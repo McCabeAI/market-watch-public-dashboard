@@ -1437,6 +1437,71 @@
       "run_id": "overnight-20261020",
       "schema_version": 1,
       "thesis": "The overnight book is already flat, and nothing in the frozen packet clears a shocked-risk SOFR hurdle. Official SOFR is 3.87% while the SR3 strip is already 4.25 Dec26 through 4.71 Sep27, the 10Y is 5.15, and skip-Oct-hike-Dec is the crowded path sitting in that curve. Hormuz is in the tape at WTI 103.66 / Brent 109.55 with VIX only 18.44, CoreWeave is not a rates-first overnight expression, and NZ is closed so NEW cannot be used. Opening risk would pay SOFR on capital against priced, noisy, poorly timed narratives; remaining at the zero official-SOFR benchmark is the only seat that does not manufacture a trade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat; paying official SOFR on shocked-risk capital to express an already-priced hike path is worse than the zero benchmark.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "96830f892dae168021b83b735483e3ae04bba451a1e38d8163c0cee043368856",
+      "event_id": "jde-e9d753d4e88c4d24",
+      "funding_view": {
+        "current_sofr": "NY Fed official SOFR 3.88 percent, 20 Oct, ACT/360. That fixing is the zero benchmark and the realized funding authority for this review.",
+        "forward_funding_assessment": "lower",
+        "implication": "Remain at the zero official-SOFR benchmark. Shocked-risk capital would pay 3.88 percent ACT/360 with no residual edge after funding. The strip, US 10Y 5.12, and CORRA 2.26 versus 2.995 already embed the hike and receive views; paying SOFR to warehouse overnight Hormuz/oil gap risk with NZ/AU closed and no listed vol is a funding cost, not a trade. Flat cash is not alpha; paying SOFR on uncompensated overnight risk is worse.",
+        "sr3_forward_view": "Over an overnight horizon the listed strip is deferred, not a one-session funding forecast: Dec26 4.245, Mar27 4.525, Jun27 4.685, Sep27 4.74. That path already prices a front-loaded rise from 3.88 toward 4.245 by Dec26 and 4.74 by Sep27. Overnight realized funding is the official SOFR print, not those deferred contracts."
+      },
+      "invalidation": "Reopen only if a United States, Canada, euro-area, or Japan catalyst reprints after the oil fade while the front SOFR strip fails to hold the priced path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c941d56e85083484480b44d0b150cdbc0d246f42da0a36bc8de9044aed47d382",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "NY Fed official SOFR 3.88 percent, 20 Oct, ACT/360. That fixing is the zero benchmark and the realized funding authority for this review.",
+          "forward_funding_assessment": "lower",
+          "implication": "Remain at the zero official-SOFR benchmark. Shocked-risk capital would pay 3.88 percent ACT/360 with no residual edge after funding. The strip, US 10Y 5.12, and CORRA 2.26 versus 2.995 already embed the hike and receive views; paying SOFR to warehouse overnight Hormuz/oil gap risk with NZ/AU closed and no listed vol is a funding cost, not a trade. Flat cash is not alpha; paying SOFR on uncompensated overnight risk is worse.",
+          "sr3_forward_view": "Over an overnight horizon the listed strip is deferred, not a one-session funding forecast: Dec26 4.245, Mar27 4.525, Jun27 4.685, Sep27 4.74. That path already prices a front-loaded rise from 3.88 toward 4.245 by Dec26 and 4.74 by Sep27. Overnight realized funding is the official SOFR print, not those deferred contracts."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "2faf6d088addb14ccf8316e588bec520956b2af37edef972493b0e90a919479f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+        "evidence_hash": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+        "overnight_run_id": "overnight-20261021",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "No new risk; official SOFR 3.88 is the zero benchmark versus a hike-priced strip from December 2026 at 4.245 through September 2027 at 4.74.",
+      "run_id": "overnight-20261021",
+      "schema_version": 1,
+      "thesis": "No new risk; official SOFR 3.88 is the zero benchmark versus a hike-priced strip from December 2026 at 4.245 through September 2027 at 4.74."
     }
   ],
   "schema_version": 1,

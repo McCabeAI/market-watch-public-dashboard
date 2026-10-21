@@ -54,7 +54,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -978.44,
     "status": "ok"
   },
   "learning": {
@@ -65,7 +65,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "a832bd5a60d79493c52a70637f15e3e79523b6048944ac51ac6bc3823ada31d7",
+  "memory_context_sha256": "b1165f687aec1f6c9bcf37c44ccc5b74a2069bc82cf746330dd29e84372a9c1e",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -81,7 +81,7 @@
         "entry_mark": 4.52,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 1000.0,
         "holding_seconds": 82247,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -89,14 +89,14 @@
         "intended_horizon_days": null,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 0.0,
+        "mfe_usd": 1000.0,
         "order_policy": "review_only",
         "position_id": "pos-fca0c79a2e45",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 1000.0,
+        "retained_mfe_fraction": 0.0,
         "review_required": false,
         "review_threshold_usd": 200000.0,
         "review_triggers": [],
@@ -131,7 +131,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.36
+        "value": 0.32
       },
       "complacency": {
         "band": "calm",
@@ -146,12 +146,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.22
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -191,7 +191,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ee2a7926441eb416d2f2e7c22fd8d23ba4e4b576f3e633e60bfd6ac2eb7afde5",
+    "state_sha256": "3391e8e12936cec0dae35ecae0198150d21de63fc9cb62f268438e7ad31e6679",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

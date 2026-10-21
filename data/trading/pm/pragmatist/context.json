@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-21T08:22:07.869994-04:00",
+  "as_of": "2026-10-21T12:07:46.926425-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -48,9 +48,9 @@
     "stress_regime": "unknown"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 247327.65,
+    "best_trader_net_pnl_usd": 211689.01,
     "best_trader_outearn_streak": null,
-    "best_trader_seat": "dollar-king",
+    "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
     "competition_cohort_size": 3,
     "competition_eligible": true,
@@ -75,7 +75,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "5f28fbba3244ec53744623bf105d3deb53d75d749a54c3528f52e21d3f5cde80",
+  "memory_context_sha256": "04569d6f6c3a4c0010ccdc7f26a894c94c2ade57cac9afa71ba57cd4ccfdc9f2",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -92,7 +92,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 540000.0,
-        "holding_seconds": 2712563,
+        "holding_seconds": 2726102,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -131,34 +131,34 @@
         "asset_class": "rates_rv",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": null,
+        "current_mark": -6.00000000000005,
         "current_notional_usd": 80000000.0,
         "entry_mark": -22.999999999999954,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
-        "holding_seconds": 609491,
+        "giveback_usd": 0.0,
+        "holding_seconds": 623030,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "NZ-US_10Y",
         "intended_horizon_days": null,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 24000.0,
+        "mfe_usd": 136000.0,
         "order_policy": "review_only",
         "position_id": "pm-pragmatist-3afafe53c6d7",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 24000.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 136000.0,
+        "retained_mfe_fraction": 1.0,
         "review_required": false,
         "review_threshold_usd": 800000.0,
         "review_triggers": [],
         "side": "short",
-        "total_pnl_usd": null,
+        "total_pnl_usd": 136000.0,
         "trade_id": "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7",
-        "unrealized_pnl_usd": null
+        "unrealized_pnl_usd": 136000.0
       },
       "instrument": "NZ-US_10Y",
       "opened_at": "2026-10-14T07:03:55.974585-04:00",
@@ -185,8 +185,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -200,13 +200,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.22
+        "trend": "up",
+        "value": 0.25
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -232,10 +232,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0c16db4f5a67c006404b437f3e4c5dd6630226a80fd26f2fc571cabafc529388",
+    "state_sha256": "84065249ec9681f580bdf7a64383bf2a5b8404f623bac5e952c7effdc0c220b5",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

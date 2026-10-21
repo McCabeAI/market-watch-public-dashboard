@@ -113,7 +113,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -13696.33,
     "status": "ok"
   },
   "learning": {
@@ -124,7 +124,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c168cb1af4841452ce87fcc920a87c034103db06306c35f7343d475368a2c1e3",
+  "memory_context_sha256": "1194c96cf367761b7d5609f71fb4d33d05bcc91a52e8ec98103be05b8adc9cfe",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -140,7 +140,7 @@
         "entry_mark": 110.89779434607021,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 13712.5,
         "holding_seconds": 1651270,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -148,14 +148,14 @@
         "intended_horizon_days": null,
         "mae_usd": -22766.21,
         "mechanical_order": false,
-        "mfe_usd": 208366.04,
+        "mfe_usd": 222078.54,
         "order_policy": "review_only",
         "position_id": "pos-44de67c4b24f",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 208366.04,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 222078.54,
+        "retained_mfe_fraction": 0.9383,
         "review_required": true,
         "review_threshold_usd": 150000.0,
         "review_triggers": [
@@ -194,12 +194,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.18
+        "trend": "down",
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
@@ -209,7 +209,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "frustration": {
         "band": "calm",
@@ -242,11 +242,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_gain_major",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261016"
-      },
-      {
         "kind": "self_report_admission_pressure_distorting",
         "magnitude": 1.0,
         "run_id": "overnight-20261016"
@@ -259,7 +254,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "acbf2b71dd008c623ba365d6ac453ffef0171e5ae6847ffffb36243378b61f26",
+    "state_sha256": "4c6c1aabbdc4d0ff8d798f2be220c1b5f20e0916e8c21848b9f49ba29b3e52b8",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

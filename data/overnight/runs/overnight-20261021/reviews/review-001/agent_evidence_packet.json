@@ -1,0 +1,818 @@
+{
+  "base_evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+  "base_packet_sha256": "6d9c285e3346e5e14f98d8eb29c85386e771764db4d4a5cf735253474766ab93",
+  "canada_prima_pressure": {
+    "change_since_last_mpr": "Versus the July 2026 MPR conditioning assumptions as of 2026-07-09, brent_end_2027_vs_prose is +16.58 USD per barrel versus 70.0. Observable monitoring only; not a reproduction of the Bank of Canada's Prima model.",
+    "conditioning_date": "2026-07-09",
+    "confidence": "high",
+    "coverage": 1.0,
+    "direction": "RISING",
+    "disclaimer": "Deterministic Market Watch proxy for observable oil-curve persistence and inflation-propagation channels. It is not a reconstruction or reproduction of the Bank of Canada's proprietary Prima model.",
+    "front_shock_classification": "parallel_upward_repricing",
+    "largest_drivers": [
+      "Brent last-day 2027-12 1m change +9.2 percent",
+      "Brent last-day 2028-12 1m change +6.2 percent",
+      "IPPI ex-energy mom +0.84 percent"
+    ],
+    "mpr_status": "partial",
+    "staleness": "producer inputs fresh; oil curve fresh",
+    "strength": "high",
+    "subcomponent_directions": {
+      "consumer_price_breadth": "RISING",
+      "demand_pass_through_constraint": "RISING",
+      "imported_pressure": "RISING",
+      "production_network_pressure": "RISING",
+      "shock_persistence": "RISING"
+    },
+    "title": "Canada Prima-pressure proxy"
+  },
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move under the trusted duration-1 P&L convention. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-10-20",
+    "funding_rate_annual": 0.0388,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "cross_assets": {
+    "generated_at": null,
+    "marks": [
+      {
+        "as_of": "2026-10-20",
+        "id": "WTI",
+        "label": "WTI futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "CL=F",
+        "unit": "USD/bbl",
+        "value": 101.79000091552734
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "BRENT",
+        "label": "Brent futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "BZ=F",
+        "unit": "USD/bbl",
+        "value": 108.79000091552734
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "GOLD",
+        "label": "Gold futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "GC=F",
+        "unit": "USD/oz",
+        "value": 4142.60009765625
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "SP500",
+        "label": "S&P 500",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "SP500",
+        "unit": "index",
+        "value": 7712.57
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "NASDAQ",
+        "label": "Nasdaq Composite",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "NASDAQCOM",
+        "unit": "index",
+        "value": 26424.82
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "DOW",
+        "label": "Dow Jones",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "DJIA",
+        "unit": "index",
+        "value": 52495.88
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "RUSSELL",
+        "label": "Russell 2000",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "^RUT",
+        "unit": "index",
+        "value": 2773.419921875
+      },
+      {
+        "as_of": "2026-10-20",
+        "id": "COPPER",
+        "label": "Copper futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "HG=F",
+        "unit": "USD/lb",
+        "value": 6.566500186920166
+      },
+      {
+        "as_of": "2026-10-19",
+        "id": "VIX",
+        "label": "VIX",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "VIXCLS",
+        "unit": "points",
+        "value": 18.44
+      }
+    ],
+    "provenance": "frozen_market_state",
+    "status": "ok"
+  },
+  "desk": {
+    "cash": {
+      "AONIA": 4.6,
+      "CORRA": 2.26,
+      "ESTR": 2.44,
+      "SOFR": 3.88,
+      "TONA": 1.227
+    },
+    "cross_assets": {
+      "BRENT": 108.79000091552734,
+      "COPPER": 6.566500186920166,
+      "DOW": 52495.88,
+      "GOLD": 4142.60009765625,
+      "NASDAQ": 26424.82,
+      "RUSSELL": 2773.419921875,
+      "SP500": 7712.57,
+      "VIX": 18.44,
+      "WTI": 101.79000091552734
+    },
+    "eligibility": "The United States, Canada, the euro area, and Japan are eligible for new risk. Australia is restricted for new risk because Australian labor, inflation, retail, spending, confidence and domestic-demand releases could not be verified. New Zealand is restricted for new risk because household income, retail, spending, wages and domestic-demand releases could not be verified, and official New Zealand government yields are unavailable.",
+    "fx": {
+      "AUDCAD": 0.9814399601395118,
+      "AUDJPY": 110.45092177379173,
+      "AUDUSD": 0.6984927752864972,
+      "CADJPY": 112.53966239370479,
+      "EURAUD": 1.6056,
+      "EURCAD": 1.5758,
+      "EURCHF": 0.9237,
+      "EURGBP": 0.84028,
+      "EURJPY": 177.34,
+      "EURUSD": 1.1215,
+      "GBPJPY": 211.04869805302994,
+      "GBPUSD": 1.3346741562336364,
+      "NZDUSD": 0.5679056106947539,
+      "USDCAD": 1.405082478823005,
+      "USDCHF": 0.8236290682122158,
+      "USDJPY": 158.12750780205084
+    },
+    "yields": {
+      "AU": {
+        "10Y": 5.314,
+        "2Y": 4.919,
+        "5Y": 4.976
+      },
+      "CA": {
+        "10Y": 3.93,
+        "2Y": 3.33,
+        "5Y": 3.64,
+        "LONG": 4.25
+      },
+      "EA": {
+        "10Y": 3.41,
+        "2Y": 3.09,
+        "30Y": 3.77,
+        "5Y": 3.21
+      },
+      "JP": {
+        "10Y": 2.927,
+        "2Y": 1.909,
+        "30Y": 3.992,
+        "5Y": 2.313
+      },
+      "NZ": {
+        "10Y": 5.06,
+        "2Y": 3.94,
+        "5Y": 4.52
+      },
+      "US": {
+        "10Y": 5.12,
+        "2Y": 4.79,
+        "30Y": 5.42,
+        "5Y": 4.94
+      }
+    }
+  },
+  "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+  "funding_context": {
+    "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
+    "sofr": {
+      "convention": "ACT/360",
+      "effective_date": "2026-10-20",
+      "percent_rate": 3.88,
+      "source": "NY_FED"
+    },
+    "sr3": [
+      {
+        "expiry": "2026-12",
+        "implied_rate": 4.245
+      },
+      {
+        "expiry": "2027-03",
+        "implied_rate": 4.525
+      },
+      {
+        "expiry": "2027-06",
+        "implied_rate": 4.685
+      },
+      {
+        "expiry": "2027-09",
+        "implied_rate": 4.74
+      }
+    ]
+  },
+  "learning_obligations": {
+    "manifest_sha256": "e6881ff3ca0544ce715ad12387dcb9df5b2e162a0c8424e21adcf3e48d9d780c",
+    "obligation_count": 3
+  },
+  "overnight_run_id": "overnight-20261021",
+  "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal."
+      },
+      {
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero."
+      },
+      {
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September."
+      }
+    ],
+    "news": [
+      {
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "summary": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region."
+      },
+      {
+        "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
+        "published_at": "2026-10-14T20:59:00-04:00",
+        "summary": "The ECB can take time analyzing inflation dynamics shaped by opposing global forces."
+      },
+      {
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens."
+      },
+      {
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "summary": "LNG shipments through Hormuz extended a rebound that began in September."
+      },
+      {
+        "headline": "The Treasury Market\u2019s New Power Brokers Are Pickier Than Ever",
+        "published_at": "2026-10-20T23:16:00-04:00",
+        "summary": "Beset by a selloff in Treasuries that\u2019s sent benchmark yields to multidecade highs, the US government is finding itself increasingly dependent on investors who only buy if the price is right."
+      },
+      {
+        "headline": "China uses crude stockpiles, but rising oil imports may curtail draws",
+        "published_at": "2026-10-20T20:31:09.015000-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "This Janus Henderson fund manager owns CoreWeave debt \u2014 here's why he's sticking with it",
+        "published_at": "2026-10-20T20:12:44-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "Housing is flashing warning signs just as the Fed weighs more interest rate hikes",
+        "published_at": "2026-10-21T07:20:58-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "French 10-year bond yield hits 5% for first time since 2002 amid unrest",
+        "published_at": "2026-10-21T06:40:01-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "UK inflation jumps to 3.5% \u2014 cementing rate hike expectations",
+        "published_at": "2026-10-21T03:50:10-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "Russia Frees US Teacher After Trump Eases Sanctions",
+        "published_at": "2026-10-21T00:28:00-04:00",
+        "summary": "Russia freed an American teacher four years after he was convicted of fighting for Ukraine following a decison by President Donald Trump to ease sanctions on the country."
+      },
+      {
+        "headline": "BlackRock\u2019s Fink Says Slow AI Buildout Would Spur Inflation",
+        "published_at": "2026-10-20T20:12:00-04:00",
+        "summary": "BlackRock Inc. Chief Executive Officer Larry Fink warned that delays in building data centers could raise computing costs and threaten economic growth as demand for artificial intelligence accelerates ..."
+      },
+      {
+        "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+        "published_at": "2026-10-19T20:30:00-04:00",
+        "summary": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks."
+      },
+      {
+        "headline": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern",
+        "published_at": "2026-10-19T14:11:00-04:00",
+        "summary": "Nasdaq rallied while tech investors bought the dip, but debt remains a concern; CoreWeave is still off menu and Oracle bonds trade near junk."
+      },
+      {
+        "headline": "10-year Treasury yield moves lower after weak housing data",
+        "published_at": "2026-10-20T16:03:14-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "Trading Day: Oil reversal lifts spirits",
+        "published_at": "2026-10-20T10:00:00-04:00",
+        "summary": "US stocks rose on Tuesday, shrugging off global weakness earlier in the day as oil prices pulled back sharply from six-month highs, a reversal that also pushed longer-dated Treasury yields lower."
+      },
+      {
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high."
+      },
+      {
+        "headline": "Saudi crude oil exports hit five-month high in August, data shows",
+        "published_at": "2026-10-21T08:17:24.911000-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "Oil prices climb as traders assess Middle East developments",
+        "published_at": "2026-10-21T03:54:59-04:00",
+        "summary": "Headline-only public metadata; article body was not retrieved."
+      },
+      {
+        "headline": "Key Mideast Oil Benchmark Hits 3-Month Low on Resilient Exports",
+        "published_at": "2026-10-20T18:49:00-04:00",
+        "summary": "A key benchmark for Middle East crude fell to its lowest in nearly three months, an indication of the resilience of the region\u2019s exports despite intensifying Iranian attacks on shipping."
+      },
+      {
+        "headline": "Fed to skip October but raise rates again in December, nearly all economists say",
+        "published_at": "2026-10-20T08:43:23.682000-04:00",
+        "summary": "Survey coverage suggests economists expect the Fed to skip October but raise rates again in December."
+      },
+      {
+        "headline": "TSX falls at open on weakness in miners, persistent inflation",
+        "published_at": "2026-10-20T06:27:22.885000-04:00",
+        "summary": "Canada\u2019s TSX fell at the open on weakness in miners and persistent inflation concerns."
+      },
+      {
+        "headline": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat",
+        "published_at": "2026-10-19T23:44:00-04:00",
+        "summary": "French-German spreads have widened from global and country-specific factors."
+      },
+      {
+        "headline": "Markets' squeal is music to Fed ears \u2014 but still too faint",
+        "published_at": "2026-10-19T23:32:00-04:00",
+        "summary": "Recent stocks and bonds selloff amounts to some tightening, but it is still faint versus the Fed\u2019s work."
+      }
+    ],
+    "sources": [
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
+        "published_at": "2026-10-14T20:59:00-04:00",
+        "snippet": "The ECB can take time analyzing inflation dynamics shaped by opposing global forces.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "published_at": null,
+        "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "published_at": null,
+        "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "The Treasury Market\u2019s New Power Brokers Are Pickier Than Ever",
+        "published_at": "2026-10-20T23:16:00-04:00",
+        "snippet": "Beset by a selloff in Treasuries that\u2019s sent benchmark yields to multidecade highs, the US government is finding itself increasingly dependent on investors who only buy if the price is right.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-21/the-treasury-market-s-new-power-brokers-are-pickier-than-ever"
+      },
+      {
+        "discovery_surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml",
+        "distribution_weight": "standard",
+        "headline": "China uses crude stockpiles, but rising oil imports may curtail draws",
+        "published_at": "2026-10-20T20:31:09.015000-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/commentary/reuters-open-interest/china-uses-crude-stockpiles-rising-oil-imports-may-curtail-draws-2026-10-21/"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "This Janus Henderson fund manager owns CoreWeave debt \u2014 here's why he's sticking with it",
+        "published_at": "2026-10-20T20:12:44-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/20/coreweave-debt-janus-henderson-lloyd.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Housing is flashing warning signs just as the Fed weighs more interest rate hikes",
+        "published_at": "2026-10-21T07:20:58-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/20/housing-mortgage-rates-real-estate-federal-reserve.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "French 10-year bond yield hits 5% for first time since 2002 amid unrest",
+        "published_at": "2026-10-21T06:40:01-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/21/france-protests-bonds-debt.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "UK inflation jumps to 3.5% \u2014 cementing rate hike expectations",
+        "published_at": "2026-10-21T03:50:10-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/21/inflation-uk-cpi-interest-rates.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "Russia Frees US Teacher After Trump Eases Sanctions",
+        "published_at": "2026-10-21T00:28:00-04:00",
+        "snippet": "Russia freed an American teacher four years after he was convicted of fighting for Ukraine following a decison by President Donald Trump to ease sanctions on the country.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-21/russia-frees-us-teacher-during-witkoff-talks-after-trump-appeal"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "BlackRock\u2019s Fink Says Slow AI Buildout Would Spur Inflation",
+        "published_at": "2026-10-20T20:12:00-04:00",
+        "snippet": "BlackRock Inc. Chief Executive Officer Larry Fink warned that delays in building data centers could raise computing costs and threaten economic growth as demand for artificial intelligence accelerates ...",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-21/blackrock-s-fink-says-slow-data-center-buildout-is-inflationary"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+        "published_at": "2026-10-19T20:30:00-04:00",
+        "snippet": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern",
+        "published_at": "2026-10-19T14:11:00-04:00",
+        "snippet": "Nasdaq rallied while tech investors bought the dip, but debt remains a concern; CoreWeave is still off menu and Oracle bonds trade near junk.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "10-year Treasury yield moves lower after weak housing data",
+        "published_at": "2026-10-20T16:03:14-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/20/us-treasury-yields-investors-economy.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "standard",
+        "headline": "Trading Day: Oil reversal lifts spirits",
+        "published_at": "2026-10-20T10:00:00-04:00",
+        "snippet": "US stocks rose on Tuesday, shrugging off global weakness earlier in the day as oil prices pulled back sharply from six-month highs, a reversal that also pushed longer-dated Treasury yields lower.",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/commentary/reuters-open-interest/global-markets-trading-day-graphic-2026-10-20/"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "published_at": null,
+        "snippet": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml",
+        "distribution_weight": "standard",
+        "headline": "Saudi crude oil exports hit five-month high in August, data shows",
+        "published_at": "2026-10-21T08:17:24.911000-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/business/energy/saudi-crude-oil-exports-hit-five-month-high-august-data-shows-2026-10-21/"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Oil prices climb as traders assess Middle East developments",
+        "published_at": "2026-10-21T03:54:59-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/21/oil-price-today-wti-brent-rise-on-middle-east-worries.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "Key Mideast Oil Benchmark Hits 3-Month Low on Resilient Exports",
+        "published_at": "2026-10-20T18:49:00-04:00",
+        "snippet": "A key benchmark for Middle East crude fell to its lowest in nearly three months, an indication of the resilience of the region\u2019s exports despite intensifying Iranian attacks on shipping.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-21/key-mideast-oil-benchmark-hits-3-month-low-on-resilient-exports"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Fed to skip October but raise rates again in December, nearly all economists say",
+        "published_at": "2026-10-20T08:43:23.682000-04:00",
+        "snippet": "Survey coverage suggests economists expect the Fed to skip October but raise rates again in December.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "TSX falls at open on weakness in miners, persistent inflation",
+        "published_at": "2026-10-20T06:27:22.885000-04:00",
+        "snippet": "Canada\u2019s TSX fell at the open on weakness in miners and persistent inflation concerns.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat",
+        "published_at": "2026-10-19T23:44:00-04:00",
+        "snippet": "French-German spreads have widened from global and country-specific factors.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Markets' squeal is music to Fed ears \u2014 but still too faint",
+        "published_at": "2026-10-19T23:32:00-04:00",
+        "snippet": "Recent stocks and bonds selloff amounts to some tightening, but it is still faint versus the Fed\u2019s work.",
+        "source_name": null,
+        "url": null
+      }
+    ],
+    "summary": "Energy risk stays front and center as Hormuz attacks target ship engine rooms, leaving oil buffers uncomfortably thin even as LNG transits rebound. Brent sits near 109 and WTI above 101, feeding a rising Canadian prima-pressure read alongside firm IPPI ex-energy. U.S. rates are mixed: SOFR is 3.88%, the 10-year is 5.12% after a modest daily dip tied to soft housing, yet the policy debate still allows for more tightening. Treasury supply continues to lean on selective buyers with yields recently at multi-decade highs. Euro-area stress shows in a 5% French 10-year; UK CPI at 3.5% keeps hike talk alive while the ECB sounds in no hurry. Risk assets are resilient\u2014S&P 7712, Nasdaq 26425, gold 4142\u2014with credit headlines around CoreWeave and AI capex adding an inflation undertone. BoJ follow-through supports a call-rate path near 1.25% from late September. Australian labor, inflation, retail, spending, confidence and domestic-demand releases could not be verified, so new Australian risk stays closed; New Zealand new risk is also closed."
+  },
+  "review_id": "review-001",
+  "synthesis": {
+    "desk_tensions": [
+      "dollar-king long USDCAD versus positioning-cynic short USDCAD",
+      "perma-bear long US 10-year versus trend-follower short US 10-year",
+      "SOFR Mar27 pay (perma-bull, catalyst-junkie) versus receive (mean-reverter)",
+      "CORRA Mar27 pay (perma-bull, rate-hawk) versus receive (rate-dove, swinger, pragmatist)"
+    ],
+    "developments": [
+      "Hormuz engine-room strikes and thin oil buffers; LNG flows recovering",
+      "Weak U.S. housing nudged the 10-year lower even as hike talk persists",
+      "French 10-year at 5%; UK CPI 3.5% lifts BOE hike expectations",
+      "ECB patience; CoreWeave stress with limited bank spill cited"
+    ],
+    "market_conclusion": "Sticky energy shock and uneven global inflation keep front-end hikes in play while U.S. duration trades a housing-led dip against still-elevated term premium.",
+    "watch_next": [
+      "Further Hormuz/LNG and Brent path versus Canada inflation proxies",
+      "U.S. housing and labor follow-through for Fed and 2Y/10Y direction",
+      "UK and euro-area inflation prints versus ECB/BOE pricing"
+    ]
+  },
+  "trade_permissions": {
+    "block_why": null,
+    "blocked_expressions": [],
+    "blocked_sources": [],
+    "countries": {
+      "AU": {
+        "eligible": false,
+        "gaps": [
+          "AU.Labor.employment",
+          "AU.Labor.unemployment",
+          "AU.Activity.business_surveys",
+          "AU.Activity.gdp_domestic_demand",
+          "AU.Consumer.confidence",
+          "AU.Consumer.income",
+          "AU.Consumer.retail",
+          "AU.Consumer.spending",
+          "AU.Inflation.headline",
+          "AU.Inflation.underlying",
+          "AU.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence"
+        ],
+        "scored_status": "ok"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.business_surveys"
+        ],
+        "scored_status": "partial"
+      },
+      "NZ": {
+        "eligible": false,
+        "gaps": [
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "hold_decisions_emitted": 0,
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "quarantine_mode": "isolate",
+    "quarantine_reason": "unsupported_mark_source",
+    "quarantined_positions": [
+      {
+        "asset_class": "rates_rv",
+        "dependency": "NZ_rates",
+        "dependency_status": "unavailable",
+        "instrument": "NZ-US_10Y",
+        "live_marked": false,
+        "observation_date": null,
+        "pnl_available": false,
+        "position_id": "pm-pragmatist-3afafe53c6d7",
+        "quarantined": true,
+        "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+        "reason_code": "unsupported_mark_source",
+        "scoring": false,
+        "seat": "pragmatist"
+      }
+    ],
+    "restricted_seats": [
+      "pragmatist"
+    ],
+    "seat_risk": {
+      "pragmatist": "unavailable_new_risk"
+    },
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.manufacturing_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.services_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      }
+    ],
+    "synthetic_holds": false,
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "EA",
+      "JP"
+    ]
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

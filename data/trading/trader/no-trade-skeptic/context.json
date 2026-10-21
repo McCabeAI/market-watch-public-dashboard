@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c941d56e85083484480b44d0b150cdbc0d246f42da0a36bc8de9044aed47d382",
+  "memory_context_sha256": "3e37258be8f87bd5aa0f72fdcd7e61d4a0349c960173da98315ed7bac6b131d5",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -100,7 +100,7 @@
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -130,30 +130,36 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261016"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261019"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "2faf6d088addb14ccf8316e588bec520956b2af37edef972493b0e90a919479f",
+    "state_sha256": "413b8a045b5de8f6e50ac5d8a66304b2b8f87d39f0b7da3e2a5a52c84f3f87b6",
     "streaks": {
-      "flat_cycles": 14,
+      "flat_cycles": 15,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "NY Fed official SOFR 3.88 percent, 20 Oct, ACT/360. That fixing is the zero benchmark and the realized funding authority for this review.",
+      "forward_funding_assessment": "lower",
+      "implication": "Remain at the zero official-SOFR benchmark. Shocked-risk capital would pay 3.88 percent ACT/360 with no residual edge after funding. The strip, US 10Y 5.12, and CORRA 2.26 versus 2.995 already embed the hike and receive views; paying SOFR to warehouse overnight Hormuz/oil gap risk with NZ/AU closed and no listed vol is a funding cost, not a trade. Flat cash is not alpha; paying SOFR on uncompensated overnight risk is worse.",
+      "sr3_forward_view": "Over an overnight horizon the listed strip is deferred, not a one-session funding forecast: Dec26 4.245, Mar27 4.525, Jun27 4.685, Sep27 4.74. That path already prices a front-loaded rise from 3.88 toward 4.245 by Dec26 and 4.74 by Sep27. Overnight realized funding is the official SOFR print, not those deferred contracts."
+    },
     {
       "current_sofr": "Official NY Fed SOFR 3.87% effective 19 Oct, ACT/360.",
       "forward_funding_assessment": "lower",
@@ -177,15 +183,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Remain at the zero official-SOFR cash benchmark. Paying official 3.89 SOFR on shocked-risk capital would fund a hike path the 2027 strip already contains; that is not alpha versus flat cash.",
       "sr3_forward_view": "Over this overnight horizon the frozen SR3 2027 path sits well above cash 3.89: December 2026 4.225, March 4.485, June 4.635, September 4.675, December 4.66. Exact 1m/3m/6m/12m SR3 horizon matches in the funding context are null. That strip is a priced multi-meeting hiking path, not an overnight funding print."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-10-13",
-        "rate": 3.89
-      },
-      "forward_funding_assessment": "lower",
-      "implication": "Realized overnight funding should print near the 3.89 official fixing and lower than those SR3 forwards. Remain at the zero official-SOFR cash benchmark; do not pay SOFR on shocked-risk capital to own a hike path the curve already contains. Flat cash is not alpha.",
-      "sr3_forward_view": "Over this overnight horizon the frozen SR3 2027 path sits well above cash 3.89: March 4.515, June 4.645, September 4.68, December 4.66. Exact 1m/3m/6m/12m SR3 horizon matches in funding_context are null. That strip is a priced multi-meeting hiking path, not an overnight funding print."
     }
   ],
   "recent_performance_reflections": [],

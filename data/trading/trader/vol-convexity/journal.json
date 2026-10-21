@@ -1068,6 +1068,60 @@
       "run_id": "overnight-20261020",
       "schema_version": 1,
       "thesis": "Hormuz is overnight binary risk and VIX is already 18.44 versus 16.46, so linear equity spot is the wrong instrument: escalation gaps indexes down, de-escalation squeezes them, and neocloud credit is idiosyncratic. US 10Y at 5.15 and SOFR Mar27 at 4.52 versus 3.87 cash already embed a 65bp hike path, so paying rates overnight is a directional inflation bet, not cheap convexity. Options are unmarkable with no IV surface in the frozen packet, and missing 2s/5s/30s plus NZ-closed NEW marks block a curve or NZ rates substitute. Book stays flat rather than forcing a linear expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat; no markable convexity and no cleaner linear expression while Hormuz timing is unresolved.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "6e4a1e0fb7b2959f9dcf7509b889e27f15b5c4e1bbb51d29dadef5a734f120d4",
+      "event_id": "jde-00042c69c7a04087",
+      "funding_view": null,
+      "invalidation": "Re-scan only if the next freeze prints a markable listed-vol surface with sourced premiums, implied vols, and strikes. A further oil or rates move by itself does not authorize linear spot or rates risk from this seat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8af5acd7cee4a63f78a8e09b9337a650911bc1fb40a5e1adfa0165ccbe927182",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "294691862d2faf1ae92cf10f5dc0860cc1b12bfa0ab6ba69a60f8b389445ea22"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+        "evidence_hash": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+        "overnight_run_id": "overnight-20261021",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "the book is flat; official SOFR is 3.88 on 2026-10-20; SR3H7 / March 2027 SOFR settles at 4.525, 64.5bp above cash; US 10Y is 5.12; VIX is 18.44 as of 2026-10-19; WTI is 101.79, Brent 108.79, gold 4142.6; USDCAD is 1.40508 and USDJPY is 158.13; S&P is 7712.57; Canada Prima-pressure is rising on a persistent oil curve; Australia and New Zealand are ineligible for new risk; the freeze has no listed implied-vol surface, premiums, or strikes. oil-linked event risk still cuts both ways in spot, so USDCAD, USDJPY, and equity index spot are the wrong instruments when timing is unknown; paying March 2027 SOFR or selling 10Y duration is a linear inflation or hike bet on a path that is already 64.5bp through cash, not cheap convexity. FX or rates implied vol, skew, risk-reversal, fly, and option mids. Without those marks an options OPEN is not executable, and a last-resort options candidate is not opened.",
+      "run_id": "overnight-20261021",
+      "schema_version": 1,
+      "thesis": "the book is flat; official SOFR is 3.88 on 2026-10-20; SR3H7 / March 2027 SOFR settles at 4.525, 64.5bp above cash; US 10Y is 5.12; VIX is 18.44 as of 2026-10-19; WTI is 101.79, Brent 108.79, gold 4142.6; USDCAD is 1.40508 and USDJPY is 158.13; S&P is 7712.57; Canada Prima-pressure is rising on a persistent oil curve; Australia and New Zealand are ineligible for new risk; the freeze has no listed implied-vol surface, premiums, or strikes. oil-linked event risk still cuts both ways in spot, so USDCAD, USDJPY, and equity index spot are the wrong instruments when timing is unknown; paying March 2027 SOFR or selling 10Y duration is a linear inflation or hike bet on a path that is already 64.5bp through cash, not cheap convexity. FX or rates implied vol, skew, risk-reversal, fly, and option mids. Without those marks an options OPEN is not executable, and a last-resort options candidate is not opened."
     }
   ],
   "schema_version": 1,

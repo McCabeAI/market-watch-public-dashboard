@@ -578,6 +578,105 @@
       "subject": {
         "drawdown_usd": 705227.57
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "event_id": "pse-000025",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "seq": 25,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0013,
+        "defensiveness": 0.0072,
+        "external_pressure": 0.002,
+        "frustration": 0.0138,
+        "revenge_pressure": 0.007,
+        "self_trust": -0.0026,
+        "thesis_attachment": 0.0015
+      },
+      "event_id": "pse-000026",
+      "kind": "session_loss",
+      "magnitude": 0.11557558,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "scale": 1.0,
+      "seq": 26,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -57787.79
+      }
+    },
+    {
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0595
+      },
+      "event_id": "pse-000027",
+      "kind": "self_report_admission_overconfidence",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "scale": 1.0,
+      "seq": 27,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-31455bf8143b"
+      }
+    },
+    {
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "external_pressure": 0.0433,
+        "self_trust": -0.0169
+      },
+      "event_id": "pse-000028",
+      "kind": "self_report_admission_pressure_distorting",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261021",
+      "scale": 1.0,
+      "seq": 28,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-31455bf8143b"
+      }
     }
   ],
   "owner_id": "dollar-king",

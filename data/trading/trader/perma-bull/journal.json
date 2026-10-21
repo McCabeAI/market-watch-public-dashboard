@@ -1159,6 +1159,92 @@
       "run_id": "overnight-20261020",
       "schema_version": 1,
       "thesis": "WTI 103.66 and Brent 109.55 with Hormuz still ramping is an inflation impulse against thin buffers, not a growth-break: VIX 18.44 with the S&P at 7690.73 still absorbs the shock. Economists skipping October then penciling a single December hike leave March 2027 SOFR at 4.52 too cheap versus that mix, so the book pays the US path and keeps the Canada and Australia pays already on. Gold at 4160.1 is a geopolitical hedge, not a signal to cover."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Keep the 50 million March 2027 CORRA pay from 3.13 versus live 2.995; cash 2.26 still maps to a 73.5bp oil-inflation hike path, so the implied has not retraced and this is not a size-up.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Keep the 25 million March 2027 AONIA pay at 4.79 versus cash 4.60 as the existing Australian oil-inflation leg; Australian labor gaps close new Australian risk, so there is no add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Keep the 50 million March 2027 SOFR pay at 4.525 versus cash 3.88; skip-October then December is still too small versus WTI 101.79 and Brent 108.79, and a 0.5bp tick is not permission to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "5086cef1051d7d0528cacb7588ad5d5fc2a73c21ae6d3a68c9235517f103fa6f",
+      "event_id": "jde-01f8c80aa11d4d6f",
+      "funding_view": null,
+      "invalidation": "Cover the Canada pay if March 2027 CORRA falls from 2.995 toward cash 2.26 while Brent 108.79 and WTI 101.79 reverse, implying the hike path is abandoned. Cover the US pay if March 2027 SOFR moves down from 4.525 because the strip validates skip-October and removes December. Cover the Australia pay if March AONIA returns to cash 4.60 without a higher cash rate. A jump in VIX 18.44 with the S&P reversing the 7712 tape would also break the book. Do not use a 105 WTI headline as a trigger.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9c12c1fd97b7037f007de1af08431ceb27d1bb3daca9b74c5ec985885d986035",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bc89be5a594f84545a8d1582c1efde506fe9c812f3162ea7c3e613bf7209a123"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+        "evidence_hash": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+        "overnight_run_id": "overnight-20261021",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "WTI 101.79 and Brent 108.79 with Hormuz engine-room attacks still ramping is an inflation impulse, not a growth break: VIX 18.44 and the S&P at 7712 still absorb it. Overnight CORRA 2.26 versus March 2027 at 2.995 prices only 73.5bp of Bank of Canada catch-up versus that oil tape and a still-rising Canada energy-pass-through proxy. Keep the existing March 2027 CORRA pay; the implied has not retraced that path, so this is not a size-up. Keep March 2027 SOFR at 4.525 versus cash 3.88 and March 2027 AONIA at 4.79 versus cash 4.60. Gold at 4142.6 is a geopolitical hedge, not a cover signal.",
+      "run_id": "overnight-20261021",
+      "schema_version": 1,
+      "thesis": "WTI 101.79 and Brent 108.79 with Hormuz engine-room attacks still ramping is an inflation impulse, not a growth break: VIX 18.44 and the S&P at 7712 still absorb it. Overnight CORRA 2.26 versus March 2027 at 2.995 prices only 73.5bp of Bank of Canada catch-up versus that oil tape and a still-rising Canada energy-pass-through proxy. Keep the existing March 2027 CORRA pay; the implied has not retraced that path, so this is not a size-up. Keep March 2027 SOFR at 4.525 versus cash 3.88 and March 2027 AONIA at 4.79 versus cash 4.60. Gold at 4142.6 is a geopolitical hedge, not a cover signal."
     }
   ],
   "schema_version": 1,
