@@ -76,6 +76,12 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 "side": "long",
                 "notional_usd": 5_000_000,
                 "asset_class": "spot_fx",
+                "lifecycle": {
+                    "framing": "tactical",
+                    "horizon_days": 10,
+                    "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                    "catalyst_logic": "The next frozen official US or Canada print inside that window.",
+                },
             }
         ]
         self.payload["pm_decisions"] = block
@@ -100,6 +106,12 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
                 "side": "long",
                 "notional_usd": 5_000_000,
                 "asset_class": "spot_fx",
+                "lifecycle": {
+                    "framing": "tactical",
+                    "horizon_days": 10,
+                    "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                    "catalyst_logic": "The next frozen official US or Canada print inside that window.",
+                },
             }
         ]
         prior_calls: list[dict] = []
@@ -203,6 +215,12 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
             "notional_usd": 10_000_000,
             "asset_class": "spot_fx",
             "expression_memo": usd_memo,
+            "lifecycle": {
+                "framing": "tactical",
+                "horizon_days": 10,
+                "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                "catalyst_logic": "The next frozen official US or Canada print inside that window.",
+            },
         }]
         cross = self.payload["decisions"]["cross-merchant"]
         cross["expression_memo"] = aud_memo
@@ -214,6 +232,12 @@ class OptionalAutomatedPMDecisionTests(ScheduledOutputTests):
             "notional_usd": 10_000_000,
             "asset_class": "spot_fx",
             "expression_memo": aud_memo,
+            "lifecycle": {
+                "framing": "swing",
+                "horizon_days": 30,
+                "realization_logic": "Fixture cross pays if AUDUSD extends inside the swing window.",
+                "catalyst_logic": "The next frozen RBA or China print inside that window.",
+            },
         }]
         packet = self.payload["agent_packet"]
         block = _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])

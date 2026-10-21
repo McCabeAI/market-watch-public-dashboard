@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": 286989,
     "average_realized_pnl_usd": -2750.0,
@@ -52,9 +52,9 @@
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
-    "session_pnl_change_usd": 0.0,
+    "risk_capital_usd": 200000.0,
+    "risk_capital_utilization": 0.02,
+    "session_pnl_change_usd": -978.44,
     "status": "ok"
   },
   "learning": {
@@ -65,13 +65,46 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c268aaeebe039c38f6d8576b803cea9e39ea8c38946b35fc5f7458f62640c4d7",
+  "memory_context_sha256": "b1165f687aec1f6c9bcf37c44ccc5b74a2069bc82cf746330dd29e84372a9c1e",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 67,
       "current_notional_usd": 20000000.0,
       "entry_mark": 4.52,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 4.52,
+        "current_notional_usd": 20000000.0,
+        "entry_mark": 4.52,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 1000.0,
+        "holding_seconds": 82247,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "SOFR_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 1000.0,
+        "order_policy": "review_only",
+        "position_id": "pos-fca0c79a2e45",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 1000.0,
+        "retained_mfe_fraction": 0.0,
+        "review_required": false,
+        "review_threshold_usd": 200000.0,
+        "review_triggers": [],
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-catalyst-junkie-pos-fca0c79a2e45",
+        "unrealized_pnl_usd": 0.0
+      },
       "instrument": "SOFR_2027-03",
       "opened_at": "2026-10-20T09:31:20.120731-04:00",
       "position_id": "pos-fca0c79a2e45",
@@ -83,6 +116,14 @@
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -90,7 +131,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.36
+        "value": 0.32
       },
       "complacency": {
         "band": "calm",
@@ -105,12 +146,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.22
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -150,7 +191,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ee2a7926441eb416d2f2e7c22fd8d23ba4e4b576f3e633e60bfd6ac2eb7afde5",
+    "state_sha256": "3391e8e12936cec0dae35ecae0198150d21de63fc9cb62f268438e7ad31e6679",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -173,6 +214,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

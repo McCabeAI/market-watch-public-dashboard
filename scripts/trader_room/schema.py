@@ -92,6 +92,10 @@ def _validate_paper_action_row(row: Any, *, label: str) -> None:
                 f"{label} rates OPEN side mismatch: expected_mark_direction={expected} "
                 f"requires side={required_side} under the trusted P&L convention"
             )
+    if kind in {"OPEN", "HEDGE"}:
+        from scripts.trading.harvest import assert_expansion_lifecycle
+
+        assert_expansion_lifecycle(row, owner_id=label)
 
 
 def _validate_primary_trade_action_alignment(

@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": 383514,
     "average_realized_pnl_usd": -28000.0,
@@ -68,23 +68,23 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": null,
-    "competitive_rank": null,
-    "drawdown_usd": 56656.8,
+    "competition_rank": 13,
+    "competitive_rank": 13,
+    "drawdown_usd": 56742.8,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99943343.2,
-    "net_pnl_usd": null,
+    "nav_usd": 99943257.2,
+    "net_pnl_usd": -56742.8,
     "pressure_flags": [],
-    "prior_competition_rank": 13,
-    "rank_change": null,
-    "raw_pnl_rank": null,
+    "prior_competition_rank": 12,
+    "rank_change": 1,
+    "raw_pnl_rank": 13,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 800000.0,
-    "risk_capital_utilization": 0.08,
-    "session_pnl_change_usd": null,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -95,19 +95,27 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b9da1eb12d5a6e1a05e140ab9b6a5bb28aa19ead4b4858d74cc2949af05f9f40",
+  "memory_context_sha256": "20faf04f22c62e45a37fd9196baf7c35fa9dbe1b2dcb4824346323886a4cd5e8",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.17
+        "trend": "down",
+        "value": 0.16
       },
       "complacency": {
         "band": "calm",
@@ -121,13 +129,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.24
+        "trend": "down",
+        "value": 0.23
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.15
+        "trend": "down",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -162,9 +170,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "09a10fcf56f30c81ebfe42003e351504b24b3b4625f451c1f65ae895db16be43",
+    "state_sha256": "cdd424cd598e1f7aaf83ed272335be113928964c4d009f5e9b4897edc5badca9",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }
@@ -196,6 +204,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

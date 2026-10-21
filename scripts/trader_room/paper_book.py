@@ -243,6 +243,13 @@ def reviews_from_run(
             "expression_memo": actions[0].get("expression_memo") or _hold_memo(seat),
             **_learning_fields(contribution, rebuttal),
         }
+        harvest_reviews = None
+        if rebuttal and rebuttal.get("harvest_reviews") is not None:
+            harvest_reviews = rebuttal.get("harvest_reviews")
+        elif contribution.get("harvest_reviews") is not None:
+            harvest_reviews = contribution.get("harvest_reviews")
+        if harvest_reviews is not None:
+            reviews[seat]["harvest_reviews"] = deepcopy(harvest_reviews)
     if set(reviews) != set(STANDING_ADVOCATES):
         raise SchemaError("reviews must cover every standing advocate")
     return reviews

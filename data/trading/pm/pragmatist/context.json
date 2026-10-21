@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T11:14:05.847827-04:00",
+  "as_of": "2026-10-21T12:12:06.849591-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -48,24 +48,27 @@
     "stress_regime": "unknown"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 247327.65,
+    "best_trader_net_pnl_usd": 211689.01,
     "best_trader_outearn_streak": null,
-    "best_trader_seat": "dollar-king",
+    "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
-    "competition_cohort_size": 3,
+    "competition_cohort_size": 4,
     "competition_eligible": true,
-    "competition_rank": null,
-    "competitive_rank": null,
-    "drawdown_usd": 567433.22,
-    "gap_to_best_trader_usd": null,
+    "competition_rank": 2,
+    "competitive_rank": 2,
+    "drawdown_usd": 364504.44,
+    "gap_to_best_trader_usd": 515700.3,
     "high_water_nav_usd": 1001091893.75,
     "max_drawdown_usd": 50000000.0,
-    "net_after_funding_pnl_usd": null,
-    "pressure_flags": [],
-    "raw_pnl_rank": null,
-    "spread_to_leader_pm_usd": 0.0,
+    "net_after_funding_pnl_usd": 727389.31,
+    "pressure_flags": [
+      "behind_leading_pm",
+      "competitive_pressure"
+    ],
+    "raw_pnl_rank": 2,
+    "spread_to_leader_pm_usd": -3110.69,
     "status": "ok",
-    "total_pnl_usd": null
+    "total_pnl_usd": 743500.0
   },
   "learning": {
     "competition_eligible": true,
@@ -75,13 +78,46 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "10f07e7672cddf85d1bc216e960017fe039926b30048ee5b871cc0724a302b58",
+  "memory_context_sha256": "a49de39608482bf8a7549db0e94dfe9f0c73ddaf90e032fa6e1e551d0fc39b61",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 58,
       "current_notional_usd": 450000000.0,
       "entry_mark": 3.13,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 2.995,
+        "current_notional_usd": 450000000.0,
+        "entry_mark": 3.13,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 472500.0,
+        "holding_seconds": 2726362,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -90000.0,
+        "mechanical_order": false,
+        "mfe_usd": 1080000.0,
+        "order_policy": "review_only",
+        "position_id": "pm-pragmatist-4e0cbc4e0b05",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 1080000.0,
+        "retained_mfe_fraction": 0.5625,
+        "review_required": false,
+        "review_threshold_usd": 4500000.0,
+        "review_triggers": [],
+        "side": "long",
+        "total_pnl_usd": 607500.0,
+        "trade_id": "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05",
+        "unrealized_pnl_usd": 607500.0
+      },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-09-19T22:52:44.447221-04:00",
       "position_id": "pm-pragmatist-4e0cbc4e0b05",
@@ -94,6 +130,39 @@
       "conviction": 64,
       "current_notional_usd": 80000000.0,
       "entry_mark": -23.0,
+      "harvest": {
+        "asset_class": "rates_rv",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": -6.00000000000005,
+        "current_notional_usd": 80000000.0,
+        "entry_mark": -22.999999999999954,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 0.0,
+        "holding_seconds": 623290,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "NZ-US_10Y",
+        "intended_horizon_days": null,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 136000.0,
+        "order_policy": "review_only",
+        "position_id": "pm-pragmatist-3afafe53c6d7",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 136000.0,
+        "retained_mfe_fraction": 1.0,
+        "review_required": false,
+        "review_threshold_usd": 800000.0,
+        "review_triggers": [],
+        "side": "short",
+        "total_pnl_usd": 136000.0,
+        "trade_id": "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7",
+        "unrealized_pnl_usd": 136000.0
+      },
       "instrument": "NZ-US_10Y",
       "opened_at": "2026-10-14T07:03:55.974585-04:00",
       "position_id": "pm-pragmatist-3afafe53c6d7",
@@ -105,14 +174,22 @@
   "owner_id": "pragmatist",
   "owner_type": "pm",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -126,13 +203,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.22
+        "trend": "up",
+        "value": 0.25
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -158,10 +235,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0c16db4f5a67c006404b437f3e4c5dd6630226a80fd26f2fc571cabafc529388",
+    "state_sha256": "84065249ec9681f580bdf7a64383bf2a5b8404f623bac5e952c7effdc0c220b5",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -172,6 +255,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

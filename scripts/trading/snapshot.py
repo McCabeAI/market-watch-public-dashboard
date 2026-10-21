@@ -164,6 +164,7 @@ def compact_memory_for_packet(
         "reflections_due": context.get("reflections_due") or [],
         "recent_performance_reflections": context.get("recent_performance_reflections") or [],
         "open_positions": context["open_positions"],
+        "profit_harvest": context.get("profit_harvest"),
         "psychology": context.get("psychology"),
     }
 

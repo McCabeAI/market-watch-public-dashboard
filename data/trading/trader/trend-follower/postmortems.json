@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-10-21T08:22:07.869994-04:00",
+      "causal": {
+        "assumptions_right": "The hiking and term-premium impulse remained visible in the 10-year backup and in still-elevated oil. The original invalidation correctly said housing-pain headlines were not enough to kill the path, and no inflation or labor break printed while the trade was open.",
+        "assumptions_wrong_or_underweighted": "I underweighted how far a single March 2027 SOFR contract can decouple from the 10-year backup. The add at 4.71 treated that contract as the aligned price expression even after it had already become the lagging tenor.",
+        "causal_divergence": "The macro regime stayed higher-for-longer, but the instrument's implied rate mean-reverted while the 10-year continuation persisted. The loss came from staying in the lagging STIR tenor, not from a broken hiking-cycle thesis.",
+        "decision_quality_attribution": "expression",
+        "future_implication": "When a SOFR contract lags a documented sovereign-yield backup, treat it as an expression problem and rotate to the confirming tenor instead of averaging or holding the laggard.",
+        "observed_reality": "The US 10-year kept backing up while March 2027 SOFR drifted from 4.58 at entry and 4.71 at the add down to 4.52 at exit. The chosen contract did not confirm the sovereign backup, and the pay was closed on that tenor failure rather than on an inflation or labor break.",
+        "original_belief": "Paying March 2027 SOFR would keep capturing a continuing US hiking cycle because the delivered hike, an upward-sloping strip, and aligned two-year and ten-year backups would lift that contract's implied rate.",
+        "same_information_counterfactual": "Once March 2027 SOFR stopped printing higher implieds while the 10-year was still backing up, the pay should have been migrated to the 10-year immediately rather than held for about a month waiting for STIR confirmation."
+      },
+      "expression_assessment": "Outright 10-year pay was the confirming trend. March 2027 SOFR was a lagging policy-path proxy that drifted lower while the sovereign curve backed up.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-10-20T09:31:20.120731-04:00",
+        "conviction": 63,
+        "entry_mark": 4.58,
+        "exit_mark": 4.52,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2631270,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "A US inflation or labor break that turns the SOFR strip and the US 2Y uptrend lower; housing-pain headlines alone do not count.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -76250.0,
+        "side": "short",
+        "thesis": null
+      },
+      "future_rule": "Do not keep or add to a SOFR pay whose implied rate is drifting lower while the US 10-year is still making a documented backup; migrate to the confirming tenor or exit.",
+      "lesson": "When a SOFR contract stops confirming a live US 10-year backup, rotate the pay to the confirming tenor instead of holding or adding to the laggard.",
+      "no_new_lesson": null,
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-06b0602f8ba0",
+      "run_id": "overnight-20261021",
+      "sizing_assessment": "Scaling from 50 million to 75 million on the lagging contract magnified the expression error. The later 75 million 10-year pay belongs on the confirming tenor, not as a reason to re-enter March 2027 SOFR.",
+      "tags": [],
+      "thesis_assessment": "The higher-for-longer thesis was not invalidated by inflation or labor. It was expressed in the wrong contract.",
+      "timing_assessment": "The add at 4.71 increased exposure after that contract had already become the lagging tenor relative to the 10-year.",
+      "trade_id": "trd-trader-trend-follower-pos-662bff0986be",
+      "what_failed": "The March 2027 SOFR pay did not confirm the 10-year backup. Implieds fell from 4.58 at entry and from the 4.71 add to 4.52 at exit, so the chosen tenor was the wrong continuation vehicle.",
+      "what_worked": "The hiking-cycle and term-premium read stayed visible in the US 10-year backup and in still-elevated oil, and the original invalidation correctly refused to treat housing headlines as a path break."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

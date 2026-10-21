@@ -1106,6 +1106,69 @@
       "run_id": "overnight-20261020",
       "schema_version": 1,
       "thesis": "The book is flat and neither overnight handoff pays enough expected edge after official SOFR charged on shocked-risk capital. March 2027 SOFR at 4.52 already embeds about 65bp of tightening versus 3.87 cash, so paying it is a further-hawkish bet with negative carry and a split trader book. Shorting the US 10-year at 5.15 pays a wide term premium into conflicting long/short handoffs and a 75 million trend size that is too large for a preservation book. Sitting out remains the consistent action; deployment is not forced."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Neither March 2027 CORRA nor March 2027 SOFR clears official SOFR on shocked-risk capital; the flat book stays flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-21T12:07:46.469844-04:00",
+      "conviction": 61,
+      "decision_fingerprint": "9fa18ff70bdf00e332c0fb45ed34c568951cf58c56a7940e463d3fa5eb9f365a",
+      "event_id": "jde-edbb89aa42a44d50",
+      "funding_view": null,
+      "invalidation": "March Canadian implied would need to sit at a clear extreme versus cash and the Canadian 2-year, with price pressure moving in the same direction as the trade, so that expected P&L still covers official SOFR on shocked-risk capital. A one-sided US March SOFR or 10-year dislocation with the same property would also reopen risk.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f7c4166747a79746a17454c977568f37574d69e2f9deb997c83f53f824d6e45a",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "yes",
+            "heater_risk": "no",
+            "judgment_effect": "sharpening",
+            "junior_vs_self": "style",
+            "protecting_gains": "not_applicable"
+          },
+          "state_sha256": "4b41f4abf3dc0a6078bec019a47b7993b72088bcb0a4f508f496317e6985c3ba"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-21T08:22:07.869994-04:00",
+        "evidence_hash": "2655b2bd05eec1bfca870007010d70bf1b7ec30d6c7e4596c088953a931d0c12",
+        "overnight_run_id": "overnight-20261021",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261021-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Canadian front end already prices a large cash-to-March tightening path, domestic price pressure is still rising, and the only expanding rates name is two-way between receive and pay. Neither that contract nor the marked US March SOFR or 10-year shows a one-sided expected edge after charging official SOFR on a plausible policy-shock loss. Stay flat.",
+      "run_id": "overnight-20261021",
+      "schema_version": 1,
+      "thesis": "The Canadian front end already prices a large cash-to-March tightening path, domestic price pressure is still rising, and the only expanding rates name is two-way between receive and pay. Neither that contract nor the marked US March SOFR or 10-year shows a one-sided expected edge after charging official SOFR on a plausible policy-shock loss. Stay flat."
     }
   ],
   "schema_version": 1,

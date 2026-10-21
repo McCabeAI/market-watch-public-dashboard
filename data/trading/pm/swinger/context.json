@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T11:14:05.720042-04:00",
+  "as_of": "2026-10-21T12:12:06.743189-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -37,28 +37,27 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 247327.65,
-    "best_trader_outearn_streak": 0,
-    "best_trader_seat": "dollar-king",
+    "best_trader_net_pnl_usd": 211689.01,
+    "best_trader_outearn_streak": null,
+    "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
-    "competition_cohort_size": 3,
+    "competition_cohort_size": 4,
     "competition_eligible": true,
     "competition_rank": 3,
     "competitive_rank": 3,
-    "drawdown_usd": 1447773.33,
-    "gap_to_best_trader_usd": -554453.06,
+    "drawdown_usd": 852084.44,
+    "gap_to_best_trader_usd": 76874.47,
     "high_water_nav_usd": 1001140647.92,
     "max_drawdown_usd": 50000000.0,
-    "net_after_funding_pnl_usd": -307125.41,
+    "net_after_funding_pnl_usd": 288563.48,
     "pressure_flags": [
       "behind_leading_pm",
-      "best_trader_ahead",
       "competitive_pressure"
     ],
     "raw_pnl_rank": 3,
-    "spread_to_leader_pm_usd": -1037625.41,
+    "spread_to_leader_pm_usd": -441936.52,
     "status": "ok",
-    "total_pnl_usd": -272500.0
+    "total_pnl_usd": 327500.0
   },
   "learning": {
     "competition_eligible": true,
@@ -68,13 +67,46 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "fb894902e74c88b86be0c8d69de663d0d7c204f3dd53702b6b3f17b9e396ecc4",
+  "memory_context_sha256": "dd1747b5d6e642a105f92fce5b3cc2f8d4a090b49917d735e49f73486268ad62",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 72,
       "current_notional_usd": 4000000000.0,
       "entry_mark": 3.13,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 2.995,
+        "current_notional_usd": 4000000000.0,
+        "entry_mark": 3.0113125,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 1165000.0,
+        "holding_seconds": 2726362,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -977500.0,
+        "mechanical_order": false,
+        "mfe_usd": 1492500.0,
+        "order_policy": "review_only",
+        "position_id": "pm-swinger-2070479ca321",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": -325000.0,
+        "recorded_mfe_usd": 1492500.0,
+        "retained_mfe_fraction": 0.2194,
+        "review_required": false,
+        "review_threshold_usd": 40000000.0,
+        "review_triggers": [],
+        "side": "long",
+        "total_pnl_usd": 327500.0,
+        "trade_id": "trd-pm-swinger-pm-swinger-2070479ca321",
+        "unrealized_pnl_usd": 652500.0
+      },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-09-19T22:52:44.433062-04:00",
       "position_id": "pm-swinger-2070479ca321",
@@ -86,13 +118,21 @@
   "owner_id": "swinger",
   "owner_type": "pm",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.19
       },
       "complacency": {
@@ -108,12 +148,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.29
+        "value": 0.3
       },
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -143,22 +183,22 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261016"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261019"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "66b72d3eb7ed0ec2325140af878b7bf98ca50e55744586b9fb7305fed6b49075",
+    "state_sha256": "b2e2cfbe33f7707ec90bea5a300c36003951550eb50f702dad22b3931f9368af",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -169,6 +209,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

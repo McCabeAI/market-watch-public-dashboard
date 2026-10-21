@@ -1,0 +1,92 @@
+{
+  "created_at": "2026-10-21T08:22:07.869994-04:00",
+  "dry_run": false,
+  "model_calls": 0,
+  "overnight_run_id": "overnight-20261021",
+  "schema_version": 1,
+  "session_date": "2026-10-21",
+  "stages": {
+    "assemble": {
+      "as_of": "2026-10-21T12:12:07.188325-04:00",
+      "errors": [],
+      "finished_at": "2026-10-21T12:12:07.188325-04:00",
+      "inputs": {},
+      "name": "assemble",
+      "outputs": {},
+      "started_at": "2026-10-21T12:12:07.188297-04:00",
+      "status": "succeeded"
+    },
+    "collect": {
+      "as_of": null,
+      "errors": [],
+      "finished_at": null,
+      "inputs": {},
+      "name": "collect",
+      "outputs": {},
+      "started_at": null,
+      "status": "pending"
+    },
+    "final_delta": {
+      "as_of": "2026-10-21T12:12:06.150275-04:00",
+      "errors": [],
+      "finished_at": "2026-10-21T12:12:06.150275-04:00",
+      "inputs": {},
+      "name": "final_delta",
+      "outputs": {},
+      "started_at": "2026-10-21T12:12:06.150239-04:00",
+      "status": "succeeded"
+    },
+    "freeze_evidence": {
+      "as_of": null,
+      "errors": [],
+      "finished_at": null,
+      "inputs": {},
+      "name": "freeze_evidence",
+      "outputs": {},
+      "started_at": null,
+      "status": "pending"
+    },
+    "pre_trader_delta": {
+      "as_of": null,
+      "errors": [],
+      "finished_at": null,
+      "inputs": {},
+      "name": "pre_trader_delta",
+      "outputs": {},
+      "started_at": null,
+      "status": "pending"
+    },
+    "publish": {
+      "as_of": null,
+      "errors": [],
+      "finished_at": null,
+      "inputs": {},
+      "name": "publish",
+      "outputs": {},
+      "started_at": null,
+      "status": "pending"
+    },
+    "trader_review": {
+      "as_of": "2026-10-21T12:07:47.316581-04:00",
+      "errors": [],
+      "finished_at": "2026-10-21T12:07:47.316581-04:00",
+      "inputs": {
+        "base_packet_sha256": "6d9c285e3346e5e14f98d8eb29c85386e771764db4d4a5cf735253474766ab93",
+        "review_id": "review-001",
+        "schedule_id": "market-watch-weekday-0205",
+        "source": "acp-scheduled-output"
+      },
+      "name": "trader_review",
+      "outputs": {
+        "model_calls": 20,
+        "packet_sha256": "f0f493aafb24e88247596c000992d11d2496da4bc04310be13aa1aea0605fca9",
+        "review_id": "review-001",
+        "source": "acp-scheduled-output"
+      },
+      "started_at": "2026-10-21T12:07:47.316567-04:00",
+      "status": "succeeded"
+    }
+  },
+  "status": "running",
+  "timezone": "America/New_York"
+}

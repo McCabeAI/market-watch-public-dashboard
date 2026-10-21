@@ -43,6 +43,32 @@
       "postmortem_id": "pmd-550c41ce938c",
       "status": "submitted",
       "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
+    },
+    {
+      "created_at": "2026-10-21T08:22:07.869994-04:00",
+      "created_run_id": "overnight-20261021",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-21T08:22:07.869994-04:00",
+        "conviction": 56,
+        "entry_mark": 1.42,
+        "exit_mark": 1.41,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 1651270,
+        "instrument": "USDCAD",
+        "invalidation": "The fade is wrong if USDCAD holds bid or squeezes higher while the desk remains or adds long, implying the long is not a crowded supply source.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 205385.05,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-385c423b1b90",
+      "status": "due",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
     }
   ],
   "schema_version": 1,

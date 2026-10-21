@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-20T09:31:20.120731-04:00",
+  "as_of": "2026-10-21T08:22:07.869994-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -60,11 +60,19 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7f6b6a0ca554fcbe0791e6c1ec7ca0b8c3fa652f413b9764b993d3efd3e99c16",
+  "memory_context_sha256": "987e24281b1022bed9763d22d50e06232a53b3402d5c4d3919d76b241d665b33",
   "open_positions": [],
   "owner_id": "vol-convexity",
   "owner_type": "trader",
   "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
   "psychology": {
     "active_flags": [],
     "applicable": true,
@@ -92,7 +100,7 @@
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.17
+        "value": 0.16
       },
       "revenge_pressure": {
         "band": "calm",
@@ -122,24 +130,24 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261016"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261019"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "294691862d2faf1ae92cf10f5dc0860cc1b12bfa0ab6ba69a60f8b389445ea22",
+    "state_sha256": "a5526579c4dfc82f6f913f8c72ed66f0526f1ee3eef8584adc6a925a802a9822",
     "streaks": {
-      "flat_cycles": 14,
+      "flat_cycles": 15,
       "session_loss": 0,
       "session_win": 0
     }
@@ -148,6 +156,6 @@
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],
-  "schema_version": 4,
+  "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }
