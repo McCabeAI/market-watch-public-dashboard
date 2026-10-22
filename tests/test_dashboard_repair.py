@@ -10,10 +10,11 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from scripts.apply_six_economy_dashboard import apply_six_economy_dashboard
-from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores
+from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html
 from scripts.dashboard_repair.calendar_view import build_release_model
+from scripts.dashboard_repair.official_schedule import parse_abs_future_releases, parse_stats_nz_next_release
 from scripts.dashboard_repair.scoreboard import score_cards
-from scripts.dashboard_repair.sources_view import source_rows
+from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
 from scripts.dashboard_repair.tape import tape_cards
 from scripts.temperature_level import display_score
 
@@ -322,14 +323,15 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertIn("Market Data · official snapshot", self.html)
         self.assertIn("NEWS PAGE", self.html)
         self.assertIn('id="research-debate"', self.html)
-        self.assertIn("base-page snapshot", self.html)
+        self.assertNotIn("Momentum Watch", self.html)
         self.assertNotIn(">Next Catalysts<", self.html)
         releases = self.html.split('data-release-calendar="repair"', 1)[1].split("</section>", 1)[0]
         self.assertIn("date unavailable", releases)
         self.assertNotIn("+162k", releases)
         sources = self.html.split('data-source-health="repair"', 1)[1]
-        self.assertIn("not checked in this publication", sources)
-        self.assertIn("macro-source audit ledger", sources)
+        self.assertIn("not checked", sources)
+        self.assertIn("No succeeded Stage 01", sources)
+        self.assertNotIn("Last successful check 2026", sources)
         self.assertIn('data-market-source="US_rates"', sources)
         self.assertNotIn("Sep 8 public snapshot", sources)
         self.assertEqual(self.html.count('data-score-overview="calibrated"'), 1)
@@ -365,11 +367,166 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertNotIn("$92.33", repaired)
         self.assertNotIn("$97.23", repaired)
         self.assertNotIn("$14,728/t", repaired)
+        self.assertNotIn("Momentum Watch", repaired)
+        self.assertNotIn("short-run cooler", repaired)
+        self.assertIn('data-momentum="removed"', repaired)
+        self.assertIn("Published score freeze 2026-09-21", repaired)
         for code in ("us", "ca", "au", "nz", "ea", "jp"):
             self.assertIn(f'data-country="{code}"', repaired)
         self.assertIn('id="country-detail"', repaired)
         self.assertNotIn('for="p-feed"', repaired)
         self.assertNotIn('for="p-relative"', repaired)
+
+
+class SourceHealthTests(unittest.TestCase):
+    def test_failed_check_is_not_a_successful_check_and_missing_ledger_invents_nothing(self):
+        series = [
+            _series("US.Labor.wages", weight=0.2),
+            _series("US.Inflation.core_pce"),
+            _series("CA.Labor.unemployment", weight=0.7),
+        ]
+        ingest = {
+            "launch_id": "mwl-test",
+            "checked_at": "2026-10-22T11:09:51Z",
+            "stage_status": "succeeded",
+            "source": "fixture",
+            "rows": [
+                {
+                    "series_id": "US.Labor.wages",
+                    "status": "new_observation",
+                    "observation_period": "2026-09",
+                    "error": None,
+                },
+                {
+                    "series_id": "US.Inflation.core_pce",
+                    "status": "source_failed",
+                    "observation_period": "2026-07",
+                    "error": "The read operation timed out",
+                    "source_health": {
+                        "carried_forward": True,
+                        "retrieved_at": "2026-09-21T14:41:19Z",
+                        "fetch_status": "source_failed",
+                    },
+                },
+            ],
+        }
+        snapshot = build_source_health_snapshot(series, ingest, None)
+        by_id = {row["series_id"]: row for row in snapshot["rows"]}
+        self.assertEqual(by_id["US.Labor.wages"]["last_successful_check"], "2026-10-22T11:09:51Z")
+        self.assertEqual(by_id["US.Labor.wages"]["observation_period"], "2026-09")
+        failed = by_id["US.Inflation.core_pce"]
+        self.assertEqual(failed["bucket"], "failure")
+        self.assertEqual(failed["last_successful_check"], "")
+        self.assertEqual(failed["ledger_retrieval"], "2026-09-21T14:41:19Z")
+        self.assertNotEqual(failed["ledger_retrieval"], snapshot["stage_checked_at"])
+        self.assertEqual(failed["carried_forward"], "yes")
+        self.assertEqual(by_id["CA.Labor.unemployment"]["bucket"], "not_checked")
+        self.assertEqual(by_id["CA.Labor.unemployment"]["stage_attempt"], "")
+        self.assertEqual(by_id["CA.Labor.unemployment"]["expected_next"], "date unavailable")
+        self.assertEqual(snapshot["counts"]["checked"], 1)
+        self.assertEqual(snapshot["counts"]["failure"], 1)
+        self.assertEqual(snapshot["counts"]["not_checked"], 1)
+        self.assertEqual(sum(snapshot["counts"][name] for name in ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")), 3)
+        empty = build_source_health_snapshot(series, None, None)
+        self.assertEqual(empty["stage_checked_at"], "")
+        self.assertTrue(all(row["last_successful_check"] == "" for row in empty["rows"]))
+        self.assertTrue(all(row["bucket"] == "not_checked" for row in empty["rows"]))
+
+    def test_latest_stage_one_ledger_matches_its_file(self):
+        ingest = load_latest_ingest()
+        self.assertIsNotNone(ingest)
+        assert ingest is not None
+        self.assertEqual(ingest["stage_status"], "succeeded")
+        self.assertTrue(ingest["checked_at"])
+        failed = next(row for row in ingest["rows"] if row.get("status") == "source_failed")
+        snapshot = build_source_health_snapshot(
+            [{"id": failed["series_id"], "country": failed.get("country"), "weight": failed.get("weight"), "role": failed.get("role")}],
+            ingest,
+            None,
+        )
+        row = snapshot["rows"][0]
+        self.assertEqual(row["bucket"], "failure")
+        self.assertEqual(row["last_successful_check"], "")
+        self.assertEqual(row["stage_attempt"], ingest["checked_at"])
+        self.assertEqual(snapshot["counts"]["checked"], 0)
+
+
+class ScheduleFetchTests(unittest.TestCase):
+    def test_abs_and_stats_nz_parsers_do_not_invent_dates(self):
+        parsed = parse_abs_future_releases(
+            '<li>Next Release 19/11/2026<br><span>Labour Force, Australia, October 2026</span></li>'
+        )
+        self.assertEqual(parsed, [{"local_date": "2026-11-19", "title": "Labour Force, Australia, October 2026", "clock": ""}])
+        self.assertEqual(parse_abs_future_releases("<p>Monthly cadence, no printed date</p>"), [])
+        nz = parse_stats_nz_next_release(
+            "<p><em>Consumers price index: September 2026 quarter</em> will be released on 22 October 2026.</p>"
+        )
+        self.assertEqual(nz[0]["local_date"], "2026-10-22")
+        self.assertEqual(nz[0]["clock"], "")
+        self.assertEqual(parse_stats_nz_next_release("<p>No release sentence</p>"), [])
+
+    def test_fetched_slot_is_scheduled_and_unknown_series_stays_tba(self):
+        series = [
+            _series(
+                "US.Labor.unemployment",
+                weight=0.7,
+                release_rule={"kind": "country_local_schedule_required", "timezone": "America/New_York", "dates": []},
+            ),
+            _series("CA.Inflation.headline"),
+        ]
+        fetched = {
+            "attempted": True,
+            "retrieved_at": "2026-10-22T16:00:00Z",
+            "pages": [{"url": "https://blsmon1.bls.gov/schedule/2026/11_sched.htm", "status": "ok", "parsed": 1}],
+            "errors": ["https://example.invalid (timed out)"],
+            "slots": [
+                {
+                    "series_ids": ["US.Labor.unemployment"],
+                    "country": "US",
+                    "name": "Employment Situation",
+                    "publisher": "Bureau of Labor Statistics",
+                    "source_url": "https://blsmon1.bls.gov/schedule/2026/11_sched.htm",
+                    "provenance": "Parsed from the official BLS monthly schedule.",
+                    "reference_period": "2026-10",
+                    "clock": "verified",
+                    "timezone": "America/New_York",
+                    "stamp": "2026-11-06T08:30:00",
+                }
+            ],
+        }
+        model = build_release_model(NOW, series=series, fetched_slots=fetched["slots"], schedule_fetch=fetched)
+        upcoming_ids = {series_id for item in model["upcoming"] + model["later"] for series_id in item["series_ids"]}
+        self.assertIn("US.Labor.unemployment", upcoming_ids)
+        self.assertNotIn("CA.Inflation.headline", upcoming_ids)
+        self.assertTrue(any(row["series_id"] == "CA.Inflation.headline" and row["reason"] == "date unavailable" for row in model["unscheduled_scored"]))
+        self.assertIn("timed out", " ".join(model["schedule_fetch"]["errors"]))
+
+
+class DebateTests(unittest.TestCase):
+    def test_complete_debate_is_escaped_and_incomplete_debate_is_hidden(self):
+        trades = []
+        for index in range(14):
+            trades.append(
+                {
+                    "agent": f"seat-{index}",
+                    "entry_reason": "<script>alert(1)</script>",
+                    "mispricing": "wide",
+                    "confidence": 0.4,
+                    "trade": {"instrument": "USDCAD", "direction": "long", "expression": "spot", "horizon": "2w"},
+                    "rebuttal": {"trade_change": "cut size", "strongest_opponent_point": "already priced"},
+                }
+            )
+        html = render_debate_html(
+            {"available": True, "seat_count": 14, "run_id": "tr-test", "as_of": "2026-10-22T12:00:00Z", "trades": trades}
+        )
+        self.assertEqual(html.count('data-debate-card="1"'), 14)
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
+        self.assertNotIn("<script>alert", html)
+        self.assertIn("Rebuttal", html)
+        self.assertIn("already priced", html)
+        self.assertIn("Not a book instruction", html)
+        self.assertEqual(render_debate_html({"available": True, "seat_count": 13, "trades": trades[:13]}), "")
+        self.assertEqual(render_debate_html({"available": False, "seat_count": 14, "trades": trades}), "")
 
 
 if __name__ == "__main__":

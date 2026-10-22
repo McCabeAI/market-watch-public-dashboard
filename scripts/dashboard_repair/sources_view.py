@@ -90,22 +90,24 @@ def load_audit(path: Path | None = None) -> dict[str, Any] | None:
     return payload if isinstance(payload, dict) else None
 
 
-def render_sources(packet: dict[str, Any] | None, audit: dict[str, Any] | None, rows: list[dict[str, str]] | None = None) -> str:
-    rows = rows if rows is not None else source_rows(audit)
-    counts: dict[str, int] = {}
-    for row in rows:
-        counts[row["status"]] = counts.get(row["status"], 0) + 1
+def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows: list[dict[str, str]] | None = None) -> str:
+    rows = rows if rows is not None else list(snapshot.get("rows") or [])
+    counts = snapshot.get("counts") or {}
     count_bits = "".join(f"<li>{esc(name)}: {count}</li>" for name, count in sorted(counts.items()))
-    if audit is None:
+    if snapshot.get("stage_checked_at"):
         audit_note = (
-            "The canonical macro-source audit ledger (data/temperature_history/macro_source_audit.json) "
-            "is not in this publication. Rows below are catalog verification and ledger retrieval times. "
-            "They are not a fresh check, and last-checked is blank where the audit did not record one."
+            f"Stage 01 ingest {snapshot.get('launch_id') or 'unknown launch'} "
+            f"ran at {snapshot.get('stage_checked_at')}. "
+            "Last successful check is set only for new_observation, checked_unchanged, or revision_applied. "
+            "Ledger retrieval is the observation vintage, not the check. "
+            "source_failed, license_gap, and rows missing from the ledger are not healthy. "
+            + str(snapshot.get("audit_ledger") or "")
         )
     else:
         audit_note = (
-            "Macro-source audit ledger was read. Last-checked is shown only when that ledger records it. "
-            f"Audit as-of {audit.get('as_of') or audit.get('generated_at') or 'not recorded'}."
+            "No succeeded Stage 01 ingest ledger was available. "
+            "Every series is not checked. No check time was invented. "
+            + str(snapshot.get("audit_ledger") or "")
         )
     by_country: dict[str, list[dict[str, str]]] = {}
     for row in rows:
@@ -115,17 +117,20 @@ def render_sources(packet: dict[str, Any] | None, audit: dict[str, Any] | None, 
         lines = []
         for row in group:
             link = f'<a href="{esc(row["url"])}" rel="noopener" target="_blank">{esc(row["publisher"] or "source")}</a>' if row["url"] else esc(row["publisher"] or "publisher not recorded")
-            checked = row["last_checked"] or "not recorded"
             lines.append(
-                '<li data-source-row="1" data-source-status="' + esc(row["status"]) + '">'
+                '<li data-source-row="1" data-source-status="' + esc(row.get("bucket") or row.get("status")) + '">'
                 f'<b>{esc(row["series_id"])}</b> · {esc(row["dimension"])} · {esc(row["component"])} · '
                 f'weight {esc(row["weight"])} · {esc(row["role"])}. '
-                f'{link}. Publisher series {esc(row["publisher_series"] or "none")}. '
-                f'Reference period {esc(row["reference_period"] or "none")}. '
-                f'Ledger retrieval {esc(row["ledger_retrieved_at"] or "not recorded")}. '
-                f'Last checked {esc(checked)}. Cadence {esc(row["cadence"] or "not recorded")}. '
-                f'Status: {esc(row["status"])}.'
-                "</li>"
+                f'{link}. Publisher series {esc(row.get("publisher_series") or "none")}. '
+                f'Observation period {esc(row.get("observation_period") or "none")}. '
+                f'Ledger retrieval {esc(row.get("ledger_retrieval") or "not recorded")}. '
+                f'Stage attempt {esc(row.get("stage_attempt") or "not in the stage 01 ledger")}. '
+                f'Last successful check {esc(row.get("last_successful_check") or "none")}. '
+                f'Expected next {esc(row.get("expected_next") or "date unavailable")}. '
+                f'Carried forward {esc(row.get("carried_forward") or "no")}. '
+                f'Status {esc(row.get("bucket") or row.get("status"))}'
+                + (f' ({esc(row.get("error"))})' if row.get("error") else "")
+                + ".</li>"
             )
         blocks.append(
             f'<details class="source-country"><summary>{esc(country)} · {len(group)} series</summary><ul>{"".join(lines)}</ul></details>'

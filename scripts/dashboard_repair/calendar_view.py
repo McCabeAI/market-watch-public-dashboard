@@ -293,7 +293,57 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     return list(grouped.values())
 
 
-def build_release_model(now: datetime, series: list[dict[str, Any]] | None = None, score_as_of: str = "2026-09-21") -> dict[str, Any]:
+def _stamp_event(row: dict[str, Any], slot: dict[str, Any], *, clock_now: datetime) -> dict[str, Any]:
+    clock = str(slot.get("clock") or "tba")
+    if clock == "verified" and slot.get("stamp"):
+        instant = _parse_stamp(str(slot["stamp"]), str(slot.get("timezone") or "America/New_York"))
+        built = _row_shell(row, {"instant": instant, "reference_period": slot.get("reference_period") or "", "source_url": slot.get("source_url") or "", "provenance": slot.get("provenance") or ""}, clock="verified", local_date=instant.date())
+        built["et_date"] = instant.astimezone(ET).date()
+        built["local_display"] = instant.strftime("%Y-%m-%d %H:%M %Z")
+        built["et_display"] = instant.astimezone(ET).strftime("%Y-%m-%d %H:%M ET")
+        built["name"] = str(slot.get("name") or built["name"])
+        built["publisher"] = str(slot.get("publisher") or built["publisher"])
+        return built
+    local = date.fromisoformat(str(slot["local_date"]))
+    built = _row_shell(row, None, clock="tba", local_date=local)
+    built["reference_period"] = str(slot.get("reference_period") or "")
+    built["source_url"] = str(slot.get("source_url") or "")
+    built["provenance"] = str(slot.get("provenance") or "")
+    built["name"] = str(slot.get("name") or built["name"])
+    built["publisher"] = str(slot.get("publisher") or built["publisher"])
+    built["actual"] = "not observed in the score ledger"
+    return built
+
+
+def _place_event(built: dict[str, Any], *, clock_now: datetime, start: date, end: date, recent_start: date, upcoming: list, recent: list, later_rows: list) -> None:
+    instant = built.get("instant")
+    if instant is not None:
+        et_date = instant.astimezone(ET).date()
+        if recent_start <= et_date <= end and instant <= clock_now:
+            recent.append(built)
+        elif start <= et_date <= end and instant > clock_now:
+            upcoming.append(built)
+        elif instant > clock_now:
+            later_rows.append(built)
+        return
+    local = built.get("local_date")
+    if local is None:
+        return
+    if recent_start <= local < start:
+        recent.append(built)
+    elif start <= local <= end:
+        upcoming.append(built)
+    elif local > end:
+        later_rows.append(built)
+
+
+def build_release_model(
+    now: datetime,
+    series: list[dict[str, Any]] | None = None,
+    score_as_of: str = "2026-09-21",
+    fetched_slots: list[dict[str, Any]] | None = None,
+    schedule_fetch: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     clock = _aware(now)
     start = clock.date()
     end = start + timedelta(days=13)
@@ -337,6 +387,24 @@ def build_release_model(now: datetime, series: list[dict[str, Any]] | None = Non
                 upcoming.append(built)
             elif local > end:
                 later_rows.append(built)
+
+    seen_dates: set[tuple[str, date | None]] = set()
+    for item in upcoming + recent + later_rows:
+        seen_dates.add((item["series_id"], item.get("et_date")))
+        seen_dates.add((item["series_id"], item.get("local_date")))
+    by_id = {str(row.get("id") or ""): row for row in rows}
+    for slot in fetched_slots or []:
+        for series_id in slot.get("series_ids") or []:
+            spec = by_id.get(str(series_id))
+            if spec is None:
+                continue
+            built = _stamp_event(spec, slot, clock_now=clock)
+            days = [built.get("et_date"), built.get("local_date")]
+            if any((built["series_id"], day) in seen_dates for day in days if day is not None):
+                continue
+            for day in days:
+                seen_dates.add((built["series_id"], day))
+            _place_event(built, clock_now=clock, start=start, end=end, recent_start=recent_start, upcoming=upcoming, recent=recent, later_rows=later_rows)
 
     unscheduled = []
     seen_ids: set[str] = set()
@@ -393,6 +461,8 @@ def build_release_model(now: datetime, series: list[dict[str, Any]] | None = Non
         "recent": _annotate(_group(_sort(recent))),
         "later": _annotate(next_later[:40]),
         "unscheduled_scored": unscheduled,
+        "schedule_fetch": schedule_fetch
+        or {"attempted": False, "pages": [], "errors": [], "retrieved_at": ""},
     }
 
 
@@ -433,6 +503,28 @@ def _event_html(item: dict[str, Any]) -> str:
     )
 
 
+def _fetch_note(model: dict[str, Any]) -> str:
+    report = model.get("schedule_fetch") or {}
+    if not report.get("attempted"):
+        return (
+            "This build did not fetch live official schedule pages. "
+            "Dates come from pinned official evidence already in the repository. "
+            "The calendar is rebuilt on each Pages publication."
+        )
+    pages = report.get("pages") or []
+    ok = sum(1 for page in pages if page.get("status") == "ok")
+    failed = [page for page in pages if page.get("status") != "ok"]
+    note = (
+        f"Live official schedule fetch at {report.get('retrieved_at') or 'unknown time'}: "
+        f"{ok} page(s) read, {len(failed)} failed. Failed pages add no dates."
+    )
+    if failed:
+        note += " Failures: " + "; ".join(
+            f"{page.get('url')} ({page.get('error') or 'failed'})" for page in failed[:4]
+        )
+    return note
+
+
 def render_releases(model: dict[str, Any]) -> str:
     def day_groups(items: list[dict[str, Any]]) -> str:
         if not items:
@@ -470,8 +562,9 @@ def render_releases(model: dict[str, Any]) -> str:
         '<div class="stitle">Releases · next 14 days</div>'
         f'<p class="note">Window {esc(model["window_start"])} through {esc(model["window_end"])} '
         f'(America/New_York dates, 14 calendar days). Score freeze {esc(model["score_freeze"])}. '
-        "Only pinned official timestamps are dated. Cadence is not a date. Unknown dates stay unavailable. "
-        "Prior, consensus, and surprise are omitted unless the score ledger holds the reference period.</p>"
+        "Cadence is not a date. A missing official timestamp stays TBA / date unavailable. "
+        "Actual values appear only when the score ledger holds that reference period. "
+        f'{esc(_fetch_note(model))}</p>'
         '<h2>Upcoming</h2>'
         + (day_groups(model["upcoming"]) if model["upcoming"] else '<p class="note" data-empty-upcoming="1">No verified release with a confirmed clock falls in the next 14 days.</p>')
         + "<h2>Just released</h2>"

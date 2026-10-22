@@ -505,7 +505,7 @@ jobs:
           if [ -s _site/market-state.json ]; then
             MARKET=(--market-state _site/market-state.json)
           fi
-          PYTHONPATH=. python scripts/apply_dashboard_repair.py _site/index.html "${MARKET[@]}"
+          PYTHONPATH=. python scripts/apply_dashboard_repair.py _site/index.html "${MARKET[@]}" --fetch-schedules --schedule-timeout 6
           python - <<'PY'
           from pathlib import Path
           html = Path("_site/index.html").read_text(encoding="utf-8")
@@ -540,6 +540,17 @@ jobs:
               raise SystemExit("releases or sources were not rebuilt")
           if "date unavailable" not in html:
               raise SystemExit("calendar did not keep unknown dates unavailable")
+          if "Momentum Watch" in html:
+              raise SystemExit("static Momentum Watch survived")
+          health = json.loads(Path("_site/source-health.json").read_text(encoding="utf-8"))
+          if not health.get("stage_checked_at"):
+              raise SystemExit("source-health snapshot has no stage check time")
+          counts = health.get("counts") or {}
+          if sum(int(counts.get(name) or 0) for name in ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")) != len(health.get("rows") or []):
+              raise SystemExit("source-health counts do not match rows")
+          failed = [row for row in health["rows"] if row.get("bucket") == "failure"]
+          if any(row.get("last_successful_check") for row in failed):
+              raise SystemExit("failed source was given a successful check time")
           PY
 
       - name: Configure Pages

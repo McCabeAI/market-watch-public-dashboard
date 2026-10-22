@@ -16,8 +16,10 @@ from typing import Any
 from scripts.dashboard_repair.calendar_view import build_release_model, render_releases
 from scripts.dashboard_repair.htmlutil import balanced_element_end, esc, replace_element_containing
 from scripts.dashboard_repair.scoreboard import render_scoreboard
-from scripts.dashboard_repair.sources_view import load_audit, render_sources
+from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
+from scripts.dashboard_repair.sources_view import render_sources
 from scripts.dashboard_repair.tape import render_tape
+from scripts.macro_ingestion.contract import load_catalog
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -49,6 +51,10 @@ button.jump{width:100%;font:inherit;color:inherit;min-height:44px;font-size:14px
 .source-country{margin:0 0 8px}
 #source-filter{min-height:44px;width:min(100%,420px);font-size:16px}
 .research-debate{margin:0 0 12px}
+.debate-card{border:1px solid var(--line);border-radius:8px;padding:10px;margin:8px 0;background:#fff}
+.debate-card h3{margin:0 0 4px;font-size:15px}
+.debate-grid{display:grid;gap:8px}
+@media(min-width:800px){.debate-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){
  .nav{height:auto;flex-wrap:wrap;align-content:flex-start;gap:4px 14px;padding:8px 14px}
  .nav label{height:auto;padding:8px 0;font-size:14px}
@@ -86,22 +92,46 @@ SCRIPT = """
       });
     });
   }
+  function escText(value) {
+    return String(value === null || value === undefined ? "" : value)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+  }
+  function debateCards(packet) {
+    return (packet.trades || []).map(function (row) {
+      var trade = row.trade || {};
+      var rebuttal = row.rebuttal || {};
+      var rebuttalText = [rebuttal.trade_change, rebuttal.strongest_opponent_point].filter(Boolean).join(" ");
+      return '<article class="debate-card" data-debate-card="1"><h3>' + escText(row.agent) + '</h3>'
+        + '<p><b>' + escText(trade.instrument || "No trade") + '</b> ' + escText(trade.direction || "")
+        + (trade.expression ? ' · ' + escText(trade.expression) : '')
+        + (trade.horizon ? ' · ' + escText(trade.horizon) : '') + '</p>'
+        + '<p><b>Why</b> ' + escText(row.entry_reason || "") + '</p>'
+        + (row.mispricing ? '<p><b>Mispricing</b> ' + escText(row.mispricing) + '</p>' : '')
+        + (rebuttalText ? '<p><b>Rebuttal</b> ' + escText(rebuttalText) + '</p>' : '')
+        + '<p>Confidence ' + escText(row.confidence === null || row.confidence === undefined ? "—" : row.confidence) + '</p></article>';
+    }).join("");
+  }
   var debate = document.getElementById("research-debate");
   if (!debate) return;
   fetch("trader-room.json", {cache: "no-store"}).then(function (response) {
     if (!response.ok) throw new Error("HTTP " + response.status);
     return response.json();
   }).then(function (packet) {
-    if (!packet || packet.available !== true || packet.seat_count !== 14) {
-      debate.remove();
+    var trades = packet && packet.trades;
+    if (!packet || packet.available !== true || packet.seat_count !== 14 || !trades || trades.length !== 14) {
+      if (!debate.querySelector("[data-debate-card]")) debate.remove();
       return;
     }
     debate.hidden = false;
     var body = document.getElementById("research-debate-body");
     if (!body) return;
-    body.textContent = "Newest complete 14-seat debate " + (packet.run_id || "") + ", evidence " + (packet.as_of || "date not recorded") + ". This is research archive, separate from the accepted Trader Book.";
+    body.innerHTML = '<p class="note">Research archive ' + escText(packet.run_id || "")
+      + ', evidence ' + escText(packet.as_of || "date not recorded")
+      + '. Separate from accepted Trader Book decisions. Not a book instruction.</p><div class="debate-grid">'
+      + debateCards(packet) + '</div>';
   }).catch(function () {
-    debate.remove();
+    if (!debate.querySelector("[data-debate-card]")) debate.remove();
   });
 })();
 </script>
@@ -199,14 +229,31 @@ def _remove_nav(html: str) -> str:
     return html
 
 
-def _annotate_static_front(html: str) -> str:
-    old_momentum = '<div class="stitle">Momentum Watch</div>'
-    new_momentum = (
-        '<div class="stitle">Momentum Watch · base-page snapshot</div>'
-        '<p class="note">These run rates are the static base page, not the maintained score ledger. They are not rolled forward.</p>'
+def _remove_momentum(html: str) -> str:
+    """Drop the static Momentum Watch grid. There is no maintained replacement series."""
+    note = (
+        '<p class="note" data-momentum="removed">The static multi-horizon run-rate table was removed. '
+        "It was a September base-page snapshot, not a score-ledger or market-state series. "
+        "Current dimension levels are on the scoreboard. Dated releases are on the Releases tab.</p>"
     )
-    if old_momentum in html and "base-page snapshot" not in html:
-        html = html.replace(old_momentum, new_momentum, 1)
+    for marker in ("Momentum Watch", "base-page snapshot"):
+        index = html.find(marker)
+        if index < 0:
+            continue
+        start = html.rfind('<div class="grid2">', 0, index)
+        if start < 0:
+            continue
+        end = balanced_element_end(html, start)
+        html = html[:start] + note + html[end:]
+        break
+    lone = '<div class="stitle">Momentum Watch</div>'
+    if lone in html:
+        html = html.replace(lone, note, 1)
+    return html
+
+
+def _annotate_static_front(html: str) -> str:
+    html = _remove_momentum(html)
     catalysts = '<div class="stitle" style="margin-top:10px">Next Catalysts</div>'
     if catalysts in html:
         start = html.find(catalysts)
@@ -224,17 +271,81 @@ def _annotate_static_front(html: str) -> str:
     return html
 
 
-def _research_link(html: str) -> str:
-    marker = '<div id="trader-book-root"'
-    snippet = (
+def _debate_text(value: object) -> str:
+    return esc(value)
+
+
+def render_debate_html(packet: dict[str, Any] | None) -> str:
+    """Read-only 14-seat debate. Incomplete packets produce no control."""
+    shell = (
         '<details id="research-debate" class="research-debate" hidden>'
         "<summary>View research debate</summary>"
-        '<p class="note">Separate from the accepted Trader Book. Shown only when a complete 14-seat debate is published.</p>'
         '<div id="research-debate-body"></div></details>'
     )
-    if 'id="research-debate"' in html or marker not in html:
+    if packet is None:
+        return shell
+    trades = packet.get("trades")
+    if (
+        packet.get("available") is not True
+        or packet.get("seat_count") != 14
+        or not isinstance(trades, list)
+        or len(trades) != 14
+    ):
+        return ""
+    cards = []
+    for row in trades:
+        if not isinstance(row, dict):
+            continue
+        trade = row.get("trade") if isinstance(row.get("trade"), dict) else {}
+        rebuttal = row.get("rebuttal") if isinstance(row.get("rebuttal"), dict) else {}
+        rebuttal_text = " ".join(
+            part
+            for part in (
+                str(rebuttal.get("trade_change") or "").strip(),
+                str(rebuttal.get("strongest_opponent_point") or "").strip(),
+            )
+            if part
+        )
+        instrument = trade.get("instrument") or "No trade"
+        cards.append(
+            '<article class="debate-card" data-debate-card="1">'
+            f'<h3>{_debate_text(row.get("agent"))}</h3>'
+            f'<p><b>{_debate_text(instrument)}</b> {_debate_text(trade.get("direction") or "")}'
+            + (f' · {_debate_text(trade.get("expression"))}' if trade.get("expression") else "")
+            + (f' · {_debate_text(trade.get("horizon"))}' if trade.get("horizon") else "")
+            + "</p>"
+            f'<p><b>Why</b> {_debate_text(row.get("entry_reason") or "")}</p>'
+            + (f'<p><b>Mispricing</b> {_debate_text(row.get("mispricing"))}</p>' if row.get("mispricing") else "")
+            + (f'<p><b>Rebuttal</b> {_debate_text(rebuttal_text)}</p>' if rebuttal_text else "")
+            + f'<p>Confidence {_debate_text(row.get("confidence") if row.get("confidence") is not None else "—")}</p>'
+            "</article>"
+        )
+    if len(cards) != 14:
+        return ""
+    return (
+        '<details id="research-debate" class="research-debate">'
+        "<summary>View research debate</summary>"
+        f'<p class="note">Research archive {_debate_text(packet.get("run_id") or "")}, '
+        f'evidence {_debate_text(packet.get("as_of") or "date not recorded")}. '
+        "Separate from accepted Trader Book decisions. Not a book instruction.</p>"
+        f'<div id="research-debate-body" class="debate-grid">{"".join(cards)}</div></details>'
+    )
+
+
+def _research_link(html: str, packet: dict[str, Any] | None) -> str:
+    block = render_debate_html(packet)
+    marker = '<div id="trader-book-root"'
+    if 'id="research-debate"' in html:
+        if not block:
+            start = html.find('<details id="research-debate"')
+            if start < 0:
+                return html
+            end = balanced_element_end(html, start)
+            return html[:start] + html[end:]
+        return replace_element_containing(html, 'id="research-debate"', block)
+    if not block or marker not in html:
         return html
-    return html.replace(marker, snippet + marker, 1)
+    return html.replace(marker, block + marker, 1)
 
 
 def _style_and_script(html: str) -> str:
@@ -259,24 +370,36 @@ def apply_dashboard_repair(
     now: datetime,
     audit: dict[str, Any] | None = None,
     series: list[dict[str, Any]] | None = None,
+    ingest: dict[str, Any] | None = None,
+    trader_room: dict[str, Any] | None = None,
+    schedule_fetch: dict[str, Any] | None = None,
 ) -> str:
+    del audit
     html = _replace_tape(html, market_state)
     html = _replace_scoreboard(html, scores)
     html = _country_jumps(html)
     html = _annotate_static_front(html)
     html = _remove_nav(html)
-    html = _research_link(html)
-    model = build_release_model(now, series=series, score_as_of=str(scores.get("as_of") or "2026-09-21"))
+    html = _research_link(html, trader_room)
+    catalog_series = series if series is not None else load_catalog()["series"]
+    model = build_release_model(
+        now,
+        series=catalog_series,
+        score_as_of=str(scores.get("as_of") or "2026-09-21"),
+        fetched_slots=(schedule_fetch or {}).get("slots"),
+        schedule_fetch=schedule_fetch,
+    )
     html = _replace_section(html, "releases", render_releases(model))
-    if audit is None and series is None:
-        audit = load_audit()
-    source_model = None
-    if series is not None:
-        from scripts.dashboard_repair.sources_view import source_rows
-
-        source_model = source_rows(audit, series)
-    html = _replace_section(html, "sources", render_sources(market_state, audit, source_model))
-    return _style_and_script(html)
+    if ingest is None and series is None:
+        ingest = load_latest_ingest()
+    snapshot = build_source_health_snapshot(catalog_series, ingest, model)
+    html = _replace_section(html, "sources", render_sources(market_state, snapshot))
+    html = _style_and_script(html)
+    html_result = html
+    # Attach the read-models for the publication step without changing the HTML return.
+    apply_dashboard_repair.last_snapshot = snapshot  # type: ignore[attr-defined]
+    apply_dashboard_repair.last_calendar = model  # type: ignore[attr-defined]
+    return html_result
 
 
 def load_scores(path: Path | None = None) -> dict[str, Any]:
