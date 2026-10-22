@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-21T08:22:07.869994-04:00",
+  "as_of": "2026-10-22T07:09:51.753996-04:00",
   "calibration": {
     "average_holding_seconds": 628505,
     "average_realized_pnl_usd": 70711.68,
@@ -72,23 +72,23 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": 2,
-    "competitive_rank": 2,
-    "drawdown_usd": 16.12,
-    "giveback_usd": 16.12,
-    "high_water_nav_usd": 100187380.26,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 16.17,
+    "giveback_usd": 16.17,
+    "high_water_nav_usd": 100211705.18,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100187364.14,
-    "net_pnl_usd": 187364.14,
+    "nav_usd": 100211689.01,
+    "net_pnl_usd": 211689.01,
     "pressure_flags": [],
     "prior_competition_rank": 1,
-    "rank_change": 1,
-    "raw_pnl_rank": 2,
+    "rank_change": 0,
+    "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 150000.0,
-    "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": -24324.87,
+    "risk_capital_usd": 500000.0,
+    "risk_capital_utilization": 0.05,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -98,8 +98,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "d5a6997fbbc0da2bc79058e6908db3d4f5f8faac556246811ad3117ff9218ed1",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-385c423b1b90",
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "reference": "trd-trader-positioning-cynic-pos-ccb6655acbad",
+      "source_run_id": "overnight-20261021"
+    }
+  ],
+  "memory_context_sha256": "d9938dd5a8c33f239cade04dd7a81dcc21ff9044e70f8406a79a57ec17c4c398",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -112,12 +121,12 @@
         "catalyst_logic": "Flattening of the existing 4.45bn receive, or CRAH27 implied moving up toward the Canada 2Y 3.33 cash yield.",
         "current_mark": 2.995,
         "current_notional_usd": 50000000.0,
-        "entry_mark": 3.0,
+        "entry_mark": 2.995,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 82063,
+        "horizon_elapsed_fraction": 0.0317,
         "horizon_status": "within",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": 30,
@@ -149,7 +158,31 @@
   ],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-10-21T08:22:07.869994-04:00",
+      "created_run_id": "overnight-20261021",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-21T08:22:07.869994-04:00",
+        "conviction": 56,
+        "entry_mark": 1.42,
+        "exit_mark": 1.41,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 1651270,
+        "instrument": "USDCAD",
+        "invalidation": "The fade is wrong if USDCAD holds bid or squeezes higher while the desk remains or adds long, implying the long is not a crowded supply source.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 205385.05,
+        "side": "short",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-385c423b1b90",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

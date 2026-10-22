@@ -28,7 +28,7 @@
       "trade_ids": []
     }
   ],
-  "as_of": "2026-10-21T08:22:07.869994-04:00",
+  "as_of": "2026-10-22T07:09:51.753996-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -61,23 +61,23 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": 1,
-    "competitive_rank": 1,
-    "drawdown_usd": 705227.57,
-    "giveback_usd": 705227.57,
+    "competition_rank": 2,
+    "competitive_rank": 2,
+    "drawdown_usd": 763015.36,
+    "giveback_usd": 763015.36,
     "high_water_nav_usd": 100952555.22,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100247327.65,
-    "net_pnl_usd": 247327.65,
+    "nav_usd": 100189539.86,
+    "net_pnl_usd": 189539.86,
     "pressure_flags": [],
     "prior_competition_rank": 2,
-    "rank_change": -1,
-    "raw_pnl_rank": 1,
+    "rank_change": 0,
+    "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 350000.0,
-    "risk_capital_utilization": 0.035,
-    "session_pnl_change_usd": 57787.79,
+    "risk_capital_usd": 150000.0,
+    "risk_capital_utilization": 0.015,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -87,8 +87,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "3838cd5fee78438b7a1ed37f27a355fba20ae6617eea37c2c6747769a8b93fd6",
+  "learning_obligations": [
+    {
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-bab9dbc214a9",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "rfd-bab9dbc214a9",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "99d29b74b3fd4946b9f15b302a7d1f710f79cca0a6e0c05a05c596db43ce76fb",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -99,13 +108,13 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 1.4073942093541203,
-        "current_notional_usd": 35000000.0,
+        "current_mark": 1.405082478823005,
+        "current_notional_usd": 15000000.0,
         "entry_mark": 1.4010471204188482,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 646792.96,
-        "holding_seconds": 2713517,
+        "giveback_usd": 762147.92,
+        "holding_seconds": 2795581,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "USDCAD",
@@ -129,7 +138,7 @@
         "realization_logic": null,
         "realized_pnl_usd": 148209.82,
         "recorded_mfe_usd": 953561.41,
-        "retained_mfe_fraction": 0.3217,
+        "retained_mfe_fraction": 0.2007,
         "review_required": true,
         "review_threshold_usd": 550000.0,
         "review_triggers": [
@@ -137,14 +146,14 @@
           "giveback"
         ],
         "side": "long",
-        "total_pnl_usd": 306768.45,
+        "total_pnl_usd": 191413.49,
         "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb",
-        "unrealized_pnl_usd": 158558.63
+        "unrealized_pnl_usd": 43203.67
       },
       "instrument": "USDCAD",
       "opened_at": "2026-09-19T22:36:50.082404-04:00",
       "position_id": "pos-5317bc96d4eb",
-      "risk_capital_usd": 350000.0,
+      "risk_capital_usd": 150000.0,
       "side": "long",
       "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
     }
@@ -269,7 +278,26 @@
       "what_happened_vs_expected": "The expected path was a grind higher in dollar-Canada while United States yields stayed restrictive versus Canada. The realized path was an overshoot to a large peak, then a giveback as oil held above 100 and Canada's relative impulse improved. Residual profit is still positive versus entry but far below the maximum favorable excursion, which is a harvest failure rather than a thesis reversal on the dollar leg."
     }
   ],
-  "reflections_due": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-10-22T07:09:51.753996-04:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 2,
+        "drawdown_usd": 763015.36,
+        "lesson_ids": [],
+        "net_pnl_usd": 189539.86,
+        "prior_competition_rank": 2,
+        "trade_ids": [
+          "trd-trader-dollar-king-pos-5317bc96d4eb"
+        ]
+      },
+      "reflection_due_id": "rfd-bab9dbc214a9",
+      "trigger_ids": [
+        "profit_giveback"
+      ]
+    }
+  ],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }
