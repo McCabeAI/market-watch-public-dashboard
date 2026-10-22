@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-21T08:22:07.869994-04:00",
+  "as_of": "2026-10-22T07:09:51.753996-04:00",
   "central_bank_research": [
     {
       "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
@@ -65,57 +65,6 @@
         },
         "disposition": "show",
         "reason_code": "oil_supply_shock",
-        "score": 15
-      }
-    },
-    {
-      "headline": "ECB in No Rush to Act Amid Opposing Economic Forces, Kazaks Says",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 15
-      },
-      "published_at": "2026-10-14T20:59:00-04:00",
-      "summary": "The ECB can take time analyzing inflation dynamics shaped by opposing global forces.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST",
-          "EUR"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
         "score": 15
       }
     },
@@ -224,7 +173,7 @@
       }
     },
     {
-      "headline": "The Treasury Market\u2019s New Power Brokers Are Pickier Than Ever",
+      "headline": "Price of Physical Oil Barrels Slides Just as Crude Futures Rally",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -233,27 +182,27 @@
           "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
-          "shock": 2,
+          "shock": 0,
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 9
+        "score": 7
       },
-      "published_at": "2026-10-20T23:16:00-04:00",
-      "summary": "Beset by a selloff in Treasuries that\u2019s sent benchmark yields to multidecade highs, the US government is finding itself increasingly dependent on investors who only buy if the price is right.",
+      "published_at": "2026-10-21T22:33:00-04:00",
+      "summary": "The oil market is gripped by a divergence between futures and physical prices across closely watched Brent benchmarks.",
       "transmission": {
         "affected_assets": [
-          "USD",
-          "UST"
+          "Brent",
+          "WTI"
         ],
-        "channel": "usd_rates",
+        "channel": "oil_energy_tot",
         "channels": [
-          "usd_rates"
+          "oil_energy_tot"
         ],
         "components": {
           "asset_named": 2,
@@ -262,18 +211,18 @@
           "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
           "subject_penalty": 0
         },
         "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
+        "reason_code": "oil_supply_shock",
+        "score": 7
       }
     },
     {
-      "headline": "China uses crude stockpiles, but rising oil imports may curtail draws",
+      "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
       "market_salience": {
         "components": {
           "asset_named": 3,
@@ -293,8 +242,7 @@
         "distribution": "standard",
         "score": 10
       },
-      "published_at": "2026-10-20T20:31:09.015000-04:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
       "transmission": {
         "affected_assets": [
           "AUD",
@@ -319,55 +267,6 @@
         "disposition": "show",
         "reason_code": "china_commodity_spillover",
         "score": 10
-      }
-    },
-    {
-      "headline": "This Janus Henderson fund manager owns CoreWeave debt \u2014 here's why he's sticking with it",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-10-20T20:12:44-04:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
       }
     },
     {
@@ -517,103 +416,6 @@
       }
     },
     {
-      "headline": "Russia Frees US Teacher After Trump Eases Sanctions",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 8
-      },
-      "published_at": "2026-10-21T00:28:00-04:00",
-      "summary": "Russia freed an American teacher four years after he was convicted of fighting for Ukraine following a decison by President Donald Trump to ease sanctions on the country.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "geopolitics_haven",
-        "channels": [
-          "geopolitics_haven"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "geopolitics_haven_or_oil",
-        "score": 8
-      }
-    },
-    {
-      "headline": "BlackRock\u2019s Fink Says Slow AI Buildout Would Spur Inflation",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-10-20T20:12:00-04:00",
-      "summary": "BlackRock Inc. Chief Executive Officer Larry Fink warned that delays in building data centers could raise computing costs and threaten economic growth as demand for artificial intelligence accelerates ...",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
       "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
       "market_salience": {
         "components": {
@@ -663,56 +465,7 @@
       }
     },
     {
-      "headline": "CNBC Daily Open: Tech investors buy the dip \u2014 but debt remains a concern",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-10-19T14:11:00-04:00",
-      "summary": "Nasdaq rallied while tech investors bought the dip, but debt remains a concern; CoreWeave is still off menu and Oracle bonds trade near junk.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "10-year Treasury yield moves lower after weak housing data",
+      "headline": "Treasury yields fall as investors weigh Middle East tensions and await fresh jobs data",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -732,7 +485,7 @@
         "distribution": "standard",
         "score": 9
       },
-      "published_at": "2026-10-20T16:03:14-04:00",
+      "published_at": "2026-10-22T05:31:06-04:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
@@ -761,104 +514,7 @@
       }
     },
     {
-      "headline": "Trading Day: Oil reversal lifts spirits",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-10-20T10:00:00-04:00",
-      "summary": "US stocks rose on Tuesday, shrugging off global weakness earlier in the day as oil prices pulled back sharply from six-month highs, a reversal that also pushed longer-dated Treasury yields lower.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
-      "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 5,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 10
-      },
-      "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
-      "transmission": {
-        "affected_assets": [
-          "AUD",
-          "iron_ore"
-        ],
-        "channel": "china_spillover",
-        "channels": [
-          "china_spillover"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 5,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "china_commodity_spillover",
-        "score": 10
-      }
-    },
-    {
-      "headline": "Saudi crude oil exports hit five-month high in August, data shows",
+      "headline": "Morning Bid: Rattled by oil, tech and France",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -878,7 +534,7 @@
         "distribution": "standard",
         "score": 7
       },
-      "published_at": "2026-10-21T08:17:24.911000-04:00",
+      "published_at": "2026-10-22T06:38:28.448000-04:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
@@ -907,7 +563,7 @@
       }
     },
     {
-      "headline": "Oil prices climb as traders assess Middle East developments",
+      "headline": "Saudi Arabia Seeks Access to Overseas Oil Storage for Aramco",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -927,8 +583,8 @@
         "distribution": "standard",
         "score": 7
       },
-      "published_at": "2026-10-21T03:54:59-04:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "published_at": "2026-10-21T21:31:00-04:00",
+      "summary": "Saudi Arabia is in talks with foreign governments to give Aramco access to strategic oil storage to make supplies more resilient during disruptions.",
       "transmission": {
         "affected_assets": [
           "Brent",
@@ -953,254 +609,12 @@
         "disposition": "assess",
         "reason_code": "oil_supply_shock",
         "score": 7
-      }
-    },
-    {
-      "headline": "Key Mideast Oil Benchmark Hits 3-Month Low on Resilient Exports",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 7
-      },
-      "published_at": "2026-10-20T18:49:00-04:00",
-      "summary": "A key benchmark for Middle East crude fell to its lowest in nearly three months, an indication of the resilience of the region\u2019s exports despite intensifying Iranian attacks on shipping.",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "Fed to skip October but raise rates again in December, nearly all economists say",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-10-20T08:43:23.682000-04:00",
-      "summary": "Survey coverage suggests economists expect the Fed to skip October but raise rates again in December.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "TSX falls at open on weakness in miners, persistent inflation",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-10-20T06:27:22.885000-04:00",
-      "summary": "Canada\u2019s TSX fell at the open on weakness in miners and persistent inflation concerns.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
-      "headline": "ECB\u2019s Rehn Says French Spread to Germany Has Widened Somewhat",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-10-19T23:44:00-04:00",
-      "summary": "French-German spreads have widened from global and country-specific factors.",
-      "transmission": {
-        "affected_assets": [
-          "EUR"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "Markets' squeal is music to Fed ears \u2014 but still too faint",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-10-19T23:32:00-04:00",
-      "summary": "Recent stocks and bonds selloff amounts to some tightening, but it is still faint versus the Fed\u2019s work.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
       }
     }
   ],
-  "overnight_run_id": "overnight-20261021",
+  "overnight_run_id": "overnight-20261022",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Energy risk stays front and center as Hormuz attacks target ship engine rooms, leaving oil buffers uncomfortably thin even as LNG transits rebound. Brent sits near 109 and WTI above 101, feeding a rising Canadian prima-pressure read alongside firm IPPI ex-energy. U.S. rates are mixed: SOFR is 3.88%, the 10-year is 5.12% after a modest daily dip tied to soft housing, yet the policy debate still allows for more tightening. Treasury supply continues to lean on selective buyers with yields recently at multi-decade highs. Euro-area stress shows in a 5% French 10-year; UK CPI at 3.5% keeps hike talk alive while the ECB sounds in no hurry. Risk assets are resilient\u2014S&P 7712, Nasdaq 26425, gold 4142\u2014with credit headlines around CoreWeave and AI capex adding an inflation undertone. BoJ follow-through supports a call-rate path near 1.25% from late September. Australian labor, inflation, retail, spending, confidence and domestic-demand releases could not be verified, so new Australian risk stays closed; New Zealand new risk is also closed.",
+  "summary": "Overnight tape is led by a wide oil split\u2014WTI near 97 and Brent near 109 on the 21st\u2014alongside gold near 4150 and equities holding the S&P near 7757 and Nasdaq near 26702, with VIX near 17. Gulf risk remains the energy driver: Iran is hitting more ship engine rooms, Aramco warns stockpile buffers are thin, LNG through Hormuz has rebounded, yet physical barrels are sliding even as futures stay firm and China's demand comeback is losing steam. Treasuries are mixed against housing warning signs and talk of more Fed tightening; European stress shows in France's 10-year near 5% and UK CPI at 3.5%. AI credit jitters around CoreWeave persist though bank spillover is described as limited. Canada's activity impulse looks warm while oil-curve persistence keeps inflation-pressure proxies elevated; Australia pairs cooling labor with warm inflation. New Zealand inflation could not be verified and NZ government rates are unusable for new NZ risk.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }
