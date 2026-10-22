@@ -570,6 +570,55 @@
       "subject": {
         "risk_capital_usd": 500000.0
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "learning_default",
+        "open_risk": [
+          150000.0,
+          500000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "event_id": "pse-000025",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261022",
+      "seq": 25,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "external_pressure": 0.1693,
+        "frustration": 0.0896,
+        "self_trust": -0.031
+      },
+      "event_id": "pse-000026",
+      "kind": "learning_default_entered",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261022",
+      "scale": 1.0,
+      "seq": 26,
+      "soften": false,
+      "source": {
+        "layer": "L3"
+      },
+      "subject": {
+        "learning_status": "learning_default"
+      }
     }
   ],
   "owner_id": "positioning-cynic",

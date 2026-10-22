@@ -1245,6 +1245,92 @@
       "run_id": "overnight-20261021",
       "schema_version": 1,
       "thesis": "WTI 101.79 and Brent 108.79 with Hormuz engine-room attacks still ramping is an inflation impulse, not a growth break: VIX 18.44 and the S&P at 7712 still absorb it. Overnight CORRA 2.26 versus March 2027 at 2.995 prices only 73.5bp of Bank of Canada catch-up versus that oil tape and a still-rising Canada energy-pass-through proxy. Keep the existing March 2027 CORRA pay; the implied has not retraced that path, so this is not a size-up. Keep March 2027 SOFR at 4.525 versus cash 3.88 and March 2027 AONIA at 4.79 versus cash 4.60. Gold at 4142.6 is a geopolitical hedge, not a cover signal."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Cyclical pay remains the growth-resilient BoC path; 2.975 versus entry 3.13 is over-discounted housing/oil scare, not a cover.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "AU 2s/10s 4.919/5.314 and AONIA 4.60 versus Mar-27 4.85 still underprice a commodity-supported RBA path; keep 25m, no add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Fed hike talk versus housing is residual US demand; Mar-27 4.55 versus cash 3.88 is the live higher-path expression, hold 50m.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "c2122d87e04929a8ca74513309b64d18a2961bf9f5c80f7f6804d53e17d00fe5",
+      "event_id": "jde-39dfb2aaf4bf4c69",
+      "funding_view": null,
+      "invalidation": "Physical oil closing the futures gap on a confirmed Hormuz shutdown; VIX holding through the mid-20s with an SPX trend break; or Mar-27 SOFR/CORRA/AONIA marks collapsing toward cash as housing confirms a North American demand break.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f2ca07815fdc86014284423936ca75cdc6095251a7de658c204823c8262fd635",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "055bb08a71cbd1f4a81a6a33a3f969efd0c7eacc4cdc5f277c52ce38fed58afd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-22T07:09:51.753996-04:00",
+        "evidence_hash": "dc087f4d9e653d88587acdd35bce98c3e154d7ef20818c5796f6b492483157fa",
+        "overnight_run_id": "overnight-20261022",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Hormuz/Brent overlay is a growth scare, not a realized supply shock: physical crude is still softer than WTI 97.15 and Brent 108.82, gold at 4150 is crowded defense, and risk appetite is intact with SPX 7757 and VIX 17.31. Fed hike talk versus a housing warning is residual North American demand strength, not a license to collapse the policy path, and UK CPI at 3.5% plus France\u2019s 5% 10-year are local inflation/fiscal facts that keep global fronts bid rather than a synchronized downturn. The live 2027-03 pay stack in SOFR, CORRA and AONIA is already the cleanest pro-cyclical expression of that higher path; CORRA\u2019s slide from 3.13 to 2.975 is the pessimism to lean against, not a cover signal.",
+      "run_id": "overnight-20261022",
+      "schema_version": 1,
+      "thesis": "The Hormuz/Brent overlay is a growth scare, not a realized supply shock: physical crude is still softer than WTI 97.15 and Brent 108.82, gold at 4150 is crowded defense, and risk appetite is intact with SPX 7757 and VIX 17.31. Fed hike talk versus a housing warning is residual North American demand strength, not a license to collapse the policy path, and UK CPI at 3.5% plus France\u2019s 5% 10-year are local inflation/fiscal facts that keep global fronts bid rather than a synchronized downturn. The live 2027-03 pay stack in SOFR, CORRA and AONIA is already the cleanest pro-cyclical expression of that higher path; CORRA\u2019s slide from 3.13 to 2.975 is the pessimism to lean against, not a cover signal."
     }
   ],
   "schema_version": 1,

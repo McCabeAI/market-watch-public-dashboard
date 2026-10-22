@@ -34,7 +34,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 6,
-    "competitive_rank": 6,
+    "competitive_rank": 5,
     "drawdown_usd": 0.0,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 6,
-    "rank_change": 0,
+    "prior_competition_rank": 7,
+    "rank_change": -1,
     "raw_pnl_rank": 6,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "987e24281b1022bed9763d22d50e06232a53b3402d5c4d3919d76b241d665b33",
+  "memory_context_sha256": "49df165b754c95f2d1bd2ff76d5f33bb3cc9c544f65df15e7c569c78e897587c",
   "open_positions": [],
   "owner_id": "vol-convexity",
   "owner_type": "trader",
@@ -95,7 +95,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.21
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
@@ -130,24 +130,24 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261019"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261020"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261021"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261022"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "a5526579c4dfc82f6f913f8c72ed66f0526f1ee3eef8584adc6a925a802a9822",
+    "state_sha256": "ad5bbdb43cd968e4b1daf55df37231628d0044f7b1f0f8b5d43cc2cd7b28edfe",
     "streaks": {
-      "flat_cycles": 15,
+      "flat_cycles": 16,
       "session_loss": 0,
       "session_win": 0
     }

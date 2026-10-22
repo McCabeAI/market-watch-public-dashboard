@@ -39,7 +39,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 8,
-    "competitive_rank": 8,
+    "competitive_rank": 7,
     "drawdown_usd": 2006.84,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -47,14 +47,14 @@
     "nav_usd": 99997993.16,
     "net_pnl_usd": -2006.84,
     "pressure_flags": [],
-    "prior_competition_rank": 8,
-    "rank_change": 0,
+    "prior_competition_rank": 6,
+    "rank_change": 2,
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -4978.44,
     "status": "ok"
   },
   "learning": {
@@ -65,7 +65,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "5045f36746f5574eb819c78223a79d490339ab3d793230ce0cdee57d751dc4e8",
+  "memory_context_sha256": "5630acae2e62fc123f9cabb81decd3c41cb706b0147109e12fa27675840d71d9",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -81,7 +81,7 @@
         "entry_mark": 4.52,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 5000.0,
         "holding_seconds": 164311,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -89,14 +89,14 @@
         "intended_horizon_days": null,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 1000.0,
+        "mfe_usd": 6000.0,
         "order_policy": "review_only",
         "position_id": "pos-fca0c79a2e45",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 1000.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 6000.0,
+        "retained_mfe_fraction": 0.1667,
         "review_required": false,
         "review_threshold_usd": 200000.0,
         "review_triggers": [],
@@ -131,7 +131,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.32
+        "value": 0.28
       },
       "complacency": {
         "band": "calm",
@@ -146,12 +146,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.21
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -181,17 +181,12 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261016"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261019"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "3391e8e12936cec0dae35ecae0198150d21de63fc9cb62f268438e7ad31e6679",
+    "state_sha256": "1f99e45072309376dbcd9082837d5ec91c0c4943b71b503ea19e6894397dc718",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

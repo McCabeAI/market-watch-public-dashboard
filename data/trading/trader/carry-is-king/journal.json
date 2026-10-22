@@ -1189,6 +1189,77 @@
       "run_id": "overnight-20261021",
       "schema_version": 1,
       "thesis": "The packet still pays the receiver for unused policy tightening that cash has not delivered. The widest eligible unused gap is Canada: cash CORRA 2.26 versus Mar27 2.995, a 73.5bp path premium, while September underlying inflation is 1.85 and labor is cooling. Triple-digit oil and a rising Canada oil-pressure proxy are known energy facts, not a cash-rate or reaction-function change, so they do not overwhelm the carry or justify staying out of the Canadian receive. Existing AONIA Mar27 remains a working, thinner 19bp receive and is held; new Australian risk is not added."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Cash 2.25 versus strip 2.975 leaves 72.5bp of implied backup with policy unchanged. Oil RISING is not a flatten signal.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "AU eligible but already in the book; 25bp cash-implied gap still pays a patient receive. Do not ADD: gap is one-third of CAD's and the line is 2bp through entry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "conviction": 52,
+      "decision_fingerprint": "8fba08320ce930c189ee2e592884bb1e36f80d1570e12b89c24b4fcc20b8f26d",
+      "event_id": "jde-bf4dd871a4dc45cc",
+      "funding_view": null,
+      "invalidation": "The view is wrong if the frozen cash-to-strip or oil/impulse stack that supports the existing book reverses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7dedf742a0a8183e81fecbad442c13c93723479a9d8c242309647f3cb36e6bc0",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b007af84bcf2c72cbe8eb7f9b4ca7ac2efdf8b49107e2d71f33f00d57c34a2f3"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-22T07:09:51.753996-04:00",
+        "evidence_hash": "dc087f4d9e653d88587acdd35bce98c3e154d7ef20818c5796f6b492483157fa",
+        "overnight_run_id": "overnight-20261022",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Both existing Mar-27 receives still harvest cash-implied gaps versus unchanged policy: CORRA cash 2.25 versus Mar-27 2.975 (72.5bp) and AONIA cash 4.60 versus Mar-27 4.85 (25bp). Prima RISING oil (WTI 97.15, Brent 108.82) is a narrative tape, not a cash-policy change, and does not pay us to flatten the CAD receive while that gap remains wide. Patient expression is to keep collecting those implied backups in STIR, not to chase spot CAD (negative USD-CAD cash differential) or to add size into the oil print.",
+      "run_id": "overnight-20261022",
+      "schema_version": 1,
+      "thesis": "Both existing Mar-27 receives still harvest cash-implied gaps versus unchanged policy: CORRA cash 2.25 versus Mar-27 2.975 (72.5bp) and AONIA cash 4.60 versus Mar-27 4.85 (25bp). Prima RISING oil (WTI 97.15, Brent 108.82) is a narrative tape, not a cash-policy change, and does not pay us to flatten the CAD receive while that gap remains wide. Patient expression is to keep collecting those implied backups in STIR, not to chase spot CAD (negative USD-CAD cash differential) or to add size into the oil print."
     }
   ],
   "schema_version": 1,

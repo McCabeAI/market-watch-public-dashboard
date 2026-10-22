@@ -1146,6 +1146,60 @@
       "run_id": "overnight-20261021",
       "schema_version": 1,
       "thesis": "Value needs a documented dislocation versus history, fundamentals, or a markable peer spread, plus a reason convergence starts now. The only previously live 10Y value line, NZ-US_10Y, is unmarkable and NZ new risk is blocked. The remaining CAD question is not in SOFR-CORRA packs: cash SOFR-CORRA is 1.62 and Mar27 SOFR-CORRA is 1.530, a 0.09 gap, so the residual, if any, is USDCAD 1.4051. That spot print has no REER, PPP, or terms-of-trade denominator in the freeze, and US 10Y 5.12 versus CA 10Y 3.93 has no historical map either. With the book already flat, the actionable trade is to stay flat rather than force a tenor or relabel an unanchored move as cheapness."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Book is already flat. SOFR-CORRA_2Y_2027H1 minus cash is about 6bp, so CAD valuation is not a pack. USDCAD at the 88th 5y percentile with no REER, a 163bp cash gap, and a 5d CAD rally does not clear an OPEN. NZ-US_10Y stays closed and blocked.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "conviction": 41,
+      "decision_fingerprint": "66f52a0c9de454a1542bd0cdc112613d6d1e6c036b7b8df379463616d1d68f05",
+      "event_id": "jde-a4439e2e574140e9",
+      "funding_view": null,
+      "invalidation": "EURUSD 1y extremes and AU-US 1y extremes remain invalid as 5y value.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6594c1cb7e9b62a3a7ec5e6b9e352798d2d0e44d2e812960de8fe7f156df7952",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cdd424cd598e1f7aaf83ed272335be113928964c4d009f5e9b4897edc5badca9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-22T07:09:51.753996-04:00",
+        "evidence_hash": "dc087f4d9e653d88587acdd35bce98c3e154d7ef20818c5796f6b492483157fa",
+        "overnight_run_id": "overnight-20261022",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Canada versus the United States is historically cheap on 2Y, but that cheapness already sits in cash SOFR-CORRA at 163bp. The 2027 H1 pack at about 157bp and the 2Y govvie gap at 149bp are not a separate dislocation, so CAD valuation is not a pack. Spot USDCAD at the 88th 5y percentile is the residual and still does not clear without REER, so the book stays flat.",
+      "run_id": "overnight-20261022",
+      "schema_version": 1,
+      "thesis": "Canada versus the United States is historically cheap on 2Y, but that cheapness already sits in cash SOFR-CORRA at 163bp. The 2027 H1 pack at about 157bp and the 2Y govvie gap at 149bp are not a separate dislocation, so CAD valuation is not a pack. Spot USDCAD at the 88th 5y percentile is the residual and still does not clear without REER, so the book stays flat."
     }
   ],
   "schema_version": 1,

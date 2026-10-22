@@ -337,6 +337,56 @@
       "run_id": "overnight-20261021",
       "seq": 15,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          250000.0,
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "event_id": "pse-000016",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "carry-is-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261022",
+      "seq": 16,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0378,
+        "external_pressure": 0.072,
+        "frustration": 0.0243
+      },
+      "event_id": "pse-000017",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "carry-is-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261022",
+      "scale": 1.0,
+      "seq": 17,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 2
+      }
     }
   ],
   "owner_id": "carry-is-king",

@@ -71,9 +71,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": true,
+    "competition_eligible": false,
     "competition_rank": 1,
-    "competitive_rank": 1,
+    "competitive_rank": null,
     "drawdown_usd": 16.17,
     "giveback_usd": 16.17,
     "high_water_nav_usd": 100211705.18,
@@ -88,14 +88,14 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 10053.89,
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": true,
-    "learning_default_age_runs": 0,
-    "learning_default_count": 1,
-    "learning_status": "compliant",
+    "competition_eligible": false,
+    "learning_default_age_runs": 1,
+    "learning_default_count": 2,
+    "learning_status": "learning_default",
     "repeated_error_escalations": []
   },
   "learning_obligations": [
@@ -108,7 +108,7 @@
       "source_run_id": "overnight-20261021"
     }
   ],
-  "memory_context_sha256": "d9938dd5a8c33f239cade04dd7a81dcc21ff9044e70f8406a79a57ec17c4c398",
+  "memory_context_sha256": "bde4ab494f6b102dcdbe9a3e4346fa997b806666ae4fad47339951bcf2113f75",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -130,7 +130,7 @@
         "horizon_status": "within",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": 30,
-        "mae_usd": 0.0,
+        "mae_usd": -10000.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
         "order_policy": "review_only",
@@ -202,23 +202,23 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.2
+        "trend": "down",
+        "value": 0.18
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.19
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.16
+        "trend": "up",
+        "value": 0.32
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.19
       },
       "revenge_pressure": {
         "band": "calm",
@@ -227,8 +227,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
-        "value": 0.52
+        "trend": "down",
+        "value": 0.48
       },
       "thesis_attachment": {
         "band": "calm",
@@ -246,11 +246,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_gain",
-        "magnitude": 0.18260192,
-        "run_id": "overnight-20261020"
-      },
-      {
         "kind": "trade_win_close",
         "magnitude": 0.41077009999999997,
         "run_id": "overnight-20261021"
@@ -259,11 +254,16 @@
         "kind": "size_escalation_after_streak",
         "magnitude": 1.0,
         "run_id": "overnight-20261021"
+      },
+      {
+        "kind": "learning_default_entered",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261022"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "cfd6e2bccbcc00813644a77a9ed49b6cfee4864898e18777eb20ef6c16beca32",
+    "state_sha256": "fc1c785911e2bf2d155eae4b06fc1dea1f9ab17c2220213d0d0ef90b9ea6bfd2",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

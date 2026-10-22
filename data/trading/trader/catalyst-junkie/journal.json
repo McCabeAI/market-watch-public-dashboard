@@ -1140,6 +1140,62 @@
       "run_id": "overnight-20261021",
       "schema_version": 1,
       "thesis": "Hormuz engine-room strikes remain the dated oil-to-Fed-path mechanism. Mar27 SOFR at 4.525 versus cash 3.88 still prices only about 64.5bp of tightening, a skip-October / hike-December-plus-a-bit map rather than an energy-war terminal. Crude eased to WTI 101.79 / Brent 108.79 and that hike is already partly in the strip, so do not add; the line is 0.5bp through 4.52 and headlines have not faded, so do not close. Hold pos-fca0c79a2e45. Do not reopen CA/EA/JP or spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 20000000,
+          "position_id": "pos-fca0c79a2e45",
+          "rationale": "The mispricing is an already-loaded Mar27 hike path. The repricing path is dated policy and labor/housing events, not a valuation gap that can sit. Competing oil tape blocks an add; no harvest is due, so hold the 20m short.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-22T07:09:51.753996-04:00",
+      "conviction": 52,
+      "decision_fingerprint": "89465a60219e7e8523cc90733b62171d9d4614600ce1cc77a9d4f7f5c27cae2c",
+      "event_id": "jde-b57305b212e4416a",
+      "funding_view": null,
+      "invalidation": "Freeze 4.55; rival Hormuz/oil tape confirming the hike path rather than fading it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-fca0c79a2e45"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5045f36746f5574eb819c78223a79d490339ab3d793230ce0cdee57d751dc4e8",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3391e8e12936cec0dae35ecae0198150d21de63fc9cb62f268438e7ad31e6679"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-22T07:09:51.753996-04:00",
+        "evidence_hash": "dc087f4d9e653d88587acdd35bce98c3e154d7ef20818c5796f6b492483157fa",
+        "overnight_run_id": "overnight-20261022",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar27 SOFR already sits at 4.55 against cash 3.88, so a large hike path is in the price and further tightening is the high bar. The dated repricing mechanism is the Fed meeting plus housing and jobs: if those fail to validate the priced path, the contract has to reprice toward cash. Hormuz/oil is the competing tape that can keep hike odds sticky, which is why the existing short is a hold, not an add.",
+      "run_id": "overnight-20261022",
+      "schema_version": 1,
+      "thesis": "Mar27 SOFR already sits at 4.55 against cash 3.88, so a large hike path is in the price and further tightening is the high bar. The dated repricing mechanism is the Fed meeting plus housing and jobs: if those fail to validate the priced path, the contract has to reprice toward cash. Hormuz/oil is the competing tape that can keep hike odds sticky, which is why the existing short is a hold, not an add."
     }
   ],
   "schema_version": 1,

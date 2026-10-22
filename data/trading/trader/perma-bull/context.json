@@ -62,7 +62,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 13,
-    "competitive_rank": 13,
+    "competitive_rank": 12,
     "drawdown_usd": 70366.76,
     "giveback_usd": 70366.76,
     "high_water_nav_usd": 100009786.12,
@@ -70,14 +70,14 @@
     "nav_usd": 99939419.36,
     "net_pnl_usd": -60580.64,
     "pressure_flags": [],
-    "prior_competition_rank": 13,
-    "rank_change": 0,
+    "prior_competition_rank": 12,
+    "rank_change": 1,
     "raw_pnl_rank": 13,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1250000.0,
     "risk_capital_utilization": 0.125,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -17365.28,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f2ca07815fdc86014284423936ca75cdc6095251a7de658c204823c8262fd635",
+  "memory_context_sha256": "2944fb392eb0a9c56b681c1edebb8f154213c76dc20b5349b5cbb30f012ffdcf",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -149,7 +149,7 @@
         "entry_mark": 4.765,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 15000.0,
         "holding_seconds": 267722,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -157,14 +157,14 @@
         "intended_horizon_days": null,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 6250.0,
+        "mfe_usd": 21250.0,
         "order_policy": "review_only",
         "position_id": "pos-78563c24fe05",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 6250.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 21250.0,
+        "retained_mfe_fraction": 0.2941,
         "review_required": false,
         "review_threshold_usd": 250000.0,
         "review_triggers": [],
@@ -194,7 +194,7 @@
         "entry_mark": 4.52,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 12500.0,
         "holding_seconds": 164311,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -202,14 +202,14 @@
         "intended_horizon_days": null,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 2500.0,
+        "mfe_usd": 15000.0,
         "order_policy": "review_only",
         "position_id": "pos-35db4e56bf42",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 2500.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 15000.0,
+        "retained_mfe_fraction": 0.1667,
         "review_required": false,
         "review_threshold_usd": 500000.0,
         "review_triggers": [],
@@ -244,7 +244,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.12
       },
       "complacency": {
         "band": "calm",
@@ -259,7 +259,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
@@ -293,7 +293,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "055bb08a71cbd1f4a81a6a33a3f969efd0c7eacc4cdc5f277c52ce38fed58afd",
+    "state_sha256": "1a583b14eb697840d8933dd524add26a775fdde0aba4fabe0639a9bac196f3d9",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
