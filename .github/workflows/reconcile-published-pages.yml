@@ -1,6 +1,13 @@
 name: Reconcile published Pages
 
 on:
+  # After a production deploy-pages run finishes, record stage 08 only when the
+  # run is a successful main workflow_dispatch of a finalized launch. Completion
+  # of this workflow is what releases the one-live-launch guard. A dispatch
+  # request is not enough, and pull_request Pages builds do not start this job.
+  workflow_run:
+    workflows: ["Deploy Market Watch Dashboard"]
+    types: [completed]
   workflow_dispatch:
     inputs:
       launch_id:
@@ -29,6 +36,9 @@ jobs:
   reconcile:
     if: >-
       github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.event == 'workflow_dispatch' &&
+       github.event.workflow_run.head_branch == 'main') ||
       (github.event_name == 'issues' &&
        github.event.issue.user.type == 'User' &&
        github.event.issue.user.login == 'kevinnmccabe-PC' &&
@@ -38,6 +48,7 @@ jobs:
     steps:
       - name: Resolve authorized recovery request
         id: resolve
+        if: github.event_name != 'workflow_run'
         env:
           EVENT_NAME: ${{ github.event_name }}
           INPUT_LAUNCH_ID: ${{ inputs.launch_id }}
@@ -81,10 +92,19 @@ jobs:
           python-version: "3.12"
 
       - name: Reconcile the successful Pages deploy into launch state
+        if: github.event_name != 'workflow_run'
         env:
           GH_TOKEN: ${{ github.token }}
           LAUNCH_ID: ${{ steps.resolve.outputs.launch_id }}
           RUN_ID: ${{ steps.resolve.outputs.run_id }}
+        run: bash scripts/market_watch_launch/reconcile_published_pages.sh
+
+      - name: Reconcile the completed production Pages run
+        if: github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_WORKFLOW_RUN: "1"
+          RUN_ID: ${{ github.event.workflow_run.id }}
         run: bash scripts/market_watch_launch/reconcile_published_pages.sh
 
       - name: Close successful issue request

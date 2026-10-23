@@ -87,7 +87,7 @@ Legacy `schedule_id` `market-watch-weekday-0205` remains only so previously acce
 | 05 | `05_acp_handoff` | Stub rehearsal, or a verified ACP grant once that side exists. Otherwise `awaiting_acp_one_shot_authority` |
 | 06 | `06_acceptance` | Existing `[overnight-output]` validate/apply for this launch's packet, 14 traders, and 3 PMs |
 | 07 | `07_finalize` | Same launch, session, and review; publication gate `may_publish` |
-| 08 | `08_pages` | Explicit `deploy-pages.yml` `workflow_dispatch` after 07. Stub runs record a dry-run and do not publish |
+| 08 | `08_pages` | Explicit `deploy-pages.yml` `workflow_dispatch` after 07, confirmed by an Actions run id. The launch stays `running` until that run's deploy succeeds and is reconciled. Stub runs record a dry-run and do not publish |
 
 Accepted `[overnight-output]` merges set `MW_PAGES_REQUIRE_LAUNCH=1`. Production Pages then run only when that payload carries a `launch_id` whose stage 07 succeeded, the provider is `acp`, and `publish_production` is true. A merge with no launch binding skips Pages. Callers that leave `MW_PAGES_REQUIRE_LAUNCH` unset still dispatch Pages, so older handoff tests stay valid. No workflow `push` or `schedule` deploys production Pages.
 
@@ -148,7 +148,7 @@ git show origin/main:data/overnight/latest.json
 gh workflow run deploy-pages.yml --ref main
 ```
 
-A successful dispatch does not by itself terminal the launch. After that run is green, reconcile it with the Pages publication recovery below. Until stage `08_pages` is `succeeded`, the launch stays `running` and the one-live-launch guard stays closed.
+A successful `gh workflow run` exits 0 on HTTP 204 and does not include a run id. That is not a deploy and does not terminal the launch. The acceptance job records stage 08 only after it observes the Actions run. `reconcile-published-pages.yml` then starts from that run's `workflow_run` completion. It marks stage 08 succeeded only when `publication_evidence_proven()` matches the successful `workflow_dispatch` on `main` to the finalized launch. Until then the launch stays `running` and the one-live-launch guard stays closed. A missing run, a failed or cancelled deploy, or a mismatched launch, review, packet, or ref does not release the guard. Pull-request Pages builds are not production.
 
 ## Reconcile a successful Pages deploy
 
@@ -175,4 +175,18 @@ git reset --hard origin/main
 LAUNCH_ID=mwl-20261002T094056Z-1d0ebea5 \
 RUN_ID=37036473785 \
   bash scripts/market_watch_launch/reconcile_published_pages.sh
+
+## October 22 launch left the guard closed
+
+Launch `mwl-20261022T110951Z-9a049b03` finalized on `65c5600877d234d483820a3957bed1c11bf2de96` at 2026-10-22 12:33:06 UTC. Acceptance run `39776675010` step "Explicitly dispatch Pages for the finalized launch" succeeded from 12:33:09 to 12:33:12. That step's `gh workflow run` returned 0 and GitHub created Actions run [`39779281989`](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/39779281989) at 12:33:10 (`workflow_dispatch`, `main`, actor `github-actions[bot]`, head `65c5600877d234d483820a3957bed1c11bf2de96`, build and deploy jobs success). The same step then pushed `561135973f32fab2fdb105bf0590bd12163c52e9`, which stored stage 08 as `pending` / `pages_dispatch_requested` and did not store the run id. The workflow token did have `actions: write`; the gap was that exit 0 was recorded without a run receipt, and nothing reconciled the deploy after it finished. The deployed tree is the finalize commit, where stage 08 was already `pending`, so that run is valid publication evidence. Later October 22 Pages runs were pull-request builds and are not this deploy.
+
+October 23 launch `mwl-20261023T130116Z-14063697` (Actions run `39957699286`) blocked at `00_authenticate` with `concurrency_one_live_launch`. That attempt stays blocked. It is not resumed. After the October 22 record on `main` is terminal, the next session needs a new human launch.
+
+The idempotent recovery, once this run is the verified deploy, is the same reconcile command. A second run is a no-op. It does not reset status by hand and it does not republish.
+
+```bash
+gh workflow run reconcile-published-pages.yml --ref main \
+  -f launch_id=mwl-20261022T110951Z-9a049b03 \
+  -f run_id=39779281989
+```
 ```

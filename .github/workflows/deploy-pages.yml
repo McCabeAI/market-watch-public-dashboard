@@ -2,7 +2,26 @@ name: Deploy Market Watch Dashboard
 
 on:
   # All market-cycle stages are manual until the dependency-gated launch is installed.
+  # Inputs are optional. An empty launch_id remains a manual refresh. A non-empty
+  # launch_id must match the finalized launch on the dispatched commit; the build
+  # fails closed when it does not. Accepting the dispatch is not publication.
   workflow_dispatch:
+    inputs:
+      launch_id:
+        description: Finalized launch id to bind to this production deploy
+        required: false
+        default: ""
+        type: string
+      review_id:
+        description: Freeze review id for launch_id
+        required: false
+        default: ""
+        type: string
+      packet_sha256:
+        description: Freeze packet SHA-256 for launch_id
+        required: false
+        default: ""
+        type: string
   pull_request:
     paths:
       - ".github/workflows/deploy-pages.yml"
@@ -106,15 +125,30 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  # Pull-request previews must not cancel a production workflow_dispatch deploy.
+  # Production dispatches still share one group so an older production run is
+  # cancelled instead of publishing over a newer one.
+  group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production' || format('pages-preview-{0}', github.event.pull_request.number || github.ref) }}
   cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      dataset_run_id: ${{ steps.dataset.outputs.dataset_run_id }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Bind authorized Pages dispatch to this checkout
+        id: dataset
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
+        env:
+          MW_LAUNCH_ID: ${{ github.event.inputs.launch_id }}
+          MW_REVIEW_ID: ${{ github.event.inputs.review_id }}
+          MW_PACKET_SHA256: ${{ github.event.inputs.packet_sha256 }}
+          PYTHONPATH: .
+        run: python3 -m scripts.market_watch_launch.pages_dispatch bind-checkout
 
       - name: Rebuild v6 base
         shell: bash
@@ -575,3 +609,15 @@ jobs:
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages-${{ github.run_attempt }}
+
+      - name: Checkout publication verifier
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
+        uses: actions/checkout@v6
+
+      - name: Verify public page serves this dataset
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          DATASET_RUN_ID: ${{ needs.build.outputs.dataset_run_id }}
+          PYTHONPATH: .
+        run: python3 -m scripts.market_watch_launch.pages_dispatch verify-public

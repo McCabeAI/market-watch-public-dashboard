@@ -9,7 +9,11 @@ from typing import Any
 from scripts.market_watch_launch.acceptance import run as acceptance_run
 from scripts.market_watch_launch.contract import AWAITING_ACP
 from scripts.market_watch_launch.finalize import run as finalize_run
-from scripts.market_watch_launch.pages import authorize_pages_dispatch, run as pages_run
+from scripts.market_watch_launch.pages import (
+    authorize_pages_dispatch,
+    pages_followup_decision,
+    run as pages_run,
+)
 from scripts.market_watch_launch.state import LaunchStateStore
 
 
@@ -193,18 +197,24 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
     )
     if provider == "acp" and not authorized:
         ctx["publish_production"] = False
+    # A retried delivery must not dispatch again or downgrade a proven publication.
+    if not ctx.get("retry_pages_dispatch"):
+        follow = pages_followup_decision(launch)
+        if follow is not None:
+            return {"launch_id": launch_id, "authorized_pages": authorized, **follow}
     pages = pages_run(launch, ctx)
     _apply_receipt(launch, pages)
     details = pages.get("details") or {}
     production_published = bool(details.get("production_published"))
-    # Successful gh workflow dispatch is not publication. production_published
-    # and a terminal launch require reconcile_published_pages after a verified
-    # successful deploy. A stub dry-run may still complete without publishing.
+    # An observed workflow_dispatch run is still not publication. The launch
+    # stays running until reconcile_published_pages proves the deploy succeeded.
+    # A stub dry-run may still complete without publishing.
     if pages.get("status") == "succeeded" and (production_published or details.get("dry_run")):
         launch["status"] = "succeeded"
-    elif details.get("dispatched"):
+    else:
         launch["status"] = "running"
     store.save_launch(launch)
+    receipt = details.get("dispatch_receipt") or {}
     return {
         "launch_id": launch_id,
         "status": pages.get("status", "failed"),
@@ -212,6 +222,8 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
         "production_published": production_published,
         "authorized_pages": authorized,
         "stage": pages.get("stage"),
+        "dispatch_confirmed": bool(details.get("dispatch_confirmed")),
+        "run_id": receipt.get("run_id") if isinstance(receipt, dict) else None,
     }
 
 
@@ -249,20 +261,12 @@ def main() -> int:
     if payload_path:
         ctx["provider_payload"] = json.loads(Path(payload_path).read_text(encoding="utf-8"))
     if os.environ.get("MW_ENABLE_PAGES_DISPATCH") == "1":
-        import subprocess
-
         def _dispatch_pages(*, plan: dict[str, Any], launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
-            _ = (launch, ctx)
-            workflow = str(plan.get("workflow") or "deploy-pages.yml")
-            ref = str(plan.get("ref") or "main")
-            # Capture gh output so the continuation decision stays a single JSON document.
-            subprocess.run(
-                ["gh", "workflow", "run", workflow, "--ref", ref],
-                check=True,
-                capture_output=True,
-                text=True,
-            )
-            return {"dispatched": True, "workflow": workflow, "ref": ref}
+            from scripts.market_watch_launch.pages_dispatch import confirm_pages_run
+
+            # gh workflow run exiting 0 is only the HTTP 204. confirm_pages_run
+            # returns dispatch_confirmed only after a run id is listed.
+            return confirm_pages_run(plan=plan, launch=launch, repo_root=Path(ctx["root"]))
 
         ctx["pages_dispatch"] = _dispatch_pages
     try:
@@ -279,6 +283,11 @@ def main() -> int:
         return 1
     if decision.get("reason") in {"hash_mismatch", "review_mismatch", "launch_mismatch"}:
         return 1
+    # Production dispatch must not look successful when no Actions run was observed
+    # and the launch is not already tied to a proven Pages deployment.
+    if os.environ.get("MW_ENABLE_PAGES_DISPATCH") == "1":
+        if not decision.get("dispatch_confirmed") and not decision.get("production_published"):
+            return 1
     return 0
 
 
