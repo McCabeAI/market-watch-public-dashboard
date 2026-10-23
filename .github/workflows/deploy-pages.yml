@@ -67,6 +67,9 @@ on:
       - "patch_v13/**"
       - "patch_v14/**"
       - "scripts/apply_trader_room_tab.py"
+      - "scripts/apply_dashboard_repair.py"
+      - "scripts/dashboard_repair/**"
+      - "tests/test_dashboard_repair.py"
       - "scripts/trader_room_public.py"
       - "scripts/pm/**"
       - "scripts/pm_layer.py"
@@ -492,6 +495,63 @@ jobs:
           grep -Fq 'Portfolio Managers' _site/trader-book.js
           grep -Fq 'Trader Book · paper P&L' _site/index.html
           grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
+
+      - name: Apply dashboard repair
+        shell: bash
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_dashboard_repair
+          MARKET=()
+          if [ -s _site/market-state.json ]; then
+            MARKET=(--market-state _site/market-state.json)
+          fi
+          PYTHONPATH=. python scripts/apply_dashboard_repair.py _site/index.html "${MARKET[@]}" --fetch-schedules --schedule-timeout 6
+          python - <<'PY'
+          from pathlib import Path
+          html = Path("_site/index.html").read_text(encoding="utf-8")
+          start = html.find('data-global-tape="repair"')
+          end = html.find('data-score-overview="calibrated"', start)
+          if start < 0 or end < 0:
+              raise SystemExit("repaired tape or scoreboard missing")
+          tape = html[start:end]
+          for stale in ("4.79%", "1.3790", "0.7210", "0.58755", "98.83", "$92.33", "$97.23"):
+              if stale in tape:
+                  raise SystemExit(f"stale base-page tape value survived: {stale}")
+          if "Live 1–100 Score Board" in html:
+              raise SystemExit("scoreboard still labeled Live")
+          import json
+          score_as_of = json.loads(Path("data/temperature_scores.json").read_text(encoding="utf-8"))["as_of"]
+          if f"Published score freeze {score_as_of}" not in html:
+              raise SystemExit(f"score freeze {score_as_of} missing")
+          for radio in ("p-feed", "p-relative", "p-traderroom"):
+              if f'for="{radio}"' in html or f'id="{radio}"' in html:
+                  raise SystemExit(f"{radio} still in the navigation")
+          for required in ("p-front", "p-country", "p-marketdata", "p-traderbook", "p-releases", "p-sources"):
+              if f'for="{required}"' not in html:
+                  raise SystemExit(f"missing nav {required}")
+          for code in ("us", "ca", "au", "nz", "ea", "jp"):
+              if f'data-country="{code}"' not in html:
+                  raise SystemExit(f"missing country jump {code}")
+          if "Trader Book" not in html:
+              raise SystemExit("Trader Book missing")
+          if "Market Data · official snapshot" not in html:
+              raise SystemExit("Market Data missing")
+          if 'data-release-calendar="repair"' not in html or 'data-source-health="repair"' not in html:
+              raise SystemExit("releases or sources were not rebuilt")
+          if "date unavailable" not in html:
+              raise SystemExit("calendar did not keep unknown dates unavailable")
+          if "Momentum Watch" in html:
+              raise SystemExit("static Momentum Watch survived")
+          health = json.loads(Path("_site/source-health.json").read_text(encoding="utf-8"))
+          if not health.get("stage_checked_at"):
+              raise SystemExit("source-health snapshot has no stage check time")
+          counts = health.get("counts") or {}
+          if sum(int(counts.get(name) or 0) for name in ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")) != len(health.get("rows") or []):
+              raise SystemExit("source-health counts do not match rows")
+          failed = [row for row in health["rows"] if row.get("bucket") == "failure"]
+          if any(row.get("last_successful_check") for row in failed):
+              raise SystemExit("failed source was given a successful check time")
+          PY
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
