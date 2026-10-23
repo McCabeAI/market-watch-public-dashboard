@@ -22,8 +22,11 @@ from typing import Any
 
 from scripts.market_watch_launch.contract import LAUNCH_ID_RE
 from scripts.market_watch_launch.pages import (
+    INCOMPLETE_DEPLOY_CONCLUSIONS,
+    PAGES_DEPLOY_FAILED,
     PAGES_RECONCILED,
     REQUIRED_PRIOR_STAGES,
+    launch_awaiting_pages_publication,
     publication_evidence_proven,
     reconcile_published_pages,
 )
@@ -157,8 +160,14 @@ def normalize_actions_run(
     *,
     run_id: str,
     repository: str,
+    require_success: bool = True,
 ) -> dict[str, str]:
-    """Fail closed unless ``run`` is a successful main ``workflow_dispatch`` of deploy-pages."""
+    """Fail closed unless ``run`` is a main ``workflow_dispatch`` of deploy-pages.
+
+    Success is required unless ``require_success`` is false, in which case a
+    completed failure, cancellation, or timeout is returned and still not treated
+    as publication.
+    """
     expected_run = _validate_run_id(run_id)
     if not isinstance(run, dict):
         _fail("non-success conclusion")
@@ -170,7 +179,11 @@ def normalize_actions_run(
         _fail("non-workflow_dispatch event")
     if run.get("head_branch") != "main":
         _fail("non-main ref")
-    if run.get("status") != "completed" or run.get("conclusion") != "success":
+    conclusion = str(run.get("conclusion") or "")
+    if require_success:
+        if run.get("status") != "completed" or conclusion != "success":
+            _fail("non-success conclusion")
+    elif run.get("status") != "completed" or conclusion not in INCOMPLETE_DEPLOY_CONCLUSIONS:
         _fail("non-success conclusion")
     repo_name = _repo_full_name(run, "repository")
     if repo_name != repository:
@@ -192,7 +205,7 @@ def normalize_actions_run(
         "workflow": DEPLOY_WORKFLOW,
         "event": "workflow_dispatch",
         "ref": "main",
-        "conclusion": "success",
+        "conclusion": "success" if require_success else conclusion,
         "head_sha": head_sha,
         "run_url": run_url,
         "run_id": expected_run,
@@ -294,6 +307,7 @@ def assess_published_pages(
         "launch_id": launch_id,
         "head_sha": normalized["head_sha"],
         "run_url": normalized["run_url"],
+        "run_id": normalized["run_id"],
         "finalized_launch": json.loads(json.dumps(finalized)),
     }
     if not already and not publication_evidence_proven(current_launch, evidence):
@@ -456,6 +470,200 @@ def stage_pages_reconciliation(launch_id: str, *, repo_root: Path) -> int:
     return 0
 
 
+def launch_ids_at_commit(repo_root: Path, head_sha: str) -> list[str]:
+    """Directory names under data/market_watch_launches at ``head_sha``."""
+    if not _SHA_RE.fullmatch(head_sha):
+        _fail("mismatched deploy head SHA")
+    shown = _git(repo_root, ["ls-tree", "--name-only", f"{head_sha}:data/market_watch_launches"])
+    if shown.returncode != 0:
+        _fail("mismatched deploy head SHA")
+    found: list[str] = []
+    for line in shown.stdout.splitlines():
+        name = line.strip().strip("/")
+        if LAUNCH_ID_RE.fullmatch(name):
+            found.append(name)
+    return found
+
+
+def select_pending_finalized_launch(launches: list[dict[str, Any]]) -> dict[str, Any] | None:
+    """The one running launch at a deploy commit that is waiting on stage 08.
+
+    Zero matches is a manual Pages refresh with nothing to terminalize.
+    More than one match fails closed.
+    """
+    eligible = [
+        launch
+        for launch in launches
+        if isinstance(launch, dict)
+        and launch.get("status") == "running"
+        and launch_awaiting_pages_publication(launch)
+    ]
+    if len(eligible) > 1:
+        _fail("ambiguous pending finalized launches")
+    return eligible[0] if eligible else None
+
+
+def _load_launches_at_commit(repo_root: Path, head_sha: str) -> list[dict[str, Any]]:
+    _require_deploy_commit(repo_root, head_sha)
+    return [
+        load_launch_at_commit(repo_root, head_sha, launch_id)
+        for launch_id in launch_ids_at_commit(repo_root, head_sha)
+    ]
+
+
+def _skipped(reason: str, launch_id: str | None = None) -> dict[str, Any]:
+    return {
+        "action": "skipped",
+        "changed": False,
+        "launch_id": launch_id,
+        "reason": reason,
+        "status": "skipped",
+    }
+
+
+def note_incomplete_deploy(
+    *,
+    repo_root: Path,
+    state_root: Path,
+    run: dict[str, Any],
+    run_id: str,
+    repository: str = DEFAULT_REPOSITORY,
+) -> dict[str, Any]:
+    """Record a failed or cancelled production deploy without releasing the guard."""
+    normalized = normalize_actions_run(
+        run,
+        run_id=run_id,
+        repository=repository,
+        require_success=False,
+    )
+    candidate = select_pending_finalized_launch(_load_launches_at_commit(repo_root, normalized["head_sha"]))
+    if candidate is None:
+        return _skipped("no_pending_finalized_launch")
+    launch_id = str(candidate["launch_id"])
+    store = LaunchStateStore(state_root)
+    try:
+        current = store.load_launch(launch_id)
+    except FileNotFoundError:
+        _fail("launch record is missing")
+    if current.get("status") == "succeeded":
+        return _skipped("already_terminal", launch_id)
+    _require_same_identity(current, candidate, launch_id=launch_id)
+    stage = (current.get("stages") or {}).get("08_pages") or {}
+    details = stage.get("details") or {}
+    if not isinstance(details, dict):
+        details = {}
+    if current.get("status") != "running" or stage.get("status") != "pending":
+        return _skipped("launch is not awaiting pages", launch_id)
+    receipt = details.get("dispatch_receipt") or {}
+    if isinstance(receipt, dict) and receipt.get("run_id") and str(receipt.get("run_id")) != normalized["run_id"]:
+        return _skipped("different_dispatch_run", launch_id)
+    attempt = {
+        "workflow": normalized["workflow"],
+        "event": normalized["event"],
+        "ref": normalized["ref"],
+        "conclusion": normalized["conclusion"],
+        "head_sha": normalized["head_sha"],
+        "run_url": normalized["run_url"],
+        "run_id": normalized["run_id"],
+        "launch_id": launch_id,
+    }
+    previous = details.get("deploy_attempt") or {}
+    if (
+        stage.get("reason") == PAGES_DEPLOY_FAILED
+        and isinstance(previous, dict)
+        and previous.get("run_id") == attempt["run_id"]
+        and previous.get("conclusion") == attempt["conclusion"]
+        and details.get("production_published") is False
+    ):
+        return {
+            "action": "noted_incomplete",
+            "changed": False,
+            "launch_id": launch_id,
+            "reason": PAGES_DEPLOY_FAILED,
+            "status": "pending",
+        }
+    details = dict(details)
+    details.update(
+        {
+            "executed": False,
+            "dry_run": False,
+            "production_published": False,
+            "dispatch_confirmed": True,
+            "publication_state": "deploy_failed",
+            "deploy_attempt": attempt,
+            "dispatch_receipt": attempt,
+        }
+    )
+    stage_row = current["stages"]["08_pages"]
+    stage_row["status"] = "pending"
+    stage_row["reason"] = PAGES_DEPLOY_FAILED
+    stage_row["details"] = details
+    current["status"] = "running"
+    store.save_launch(current)
+    return {
+        "action": "noted_incomplete",
+        "changed": True,
+        "launch_id": launch_id,
+        "reason": PAGES_DEPLOY_FAILED,
+        "status": "pending",
+    }
+
+
+def workflow_run_decision(
+    *,
+    repo_root: Path,
+    state_root: Path,
+    run: dict[str, Any],
+    run_id: str,
+    repository: str = DEFAULT_REPOSITORY,
+) -> dict[str, Any]:
+    """Reconcile a completed production Pages run, or note an incomplete one.
+
+    Does not dispatch traders, PMs, or another Pages run. A pull-request build
+    cannot reach this function: ``normalize_actions_run`` rejects that event.
+    """
+    if not isinstance(run, dict):
+        _fail("non-success conclusion")
+    conclusion = str(run.get("conclusion") or "")
+    if conclusion in INCOMPLETE_DEPLOY_CONCLUSIONS:
+        return note_incomplete_deploy(
+            repo_root=repo_root,
+            state_root=state_root,
+            run=run,
+            run_id=run_id,
+            repository=repository,
+        )
+    if conclusion != "success":
+        return _skipped(f"ignored conclusion {conclusion or 'missing'}")
+    normalized = normalize_actions_run(run, run_id=run_id, repository=repository)
+    candidate = select_pending_finalized_launch(_load_launches_at_commit(repo_root, normalized["head_sha"]))
+    if candidate is None:
+        return _skipped("no_pending_finalized_launch")
+    launch_id = str(candidate["launch_id"])
+    try:
+        decision = apply_published_pages(
+            repo_root=repo_root,
+            state_root=state_root,
+            launch_id=launch_id,
+            run=run,
+            run_id=run_id,
+            repository=repository,
+        )
+    except SystemExit as exc:
+        message = exc.code if isinstance(exc.code, str) else ""
+        if message == "launch is terminal without matching pages publication evidence":
+            return _skipped(message, launch_id)
+        raise
+    changed = bool(decision.get("changed"))
+    return {
+        "action": "already_reconciled" if decision.get("already_reconciled") else "reconciled",
+        "changed": changed,
+        "launch_id": launch_id,
+        "reason": decision.get("reason"),
+        "status": decision.get("status", "succeeded"),
+    }
+
+
 def _load_run_json(path: Path) -> dict[str, Any]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
@@ -500,6 +708,11 @@ def main(argv: list[str] | None = None) -> int:
     assert_p = sub.add_parser("assert-reconciled", parents=[shared, run_shared])
     assert_p.add_argument("--ref", required=True)
 
+    workflow_p = sub.add_parser("workflow-run", parents=[run_shared])
+    workflow_p.add_argument("--repo-root", type=Path, default=Path.cwd())
+    workflow_p.add_argument("--state-root", type=Path, default=None)
+    workflow_p.add_argument("--decision-out", type=Path, default=None)
+
     args = parser.parse_args(argv)
     root = Path(args.repo_root)
     try:
@@ -509,6 +722,20 @@ def main(argv: list[str] | None = None) -> int:
         if args.command == "stage":
             return stage_pages_reconciliation(args.launch_id, repo_root=root)
         run = _load_run_json(Path(args.run_json))
+        if args.command == "workflow-run":
+            state_root = Path(args.state_root) if args.state_root is not None else root
+            decision = workflow_run_decision(
+                repo_root=root,
+                state_root=state_root,
+                run=run,
+                run_id=args.run_id,
+                repository=args.repository,
+            )
+            text = json.dumps(_public_decision(decision), indent=2, sort_keys=True) + "\n"
+            if args.decision_out is not None:
+                Path(args.decision_out).write_text(text, encoding="utf-8")
+            sys.stdout.write(text)
+            return 0
         if args.command == "apply":
             state_root = Path(args.state_root) if args.state_root is not None else root
             decision = apply_published_pages(

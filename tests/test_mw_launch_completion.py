@@ -336,12 +336,24 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
                     "base_packet_sha256": self.launch["base_packet_sha256"],
                     "provider_run_url": "https://cursor.example/run-1",
                 },
-                "pages_dispatch": lambda **_: {"dispatched": True},
+                "pages_dispatch": lambda **_: {
+                    "dispatched": True,
+                    "dispatch_confirmed": True,
+                    "run_id": "39779281989",
+                    "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/39779281989",
+                    "head_sha": "65c5600877d234d483820a3957bed1c11bf2de96",
+                    "workflow": "deploy-pages.yml",
+                    "event": "workflow_dispatch",
+                    "ref": "main",
+                    "launch_id": self.launch_id,
+                },
             },
         )
         self.assertEqual(decision["status"], "pending")
         self.assertEqual(decision["reason"], "pages_dispatch_requested")
         self.assertFalse(decision["production_published"])
+        self.assertTrue(decision["dispatch_confirmed"])
+        self.assertEqual(decision["run_id"], "39779281989")
         persisted = json.loads(launch_record_path(self.state_root, self.launch_id).read_text())
         self.assertEqual(persisted["stages"]["05_acp_handoff"]["status"], "succeeded")
         self.assertTrue(persisted["stages"]["05_acp_handoff"]["details"]["live_provider_dispatched"])
@@ -351,6 +363,8 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
         self.assertEqual(pages["status"], "pending")
         self.assertEqual(pages["reason"], "pages_dispatch_requested")
         self.assertTrue(pages["details"]["dispatched"])
+        self.assertTrue(pages["details"]["dispatch_confirmed"])
+        self.assertEqual(pages["details"]["dispatch_receipt"]["run_id"], "39779281989")
         self.assertFalse(pages["details"]["executed"])
         self.assertFalse(pages["details"]["production_published"])
         self.assertEqual(persisted["status"], "running")
@@ -392,7 +406,17 @@ class MarketWatchLaunchCompletionTests(unittest.TestCase):
                     "review_id": review_id,
                     "base_packet_sha256": packet,
                 },
-                "pages_dispatch": lambda **_: {"dispatched": True, "workflow": "deploy-pages.yml", "ref": "main"},
+                "pages_dispatch": lambda **_: {
+                    "dispatched": True,
+                    "dispatch_confirmed": True,
+                    "workflow": "deploy-pages.yml",
+                    "event": "workflow_dispatch",
+                    "ref": "main",
+                    "run_id": "37456007090",
+                    "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/37456007090",
+                    "head_sha": head_sha,
+                    "launch_id": self.launch_id,
+                },
             },
         )
         self.assertEqual(decision["status"], "pending")

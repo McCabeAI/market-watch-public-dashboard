@@ -82,6 +82,31 @@ REQUIRED_PRIOR_STAGES: tuple[str, ...] = (
     "06_acceptance",
     "07_finalize",
 )
+PAGES_DEPLOY_FAILED = "pages_deploy_failed"
+PAGES_RUN_NOT_OBSERVED = "pages_run_not_observed"
+INCOMPLETE_DEPLOY_CONCLUSIONS = frozenset(
+    {"failure", "cancelled", "timed_out", "startup_failure"}
+)
+
+
+def launch_awaiting_pages_publication(launch: dict[str, Any]) -> bool:
+    """True when this record is finalized, accepted, and stage 08 is still unpublished."""
+    if not isinstance(launch, dict):
+        return False
+    if (launch.get("request") or {}).get("provider") != "acp":
+        return False
+    stages = launch.get("stages") or {}
+    for name in REQUIRED_PRIOR_STAGES:
+        if (stages.get(name) or {}).get("status") != "succeeded":
+            return False
+    if (stages.get("05_acp_handoff") or {}).get("reason") != "provider_output_accepted":
+        return False
+    publication = ((stages.get("07_finalize") or {}).get("details") or {}).get("publication") or {}
+    if not isinstance(publication, dict) or publication.get("may_publish") is not True:
+        return False
+    if (stages.get("08_pages") or {}).get("status") != "pending":
+        return False
+    return True
 
 
 def publication_evidence_proven(launch: dict[str, Any], evidence: dict[str, Any] | None) -> bool:
@@ -90,6 +115,7 @@ def publication_evidence_proven(launch: dict[str, Any], evidence: dict[str, Any]
     ``evidence`` is the deploy receipt. ``evidence["finalized_launch"]`` is the
     launch record at the deployed commit. Both must describe this launch, with
     stages 00–07 succeeded and stage 08 still unpublished in that tree.
+    A workflow_dispatch request, including one whose CLI exited 0, is not evidence.
     """
     if not isinstance(evidence, dict):
         return False
@@ -109,39 +135,19 @@ def publication_evidence_proven(launch: dict[str, Any], evidence: dict[str, Any]
     run_url = str(evidence.get("run_url") or "")
     if not run_url.startswith("https://github.com/") or "/actions/runs/" not in run_url:
         return False
+    run_id = evidence.get("run_id")
+    if run_id is not None and (not str(run_id).isdigit() or not 1 <= len(str(run_id)) <= 20):
+        return False
     finalized = evidence.get("finalized_launch")
     if not isinstance(finalized, dict):
+        return False
+    if not launch_awaiting_pages_publication(launch) or not launch_awaiting_pages_publication(finalized):
         return False
     if finalized.get("launch_id") != launch.get("launch_id"):
         return False
     if finalized.get("review_id") != launch.get("review_id"):
         return False
     if finalized.get("base_packet_sha256") != launch.get("base_packet_sha256"):
-        return False
-    final_stages = finalized.get("stages") or {}
-    current_stages = launch.get("stages") or {}
-    for name in REQUIRED_PRIOR_STAGES:
-        final_row = final_stages.get(name) or {}
-        current_row = current_stages.get(name) or {}
-        if final_row.get("status") != "succeeded" or current_row.get("status") != "succeeded":
-            return False
-    handoff = current_stages.get("05_acp_handoff") or {}
-    if handoff.get("reason") != "provider_output_accepted":
-        return False
-    if (final_stages.get("05_acp_handoff") or {}).get("reason") != "provider_output_accepted":
-        return False
-    finalize = current_stages.get("07_finalize") or {}
-    publication = (finalize.get("details") or {}).get("publication") or {}
-    if publication.get("may_publish") is not True:
-        return False
-    final_publication = ((final_stages.get("07_finalize") or {}).get("details") or {}).get("publication") or {}
-    if final_publication.get("may_publish") is not True:
-        return False
-    if (final_stages.get("08_pages") or {}).get("status") != "pending":
-        return False
-    if (current_stages.get("08_pages") or {}).get("status") != "pending":
-        return False
-    if (launch.get("request") or {}).get("provider") != "acp":
         return False
     return True
 
@@ -178,15 +184,7 @@ def reconcile_published_pages(
             "dry_run": False,
             "production_published": True,
             "reconciled": True,
-            "publication_evidence": {
-                "workflow": evidence["workflow"],
-                "event": evidence["event"],
-                "ref": evidence["ref"],
-                "conclusion": evidence["conclusion"],
-                "head_sha": evidence["head_sha"],
-                "run_url": evidence["run_url"],
-                "launch_id": evidence["launch_id"],
-            },
+            "publication_evidence": _publication_evidence_row(evidence),
         },
     )
     body = {"stage": STAGE, "status": receipt["status"], **receipt["details"]}
@@ -199,8 +197,77 @@ def reconcile_published_pages(
     return receipt
 
 
+def _publication_evidence_row(evidence: dict[str, Any]) -> dict[str, Any]:
+    row = {
+        "workflow": evidence["workflow"],
+        "event": evidence["event"],
+        "ref": evidence["ref"],
+        "conclusion": evidence["conclusion"],
+        "head_sha": evidence["head_sha"],
+        "run_url": evidence["run_url"],
+        "launch_id": evidence["launch_id"],
+    }
+    run_id = evidence.get("run_id")
+    if run_id is not None and str(run_id).isdigit():
+        row["run_id"] = str(run_id)
+    return row
+
+
 def _provider(launch: dict[str, Any]) -> str:
     return (launch.get("request") or {}).get("provider", "stub")
+
+
+def _stage_details(launch: dict[str, Any]) -> dict[str, Any]:
+    details = ((launch.get("stages") or {}).get(STAGE) or {}).get("details") or {}
+    return details if isinstance(details, dict) else {}
+
+
+def pages_followup_decision(launch: dict[str, Any]) -> dict[str, Any] | None:
+    """No-write decision when this launch was already confirmed or published.
+
+    A retried acceptance delivery must not dispatch Pages again and must not
+    downgrade a proven publication back to pending.
+    """
+    stage = (launch.get("stages") or {}).get(STAGE) or {}
+    details = _stage_details(launch)
+    evidence = details.get("publication_evidence") or {}
+    receipt = details.get("dispatch_receipt") or {}
+    if not isinstance(evidence, dict):
+        evidence = {}
+    if not isinstance(receipt, dict):
+        receipt = {}
+    run_id = str(evidence.get("run_id") or receipt.get("run_id") or "")
+    if (
+        launch.get("status") == "succeeded"
+        and stage.get("status") == "succeeded"
+        and stage.get("reason") == PAGES_RECONCILED
+        and details.get("production_published") is True
+        and details.get("reconciled") is True
+    ):
+        return {
+            "status": "succeeded",
+            "reason": PAGES_RECONCILED,
+            "production_published": True,
+            "dispatch_confirmed": True,
+            "run_id": run_id or None,
+            "stage": STAGE,
+        }
+    if (
+        launch.get("status") == "running"
+        and stage.get("status") == "pending"
+        and details.get("dispatch_confirmed") is True
+        and details.get("production_published") is False
+        and run_id.isdigit()
+    ):
+        return {
+            "status": "pending",
+            "reason": stage.get("reason") or PAGES_DISPATCH_REQUESTED,
+            "production_published": False,
+            "dispatch_confirmed": True,
+            "run_id": run_id,
+            "stage": STAGE,
+        }
+    return None
 
 
 def _build_plan(launch: dict[str, Any]) -> dict[str, Any]:
@@ -271,29 +338,89 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         )
 
     result = dispatch(plan=plan, launch=launch, ctx=ctx)
-    if not (isinstance(result, dict) and result.get("dispatched")):
+    confirmed = _confirmed_dispatch_receipt(result, launch)
+    if confirmed is None:
+        reason = PAGES_RUN_NOT_OBSERVED
+        if isinstance(result, dict) and result.get("reason") in {
+            PAGES_RUN_NOT_OBSERVED,
+            "pages_dispatch_not_confirmed",
+            "pages_dispatch_ambiguous",
+        }:
+            reason = str(result["reason"])
+        # Stay pending and running. A blocked stage would look terminal to the
+        # stage-derived status helper and would open the one-live-launch guard.
         return contract.stage_receipt(
             STAGE,
-            status="blocked",
+            status="pending",
             input_sha256=input_sha,
-            reason="pages_dispatch_not_confirmed",
-            details={"plan": plan, "executed": False, "production_published": False},
+            reason=reason,
+            details={
+                "plan": plan,
+                "executed": False,
+                "dry_run": False,
+                "dispatched": False,
+                "dispatch_confirmed": False,
+                "production_published": False,
+                "publication_state": "not_confirmed",
+            },
         )
 
-    # A workflow_dispatch request is not a completed deployment. Stage 08
-    # stays pending so a failed Pages run can be repaired by reconcile
-    # without rerunning traders, PMs, or ingestion.
+    reason = PAGES_DISPATCH_REQUESTED
+    publication_state = "dispatch_confirmed"
+    conclusion = str(confirmed.get("conclusion") or "")
+    if conclusion in INCOMPLETE_DEPLOY_CONCLUSIONS:
+        reason = PAGES_DEPLOY_FAILED
+        publication_state = "deploy_failed"
     return contract.stage_receipt(
         STAGE,
         status="pending",
         input_sha256=input_sha,
-        reason=PAGES_DISPATCH_REQUESTED,
+        reason=reason,
         details={
             "plan": plan,
             "executed": False,
             "dry_run": False,
             "dispatched": True,
+            "dispatch_confirmed": True,
             "production_published": False,
-            "publication_state": "dispatched",
+            "publication_state": publication_state,
+            "dispatch_receipt": confirmed,
         },
     )
+
+
+def _confirmed_dispatch_receipt(result: Any, launch: dict[str, Any]) -> dict[str, str] | None:
+    """A dispatch is confirmed only by an observed Actions run, never by CLI exit 0."""
+    if not isinstance(result, dict) or result.get("dispatch_confirmed") is not True:
+        return None
+    run_id = str(result.get("run_id") or "")
+    head_sha = str(result.get("head_sha") or "").lower()
+    run_url = str(result.get("run_url") or "")
+    if not run_id.isdigit() or not 1 <= len(run_id) <= 20:
+        return None
+    if len(head_sha) != 40 or any(ch not in "0123456789abcdef" for ch in head_sha):
+        return None
+    marker = f"/actions/runs/{run_id}"
+    if not run_url.startswith("https://github.com/") or marker not in run_url:
+        return None
+    if result.get("workflow") not in (None, "deploy-pages.yml"):
+        return None
+    if result.get("event") not in (None, "workflow_dispatch"):
+        return None
+    if result.get("ref") not in (None, "main"):
+        return None
+    if str(result.get("launch_id") or launch.get("launch_id")) != launch.get("launch_id"):
+        return None
+    receipt = {
+        "workflow": "deploy-pages.yml",
+        "event": "workflow_dispatch",
+        "ref": "main",
+        "run_id": run_id,
+        "run_url": run_url,
+        "head_sha": head_sha,
+        "launch_id": str(launch.get("launch_id") or ""),
+    }
+    conclusion = result.get("conclusion")
+    if isinstance(conclusion, str) and conclusion:
+        receipt["conclusion"] = conclusion
+    return receipt
