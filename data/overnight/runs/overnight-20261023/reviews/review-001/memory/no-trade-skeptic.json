@@ -1,0 +1,196 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-23T15:46:45.247147-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 7,
+    "competitive_rank": 6,
+    "drawdown_usd": 0.0,
+    "giveback_usd": 0.0,
+    "high_water_nav_usd": 100000000.0,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100000000.0,
+    "net_pnl_usd": 0.0,
+    "pressure_flags": [],
+    "prior_competition_rank": 7,
+    "rank_change": 0,
+    "raw_pnl_rank": 7,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "35ff801f95306db04803bbad78bb77f32438607b6060e82f59f8e72f13af8b39",
+  "open_positions": [],
+  "owner_id": "no-trade-skeptic",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.35
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.15
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.55
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261020"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261022"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "19bb4c76f2f56717bd0d6b076af2fb02b95ffba2cbf6e60dec09b84eaeaff53c",
+    "streaks": {
+      "flat_cycles": 16,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [
+    {
+      "current_sofr": {
+        "citation": "official NY Fed SOFR 3.88 percent dated 2026-10-20 ACT/360",
+        "date": "2026-10-20",
+        "day_count": "ACT/360",
+        "percent": 3.88,
+        "rate": 3.88,
+        "source": "NY Fed official SOFR"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Remain at the zero official-SOFR benchmark. Flat cash is not alpha, but with no residual edge the alternative is worse: paying SOFR on shocked-risk capital to own a hike path already printed in Dec26 4.255 / Mar27 4.55 / Jun27 4.725 / Sep27 4.785. Do not fund a new risk book off 3.88 SOFR until realized funding is shown, with a dated catalyst, to print away from that strip.",
+      "sr3_forward_view": "Over the decision horizon the SR3 strip already embeds a steep tightening path versus the 3.88 official fixing: Dec26 4.255, Mar27 4.55, Jun27 4.725, Sep27 4.785. That is a front-loaded hike sequence of roughly 37.5bp into year-end 2026 and about 90bp by Sep27, so apparent funding-tightening or hawkish-repricing edges are the curve, not a mispricing of it. No unpriced residual versus those four contracts is identified in the frozen funding_context."
+    },
+    {
+      "current_sofr": "NY Fed official SOFR 3.88 percent, 20 Oct, ACT/360. That fixing is the zero benchmark and the realized funding authority for this review.",
+      "forward_funding_assessment": "lower",
+      "implication": "Remain at the zero official-SOFR benchmark. Shocked-risk capital would pay 3.88 percent ACT/360 with no residual edge after funding. The strip, US 10Y 5.12, and CORRA 2.26 versus 2.995 already embed the hike and receive views; paying SOFR to warehouse overnight Hormuz/oil gap risk with NZ/AU closed and no listed vol is a funding cost, not a trade. Flat cash is not alpha; paying SOFR on uncompensated overnight risk is worse.",
+      "sr3_forward_view": "Over an overnight horizon the listed strip is deferred, not a one-session funding forecast: Dec26 4.245, Mar27 4.525, Jun27 4.685, Sep27 4.74. That path already prices a front-loaded rise from 3.88 toward 4.245 by Dec26 and 4.74 by Sep27. Overnight realized funding is the official SOFR print, not those deferred contracts."
+    },
+    {
+      "current_sofr": "Official NY Fed SOFR 3.87% effective 19 Oct, ACT/360.",
+      "forward_funding_assessment": "lower",
+      "implication": "Overnight realized funding should print near the 3.87% official fixing, below the 4.25-4.71 strip, so remaining at the zero official-SOFR benchmark keeps the cash rate without paying SOFR on shocked-risk capital. Any OPEN must beat 3.87% plus that already-steep path; the frozen packet does not show such an edge, and flat cash is not alpha.",
+      "sr3_forward_view": "Frozen SOFR strip prices a hike path well above cash: Dec26 4.25, Mar27 4.52, Jun27 4.67, Sep27 4.71, so forwards already embed substantial tightening from 3.87% through late 2027."
+    },
+    {
+      "current_sofr": {
+        "observation_date": "2026-10-15",
+        "rate": 3.89
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Remain at the zero official-SOFR cash benchmark. Paying official 3.89 SOFR on shocked-risk capital would fund a hike path the 2027 strip already contains; that is not alpha versus flat cash.",
+      "sr3_forward_view": "Over this overnight horizon the frozen SR3 2027 path sits well above cash 3.89: December 2026 4.225, March 4.485, June 4.635, September 4.675, December 4.66. Exact 1-month through 12-month horizon matches in the funding context are null. That strip is a priced multi-meeting hiking path, not an overnight funding print."
+    }
+  ],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

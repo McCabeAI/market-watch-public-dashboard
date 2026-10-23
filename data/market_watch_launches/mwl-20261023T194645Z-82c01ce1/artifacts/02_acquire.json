@@ -1,0 +1,195 @@
+{
+  "families": {
+    "central_bank_research": {
+      "as_of": "2026-10-22T07:09:51.753996-04:00",
+      "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+      "status": "fresh"
+    },
+    "macro_hard": {
+      "as_of": null,
+      "digest": "e2d3f0125567d1a8709790ffc491ee3ec433682a5fb7cbe82c76d5a758dcf275",
+      "status": "stale"
+    },
+    "market_state": {
+      "as_of": "2026-10-23T20:07:15Z",
+      "digest": "a031a6217d242ae506d20b48b40f91db7981510b1fa3b17a05ee154b98f95a83",
+      "status": "fresh"
+    },
+    "news": {
+      "as_of": "2026-10-23T15:46:45.247147-04:00",
+      "digest": "4021f23354c7d99f48dd744b594a2672ef4253fcac19047c80e9754e3db4a5ac",
+      "status": "fresh"
+    }
+  },
+  "market_legs": {
+    "AU": "ok",
+    "CA": "ok",
+    "FX": "ok",
+    "US": "ok"
+  },
+  "market_state_generated_at": "2026-10-23T20:07:15Z",
+  "mode": "live",
+  "news_acquisition": {
+    "cutoff": "2026-10-23T15:46:45.247147-04:00",
+    "mode": "live",
+    "partial": false,
+    "receipts": [
+      {
+        "candidate_count": 12,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 4,
+        "source": "bloomberg",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 50,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 7,
+        "source": "reuters",
+        "status": "ok",
+        "surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
+      },
+      {
+        "candidate_count": 8,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_relevant_candidates",
+        "result_count": 0,
+        "source": "bloomberg_credit",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28CoreWeave%20OR%20neocloud%20OR%20%22data%20center%22%20OR%20hyperscaler%29%20%28bond%20OR%20debt%20OR%20financing%20OR%20%22credit%20facility%22%20OR%20IPO%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 12,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 2,
+        "source": "bloomberg_equity",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 12,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 4,
+        "source": "reuters_credit",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 154,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 10,
+        "source": "cnbc",
+        "status": "ok",
+        "surface": "https://www.cnbc.com/sitemap_news.xml"
+      },
+      {
+        "candidate_count": 10,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 5,
+        "source": "cnbc_credit",
+        "status": "ok",
+        "surface": "https://www.bing.com/news/search?q=site%3Acnbc.com%20%28CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%20OR%20%22credit%20default%20swap%22%29&format=rss&qft=interval%3d%227%22"
+      },
+      {
+        "candidate_count": 25,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "cnbc_investing",
+        "status": "ok",
+        "surface": "https://www.cnbc.com/id/15839069/device/rss/rss.html"
+      },
+      {
+        "candidate_count": 50,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "rbnz_news",
+        "status": "ok",
+        "surface": "https://www.rbnz.govt.nz/feeds/news"
+      },
+      {
+        "candidate_count": 15,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "fed_monetary",
+        "status": "ok",
+        "surface": "https://www.federalreserve.gov/feeds/press_monetary.xml"
+      },
+      {
+        "candidate_count": 10,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "boc_press",
+        "status": "ok",
+        "surface": "https://www.bankofcanada.ca/content_type/press/feed/"
+      },
+      {
+        "candidate_count": 1,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "rba_media",
+        "status": "ok",
+        "surface": "https://www.rba.gov.au/rss/rss-cb-media-releases.xml"
+      },
+      {
+        "candidate_count": 15,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "candidates",
+        "result_count": 1,
+        "source": "ecb_press",
+        "status": "ok",
+        "surface": "https://www.ecb.europa.eu/rss/press.html"
+      },
+      {
+        "candidate_count": 51,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "boj_whatsnew",
+        "status": "ok",
+        "surface": "https://www.boj.or.jp/en/rss/whatsnew.xml"
+      },
+      {
+        "candidate_count": 50,
+        "checked_at": "2026-10-23T15:46:45.247147-04:00",
+        "failure": null,
+        "feed_health": "no_in_window",
+        "result_count": 0,
+        "source": "boe_news",
+        "status": "ok",
+        "surface": "https://www.bankofengland.co.uk/rss/news"
+      }
+    ]
+  },
+  "offline": false,
+  "overnight_run_id": "overnight-20261023",
+  "required_preflight_block": null,
+  "required_preflight_ok": true,
+  "stage": "02_acquire",
+  "status": "succeeded"
+}

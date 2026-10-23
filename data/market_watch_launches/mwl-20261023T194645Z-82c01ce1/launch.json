@@ -1,0 +1,4586 @@
+{
+  "base_packet_sha256": "c5ac44c9c4c782d8e2ee4c9ef20950871ad8accdae7a101b8d46f8ee5fc05356",
+  "created_at": "2026-10-23T15:46:45.247147-04:00",
+  "duplicate_of": null,
+  "freeze_commit_sha": null,
+  "launch_id": "mwl-20261023T194645Z-82c01ce1",
+  "launcher_id": "manual-market-watch-launch-v1",
+  "overnight_run_id": "overnight-20261023",
+  "prior_launch_id": null,
+  "request": {
+    "actor": "kevinnmccabe-PC",
+    "actor_type": "User",
+    "issue_number": 244,
+    "issue_title": "[launch-market-watch] 2026-10-23",
+    "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/244",
+    "mode": "live",
+    "origin": {
+      "actor": "kevinnmccabe-PC",
+      "actor_type": "User",
+      "issue_number": 244,
+      "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/244",
+      "repository_permission": "admin",
+      "source": "github_issue"
+    },
+    "provider": "acp",
+    "publish_production": true,
+    "repository_permission": "admin",
+    "rerun": false,
+    "session_date": "2026-10-23",
+    "source": "github_issue"
+  },
+  "rerun": false,
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-10-23",
+  "stages": {
+    "00_authenticate": {
+      "artifact": "artifacts/00_authenticate.json",
+      "details": {
+        "actor": "kevinnmccabe-PC",
+        "authenticated": true,
+        "launch_id": "mwl-20261023T194645Z-82c01ce1",
+        "overnight_run_id": "overnight-20261023",
+        "session_date": "2026-10-23",
+        "source": "github_issue"
+      },
+      "finished_at": "2026-10-23T15:46:45.247147-04:00",
+      "input_sha256": "f49e57085263989ebf7d6685187339421ed9b5b533b89b4beb3a530402378ac4",
+      "output_sha256": "31f5be3d084aa1eb1476adc6028a10edd50da19319d927cc31cfb7d06622c74d",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "00_authenticate",
+      "started_at": "2026-10-23T15:46:45.247147-04:00",
+      "status": "succeeded"
+    },
+    "01_ingest": {
+      "artifact": "artifacts/01_ingest.json",
+      "details": {
+        "au_labor_evidence": {
+          "added_by": "au-labor-reliability-20261014",
+          "as_of": "2026-10-23",
+          "gaps": [
+            {
+              "id": "AU.Labor.leading",
+              "publisher": "au_labor",
+              "reason": "leading collector transport error: The read operation timed out",
+              "status": "source_failed"
+            }
+          ],
+          "observations": [],
+          "packet_sha256": "f24aa305f945c52f12324da91871283ec7a5b5509e7b5e5ccda1678c9d055bf0",
+          "partial": true
+        },
+        "checked_at": "2026-10-23T19:46:45Z",
+        "countries": [
+          "US",
+          "CA",
+          "AU",
+          "NZ",
+          "EA",
+          "JP"
+        ],
+        "cutoff_class": "post_freeze",
+        "gaps": [
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Activity.gdp_domestic_demand",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "HTTP 404",
+            "series_id": "US.Activity.manufacturing_surveys",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "HTTP 404",
+            "series_id": "US.Activity.services_surveys",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Consumer.confidence",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Consumer.income",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Consumer.retail",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Consumer.spending",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Inflation.core_pce",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "flash_pmi_primary_pdf_not_parsed",
+            "series_id": "US.Activity.flash_pmi",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Activity.gdp_level",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "proprietary_blocked",
+            "series_id": "US.Consumer.confidence_conference_board",
+            "status": "license_gap"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Credit.mortgage_30y",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Housing.fhfa_purchase_only",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Housing.housing_starts",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Inflation.cpi_core",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Inflation.cpi_headline",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Inflation.export_price_index",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Inflation.import_price_index",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "mapped_bridge_transform_not_wired",
+            "series_id": "US.Inflation.mapped_bridge",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "The read operation timed out",
+            "series_id": "US.Inflation.pce_headline",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Inflation.ppi_final_demand",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.adp_employment",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.attr_entrant_reentrant",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.attr_job_loss",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.attr_labor_force_exit",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.attr_labor_force_expansion",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.attr_weak_job_finding",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.breakeven_employment",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.challenger_job_cuts",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_error",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_flow_consistent_u3",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_hiring_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_nowcast_revision",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_separation_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_u3_nowcast_advance",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.chicago_fed_u3_nowcast_final",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.conference_board_jobs_hard_to_get",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.conference_board_jobs_plentiful",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.conference_board_labor_differential",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.continuing_claims",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.continuing_claims_revised",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.delta_household_employment",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.delta_labor_force",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.delta_unemployed",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.employment_foreign_born",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.employment_native_born",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.employment_population_ratio",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.flow_en",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.flow_eu",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.flow_ne",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.flow_nu",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.flow_ue",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.flow_un",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.household_employment",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.initial_claims",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.initial_claims_4w",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.initial_claims_4w_revised",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.initial_claims_normalized",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.initial_claims_revised",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.insured_unemployment_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.insured_unemployment_rate_revised",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.ism_manufacturing_employment",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_hires",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_hires_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_layoffs",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_layoffs_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_openings",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_openings_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_quits",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.jolts_quits_rate",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.labor_force",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.labor_force_absorption",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.labor_force_change",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.labor_force_foreign_born",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.labor_force_native_born",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.participation",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.payroll_level_ces",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.payroll_vs_breakeven",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.population",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.population_change",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.population_foreign_born",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.population_native_born",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.prime_age_participation",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unemployed",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unemployed_job_leavers",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unemployed_job_losers",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unemployed_new_entrants",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unemployed_on_layoff",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unemployed_reentrants",
+            "status": "source_failed"
+          },
+          {
+            "country": "US",
+            "error": "budget_deferred",
+            "series_id": "US.Labor.unrounded_u3",
+            "status": "source_failed"
+          },
+          {
+            "country": "CA",
+            "error": "bank_of_canada_csce_no_machine_readable_series",
+            "series_id": "CA.Consumer.confidence",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series",
+            "series_id": "CA.Housing.existing_home_sales",
+            "status": "license_gap"
+          },
+          {
+            "country": "CA",
+            "error": "CA.Inflation.import_export_price_indexes: vector id unpinned in catalog fragment",
+            "series_id": "CA.Inflation.import_export_price_indexes",
+            "status": "source_failed"
+          },
+          {
+            "country": "CA",
+            "error": "CA.Inflation.ippi: vector id unpinned in catalog fragment",
+            "series_id": "CA.Inflation.ippi",
+            "status": "source_failed"
+          },
+          {
+            "country": "CA",
+            "error": "CA.Inflation.rmpi: vector id unpinned in catalog fragment",
+            "series_id": "CA.Inflation.rmpi",
+            "status": "source_failed"
+          },
+          {
+            "country": "CA",
+            "error": "CA.Labor.participation: vector id unpinned in catalog fragment",
+            "series_id": "CA.Labor.participation",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "pmi_listing_challenge",
+            "series_id": "AU.Activity.business_surveys",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": "westpac_unverified_no_primary_adapter",
+            "series_id": "AU.Consumer.confidence",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "series_id_not_in_workbook:A2304183K",
+            "series_id": "AU.Activity.domestic_final_demand",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "pmi_listing_challenge",
+            "series_id": "AU.Activity.flash_composite_pmi",
+            "status": "license_gap"
+          },
+          {
+            "country": "AU",
+            "error": null,
+            "series_id": "AU.Housing.dwelling_values_and_approvals",
+            "status": "calendar_unparsed"
+          },
+          {
+            "country": "AU",
+            "error": "The read operation timed out",
+            "series_id": "AU.Labor.jsa_ivi_national_sa",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "The read operation timed out",
+            "series_id": "AU.Labor.jsa_reos_hiring_intent",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "The read operation timed out",
+            "series_id": "AU.Labor.jsa_reos_recruiting_share",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "The read operation timed out",
+            "series_id": "AU.Labor.jsa_reos_recruitment_difficulty",
+            "status": "source_failed"
+          },
+          {
+            "country": "AU",
+            "error": "period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-september26/",
+            "series_id": "AU.Labor.seek_job_ad_trend",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "empty_parse",
+            "series_id": "NZ.Activity.gdp_domestic_demand",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "empty_parse",
+            "series_id": "NZ.Consumer.income",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "empty_parse",
+            "series_id": "NZ.Consumer.retail",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "empty_parse",
+            "series_id": "NZ.Consumer.spending",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "empty_parse",
+            "series_id": "NZ.Labor.wages",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "HTTP 404",
+            "series_id": "NZ.Inflation.export_price_index",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "HTTP 404",
+            "series_id": "NZ.Inflation.import_price_index",
+            "status": "source_failed"
+          },
+          {
+            "country": "NZ",
+            "error": "HTTP 404",
+            "series_id": "NZ.Inflation.ppi",
+            "status": "source_failed"
+          },
+          {
+            "country": "EA",
+            "error": "primary_flash_pdf_unavailable; 202:https://www.pmi.spglobal.com/Public/Release/PressReleases; 403:https://www.spglobal.com/marketintelligence/en/mi/research-analysis.html",
+            "series_id": "EA.Activity.flash_composite_pmi",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "pmi_listing_blocked",
+            "series_id": "JP.Activity.business_surveys",
+            "status": "license_gap"
+          },
+          {
+            "country": "JP",
+            "error": "The read operation timed out",
+            "series_id": "JP.Consumer.spending",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "The read operation timed out",
+            "series_id": "JP.Inflation.headline",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "The read operation timed out",
+            "series_id": "JP.Labor.employment",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "The read operation timed out",
+            "series_id": "JP.Labor.unemployment",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": null,
+            "series_id": "JP.Activity.flash_composite_pmi",
+            "status": "calendar_unparsed"
+          },
+          {
+            "country": "JP",
+            "error": "meti_iip_page_unparsed",
+            "series_id": "JP.Activity.industrial_production",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "tankan_zip_unparsed",
+            "series_id": "JP.Activity.tankan_large_manufacturing",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+            "series_id": "JP.Inflation.cgpi_ppi",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+            "series_id": "JP.Inflation.export_price_index",
+            "status": "source_failed"
+          },
+          {
+            "country": "JP",
+            "error": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+            "series_id": "JP.Inflation.import_price_index",
+            "status": "source_failed"
+          }
+        ],
+        "invented_values": false,
+        "lineage": {
+          "appended_count": 2,
+          "appended_points": [
+            {
+              "catalog_id": "JP.Inflation.underlying",
+              "checked_at": "2026-10-23T19:46:45Z",
+              "country": "JP",
+              "period": "2026-09",
+              "raw_sha256": "02d90d0c9401bd1b4f22918ca962249eaea8f4e3410663ccda61093069644299",
+              "release_date": null,
+              "transformation": "yoy_pct",
+              "value": 2.2,
+              "vintage": "latest_available"
+            },
+            {
+              "catalog_id": "JP.Labor.wages",
+              "checked_at": "2026-10-23T19:46:45Z",
+              "country": "JP",
+              "period": "2026-08",
+              "raw_sha256": "cb874a917da9d92a581292c07a984ee7e05dcaf86747ed718fa87758c252fd80",
+              "release_date": null,
+              "transformation": "yoy_pct",
+              "value": 3.9,
+              "vintage": "latest_available"
+            }
+          ],
+          "checked_at": "2026-10-23T19:46:45Z",
+          "lineage_dir": "data/market_watch_launches/mwl-20261023T194645Z-82c01ce1/lineage",
+          "provenance_sha256": "3b581e214611b97a9413488898cae9a057622d35ff49e3d1b00d6961f1cd21c2",
+          "rejections": [],
+          "score_state_sha256": "e2d3f0125567d1a8709790ffc491ee3ec433682a5fb7cbe82c76d5a758dcf275"
+        },
+        "live_fetch": true,
+        "mode": "live",
+        "overnight_run_id": "overnight-20261023",
+        "rows": [
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "AU.Labor.employment",
+            "status": "new_observation",
+            "weight": 0.1
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "AU.Labor.unemployment",
+            "status": "new_observation",
+            "weight": 0.7
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "US.Labor.payrolls",
+            "status": "new_observation",
+            "weight": 0.1
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "US.Labor.unemployment",
+            "status": "new_observation",
+            "weight": 0.7
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "US.Labor.wages",
+            "status": "new_observation",
+            "weight": 0.2
+          },
+          {
+            "attempts": 3,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-Q2",
+            "prior_verified": {
+              "observation_period": "2026-Q2",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "series_id": "A191RL1Q225SBEA",
+              "transformation": "saar_pct",
+              "value": 1.5,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Activity.gdp_domestic_demand",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-Q2",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "state": "carried_forward",
+              "value": 1.5,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "HTTP 404",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T16:30:00Z",
+              "series_id": "NAPM",
+              "transformation": "diffusion_index",
+              "value": 54.6,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Activity.manufacturing_surveys",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "HTTP 404",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T16:30:00Z",
+              "state": "carried_forward",
+              "value": 54.6,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.12
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "HTTP 404",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T16:30:00Z",
+              "series_id": "NMFBAI",
+              "transformation": "diffusion_index",
+              "value": 55.4,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Activity.services_surveys",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "HTTP 404",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T16:30:00Z",
+              "state": "carried_forward",
+              "value": 55.4,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.28
+          },
+          {
+            "attempts": 3,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "prior_verified": {
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "series_id": "UMCSENT",
+              "transformation": "index_level",
+              "value": 55.2,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.confidence",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "state": "carried_forward",
+              "value": 55.2,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 3,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "prior_verified": {
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "series_id": "DSPI",
+              "transformation": "mom_sa_pct",
+              "value": 0.530503,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.income",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "state": "carried_forward",
+              "value": 0.530503,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 3,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "series_id": "RSAFS",
+              "transformation": "mom_sa_pct",
+              "value": 1.240742,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.retail",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "state": "carried_forward",
+              "value": 1.240742,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 3,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "prior_verified": {
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "series_id": "PCEC96",
+              "transformation": "mom_sa_pct",
+              "value": 0.007692,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Consumer.spending",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "state": "carried_forward",
+              "value": 0.007692,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 3,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "prior_verified": {
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "series_id": "PCEPILFE",
+              "transformation": "mom_sa_pct",
+              "value": 0.245516,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "US.Inflation.core_pce",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-07",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "state": "carried_forward",
+              "value": 0.245516,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 1.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "flash_pmi_primary_pdf_not_parsed",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Activity.flash_pmi",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Activity.gdp_level",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "proprietary_blocked",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Consumer.confidence_conference_board",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Credit.mortgage_30y",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Housing.fhfa_purchase_only",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Housing.housing_starts",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.cpi_core",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Inflation.cpi_headline",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.export_price_index",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.import_price_index",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "mapped_bridge_transform_not_wired",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "registry_unweighted",
+            "series_id": "US.Inflation.mapped_bridge",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "US",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.pce_headline",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Inflation.ppi_final_demand",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.adp_employment",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.attr_entrant_reentrant",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.attr_job_loss",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.attr_labor_force_exit",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.attr_labor_force_expansion",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.attr_weak_job_finding",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-04",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.breakeven_employment",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.challenger_job_cuts",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_error",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_flow_consistent_u3",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_hiring_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_nowcast_revision",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_separation_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_u3_nowcast_advance",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.chicago_fed_u3_nowcast_final",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.conference_board_jobs_hard_to_get",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.conference_board_jobs_plentiful",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.conference_board_labor_differential",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.continuing_claims",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.continuing_claims_revised",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.delta_household_employment",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.delta_labor_force",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.delta_unemployed",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.employment_foreign_born",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.employment_native_born",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.employment_population_ratio",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.flow_en",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.flow_eu",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.flow_ne",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.flow_nu",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.flow_ue",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.flow_un",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.household_employment",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.initial_claims",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.initial_claims_4w",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.initial_claims_4w_revised",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.initial_claims_normalized",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.initial_claims_revised",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.insured_unemployment_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.insured_unemployment_rate_revised",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.ism_manufacturing_employment",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_hires",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_hires_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_layoffs",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_layoffs_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_openings",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_openings_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_quits",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": null,
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "US.Labor.jolts_quits_rate",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.labor_force",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.labor_force_absorption",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.labor_force_change",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.labor_force_foreign_born",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.labor_force_native_born",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.participation",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.payroll_level_ces",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.payroll_vs_breakeven",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.population",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.population_change",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.population_foreign_born",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.population_native_born",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.prime_age_participation",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unemployed",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unemployed_job_leavers",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unemployed_job_losers",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unemployed_new_entrants",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unemployed_on_layoff",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unemployed_reentrants",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "US",
+            "due_period": "2026-09",
+            "error": "budget_deferred",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "US.Labor.unrounded_u3",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Activity.business_surveys",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Activity.gdp_domestic_demand",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "bank_of_canada_csce_no_machine_readable_series",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.confidence",
+            "status": "license_gap",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.income",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.retail",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Consumer.spending",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Inflation.headline",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Inflation.underlying",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Labor.employment",
+            "status": "new_observation",
+            "weight": 0.1
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Labor.unemployment",
+            "status": "new_observation",
+            "weight": 0.7
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "CA.Labor.wages",
+            "status": "new_observation",
+            "weight": 0.2
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.crude_export_volume",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "flash_composite_context_only_no_public_primary_pinned",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.flash_composite_pmi",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "ivey_pmi_conflict_only_weight_zero_not_fetched",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.ivey_pmi",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.real_building_investment",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.real_manufacturing_sales",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Activity.wholesale_sales_volume",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Consumer.retail_sales_volume",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Energy.ab_condensate_production",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Energy.ab_conventional_crude_production",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Energy.ab_oil_sands_production",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Energy.ab_oil_total_production",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Energy.gas_marketable_production",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Housing.existing_home_sales",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Housing.new_housing_price_index",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "CA.Inflation.import_export_price_indexes: vector id unpinned in catalog fragment",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Inflation.import_export_price_indexes",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "CA.Inflation.ippi: vector id unpinned in catalog fragment",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Inflation.ippi",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "CA.Inflation.rmpi: vector id unpinned in catalog fragment",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Inflation.rmpi",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "CA",
+            "due_period": null,
+            "error": "CA.Labor.participation: vector id unpinned in catalog fragment",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "CA.Labor.participation",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": "pmi_listing_challenge",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "AU.Activity.business_surveys",
+            "status": "license_gap",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Activity.gdp_domestic_demand",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": "westpac_unverified_no_primary_adapter",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.confidence",
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.income",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2025-06",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Consumer.retail",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "AU.Consumer.spending",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "AU.Inflation.headline",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-08",
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "AU.Inflation.underlying",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "AU.Labor.wages",
+            "status": "new_observation",
+            "weight": 0.2
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": "series_id_not_in_workbook:A2304183K",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Activity.domestic_final_demand",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": "pmi_listing_challenge",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Activity.flash_composite_pmi",
+            "status": "license_gap",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": "explanatory_alias",
+            "observation_period": "2025-06",
+            "provenance": null,
+            "release_due": false,
+            "role": "explanatory_alias",
+            "series_id": "AU.Consumer.retail_ceased",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Housing.dwelling_values_and_approvals",
+            "status": "calendar_unparsed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": "explanatory_alias",
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "explanatory_alias",
+            "series_id": "AU.Inflation.cpi_core_trimmed_already_scored_note",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Inflation.export_price_index",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Inflation.import_price_index",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Inflation.ppi",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.anz_indeed_job_ads_sa",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.employment_level",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.employment_to_population",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.full_time",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.hours_worked",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 3,
+            "country": "AU",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Labor.jsa_ivi_national_sa",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 3,
+            "country": "AU",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Labor.jsa_reos_hiring_intent",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 3,
+            "country": "AU",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Labor.jsa_reos_recruiting_share",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 3,
+            "country": "AU",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "AU.Labor.jsa_reos_recruitment_difficulty",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.labour_force",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.nab_employment_subindex",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.part_time",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.participation",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-08",
+            "error": "period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-september26/",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.seek_job_ad_trend",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.underemployed_persons",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.underemployment_rate",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.underutilisation_rate",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "AU",
+            "due_period": "2026-09",
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "AU.Labor.unemployed_persons",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Activity.business_surveys",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "empty_parse",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Activity.gdp_domestic_demand",
+            "status": "source_failed",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.confidence",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "empty_parse",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.income",
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "empty_parse",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.retail",
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "empty_parse",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Consumer.spending",
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "NZ.Inflation.headline",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": true,
+            "role": "scored",
+            "series_id": "NZ.Inflation.underlying",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Labor.employment",
+            "status": "new_observation",
+            "weight": 0.1
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Labor.unemployment",
+            "status": "new_observation",
+            "weight": 0.7
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "empty_parse",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "NZ.Labor.wages",
+            "status": "source_failed",
+            "weight": 0.2
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "context_expenditure_gdp_not_primary",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Activity.gdp_expenditure",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-07",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Activity.manufacturing_pmi",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "HTTP 404",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Inflation.export_price_index",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "HTTP 404",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Inflation.import_price_index",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": "HTTP 404",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Inflation.ppi",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "NZ",
+            "due_period": null,
+            "error": null,
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "NZ.Labor.participation",
+            "status": "checked_unchanged",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Activity.business_surveys",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Activity.gdp_domestic_demand",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.confidence",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q1",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.income",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.retail",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Consumer.spending",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Inflation.headline",
+            "status": "new_observation",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Inflation.underlying",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Labor.employment",
+            "status": "new_observation",
+            "weight": 0.1
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Labor.unemployment",
+            "status": "new_observation",
+            "weight": 0.7
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "EA.Labor.wages",
+            "status": "new_observation",
+            "weight": 0.2
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "primary_flash_pdf_unavailable; 202:https://www.pmi.spglobal.com/Public/Release/PressReleases; 403:https://www.spglobal.com/marketintelligence/en/mi/research-analysis.html",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "EA.Activity.flash_composite_pmi",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.gdp_components",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "Sector PMI PDF parser not implemented; composite scored series uses business_surveys (checked https://www.pmi.spglobal.com/Public/Release/PressReleases)",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.manufacturing_pmi_final",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "Sector PMI PDF parser not implemented; composite scored series uses business_surveys (checked https://www.pmi.spglobal.com/Public/Release/PressReleases)",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.services_pmi_final",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-10",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.zew_current_de",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-10",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.zew_expectations_de",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-10",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Activity.zew_expectations_ea",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "No EA21 export-price index distinct from domestic PPI in Eurostat STS API (checked https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_INPPD_M?geo=EA21&sinceTimePeriod=2025-01)",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.export_price_index",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_de",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_es",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "Distinct HICP flash vintage not pinned from Eurostat statistics API (checked https://ec.europa.eu/eurostat/web/hicp)",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_flash",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_fr",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_it",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.hicp_pt",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "No EA21 import-price index in Eurostat STS API (checked https://ec.europa.eu/eurostat/api/dissemination/statistics/1.0/data/STS_INPPD_M?geo=EA21&sinceTimePeriod=2025-01)",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.import_price_index",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Inflation.ppi",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "EA",
+            "due_period": null,
+            "error": "EA21 quarterly participation series not exposed on checked Eurostat LFS API (checked https://ec.europa.eu/eurostat/web/lfs)",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "EA.Labor.participation",
+            "status": "not_applicable",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": "pmi_listing_blocked",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Activity.business_surveys",
+            "status": "license_gap",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Activity.gdp_domestic_demand",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.confidence",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.income",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.retail",
+            "status": "new_observation",
+            "weight": 0.25
+          },
+          {
+            "attempts": 3,
+            "country": "JP",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-10-13T15:45:39Z",
+              "series_id": "FIES_TWO_PLUS_HH_CONSUMPTION_NOMINAL_YOY",
+              "transformation": "yoy_pct",
+              "value": -1.0,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Consumer.spending",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-10-13T15:45:39Z",
+              "state": "carried_forward",
+              "value": -1.0,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.25
+          },
+          {
+            "attempts": 3,
+            "country": "JP",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T22:23:30Z",
+              "series_id": "CPI_2025BASE_ALL_ITEMS_YOY",
+              "transformation": "yoy_pct",
+              "value": 2.0,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Inflation.headline",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-09-21T22:23:30Z",
+              "state": "carried_forward",
+              "value": 2.0,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.4
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-09",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Inflation.underlying",
+            "status": "new_observation",
+            "weight": 0.6
+          },
+          {
+            "attempts": 3,
+            "country": "JP",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "series_id": "LFS_1A1_EMPLOYED_PERSONS_SA",
+              "transformation": "mom_change_thousands_sa",
+              "value": 30.0,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Labor.employment",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "state": "carried_forward",
+              "value": 30.0,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.1
+          },
+          {
+            "attempts": 3,
+            "country": "JP",
+            "due_period": null,
+            "error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "prior_verified": {
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "series_id": "LFS_1A1_UNEMPLOYMENT_RATE_SA",
+              "transformation": "rate_pct",
+              "value": 2.5,
+              "vintage": "latest_available"
+            },
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Labor.unemployment",
+            "source_health": {
+              "blocks_new_risk": false,
+              "carried_forward": true,
+              "classification": "transient_fetch",
+              "fetch_error": "The read operation timed out",
+              "fetch_status": "source_failed",
+              "observation_period": "2026-08",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "state": "carried_forward",
+              "value": 2.5,
+              "vintage": "latest_available"
+            },
+            "status": "source_failed",
+            "weight": 0.7
+          },
+          {
+            "attempts": 3,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-08",
+            "provenance": null,
+            "release_due": false,
+            "role": "scored",
+            "series_id": "JP.Labor.wages",
+            "status": "new_observation",
+            "weight": 0.2
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": "2026-Q2",
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.domestic_demand",
+            "status": "new_observation",
+            "weight": 0.0
+          },
+          {
+            "attempts": 0,
+            "country": "JP",
+            "due_period": null,
+            "error": null,
+            "observation_period": null,
+            "provenance": null,
+            "release_due": true,
+            "role": "context",
+            "series_id": "JP.Activity.flash_composite_pmi",
+            "status": "calendar_unparsed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": "meti_iip_page_unparsed",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.industrial_production",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": "tankan_zip_unparsed",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Activity.tankan_large_manufacturing",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Inflation.cgpi_ppi",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Inflation.export_price_index",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 1,
+            "country": "JP",
+            "due_period": null,
+            "error": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Inflation.import_price_index",
+            "status": "source_failed",
+            "weight": 0.0
+          },
+          {
+            "attempts": 3,
+            "country": "JP",
+            "due_period": null,
+            "error": "participation_rate_not_in_lfs_1a1_major_items_table",
+            "observation_period": null,
+            "provenance": null,
+            "release_due": false,
+            "role": "context",
+            "series_id": "JP.Labor.participation",
+            "status": "not_applicable",
+            "weight": 0.0
+          }
+        ],
+        "score_bridge": {
+          "ok": true,
+          "rejections": [],
+          "state_sha256": "e2d3f0125567d1a8709790ffc491ee3ec433682a5fb7cbe82c76d5a758dcf275",
+          "summary": "appended=2"
+        },
+        "series_contract_preflight": {
+          "blocked_countries": [],
+          "checked": 64,
+          "mismatch_count": 0,
+          "ok": true
+        },
+        "source_matrix_sha256": "57686479da02e56c82410df6c846dfe54d1c130ee7d886379ee030b227d78aa1"
+      },
+      "finished_at": null,
+      "input_sha256": "31f5be3d084aa1eb1476adc6028a10edd50da19319d927cc31cfb7d06622c74d",
+      "output_sha256": "a880be1ebb41a787a89ea7f214a443ce623ee0dde8671868f433a50a626889cb",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "01_ingest",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "02_acquire": {
+      "artifact": "artifacts/02_acquire.json",
+      "details": {
+        "families": {
+          "central_bank_research": {
+            "as_of": "2026-10-22T07:09:51.753996-04:00",
+            "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+            "status": "fresh"
+          },
+          "macro_hard": {
+            "as_of": null,
+            "digest": "e2d3f0125567d1a8709790ffc491ee3ec433682a5fb7cbe82c76d5a758dcf275",
+            "status": "stale"
+          },
+          "market_state": {
+            "as_of": "2026-10-23T20:07:15Z",
+            "digest": "a031a6217d242ae506d20b48b40f91db7981510b1fa3b17a05ee154b98f95a83",
+            "status": "fresh"
+          },
+          "news": {
+            "as_of": "2026-10-23T15:46:45.247147-04:00",
+            "digest": "4021f23354c7d99f48dd744b594a2672ef4253fcac19047c80e9754e3db4a5ac",
+            "status": "fresh"
+          }
+        },
+        "market_legs": {
+          "AU": "ok",
+          "CA": "ok",
+          "FX": "ok",
+          "US": "ok"
+        },
+        "market_state_generated_at": "2026-10-23T20:07:15Z",
+        "mode": "live",
+        "news_acquisition": {
+          "cutoff": "2026-10-23T15:46:45.247147-04:00",
+          "mode": "live",
+          "partial": false,
+          "receipts": [
+            {
+              "candidate_count": 12,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 4,
+              "source": "bloomberg",
+              "status": "ok",
+              "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22"
+            },
+            {
+              "candidate_count": 50,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 7,
+              "source": "reuters",
+              "status": "ok",
+              "surface": "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
+            },
+            {
+              "candidate_count": 8,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_relevant_candidates",
+              "result_count": 0,
+              "source": "bloomberg_credit",
+              "status": "ok",
+              "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28CoreWeave%20OR%20neocloud%20OR%20%22data%20center%22%20OR%20hyperscaler%29%20%28bond%20OR%20debt%20OR%20financing%20OR%20%22credit%20facility%22%20OR%20IPO%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22"
+            },
+            {
+              "candidate_count": 12,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 2,
+              "source": "bloomberg_equity",
+              "status": "ok",
+              "surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22"
+            },
+            {
+              "candidate_count": 12,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 4,
+              "source": "reuters_credit",
+              "status": "ok",
+              "surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22"
+            },
+            {
+              "candidate_count": 154,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 10,
+              "source": "cnbc",
+              "status": "ok",
+              "surface": "https://www.cnbc.com/sitemap_news.xml"
+            },
+            {
+              "candidate_count": 10,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 5,
+              "source": "cnbc_credit",
+              "status": "ok",
+              "surface": "https://www.bing.com/news/search?q=site%3Acnbc.com%20%28CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%20OR%20%22credit%20default%20swap%22%29&format=rss&qft=interval%3d%227%22"
+            },
+            {
+              "candidate_count": 25,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "cnbc_investing",
+              "status": "ok",
+              "surface": "https://www.cnbc.com/id/15839069/device/rss/rss.html"
+            },
+            {
+              "candidate_count": 50,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "rbnz_news",
+              "status": "ok",
+              "surface": "https://www.rbnz.govt.nz/feeds/news"
+            },
+            {
+              "candidate_count": 15,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "fed_monetary",
+              "status": "ok",
+              "surface": "https://www.federalreserve.gov/feeds/press_monetary.xml"
+            },
+            {
+              "candidate_count": 10,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "boc_press",
+              "status": "ok",
+              "surface": "https://www.bankofcanada.ca/content_type/press/feed/"
+            },
+            {
+              "candidate_count": 1,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "rba_media",
+              "status": "ok",
+              "surface": "https://www.rba.gov.au/rss/rss-cb-media-releases.xml"
+            },
+            {
+              "candidate_count": 15,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "candidates",
+              "result_count": 1,
+              "source": "ecb_press",
+              "status": "ok",
+              "surface": "https://www.ecb.europa.eu/rss/press.html"
+            },
+            {
+              "candidate_count": 51,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "boj_whatsnew",
+              "status": "ok",
+              "surface": "https://www.boj.or.jp/en/rss/whatsnew.xml"
+            },
+            {
+              "candidate_count": 50,
+              "checked_at": "2026-10-23T15:46:45.247147-04:00",
+              "failure": null,
+              "feed_health": "no_in_window",
+              "result_count": 0,
+              "source": "boe_news",
+              "status": "ok",
+              "surface": "https://www.bankofengland.co.uk/rss/news"
+            }
+          ]
+        },
+        "offline": false,
+        "overnight_run_id": "overnight-20261023",
+        "required_preflight_block": null,
+        "required_preflight_ok": true
+      },
+      "finished_at": null,
+      "input_sha256": "a880be1ebb41a787a89ea7f214a443ce623ee0dde8671868f433a50a626889cb",
+      "output_sha256": "ef4c226abeeeee190641ccd860e5dc658c5c8a29363158ebb09d6737b08e8393",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "02_acquire",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "03_quality_gate": {
+      "artifact": "artifacts/03_quality_gate.json",
+      "details": {
+        "blocked_expressions": [
+          "macro:NZ"
+        ],
+        "blocked_legs": [],
+        "blocked_sources": [
+          "NZ.Inflation.headline",
+          "NZ.Inflation.underlying"
+        ],
+        "countries": {
+          "AU": {
+            "eligible": true,
+            "gaps": [
+              "AU.Activity.business_surveys",
+              "AU.Consumer.confidence"
+            ],
+            "scored_status": "partial"
+          },
+          "CA": {
+            "eligible": true,
+            "gaps": [
+              "CA.Consumer.confidence"
+            ],
+            "scored_status": "ok"
+          },
+          "EA": {
+            "eligible": true,
+            "gaps": [],
+            "scored_status": "ok"
+          },
+          "JP": {
+            "eligible": true,
+            "gaps": [
+              "JP.Activity.business_surveys"
+            ],
+            "scored_status": "partial"
+          },
+          "NZ": {
+            "eligible": false,
+            "gaps": [
+              "NZ.Activity.gdp_domestic_demand",
+              "NZ.Consumer.income",
+              "NZ.Consumer.retail",
+              "NZ.Consumer.spending",
+              "NZ.Inflation.headline",
+              "NZ.Inflation.underlying",
+              "NZ.Labor.wages"
+            ],
+            "scored_status": "partial"
+          },
+          "US": {
+            "eligible": true,
+            "gaps": [],
+            "scored_status": "ok"
+          }
+        },
+        "countries_unaffected": [],
+        "coverage": "PARTIAL",
+        "eligible": true,
+        "hold_decisions_emitted": 0,
+        "outcome": "PASS",
+        "partial_expressions": [
+          "activity:US",
+          "activity:CA",
+          "activity:AU",
+          "activity:NZ",
+          "activity:EA",
+          "activity:JP",
+          "macro:AU",
+          "macro:NZ"
+        ],
+        "partial_legs": [
+          "NZ_rates"
+        ],
+        "partial_series": [
+          "AU.Consumer.confidence",
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Labor.wages"
+        ],
+        "quarantine_mode": "isolate",
+        "quarantine_reason": "unsupported_mark_source",
+        "quarantined_positions": [
+          {
+            "asset_class": "rates_rv",
+            "dependency": "NZ_rates",
+            "dependency_status": "unavailable",
+            "instrument": "NZ-US_10Y",
+            "live_marked": false,
+            "observation_date": null,
+            "pnl_available": false,
+            "position_id": "pm-pragmatist-3afafe53c6d7",
+            "quarantined": true,
+            "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+            "reason_code": "unsupported_mark_source",
+            "scoring": false,
+            "seat": "pragmatist"
+          }
+        ],
+        "reason": null,
+        "restricted_seats": [
+          "pragmatist"
+        ],
+        "seat_risk": {
+          "pragmatist": "unavailable_new_risk"
+        },
+        "source_health": [
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-Q2",
+            "retrieved_at": "2026-09-21T14:41:19Z",
+            "series_id": "US.Activity.gdp_domestic_demand"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "HTTP 404",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-09-21T16:30:00Z",
+            "series_id": "US.Activity.manufacturing_surveys"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "HTTP 404",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-09-21T16:30:00Z",
+            "series_id": "US.Activity.services_surveys"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "retrieved_at": "2026-09-21T14:41:19Z",
+            "series_id": "US.Consumer.confidence"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "retrieved_at": "2026-09-21T14:41:19Z",
+            "series_id": "US.Consumer.income"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-09-21T14:41:19Z",
+            "series_id": "US.Consumer.retail"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "retrieved_at": "2026-09-21T14:41:19Z",
+            "series_id": "US.Consumer.spending"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "US",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-07",
+            "retrieved_at": "2026-09-21T14:41:19Z",
+            "series_id": "US.Inflation.core_pce"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "JP",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-10-13T15:45:39Z",
+            "series_id": "JP.Consumer.spending"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "JP",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-09-21T22:23:30Z",
+            "series_id": "JP.Inflation.headline"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "JP",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-10-02T09:40:56Z",
+            "series_id": "JP.Labor.employment"
+          },
+          {
+            "blocks_new_risk": false,
+            "carried_forward": true,
+            "classification": "transient_fetch",
+            "country": "JP",
+            "fetch_error": "The read operation timed out",
+            "observation_period": "2026-08",
+            "retrieved_at": "2026-10-02T09:40:56Z",
+            "series_id": "JP.Labor.unemployment"
+          }
+        ],
+        "synthetic_holds": false,
+        "trade_eligible_countries": [
+          "US",
+          "CA",
+          "AU",
+          "EA",
+          "JP"
+        ],
+        "unmarkable_positions": [
+          {
+            "asset_class": "rates_rv",
+            "dependency": "NZ_rates",
+            "dependency_status": "unavailable",
+            "instrument": "NZ-US_10Y",
+            "observation_date": null,
+            "paper_expression": null,
+            "position_id": "pm-pragmatist-3afafe53c6d7",
+            "reason": "position 'NZ-US_10Y' depends on NZ_rates (unavailable); latest observation None",
+            "seat": "pragmatist"
+          }
+        ]
+      },
+      "finished_at": null,
+      "input_sha256": "ef4c226abeeeee190641ccd860e5dc658c5c8a29363158ebb09d6737b08e8393",
+      "output_sha256": "ead21a431e89f0146c1ed66bc15215b3bda6e08ee5ac040bb36abfaf0febbaec",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "03_quality_gate",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "04_freeze": {
+      "artifact": "artifacts/04_freeze.json",
+      "details": {
+        "as_of": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_boundary": "actual_freeze_timestamp",
+        "legacy_0150_used": false,
+        "overnight_run_id": "overnight-20261023",
+        "packet_sha256": "c5ac44c9c4c782d8e2ee4c9ef20950871ad8accdae7a101b8d46f8ee5fc05356",
+        "provenance_sha256": "3b581e214611b97a9413488898cae9a057622d35ff49e3d1b00d6961f1cd21c2",
+        "review_id": "review-001",
+        "score_state_sha256": "e2d3f0125567d1a8709790ffc491ee3ec433682a5fb7cbe82c76d5a758dcf275",
+        "starting_pm_books_sha256": "d34223ecccf7d47c7d501c83190e6081f8ce90358a80b37590d5b9c0f7190318",
+        "starting_trader_books_sha256": "372adc60bb92a84f537942f81538412e140311835667b34b6d4e8c323da41337"
+      },
+      "finished_at": null,
+      "input_sha256": "ead21a431e89f0146c1ed66bc15215b3bda6e08ee5ac040bb36abfaf0febbaec",
+      "output_sha256": "7f124a758de8db4a1f0c671eee36fa7e9a731fc9505ea6913050fa2778a38a89",
+      "reason": null,
+      "source_run_url": null,
+      "stage": "04_freeze",
+      "started_at": null,
+      "status": "succeeded"
+    },
+    "05_acp_handoff": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "05_acp_handoff",
+      "started_at": null,
+      "status": "pending"
+    },
+    "06_acceptance": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "06_acceptance",
+      "started_at": null,
+      "status": "pending"
+    },
+    "07_finalize": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "07_finalize",
+      "started_at": null,
+      "status": "pending"
+    },
+    "08_pages": {
+      "artifact": null,
+      "details": {},
+      "finished_at": null,
+      "input_sha256": null,
+      "output_sha256": null,
+      "reason": null,
+      "source_run_url": null,
+      "stage": "08_pages",
+      "started_at": null,
+      "status": "pending"
+    }
+  },
+  "starting_pm_books_sha256": "d34223ecccf7d47c7d501c83190e6081f8ce90358a80b37590d5b9c0f7190318",
+  "starting_trader_books_sha256": "372adc60bb92a84f537942f81538412e140311835667b34b6d4e8c323da41337",
+  "status": "running",
+  "timezone": "America/New_York",
+  "type": "MARKET_WATCH_LAUNCH"
+}

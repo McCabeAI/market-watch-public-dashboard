@@ -1,0 +1,313 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "No new receive on CORRA 2027-03 while crowding is flagged, regardless of cash-strip cheapness; if the hold cannot extend beyond one session, do not enter.",
+      "lesson_id": "les-a9925954d887",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-86d9c87862a0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "Cheap versus cash is not an entry when the receive is already the crowded desk position.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-142ad113f303"
+      ]
+    }
+  ],
+  "as_of": "2026-10-23T15:46:45.247147-04:00",
+  "calibration": {
+    "average_holding_seconds": 628505,
+    "average_realized_pnl_usd": 70711.68,
+    "breakeven": 1,
+    "by_asset_class": {
+      "rates": {
+        "count": 2,
+        "total_realized_pnl_usd": 6750.0
+      },
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": 205385.05
+      }
+    },
+    "closed_trade_count": 3,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 70711.68,
+        "count": 3,
+        "hit_rate": 1.0
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 212135.05,
+    "wins": 2
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": false,
+    "competition_rank": 1,
+    "competitive_rank": null,
+    "drawdown_usd": 10070.06,
+    "giveback_usd": 10070.06,
+    "high_water_nav_usd": 100211705.18,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100201635.12,
+    "net_pnl_usd": 201635.12,
+    "pressure_flags": [],
+    "prior_competition_rank": 1,
+    "rank_change": 0,
+    "raw_pnl_rank": 1,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 500000.0,
+    "risk_capital_utilization": 0.05,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": false,
+    "learning_default_age_runs": 1,
+    "learning_default_count": 2,
+    "learning_status": "learning_default",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-385c423b1b90",
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "reference": "trd-trader-positioning-cynic-pos-ccb6655acbad",
+      "source_run_id": "overnight-20261021"
+    }
+  ],
+  "memory_context_sha256": "bda2ee19590ffce7e7c4b7fe12f4641fafe62195676eb8351d20f426986ac7dd",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 55,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 3.0,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": "Flattening of the existing 4.45bn receive, or CRAH27 implied moving up toward the Canada 2Y 3.33 cash yield.",
+        "current_mark": 2.975,
+        "current_notional_usd": 50000000.0,
+        "entry_mark": 2.995,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 199477,
+        "horizon_elapsed_fraction": 0.077,
+        "horizon_status": "within",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": 30,
+        "mae_usd": -10000.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "order_policy": "review_only",
+        "position_id": "pos-df316f59e974",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The crowded CORRA Mar27 receive is reduced or fails to compress toward cash if oil-driven Canada inflation pressure keeps the hike path alive.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_required": false,
+        "review_threshold_usd": 500000.0,
+        "review_triggers": [],
+        "side": "short",
+        "total_pnl_usd": -10000.0,
+        "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974",
+        "unrealized_pnl_usd": -10000.0
+      },
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-10-21T08:22:07.869994-04:00",
+      "position_id": "pos-df316f59e974",
+      "risk_capital_usd": 500000.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974"
+    }
+  ],
+  "owner_id": "positioning-cynic",
+  "owner_type": "trader",
+  "postmortems_due": [
+    {
+      "created_at": "2026-10-21T08:22:07.869994-04:00",
+      "created_run_id": "overnight-20261021",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-21T08:22:07.869994-04:00",
+        "conviction": 56,
+        "entry_mark": 1.42,
+        "exit_mark": 1.41,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 1651270,
+        "instrument": "USDCAD",
+        "invalidation": "The fade is wrong if USDCAD holds bid or squeezes higher while the desk remains or adds long, implying the long is not a crowded supply source.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 205385.05,
+        "side": "short",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-385c423b1b90",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+    }
+  ],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.18
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.19
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.32
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.19
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "down",
+        "value": 0.48
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.41077009999999997,
+        "run_id": "overnight-20261021"
+      },
+      {
+        "kind": "size_escalation_after_streak",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261021"
+      },
+      {
+        "kind": "learning_default_entered",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261022"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "fc1c785911e2bf2d155eae4b06fc1dea1f9ab17c2220213d0d0ef90b9ea6bfd2",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 2
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-10-21T08:22:07.869994-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 1651270,
+      "instrument": "USDCAD",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "realized_pnl_usd": 205385.05,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 57,
+      "holding_duration_seconds": 171269,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-09-20T16:06:28.069463-04:00",
+      "realized_pnl_usd": 6750.0,
+      "side": "short",
+      "trade_id": "trd-trader-positioning-cynic-pos-f18c10895ae3"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-20T16:06:28.069463-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 62977,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 0.0,
+      "side": "long",
+      "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-22T07:09:51.753996-04:00",
+  "as_of": "2026-10-23T15:46:45.247147-04:00",
   "calibration": {
     "average_holding_seconds": 628505,
     "average_realized_pnl_usd": 70711.68,
@@ -74,12 +74,12 @@
     "competition_eligible": false,
     "competition_rank": 1,
     "competitive_rank": null,
-    "drawdown_usd": 16.17,
-    "giveback_usd": 16.17,
+    "drawdown_usd": 10070.06,
+    "giveback_usd": 10070.06,
     "high_water_nav_usd": 100211705.18,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100211689.01,
-    "net_pnl_usd": 211689.01,
+    "nav_usd": 100201635.12,
+    "net_pnl_usd": 201635.12,
     "pressure_flags": [],
     "prior_competition_rank": 1,
     "rank_change": 0,
@@ -88,7 +88,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 10053.89,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -108,7 +108,7 @@
       "source_run_id": "overnight-20261021"
     }
   ],
-  "memory_context_sha256": "bde4ab494f6b102dcdbe9a3e4346fa997b806666ae4fad47339951bcf2113f75",
+  "memory_context_sha256": "bda2ee19590ffce7e7c4b7fe12f4641fafe62195676eb8351d20f426986ac7dd",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -119,14 +119,14 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": "Flattening of the existing 4.45bn receive, or CRAH27 implied moving up toward the Canada 2Y 3.33 cash yield.",
-        "current_mark": 2.995,
+        "current_mark": 2.975,
         "current_notional_usd": 50000000.0,
         "entry_mark": 2.995,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 82063,
-        "horizon_elapsed_fraction": 0.0317,
+        "holding_seconds": 199477,
+        "horizon_elapsed_fraction": 0.077,
         "horizon_status": "within",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": 30,
@@ -144,9 +144,9 @@
         "review_threshold_usd": 500000.0,
         "review_triggers": [],
         "side": "short",
-        "total_pnl_usd": 0.0,
+        "total_pnl_usd": -10000.0,
         "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974",
-        "unrealized_pnl_usd": 0.0
+        "unrealized_pnl_usd": -10000.0
       },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-10-21T08:22:07.869994-04:00",
