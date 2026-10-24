@@ -613,7 +613,11 @@ def apply_action(
             action,
             when=stamp,
             run_id=run_id,
-            result="pending_mark" if action.get("pending_mark") else "applied",
+            result=(
+                "pending_mark"
+                if action.get("pending_mark")
+                else ("zero_lot" if action.get("fill_status") == "zero_lot" else "applied")
+            ),
         )
     )
     return mark_pm_book(book, when=stamp, run_id=run_id)
@@ -696,58 +700,119 @@ def _resize(
         asset_class=action.get("asset_class") or position.get("asset_class"),
         expression=action.get("paper_expression"),
     )
+    from scripts.overnight.paper_marks import clear_unresolved_mark, marks_are_current, refresh_positions
+
+    stamped = bool(position.get("legs") or position.get("valuation_method") == "instrument_dv01")
+    if stamped and isinstance(market_state, dict):
+        refresh_positions([position], market_state)
+    elif stamped and (position.get("legs") or position.get("contract_currency") not in (None, "USD")):
+        clear_unresolved_mark(position, reason="market state missing; current marks invalidated")
+    if factor < 0 and delta > float(position["notional_usd"]) + 1e-9:
+        raise SchemaError("REDUCE exceeds position notional")
+    if stamped and not marks_are_current(position):
+        action["pending_mark"] = True
+        action["fill_status"] = "pending_mark"
+        action["realized_pnl_usd"] = None
+        action["lots_closed"] = 0
+        action["lots_added"] = 0
+        position["exit_status"] = "pending_mark"
+        position["pnl_unavailable"] = True
+        book.setdefault("alerts", []).append(
+            f"{position['position_id']} {action.get('action') or 'resize'} left pending: current marks or FX are unavailable; no fill or P&L was invented"
+        )
+        return
     if factor < 0:
-        if delta > float(position["notional_usd"]) + 1e-9:
-            raise SchemaError("REDUCE exceeds position notional")
-        from scripts.overnight.paper_marks import marks_are_current, refresh_positions
-
-        if position.get("legs") and isinstance(market_state, dict):
-            refresh_positions([position], market_state)
-
-        if position.get("legs") and not marks_are_current(position):
-            action["pending_mark"] = True
-            action["realized_pnl_usd"] = None
-            position["exit_status"] = "pending_mark"
-            position["pnl_unavailable"] = True
-            book.setdefault("alerts", []).append(
-                f"{position['position_id']} REDUCE/CLOSE left pending: current leg marks or FX are unavailable; no fill or P&L was invented"
-            )
-            return
-        exit_price = _require_mark(action, kind="REDUCE", pm_id=book["pm_id"])
         old_n = float(position["notional_usd"])
-        realized = realized_increment(position, exit_price=exit_price, closed_notional=delta)
-        position["notional_usd"] = round(old_n - delta, 2)
-        if position.get("legs") and old_n > 0:
-            from scripts.rates.structures import scale_legs
+        new_n = round(old_n - delta, 2)
+        if stamped:
+            from scripts.rates.lifecycle import apply_book_resize
 
-            scale_legs(position["legs"], position["notional_usd"] / old_n, average_entries=False)
+            result = apply_book_resize(position, old_notional=old_n, new_notional=new_n, market_state=market_state)
+            if result.get("pending_mark"):
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                action["realized_pnl_usd"] = None
+                position["exit_status"] = "pending_mark"
+                return
+            if result.get("zero_lot"):
+                action["fill_status"] = "zero_lot"
+                action["lots_closed"] = 0
+                action["realized_pnl_usd"] = 0.0
+                action["zero_lot_policy"] = "sub_lot_request_is_not_a_fill"
+                return
+            realized = float(result["realized_pnl_usd"])
+            action["lots_closed"] = result.get("lots_closed")
+            action["fill_status"] = "executed"
+            position["notional_usd"] = new_n
+            position.pop("_closed_lots", None)
+        else:
+            exit_price = _require_mark(action, kind="REDUCE", pm_id=book["pm_id"])
+            realized = realized_increment(position, exit_price=exit_price, closed_notional=delta)
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
         book["realized_pnl_usd"] = round(float(book["realized_pnl_usd"]) + realized, 2)
         action["realized_pnl_usd"] = realized
-        if position["notional_usd"] <= 1e-9:
+        flat_lots = stamped and (
+            (not position.get("legs") and int(position.get("contracts") or 0) == 0)
+            or (position.get("legs") and all(int(leg.get("contracts") or 0) == 0 for leg in position["legs"]))
+        )
+        if position["notional_usd"] <= 1e-9 or flat_lots:
             book["positions"] = [p for p in book["positions"] if p["position_id"] != position["position_id"]]
     else:
         add_price = _require_mark(action, kind="ADD", pm_id=book["pm_id"])
         old_n = float(position["notional_usd"])
-        if position.get("entry_price") not in (None, ""):
-            position["entry_price"] = (float(position["entry_price"]) * old_n + add_price * delta) / (old_n + delta)
-            position["mark_price"] = action.get("mark_price", add_price)
-            position["entry_price_source"] = "weighted_average_paper_mid"
-            position["entry_price_as_of"] = action.get("paper_mid_as_of")
-            position["mark_price_source"] = action.get("paper_mid_source")
-            position["mark_price_as_of"] = action.get("paper_mid_as_of")
-        preview = deepcopy(book)
-        preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
-        preview_pos["notional_usd"] = round(old_n + delta, 2)
-        if preview_pos.get("legs") and old_n > 0:
-            from scripts.rates.structures import scale_legs
+        new_n = round(old_n + delta, 2)
+        stamped = bool(position.get("legs") or position.get("valuation_method") == "instrument_dv01")
+        if stamped:
+            from scripts.rates.lifecycle import apply_book_resize
 
-            scale_legs(preview_pos["legs"], preview_pos["notional_usd"] / old_n, average_entries=True)
-        assert_cap(preview)
-        position["notional_usd"] = round(old_n + delta, 2)
-        if position.get("legs") and old_n > 0:
-            from scripts.rates.structures import scale_legs
-
-            scale_legs(position["legs"], position["notional_usd"] / old_n, average_entries=True)
+            preview = deepcopy(book)
+            preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
+            preview_result = apply_book_resize(
+                preview_pos,
+                old_notional=old_n,
+                new_notional=new_n,
+                add_price=add_price,
+                market_state=market_state,
+            )
+            if preview_result.get("pending_mark"):
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                return
+            if not preview_result.get("zero_lot"):
+                preview_pos["notional_usd"] = new_n
+            assert_cap(preview)
+            result = apply_book_resize(
+                position,
+                old_notional=old_n,
+                new_notional=new_n,
+                add_price=add_price,
+                market_state=market_state,
+            )
+            if result.get("zero_lot"):
+                action["fill_status"] = "zero_lot"
+                action["lots_added"] = 0
+                action["realized_pnl_usd"] = 0.0
+                action["zero_lot_policy"] = "sub_lot_request_is_not_a_fill"
+                return
+            position["notional_usd"] = new_n
+            action["lots_added"] = result.get("lots_added")
+            action["fill_status"] = "executed"
+            position["entry_price_source"] = "weighted_average_of_actual_lots"
+        else:
+            if position.get("entry_price") not in (None, ""):
+                position["entry_price"] = (float(position["entry_price"]) * old_n + add_price * delta) / new_n
+                position["mark_price"] = action.get("mark_price", add_price)
+                position["entry_price_source"] = "weighted_average_paper_mid"
+                position["entry_price_as_of"] = action.get("paper_mid_as_of")
+                position["mark_price_source"] = action.get("paper_mid_source")
+                position["mark_price_as_of"] = action.get("paper_mid_as_of")
+            preview = deepcopy(book)
+            preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
+            preview_pos["notional_usd"] = new_n
+            assert_cap(preview)
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
     action["run_id"] = run_id
     action["at"] = isoformat(when)
     action["locked_expression_family"] = position.get("locked_expression_family")

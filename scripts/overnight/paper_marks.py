@@ -639,6 +639,16 @@ def hydrate_structure_rates(position: dict[str, Any], market_state: Mapping[str,
 def marks_are_current(position: Mapping[str, Any]) -> bool:
     if position.get("mark_status") == "unavailable":
         return False
+    if (
+        not position.get("legs")
+        and position.get("valuation_method") == "instrument_dv01"
+        and position.get("contract_currency") not in (None, "USD")
+        and (
+            position.get("mark_fx_usd_per_unit") in (None, "")
+            or position.get("mark_fx_status") not in (None, "ok")
+        )
+    ):
+        return False
     legs = position.get("legs")
     if not legs:
         return position.get("mark_price") not in (None, "")
@@ -710,6 +720,9 @@ def clear_unresolved_mark(position: dict[str, Any], *, reason: str | None = None
         leg["mark_fx_usd_per_unit"] = None
         leg["mark_fx_status"] = "unavailable"
         leg["dv01_usd"] = None
+    if not position.get("legs") and position.get("valuation_method") == "instrument_dv01":
+        position["mark_fx_usd_per_unit"] = None
+        position["mark_fx_status"] = "unavailable"
 
 
 def refresh_positions(
@@ -735,6 +748,13 @@ def refresh_positions(
         mark = dict(mark)
         mark["market_state"] = market_state
         apply_resolved_mark(position, mark)
+        if position.get("valuation_method") == "instrument_dv01" and not position.get("legs"):
+            from scripts.rates.lifecycle import refresh_outright_fx
+
+            if not refresh_outright_fx(position, market_state):
+                if alerts is not None:
+                    alerts.append(f"FX mark unavailable for {position.get('instrument')}")
+                continue
         if position.get("legs"):
             from scripts.rates.structures import apply_mark_fx, package_mark_bp
 

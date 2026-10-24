@@ -128,12 +128,26 @@ def _projected_risk_capital(
         prior = position_risk_capital(position)
         projected = deepcopy(position)
         old_n = float(position["notional_usd"])
-        projected["notional_usd"] = old_n + _money(action.get("notional_usd"), "notional_usd")
-        projected.pop("contracts", None)
-        if projected.get("legs") and old_n > 0:
-            from scripts.rates.structures import scale_legs
+        new_n = old_n + _money(action.get("notional_usd"), "notional_usd")
+        if position.get("legs") or position.get("valuation_method") == "instrument_dv01":
+            from scripts.overnight.paper_marks import refresh_positions
+            from scripts.rates.lifecycle import apply_book_resize
 
-            scale_legs(projected["legs"], projected["notional_usd"] / old_n, average_entries=False)
+            if isinstance(market_state, dict):
+                refresh_positions([projected], market_state)
+            preview = apply_book_resize(
+                projected,
+                old_notional=old_n,
+                new_notional=new_n,
+                add_price=None if action.get("price") in (None, "") else float(action.get("price")),
+                market_state=market_state,
+            )
+            # A mark that cannot be priced adds no risk. The booking path records pending_mark.
+            if preview.get("pending_mark") or preview.get("zero_lot"):
+                return current
+            projected["notional_usd"] = new_n
+        else:
+            projected["notional_usd"] = new_n
         if action.get("price") not in (None, ""):
             projected["mark_price"] = action.get("mark_price", action.get("price"))
         new = position_risk_capital(projected)
@@ -766,7 +780,7 @@ def apply_action(
             action,
             when=stamp,
             run_id=run_id,
-            result="pending_mark" if action.get("pending_mark") else "applied",
+            result="pending_mark" if action.get("pending_mark") else ("zero_lot" if action.get("fill_status") == "zero_lot" else "applied"),
             extra={"blocked_families": blocked},
         )
     )
@@ -904,26 +918,21 @@ def _open_position(
     return position
 
 
-def _refresh_structure_marks(position: dict[str, Any], market_state: dict[str, Any] | None) -> None:
-    if not position.get("legs"):
+def _refresh_live_marks(position: dict[str, Any], market_state: dict[str, Any] | None) -> None:
+    stamped = position.get("legs") or position.get("valuation_method") == "instrument_dv01"
+    if not stamped:
         return
     from scripts.overnight.paper_marks import clear_unresolved_mark, refresh_positions
 
     if not isinstance(market_state, dict):
-        clear_unresolved_mark(position, reason="market state missing; structure marks invalidated")
+        if position.get("legs") or position.get("contract_currency") not in (None, "USD"):
+            clear_unresolved_mark(position, reason="market state missing; current marks invalidated")
         return
     refresh_positions([position], market_state)
 
 
-def _scale_open_legs(position: dict[str, Any], old_notional: float, new_notional: float, *, average_entries: bool) -> None:
-    legs = position.get("legs")
-    if not legs or old_notional <= 0:
-        return
-    from scripts.rates.structures import scale_legs
-
-    scale_legs(legs, new_notional / old_notional, average_entries=average_entries)
-    dv01s = [abs(float(leg.get("dv01_usd") or 0.0)) for leg in legs]
-    position["spread_dv01_usd"] = round(max(dv01s) if dv01s else 0.0, 8)
+def _instrument_position(position: dict[str, Any]) -> bool:
+    return bool(position.get("legs") or (position.get("valuation_method") == "instrument_dv01" and position.get("contracts") is not None))
 
 
 def _resize(
@@ -937,61 +946,114 @@ def _resize(
 ) -> None:
     position = _find_position(seat_book, action.get("position_id") or "")
     delta = _require_notional(action)
-    _refresh_structure_marks(position, market_state)
+    _refresh_live_marks(position, market_state)
+    if factor < 0 and delta > float(position["notional_usd"]) + 1e-9:
+        raise SchemaError("REDUCE exceeds position notional")
+    from scripts.overnight.paper_marks import marks_are_current
+
+    if _instrument_position(position) and not marks_are_current(position):
+        action["pending_mark"] = True
+        action["fill_status"] = "pending_mark"
+        action["realized_pnl_usd"] = None
+        action["lots_closed"] = 0
+        action["lots_added"] = 0
+        position["exit_status"] = "pending_mark"
+        position["pnl_unavailable"] = True
+        seat_book["alerts"].append(
+            f"{position['position_id']} {action.get('action') or 'resize'} left pending: current marks or FX are unavailable; no fill or P&L was invented"
+        )
+        return
     if factor < 0:
-        if delta > float(position["notional_usd"]) + 1e-9:
-            raise SchemaError("REDUCE exceeds position notional")
-        from scripts.overnight.paper_marks import marks_are_current
-
-        if position.get("legs") and not marks_are_current(position):
-            action["pending_mark"] = True
-            action["realized_pnl_usd"] = None
-            position["exit_status"] = "pending_mark"
-            position["pnl_unavailable"] = True
-            seat_book["alerts"].append(
-                f"{position['position_id']} REDUCE/CLOSE left pending: current leg marks or FX are unavailable; no fill or P&L was invented"
-            )
-            return
-        exit_price = action.get("price", position.get("mark_price"))
         old_n = float(position["notional_usd"])
-        if exit_price in (None, "") and not position.get("legs"):
-            realized = 0.0
-            seat_book["alerts"].append(f"{position['position_id']} reduced without a price; realized P&L left at 0")
-        else:
-            if position.get("legs"):
-                from scripts.rates.contract_economics import whole_lots
+        new_n = round(old_n - delta, 2)
+        if _instrument_position(position):
+            from scripts.rates.lifecycle import apply_book_resize
 
-                anchor_before = int(position["legs"][0].get("contracts") or 0)
-                remaining = whole_lots(anchor_before * ((old_n - delta) / old_n)) if old_n else 0
-                position["_closed_lots"] = max(0, anchor_before - remaining)
-            realized = realized_increment(
-                position,
-                exit_price=float(exit_price if exit_price not in (None, "") else position.get("mark_price") or 0.0),
-                closed_notional=delta,
-            )
+            result = apply_book_resize(position, old_notional=old_n, new_notional=new_n, market_state=market_state)
+            if result.get("pending_mark"):
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                action["realized_pnl_usd"] = None
+                position["exit_status"] = "pending_mark"
+                seat_book["alerts"].append(
+                    f"{position['position_id']} REDUCE/CLOSE left pending: current marks or FX are unavailable; no fill or P&L was invented"
+                )
+                return
+            if result.get("zero_lot"):
+                action["fill_status"] = "zero_lot"
+                action["lots_closed"] = 0
+                action["realized_pnl_usd"] = 0.0
+                action["zero_lot_policy"] = "sub_lot_request_is_not_a_fill"
+                seat_book["alerts"].append(
+                    f"{position['position_id']} REDUCE did not close a whole lot; contracts and P&L were left unchanged"
+                )
+                return
+            realized = float(result["realized_pnl_usd"])
+            action["lots_closed"] = result.get("lots_closed")
+            action["fill_status"] = "executed"
+            position["notional_usd"] = new_n
             position.pop("_closed_lots", None)
-        position["notional_usd"] = round(old_n - delta, 2)
-        if position.get("legs") and old_n > 0:
-            _scale_open_legs(position, old_n, position["notional_usd"], average_entries=False)
+        else:
+            exit_price = action.get("price", position.get("mark_price"))
+            if exit_price in (None, ""):
+                realized = 0.0
+                seat_book["alerts"].append(f"{position['position_id']} reduced without a price; realized P&L left at 0")
+            else:
+                realized = realized_increment(position, exit_price=float(exit_price), closed_notional=delta)
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
         seat_book["realized_pnl_usd"] = round(float(seat_book["realized_pnl_usd"]) + realized, 2)
         seat_book["cash_usd"] = round(float(seat_book["cash_usd"]) + realized, 2)
         action["realized_pnl_usd"] = realized
-        if position["notional_usd"] <= 1e-9:
+        if position["notional_usd"] <= 1e-9 or (
+            _instrument_position(position) and int(position.get("contracts") or 0) == 0 and not position.get("legs")
+        ) or (position.get("legs") and all(int(leg.get("contracts") or 0) == 0 for leg in position["legs"])):
             seat_book["positions"] = [p for p in seat_book["positions"] if p["position_id"] != position["position_id"]]
     else:
-        # ADD: weighted-average entry when a new price is supplied
-        add_price = action.get("price")
+        add_price = action.get("price", position.get("mark_price"))
         old_n = float(position["notional_usd"])
-        if add_price not in (None, "") and position.get("entry_price") not in (None, ""):
-            position["entry_price"] = (float(position["entry_price"]) * old_n + float(add_price) * delta) / (old_n + delta)
+        new_n = round(old_n + delta, 2)
+        if _instrument_position(position):
+            from scripts.rates.lifecycle import apply_book_resize
+
+            result = apply_book_resize(
+                position,
+                old_notional=old_n,
+                new_notional=new_n,
+                add_price=None if add_price in (None, "") else float(add_price),
+                market_state=market_state,
+            )
+            if result.get("zero_lot"):
+                action["fill_status"] = "zero_lot"
+                action["lots_added"] = 0
+                action["realized_pnl_usd"] = 0.0
+                action["zero_lot_policy"] = "sub_lot_request_is_not_a_fill"
+                seat_book["alerts"].append(
+                    f"{position['position_id']} ADD was below one lot; contracts were left unchanged"
+                )
+                return
+            if result.get("pending_mark"):
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                return
+            position["notional_usd"] = new_n
+            action["lots_added"] = result.get("lots_added")
+            action["fill_status"] = "executed"
+            if add_price not in (None, ""):
+                position["mark_price"] = add_price
+                position["entry_price_source"] = "weighted_average_of_actual_lots"
+        elif add_price not in (None, "") and position.get("entry_price") not in (None, ""):
+            position["entry_price"] = (float(position["entry_price"]) * old_n + float(add_price) * delta) / new_n
             position["mark_price"] = action.get("mark_price", add_price)
             position["entry_price_source"] = "weighted_average_paper_mid"
             position["entry_price_as_of"] = action.get("paper_mid_as_of")
             position["mark_price_source"] = action.get("paper_mid_source")
             position["mark_price_as_of"] = action.get("paper_mid_as_of")
-        position["notional_usd"] = round(old_n + delta, 2)
-        if position.get("legs"):
-            _scale_open_legs(position, old_n, position["notional_usd"], average_entries=True)
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
+        else:
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
     action["overnight_run_id"] = run_id
     action["at"] = isoformat(when)
 

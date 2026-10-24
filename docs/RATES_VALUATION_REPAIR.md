@@ -28,6 +28,18 @@ These are mechanics checks, not sample portfolios.
 - DV01-balanced SR3 calendar, both rates +1bp: package P&L = 0. Near rate +1bp and far unchanged, long calendar (pay near / receive far): P&L = +near DV01.
 - A four-contract strip average is not given a curve-spread label and is not assigned single-contract DV01 when leg quantities were never stored.
 
+## Lot lifecycle
+
+OPEN, ADD, REDUCE, and CLOSE on a stamped outright or structure change integer contracts, not only descriptive notional.
+
+- A request that would close or add less than one lot is not a fill (`sub_lot_request_is_not_a_fill`). Contracts, notional, and P&L stay put. History result is `zero_lot`.
+- A partial reduce keeps `floor(old_lots × remaining_notional / old_notional)` and realizes P&L only on the lots removed. Halving 13 lots leaves 6 and closes 7. The 0.5 lot gap is residual DV01, not a fractional fill.
+- Each structure leg uses that rule on its own count. A 13/26/13 butterfly and a 13-lot CAD calendar hedged with 10 USD lots therefore close different numbers of contracts. Realized P&L is the sum of those closed lots at the current valid rate and FX.
+- An outright ADD sizes new contracts from the added face at the current FX and blends entry by those contracts times the current price. Pretrade shocked risk uses that same lot count and FX.
+- A real fill with a missing or stale mark or FX is `pending_mark`. It does not invent P&L or change the lot count. A later packet with a valid price and FX can complete the close.
+- Single CRA and IB positions refresh `mark_fx_*` (status, as-of, pair, source) on every mark and exit. `entry_fx_*` is not overwritten. USD SR3 stays on the identity rate. If the current CAD or AUD fixing is missing or stale, USD P&L and DV01 are unavailable and the mark price is cleared with the FX.
+- Rows that were never stamped `instrument_dv01` and have no legs stay on the legacy duration-one formula. This path does not write contracts onto them.
+
 ## Review repairs
 
 - Trader OPEN/HEDGE admission builds the same whole-lot legs as the booked position before the risk cap. A USD 2bn SR3 calendar is 2,000 lots and a USD 5m 100bp-spread shock, not 1% of face.

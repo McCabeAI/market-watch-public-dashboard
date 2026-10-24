@@ -172,8 +172,10 @@ def _contract_pnl(position: Mapping[str, Any], *, exit_price: float | None, clos
             "contract": parsed.as_dict(),
             "fx_pair": pair,
         }
-    contracts = position.get("contracts")
-    contracts_f = _number(contracts)
+    from scripts.rates.lifecycle import outright_lot_pnl_lots
+
+    priced_lots = outright_lot_pnl_lots(position, closed_notional)
+    contracts_f = None if priced_lots is None else float(priced_lots)
     if contracts_f is None:
         raw = contracts_from_face_usd(parsed.spec, abs(notional), fx)
         contracts_f = None if raw is None else float(whole_lots(raw))
@@ -249,16 +251,19 @@ def value_position(position: Mapping[str, Any], *, exit_price: float | None = No
                 "mark_status": "unavailable",
                 "structure_label": _expression(position).get("type") or position.get("structure_label"),
             }
-        fraction = 1.0
-        closed_lots = _number(position.get("_closed_lots"))
-        open_lots = _number((legs[0] or {}).get("contracts")) if legs else None
-        if closed_lots is not None and open_lots not in (None, 0):
-            fraction = closed_lots / open_lots
-        elif closed_notional is not None:
-            notional = _number(position.get("notional_usd"))
-            if notional not in (None, 0):
-                fraction = float(closed_notional) / notional
-        total = structure_pnl_usd(legs)
+        if closed_notional is not None:
+            from scripts.rates.lifecycle import plan_structure_resize, structure_pnl_for_closed_lots
+
+            notional = _number(position.get("notional_usd")) or 0.0
+            explicit = position.get("_leg_closed_lots")
+            if isinstance(explicit, dict):
+                total = structure_pnl_for_closed_lots(legs, {str(k): int(v) for k, v in explicit.items()})
+            else:
+                plan = plan_structure_resize(legs, notional, notional - float(closed_notional))
+                closed_map = {str(row["role"]): int(row["closed_lots"]) for row in plan["per_leg"]}
+                total = structure_pnl_for_closed_lots(legs, closed_map)
+        else:
+            total = structure_pnl_usd(legs)
         if total is None:
             return {
                 "unrealized_pnl_usd": None,
@@ -269,7 +274,7 @@ def value_position(position: Mapping[str, Any], *, exit_price: float | None = No
                 "structure_label": _expression(position).get("type") or position.get("structure_label"),
             }
         return {
-            "unrealized_pnl_usd": round(total * fraction, 2),
+            "unrealized_pnl_usd": round(total, 2),
             "pnl_unavailable": False,
             "pnl_note": None,
             "valuation_method": INSTRUMENT_METHOD,

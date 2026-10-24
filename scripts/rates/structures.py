@@ -379,8 +379,12 @@ def package_mark_bp(kind: str, legs: list[dict[str, Any]]) -> float | None:
     return None
 
 
-def leg_pnl_usd(leg: Mapping[str, Any]) -> float | None:
-    """Current USD P&L. Uses the mark FX vintage only, never the entry fixing."""
+def leg_pnl_for_contracts(leg: Mapping[str, Any], contracts: int) -> float | None:
+    """USD P&L for an explicit whole-lot slice at the leg's current mark and FX."""
+    if contracts < 0:
+        return None
+    if contracts == 0:
+        return 0.0
     if leg.get("mark_status") == "unavailable":
         return None
     entry = leg.get("entry_rate")
@@ -389,13 +393,19 @@ def leg_pnl_usd(leg: Mapping[str, Any]) -> float | None:
     if leg.get("mark_fx_status") not in (None, "ok"):
         return None
     local = leg.get("dv01_per_contract_local")
-    contracts = leg.get("contracts")
-    if entry is None or mark is None or fx is None or local is None or contracts is None:
+    if entry is None or mark is None or fx is None or local is None:
         return None
     bp = (float(mark) - float(entry)) * 100.0
     sign = 1.0 if leg.get("side") == "long" else -1.0
-    # Long futures: profit when the implied rate falls.
     return -sign * int(contracts) * float(local) * bp * float(fx)
+
+
+def leg_pnl_usd(leg: Mapping[str, Any]) -> float | None:
+    """Current USD P&L. Uses the mark FX vintage only, never the entry fixing."""
+    contracts = leg.get("contracts")
+    if contracts is None:
+        return None
+    return leg_pnl_for_contracts(leg, int(contracts))
 
 
 def structure_pnl_usd(legs: list[Mapping[str, Any]] | None) -> float | None:
