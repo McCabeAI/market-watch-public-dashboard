@@ -12,7 +12,7 @@ from zoneinfo import ZoneInfo
 from scripts.apply_six_economy_dashboard import apply_six_economy_dashboard
 from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html
 from scripts.dashboard_repair.brief import ranked_impulses, ranked_moves
-from scripts.dashboard_repair.calendar_view import build_release_model, render_releases
+from scripts.dashboard_repair.calendar_view import _event_title, _release_family_key, build_release_model, render_releases
 from scripts.dashboard_repair.sources_view import render_sources
 from scripts.dashboard_repair.official_schedule import parse_abs_future_releases, parse_stats_nz_next_release
 from scripts.dashboard_repair.scoreboard import score_cards
@@ -281,6 +281,82 @@ class CalendarTests(unittest.TestCase):
         for bucket in ("upcoming", "recent", "later"):
             for item in model[bucket]:
                 self.assertNotIn("tests/", item["provenance"])
+
+    def test_grouped_headlines_name_the_release_not_publisher_counts(self):
+        model = build_release_model(NOW, score_as_of="2026-09-21")
+        html = render_releases(model)
+        self.assertIn("Consumer Price Index, Australia (headline and trimmed-mean inflation)", html)
+        self.assertIn("Chicago Fed Labor Market Indicators (unemployment nowcast and flows)", html)
+        self.assertNotIn("Australian Bureau of Statistics · 2 series", html)
+        self.assertNotIn("Federal Reserve Bank of Chicago · 6 series", html)
+        self.assertNotIn("BLS · ", html)
+        au = next(
+            item
+            for item in model["upcoming"]
+            if set(item.get("series_ids") or []) == {"AU.Inflation.headline", "AU.Inflation.underlying"}
+        )
+        self.assertEqual(
+            _event_title(au),
+            "Consumer Price Index, Australia (headline and trimmed-mean inflation)",
+        )
+        chicago = next(
+            item
+            for item in model["upcoming"]
+            if "US.Labor.chicago_fed_u3_nowcast_final" in item.get("series_ids", [])
+        )
+        self.assertEqual(len(chicago.get("series_ids") or []), 6)
+        self.assertEqual(
+            _event_title(chicago),
+            "Chicago Fed Labor Market Indicators (unemployment nowcast and flows)",
+        )
+
+    def test_single_series_card_uses_canonical_name(self):
+        model = build_release_model(NOW, score_as_of="2026-09-21")
+        cpi = next(item for item in model["later"] if item.get("series_ids") == ["US.Inflation.cpi_headline"])
+        self.assertEqual(_event_title(cpi), "CPI All Items, seasonally adjusted")
+        self.assertIn("CPI All Items, seasonally adjusted", render_releases(model))
+
+    def test_unrelated_same_time_releases_stay_separate_cards(self):
+        stamp = "2026-11-06T08:30:00"
+        rule = {
+            "kind": "country_local_schedule_required",
+            "timezone": "America/New_York",
+            "dates": [stamp],
+            "note": "parsed from official schedule as published",
+            "schedule_source": "tests/macro_ingestion/fixtures/us/bls_schedule_fetch_excerpt.txt",
+        }
+        series = [
+            _series(
+                "US.Inflation.cpi_headline",
+                publisher="BLS",
+                canonical_name="CPI All Items, seasonally adjusted",
+                release_rule=rule,
+            ),
+            _series(
+                "US.Labor.unemployment",
+                publisher="BLS",
+                canonical_name="Unemployment Rate",
+                weight=0.7,
+                release_rule=rule,
+            ),
+        ]
+        model = build_release_model(NOW, series=series, score_as_of="2026-09-21")
+        later = [item for item in model["later"] if item.get("et_display", "").startswith("2026-11-06")]
+        self.assertEqual(len(later), 2)
+        self.assertEqual({_release_family_key("US.Inflation.cpi_headline"), _release_family_key("US.Labor.unemployment")}, {"us_cpi", "us_empsit"})
+        titles = {_event_title(item) for item in later}
+        self.assertEqual(
+            titles,
+            {"CPI All Items, seasonally adjusted", "Unemployment Rate"},
+        )
+
+    def test_release_date_and_weekday_stack_without_collision(self):
+        html = render_releases(build_release_model(NOW, score_as_of="2026-09-21"))
+        self.assertIn('class="mw-num mw-release-day"', html)
+        self.assertIn('class="mw-asof mw-release-weekday"', html)
+        theme = (ROOT / "scripts/dashboard_repair/theme.css").read_text(encoding="utf-8")
+        self.assertIn(".mw-release-date{", theme)
+        self.assertIn("flex-direction:column", theme.split(".mw-release-date{", 1)[1].split("}", 1)[0])
 
 
 class RepairHtmlTests(unittest.TestCase):
