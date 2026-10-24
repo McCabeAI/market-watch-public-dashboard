@@ -458,7 +458,7 @@ def _prima_channel_snippet(
             return f"IPPI ex-energy {mom * 100:+.2f}% m/m"
         if channel == "imported_pressure" and first.get("mom") is not None:
             mom = float(first["mom"])
-            return f"RMPI ex-energy {mom * 100:+.2f}% m/m"
+            return f"RMPI ex-crude-energy {mom * 100:+.2f}% m/m"
         if channel == "demand_pass_through_constraint" and first.get("gap") is not None:
             return f"CORRA gap {float(first['gap']):+.2f}pp"
         if channel == "consumer_price_breadth" and first.get("breadth_share") is not None:
@@ -480,7 +480,7 @@ def _prima_channel_snippet(
         if channel == "imported_pressure":
             m = _RMPI_DRIVER_RE.search(drv)
             if m:
-                return f"RMPI ex-energy {m.group(1)}% m/m"
+                return f"RMPI ex-crude-energy {m.group(1)}% m/m"
     return ""
 
 
