@@ -453,6 +453,11 @@ label:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,i
 }
 
 /* ---- Country Detail surfaces (scoped; beats patch_v8 light drilldowns) ---- */
+.country-detail details p,
+.cdetail details p{
+  font-size:inherit;
+  line-height:inherit;
+}
 .cdetail .temp-inputs,
 .country-detail .temp-inputs{
   border-top-color:var(--mw-line);
