@@ -36,9 +36,29 @@ from scripts.temperature_level import display_score, temperature_class
 
 _CSS_PATH = Path(__file__).resolve().parent / "country_detail.css"
 
-_DIRECTION_LABELS = {"cooling": "Cooling", "static": "Static", "warming": "Warming"}
+_DIRECTION_LABELS = {"cooling": "cooling", "static": "static", "warming": "warming"}
+_DIRECTION_ARROW = {"cooling": "↓", "static": "→", "warming": "↑"}
 
 _MONTHS = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+_MONTHS_TITLE = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
+
+_COMPONENT_NAMES = {
+    "core_pce": "Core PCE",
+    "headline": "Headline",
+    "underlying": "Underlying",
+    "unemployment": "Unemployment",
+    "wages": "Wages",
+    "payrolls": "Payrolls",
+    "employment": "Employment",
+    "gdp_domestic_demand": "Domestic demand",
+    "services_surveys": "Services surveys",
+    "manufacturing_surveys": "Manufacturing surveys",
+    "business_surveys": "Business surveys",
+    "retail": "Retail",
+    "income": "Income",
+    "spending": "Spending",
+    "confidence": "Confidence",
+}
 
 
 def country_detail_css() -> str:
@@ -105,15 +125,82 @@ def _dimension_spec(score_state: Mapping[str, Any], country_code: str, dimension
     return dict(spec) if spec else {}
 
 
-def _impulse_line(spec: Mapping[str, Any]) -> str:
+def _pretty_vintage(text: str) -> str:
+    monthly = re.fullmatch(r"(\d{4})-(\d{2})", str(text).strip())
+    if monthly:
+        month = int(monthly.group(2))
+        if 1 <= month <= 12:
+            return f"{_MONTHS_TITLE[month - 1]} {monthly.group(1)}"
+    quarterly = re.fullmatch(r"(\d{4})-Q([1-4])", str(text).strip())
+    if quarterly:
+        return f"{quarterly.group(1)} Q{quarterly.group(2)}"
+    daily = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", str(text).strip())
+    if daily:
+        month = int(daily.group(2))
+        if 1 <= month <= 12:
+            return f"{int(daily.group(3))} {_MONTHS_TITLE[month - 1]} {daily.group(1)}"
+    return str(text)
+
+
+def _component_label(key: str) -> str:
+    return _COMPONENT_NAMES.get(key, str(key).replace("_", " "))
+
+
+def _vintage_line(spec: Mapping[str, Any]) -> str:
+    """Input vintage from component_state as_of. Empty when the score state has none."""
+    components = spec.get("component_state")
+    if not isinstance(components, Mapping):
+        return ""
+    items: list[tuple[str, str]] = []
+    for key, state in components.items():
+        if not isinstance(state, Mapping):
+            continue
+        if state.get("observed") is False:
+            continue
+        as_of = state.get("as_of")
+        if not as_of:
+            continue
+        items.append((_component_label(str(key)), _pretty_vintage(str(as_of))))
+    if not items:
+        return ""
+    if len(items) == 1:
+        name, period = items[0]
+        return f"{name} through {period}"
+    periods = {period for _, period in items}
+    if len(periods) == 1:
+        return f"Inputs through {items[0][1]}"
+    return " · ".join(f"{name} through {period}" for name, period in items)
+
+
+def _impulse_markup(spec: Mapping[str, Any]) -> str:
     direction = str(spec.get("direction") or "static").lower()
-    label = _DIRECTION_LABELS.get(direction, direction.title())
+    if direction not in _DIRECTION_LABELS:
+        direction = "static"
     impulse = spec.get("impulse")
-    if impulse is None:
-        impulse_bit = "n/a"
+    number = "n/a" if impulse is None else f"{float(impulse):+.2f}"
+    return (
+        f'<span class="imp imp-{_esc(direction)}">{_esc(_DIRECTION_ARROW[direction])} '
+        f"{_esc(_DIRECTION_LABELS[direction])} {_esc(number)}</span>"
+        '<span class="mw-asof">vs prior print</span>'
+    )
+
+
+def _score_header(score_state: Mapping[str, Any]) -> str:
+    as_of = score_state.get("as_of") if isinstance(score_state, Mapping) else None
+    if as_of:
+        freeze = f"Score freeze {_pretty_vintage(str(as_of))}"
     else:
-        impulse_bit = display_score(float(impulse))
-    return f"{label} · impulse {impulse_bit}"
+        freeze = "Score freeze date not published in this view"
+    legend = (
+        "LEVEL is the 1–100 score, where 50 is the structural/policy neutral point. "
+        "IMPULSE is the latest print versus the prior print, in score points."
+    )
+    return (
+        '<header class="cd-head">'
+        f'<span class="mw-asof">{_esc(freeze)}</span>'
+        f'<p class="cd-legend">{_esc(legend)}</p>'
+        "</header>"
+    )
 
 
 def _score_level_parts(spec: Mapping[str, Any]) -> tuple[str, str, str]:
@@ -209,15 +296,21 @@ def _render_score_compact(country_code: str, score_state: Mapping[str, Any]) -> 
     parts: list[str] = ['<div class="score-compact">']
     for dimension in SCORE_DIMENSIONS:
         spec = _dimension_spec(score_state, country_code, dimension)
-        level_text, _, _ = _score_level_parts(spec)
-        impulse = _impulse_line(spec)
+        level_text, klass, width_text = _score_level_parts(spec)
+        class_word = "" if spec.get("level") is None else str(spec.get("temperature_class") or klass)
+        vintage = _vintage_line(spec)
+        vintage_html = f'<span class="cd-vintage mw-asof">{_esc(vintage)}</span>' if vintage else ""
         anchor = f"#cd-{_esc(country_code)}-{_esc(dimension)}"
         parts.append(
             f'<a class="score-compact-btn" href="{anchor}">'
-            f'<span class="scd-dim">{_esc(dimension)}</span>'
-            f'<span class="scd-level">{_esc(level_text)}</span>'
-            f'<span class="scd-impulse">{_esc(impulse)}</span>'
-            f"</a>"
+            f'<span class="scd-dim mw-label">{_esc(dimension)}</span>'
+            '<span class="scd-level"><span class="mw-label">Level</span> '
+            f'<span class="mw-num">{_esc(level_text)}</span><span class="scd-scale">/100</span> '
+            f'<span class="scd-class">{_esc(class_word)}</span></span>'
+            f'<span class="lvl-track" aria-hidden="true"><span class="lvl-bar" data-temp="{_esc(klass)}" style="width:{_esc(width_text)}%"></span></span>'
+            f'<span class="scd-impulse"><span class="mw-label">Impulse</span> {_impulse_markup(spec)}</span>'
+            f"{vintage_html}"
+            "</a>"
         )
     parts.append("</div>")
     return "".join(parts)
@@ -255,10 +348,10 @@ def _render_wmn(
             value_s = _format_value(obs.get("value"), obs.get("units"), obs.get("transformation"))
             period = _format_period(obs.get("reference_period") or finding.get("reference_period"))
             value_bits = " · ".join(bit for bit in (value_s, period) if bit)
-            parts.append(f'<p class="wmn-value">{_esc(value_bits)}</p>')
+            parts.append(f'<p class="wmn-value mw-num">{_esc(value_bits)}</p>')
             parts.append(f'<p class="wmn-bucket">{_esc(bucket_label(obs))}</p>')
-            parts.append(f'<p class="wmn-synopsis">{_esc(series_synopsis(obs))}</p>')
             parts.append(f'<p class="wmn-why">{_esc(why_it_surfaced(finding, obs))}</p>')
+            parts.append(f'<p class="wmn-synopsis">{_esc(series_synopsis(obs))}</p>')
             related = list(finding.get("related_observation_ids") or [])
             rel_text = _related_obs_text(related, obs_map)
             if rel_text:
@@ -266,16 +359,19 @@ def _render_wmn(
                     f'<p class="wmn-related">Related: {_esc(rel_text)}</p>'
                 )
             parts.append('<details class="wmn-technical"><summary>Technical detail</summary>')
+            official = str(obs.get("label") or "")
+            if official:
+                parts.append(f'<p class="wmn-official">Official title: {_esc(official)}</p>')
             parts.append(f'<p class="wmn-reason">{_esc(finding.get("reason", ""))}</p>')
             parts.append(
                 f'<p class="wmn-headline">{_esc(finding.get("headline_text", ""))}</p>'
             )
             series_id = obs.get("series_id") or finding.get("series_id")
             if series_id:
-                parts.append(f'<p class="evidence-code">{_esc(series_id)}</p>')
+                parts.append(f'<p class="evidence-code mw-raw">{_esc(series_id)}</p>')
             raw_transformation = obs.get("transformation") or finding.get("transformation")
             if raw_transformation:
-                parts.append(f'<p class="evidence-code">{_esc(raw_transformation)}</p>')
+                parts.append(f'<p class="evidence-code mw-raw">{_esc(raw_transformation)}</p>')
             parts.append("</details></article>")
         parts.append("</ol>")
     parts.append("</section>")
@@ -363,9 +459,12 @@ def _render_evidence_row(
         '<div class="evidence-technical">',
         f'<p class="evidence-synopsis">{_esc(series_synopsis(obs))}</p>',
     ]
+    official = str(obs.get("label") or "")
+    if official:
+        parts.append(f'<p class="wmn-official">Official title: {_esc(official)}</p>')
     series_id = obs.get("series_id")
     if series_id:
-        parts.append(f'<p class="evidence-code">Series {_esc(series_id)}</p>')
+        parts.append(f'<p class="evidence-code mw-raw">Series {_esc(series_id)}</p>')
     raw_transformation = obs.get("transformation")
     if raw_transformation:
         parts.append(
@@ -468,10 +567,28 @@ def _audit_row(
         lead = f"<strong>{_esc(label)}</strong>"
         if state_markup:
             lead = f"{lead} {state_markup}"
+        official = str(obs.get("label") or "")
+        series_id = obs.get("series_id")
+        technical_bits = []
+        if official:
+            technical_bits.append(f"<p>Official title: {_esc(official)}</p>")
+        if series_id:
+            technical_bits.append(f'<p class="evidence-code mw-raw">Series {_esc(series_id)}</p>')
+        raw_transformation = obs.get("transformation")
+        if raw_transformation:
+            technical_bits.append(f'<p class="evidence-code mw-raw">{_esc(raw_transformation)}</p>')
+        technical = ""
+        if technical_bits:
+            technical = (
+                '<details class="score-input-technical"><summary>Technical detail</summary>'
+                + "".join(technical_bits)
+                + "</details>"
+            )
         return (
             f'<div class="evidence-grid-row" data-observation-id="{_esc(oid)}">'
             f"{lead} — "
             f'<a href="#ev-{_esc(oid)}">Country Evidence</a>'
+            f"{technical}"
             "</div>"
         )
     period = _format_period(obs.get("reference_period"))
@@ -606,6 +723,191 @@ _PRIMA_CHANNEL_LABELS = {
     "consumer_price_breadth": "Consumer price breadth",
     "demand_pass_through_constraint": "Demand pass-through constraint",
 }
+_PRIMA_CATEGORIES = ("RISING", "STABLE", "FALLING")
+# Oil context is claimed only when a stored line names one of these products.
+# "ex-energy" and a bare "oil curve" freshness label do not match.
+_PRIMA_OIL_TOKEN = re.compile(
+    r"(?i)(?<![A-Za-z])(?:brent|wti|crude|rbob|ulsd|heating oil|gasoline|natural gas)(?![A-Za-z])"
+)
+
+
+def _prima_day(observed_at: str) -> str:
+    text = observed_at.strip()
+    match = re.match(r"(\d{4}-\d{2}-\d{2})", text)
+    return match.group(1) if match else text
+
+
+def _prima_last_transition(transitions: list[Any]) -> Mapping[str, Any] | None:
+    for item in reversed(transitions):
+        if isinstance(item, Mapping):
+            return item
+    return None
+
+
+def _prima_vs_previous(direction: str, transitions: list[Any]) -> tuple[str, str]:
+    """Glance phrase and a stable kind. Kinds are not magnitudes."""
+    if direction not in _PRIMA_CATEGORIES:
+        return "Stored direction unavailable", "unavailable"
+    last = _prima_last_transition(transitions)
+    if last is None:
+        return "No previous stored observation", "no-previous"
+    previous = str(last.get("from_direction") or "")
+    current = str(last.get("to_direction") or "")
+    label = str(last.get("label") or "").strip()
+    if previous in _PRIMA_CATEGORIES and current == direction and previous == current:
+        return "Unchanged vs previous stored observation", "unchanged"
+    if previous in _PRIMA_CATEGORIES and current == direction and previous != current:
+        return f"Changed vs previous stored observation ({previous} → {current})", "changed"
+    if label:
+        return f"Latest stored transition: {label}", "recorded"
+    return "Previous stored observation is on file", "recorded"
+
+
+def _prima_oil_hits(drivers: list[str], change_text: str) -> tuple[list[str], bool]:
+    hits = [item for item in drivers if _PRIMA_OIL_TOKEN.search(item)]
+    mpr_names_oil = bool(
+        change_text
+        and change_text.lower() != "unavailable"
+        and _PRIMA_OIL_TOKEN.search(change_text)
+    )
+    return hits, mpr_names_oil
+
+
+def _prima_means_sentences(
+    *,
+    direction: str,
+    subs: Mapping[str, Any],
+    transitions: list[Any],
+    trend: list[Any],
+    drivers: list[str],
+    change_text: str,
+    staleness: str | None,
+    stale: bool,
+    mpr_status: Any,
+    conditioning_date: Any,
+    vs_phrase: str,
+) -> list[str]:
+    """Plain sentences from stored proxy fields. No score and no new oil math."""
+    sentences: list[str] = [
+        (
+            "This is the Market Watch deterministic proxy, not the Bank of Canada's Prima model. "
+            "It does not feed the Inflation score."
+        )
+    ]
+    if direction in _PRIMA_CATEGORIES:
+        sentences.append(f"Current stored direction is {direction}.")
+    else:
+        sentences.append("Current stored direction is unavailable.")
+    sentences.append(vs_phrase + ".")
+    sentences.append(
+        "The aggregate signal is a direction category. No numeric Prima score or magnitude is stored."
+    )
+
+    stored = [point for point in trend if isinstance(point, Mapping)]
+    if not stored:
+        sentences.append("No stored observation is on file.")
+    elif len(stored) == 1:
+        sentences.append(
+            "One stored observation is on file, so there is no transition to a previous observation."
+        )
+    else:
+        sentences.append(
+            f"{len(stored)} stored observations are on file. "
+            "Transitions compare consecutive stored runs only."
+        )
+
+    last = _prima_last_transition(transitions)
+    if last is not None:
+        label = str(last.get("label") or "").strip()
+        if not label:
+            label = (
+                f"{last.get('from_direction') or 'UNAVAILABLE'} → "
+                f"{last.get('to_direction') or 'UNAVAILABLE'}"
+            )
+        sentences.append(
+            "Latest stored transition: "
+            f"{label} ({last.get('from_observed_at') or ''} → {last.get('to_observed_at') or ''})."
+        )
+
+    if direction in _PRIMA_CATEGORIES:
+        matching: list[str] = []
+        differing: list[str] = []
+        missing: list[str] = []
+        for key, label in _PRIMA_CHANNEL_LABELS.items():
+            channel_direction = str(subs.get(key) or "UNAVAILABLE")
+            if channel_direction == direction:
+                matching.append(label)
+            elif channel_direction in _PRIMA_CATEGORIES:
+                differing.append(f"{label} {channel_direction}")
+            else:
+                missing.append(label)
+        if matching:
+            sentences.append(
+                "Channels stored in the current direction: " + ", ".join(matching) + "."
+            )
+        else:
+            sentences.append("No stored channel is in the current direction.")
+        if differing:
+            sentences.append("Other stored channel directions: " + "; ".join(differing) + ".")
+        if missing:
+            sentences.append(
+                "Channels without a stored direction: " + ", ".join(missing) + "."
+            )
+    else:
+        sentences.append(
+            "There is no aggregate direction to match. Channel directions are listed below."
+        )
+
+    imported = str(subs.get("imported_pressure") or "UNAVAILABLE")
+    sentences.append(f"Imported pressure is stored as {imported}.")
+
+    oil_drivers, mpr_names_oil = _prima_oil_hits(drivers, change_text)
+    if oil_drivers:
+        sentences.append(
+            "Oil context in stored driver lines: "
+            + "; ".join(oil_drivers)
+            + ". Quoted as stored. This view does not add an oil weight, contribution, or forecast."
+        )
+        if mpr_names_oil:
+            sentences.append(
+                "The stored last-MPR comparison also names Brent, WTI, crude, or a listed oil product. "
+                "It is quoted below and is not recomputed. No oil contribution is shown beyond that stored text."
+            )
+    elif mpr_names_oil:
+        sentences.append(
+            "No stored driver line names Brent, WTI, crude, or a listed oil product. "
+            "The stored last-MPR comparison does. It is quoted below and is not recomputed. "
+            "No oil contribution is shown."
+        )
+    else:
+        sentences.append(
+            "No stored driver line or last-MPR comparison names Brent, WTI, crude, or a listed oil product. "
+            "No oil contribution is shown."
+        )
+
+    if staleness:
+        sentences.append(f"Staleness as stored: {staleness}.")
+    else:
+        sentences.append("Staleness is not recorded.")
+    sentences.append(
+        "This observation is marked stale." if stale else "This observation is not marked stale."
+    )
+
+    if not change_text or change_text.lower() == "unavailable":
+        sentences.append("The comparison versus the last BoC MPR is unavailable.")
+    else:
+        bits: list[str] = []
+        if mpr_status is not None and str(mpr_status).strip():
+            bits.append(f"MPR status {mpr_status}")
+        if conditioning_date:
+            bits.append(f"conditioning date {conditioning_date}")
+        suffix = f" ({', '.join(bits)})" if bits else ""
+        sentences.append(
+            "A stored comparison versus the last BoC MPR is on file"
+            + suffix
+            + ". The wording below is quoted as stored and is not recomputed here."
+        )
+    return sentences
 
 
 def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
@@ -658,7 +960,7 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
     else:
         confidence_text = "confidence unavailable"
 
-    stale_label = " Stale" if current.get("stale") else ""
+    stale = bool(current.get("stale"))
     status = str(current.get("status") or "").strip().lower()
     reason = str(current.get("reason") or "").strip()
     status_bits: list[str] = []
@@ -667,7 +969,7 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
     if reason:
         status_bits.append(_esc(reason) + ".")
 
-    aggregate_available = direction in {"RISING", "STABLE", "FALLING"}
+    aggregate_available = direction in _PRIMA_CATEGORIES
     partial_channels = [
         label
         for key, label in _PRIMA_CHANNEL_LABELS.items()
@@ -680,45 +982,86 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
             + " unavailable."
         )
 
-    drivers = current.get("largest_drivers")
-    driver_text = ""
-    if isinstance(drivers, list) and drivers:
-        driver_text = (
-            '<div class="prima-meta">Largest drivers: '
-            + _esc("; ".join(str(item) for item in drivers[:3]))
-            + "</div>"
+    driver_values = current.get("largest_drivers")
+    drivers = (
+        [str(item).strip() for item in driver_values if str(item).strip()]
+        if isinstance(driver_values, list)
+        else []
+    )
+    if drivers:
+        driver_items = "".join(f"<li>{_esc(item)}</li>" for item in drivers)
+        driver_html = (
+            '<div class="prima-kicker">Largest drivers</div>'
+            f'<ul class="prima-drivers">{driver_items}</ul>'
+        )
+    else:
+        driver_html = (
+            '<div class="prima-kicker">Largest drivers</div>'
+            '<p class="prima-meta">No stored driver lines.</p>'
         )
 
     history_note = str(block.get("history_note") or "")
-    history_state = str(block.get("history_state") or "")
     trend = block.get("trend") if isinstance(block.get("trend"), list) else []
     transitions = block.get("transitions") if isinstance(block.get("transitions"), list) else []
+    vs_phrase, vs_kind = _prima_vs_previous(direction, transitions)
 
-    history_lines: list[str] = []
-    if history_state == "trend" and trend:
-        for point in trend:
-            if not isinstance(point, Mapping):
-                continue
-            at = str(point.get("observed_at") or "")
-            dir_word = str(point.get("direction") or "UNAVAILABLE")
-            history_lines.append(f"<div>{_esc(at)} · {_esc(dir_word)}</div>")
-        for transition in transitions:
-            if not isinstance(transition, Mapping):
-                continue
-            label = str(transition.get("label") or "")
-            from_at = str(transition.get("from_observed_at") or "")
-            to_at = str(transition.get("to_observed_at") or "")
-            if label:
-                history_lines.append(
-                    f"<div>{_esc(from_at)} → {_esc(to_at)}: {_esc(label)}</div>"
-                )
-    history_body = "".join(history_lines)
+    timeline_steps: list[str] = []
+    for point in trend:
+        if not isinstance(point, Mapping):
+            continue
+        at = str(point.get("observed_at") or "")
+        dir_word = str(point.get("direction") or "UNAVAILABLE")
+        staleness_point = str(point.get("staleness") or "").strip()
+        note = (
+            f'<span class="prima-step-note">{_esc(staleness_point)}</span>'
+            if staleness_point
+            else ""
+        )
+        timeline_steps.append(
+            f'<li class="prima-step" data-prima-step-direction="{_esc(dir_word)}">'
+            f'<span class="prima-step-dir">{_esc(dir_word)}</span>'
+            f'<time datetime="{_esc(at)}">{_esc(_prima_day(at))}</time>'
+            f"{note}</li>"
+        )
+    if timeline_steps:
+        timeline_html = (
+            '<div class="prima-kicker">Stored direction timeline</div>'
+            '<ol class="prima-timeline">'
+            + "".join(timeline_steps)
+            + "</ol>"
+            '<p class="prima-meta">Direction categories and dates only. Not a numeric chart.</p>'
+        )
+    else:
+        timeline_html = (
+            '<div class="prima-kicker">Stored direction timeline</div>'
+            '<p class="prima-meta">No stored direction timeline. History is not fabricated.</p>'
+        )
+
+    transition_lines: list[str] = []
+    for transition in transitions:
+        if not isinstance(transition, Mapping):
+            continue
+        label = str(transition.get("label") or "")
+        from_at = str(transition.get("from_observed_at") or "")
+        to_at = str(transition.get("to_observed_at") or "")
+        if label or from_at or to_at:
+            transition_lines.append(
+                f"<li>{_esc(from_at)} → {_esc(to_at)}: {_esc(label)}</li>"
+            )
+    if transition_lines:
+        transition_html = (
+            '<div class="prima-kicker">Stored transitions</div>'
+            f'<ul class="prima-transitions">{"".join(transition_lines)}</ul>'
+        )
+    else:
+        transition_html = ""
 
     channel_rows = []
     for channel, label in _PRIMA_CHANNEL_LABELS.items():
         ch_dir = str(subs.get(channel) or "UNAVAILABLE")
         channel_rows.append(
-            f'<div data-prima-channel="{_esc(channel)}">{_esc(label)}: {_esc(ch_dir)}</div>'
+            f'<div class="prima-channel" data-prima-channel="{_esc(channel)}" '
+            f'data-prima-channel-direction="{_esc(ch_dir)}">{_esc(label)}: {_esc(ch_dir)}</div>'
         )
 
     mpr_status = current.get("mpr_status")
@@ -726,11 +1069,15 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
     change_since = current.get("change_since_last_mpr")
     change_text = str(change_since or "").strip()
     if not change_text or change_text.lower() == "unavailable":
-        mpr_body = (
-            "<p>The comparison versus the last BoC MPR is unavailable.</p>"
-        )
+        mpr_body = "<p>The comparison versus the last BoC MPR is unavailable.</p>"
     else:
-        mpr_body = f"<p>{_esc(change_text)}</p>"
+        gloss = ""
+        if "brent_end_2027_vs_prose" in change_text:
+            gloss = (
+                '<p class="prima-meta">Stored line name: Brent end-2027 versus the MPR prose assumption. '
+                "The figure below is quoted as stored.</p>"
+            )
+        mpr_body = gloss + f"<p>{_esc(change_text)}</p>"
     mpr_meta = []
     if conditioning_date:
         mpr_meta.append(f"Conditioning date: {_esc(conditioning_date)}")
@@ -738,6 +1085,23 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
         mpr_meta.append(f"MPR status: {_esc(mpr_status)}")
     if mpr_meta:
         mpr_body = f'<p class="prima-meta">{". ".join(mpr_meta)}</p>{mpr_body}'
+
+    staleness = current.get("staleness")
+    staleness_text = str(staleness).strip() if staleness is not None and str(staleness).strip() else None
+    means = _prima_means_sentences(
+        direction=direction,
+        subs=subs,
+        transitions=transitions,
+        trend=trend,
+        drivers=drivers,
+        change_text=change_text,
+        staleness=staleness_text,
+        stale=stale,
+        mpr_status=mpr_status,
+        conditioning_date=conditioning_date,
+        vs_phrase=vs_phrase,
+    )
+    means_html = "".join(f"<p>{_esc(sentence)}</p>" for sentence in means)
 
     disclaimer = str(
         current.get("disclaimer")
@@ -748,24 +1112,72 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
         )
     )
 
+    tech_lines: list[str] = []
+    history_state = str(block.get("history_state") or "")
+    if history_state:
+        tech_lines.append(f"history_state: {history_state}")
+    for flag in ("feeds_inflation_score", "score_inputs_changed"):
+        if flag not in block:
+            continue
+        value = block.get(flag)
+        if value is True:
+            rendered_flag = "true"
+        elif value is False:
+            rendered_flag = "false"
+        else:
+            rendered_flag = str(value)
+        tech_lines.append(f"{flag}: {rendered_flag}")
+    limitations = block.get("limitations")
+    if isinstance(limitations, list) and limitations:
+        tech_lines.append("limitations: " + "; ".join(str(item) for item in limitations))
+    for channel, _label in _PRIMA_CHANNEL_LABELS.items():
+        tech_lines.append(f"{channel} = {subs.get(channel) or 'UNAVAILABLE'}")
+    for point in trend:
+        if not isinstance(point, Mapping):
+            continue
+        bits = [
+            str(point.get("observed_at") or ""),
+            str(point.get("direction") or "UNAVAILABLE"),
+        ]
+        for field in ("status", "staleness", "source_id", "run_id", "review_id", "source_kind"):
+            value = point.get(field)
+            if value:
+                bits.append(f"{field} {value}")
+        tech_lines.append(" · ".join(bits))
+    tech_html = "".join(f"<div>{_esc(line)}</div>" for line in tech_lines)
+
     status_html = (
         f'<div class="prima-meta">{" ".join(status_bits)}</div>' if status_bits else ""
     )
+    stale_html = '<span class="prima-stale">Stale</span>' if stale else ""
+    freshness = staleness_text or "staleness not recorded"
 
     return (
         f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
         f'<div class="evidence-title">Prima Pressure</div>'
+        f'<div class="prima-badges">'
+        f'<span class="prima-badge">Market Watch proxy</span>'
+        f'<span class="prima-badge">Not the Bank of Canada Prima model</span>'
+        f"</div>"
         f'<div class="prima-context-note">context only — does not feed Inflation score</div>'
-        f'<div class="prima-meta">{_esc(disclaimer)}</div>'
-        f'<div class="prima-direction" data-prima-direction="{_esc(direction)}">{_esc(direction)}{_esc(stale_label)}</div>'
-        f'<div class="prima-meta">{_esc(coverage_text)} · {_esc(confidence_text)}</div>'
+        f'<div class="prima-direction" data-prima-direction="{_esc(direction)}" data-prima-vs="{_esc(vs_kind)}">'
+        f'<span class="prima-direction-word">{_esc(direction)}</span>'
+        f"{stale_html}"
+        f'<span class="prima-vs">{_esc(vs_phrase)}</span>'
+        f"</div>"
+        f'<div class="prima-meta">{_esc(coverage_text)} · {_esc(confidence_text)} · {_esc(freshness)}</div>'
+        f'<div class="prima-means"><div class="prima-kicker">What this shows</div>{means_html}</div>'
+        f"{timeline_html}"
+        f"{transition_html}"
+        f'<div class="prima-history">{_esc(history_note)}</div>'
+        f"{driver_html}"
+        f'<div class="prima-kicker">Channel directions</div>'
+        f'<div class="prima-channels">{"".join(channel_rows)}</div>'
+        f'<div class="prima-mpr"><div class="prima-kicker">Versus last BoC MPR</div>{mpr_body}</div>'
         f"{status_html}"
-        f"{driver_text}"
-        f'<div class="prima-history">{_esc(history_note)}{history_body}</div>'
-        f'<details class="prima-detail"><summary>Component attribution</summary>'
-        f'<div class="prima-meta">{"".join(channel_rows)}</div></details>'
-        f'<details class="prima-detail"><summary>Versus last BoC MPR</summary>'
-        f"{mpr_body}</details>"
+        f'<div class="prima-meta">{_esc(disclaimer)}</div>'
+        f'<details class="prima-detail"><summary>Technical detail</summary>'
+        f'<div class="prima-meta">{tech_html}</div></details>'
         f"</div>"
     )
 
@@ -820,8 +1232,12 @@ def _render_score_drilldown(
             ctx_rows = '<div class="evidence-grid-row">No context rows for this topic.</div>'
 
         detail_id = f"cd-{country_code}-{dimension}"
+        vintage = _vintage_line(spec)
+        class_word = "" if spec.get("level") is None else str(spec.get("temperature_class") or klass)
+        vintage_html = f'<div class="score-hint mw-asof">{_esc(vintage)}</div>' if vintage else ""
         impulse_html = (
-            f'<div class="score-impulse">{_esc(_impulse_line(spec))}</div>'
+            '<div class="score-impulse"><span class="mw-label">Impulse</span>'
+            f"{_impulse_markup(spec)}</div>"
         )
         lineage = (
             f"<div class=\"lineage-note\"><b>Score lineage:</b> {LINEAGE_ANCHOR_PHRASE}. "
@@ -836,10 +1252,12 @@ def _render_score_drilldown(
             f'<details class="{SCORE_DETAIL_CLASS_ATTRIBUTE}" id="{_esc(detail_id)}">'
             f'<summary class="score-summary">'
             f'<div class="score-top"><b>{_esc(dimension)}</b>'
-            f'<span class="score-num">{_esc(score_text)}/100</span></div>'
+            f'<span class="score-level-block"><span class="mw-label">Level</span> '
+            f'<span class="score-num mw-num">{_esc(score_text)}</span><span class="scd-scale">/100</span> '
+            f'<span class="scd-class">{_esc(class_word)}</span></span></div>'
             f'<div class="temp-bar"><i class="{_esc(klass)}" style="width:{_esc(width_text)}%"></i></div>'
-            f'<div class="score-hint">{_esc(dimension)} score</div>'
             f"{impulse_html}"
+            f"{vintage_html}"
             f"</summary>"
             f'<div class="score-evidence">'
             f'<div class="evidence-block">'
@@ -872,6 +1290,7 @@ def render_country_detail(
 
     chunks = [
         f'<section class="country-detail" data-country="{_esc(code)}">',
+        _score_header(score_state),
         _render_score_compact(code, score_state),
         _render_wmn(attention_country, obs_map),
         _render_score_drilldown(

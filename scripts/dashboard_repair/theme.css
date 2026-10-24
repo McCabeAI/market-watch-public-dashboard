@@ -1,0 +1,466 @@
+/* Market Watch workstation theme. Injected last by scripts/dashboard_repair/apply.py
+   so it wins over the immutable v6 base stylesheet and the per-tab patch CSS.
+   Tokens first; surface overrides below. Colour never carries meaning alone:
+   every semantic colour is paired with a word, sign or arrow in the markup. */
+:root {
+  color-scheme: dark;
+  /* surfaces, darkest to most raised */
+  --mw-bg: #0a0f15;
+  --mw-bg-top: #0f1720;
+  --mw-panel: #111922;
+  --mw-panel-2: #16202b;
+  --mw-panel-3: #1c2835;
+  --mw-line: #233140;
+  --mw-line-strong: #34475b;
+  /* text */
+  --mw-ink: #e7edf3;
+  --mw-ink-2: #c4d0db;
+  --mw-muted: #93a5b6;
+  --mw-faint: #6f8294;
+  /* interaction */
+  --mw-accent: #5ea8e4;
+  --mw-accent-strong: #8cc6f5;
+  --mw-focus: #9fd0ff;
+  /* semantics */
+  --mw-pos: #43b883;
+  --mw-neg: #f07a72;
+  --mw-ok: #43b883;
+  --mw-warn: #e5a83f;
+  --mw-bad: #f07a72;
+  --mw-info: #5ea8e4;
+  --mw-ok-wash: rgba(67, 184, 131, .13);
+  --mw-warn-wash: rgba(229, 168, 63, .13);
+  --mw-bad-wash: rgba(240, 122, 114, .13);
+  --mw-info-wash: rgba(94, 168, 228, .13);
+  /* temperature scale keeps its cold -> hot order */
+  --mw-cold: #4f8fd0;
+  --mw-cool: #74b6dc;
+  --mw-neutral: #8e9ba8;
+  --mw-warm: #e39d3e;
+  --mw-hot: #ea6552;
+  --mw-warming: #e39d3e;
+  --mw-cooling: #74b6dc;
+  --mw-static: #8e9ba8;
+  /* type */
+  --mw-font: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --mw-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --mw-fs-micro: 11px;   /* uppercase labels only */
+  --mw-fs-meta: 12.5px;  /* dates, units, captions */
+  --mw-fs-body: 14px;
+  --mw-fs-title: 16px;
+  --mw-fs-kpi: 22px;
+  --mw-fs-page: 26px;
+  /* space, radius, depth */
+  --mw-s1: 4px; --mw-s2: 8px; --mw-s3: 12px; --mw-s4: 16px; --mw-s5: 24px; --mw-s6: 32px;
+  --mw-r-sm: 6px; --mw-r: 8px; --mw-r-lg: 12px;
+  --mw-shadow-1: inset 0 1px 0 rgba(255, 255, 255, .035), 0 1px 2px rgba(0, 0, 0, .45);
+  --mw-shadow-2: inset 0 1px 0 rgba(255, 255, 255, .05), 0 10px 28px rgba(0, 0, 0, .38);
+
+  /* legacy variable names used by the v6 base page and the tab patches */
+  --navy: #0d141c; --ink: var(--mw-ink); --muted: var(--mw-muted); --line: var(--mw-line);
+  --bg: var(--mw-bg); --panel: var(--mw-panel);
+  --cold: var(--mw-cold); --cool: var(--mw-cool); --neutral: var(--mw-neutral);
+  --warm: var(--mw-warm); --hot: var(--mw-hot);
+  --cooling: var(--mw-cooling); --warming: var(--mw-warming); --static: var(--mw-static);
+  --good: var(--mw-pos); --bad: var(--mw-neg);
+  --bluewash: var(--mw-info-wash); --amberwash: var(--mw-warn-wash);
+  --shadow: var(--mw-shadow-1);
+}
+
+/* ---- shared component vocabulary (mw-*) ---- */
+.mw-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;border:1px solid var(--mw-line-strong);background:var(--mw-panel-2);color:var(--mw-ink-2);font-size:var(--mw-fs-meta);font-weight:650;line-height:1.5;white-space:nowrap}
+.mw-chip--ok{border-color:rgba(67,184,131,.45);background:var(--mw-ok-wash);color:#9be3c0}
+.mw-chip--warn{border-color:rgba(229,168,63,.5);background:var(--mw-warn-wash);color:#f3cd8a}
+.mw-chip--bad{border-color:rgba(240,122,114,.5);background:var(--mw-bad-wash);color:#f8b4ae}
+.mw-chip--info{border-color:rgba(94,168,228,.45);background:var(--mw-info-wash);color:#b5dafa}
+.mw-asof{color:var(--mw-muted);font-size:var(--mw-fs-meta);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mw-label{color:var(--mw-muted);font-size:var(--mw-fs-micro);font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.mw-num{font-variant-numeric:tabular-nums}
+.mw-up{color:var(--mw-pos)} .mw-down{color:var(--mw-neg)} .mw-flat{color:var(--mw-muted)}
+.mw-raw{font-family:var(--mw-mono);font-size:12px;color:var(--mw-muted);overflow-wrap:anywhere}
+
+/* ---- global document surfaces ---- */
+*,*::before,*::after{box-sizing:border-box}
+html{overflow-x:hidden}
+body{
+  margin:0;
+  font-family:var(--mw-font);
+  font-size:var(--mw-fs-body);
+  line-height:1.5;
+  color:var(--mw-ink);
+  background:linear-gradient(180deg,var(--mw-bg-top) 0%,var(--mw-bg) 220px,var(--mw-bg) 100%);
+  font-variant-numeric:tabular-nums;
+  overflow-x:hidden;
+}
+main{padding:18px 24px 40px;max-width:1440px;margin:0 auto}
+a{color:var(--mw-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img,svg,video{max-width:100%}
+.topbar{
+  background:var(--mw-panel);
+  color:var(--mw-ink);
+  border-bottom:1px solid var(--mw-line);
+  padding:18px 24px 14px;
+}
+.nav{
+  height:auto;
+  min-height:48px;
+  background:var(--mw-panel);
+  border-bottom:1px solid var(--mw-line);
+  display:flex;
+  flex-wrap:nowrap;
+  gap:6px 18px;
+  align-items:center;
+  padding:0 16px;
+  position:sticky;
+  top:0;
+  z-index:30;
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.nav label{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  padding:10px 2px 8px;
+  cursor:pointer;
+  color:var(--mw-muted);
+  font-weight:650;
+  font-size:var(--mw-fs-meta);
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
+  transition:border-color .12s ease,color .12s ease;
+}
+.nav label:hover{color:var(--mw-ink-2)}
+input[name=page]:checked~.app .nav label[for^=p-]{color:var(--mw-muted);border-bottom-color:transparent;font-weight:650}
+#p-front:checked~.app .nav label[for=p-front],
+#p-country:checked~.app .nav label[for=p-country],
+#p-news:checked~.app .nav label[for=p-news],
+#p-releases:checked~.app .nav label[for=p-releases],
+#p-sources:checked~.app .nav label[for=p-sources],
+#p-marketdata:checked~.app .nav label[for=p-marketdata],
+#p-traderbook:checked~.app .nav label[for=p-traderbook]{color:var(--mw-ink);border-bottom-color:var(--mw-accent);font-weight:800}
+.stitle{font-size:var(--mw-fs-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--mw-muted);font-weight:800;margin:0 0 10px}
+.note{font-size:var(--mw-fs-meta);color:var(--mw-muted);line-height:1.55;margin:8px 0}
+.panel,.card,.tape-card{
+  background:var(--mw-panel);
+  border:1px solid var(--mw-line);
+  border-radius:var(--mw-r);
+  box-shadow:var(--mw-shadow-1);
+  color:var(--mw-ink);
+}
+.tape-card{padding:12px}
+.tape-card .lab{font-size:var(--mw-fs-micro);color:var(--mw-muted);text-transform:uppercase}
+.tape-card .val{font-size:var(--mw-fs-kpi);font-weight:800;color:var(--mw-ink)}
+.tape-card .sub{font-size:var(--mw-fs-meta);color:var(--mw-muted)}
+.pill{color:#0a0f15;font-size:var(--mw-fs-meta);font-weight:800}
+.pill.cold{background:var(--mw-cold);color:#0a1420}
+.pill.cool{background:var(--mw-cool);color:#0a1420}
+.pill.neutral{background:var(--mw-neutral);color:#101820}
+.pill.warm{background:var(--mw-warm);color:#1a1208}
+.pill.hot{background:var(--mw-hot);color:#1a0e0c}
+.dir.cooling{color:var(--mw-cooling);background:rgba(116,182,220,.12);border-color:rgba(116,182,220,.45)}
+.dir.static{color:var(--mw-static);background:rgba(142,155,168,.12);border-color:rgba(142,155,168,.4)}
+.dir.warming{color:var(--mw-warming);background:rgba(227,157,62,.12);border-color:rgba(227,157,62,.45)}
+table{color:var(--mw-ink-2)}
+th{color:var(--mw-muted);font-size:var(--mw-fs-micro);text-transform:uppercase;letter-spacing:.06em}
+td,th{border-color:var(--mw-line)}
+.table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--mw-line);border-radius:var(--mw-r);max-width:100%}
+.table-scroll table{min-width:min(880px,100%)}
+/* Legacy/plain disclosures only — never override tab-owned summary grids (Market Data, Country, Trader Book). */
+details:not([class]),
+details.source-country,
+details.mw-archived,
+details.mw-release-detail,
+details.mw-release-window,
+details.mw-raw:not(.mw-source-raw),
+details.research-debate{
+  background:var(--mw-panel);
+  border:1px solid var(--mw-line);
+  border-radius:var(--mw-r);
+  padding:10px 12px;
+  color:var(--mw-ink-2);
+}
+details:not([class])>summary,
+details.source-country>summary,
+details.mw-archived>summary,
+details.mw-release-detail>summary,
+details.mw-release-window>summary,
+details.mw-raw:not(.mw-source-raw)>summary,
+details.research-debate>summary{
+  cursor:pointer;
+  list-style:none;
+  font-weight:650;
+  color:var(--mw-ink);
+  min-height:40px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+details:not([class])>summary::-webkit-details-marker,
+details.source-country>summary::-webkit-details-marker,
+details.mw-archived>summary::-webkit-details-marker,
+details.mw-release-detail>summary::-webkit-details-marker,
+details.mw-release-window>summary::-webkit-details-marker,
+details.mw-raw:not(.mw-source-raw)>summary::-webkit-details-marker,
+details.research-debate>summary::-webkit-details-marker{display:none}
+details:not([class])>summary::before,
+details.source-country>summary::before,
+details.mw-archived>summary::before,
+details.mw-release-detail>summary::before,
+details.mw-release-window>summary::before,
+details.mw-raw:not(.mw-source-raw)>summary::before,
+details.research-debate>summary::before{
+  content:"▸";
+  color:var(--mw-muted);
+  font-size:12px;
+  transition:transform .12s ease;
+  flex:0 0 auto;
+}
+details:not([class])[open]>summary::before,
+details.source-country[open]>summary::before,
+details.mw-archived[open]>summary::before,
+details.mw-release-detail[open]>summary::before,
+details.mw-release-window[open]>summary::before,
+details.mw-raw:not(.mw-source-raw)[open]>summary::before,
+details.research-debate[open]>summary::before{transform:rotate(90deg)}
+details:not([class]):hover,
+details.source-country:hover,
+details.mw-archived:hover{border-color:var(--mw-line-strong)}
+.marketdata details,
+.traderbook details,
+.country-detail details,
+details.md-alert,
+details.md-rel,
+details.md-health,
+details.story,
+details.wmn-technical{
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.marketdata details>summary,
+.traderbook details>summary,
+.country-detail details>summary,
+details.md-alert>summary,
+details.md-rel>summary,
+details.md-health>summary,
+details.story>summary,
+details.wmn-technical>summary,
+summary.score-summary{
+  display:revert;
+  align-items:revert;
+  gap:revert;
+  min-height:revert;
+  font-weight:revert;
+}
+.marketdata details>summary::before,
+.traderbook details>summary::before,
+.country-detail details>summary::before,
+details.md-alert>summary::before,
+details.md-rel>summary::before,
+details.md-health>summary::before,
+details.story>summary::before,
+details.wmn-technical>summary::before,
+summary.score-summary::before{content:none}
+.nav .stamp{
+  font-size:var(--mw-fs-micro);
+  border:1px solid var(--mw-line-strong);
+  padding:4px 8px;
+  border-radius:var(--mw-r-sm);
+  background:var(--mw-panel-2);
+  color:var(--mw-ink-2);
+  white-space:nowrap;
+  line-height:1.25;
+  align-self:center;
+  margin-left:auto;
+  flex:0 1 auto;
+  max-width:min(42vw,320px);
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+input[name=page]{
+  position:absolute;
+  width:1px;
+  height:1px;
+  margin:-1px;
+  padding:0;
+  border:0;
+  clip:rect(0 0 0 0);
+  overflow:hidden;
+}
+input,select,textarea,button{
+  font:inherit;
+  color:var(--mw-ink);
+  background:var(--mw-panel-2);
+  border:1px solid var(--mw-line-strong);
+  border-radius:var(--mw-r-sm);
+}
+input,select,textarea{font-size:var(--mw-fs-meta);padding:8px 10px;min-height:40px}
+#source-filter{width:min(100%,420px);max-width:100%}
+label.jump,.jump{
+  display:inline-flex;
+  align-items:center;
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:var(--mw-r-sm);
+  border:1px solid var(--mw-line-strong);
+  background:var(--mw-panel-2);
+  cursor:pointer;
+}
+label:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible{
+  outline:2px solid var(--mw-focus);
+  outline-offset:2px;
+}
+.footer{color:var(--mw-faint);font-size:var(--mw-fs-meta);margin-top:24px}
+
+/* Last 24h / news patches */
+.last24{
+  margin:14px 0 20px;
+  padding:18px;
+  border:1px solid var(--mw-line);
+  border-radius:var(--mw-r-lg);
+  background:var(--mw-panel);
+}
+.last24-head h2{color:var(--mw-ink);font-size:var(--mw-fs-title)}
+.last24-head p,.last24-window{color:var(--mw-muted);font-size:var(--mw-fs-meta)}
+.last24-thesis{border-left:4px solid var(--mw-bad);background:var(--mw-bad-wash);color:var(--mw-ink-2)}
+.last24-item{background:var(--mw-panel-2);border-color:var(--mw-line)}
+.last24-item:hover{border-color:var(--mw-line-strong);box-shadow:var(--mw-shadow-1)}
+.driver-card,.story{
+  background:var(--mw-panel);
+  border:1px solid var(--mw-line);
+  border-radius:var(--mw-r);
+  color:var(--mw-ink);
+}
+.driver-card{display:block;padding:14px;text-decoration:none}
+.driver-card:hover{border-color:var(--mw-accent);text-decoration:none}
+.story summary{padding:10px 8px}
+.story-title{color:var(--mw-ink)}
+.story-kicker,.dmeta,.scanline{color:var(--mw-muted);font-size:var(--mw-fs-meta)}
+.impact.high{color:var(--mw-bad)}
+.impact.med{color:var(--mw-warn)}
+.news-digest details{border-color:var(--mw-line)}
+
+/* Scoreboard fallback */
+.scoreboard,.score-card{background:var(--mw-panel);border:1px solid var(--mw-line);border-radius:var(--mw-r)}
+.score-card{padding:12px}
+
+/* Repair tab blocks from apply.py */
+.release-card,.source-summary,.debate-card{
+  background:var(--mw-panel);
+  border:1px solid var(--mw-line);
+  border-radius:var(--mw-r);
+  padding:12px 14px;
+  margin:0 0 10px;
+  max-width:100%;
+  overflow:hidden;
+}
+.release-card header,.release-card p,.release-card li,.source-country li{font-size:var(--mw-fs-meta);line-height:1.5}
+.research-debate{margin:12px 0}
+.debate-grid{gap:10px}
+.mw-archived{
+  border-left:4px solid var(--mw-warn);
+  background:var(--mw-warn-wash);
+  padding:10px 12px;
+  border-radius:var(--mw-r);
+}
+.mw-archived>summary{color:var(--mw-ink);font-weight:750}
+
+/* Releases layout */
+.mw-release-intro details{border:0;background:transparent;padding:0;margin-top:6px}
+.mw-release-dayhead{font-size:var(--mw-fs-title);color:var(--mw-ink);margin:18px 0 8px;font-weight:750}
+.mw-release-list{display:flex;flex-direction:column;gap:8px}
+.mw-release-row{
+  display:grid;
+  grid-template-columns:120px 52px minmax(140px,1.4fr) minmax(160px,1fr) minmax(130px,.9fr) minmax(150px,1fr);
+  gap:10px 12px;
+  align-items:center;
+}
+.mw-release-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mw-release-main b{font-size:var(--mw-fs-body);overflow-wrap:anywhere}
+.mw-release-times{display:flex;flex-direction:column;gap:2px;white-space:normal}
+.mw-release-detail{grid-column:1/-1;margin-top:4px}
+.mw-release-status{overflow-wrap:anywhere;white-space:normal}
+.page.releases h2{font-size:var(--mw-fs-title);margin:20px 0 10px;color:var(--mw-ink)}
+
+/* Sources layout */
+.source-summary{padding:14px}
+.mw-source-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0 14px}
+.mw-source-stat .note{margin:6px 0 0;font-size:var(--mw-fs-meta)}
+.source-country>summary.mw-source-country-summary,
+.source-country>summary{
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  align-items:center;
+  gap:8px 12px;
+  width:100%;
+  text-align:left;
+}
+.mw-source-country-label{flex:0 1 auto;text-align:left}
+.mw-source-mini{margin-left:auto;flex:0 1 auto;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
+.mw-release-times span{white-space:nowrap}
+.mw-source-mini{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.mw-source-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.mw-source-row{
+  display:grid;
+  grid-template-columns:minmax(120px,1.2fr) auto auto minmax(100px,1fr);
+  gap:8px 10px;
+  align-items:start;
+  padding:10px 8px;
+  border:1px solid var(--mw-line);
+  border-radius:var(--mw-r-sm);
+  background:var(--mw-panel-2);
+  overflow:hidden;
+}
+.mw-source-name{font-weight:700;color:var(--mw-ink);overflow-wrap:anywhere}
+.mw-source-link{overflow-wrap:anywhere;min-width:0}
+.mw-source-raw summary,.mw-source-raw pre{overflow-wrap:anywhere;white-space:pre-wrap}
+.mw-source-raw{grid-column:1/-1}
+
+@media(max-width:480px){
+  .nav{
+    flex-wrap:wrap;
+    overflow-x:visible;
+    justify-content:flex-start;
+    align-content:flex-start;
+    gap:2px 10px;
+    padding:6px 10px 8px;
+    row-gap:2px;
+  }
+  .nav label{
+    flex:0 1 auto;
+    min-height:40px;
+    padding:8px 4px 6px;
+    font-size:11px;
+  }
+  .nav .stamp{display:none}
+}
+@media(max-width:720px){
+  main{padding:14px 12px 32px}
+  .nav{padding:0 10px;gap:4px 12px}
+  .mw-release-row{grid-template-columns:1fr 1fr;grid-template-areas:
+    "date date" "chip title" "times times" "feed status" "detail detail";}
+  .mw-release-row .mw-release-date{grid-area:date}
+  .mw-release-row .mw-chip:first-of-type{grid-area:chip}
+  .mw-release-row .mw-release-main{grid-area:title}
+  .mw-release-row .mw-release-times{grid-area:times}
+  .mw-release-row .mw-chip.mw-chip--ok,.mw-release-row .mw-chip.mw-chip--info{grid-area:feed}
+  .mw-release-row .mw-release-status{grid-area:status}
+  .mw-release-detail{grid-area:detail}
+  .mw-source-row{grid-template-columns:1fr;gap:6px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+@media print{
+  :root{color-scheme:light}
+  body{background:#fff!important;color:#111!important;font-size:11pt}
+  .nav,.topbar{position:static;background:#fff;color:#111;border-color:#ccc}
+  .panel,.card,.tape-card,.release-card,.source-summary,details{background:#fff!important;border-color:#ccc!important;box-shadow:none!important}
+  a{color:#0645ad}
+  .mw-chip{border-color:#999;background:#f4f4f4;color:#222}
+}

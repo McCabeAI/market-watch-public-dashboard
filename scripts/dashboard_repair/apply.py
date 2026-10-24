@@ -13,12 +13,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from scripts.dashboard_repair.brief import format_freeze_day, format_packet_time, render_brief
 from scripts.dashboard_repair.calendar_view import build_release_model, render_releases
 from scripts.dashboard_repair.htmlutil import balanced_element_end, esc, replace_element_containing
 from scripts.dashboard_repair.scoreboard import render_scoreboard
 from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
 from scripts.dashboard_repair.sources_view import render_sources
-from scripts.dashboard_repair.tape import render_tape
+from scripts.dashboard_repair.tape import render_tape, tape_cards
 from scripts.macro_ingestion.contract import load_catalog
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -56,9 +57,85 @@ button.jump{width:100%;font:inherit;color:inherit;min-height:44px;font-size:14px
 .debate-grid{display:grid;gap:8px}
 @media(min-width:800px){.debate-grid{grid-template-columns:1fr 1fr}}
 @media(max-width:720px){
- .nav{height:auto;flex-wrap:wrap;align-content:flex-start;gap:4px 14px;padding:8px 14px}
+ .nav{height:48px;flex-wrap:nowrap;overflow-x:auto;align-items:center}
  .nav label{height:auto;padding:8px 0;font-size:14px}
  .score-dim{grid-template-columns:1fr}
+}
+.topbar .meta{display:block}
+.topbar{align-items:flex-end;gap:12px}
+.stamp{background:var(--mw-panel-2);color:var(--mw-ink-2);border-color:var(--mw-line)}
+.desk-brief{margin:0 0 12px}
+.desk-brief-head h2{margin:0 0 6px;font-size:var(--mw-fs-title,16px);font-weight:750}
+.desk-brief-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.brief-block{background:var(--mw-panel);border:1px solid var(--mw-line);border-radius:var(--mw-r,8px);padding:8px 10px;min-width:0}
+.brief-block h3{margin:0 0 4px;font-size:13px;font-weight:750;display:flex;flex-wrap:wrap;gap:4px 6px;align-items:center}
+.brief-caption,.brief-sub{margin:0 0 4px;font-size:12px;line-height:1.3;color:var(--mw-muted)}
+.brief-sub{font-weight:700;color:var(--mw-ink-2)}
+.brief-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.brief-list li{min-width:0;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline}
+.brief-list .mw-asof{white-space:normal}
+.desk-brief button.jump{width:auto;min-height:40px;display:flex;flex-wrap:wrap;gap:2px 8px;align-items:baseline;text-align:left;padding:4px 6px;background:transparent;border:0;border-radius:6px}
+.desk-brief button.jump:hover{background:var(--mw-panel-3)}
+.brief-k{font-weight:750}
+.brief-name{min-width:0;overflow-wrap:anywhere}
+.brief-impulse,.brief-level,.brief-value{font-variant-numeric:tabular-nums}
+.brief-tab{display:inline-flex;align-items:center;min-height:40px;color:var(--mw-accent);font-weight:700;cursor:pointer}
+.imp-warming{color:var(--mw-warming)} .imp-cooling{color:var(--mw-cooling)} .imp-static{color:var(--mw-static)}
+.mw-tape{min-width:0}
+.mw-tape .tape{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin:8px 0 14px}
+.tape-card{display:flex;flex-direction:column;gap:2px;min-width:0;padding:8px 10px;min-height:132px;background:var(--mw-panel);border:1px solid var(--mw-line);border-radius:8px}
+.tape-card .lab{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mw-muted)}
+.tape-card .val{font-size:20px;font-weight:750;line-height:1.15}
+.tape-change{font-size:13px;font-variant-numeric:tabular-nums}
+.tape-change-missing{color:var(--mw-muted)}
+.tape-more{background:transparent;border:0;padding:0;margin-top:4px}
+.tape-more summary{font-size:12px;min-height:32px;color:var(--mw-accent)}
+.tape-more p{font-size:12px;color:var(--mw-muted);overflow-wrap:anywhere}
+.scoreboard{background:var(--mw-panel);border:1px solid var(--mw-line);color:var(--mw-ink)}
+.score-scroll{overflow-x:auto;max-width:100%}
+.score-matrix{width:100%;border-collapse:collapse}
+.score-matrix tbody tr:nth-child(odd),.score-matrix tbody tr:nth-child(even),.score-matrix tbody tr:hover{background:transparent}
+.score-matrix th,.score-matrix td{white-space:normal;text-align:left;vertical-align:top;padding:6px 8px;border-bottom:1px solid var(--mw-line);background:transparent;font-size:13px;color:var(--mw-ink)}
+.score-matrix thead th{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--mw-muted)}
+.lvl-num{font-size:18px;font-weight:750;display:block}
+.lvl-scale{font-size:11px;color:var(--mw-muted)}
+.imp-line{display:flex;flex-wrap:wrap;gap:2px 6px;align-items:baseline;font-size:12px;margin-top:2px}
+.score-matrix .mw-asof{white-space:normal}
+.score-bar{display:block;height:3px;background:var(--mw-panel-3);border-radius:2px;overflow:hidden;margin:3px 0}
+.score-bar i{display:block;height:100%}
+.score-peak{display:block;margin-top:3px;font-size:11px;font-weight:750;letter-spacing:.03em;text-transform:uppercase;color:var(--mw-warn)}
+.score-legend{margin:0 0 8px;font-size:12.5px;line-height:1.35;color:var(--mw-muted)}
+.scoreboard button.jump{width:auto;min-height:40px;padding:6px 10px}
+.mw-archived{margin:12px 0;padding:8px 12px;background:var(--mw-panel);border:1px solid var(--mw-warn);border-radius:8px;max-width:100%;overflow-x:auto}
+.mw-archived > summary{color:var(--mw-warn);font-weight:750;min-height:40px;cursor:pointer}
+.mw-archived .kpi,.mw-archived .ladvals span,.mw-archived .thermo,.mw-archived details{background:var(--mw-panel-2);color:var(--mw-ink)}
+.app,.wrap,.page,.cdetail{min-width:0;max-width:100%}
+.news-alert{grid-template-columns:auto minmax(0,1fr) auto;background:var(--mw-panel);color:var(--mw-ink);border:1px solid var(--mw-line);border-left:4px solid var(--mw-warn)}
+.news-alert h3{color:var(--mw-ink)}
+.news-alert p,.news-alert .alert-sub{color:var(--mw-muted)}
+.news-alert .flag{color:var(--mw-warn)}
+.news-alert label{background:var(--mw-panel-3);color:var(--mw-ink)}
+.news-alert h3,.news-alert p{overflow-wrap:anywhere}
+.country-switch label{background:var(--mw-panel-2);color:var(--mw-ink);border-color:var(--mw-line)}
+.country-detail .cd-vintage{white-space:normal;overflow-wrap:anywhere}
+button:focus-visible,.jump:focus-visible,summary:focus-visible,.brief-tab:focus-visible,label:focus-visible{outline:2px solid var(--mw-focus);outline-offset:2px}
+@media(max-width:1200px){
+ .desk-brief-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:720px){
+ .topbar{flex-direction:column;align-items:flex-start}
+ .topbar .meta{text-align:left}
+ .desk-brief-grid{grid-template-columns:1fr}
+ .mw-tape .tape{display:flex;flex-wrap:nowrap;overflow-x:auto;max-width:100%}
+ .mw-tape .tape-card{flex:0 0 160px}
+ .score-matrix thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+ .score-matrix,.score-matrix tbody,.score-matrix tr,.score-matrix td,.score-matrix th{display:block;width:auto}
+ .score-matrix tr{display:grid;grid-template-columns:1fr 1fr;gap:6px;border:1px solid var(--mw-line);border-radius:8px;margin:0 0 8px;padding:8px;background:var(--mw-panel-2)}
+ .score-matrix tbody tr:nth-child(odd),.score-matrix tbody tr:nth-child(even),.score-matrix tbody tr:hover{background:var(--mw-panel-2)}
+ .country-detail .score-compact{grid-template-columns:1fr 1fr}
+ .score-matrix th[scope="row"],.score-matrix .score-mean-cell,.score-matrix .score-open{grid-column:1 / -1}
+ .news-alert{grid-template-columns:1fr}
+ .news-alert label{white-space:normal}
 }
 </style>
 """
@@ -138,8 +215,26 @@ SCRIPT = """
 """
 
 
+def _marker_outside_style(html: str, marker: str) -> int:
+    """Find a markup anchor, skipping copies that live in style or script text."""
+    cursor = 0
+    while True:
+        index = html.find(marker, cursor)
+        if index < 0:
+            return -1
+        style = html.rfind("<style", 0, index)
+        if style >= 0 and html.find("</style>", style) > index:
+            cursor = html.find("</style>", style) + len("</style>")
+            continue
+        script = html.rfind("<script", 0, index)
+        if script >= 0 and html.find("</script>", script) > index:
+            cursor = html.find("</script>", script) + len("</script>")
+            continue
+        return index
+
+
 def _replace_balanced_marker(html: str, marker: str, replacement: str) -> str:
-    index = html.find(marker)
+    index = _marker_outside_style(html, marker)
     if index < 0:
         raise ValueError(f"missing {marker}")
     start = html.rfind("<", 0, index)
@@ -348,11 +443,22 @@ def _research_link(html: str, packet: dict[str, Any] | None) -> str:
     return html.replace(marker, block + marker, 1)
 
 
+THEME_PATH = Path(__file__).resolve().parent / "theme.css"
+
+
+def theme_css() -> str:
+    return '<style id="mw-theme-css">\n' + THEME_PATH.read_text(encoding="utf-8") + "\n</style>\n"
+
+
 def _style_and_script(html: str) -> str:
     if 'id="dashboard-repair-css"' in html:
         html = replace_element_containing(html, 'id="dashboard-repair-css"', CSS)
     elif "</head>" in html:
         html = html.replace("</head>", CSS + "</head>", 1)
+    if 'id="mw-theme-css"' in html:
+        html = replace_element_containing(html, 'id="mw-theme-css"', theme_css())
+    elif "</head>" in html:
+        html = html.replace("</head>", theme_css() + "</head>", 1)
     if 'id="dashboard-repair-script"' in html:
         html = replace_element_containing(html, 'id="dashboard-repair-script"', SCRIPT)
     elif "</body>" in html:
@@ -360,6 +466,82 @@ def _style_and_script(html: str) -> str:
     if 'data-dashboard-repair="applied"' not in html:
         html = html.replace("<body>", '<body data-dashboard-repair="applied">', 1)
     return html
+
+
+def _inside_archived(html: str, index: int) -> bool:
+    opener = html.rfind('<details class="mw-archived"', 0, index)
+    if opener < 0:
+        return False
+    return "</details>" not in html[opener:index]
+
+
+def _fence_macro_snapshot(html: str) -> str:
+    """Collapse the undated September country cards. Jump buttons stay in the HTML."""
+    marker = '<div class="stitle">Macro Snapshot</div>'
+    start = html.find(marker)
+    if start < 0 or _inside_archived(html, start):
+        return html
+    ends = []
+    for token in ('<div class="grid2">', 'data-momentum="removed"', "</section>"):
+        pos = html.find(token, start)
+        if pos >= 0:
+            ends.append(pos)
+    if not ends:
+        return html
+    end = min(ends)
+    summary = "September base-page country snapshot — not refreshed; figures may be superseded"
+    wrapped = (
+        '<details class="mw-archived"><summary>'
+        + esc(summary)
+        + "</summary>"
+        + html[start:end]
+        + "</details>"
+    )
+    return html[:start] + wrapped + html[end:]
+
+
+def _replace_header(html: str, packet: dict[str, Any] | None, scores: dict[str, Any]) -> str:
+    header = html.find('<header class="topbar">')
+    if header >= 0:
+        meta = html.find('<div class="meta">', header)
+        header_end = html.find("</header>", header)
+        if meta >= 0 and (header_end < 0 or meta < header_end):
+            end = balanced_element_end(html, meta)
+            when = format_packet_time(packet.get("generated_at")) if isinstance(packet, dict) else ""
+            if not when:
+                when = "Market packet time unavailable"
+            freeze = format_freeze_day(scores.get("as_of"))
+            freeze_line = f"Scores frozen {freeze}" if freeze else "Score freeze date unavailable"
+            replacement = (
+                '<div class="meta">'
+                f'<b class="mw-asof">{esc(when)}</b><br/>'
+                f'<span class="mw-asof">{esc(freeze_line)}</span><br/>'
+                "Dated official data · not a quote feed"
+                "</div>"
+            )
+            html = html[:meta] + replacement + html[end:]
+    html = html.replace(
+        '<span class="stamp">public snapshot</span>',
+        '<span class="stamp">Daily research snapshot</span>',
+        1,
+    )
+    html = html.replace(
+        "Public-data prototype · CAD / AUD / NZD focus · US benchmark · level and direction separated",
+        "Six economies · US, CA, AU, NZ, EA, JP",
+        1,
+    )
+    return html
+
+
+def _insert_brief(html: str, block: str) -> str:
+    if _marker_outside_style(html, 'data-desk-brief="repair"') >= 0:
+        return replace_element_containing(html, 'data-desk-brief="repair"', block)
+    marker = '<section class="page front">'
+    index = html.find(marker)
+    if index < 0:
+        return html
+    insert_at = index + len(marker)
+    return html[:insert_at] + block + html[insert_at:]
 
 
 def apply_dashboard_repair(
@@ -373,12 +555,14 @@ def apply_dashboard_repair(
     ingest: dict[str, Any] | None = None,
     trader_room: dict[str, Any] | None = None,
     schedule_fetch: dict[str, Any] | None = None,
+    country_detail: dict[str, Any] | None = None,
 ) -> str:
     del audit
     html = _replace_tape(html, market_state)
     html = _replace_scoreboard(html, scores)
     html = _country_jumps(html)
     html = _annotate_static_front(html)
+    html = _fence_macro_snapshot(html)
     html = _remove_nav(html)
     html = _research_link(html, trader_room)
     catalog_series = series if series is not None else load_catalog()["series"]
@@ -393,7 +577,20 @@ def apply_dashboard_repair(
     if ingest is None and series is None:
         ingest = load_latest_ingest()
     snapshot = build_source_health_snapshot(catalog_series, ingest, model)
-    html = _replace_section(html, "sources", render_sources(market_state, snapshot))
+    names = {str(spec.get("id") or ""): str(spec.get("canonical_name") or "").strip() for spec in catalog_series}
+    display_rows = [dict(row, canonical_name=names.get(str(row.get("series_id") or ""), "")) for row in snapshot.get("rows") or []]
+    html = _replace_section(html, "sources", render_sources(market_state, snapshot, display_rows))
+    html = _replace_header(html, market_state, scores)
+    html = _insert_brief(
+        html,
+        render_brief(
+            scores=scores,
+            tape_cards=tape_cards(market_state),
+            packet=market_state,
+            calendar=model,
+            country_detail=country_detail,
+        ),
+    )
     html = _style_and_script(html)
     html_result = html
     # Attach the read-models for the publication step without changing the HTML return.

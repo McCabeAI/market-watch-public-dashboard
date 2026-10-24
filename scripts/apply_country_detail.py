@@ -163,6 +163,65 @@ def _inject_filter_script(page: str) -> str:
     return page[:idx] + script + page[idx:]
 
 
+def _inside_archived(page: str, index: int) -> bool:
+    opener = page.rfind('<details class="mw-archived"', 0, index)
+    if opener < 0:
+        return False
+    return "</details>" not in page[opener:index]
+
+
+def _child_divs(fragment: str) -> list[str]:
+    parts: list[str] = []
+    pos = 0
+    while True:
+        start = fragment.find("<div", pos)
+        if start < 0:
+            break
+        end = _closing_div(fragment, start)
+        parts.append(fragment[start:end])
+        pos = end
+    return parts
+
+
+def _fence_country_snapshot(block: str) -> str:
+    """Collapse the undated September hero and momentum panel. Leave policy visible."""
+    hero = block.find('<div class="panel hero">')
+    if hero < 0 or _inside_archived(block, hero):
+        return block
+    hero_end = _closing_div(block, hero)
+    archived = [block[hero:hero_end]]
+    tail = hero_end
+    policy = ""
+    grid = block.find('<div class="detailgrid">', hero_end)
+    if grid >= 0 and not block[hero_end:grid].strip():
+        grid_end = _closing_div(block, grid)
+        inner_start = block.find(">", grid) + 1
+        inner = block[inner_start : grid_end - len("</div>")]
+        momentum: list[str] = []
+        policies: list[str] = []
+        for piece in _child_divs(inner):
+            if "Policy / Transmission" in piece:
+                policies.append(piece)
+            else:
+                momentum.append(piece)
+        archived.extend(momentum)
+        policy = "".join(policies)
+        tail = grid_end
+    summary = (
+        "September base-page snapshot — not refreshed; figures may be superseded "
+        "by the dated evidence above"
+    )
+    fenced = (
+        '<details class="mw-archived"><summary>'
+        + html.escape(summary)
+        + "</summary>"
+        + "".join(archived)
+        + "</details>"
+        + policy
+    )
+    return block[:hero] + fenced + block[tail:]
+
+
 def _inject_section(block: str, key: str, section: str) -> str:
     count = block.count(_TEMP_INPUTS)
     if count > 1:
@@ -198,7 +257,9 @@ def apply_country_detail(page: str, *, root: Path | None = None) -> str:
     for code, (start, end) in reversed(bounds):
         block = page[start:end]
         lead, evidence = _split_country_evidence(sections[code])
-        updated = _append_evidence(_inject_section(block, keys[code], lead), code, evidence)
+        updated = _fence_country_snapshot(
+            _append_evidence(_inject_section(block, keys[code], lead), code, evidence)
+        )
         page = page[:start] + updated + page[end:]
     page = _inject_filter_script(page)
     return rewrite_policy_transmission(

@@ -9,6 +9,7 @@ from scripts.country_detail import policy
 from scripts.country_detail.present import (
     history_limitation,
     is_raw_price_index_level,
+    plain_series_name,
     series_synopsis,
     why_it_surfaced,
 )
@@ -53,6 +54,21 @@ class CountryDetailPresentSynopsisTest(unittest.TestCase):
             'if any(token in name for token in ("consumption", "spending", "household spending")):'
         )
         self.assertLess(price_pos, spend_pos)
+
+    def test_core_pce_transforms_stay_distinct(self) -> None:
+        base = {
+            "label": CORE_PCE["label"],
+            "units": "index 2017=100",
+            "nominal_basis": "index",
+        }
+        names = {
+            transform: plain_series_name({**base, "transformation": transform})
+            for transform in ("index_level", "yoy_pct", "mom_sa_pct")
+        }
+        self.assertEqual(names["index_level"], "Core PCE · level")
+        self.assertEqual(names["yoy_pct"], "Core PCE · y/y")
+        self.assertEqual(names["mom_sa_pct"], "Core PCE · m/m")
+        self.assertEqual(len(set(names.values())), 3)
 
     def test_core_pce_and_real_spending_synopses(self) -> None:
         self.assertEqual(series_synopsis(CORE_PCE), PRICE_SYNOPSIS)

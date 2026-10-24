@@ -246,5 +246,44 @@ class PMDashboardTests(unittest.TestCase):
             shutil.rmtree(site, ignore_errors=True)
 
 
+    def test_trader_book_presentation_helpers(self) -> None:
+        seats = [
+            {"seat": "alpha", "net_pnl_usd": 10000, "positions": []},
+            {"seat": "beta", "net_pnl_usd": -2500, "positions": [{"instrument": "USDCAD"}]},
+            {"seat": "gamma", "net_pnl_usd": None, "positions": []},
+        ]
+        pms = [
+            {"pm_id": "chatgpt", "net_after_funding_pnl_usd": 2000, "total_pnl_usd": 3000},
+            {"pm_id": "pragmatist", "net_after_funding_pnl_usd": None, "total_pnl_usd": 50},
+            {"pm_id": "grinder", "net_after_funding_pnl_usd": None, "total_pnl_usd": None},
+        ]
+
+        def finite(value: object) -> bool:
+            return isinstance(value, (int, float)) and not isinstance(value, bool)
+
+        trader_expected = sum(row["net_pnl_usd"] for row in seats if finite(row["net_pnl_usd"]))
+
+        def pm_net(pm: dict) -> object:
+            if finite(pm.get("net_after_funding_pnl_usd")):
+                return pm["net_after_funding_pnl_usd"]
+            return pm.get("total_pnl_usd")
+
+        pm_expected = sum(value for value in (pm_net(pm) for pm in pms) if finite(value))
+        result = subprocess.run(
+            ["node", str(REPO / "tests" / "trader_book_presentation.js")],
+            input=json.dumps({"seats": seats, "pms": pms}),
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("trader_book_presentation ok", result.stdout)
+        out = json.loads(result.stdout.splitlines()[0])
+        self.assertEqual(out["traderTotal"], trader_expected)
+        self.assertEqual(out["pmTotal"], pm_expected)
+        self.assertIn("14 of 14 seats", out["fundingText"])
+        self.assertEqual(out["traderTotal"], 7500)
+        self.assertEqual(out["pmTotal"], 2050)
+
+
 if __name__ == "__main__":
     unittest.main()

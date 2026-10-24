@@ -196,6 +196,26 @@ def parse_boc_corra_html(text: str) -> dict[str, Any]:
                     return {"rate": values[-1], "as_of": header_dates[-1] if header_dates else None}
     raise ValueError("BoC CORRA page did not expose a current rate")
 
+# Official TMX maintenance copy. Present only when the public websites are
+# replaced by the outage notice; a live expectations table does not contain it.
+_TMX_WEBSITE_UNAVAILABLE_MARKERS = (
+    "Our websites are currently unavailable",
+    "Nos sites Web sont actuellement indisponibles",
+)
+
+
+def mx_expectations_outage_reason(text: str) -> str | None:
+    """Explain a TMX-wide website outage. Does not invent futures prices."""
+    if any(marker in text for marker in _TMX_WEBSITE_UNAVAILABLE_MARKERS):
+        return (
+            "TMX public websites are unavailable "
+            "(official notice: security mitigation related to PHP). "
+            "MX expectations page did not expose CORRA futures rows. "
+            "No substitute prices were used."
+        )
+    return None
+
+
 def parse_mx_expectations_html(text: str, *, benchmark: float) -> dict[str, Any]:
     parser = _TableParser()
     parser.feed(text)
@@ -226,6 +246,9 @@ def parse_mx_expectations_html(text: str, *, benchmark: float) -> dict[str, Any]
                 )
             )
     if not contracts["1m"] and not contracts["3m"]:
+        outage = mx_expectations_outage_reason(text)
+        if outage:
+            raise ValueError(outage)
         raise ValueError("MX expectations page did not expose CORRA futures rows")
     for family in contracts:
         contracts[family].sort(key=lambda row: row["expiry"])
