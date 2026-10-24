@@ -138,7 +138,9 @@ def _level_face(row: dict[str, Any]) -> str:
 
 
 def render_scoreboard(state: dict[str, Any]) -> str:
-    as_of = str(state.get("as_of") or state.get("last_refresh_date") or "date missing")
+    from scripts.dashboard_repair.score_dates import scoreboard_asof_line
+
+    as_of_line = scoreboard_asof_line(state)
     heads = "".join(f"<th scope=\"col\">{esc(name)}</th>" for name in ("Economy", *DIMENSIONS, "Equal-weight", ""))
     body = []
     for card in score_cards(state):
@@ -185,7 +187,7 @@ def render_scoreboard(state: dict[str, Any]) -> str:
     return (
         '<div data-score-overview="calibrated" class="scoreboard">'
         '<div class="scoreboard-head"><b>1–100 Score Board</b>'
-        f'<span class="mw-asof">Published score freeze {esc(as_of)}</span></div>'
+        f'<span class="mw-asof">{esc(as_of_line)}</span></div>'
         f'<p class="score-legend">{esc(legend)}</p>'
         '<div class="score-scroll"><table class="score-matrix">'
         f"<thead><tr>{heads}</tr></thead><tbody>{''.join(body)}</tbody></table></div></div>"

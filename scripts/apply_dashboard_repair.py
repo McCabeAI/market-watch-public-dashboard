@@ -34,6 +34,8 @@ def _write_sidecars(site: Path) -> None:
         public = {
             "window_start": calendar.get("window_start"),
             "window_end": calendar.get("window_end"),
+            "calibration_anchor": calendar.get("calibration_anchor"),
+            "score_inputs_last_ingested": calendar.get("score_inputs_last_ingested"),
             "score_freeze": calendar.get("score_freeze"),
             "schedule_fetch": calendar.get("schedule_fetch"),
             "upcoming": calendar.get("upcoming"),

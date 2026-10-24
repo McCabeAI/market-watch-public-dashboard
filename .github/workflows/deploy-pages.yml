@@ -554,9 +554,20 @@ jobs:
           if "Live 1–100 Score Board" in html:
               raise SystemExit("scoreboard still labeled Live")
           import json
-          score_as_of = json.loads(Path("data/temperature_scores.json").read_text(encoding="utf-8"))["as_of"]
-          if f"Published score freeze {score_as_of}" not in html:
-              raise SystemExit(f"score freeze {score_as_of} missing")
+          from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
+          scores = json.loads(Path("data/temperature_scores.json").read_text(encoding="utf-8"))
+          anchor = scores.get("calibration_anchor_date") or scores.get("as_of")
+          ingested = scores.get("score_inputs_last_ingested_at")
+          if not anchor or not ingested:
+              raise SystemExit("score date metadata missing from temperature_scores.json")
+          if f"calibration anchor {format_calibration_anchor(anchor)}" not in html:
+              raise SystemExit(f"calibration anchor label missing for {anchor}")
+          if f"inputs last ingested {format_ingestion_day(ingested)}" not in html:
+              raise SystemExit("score input ingestion label missing from HTML")
+          lowered = html.lower()
+          for forbidden in ("score freeze", "scores frozen", "scores are frozen"):
+              if forbidden in lowered:
+                  raise SystemExit(f"forbidden score-freeze wording: {forbidden}")
           for radio in ("p-feed", "p-relative", "p-traderroom"):
               if f'for="{radio}"' in html or f'id="{radio}"' in html:
                   raise SystemExit(f"{radio} still in the navigation")

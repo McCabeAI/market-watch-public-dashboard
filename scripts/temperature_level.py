@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import argparse
+import calendar
 import json
 import math
 import re
 from dataclasses import dataclass
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -84,6 +86,106 @@ def period_sort_key(period: str) -> tuple[int, int]:
 
 def period_leq(period: str, cutoff: str) -> bool:
     return period_sort_key(period) <= period_sort_key(cutoff)
+
+
+def reference_period_end(period: str) -> date:
+    kind, year, num = parse_period(period)
+    last_day = calendar.monthrange(year, num)[1]
+    return date(year, num, last_day)
+
+
+def _parse_release_date(value: object) -> date | None:
+    if value in (None, ""):
+        return None
+    if isinstance(value, date):
+        return value
+    text = str(value).strip()
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
+def _release_date_fields(obs: dict[str, Any] | None, reference_period: str | None) -> dict[str, Any]:
+    if obs is None or not reference_period:
+        return {
+            "release_date": None,
+            "release_date_status": "not_recorded",
+        }
+    raw = obs.get("release_date")
+    if raw in (None, ""):
+        return {"release_date": None, "release_date_status": "not_recorded"}
+    parsed = _parse_release_date(raw)
+    if parsed is None:
+        return {"release_date": None, "release_date_status": "inherited_or_inconsistent"}
+    try:
+        period_end = reference_period_end(reference_period)
+    except ValueError:
+        return {"release_date": None, "release_date_status": "inherited_or_inconsistent"}
+    if parsed <= period_end:
+        return {"release_date": None, "release_date_status": "inherited_or_inconsistent"}
+    return {"release_date": str(raw)[:10] if isinstance(raw, str) else parsed.isoformat(), "release_date_status": "recorded"}
+
+
+def _rows_at_reference_period(
+    history: dict[str, Any], spec: dict[str, Any], cutoff: str, reference_period: str
+) -> list[dict[str, Any]]:
+    rows = _observations_for_spec(history, spec, cutoff)
+    matched = [obs for obs in rows if obs.get("reference_period") == reference_period]
+    if spec.get("collapse") == "equal_mean_same_period":
+        series_ids = set(spec.get("series_ids") or [])
+        matched = [obs for obs in matched if obs.get("series_id") in series_ids]
+    elif spec.get("series_id"):
+        matched = [obs for obs in matched if obs.get("series_id") == spec["series_id"]]
+    return matched
+
+
+def _lineage_for_scored_period(
+    history: dict[str, Any],
+    spec: dict[str, Any],
+    cutoff: str,
+    reference_period: str | None,
+) -> dict[str, Any]:
+    if not reference_period:
+        return {
+            "retrieved_at": None,
+            "release_date": None,
+            "release_date_status": "not_recorded",
+        }
+    rows = _rows_at_reference_period(history, spec, cutoff, reference_period)
+    if not rows:
+        return {
+            "retrieved_at": None,
+            "release_date": None,
+            "release_date_status": "not_recorded",
+        }
+    best = max(rows, key=lambda obs: str(obs.get("retrieved_at") or ""))
+    retrieved = best.get("retrieved_at")
+    release_bits = _release_date_fields(best, reference_period)
+    return {
+        "retrieved_at": str(retrieved) if retrieved else None,
+        **release_bits,
+    }
+
+
+def _max_iso_timestamp(values: list[str]) -> str | None:
+    cleaned = [str(v) for v in values if v]
+    return max(cleaned) if cleaned else None
+
+
+def _utc_date_from_iso(value: str | None) -> str | None:
+    if not value:
+        return None
+    text = str(value).strip()
+    if text.endswith("Z"):
+        text = text[:-1] + "+00:00"
+    try:
+        stamp = datetime.fromisoformat(text)
+    except ValueError:
+        return text[:10] if len(text) >= 10 else None
+    if stamp.tzinfo is not None:
+        stamp = stamp.astimezone(timezone.utc)
+    return stamp.date().isoformat()
 
 
 def month_before(period: str) -> str | None:
@@ -396,6 +498,7 @@ def compute_state(
                 spec = _component_spec(cal, country, dimension, comp_name)
                 res = score_component(history, spec, cal, cutoff, float(weight))
                 comp_results[comp_name] = res
+                lineage = _lineage_for_scored_period(history, spec, cutoff, res.as_of)
                 component_state[comp_name] = {
                     "observed": res.observed,
                     "as_of": res.as_of,
@@ -405,6 +508,9 @@ def compute_state(
                     "weight": float(weight),
                     "coverage_contribution": float(weight) if res.observed and res.level is not None else 0.0,
                     "short_window": res.short_window,
+                    "retrieved_at": lineage["retrieved_at"],
+                    "release_date": lineage["release_date"],
+                    "release_date_status": lineage["release_date_status"],
                 }
             agg = aggregate_dimension(weights, comp_results, cal)
             countries[country][dimension] = {
@@ -468,10 +574,24 @@ def build_score_state(
 ) -> dict[str, Any]:
     events_by_dimension = events_by_dimension or {}
     countries_out: dict[str, Any] = {}
+    all_reference_periods: list[str] = []
+    all_retrieved: list[str] = []
     for country in COUNTRY_CODES:
         countries_out[country] = {}
         for dimension in DIMENSIONS:
             dim = computed["countries"][country][dimension]
+            comp_periods = [
+                str(state["as_of"])
+                for state in dim["component_state"].values()
+                if isinstance(state, dict) and state.get("as_of")
+            ]
+            for state in dim["component_state"].values():
+                if isinstance(state, dict) and state.get("retrieved_at"):
+                    all_retrieved.append(str(state["retrieved_at"]))
+            all_reference_periods.extend(comp_periods)
+            latest_reference_period = (
+                max(comp_periods, key=period_sort_key) if comp_periods else None
+            )
             entry = {
                 "level": dim["level"],
                 "impulse": dim["impulse"],
@@ -479,6 +599,7 @@ def build_score_state(
                 "coverage": dim["coverage"],
                 "temperature_class": dim["temperature_class"],
                 "as_of": dim["as_of"],
+                "latest_reference_period": latest_reference_period,
                 "components": dim["components"],
                 "component_state": dim["component_state"],
                 "lineage": build_lineage(cal),
@@ -488,12 +609,31 @@ def build_score_state(
                 entry["events"] = ev
             countries_out[country][dimension] = entry
 
+    scoring_cutoff_value = str(computed.get("cutoff") or cal.get("as_of", "")[:7])
+    score_inputs_latest_reference_period = (
+        max(all_reference_periods, key=period_sort_key) if all_reference_periods else None
+    )
+    score_inputs_last_ingested_at = _max_iso_timestamp(all_retrieved)
+    last_refresh_date = _utc_date_from_iso(score_inputs_last_ingested_at) or str(cal["as_of"])
+
     return {
         "version": 3,
         "methodology": cal["methodology"],
         "calibration": "data/temperature_calibration.json",
         "as_of": cal["as_of"],
-        "last_refresh_date": cal["as_of"],
+        "calibration_anchor_date": cal["as_of"],
+        "scoring_cutoff": scoring_cutoff_value,
+        "score_inputs_latest_reference_period": score_inputs_latest_reference_period,
+        "score_inputs_last_ingested_at": score_inputs_last_ingested_at,
+        "last_refresh_date": last_refresh_date,
+        "date_semantics": {
+            "as_of": "Immutable calibration anchor for the 1–100 LEVEL engine (not the latest scored input).",
+            "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
+            "scoring_cutoff": "Latest calendar month the LEVEL engine may read from history.",
+            "score_inputs_latest_reference_period": "Latest reference period among scored components.",
+            "score_inputs_last_ingested_at": "Latest retrieved_at among observations used in the current score.",
+            "last_refresh_date": "UTC date of score_inputs_last_ingested_at, or the calibration anchor if none.",
+        },
         "baseline_score": float(cal["neutral_score"]),
         "baseline_meaning": "structural_policy_neutral_not_reindex_date",
         "countries": countries_out,

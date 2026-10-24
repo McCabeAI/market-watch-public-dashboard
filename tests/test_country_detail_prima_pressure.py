@@ -30,7 +30,7 @@ from tests.test_overnight_scheduled_output import AS_OF
 
 TEMP_SCORES = ROOT / "data/temperature_scores.json"
 TEMP_CALIBRATION = ROOT / "data/temperature_calibration.json"
-CONTEXT_PHRASE = "context only — does not feed Inflation score"
+CONTEXT_PHRASE = "not in the Inflation score"
 REPO_HISTORY = ROOT / "data/prima_pressure/canada_history.json"
 
 
@@ -562,31 +562,26 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.attention,
             self.scores,
         )
-        self.assertIn("Prima Pressure", html)
+        self.assertIn("Inflation pressure proxy", html)
         self.assertIn('data-prima-pressure="ca"', html)
         self.assertIn(CONTEXT_PHRASE, html)
-        self.assertIn("What this shows", html)
-        self.assertIn("No numeric Prima score or magnitude is stored.", html)
-        self.assertIn("Market Watch deterministic proxy", html)
-        self.assertIn("Not a numeric chart.", html)
+        self.assertIn('data-prima-glance', html)
         current = self.projection["countries"]["CA"]["prima_pressure"]["current"]
         self.assertIn(f'data-prima-direction="{current["direction"]}"', html)
-        labels = {
-            "shock_persistence": "Shock persistence",
-            "production_network_pressure": "Production network pressure",
-            "imported_pressure": "Imported pressure",
-            "consumer_price_breadth": "Consumer price breadth",
-            "demand_pass_through_constraint": "Demand pass-through constraint",
-        }
-        for key, label in labels.items():
-            self.assertIn(f"{label}: {current['subcomponent_directions'][key]}", html)
-        self.assertIn("Versus last BoC MPR", html)
+        self.assertEqual(html.count('details class="prima-ch"'), 5)
+        for ch in contract.CHANNELS:
+            self.assertIn(f'data-prima-channel="{ch}"', html)
+            self.assertIn("prima-ch-summary", html)
         prima = html.split('data-prima-pressure="ca"', 1)[1]
         prima = prima.split('class="evidence-block context"', 1)[0]
+        layer1 = prima.split('class="prima-why"', 1)[0]
+        for banned in ("stored observation", "not recomputed", "Quoted as stored"):
+            self.assertNotIn(banned, layer1)
         self.assertNotIn("<svg", prima)
         self.assertNotIn("<canvas", prima)
         self.assertNotIn("/100", prima)
         self.assertNotIn("strength", prima.lower())
+        self.assertEqual(prima.count("not a reconstruction"), 1)
         loud = _presentation_from_block(_rising_block())
         html_loud = render_country_detail(
             "CA",
@@ -594,14 +589,14 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.attention,
             self.scores,
         )
-        self.assertIn("2026-07-09", html_loud)
+        self.assertIn("2026-07-09", html_loud.split('data-prima-raw="run"', 1)[1])
 
     def test_prima_only_on_ca_inflation(self) -> None:
         projection = build_projection(ROOT)
         for code in ("US", "AU", "NZ", "EA", "JP"):
             html = render_country_detail(code, projection["countries"][code], self.attention, self.scores)
             self.assertNotIn('data-prima-pressure', html)
-            self.assertNotIn("Prima Pressure", html)
+            self.assertNotIn("Inflation pressure proxy", html)
 
         ca_html = render_country_detail(
             "CA", projection["countries"]["CA"], self.attention, self.scores
@@ -633,8 +628,6 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         prima_idx_without = html_empty.find('data-prima-pressure="ca"')
         self.assertGreater(prima_idx_full, 0)
         self.assertGreater(prima_idx_without, 0)
-        self.assertEqual(html_empty[:prima_idx_without], html_full[:prima_idx_full])
-
         sum_empty = re.search(
             r'id="cd-CA-Inflation"[^>]*>.*?<summary class="score-summary">(.*?)</summary>',
             html_empty,
@@ -645,7 +638,8 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             html_full,
             flags=re.DOTALL,
         ).group(1)
-        self.assertEqual(sum_empty, sum_full)
+        self.assertIn('data-prima-glance', sum_full)
+        self.assertNotIn('data-prima-glance', sum_empty)
         infl_score = self.scores["countries"]["CA"]["Inflation"]
         self.assertEqual(infl_score["level"], 54.34)
         self.assertEqual(infl_score["impulse"], -0.44)
@@ -680,9 +674,9 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.scores,
         )
         self.assertIn('data-prima-direction="UNAVAILABLE"', html)
-        self.assertIn("Stale", html)
+        self.assertIn("Stale inputs", html)
         self.assertIn('data-prima-channel="production_network_pressure"', html)
-        self.assertIn("Production network pressure: UNAVAILABLE", html)
+        self.assertIn('data-prima-channel-direction="UNAVAILABLE"', html)
         self.assertIn('data-prima-pressure="ca"', html)
 
         missing_dir = _presentation_from_block(_rising_block(direction=None))
@@ -707,7 +701,7 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             prima = html.split('data-prima-pressure="ca"', 1)[1].split("</div>", 1)[0]
             self.assertNotIn("/100", prima)
             self.assertNotIn("strength", prima.lower())
-            self.assertIn("Coverage 0.80", html)
+            self.assertIn("5 of 5 channels available", html)
 
     def test_trend_from_two_accepted_runs(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -780,21 +774,10 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.assertEqual(packet2.get("packet_sha256"), packet.get("packet_sha256"))
             self.assertFalse(hist_path.exists())
 
-    def test_prima_annotation_quotes_oil_and_a_direction_change(self) -> None:
-        earlier = _presentation_from_block(
-            _rising_block(
-                direction="STABLE",
-                largest_drivers=["IPPI ex-energy mom +0.10 percent"],
-                subcomponent_directions={ch: "STABLE" for ch in contract.CHANNELS},
-            )
-        )
-        later = _presentation_from_block(
+    def test_stable_channel_not_listed_under_offsetting(self) -> None:
+        presentation = _presentation_from_block(
             _rising_block(
                 direction="RISING",
-                largest_drivers=[
-                    "Brent last-day 2027-12 1m change +9.2 percent",
-                    "IPPI ex-energy mom +0.28 percent",
-                ],
                 subcomponent_directions={
                     "shock_persistence": "RISING",
                     "production_network_pressure": "STABLE",
@@ -802,6 +785,41 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
                     "consumer_price_breadth": "RISING",
                     "demand_pass_through_constraint": "RISING",
                 },
+            )
+        )
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        prima = html.split('data-prima-pressure="ca"', 1)[1].split(
+            'class="evidence-block context"', 1
+        )[0]
+        offset_block = prima.split('prima-list-label">Offsetting', 1)[1].split(
+            'prima-list-label">Neutral', 1
+        )[0]
+        self.assertNotIn("Production network pressure", offset_block)
+        self.assertIn("Imported pressure", offset_block)
+        neutral_block = prima.split('prima-list-label">Neutral', 1)[1].split("</ul>", 1)[0]
+        self.assertIn("Production network pressure", neutral_block)
+
+    def test_prima_trend_chip_and_channel_change_marker(self) -> None:
+        subs_rising = {
+            "shock_persistence": "RISING",
+            "production_network_pressure": "STABLE",
+            "imported_pressure": "FALLING",
+            "consumer_price_breadth": "RISING",
+            "demand_pass_through_constraint": "RISING",
+        }
+        later = _presentation_from_block(
+            _rising_block(
+                direction="RISING",
+                largest_drivers=[
+                    "Brent last-day 2027-12 1m change +9.2 percent",
+                    "IPPI ex-energy mom +0.28 percent",
+                ],
+                subcomponent_directions=subs_rising,
             )
         )
         later["history_state"] = "trend"
@@ -813,6 +831,7 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
                 "source_id": "overnight-a/review-001",
                 "run_id": "overnight-a",
                 "review_id": "review-001",
+                "subcomponent_directions": {ch: "STABLE" for ch in contract.CHANNELS},
             },
             {
                 "observed_at": "2026-10-23T15:46:45-04:00",
@@ -821,6 +840,7 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
                 "source_id": "overnight-b/review-001",
                 "run_id": "overnight-b",
                 "review_id": "review-001",
+                "subcomponent_directions": subs_rising,
             },
         ]
         later["transitions"] = [
@@ -832,7 +852,6 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
                 "label": "STABLE → RISING",
             }
         ]
-        later["current"] = later["current"]
         html = render_country_detail(
             "CA",
             {**self.projection["countries"]["CA"], "prima_pressure": later},
@@ -841,63 +860,118 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         )
         prima = html.split('data-prima-pressure="ca"', 1)[1]
         prima = prima.split('class="evidence-block context"', 1)[0]
-        self.assertIn('data-prima-vs="changed"', prima)
-        self.assertIn("Changed vs previous stored observation (STABLE → RISING)", prima)
-        self.assertIn("Current stored direction is RISING.", prima)
-        self.assertIn("Channels stored in the current direction: Shock persistence, Consumer price breadth, Demand pass-through constraint.", prima)
-        self.assertIn("Production network pressure STABLE", prima)
-        self.assertIn("Imported pressure is stored as FALLING.", prima)
-        self.assertIn("Imported pressure: FALLING", prima)
-        self.assertIn("Oil context in stored driver lines: Brent last-day 2027-12 1m change +9.2 percent.", prima)
-        self.assertIn("Quoted as stored.", prima)
-        self.assertIn("Brent end-2027 versus the MPR prose assumption", prima)
-        self.assertIn("does not add an oil weight, contribution, or forecast.", prima)
-        self.assertIn("IPPI ex-energy mom +0.28 percent", prima)
-        oil_sentence = prima.split("Oil context in stored driver lines:", 1)[1].split("</p>", 1)[0]
-        self.assertNotIn("IPPI", oil_sentence)
-        self.assertIn("data-prima-step-direction=\"STABLE\"", prima)
-        self.assertIn("data-prima-step-direction=\"RISING\"", prima)
-        self.assertIn("2026-10-21", prima)
-        self.assertIn("2026-10-23", prima)
-        self.assertIn("overnight-b/review-001", prima)
-        self.assertIn("shock_persistence = RISING", prima)
-        self.assertIn("feeds_inflation_score: false", prima)
-        self.assertNotIn("<svg", prima)
-        self.assertNotIn("strength", prima.lower())
-        self.assertNotIn(earlier["current"]["direction"] + " score", prima)
+        layer1 = prima.split('class="prima-why"', 1)[0]
+        self.assertIn("changed from Stable (21 Oct)", layer1)
+        self.assertIn("prima-strip", prima)
+        self.assertIn("21 Oct", prima)
+        self.assertIn("23 Oct", prima)
+        self.assertNotIn("2026-10-21", layer1)
+        self.assertIn("was Stable 21 Oct", prima)
+        self.assertIn("↓ Falling", prima)
+        self.assertNotIn("Offsetting</div><ul><li>→ Stable Production", prima)
+        imported = prima.split('data-prima-why="imported_pressure"', 1)[1]
+        self.assertIn("0.40%", imported)
+        self.assertIn("Not stored for this run", imported)
 
-    def test_prima_annotation_omits_oil_when_stored_lines_do_not_name_it(self) -> None:
-        presentation = _presentation_from_block(
-            _rising_block(
-                direction="STABLE",
-                largest_drivers=["IPPI ex-energy mom +0.28 percent"],
-                change_since_last_mpr="unavailable",
-                conditioning_date=None,
-                mpr_status="unavailable",
-                subcomponent_directions={ch: "STABLE" for ch in contract.CHANNELS},
-            )
-        )
+    def test_repo_demand_shows_prior_run_corra_reading(self) -> None:
+        presentation = build_presentation(ROOT)
         html = render_country_detail(
             "CA",
             {**self.projection["countries"]["CA"], "prima_pressure": presentation},
             self.attention,
             self.scores,
         )
-        prima = html.split('data-prima-pressure="ca"', 1)[1]
-        prima = prima.split('class="evidence-block context"', 1)[0]
-        self.assertIn('data-prima-vs="no-previous"', prima)
-        self.assertIn("No previous stored observation", prima)
-        self.assertIn("No stored direction timeline. History is not fabricated.", prima)
-        self.assertIn(
-            "No stored driver line or last-MPR comparison names Brent, WTI, crude, or a listed oil product.",
-            prima,
+        demand = html.split('data-prima-why="demand_pass_through_constraint"', 1)[1].split(
+            "</details>", 1
+        )[0]
+        self.assertIn("Earlier stored reading", demand)
+        self.assertIn("22 Oct", demand)
+        self.assertIn("0.50 pp below", demand)
+
+    def test_repo_imported_falling_missing_stored_mom(self) -> None:
+        presentation = build_presentation(ROOT)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
         )
-        self.assertIn("No oil contribution is shown.", prima)
-        self.assertNotIn("Oil context in stored driver lines", prima)
-        self.assertIn("IPPI ex-energy mom +0.28 percent", prima)
-        self.assertIn("The comparison versus the last BoC MPR is unavailable.", prima)
-        self.assertNotIn("Brent end-2027 versus the MPR prose assumption", prima)
-        self.assertIn(CONTEXT_PHRASE, prima)
+        imported = html.split('data-prima-why="imported_pressure"', 1)[1].split(
+            "</details>", 1
+        )[0]
+        self.assertIn('data-prima-evidence="missing"', imported)
+        self.assertIn("23 Oct", imported)
+        self.assertIn("21 Oct Rising → 22 Oct Unavailable", imported)
+        self.assertIn("Falling", imported)
+        self.assertIn('data-prima-channel-direction="FALLING"', html)
+
+    def test_imported_pressure_snippet_names_exact_series(self) -> None:
+        """The short label must not imply all energy components were removed."""
+        from scripts.country_detail._prima_section import _prima_channel_snippet
+
+        directions = {"imported_pressure": "FALLING"}
+        direct = _prima_channel_snippet(
+            "imported_pressure",
+            directions,
+            [],
+            {"imported_pressure": {"inputs": [{"mom": -0.005}]}},
+        )
+        fallback = _prima_channel_snippet(
+            "imported_pressure",
+            directions,
+            ["RMPI ex-crude-energy mom -0.50 percent"],
+            None,
+        )
+        self.assertEqual(direct, "RMPI ex-crude-energy -0.50% m/m")
+        self.assertEqual(fallback, "RMPI ex-crude-energy -0.50% m/m")
+
+    def test_channel_evidence_fixture_shows_direct_imported_input(self) -> None:
+        from scripts.prima_pressure.proxy import compact_block, compute_prima_proxy
+        from tests.prima_pressure.test_proxy import _stable_flat_bundle, _producer_series
+
+        bundle = _stable_flat_bundle()
+        bundle["producer_prices"]["series"] = [
+            {
+                **_producer_series("rmpi_ex_crude_energy", -0.005),
+                "table": "18-10-0268-01",
+                "vector_id": 1230998148,
+                "prior_period": "2026-07",
+                "prior_value": 100.0,
+            },
+            _producer_series("ippi_ex_energy", 0.0),
+        ]
+        block = compact_block(compute_prima_proxy(bundle))
+        from scripts.prima_pressure.presentation import project_block
+
+        presentation = _presentation_from_block(block)
+        presentation["current"] = project_block(block)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        imported = html.split('data-prima-why="imported_pressure"', 1)[1]
+        self.assertIn('data-prima-evidence="direct"', imported)
+        self.assertIn("RMPI ex-crude-energy -0.50% m/m", html)
+        self.assertNotIn("RMPI ex-energy", html)
+        self.assertNotIn('data-prima-evidence="missing"', imported.split("</details>", 1)[0])
+
+    def test_headline_change_reports_streak_start(self) -> None:
+        from scripts.country_detail._prima_section import _prima_headline_change
+
+        def point(day: str, direction: str) -> dict[str, str]:
+            return {"observed_at": f"2026-10-{day}T08:00:00-04:00", "direction": direction}
+
+        all_rising = [point("21", "RISING"), point("22", "RISING"), point("23", "RISING")]
+        self.assertEqual(
+            _prima_headline_change("RISING", all_rising),
+            "same in all 3 stored runs since 21 Oct",
+        )
+        streak = [point("20", "STABLE"), point("21", "RISING"), point("22", "RISING"), point("23", "RISING")]
+        self.assertEqual(_prima_headline_change("RISING", streak), "unchanged since 21 Oct")
+        flipped = [point("22", "STABLE"), point("23", "RISING")]
+        self.assertEqual(_prima_headline_change("RISING", flipped), "changed from Stable (22 Oct)")
 
     def test_renderer_deterministic(self) -> None:
         p1 = build_presentation(ROOT)

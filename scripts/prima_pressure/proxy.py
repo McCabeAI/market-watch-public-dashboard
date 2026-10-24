@@ -62,13 +62,18 @@ def _mom_direction(mom: float | None, band: float) -> str:
 
 def _curve_driver(point: dict, label: str) -> dict:
     abs_chg, pct_chg = _change_1m(point)
+    bucket = (point.get("changes") or {}).get("1m") or {}
+    obs_date = point.get("observation_date") or point.get("as_of")
     return {
         "label": label,
         "symbol": point.get("symbol"),
         "contract_month": point.get("contract_month"),
         "maturity_months": point.get("maturity_months"),
+        "price": _safe_float(point.get("price")),
         "change_1m_abs": abs_chg,
         "change_1m_pct": pct_chg,
+        "observation_date": obs_date,
+        "change_1m_base_date": bucket.get("prior_date"),
     }
 
 
@@ -205,12 +210,26 @@ def _production_network(bundle: dict) -> tuple[dict, list[dict], bool, str | Non
     direction = _mom_direction(mom, contract.IPPI_EX_ENERGY_MOM_BAND) if source else "UNAVAILABLE"
     drivers: list[dict] = []
     if source and series_id:
+        row_meta = series.get(series_id) if series_id in series else {}
+        if source == "sector_ppi":
+            row_meta = sector
         drivers.append(
             {
                 "input": source,
                 "series_id": series_id,
                 "mom": mom,
                 "band": contract.IPPI_EX_ENERGY_MOM_BAND,
+                "table": row_meta.get("table"),
+                "vector_id": row_meta.get("vector_id"),
+                "units": row_meta.get("units"),
+                "seasonal_status": row_meta.get("seasonal_status"),
+                "period": row_meta.get("period"),
+                "value": row_meta.get("value"),
+                "prior_period": row_meta.get("prior_period"),
+                "prior_value": row_meta.get("prior_value"),
+                "release_time": row_meta.get("release_time"),
+                "status": row_meta.get("status"),
+                "stale": row_meta.get("stale"),
             }
         )
 
@@ -241,12 +260,23 @@ def _imported_pressure(bundle: dict) -> tuple[dict, list[dict], bool]:
 
     direction = _mom_direction(mom, contract.RMPI_EX_ENERGY_MOM_BAND) if mom is not None else "UNAVAILABLE"
     drivers: list[dict] = []
-    if mom is not None:
+    if mom is not None and row:
         drivers.append(
             {
                 "series_id": "rmpi_ex_crude_energy",
                 "mom": mom,
                 "band": contract.RMPI_EX_ENERGY_MOM_BAND,
+                "table": row.get("table"),
+                "vector_id": row.get("vector_id"),
+                "units": row.get("units"),
+                "seasonal_status": row.get("seasonal_status"),
+                "period": row.get("period"),
+                "value": row.get("value"),
+                "prior_period": row.get("prior_period"),
+                "prior_value": row.get("prior_value"),
+                "release_time": row.get("release_time"),
+                "status": row.get("status"),
+                "stale": row.get("stale"),
             }
         )
     sub = _channel_shell(direction, stale=stale, drivers=drivers)
@@ -328,12 +358,25 @@ def _consumer_breadth(bundle: dict) -> tuple[dict, list[dict], bool]:
     if breadth_share is None or accel_pp is None:
         note = "Requires all eight CPI majors with month-over-month readings and at least five trim index levels."
     else:
+        major_details: list[dict] = []
+        for major_id in contract.CPI_MAJOR_IDS:
+            major_row = series.get(major_id) or {}
+            pts = major_row.get("points") or []
+            latest_period = pts[-1].get("period") if pts else None
+            major_details.append(
+                {
+                    "series_id": major_id,
+                    "latest_mom": _safe_float(major_row.get("latest_mom")),
+                    "period": latest_period,
+                }
+            )
         drivers.append(
             {
                 "breadth_share": breadth_share,
                 "breadth_positive_majors": positive,
                 "breadth_majors_with_mom": with_mom,
                 "trim_accel_pp": accel_pp,
+                "majors": major_details,
             }
         )
         rising = (
@@ -610,6 +653,45 @@ def compute_prima_proxy(bundle: dict) -> dict:
     }
 
 
+_CHANNEL_RULE_IDS = {
+    "shock_persistence": "brent_12m_24m_1m_persistence",
+    "production_network_pressure": "ippi_ex_energy_mom_band",
+    "imported_pressure": "rmpi_ex_crude_energy_mom_band",
+    "consumer_price_breadth": "cpi_major_share_trim_accel",
+    "demand_pass_through_constraint": "corra_neutral_gap",
+}
+
+
+def _flatten_channel_inputs(drivers: list[dict]) -> list[dict]:
+    out: list[dict] = []
+    for drv in drivers:
+        if drv.get("context") == "wti":
+            continue
+        nested = drv.get("points")
+        if isinstance(nested, list):
+            for pt in nested:
+                if isinstance(pt, dict):
+                    out.append(dict(pt))
+            continue
+        out.append({k: v for k, v in drv.items() if k not in ("label", "input")})
+    return out
+
+
+def _build_channel_evidence(subcomponents: dict[str, dict]) -> dict[str, dict]:
+    evidence: dict[str, dict] = {}
+    for ch in CHANNELS:
+        sub = subcomponents.get(ch) or {}
+        note = sub.get("note")
+        evidence[ch] = {
+            "direction": sub.get("direction", "UNAVAILABLE"),
+            "rule": _CHANNEL_RULE_IDS[ch],
+            "inputs": _flatten_channel_inputs(sub.get("drivers") or []),
+            "stale": bool(sub.get("stale")),
+            "note": str(note) if note is not None else None,
+        }
+    return evidence
+
+
 def compact_block(proxy: dict) -> dict:
     proxy = proxy or {}
     mpr = proxy.get("mpr_comparison") or {}
@@ -638,4 +720,5 @@ def compact_block(proxy: dict) -> dict:
             bool(staleness.get("producer")),
             str(staleness.get("oil_status") or ("stale" if staleness.get("oil") else "fresh")),
         ),
+        "channel_evidence": _build_channel_evidence(subs),
     }

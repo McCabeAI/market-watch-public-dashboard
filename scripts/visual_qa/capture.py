@@ -51,6 +51,18 @@ def select(page, radio: str) -> None:
     )
 
 
+def open_details_in_country(page, country_key: str) -> None:
+    """Open every <details> inside ``.cdetail.<country_key>`` (nested included)."""
+    page.evaluate(
+        """(code) => {
+        const root = document.querySelector('.cdetail.' + code);
+        if (!root) return;
+        root.querySelectorAll('details').forEach((d) => { d.open = true; });
+    }""",
+        country_key,
+    )
+
+
 def slice_image(path: Path, dest: Path) -> None:
     """Cut a full-page capture into readable viewport-sized chunks (needs Pillow)."""
     try:
@@ -84,6 +96,7 @@ def main() -> None:
     else:
         base, out = args[0], Path(args[1])
     full = "--full" in sys.argv
+    open_details = "--open-details" in sys.argv
     only = [a.split("=", 1)[1] for a in sys.argv if a.startswith("--only=")]
     out.mkdir(parents=True, exist_ok=True)
     chrome = os.environ.get("CHROME_PATH", "/usr/local/bin/google-chrome")
@@ -106,6 +119,8 @@ def main() -> None:
                 select(page, radio)
                 if sub:
                     select(page, sub)
+                    if open_details:
+                        open_details_in_country(page, sub.removeprefix("c-"))
                 page.wait_for_timeout(600)
                 shot = out / f"{vname}-{name}.png"
                 page.screenshot(path=str(shot), full_page=full)

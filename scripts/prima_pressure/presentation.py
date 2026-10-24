@@ -85,7 +85,18 @@ def project_block(block: dict[str, Any]) -> dict[str, Any]:
         if item not in unique_reasons:
             unique_reasons.append(item)
 
-    return {
+    channel_evidence: dict[str, Any] | None = None
+    ce_raw = block.get("channel_evidence")
+    if isinstance(ce_raw, dict):
+        normalized_ce: dict[str, Any] = {}
+        for channel in CHANNELS:
+            entry = ce_raw.get(channel)
+            if isinstance(entry, dict):
+                normalized_ce[channel] = entry
+        if normalized_ce:
+            channel_evidence = normalized_ce
+
+    projected: dict[str, Any] = {
         "direction": direction,
         "subcomponent_directions": subcomponent_directions,
         "confidence": block.get("confidence") if block.get("confidence") is not None else None,
@@ -100,6 +111,9 @@ def project_block(block: dict[str, Any]) -> dict[str, Any]:
         "largest_drivers": largest_drivers,
         "stale": stale,
     }
+    if channel_evidence is not None:
+        projected["channel_evidence"] = channel_evidence
+    return projected
 
 
 def _synthetic_unavailable_current() -> dict[str, Any]:
@@ -177,6 +191,12 @@ def _trend_point(observation: dict[str, Any], projected: dict[str, Any]) -> dict
         point["status"] = projected["status"]
     if projected.get("staleness"):
         point["staleness"] = projected["staleness"]
+    point["subcomponent_directions"] = dict(projected.get("subcomponent_directions") or {})
+    if projected.get("largest_drivers"):
+        point["largest_drivers"] = list(projected["largest_drivers"])
+    ce = projected.get("channel_evidence")
+    if isinstance(ce, dict) and ce:
+        point["channel_evidence"] = ce
     return point
 
 
