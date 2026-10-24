@@ -36,9 +36,29 @@ from scripts.temperature_level import display_score, temperature_class
 
 _CSS_PATH = Path(__file__).resolve().parent / "country_detail.css"
 
-_DIRECTION_LABELS = {"cooling": "Cooling", "static": "Static", "warming": "Warming"}
+_DIRECTION_LABELS = {"cooling": "cooling", "static": "static", "warming": "warming"}
+_DIRECTION_ARROW = {"cooling": "↓", "static": "→", "warming": "↑"}
 
 _MONTHS = "JAN FEB MAR APR MAY JUN JUL AUG SEP OCT NOV DEC".split()
+_MONTHS_TITLE = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
+
+_COMPONENT_NAMES = {
+    "core_pce": "Core PCE",
+    "headline": "Headline",
+    "underlying": "Underlying",
+    "unemployment": "Unemployment",
+    "wages": "Wages",
+    "payrolls": "Payrolls",
+    "employment": "Employment",
+    "gdp_domestic_demand": "Domestic demand",
+    "services_surveys": "Services surveys",
+    "manufacturing_surveys": "Manufacturing surveys",
+    "business_surveys": "Business surveys",
+    "retail": "Retail",
+    "income": "Income",
+    "spending": "Spending",
+    "confidence": "Confidence",
+}
 
 
 def country_detail_css() -> str:
@@ -105,15 +125,82 @@ def _dimension_spec(score_state: Mapping[str, Any], country_code: str, dimension
     return dict(spec) if spec else {}
 
 
-def _impulse_line(spec: Mapping[str, Any]) -> str:
+def _pretty_vintage(text: str) -> str:
+    monthly = re.fullmatch(r"(\d{4})-(\d{2})", str(text).strip())
+    if monthly:
+        month = int(monthly.group(2))
+        if 1 <= month <= 12:
+            return f"{_MONTHS_TITLE[month - 1]} {monthly.group(1)}"
+    quarterly = re.fullmatch(r"(\d{4})-Q([1-4])", str(text).strip())
+    if quarterly:
+        return f"{quarterly.group(1)} Q{quarterly.group(2)}"
+    daily = re.fullmatch(r"(\d{4})-(\d{2})-(\d{2})", str(text).strip())
+    if daily:
+        month = int(daily.group(2))
+        if 1 <= month <= 12:
+            return f"{int(daily.group(3))} {_MONTHS_TITLE[month - 1]} {daily.group(1)}"
+    return str(text)
+
+
+def _component_label(key: str) -> str:
+    return _COMPONENT_NAMES.get(key, str(key).replace("_", " "))
+
+
+def _vintage_line(spec: Mapping[str, Any]) -> str:
+    """Input vintage from component_state as_of. Empty when the score state has none."""
+    components = spec.get("component_state")
+    if not isinstance(components, Mapping):
+        return ""
+    items: list[tuple[str, str]] = []
+    for key, state in components.items():
+        if not isinstance(state, Mapping):
+            continue
+        if state.get("observed") is False:
+            continue
+        as_of = state.get("as_of")
+        if not as_of:
+            continue
+        items.append((_component_label(str(key)), _pretty_vintage(str(as_of))))
+    if not items:
+        return ""
+    if len(items) == 1:
+        name, period = items[0]
+        return f"{name} through {period}"
+    periods = {period for _, period in items}
+    if len(periods) == 1:
+        return f"Inputs through {items[0][1]}"
+    return " · ".join(f"{name} through {period}" for name, period in items)
+
+
+def _impulse_markup(spec: Mapping[str, Any]) -> str:
     direction = str(spec.get("direction") or "static").lower()
-    label = _DIRECTION_LABELS.get(direction, direction.title())
+    if direction not in _DIRECTION_LABELS:
+        direction = "static"
     impulse = spec.get("impulse")
-    if impulse is None:
-        impulse_bit = "n/a"
+    number = "n/a" if impulse is None else f"{float(impulse):+.2f}"
+    return (
+        f'<span class="imp imp-{_esc(direction)}">{_esc(_DIRECTION_ARROW[direction])} '
+        f"{_esc(_DIRECTION_LABELS[direction])} {_esc(number)}</span>"
+        '<span class="mw-asof">vs prior print</span>'
+    )
+
+
+def _score_header(score_state: Mapping[str, Any]) -> str:
+    as_of = score_state.get("as_of") if isinstance(score_state, Mapping) else None
+    if as_of:
+        freeze = f"Score freeze {_pretty_vintage(str(as_of))}"
     else:
-        impulse_bit = display_score(float(impulse))
-    return f"{label} · impulse {impulse_bit}"
+        freeze = "Score freeze date not published in this view"
+    legend = (
+        "LEVEL is the 1–100 score, where 50 is the structural/policy neutral point. "
+        "IMPULSE is the latest print versus the prior print, in score points."
+    )
+    return (
+        '<header class="cd-head">'
+        f'<span class="mw-asof">{_esc(freeze)}</span>'
+        f'<p class="cd-legend">{_esc(legend)}</p>'
+        "</header>"
+    )
 
 
 def _score_level_parts(spec: Mapping[str, Any]) -> tuple[str, str, str]:
@@ -209,15 +296,21 @@ def _render_score_compact(country_code: str, score_state: Mapping[str, Any]) -> 
     parts: list[str] = ['<div class="score-compact">']
     for dimension in SCORE_DIMENSIONS:
         spec = _dimension_spec(score_state, country_code, dimension)
-        level_text, _, _ = _score_level_parts(spec)
-        impulse = _impulse_line(spec)
+        level_text, klass, width_text = _score_level_parts(spec)
+        class_word = "" if spec.get("level") is None else str(spec.get("temperature_class") or klass)
+        vintage = _vintage_line(spec)
+        vintage_html = f'<span class="cd-vintage mw-asof">{_esc(vintage)}</span>' if vintage else ""
         anchor = f"#cd-{_esc(country_code)}-{_esc(dimension)}"
         parts.append(
             f'<a class="score-compact-btn" href="{anchor}">'
-            f'<span class="scd-dim">{_esc(dimension)}</span>'
-            f'<span class="scd-level">{_esc(level_text)}</span>'
-            f'<span class="scd-impulse">{_esc(impulse)}</span>'
-            f"</a>"
+            f'<span class="scd-dim mw-label">{_esc(dimension)}</span>'
+            '<span class="scd-level"><span class="mw-label">Level</span> '
+            f'<span class="mw-num">{_esc(level_text)}</span><span class="scd-scale">/100</span> '
+            f'<span class="scd-class">{_esc(class_word)}</span></span>'
+            f'<span class="lvl-track" aria-hidden="true"><span class="lvl-bar" data-temp="{_esc(klass)}" style="width:{_esc(width_text)}%"></span></span>'
+            f'<span class="scd-impulse"><span class="mw-label">Impulse</span> {_impulse_markup(spec)}</span>'
+            f"{vintage_html}"
+            "</a>"
         )
     parts.append("</div>")
     return "".join(parts)
@@ -255,10 +348,10 @@ def _render_wmn(
             value_s = _format_value(obs.get("value"), obs.get("units"), obs.get("transformation"))
             period = _format_period(obs.get("reference_period") or finding.get("reference_period"))
             value_bits = " · ".join(bit for bit in (value_s, period) if bit)
-            parts.append(f'<p class="wmn-value">{_esc(value_bits)}</p>')
+            parts.append(f'<p class="wmn-value mw-num">{_esc(value_bits)}</p>')
             parts.append(f'<p class="wmn-bucket">{_esc(bucket_label(obs))}</p>')
-            parts.append(f'<p class="wmn-synopsis">{_esc(series_synopsis(obs))}</p>')
             parts.append(f'<p class="wmn-why">{_esc(why_it_surfaced(finding, obs))}</p>')
+            parts.append(f'<p class="wmn-synopsis">{_esc(series_synopsis(obs))}</p>')
             related = list(finding.get("related_observation_ids") or [])
             rel_text = _related_obs_text(related, obs_map)
             if rel_text:
@@ -266,16 +359,19 @@ def _render_wmn(
                     f'<p class="wmn-related">Related: {_esc(rel_text)}</p>'
                 )
             parts.append('<details class="wmn-technical"><summary>Technical detail</summary>')
+            official = str(obs.get("label") or "")
+            if official:
+                parts.append(f'<p class="wmn-official">Official title: {_esc(official)}</p>')
             parts.append(f'<p class="wmn-reason">{_esc(finding.get("reason", ""))}</p>')
             parts.append(
                 f'<p class="wmn-headline">{_esc(finding.get("headline_text", ""))}</p>'
             )
             series_id = obs.get("series_id") or finding.get("series_id")
             if series_id:
-                parts.append(f'<p class="evidence-code">{_esc(series_id)}</p>')
+                parts.append(f'<p class="evidence-code mw-raw">{_esc(series_id)}</p>')
             raw_transformation = obs.get("transformation") or finding.get("transformation")
             if raw_transformation:
-                parts.append(f'<p class="evidence-code">{_esc(raw_transformation)}</p>')
+                parts.append(f'<p class="evidence-code mw-raw">{_esc(raw_transformation)}</p>')
             parts.append("</details></article>")
         parts.append("</ol>")
     parts.append("</section>")
@@ -363,9 +459,12 @@ def _render_evidence_row(
         '<div class="evidence-technical">',
         f'<p class="evidence-synopsis">{_esc(series_synopsis(obs))}</p>',
     ]
+    official = str(obs.get("label") or "")
+    if official:
+        parts.append(f'<p class="wmn-official">Official title: {_esc(official)}</p>')
     series_id = obs.get("series_id")
     if series_id:
-        parts.append(f'<p class="evidence-code">Series {_esc(series_id)}</p>')
+        parts.append(f'<p class="evidence-code mw-raw">Series {_esc(series_id)}</p>')
     raw_transformation = obs.get("transformation")
     if raw_transformation:
         parts.append(
@@ -468,10 +567,28 @@ def _audit_row(
         lead = f"<strong>{_esc(label)}</strong>"
         if state_markup:
             lead = f"{lead} {state_markup}"
+        official = str(obs.get("label") or "")
+        series_id = obs.get("series_id")
+        technical_bits = []
+        if official:
+            technical_bits.append(f"<p>Official title: {_esc(official)}</p>")
+        if series_id:
+            technical_bits.append(f'<p class="evidence-code mw-raw">Series {_esc(series_id)}</p>')
+        raw_transformation = obs.get("transformation")
+        if raw_transformation:
+            technical_bits.append(f'<p class="evidence-code mw-raw">{_esc(raw_transformation)}</p>')
+        technical = ""
+        if technical_bits:
+            technical = (
+                '<details class="score-input-technical"><summary>Technical detail</summary>'
+                + "".join(technical_bits)
+                + "</details>"
+            )
         return (
             f'<div class="evidence-grid-row" data-observation-id="{_esc(oid)}">'
             f"{lead} — "
             f'<a href="#ev-{_esc(oid)}">Country Evidence</a>'
+            f"{technical}"
             "</div>"
         )
     period = _format_period(obs.get("reference_period"))
@@ -820,8 +937,12 @@ def _render_score_drilldown(
             ctx_rows = '<div class="evidence-grid-row">No context rows for this topic.</div>'
 
         detail_id = f"cd-{country_code}-{dimension}"
+        vintage = _vintage_line(spec)
+        class_word = "" if spec.get("level") is None else str(spec.get("temperature_class") or klass)
+        vintage_html = f'<div class="score-hint mw-asof">{_esc(vintage)}</div>' if vintage else ""
         impulse_html = (
-            f'<div class="score-impulse">{_esc(_impulse_line(spec))}</div>'
+            '<div class="score-impulse"><span class="mw-label">Impulse</span>'
+            f"{_impulse_markup(spec)}</div>"
         )
         lineage = (
             f"<div class=\"lineage-note\"><b>Score lineage:</b> {LINEAGE_ANCHOR_PHRASE}. "
@@ -836,10 +957,12 @@ def _render_score_drilldown(
             f'<details class="{SCORE_DETAIL_CLASS_ATTRIBUTE}" id="{_esc(detail_id)}">'
             f'<summary class="score-summary">'
             f'<div class="score-top"><b>{_esc(dimension)}</b>'
-            f'<span class="score-num">{_esc(score_text)}/100</span></div>'
+            f'<span class="score-level-block"><span class="mw-label">Level</span> '
+            f'<span class="score-num mw-num">{_esc(score_text)}</span><span class="scd-scale">/100</span> '
+            f'<span class="scd-class">{_esc(class_word)}</span></span></div>'
             f'<div class="temp-bar"><i class="{_esc(klass)}" style="width:{_esc(width_text)}%"></i></div>'
-            f'<div class="score-hint">{_esc(dimension)} score</div>'
             f"{impulse_html}"
+            f"{vintage_html}"
             f"</summary>"
             f'<div class="score-evidence">'
             f'<div class="evidence-block">'
@@ -872,6 +995,7 @@ def render_country_detail(
 
     chunks = [
         f'<section class="country-detail" data-country="{_esc(code)}">',
+        _score_header(score_state),
         _render_score_compact(code, score_state),
         _render_wmn(attention_country, obs_map),
         _render_score_drilldown(

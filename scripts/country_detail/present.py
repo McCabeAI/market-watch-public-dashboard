@@ -21,8 +21,82 @@ _INTERNAL_CODES = (
 )
 
 
+# Exact official titles that are too long for a row. The full title stays in technical detail.
+_CONCISE_TITLES = (
+    (
+        "personal consumption expenditures: chain-type price index, excluding food and energy",
+        "Core PCE",
+    ),
+    (
+        "personal consumption expenditures: chain-type price index",
+        "PCE price index",
+    ),
+    ("real gross domestic product", "Real GDP"),
+)
+
+_TRANSFORMATION_MARKS = (
+    ("mom_sa_compound_annualized_n3", "3m annualised"),
+    ("mean_qoq_to_saar_n2", "q/q annualised"),
+    ("qoq_pct_saar", "q/q annualised"),
+    ("qoq_to_saar", "q/q annualised"),
+    ("saar_pct", "annualised"),
+    ("mom_sa_pct", "m/m"),
+    ("mom_pct", "m/m"),
+    ("mom_change_thousands_sa", "m/m"),
+    ("mm_change_thousands_sa", "m/m"),
+    ("ppi_component_mom_pct", "m/m"),
+    ("yoy_pct", "y/y"),
+    ("qoq_sa_pct", "q/q"),
+    ("qoq_pct", "q/q"),
+    ("index_level", "level"),
+    ("monthly_level", "level"),
+    ("level_thousands_sa", "level"),
+    ("calendar_day_rate", "calendar-day rate"),
+    ("diffusion_index", "diffusion"),
+    ("percent", "level"),
+)
+
+
+def transformation_mark(transformation: str | None) -> str:
+    """Short disambiguator for a published transformation. Empty when unmapped."""
+    text = str(transformation or "").strip().lower()
+    if not text:
+        return ""
+    for key, mark in _TRANSFORMATION_MARKS:
+        if text == key:
+            return mark
+    if "annual" in text and "3" in text:
+        return "3m annualised"
+    if text.startswith("level") or text.endswith("_level") or text == "index":
+        return "level"
+    if "yoy" in text or "year" in text:
+        return "y/y"
+    if "mom" in text or text.startswith("mm"):
+        return "m/m"
+    if "qoq" in text or "saar" in text:
+        return "q/q annualised" if "saar" in text or "annual" in text else "q/q"
+    return ""
+
+
+def _concise_base(label: str) -> str:
+    """Shorten only long official titles. Short labels stay intact."""
+    if len(label) <= 64:
+        return label
+    lowered = label.lower()
+    for needle, alias in _CONCISE_TITLES:
+        if needle in lowered:
+            return alias
+    text = re.sub(r",?\s+percent change from preceding period.*$", "", label, flags=re.I).strip(" ,")
+    text = re.sub(r",?\s+seasonally adjusted annual rate.*$", "", text, flags=re.I).strip(" ,")
+    if len(text) > 64:
+        text = text.split(",")[0].strip()
+    if len(text) > 72:
+        text = text[:69].rstrip() + "…"
+    return text or label
+
+
 def plain_series_name(obs: Mapping[str, Any]) -> str:
-    """Series title without a trailing transformation code."""
+    """Concise series title, disambiguated by its published transformation."""
     label = str(obs.get("label") or obs.get("series_id") or "Series").strip()
     transformation = str(obs.get("transformation") or "")
     suffix = _transformation_words(transformation)
@@ -33,6 +107,10 @@ def plain_series_name(obs: Mapping[str, Any]) -> str:
     if transformation.lower().startswith("level") and re.search(r"\bchange\b", label, flags=re.I):
         label = re.sub(r"(?i)^monthly change in ", "Level of ", label)
         label = re.sub(r"(?i)^change in ", "Level of ", label)
+    label = _concise_base(label)
+    mark = transformation_mark(transformation)
+    if mark and f"· {mark}" not in label:
+        label = f"{label} · {mark}"
     return label or "Series"
 
 

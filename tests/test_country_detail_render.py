@@ -423,7 +423,7 @@ class CountryDetailRenderTest(unittest.TestCase):
         header = re.search(r'class="evidence-item-header">([^<]+)', html)
         self.assertIsNotNone(meta)
         self.assertIsNotNone(header)
-        self.assertEqual(header.group(1), "Level of employed persons, seasonally adjusted")
+        self.assertEqual(header.group(1), "Level of employed persons, seasonally adjusted · level")
         self.assertIn("14,600.81 thousand", meta.group(1))
         self.assertNotIn("thousands_sa", meta.group(1))
         self.assertIn("The number of people employed.", html)

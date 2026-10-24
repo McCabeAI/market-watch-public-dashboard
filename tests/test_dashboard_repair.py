@@ -11,11 +11,12 @@ from zoneinfo import ZoneInfo
 
 from scripts.apply_six_economy_dashboard import apply_six_economy_dashboard
 from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html
+from scripts.dashboard_repair.brief import ranked_impulses, ranked_moves
 from scripts.dashboard_repair.calendar_view import build_release_model
 from scripts.dashboard_repair.official_schedule import parse_abs_future_releases, parse_stats_nz_next_release
 from scripts.dashboard_repair.scoreboard import score_cards
 from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
-from scripts.dashboard_repair.tape import tape_cards
+from scripts.dashboard_repair.tape import render_tape, tape_cards
 from scripts.temperature_level import display_score
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -344,7 +345,8 @@ class RepairHtmlTests(unittest.TestCase):
             series=[_series("US.Inflation.core_pce")],
         )
         self.assertEqual(again.count('data-score-overview="calibrated"'), 1)
-        self.assertEqual(again.count('data-country="jp"'), 1)
+        self.assertGreaterEqual(self.html.count('data-country="jp"'), 1)
+        self.assertEqual(again.count('data-country="jp"'), self.html.count('data-country="jp"'))
         self.assertIn("market-state packet missing", again)
         again_at = again.find('data-global-tape="repair"')
         again_tape = again[again_at : again.find('data-score-overview="calibrated"', again_at)]
@@ -376,6 +378,103 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertIn('id="country-detail"', repaired)
         self.assertNotIn('for="p-feed"', repaired)
         self.assertNotIn('for="p-relative"', repaired)
+        self.assertNotIn("8 SEP 2026", repaired)
+        self.assertIn("Scores frozen 21 Sep 2026", repaired)
+        self.assertIn("September base-page country snapshot — not refreshed; figures may be superseded", repaired)
+
+
+class BriefHeaderArchiveTests(unittest.TestCase):
+    def test_impulses_rank_by_absolute_value(self):
+        rows = ranked_impulses(load_scores(), limit=5)
+        self.assertEqual(len(rows), 5)
+        magnitudes = [abs(row["impulse"]) for row in rows]
+        self.assertEqual(magnitudes, sorted(magnitudes, reverse=True))
+        every = ranked_impulses(load_scores(), limit=99)
+        self.assertGreater(len(every), 5)
+        self.assertGreaterEqual(magnitudes[-1], abs(every[5]["impulse"]))
+        self.assertTrue(all(row["country"] in {"US", "CA", "AU", "NZ", "EA", "JP"} for row in every))
+
+    def test_basis_points_and_percent_stay_in_separate_rankings(self):
+        rates, percents = ranked_moves(tape_cards(_packet()))
+        self.assertTrue(rates)
+        self.assertTrue(percents)
+        self.assertTrue(all(row["unit"] == "bp" for row in rates))
+        self.assertTrue(all(row["unit"] == "%" for row in percents))
+        ranked_keys = {row["key"] for row in rates + percents}
+        self.assertIn("US10Y", ranked_keys)
+        self.assertNotIn("WTI", ranked_keys)
+        self.assertNotIn("SP500", ranked_keys)
+        mixed = [
+            {"key": "US10Y", "label": "US 10Y", "change_value": 4.0, "change_unit": "bp", "as_of": "2026-10-21"},
+            {"key": "CA10Y", "label": "CA 10Y", "change_value": -9.0, "change_unit": "bp", "as_of": "2026-10-21"},
+            {"key": "USDCAD", "label": "USD/CAD", "change_value": 1.2, "change_unit": "%", "as_of": "2026-10-21"},
+            {"key": "WTI", "label": "WTI", "change_value": -3.0, "change_unit": "%", "as_of": "2026-10-21"},
+            {"key": "GOLD", "label": "Gold", "change_value": None, "change_unit": "", "as_of": "2026-10-21"},
+        ]
+        bp_rows, pct_rows = ranked_moves(mixed, limit=3)
+        self.assertEqual([row["key"] for row in bp_rows], ["CA10Y", "US10Y"])
+        self.assertEqual([row["key"] for row in pct_rows], ["WTI", "USDCAD"])
+        self.assertTrue(all(row["unit"] == "bp" for row in bp_rows))
+        self.assertTrue(all(row["unit"] == "%" for row in pct_rows))
+
+    def test_header_replaces_hard_coded_date_and_archive_keeps_jumps(self):
+        snapshot = (
+            '<div class="stitle">Macro Snapshot</div><div class="board">'
+            + "".join(
+                f'<label class="jump" for="c-{code}">Open {code}</label>'
+                for code in ("us", "ca", "au", "nz", "ea", "jp")
+            )
+            + "</div>"
+        )
+        page = (
+            '<header class="topbar"><div class="brand"><b>Market Watch</b>'
+            "<span>Public-data prototype · CAD / AUD / NZD focus · US benchmark · level and direction separated</span>"
+            '</div><div class="meta"><b>8 SEP 2026</b><br/>Official data + public market snapshot<br/>Core controls are script-free</div>'
+            '<span class="stamp">public snapshot</span></header>'
+            + FIXTURE.replace('<div class="stitle">Momentum Watch</div>', snapshot + '<div class="stitle">Momentum Watch</div>', 1)
+        )
+        html = apply_dashboard_repair(
+            page,
+            market_state=_packet(),
+            scores=load_scores(),
+            now=NOW,
+            audit=None,
+            series=[_series("US.Inflation.core_pce")],
+        )
+        self.assertNotIn("8 SEP 2026", html)
+        self.assertIn("Scores frozen 21 Sep 2026", html)
+        self.assertIn("22 Oct 2026 14:00 UTC", html)
+        self.assertIn("Dated official data · not a quote feed", html)
+        self.assertIn("Daily research snapshot", html)
+        self.assertIn("Six economies · US, CA, AU, NZ, EA, JP", html)
+        self.assertNotIn(">public snapshot<", html)
+        start = html.find('<details class="mw-archived"')
+        self.assertGreaterEqual(start, 0)
+        self.assertNotIn(" open", html[start : start + 40])
+        end = html.find("</details>", start)
+        archived = html[start:end]
+        self.assertIn("September base-page country snapshot — not refreshed; figures may be superseded", archived)
+        for code in ("us", "ca", "au", "nz", "ea", "jp"):
+            self.assertIn(f'data-country="{code}"', archived)
+
+    def test_unavailable_tape_keeps_the_full_reason_inside_details(self):
+        packet = _packet()
+        reason = (
+            "RBNZ official B2 workbook was blocked or unusable; see https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/b2 "
+            "and the workbook notes for the daily close."
+        )
+        packet["rates"]["NZ"] = {"status": "unavailable", "error": reason}
+        html = render_tape(packet)
+        card_at = html.find('data-tape="NZ10Y"')
+        self.assertGreaterEqual(card_at, 0)
+        card = html[card_at : html.find("</div></div>", card_at)]
+        face, _, disclosure = card.partition("<details")
+        self.assertIn("Unavailable", face)
+        self.assertNotIn("https://", face)
+        self.assertIn("RBNZ official B2 workbook was blocked or unusable", face)
+        self.assertLessEqual(len("RBNZ official B2 workbook was blocked or unusable"), 80)
+        self.assertIn("https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/b2", disclosure)
+        self.assertIn(reason, disclosure)
 
 
 class SourceHealthTests(unittest.TestCase):

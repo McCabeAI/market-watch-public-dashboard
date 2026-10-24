@@ -99,60 +99,94 @@ def score_cards(state: dict[str, Any]) -> list[dict[str, Any]]:
     return cards
 
 
+def _impulse_face(row: dict[str, Any]) -> str:
+    direction = row["direction"] if row["direction"] in _DIR_WORD else "static"
+    if row["impulse"] is None:
+        number = "n/a"
+    else:
+        number = f"{float(row['impulse']):+.2f}"
+    return (
+        f'<span class="imp imp-{esc(direction)}">{esc(_DIR_ARROW[direction])} {esc(_DIR_WORD[direction])} {esc(number)}</span>'
+        '<span class="mw-asof">vs prior print</span>'
+    )
+
+
+def _coverage_chip(coverage: float | None) -> str:
+    if coverage is None or coverage >= 1.0 - 1e-9:
+        return ""
+    return f'<span class="mw-chip mw-chip--warn">Coverage {coverage:.0%}</span>'
+
+
+def _level_face(row: dict[str, Any]) -> str:
+    width = 0.0 if row["level"] is None else max(0.0, min(100.0, float(row["level"])))
+    if row["level"] is None:
+        number = "—"
+        klass_word = ""
+    else:
+        number = f'{row["level_text"]} {_CLASS_WORD.get(row["klass"], row["klass"])}'
+        klass_word = str(row["klass"])
+    return (
+        '<div class="lvl">'
+        '<span class="mw-label">Level</span>'
+        f'<span class="lvl-num mw-num">{esc(number)}</span>'
+        '<span class="lvl-scale">/100</span>'
+        f'<span class="score-bar" aria-hidden="true"><i class="{esc(klass_word)}" style="width:{width:.1f}%"></i></span>'
+        "</div>"
+        '<div class="imp-line"><span class="mw-label">Impulse</span>'
+        f"{_impulse_face(row)}</div>"
+    )
+
+
 def render_scoreboard(state: dict[str, Any]) -> str:
     as_of = str(state.get("as_of") or state.get("last_refresh_date") or "date missing")
-    cards = []
+    heads = "".join(f"<th scope=\"col\">{esc(name)}</th>" for name in ("Economy", *DIMENSIONS, "Equal-weight", ""))
+    body = []
     for card in score_cards(state):
-        material = card["material"]
-        material_dim = next((row for row in card["dimensions"] if row["dimension"] == material), None)
-        if material_dim is None:
-            headline = "No dimension impulse is published in the score state."
-        else:
-            headline = (
-                f"Largest impulse: {material_dim['dimension']} "
-                f"{_DIR_ARROW[material_dim['direction']]} {_DIR_WORD[material_dim['direction']]} "
-                f"{material_dim['impulse']:+.2f} (level {material_dim['level_text']} {_CLASS_WORD.get(material_dim['klass'], material_dim['klass'])})."
-            )
-        spread_bit = ""
-        if card["spread"] is not None and card["spread"] >= 15:
-            ordered = [row for row in card["dimensions"] if row["level"] is not None]
-            low = min(ordered, key=lambda row: row["level"])
-            high = max(ordered, key=lambda row: row["level"])
-            spread_bit = (
-                f' <span class="score-spread">Level spread {esc(low["dimension"])} {esc(low["level_text"])} '
-                f'to {esc(high["dimension"])} {esc(high["level_text"])}.</span>'
-            )
-        chips = []
+        peak_name = card["material"]
+        cells = []
         for row in card["dimensions"]:
-            coverage = "coverage not recorded"
-            if row["coverage"] is not None:
-                coverage = f"coverage {row['coverage']:.0%}"
-            width = 0 if row["level"] is None else max(0.0, min(100.0, row["level"]))
-            chips.append(
-                '<div class="score-dim">'
-                f'<span class="score-dim-name">{esc(row["dimension"])}</span>'
-                f'<span class="pill {esc(row["klass"])}">{esc(row["level_text"])} {esc(_CLASS_WORD.get(row["klass"], row["klass"]))}</span>'
-                f'<span class="dir {esc(row["direction"])}">{esc(_DIR_ARROW[row["direction"]])} {esc(_DIR_WORD[row["direction"]])}</span>'
-                f'<span class="score-cov">{esc(coverage)}</span>'
-                f'<span class="score-bar" aria-hidden="true"><i class="{esc(row["klass"])}" style="width:{width:.1f}%"></i></span>'
-                "</div>"
+            marker = ""
+            if peak_name and row["dimension"] == peak_name and row["impulse"] is not None:
+                marker = '<span class="score-peak">Largest impulse</span>'
+            cells.append(
+                f'<td class="score-cell" data-dimension="{esc(row["dimension"])}">'
+                f"{_level_face(row)}{_coverage_chip(row['coverage'])}{marker}</td>"
             )
-        partial = "Partial dimension coverage." if card["partial"] else "All four dimensions have a published level."
-        cards.append(
-            f'<article class="score-card" data-score-country="{esc(card["country"])}">'
-            f'<h3>{esc(card["heading"])}</h3>'
-            f'<p class="score-headline">{esc(headline)}{spread_bit}</p>'
-            '<p class="score-mean">Equal-weight summary '
-            f'<span class="pill {esc(card["mean_class"])}">{esc(card["mean_text"])} {esc(_CLASS_WORD.get(card["mean_class"], card["mean_class"]))}</span>'
-            " Simple mean of the published dimension levels. Not a separate weighted aggregate.</p>"
-            f'<p class="score-cov">{esc(partial)}</p>'
-            + "".join(chips)
-            + "</article>"
+        mean_word = ""
+        if card["mean"] is not None:
+            mean_word = f'{card["mean_text"]} {_CLASS_WORD.get(card["mean_class"], card["mean_class"])}'
+        else:
+            mean_word = "—"
+        partial = '<span class="mw-chip mw-chip--warn">Partial</span>' if card["partial"] else ""
+        mean_width = 0.0 if card["mean"] is None else max(0.0, min(100.0, float(card["mean"])))
+        cells.append(
+            '<td class="score-cell score-mean-cell">'
+            '<div class="lvl"><span class="mw-label">Equal-weight</span>'
+            f'<span class="lvl-num mw-num">{esc(mean_word)}</span><span class="lvl-scale">/100</span>'
+            f'<span class="score-bar" aria-hidden="true"><i class="{esc(card["mean_class"])}" style="width:{mean_width:.1f}%"></i></span>'
+            f"</div>{partial}</td>"
         )
+        cells.append(
+            '<td class="score-open">'
+            f'<button type="button" class="jump country-jump" data-country="{esc(str(card["country"]).lower())}" '
+            f'aria-label="Open {esc(card["heading"])}">Open</button></td>'
+        )
+        body.append(
+            f'<tr data-score-country="{esc(card["country"])}">'
+            f'<th scope="row">{esc(card["heading"])}</th>'
+            + "".join(cells)
+            + "</tr>"
+        )
+    legend = (
+        "LEVEL is the 1–100 score (50 = structural/policy neutral). "
+        "IMPULSE is the latest print versus the prior print, in score points. "
+        "Equal-weight summary is the simple mean of the published dimension levels, not a separate weighted aggregate."
+    )
     return (
         '<div data-score-overview="calibrated" class="scoreboard">'
         '<div class="scoreboard-head"><b>1–100 Score Board</b>'
-        f'<span>Published score freeze {esc(as_of)}. Level bands use the existing cold/cool/neutral/warm/hot thresholds. '
-        "Arrows are the impulse versus the prior print and use their own cooling/static/warming labels.</span></div>"
-        '<div class="scoreboard-grid">' + "".join(cards) + "</div></div>"
+        f'<span class="mw-asof">Published score freeze {esc(as_of)}</span></div>'
+        f'<p class="score-legend">{esc(legend)}</p>'
+        '<div class="score-scroll"><table class="score-matrix">'
+        f"<thead><tr>{heads}</tr></thead><tbody>{''.join(body)}</tbody></table></div></div>"
     )

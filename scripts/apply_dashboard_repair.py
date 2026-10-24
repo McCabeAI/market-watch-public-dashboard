@@ -84,6 +84,9 @@ def main() -> None:
         loaded = json.loads(trader_path.read_text(encoding="utf-8"))
         if isinstance(loaded, dict):
             trader_room = loaded
+    from scripts.apply_country_detail import load_country_detail_context
+
+    country_detail = load_country_detail_context()
     updated = apply_dashboard_repair(
         path.read_text(encoding="utf-8"),
         market_state=packet,
@@ -91,6 +94,7 @@ def main() -> None:
         now=now,
         trader_room=trader_room,
         schedule_fetch=schedule_fetch,
+        country_detail=country_detail,
     )
     path.write_text(updated, encoding="utf-8")
     _write_sidecars(path.parent)
