@@ -4661,19 +4661,8 @@
     "08_pages": {
       "artifact": null,
       "details": {
-        "dispatch_confirmed": true,
-        "dispatch_receipt": {
-          "event": "workflow_dispatch",
-          "head_sha": "904c09a4802db5b34d296d7da537cbd91bfaced0",
-          "launch_id": "mwl-20261023T194645Z-82c01ce1",
-          "ref": "main",
-          "run_id": "40057907937",
-          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/40057907937",
-          "workflow": "deploy-pages.yml"
-        },
-        "dispatched": true,
         "dry_run": false,
-        "executed": false,
+        "executed": true,
         "plan": {
           "event": "workflow_dispatch",
           "launch_id": "mwl-20261023T194645Z-82c01ce1",
@@ -4681,22 +4670,32 @@
           "review_id": "review-001",
           "workflow": "deploy-pages.yml"
         },
-        "production_published": false,
-        "publication_state": "dispatch_confirmed"
+        "production_published": true,
+        "publication_evidence": {
+          "conclusion": "success",
+          "event": "workflow_dispatch",
+          "head_sha": "c382cab173a18e3350685ba91630116e27eb48b1",
+          "launch_id": "mwl-20261023T194645Z-82c01ce1",
+          "ref": "main",
+          "run_id": "40108264379",
+          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/40108264379",
+          "workflow": "deploy-pages.yml"
+        },
+        "reconciled": true
       },
       "finished_at": null,
       "input_sha256": "c5ac44c9c4c782d8e2ee4c9ef20950871ad8accdae7a101b8d46f8ee5fc05356",
-      "output_sha256": null,
-      "reason": "pages_dispatch_requested",
+      "output_sha256": "4195239627f1e6230515e8d4a39245db1e9da99ba2ecda5d79d8e321d8be447c",
+      "reason": "pages_publication_reconciled",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     }
   },
   "starting_pm_books_sha256": "d34223ecccf7d47c7d501c83190e6081f8ce90358a80b37590d5b9c0f7190318",
   "starting_trader_books_sha256": "372adc60bb92a84f537942f81538412e140311835667b34b6d4e8c323da41337",
-  "status": "running",
+  "status": "succeeded",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }
