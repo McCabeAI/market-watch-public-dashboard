@@ -186,18 +186,23 @@ def _impulse_markup(spec: Mapping[str, Any]) -> str:
 
 
 def _score_header(score_state: Mapping[str, Any]) -> str:
-    as_of = score_state.get("as_of") if isinstance(score_state, Mapping) else None
-    if as_of:
-        freeze = f"Score freeze {_pretty_vintage(str(as_of))}"
+    if not isinstance(score_state, Mapping):
+        line = "Score dates not published in this view"
+    elif score_state.get("score_inputs_last_ingested_at") or score_state.get("calibration_anchor_date"):
+        from scripts.dashboard_repair.score_dates import header_score_line
+
+        line = header_score_line(score_state)
+    elif score_state.get("as_of"):
+        line = f"Calibration anchor {_pretty_vintage(str(score_state['as_of']))}"
     else:
-        freeze = "Score freeze date not published in this view"
+        line = "Score dates not published in this view"
     legend = (
         "LEVEL is the 1–100 score, where 50 is the structural/policy neutral point. "
         "IMPULSE is the latest print versus the prior print, in score points."
     )
     return (
         '<header class="cd-head">'
-        f'<span class="mw-asof">{_esc(freeze)}</span>'
+        f'<span class="mw-asof" data-score-dates>{_esc(line)}</span>'
         f'<p class="cd-legend">{_esc(legend)}</p>'
         "</header>"
     )

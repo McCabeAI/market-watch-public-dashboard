@@ -23,6 +23,7 @@ from scripts.au_cpi_release.calendar import (
     _EXPLICIT,
 )
 from scripts.dashboard_repair.htmlutil import esc
+from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
 from scripts.macro_ingestion.contract import load_catalog
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -337,10 +338,23 @@ def _place_event(built: dict[str, Any], *, clock_now: datetime, start: date, end
         later_rows.append(built)
 
 
+def _parse_score_day(value: object) -> date | None:
+    if isinstance(value, date):
+        return value
+    text = str(value or "").strip()
+    if not text:
+        return None
+    try:
+        return date.fromisoformat(text[:10])
+    except ValueError:
+        return None
+
+
 def build_release_model(
     now: datetime,
     series: list[dict[str, Any]] | None = None,
     score_as_of: str = "2026-09-21",
+    score_inputs_last_ingested_at: str | None = None,
     fetched_slots: list[dict[str, Any]] | None = None,
     schedule_fetch: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -348,7 +362,8 @@ def build_release_model(
     start = clock.date()
     end = start + timedelta(days=13)
     recent_start = start - timedelta(days=7)
-    freeze = date.fromisoformat(score_as_of)
+    calibration_anchor = _parse_score_day(score_as_of) or date.fromisoformat("2026-09-21")
+    ingestion_day = _parse_score_day(score_inputs_last_ingested_at) or calibration_anchor
     rows = series if series is not None else load_catalog()["series"]
     upcoming: list[dict[str, Any]] = []
     recent: list[dict[str, Any]] = []
@@ -446,15 +461,26 @@ def build_release_model(
                 next_later.append(item)
 
     def _annotate(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+        clock_day = clock.astimezone(ET).date()
         for item in items:
             when = item["et_date"] or item["local_date"]
-            item["after_freeze"] = bool(when and when > freeze)
+            item["after_freeze"] = bool(when and when > calibration_anchor)
+            item["after_score_input_ingestion"] = bool(when and ingestion_day and when > ingestion_day)
+            if isinstance(when, date) and when > clock_day:
+                item["score_release_context"] = "upcoming"
+            elif item["after_score_input_ingestion"]:
+                item["score_release_context"] = "after_ingestion"
+            else:
+                item["score_release_context"] = "before_ingestion"
+            item["score_inputs_ingestion_day"] = ingestion_day.isoformat()
         return items
 
     return {
         "window_start": start,
         "window_end": end,
         "recent_start": recent_start,
+        "calibration_anchor": score_as_of,
+        "score_inputs_last_ingested": score_inputs_last_ingested_at,
         "score_freeze": score_as_of,
         "generated_at": clock.isoformat(),
         "upcoming": _annotate(_group(_sort(upcoming))),
@@ -517,11 +543,21 @@ def _event_html(item: dict[str, Any]) -> str:
     link = ""
     if str(item.get("source_url") or "").startswith("https://"):
         link = f'<a href="{esc(item["source_url"])}" rel="noopener" target="_blank">Official source</a>'
-    freeze_text = (
-        "After the published score freeze, so this release is not in the 1–100 levels on this page."
-        if item.get("after_freeze")
-        else "At or before the published score freeze."
-    )
+    context = str(item.get("score_release_context") or "")
+    ingestion_day = _parse_score_day(item.get("score_inputs_ingestion_day"))
+    ingested_label = format_ingestion_day(ingestion_day.isoformat()) if ingestion_day else "unknown date"
+    if context == "upcoming":
+        freeze_text = "Upcoming; not in the 1–100 levels yet."
+    elif context == "after_ingestion":
+        freeze_text = (
+            f"Released after the latest score-input ingestion ({ingested_label}); "
+            "not yet in the 1–100 levels."
+        )
+    else:
+        freeze_text = (
+            "Released before the latest score-input ingestion; "
+            "see the country's score inputs for whether this period is scored."
+        )
     clock_note = ""
     if item.get("clock") == "standing":
         clock_note = "Clock is the standing publisher time, not a time reprinted on the future-date line."
@@ -637,9 +673,12 @@ def render_releases(model: dict[str, Any]) -> str:
         )
         tba_blocks.append(f"<details><summary>{esc(country)} · {len(rows)} scored series with no verified future date</summary><ul>{lines}</ul></details>")
     later = day_groups(model["later"]) if model["later"] else '<p class="note">No later verified timestamp is pinned.</p>'
+    anchor_label = format_calibration_anchor(model.get("calibration_anchor") or model.get("score_freeze"))
+    ingested_label = format_ingestion_day(model.get("score_inputs_last_ingested") or "")
     window_line = (
         f"Window {_display_date(model['window_start'])} through {_display_date(model['window_end'])} "
-        f"(America/New_York). Score freeze {esc(model['score_freeze'])}."
+        f"(America/New_York). Calibration anchor {esc(anchor_label)}. "
+        f"Score inputs last ingested {esc(ingested_label)}."
     )
     window_detail = (
         "<p>Cadence is not a date. A missing official timestamp stays TBA / date unavailable. "
@@ -650,7 +689,7 @@ def render_releases(model: dict[str, Any]) -> str:
         '<section class="page releases" data-release-calendar="repair">'
         '<div class="stitle">Releases · next 14 days</div>'
         f'<p class="note mw-release-intro">{esc(window_line)} '
-        '<details class="mw-release-window"><summary>Window, freeze and schedule fetch</summary>'
+        '<details class="mw-release-window"><summary>Window, score inputs and schedule fetch</summary>'
         f"{window_detail}</details></p>"
         '<h2>Upcoming</h2>'
         + (day_groups(model["upcoming"]) if model["upcoming"] else '<p class="note" data-empty-upcoming="1">No verified release with a confirmed clock falls in the next 14 days.</p>')

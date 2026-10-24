@@ -314,13 +314,13 @@ def _score_overview_html(levels: dict[str, dict[str, float | None]], state: dict
             f'<b>{country}</b><div style="margin-top:4px;font-size:12px;">{values}</div></div>'
         )
 
-    refreshed = state.get("as_of") or state.get("last_refresh_date", "")
+    refreshed = state.get("last_refresh_date") or state.get("as_of", "")
     return (
         '<div data-score-overview="live" style="margin:0 0 18px;padding:12px;'
         'border:1px solid currentColor;border-radius:10px;">'
         '<div style="display:flex;justify-content:space-between;gap:12px;align-items:baseline;'
         'margin-bottom:10px;"><b>Live 1–100 Score Board</b>'
-        f'<span style="font-size:11px;">calibrated LEVEL through {refreshed}</span></div>'
+        f'<span style="font-size:11px;">score inputs last ingested {refreshed}</span></div>'
         '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;">'
         + "".join(cells)
         + '</div><div style="margin-top:8px;font-size:10px;color:var(--muted);">'

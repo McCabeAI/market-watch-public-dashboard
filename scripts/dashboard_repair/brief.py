@@ -10,7 +10,9 @@ from scripts.country_detail.policy import COUNTRY_CODES
 from scripts.country_detail.present import plain_series_name
 from scripts.country_detail.render import _format_period, _format_value
 from scripts.dashboard_repair.htmlutil import esc
+from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
 from scripts.dashboard_repair.scoreboard import score_cards
+from scripts.temperature_level import period_leq, period_sort_key
 
 _MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
 _DIR_WORD = {"cooling": "cooling", "static": "static", "warming": "warming"}
@@ -86,7 +88,7 @@ def format_packet_time(value: object) -> str:
 
 
 def format_freeze_day(value: object) -> str:
-    """Score-freeze day. Returns the raw text when it is not a date."""
+    """Calendar day for display. Returns the raw text when it is not a date."""
     if value in (None, ""):
         return ""
     day = _parse_date(value)
@@ -188,6 +190,37 @@ def _has_date_field(obs: Mapping[str, Any]) -> bool:
     return any(field in obs and obs.get(field) not in (None, "") for field in _DATE_FIELDS)
 
 
+def _scored_component_as_of(scores: Mapping[str, Any], catalog_id: str) -> str | None:
+    parts = str(catalog_id or "").split(".")
+    if len(parts) != 3:
+        return None
+    country, dimension, component = parts
+    countries = scores.get("countries") if isinstance(scores.get("countries"), Mapping) else {}
+    dim = countries.get(country) if isinstance(countries.get(country), Mapping) else {}
+    spec = dim.get(dimension) if isinstance(dim.get(dimension), Mapping) else {}
+    component_state = spec.get("component_state") if isinstance(spec.get("component_state"), Mapping) else {}
+    row = component_state.get(component) if isinstance(component_state.get(component), Mapping) else {}
+    as_of = row.get("as_of")
+    return str(as_of) if as_of else None
+
+
+def _print_score_class(obs: Mapping[str, Any], scores: Mapping[str, Any]) -> str:
+    if not obs.get("score_input"):
+        return "context_only"
+    catalog_id = str(obs.get("catalog_id") or "")
+    ref_period = str(obs.get("reference_period") or "")
+    if not catalog_id or not ref_period:
+        return "unknown"
+    scored_as_of = _scored_component_as_of(scores, catalog_id)
+    if not scored_as_of:
+        return "unknown"
+    if period_leq(ref_period, scored_as_of):
+        return "in_score"
+    if period_sort_key(ref_period) > period_sort_key(scored_as_of):
+        return "newer_than_score"
+    return "unknown"
+
+
 def _prints(country_detail: Mapping[str, Any] | None, scores: Mapping[str, Any], limit: int = 6) -> list[dict[str, Any]] | None:
     if not isinstance(country_detail, Mapping):
         return None
@@ -195,7 +228,6 @@ def _prints(country_detail: Mapping[str, Any] | None, scores: Mapping[str, Any],
     projection = country_detail.get("projection") if isinstance(country_detail.get("projection"), Mapping) else {}
     countries_a = attention.get("countries") if isinstance(attention.get("countries"), Mapping) else {}
     countries_p = projection.get("countries") if isinstance(projection.get("countries"), Mapping) else {}
-    freeze = _parse_date(scores.get("as_of"))
     found: list[dict[str, Any]] = []
     order = 0
     for code in COUNTRY_CODES:
@@ -214,7 +246,7 @@ def _prints(country_detail: Mapping[str, Any] | None, scores: Mapping[str, Any],
             if not isinstance(obs, Mapping):
                 continue
             stamp = _comparison_date(obs)
-            after = bool(freeze and stamp and stamp > freeze)
+            score_class = _print_score_class(obs, scores)
             found.append(
                 {
                     "country": code,
@@ -223,14 +255,20 @@ def _prints(country_detail: Mapping[str, Any] | None, scores: Mapping[str, Any],
                     "value": _format_value(obs.get("value"), obs.get("units"), obs.get("transformation")),
                     "period": _brief_period(obs.get("reference_period") or finding.get("reference_period")),
                     "badge": str(finding.get("badge_text") or ""),
-                    "after_freeze": after,
+                    "score_class": score_class,
                     "dated": _has_date_field(obs),
                     "stamp": stamp,
                     "order": order,
                 }
             )
             order += 1
-    found.sort(key=lambda row: (0 if row["after_freeze"] else 1, -(row["stamp"].toordinal() if row["stamp"] else 0), row["order"]))
+    found.sort(
+        key=lambda row: (
+            0 if row["score_class"] == "newer_than_score" else 1,
+            -(row["stamp"].toordinal() if row["stamp"] else 0),
+            row["order"],
+        )
+    )
     return found[:limit]
 
 
@@ -281,22 +319,28 @@ def _upcoming_week(model: Mapping[str, Any] | None) -> list[dict[str, Any]]:
     return rows
 
 
-def _freeze_age(scores: Mapping[str, Any], packet: Mapping[str, Any] | None) -> str:
-    freeze = _parse_date(scores.get("as_of"))
+def _score_lineage_caption(scores: Mapping[str, Any], packet: Mapping[str, Any] | None) -> str:
+    anchor = _parse_date(scores.get("calibration_anchor_date") or scores.get("as_of"))
+    ingested = scores.get("score_inputs_last_ingested_at")
+    ingested_day = _parse_date(ingested)
     generated = _parse_date((packet or {}).get("generated_at")) if isinstance(packet, Mapping) else None
-    if freeze and generated:
-        days = (generated - freeze).days
-        if days >= 0:
-            relation = f"{days} days before the market packet {_fmt_day(generated)}"
-        else:
-            relation = f"{abs(days)} days after the market packet {_fmt_day(generated)}"
-        return f"Scores frozen {_fmt_day(freeze)}, {relation}."
-    if freeze:
-        return (
-            f"Scores frozen {_fmt_day(freeze)}. "
-            "The market packet has no generated date, so the freeze age is not calculated."
+    if anchor and ingested_day:
+        base = (
+            f"Calibration anchor {_fmt_day(anchor)}. "
+            f"Score inputs last ingested {format_ingestion_day(ingested)}."
         )
-    return "Score freeze date is not in this build."
+    elif anchor:
+        base = f"Calibration anchor {format_calibration_anchor(anchor)}."
+    else:
+        return "Score dates are not in this build."
+    if generated:
+        days = (generated - anchor).days if anchor else 0
+        if days >= 0:
+            relation = f"Market packet {_fmt_day(generated)} is {days} days after the calibration anchor."
+        else:
+            relation = f"Market packet {_fmt_day(generated)} is {abs(days)} days before the calibration anchor."
+        return f"{base} {relation}"
+    return f"{base} The market packet has no generated date."
 
 
 def _change_face(row: Mapping[str, Any]) -> str:
@@ -321,10 +365,13 @@ def _asof_text(value: object) -> str:
 
 
 def _impulse_block(state: Mapping[str, Any]) -> str:
-    freeze_iso = str(state.get("as_of") or "")
+    anchor = state.get("calibration_anchor_date") or state.get("as_of")
     chip = ""
-    if freeze_iso:
-        chip = f'<span class="mw-chip mw-chip--info">Score freeze {esc(format_freeze_day(freeze_iso))}</span>'
+    if anchor:
+        chip = (
+            f'<span class="mw-chip mw-chip--info">Calibration anchor '
+            f"{esc(format_calibration_anchor(anchor))}</span>"
+        )
     rows = ranked_impulses(state)
     if not rows:
         body = '<p class="brief-caption">No dimension impulse is published in the score state.</p>'
@@ -355,32 +402,34 @@ def _impulse_block(state: Mapping[str, Any]) -> str:
 
 def _prints_block(country_detail: Mapping[str, Any] | None, scores: Mapping[str, Any]) -> str:
     rows = _prints(country_detail, scores)
-    freeze = format_freeze_day(scores.get("as_of"))
+    ingested = scores.get("score_inputs_last_ingested_at")
     if rows is None:
         body = '<p class="brief-caption">Newest prints are not available in this build.</p>'
         caption = ""
     elif not rows:
         body = '<p class="brief-caption">No What Matters Now finding is published.</p>'
-        caption = f'<p class="brief-caption">Scores frozen {esc(freeze)}.</p>' if freeze else ""
+        caption = ""
     else:
-        any_dated = any(row["dated"] for row in rows)
-        if not any_dated and freeze:
-            caption = (
-                f'<p class="brief-caption">Scores are frozen at {esc(freeze)}. '
-                "These prints have no release or retrieval date to compare with the freeze.</p>"
-            )
-        elif freeze and not any(row["after_freeze"] for row in rows):
-            caption = (
-                f'<p class="brief-caption">Scores frozen {esc(freeze)}. '
-                "None of these prints has a release or retrieval date after the freeze.</p>"
-            )
-        else:
-            caption = '<p class="brief-caption">Flagged on the country page. A chip marks a print dated after the score freeze.</p>'
+        ingested_bit = (
+            f"Score inputs last ingested {esc(format_ingestion_day(ingested))}."
+            if ingested
+            else "Score input ingestion time is not published."
+        )
+        caption = (
+            f'<p class="brief-caption">Flagged on the country page. {ingested_bit} '
+            "Chips show whether each print's reference period is in the current score.</p>"
+        )
         items = []
+        chip_map = {
+            "in_score": ('<span class="mw-chip mw-chip--ok">In score</span>',),
+            "newer_than_score": ('<span class="mw-chip mw-chip--warn">Newer than score</span>',),
+            "context_only": ('<span class="mw-chip mw-chip--info">Context only</span>',),
+        }
         for row in rows:
             chip = ""
-            if row["after_freeze"]:
-                chip = '<span class="mw-chip mw-chip--warn">After score freeze</span>'
+            mapped = chip_map.get(str(row.get("score_class") or ""))
+            if mapped:
+                chip = mapped[0]
             badge = f'{esc(row["badge"])} · ' if row["badge"] else ""
             value_bits = " · ".join(bit for bit in (str(row["value"]), str(row["period"])) if bit)
             items.append(
@@ -460,7 +509,7 @@ def _caveat_block(
     return (
         '<section class="brief-block">'
         "<h3>Caveats</h3>"
-        f'<p class="brief-caption">{esc(_freeze_age(scores, packet))}</p>'
+        f'<p class="brief-caption">{esc(_score_lineage_caption(scores, packet))}</p>'
         '<p class="brief-sub">Unavailable tape series</p>'
         f"{unavailable}"
         '<p class="brief-sub">Next 7 days</p>'
