@@ -109,7 +109,16 @@ def _prima_headline_change(direction: str, trend: list[Any]) -> str:
     prev_dir = str(prev.get("direction") or "UNAVAILABLE")
     prev_day = _prima_short_date(str(prev.get("observed_at") or ""))
     if prev_dir == direction:
-        return f"unchanged since {prev_day}"
+        streak = [p for p in trend[:-1] if isinstance(p, Mapping)]
+        start = prev
+        for point in reversed(streak):
+            if str(point.get("direction") or "UNAVAILABLE") != direction:
+                break
+            start = point
+        start_day = _prima_short_date(str(start.get("observed_at") or ""))
+        if start is trend[0]:
+            return f"same in all {len(trend)} stored runs since {start_day}"
+        return f"unchanged since {start_day}"
     if prev_dir in _PRIMA_CATEGORIES:
         return f"changed from {_PRIMA_DIR_WORD[prev_dir]} ({prev_day})"
     return f"prior run {prev_day}"

@@ -935,6 +935,22 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertIn('data-prima-evidence="direct"', imported)
         self.assertNotIn('data-prima-evidence="missing"', imported.split("</details>", 1)[0])
 
+    def test_headline_change_reports_streak_start(self) -> None:
+        from scripts.country_detail._prima_section import _prima_headline_change
+
+        def point(day: str, direction: str) -> dict[str, str]:
+            return {"observed_at": f"2026-10-{day}T08:00:00-04:00", "direction": direction}
+
+        all_rising = [point("21", "RISING"), point("22", "RISING"), point("23", "RISING")]
+        self.assertEqual(
+            _prima_headline_change("RISING", all_rising),
+            "same in all 3 stored runs since 21 Oct",
+        )
+        streak = [point("20", "STABLE"), point("21", "RISING"), point("22", "RISING"), point("23", "RISING")]
+        self.assertEqual(_prima_headline_change("RISING", streak), "unchanged since 21 Oct")
+        flipped = [point("22", "STABLE"), point("23", "RISING")]
+        self.assertEqual(_prima_headline_change("RISING", flipped), "changed from Stable (22 Oct)")
+
     def test_renderer_deterministic(self) -> None:
         p1 = build_presentation(ROOT)
         p2 = build_presentation(ROOT)
