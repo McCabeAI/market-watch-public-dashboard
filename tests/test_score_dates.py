@@ -201,6 +201,40 @@ class ScoreDatesPresentationTests(unittest.TestCase):
         self.assertIn('data-score-dates', header)
 
 
+class ScoreLineageCaptionTests(unittest.TestCase):
+    def test_packet_relation_uses_latest_ingestion_not_anchor(self) -> None:
+        from scripts.dashboard_repair.brief import _score_lineage_caption
+
+        scores = {
+            "calibration_anchor_date": "2026-09-21",
+            "score_inputs_last_ingested_at": "2026-10-23T19:46:45Z",
+        }
+        packet = {"generated_at": "2026-10-24T12:00:00Z"}
+        caption = _score_lineage_caption(scores, packet)
+        self.assertIn("1 day after the latest score-input ingestion", caption)
+        self.assertNotIn("calibration anchor.", caption[caption.index("Market packet") :])
+
+    def test_packet_same_day_and_before_ingestion(self) -> None:
+        from scripts.dashboard_repair.brief import _score_lineage_caption
+
+        scores = {
+            "as_of": "2026-09-21",
+            "score_inputs_last_ingested_at": "2026-10-23T12:00:00Z",
+        }
+        same = _score_lineage_caption(scores, {"generated_at": "2026-10-23T18:00:00Z"})
+        self.assertIn("same day as the latest score-input ingestion", same)
+        before = _score_lineage_caption(scores, {"generated_at": "2026-10-22T12:00:00Z"})
+        self.assertIn("1 day before the latest score-input ingestion", before)
+
+    def test_packet_without_ingestion_time_states_date_only(self) -> None:
+        from scripts.dashboard_repair.brief import _score_lineage_caption
+
+        scores = {"calibration_anchor_date": "2026-09-21"}
+        caption = _score_lineage_caption(scores, {"generated_at": "2026-10-24T12:00:00Z"})
+        self.assertIn("Market packet 24 Oct 2026.", caption)
+        self.assertNotIn("after the", caption.split("Market packet", 1)[-1])
+
+
 class ScoreDatesDeterminismTests(unittest.TestCase):
     def test_regenerated_state_matches_committed_file(self) -> None:
         import tempfile
