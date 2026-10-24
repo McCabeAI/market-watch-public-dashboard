@@ -905,6 +905,26 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertIn("Falling", imported)
         self.assertIn('data-prima-channel-direction="FALLING"', html)
 
+    def test_imported_pressure_snippet_names_exact_series(self) -> None:
+        """The short label must not imply all energy components were removed."""
+        from scripts.country_detail._prima_section import _prima_channel_snippet
+
+        directions = {"imported_pressure": "FALLING"}
+        direct = _prima_channel_snippet(
+            "imported_pressure",
+            directions,
+            [],
+            {"imported_pressure": {"inputs": [{"mom": -0.005}]}},
+        )
+        fallback = _prima_channel_snippet(
+            "imported_pressure",
+            directions,
+            ["RMPI ex-crude-energy mom -0.50 percent"],
+            None,
+        )
+        self.assertEqual(direct, "RMPI ex-crude-energy -0.50% m/m")
+        self.assertEqual(fallback, "RMPI ex-crude-energy -0.50% m/m")
+
     def test_channel_evidence_fixture_shows_direct_imported_input(self) -> None:
         from scripts.prima_pressure.proxy import compact_block, compute_prima_proxy
         from tests.prima_pressure.test_proxy import _stable_flat_bundle, _producer_series
@@ -933,6 +953,8 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         )
         imported = html.split('data-prima-why="imported_pressure"', 1)[1]
         self.assertIn('data-prima-evidence="direct"', imported)
+        self.assertIn("RMPI ex-crude-energy -0.50% m/m", html)
+        self.assertNotIn("RMPI ex-energy", html)
         self.assertNotIn('data-prima-evidence="missing"', imported.split("</details>", 1)[0])
 
     def test_headline_change_reports_streak_start(self) -> None:
