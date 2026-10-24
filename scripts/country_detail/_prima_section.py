@@ -55,10 +55,29 @@ _MPR_BRENT_RE = re.compile(
     r"brent_end_2027_vs_prose is ([+-]?\d+(?:\.\d+)?) USD per barrel versus ([\d.]+)",
     re.I,
 )
+_CORRA_DRIVER_RE = re.compile(
+    r"CORRA gap versus neutral midpoint ([+-]?\d+(?:\.\d+)?) percentage points",
+    re.I,
+)
 
 _MONTHS_TITLE = (
     "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
 )
+_COUNT_WORDS = {
+    0: "zero",
+    1: "one",
+    2: "two",
+    3: "three",
+    4: "four",
+    5: "five",
+}
+_CHANNEL_OFFSET_NOUN = {
+    "imported_pressure": "non-energy raw-material prices (imported pressure)",
+    "production_network_pressure": "non-energy producer prices (production network)",
+    "shock_persistence": "Brent curve persistence (shock persistence)",
+    "consumer_price_breadth": "CPI breadth (consumer price breadth)",
+    "demand_pass_through_constraint": "policy restraint via CORRA (demand pass-through)",
+}
 
 
 def _prima_short_date(observed_at: str) -> str:
@@ -96,8 +115,8 @@ def _prima_headline_change(direction: str, trend: list[Any]) -> str:
     return f"prior run {prev_day}"
 
 
-def _prima_channel_counts(subs: Mapping[str, Any], direction: str) -> tuple[int, int, int]:
-    up = down = neutral = 0
+def _prima_channel_counts(subs: Mapping[str, Any]) -> tuple[int, int, int, int]:
+    up = down = neutral = unavailable = 0
     for ch in _PRIMA_CHANNEL_LABELS:
         d = str(subs.get(ch) or "UNAVAILABLE")
         if d == "RISING":
@@ -106,7 +125,86 @@ def _prima_channel_counts(subs: Mapping[str, Any], direction: str) -> tuple[int,
             down += 1
         elif d == "STABLE":
             neutral += 1
-    return up, down, neutral
+        else:
+            unavailable += 1
+    return up, down, neutral, unavailable
+
+
+def _count_word(n: int) -> str:
+    return _COUNT_WORDS.get(n, str(n))
+
+
+def _headline_count_clause(count: int, verb_phrase: str) -> str:
+    """e.g. 'Three of five channels point up' or 'One channel points up'."""
+    if count == 0:
+        return f"none of five channels {verb_phrase}"
+    if count == 1:
+        singular = verb_phrase.replace("point ", "points ", 1)
+        return f"One channel {singular}"
+    return f"{_count_word(count).title()} of five channels {verb_phrase}"
+
+
+def _secondary_count_clause(count: int, tail: str) -> str:
+    if count == 0:
+        return f"none {tail}"
+    if count == 1:
+        return f"one {tail}"
+    return f"{_count_word(count)} {tail}"
+
+
+def _brent_driver_labels(drivers: list[str]) -> list[str]:
+    brent_bits: list[str] = []
+    for drv in drivers:
+        m = _BRENT_DRIVER_RE.search(drv)
+        if not m:
+            continue
+        ym = m.group(1)
+        pct = m.group(2)
+        try:
+            y, mo = ym.split("-")
+            label = f"{_MONTHS_TITLE[int(mo) - 1]}-{y}"
+        except (ValueError, IndexError):
+            label = ym
+        brent_bits.append(f"{label} {pct}%")
+    return brent_bits
+
+
+def _opposite_direction(headline: str) -> str:
+    if headline == "RISING":
+        return "FALLING"
+    if headline == "FALLING":
+        return "RISING"
+    return ""
+
+
+def _prima_channel_groups(
+    subs: Mapping[str, Any],
+    headline: str,
+) -> tuple[list[str], list[str], list[str], list[str]]:
+    supporting: list[str] = []
+    offsetting: list[str] = []
+    neutral: list[str] = []
+    unavailable: list[str] = []
+    opposite = _opposite_direction(headline)
+    for ch, label in _PRIMA_CHANNEL_LABELS.items():
+        d = str(subs.get(ch) or "UNAVAILABLE")
+        entry = f"{_prima_dir_phrase(d)} {label}"
+        if d == "UNAVAILABLE":
+            unavailable.append(entry)
+        elif headline == "STABLE":
+            if d == "STABLE":
+                supporting.append(entry)
+            elif d in ("RISING", "FALLING"):
+                offsetting.append(entry)
+        elif d == headline:
+            supporting.append(entry)
+        elif d == "STABLE":
+            neutral.append(entry)
+        elif opposite and d == opposite:
+            offsetting.append(entry)
+        elif d in _PRIMA_CATEGORIES:
+            offsetting.append(entry)
+    return supporting, offsetting, neutral, unavailable
 
 
 def _prima_summary_sentences(
@@ -116,64 +214,60 @@ def _prima_summary_sentences(
 ) -> list[str]:
     if direction not in _PRIMA_CATEGORIES:
         return ["Aggregate direction is unavailable; channel rows below show what was stored."]
-    up, down, neutral = _prima_channel_counts(subs, direction)
-    parts: list[str] = []
+    up, down, neutral, _unavail = _prima_channel_counts(subs)
+    sentence_parts: list[str] = []
     if direction == "RISING":
-        parts.append(
-            f"{up} of five channels point up"
-            + (f" and {down} point down" if down else "")
-            + (f"; {neutral} are stable" if neutral and not down else "")
-            + "."
-        )
+        sentence_parts.append(_headline_count_clause(up, "point up"))
+        if down:
+            sentence_parts.append(f"and {_secondary_count_clause(down, 'points down')}")
+        elif neutral and not down:
+            sentence_parts.append(f"and {_secondary_count_clause(neutral, 'are stable')}")
     elif direction == "FALLING":
-        parts.append(
-            f"{down} of five channels point down"
-            + (f" and {up} point up" if up else "")
-            + "."
-        )
+        sentence_parts.append(_headline_count_clause(down, "point down"))
+        if up:
+            sentence_parts.append(f"and {_secondary_count_clause(up, 'point up')}")
     else:
-        parts.append(
-            f"Channels split {up} up, {down} down, {neutral} stable; net vote is stable."
+        sentence_parts.append(
+            f"Channels split {_count_word(up)} up, {_count_word(down)} down, "
+            f"{_count_word(neutral)} stable; net vote is stable."
         )
+    first = " ".join(sentence_parts).rstrip() + "."
 
-    brent_bits: list[str] = []
-    for drv in drivers:
-        m = _BRENT_DRIVER_RE.search(drv)
-        if m:
-            ym = m.group(1)
-            pct = m.group(2)
-            try:
-                y, mo = ym.split("-")
-                label = f"{_MONTHS_TITLE[int(mo) - 1]}-{y}"
-            except (ValueError, IndexError):
-                label = ym
-            brent_bits.append(f"{label} {pct}%")
-    if brent_bits:
-        parts.append(
+    second_bits: list[str] = []
+    brent_bits = _brent_driver_labels(drivers)
+    if brent_bits and direction == "RISING":
+        second_bits.append(
             "Longer-dated Brent futures repriced higher over the past month ("
-            + "; ".join(brent_bits)
-            + ")."
-            if direction == "RISING" and brent_bits
-            else "Brent contract 1-month moves in stored drivers: " + "; ".join(brent_bits) + "."
+            + ", ".join(brent_bits)
+            + ")"
+        )
+    elif brent_bits:
+        second_bits.append(
+            "Brent contract 1-month moves in stored drivers (" + ", ".join(brent_bits) + ")"
         )
 
-    imp = str(subs.get("imported_pressure") or "UNAVAILABLE")
-    if imp == "FALLING" and direction == "RISING":
-        rmpi = next((d for d in drivers if _RMPI_DRIVER_RE.search(d)), None)
-        if rmpi:
-            m = _RMPI_DRIVER_RE.search(rmpi)
-            if m:
-                parts.append(
-                    f"Non-energy raw-material prices are the offset (RMPI ex-crude-energy m/m {m.group(1)}%)."
-                )
-            else:
-                parts.append("Non-energy raw-material prices are the offset.")
+    opposite = _opposite_direction(direction)
+    offset_channels: list[str] = []
+    if opposite:
+        for ch, label in _PRIMA_CHANNEL_LABELS.items():
+            if str(subs.get(ch) or "UNAVAILABLE") == opposite:
+                offset_channels.append(_CHANNEL_OFFSET_NOUN.get(ch, label))
+    if offset_channels:
+        if len(offset_channels) == 1:
+            second_bits.append(f"{offset_channels[0]} is the offset")
         else:
-            parts.append("Non-energy raw-material prices are the offset.")
-    elif imp == "RISING" and direction == "FALLING":
-        parts.append("Imported raw-material pressure is rising in the stored channel read.")
+            second_bits.append(
+                "; ".join(offset_channels[:-1]) + f"; and {offset_channels[-1]} are offsets"
+            )
 
-    return parts[:2]
+    if not second_bits:
+        return [first]
+    second = second_bits[0]
+    if len(second_bits) > 1:
+        second = f"{second_bits[0]}; {second_bits[1]}"
+    if not second.endswith("."):
+        second += "."
+    return [first, second]
 
 
 def _prima_mpr_oil_line(change_text: str) -> str | None:
@@ -193,29 +287,131 @@ def _prima_mpr_oil_line(change_text: str) -> str | None:
     )
 
 
-def _prima_list_channels(
-    subs: Mapping[str, Any],
-    direction: str,
-    *,
-    match: bool,
-) -> list[str]:
+def _driver_lines_for_channel(channel: str, driver_list: list[str]) -> list[str]:
     out: list[str] = []
-    for ch, label in _PRIMA_CHANNEL_LABELS.items():
-        d = str(subs.get(ch) or "UNAVAILABLE")
-        if match:
-            if direction == "STABLE" and d == "STABLE":
-                out.append(f"{_prima_dir_phrase(d)} {label}")
-            elif direction != "STABLE" and d == direction:
-                out.append(f"{_prima_dir_phrase(d)} {label}")
-        else:
-            if direction == "STABLE":
-                if d in ("RISING", "FALLING"):
-                    out.append(f"{_prima_dir_phrase(d)} {label}")
-            elif d in _PRIMA_CATEGORIES and d != direction:
-                out.append(f"{_prima_dir_phrase(d)} {label}")
-            elif d == "UNAVAILABLE":
-                out.append(f"— Unavailable {label}")
+    for drv in driver_list:
+        if channel == "shock_persistence" and "Brent" in drv:
+            out.append(drv)
+        elif channel == "production_network_pressure" and "IPPI" in drv:
+            out.append(drv)
+        elif channel == "imported_pressure" and "RMPI" in drv:
+            out.append(drv)
+        elif channel == "demand_pass_through_constraint" and "CORRA" in drv:
+            out.append(drv)
     return out
+
+
+def _current_channel_has_direct_input(
+    channel: str,
+    drivers: list[str],
+    channel_evidence: Mapping[str, Any] | None,
+) -> bool:
+    if _driver_lines_for_channel(channel, drivers):
+        return True
+    if isinstance(channel_evidence, Mapping):
+        entry = channel_evidence.get(channel)
+        if isinstance(entry, Mapping):
+            inputs = entry.get("inputs")
+            if isinstance(inputs, list) and inputs:
+                return True
+    return False
+
+
+def _prior_run_driver_line(
+    channel: str,
+    trend: list[Any],
+    drivers: list[str],
+) -> tuple[str, str] | None:
+    if _driver_lines_for_channel(channel, drivers):
+        return None
+    for point in reversed(trend[:-1]):
+        if not isinstance(point, Mapping):
+            continue
+        run_day = _prima_short_date(str(point.get("observed_at") or ""))
+        prior_drivers = point.get("largest_drivers")
+        if not isinstance(prior_drivers, list):
+            continue
+        lines = _driver_lines_for_channel(channel, [str(x) for x in prior_drivers])
+        if lines:
+            return run_day, lines[0]
+    return None
+
+
+def _format_prior_corra_reading(run_day: str, driver_line: str) -> str:
+    m = _CORRA_DRIVER_RE.search(driver_line)
+    if not m:
+        return f"Latest stored reading ({run_day} run): {driver_line}"
+    gap = float(m.group(1))
+    mid = prima_contract.NEUTRAL_MIDPOINT
+    mag = abs(gap)
+    if gap < 0:
+        return (
+            f"Latest stored reading ({run_day} run): CORRA {mag:.2f} pp below "
+            f"the {mid:.2f}% neutral midpoint."
+        )
+    if gap > 0:
+        return (
+            f"Latest stored reading ({run_day} run): CORRA {mag:.2f} pp above "
+            f"the {mid:.2f}% neutral midpoint."
+        )
+    return f"Latest stored reading ({run_day} run): CORRA at the {mid:.2f}% neutral midpoint."
+
+
+def _format_prior_driver_reading(channel: str, run_day: str, driver_line: str) -> str:
+    if channel == "demand_pass_through_constraint":
+        return _format_prior_corra_reading(run_day, driver_line)
+    return f"Latest stored reading ({run_day} run): {driver_line}"
+
+
+def _evidence_block(esc: Any, kind: str, label: str, body: str) -> str:
+    return (
+        f'<div class="prima-evidence" data-prima-evidence="{esc(kind)}">'
+        f'<div class="prima-ev-label">{esc(label)}</div>'
+        f'<div class="prima-ev-body">{body}</div></div>'
+    )
+
+
+def _contradicting_channels(subs: Mapping[str, Any], channel: str, ch_dir: str) -> str:
+    bits: list[str] = []
+    for c, label in _PRIMA_CHANNEL_LABELS.items():
+        if c == channel:
+            continue
+        d = str(subs.get(c) or "UNAVAILABLE")
+        if d in _PRIMA_CATEGORIES and d != ch_dir and d != "STABLE":
+            bits.append(f"{_prima_dir_phrase(d)}: {label}")
+    return ", ".join(bits)
+
+
+def _prima_channel_threshold_line(channel: str) -> str:
+    if channel == "shock_persistence":
+        p = _prima_band_pct(prima_contract.PATH_PERSISTENCE_PCT)
+        return f"Threshold: Brent 12m and 24m 1m change band ±{p}"
+    if channel == "production_network_pressure":
+        b = _prima_band_pct(prima_contract.IPPI_EX_ENERGY_MOM_BAND)
+        return f"Band ±{b} m/m (IPPI ex-energy)"
+    if channel == "imported_pressure":
+        b = _prima_band_pct(prima_contract.RMPI_EX_ENERGY_MOM_BAND)
+        return f"Band ±{b} m/m (RMPI ex-crude-energy)"
+    if channel == "consumer_price_breadth":
+        rise = prima_contract.BREADTH_RISING_SHARE * 100
+        fall = prima_contract.BREADTH_FALLING_SHARE * 100
+        acc = prima_contract.TRIM_ACCEL_PP
+        return (
+            f"Threshold: ≥{rise:.1f}% majors positive m/m and trim accel >{acc:.2f}pp rising; "
+            f"≤{fall:.1f}% and <{-acc:.2f}pp falling"
+        )
+    if channel == "demand_pass_through_constraint":
+        band = prima_contract.NEUTRAL_BAND
+        mid = prima_contract.NEUTRAL_MIDPOINT
+        return f"Threshold: CORRA gap vs {mid:.2f}% midpoint ±{band:.2f}pp"
+    return ""
+
+
+def _series_title_short(meta: Mapping[str, Any]) -> str:
+    title = str(meta.get("title") or "")
+    if ";" in title:
+        title = title.split(";", 1)[1].strip()
+    return title
 
 
 def _prima_channel_snippet(
@@ -440,8 +636,9 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
     summary_sents = _prima_summary_sentences(direction, subs, drivers)
     mpr_line = _prima_mpr_oil_line(str(current.get("change_since_last_mpr") or ""))
 
-    supporting = _prima_list_channels(subs, direction, match=True) if direction in _PRIMA_CATEGORIES else []
-    offsetting = _prima_list_channels(subs, direction, match=False) if direction in _PRIMA_CATEGORIES else []
+    supporting, offsetting, neutral_list, unavailable_list = (
+        _prima_channel_groups(subs, direction) if direction in _PRIMA_CATEGORIES else ([], [], [], [])
+    )
 
     strip_items: list[str] = []
     prev_dir: str | None = None
@@ -494,18 +691,19 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
             if isinstance(raw_ev, Mapping):
                 ev_entry = raw_ev
         inputs = ev_entry.get("inputs") if ev_entry else None
-        direct_html = ""
-        missing_html = ""
+        why_parts: list[str] = [
+            _evidence_block(esc, "rule", "Rule", rule),
+        ]
+        direct_rows: list[str] = []
         if isinstance(inputs, list) and inputs:
-            rows: list[str] = []
             for inp in inputs:
                 if not isinstance(inp, dict):
                     continue
                 if channel == "consumer_price_breadth" and inp.get("majors"):
-                    rows.append(
-                        f"<div>Share of majors positive: {esc(str(inp.get('breadth_positive_majors')))}"
+                    direct_rows.append(
+                        f"<p>Share of majors positive: {esc(str(inp.get('breadth_positive_majors')))}"
                         f"/{esc(str(inp.get('breadth_majors_with_mom')))}; "
-                        f"trim accel {esc(str(inp.get('trim_accel_pp')))}pp</div>"
+                        f"trim accel {esc(str(inp.get('trim_accel_pp')))}pp</p>"
                     )
                     continue
                 pieces = []
@@ -526,85 +724,95 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                     if inp.get(key) is not None:
                         pieces.append(f"{key}: {esc(str(inp[key]))}")
                 if pieces:
-                    rows.append("<div>" + "; ".join(pieces) + "</div>")
-            if rows:
-                direct_html = (
-                    f'<div class="prima-evidence" data-prima-evidence="direct">'
-                    f"<div class=\"prima-ev-label\">Direct input</div>{''.join(rows)}</div>"
+                    direct_rows.append("<p>" + "; ".join(pieces) + "</p>")
+        if direct_rows:
+            why_parts.append(
+                _evidence_block(esc, "direct", "Direct input", "".join(direct_rows))
+            )
+        else:
+            prior = _prior_run_driver_line(channel, trend, drivers)
+            if prior:
+                run_day, driver_line = prior
+                prior_text = esc(_format_prior_driver_reading(channel, run_day, driver_line))
+                why_parts.append(
+                    _evidence_block(esc, "prior-run", "Earlier stored reading", f"<p>{prior_text}</p>")
                 )
-        if not direct_html:
-            if ch_dir == "UNAVAILABLE":
-                missing_html = (
-                    f'<div class="prima-evidence" data-prima-evidence="missing">'
-                    f"No stored direction input for this channel on {esc(current_run_day)}.</div>"
-                )
-            elif channel == "imported_pressure" and ch_dir == "FALLING":
-                missing_html = (
-                    f'<div class="prima-evidence" data-prima-evidence="missing">'
+            elif channel == "imported_pressure" and ch_dir == "FALLING" and not direct_rows:
+                missing_body = (
                     f"This run ({esc(current_run_day)}) stored the direction only. "
                     "The RMPI ex-crude-energy month-over-month reading, its reference month "
                     "and release date were not saved, so the size of the decline cannot be shown here. "
-                    "Runs after this change store them.</div>"
+                    "Runs after this change store them."
                 )
-            else:
-                missing_html = (
-                    f'<div class="prima-evidence" data-prima-evidence="missing">'
-                    f"Observed values for this channel were not stored on {esc(current_run_day)}.</div>"
+                why_parts.append(
+                    _evidence_block(esc, "missing", "Not stored for this run", f"<p>{missing_body}</p>")
+                )
+            elif not direct_rows:
+                if ch_dir == "UNAVAILABLE":
+                    miss = f"No stored direction input for this channel on {esc(current_run_day)}."
+                else:
+                    miss = f"Observed values for this channel were not stored on {esc(current_run_day)}."
+                why_parts.append(
+                    _evidence_block(esc, "missing", "Not stored for this run", f"<p>{miss}</p>")
                 )
 
-        context_bits: list[str] = []
+        context_line = ""
         if channel == "imported_pressure":
-            context_bits.append(
+            context_line = (
                 "Crude energy is excluded from this channel; oil moves enter through Shock persistence."
             )
-        opp = [
-            _PRIMA_CHANNEL_LABELS[c]
-            for c in _PRIMA_CHANNEL_LABELS
-            if c != channel
-            and str(subs.get(c) or "") in _PRIMA_CATEGORIES
-            and str(subs.get(c)) != ch_dir
-            and str(subs.get(c)) != "STABLE"
-        ]
-        if opp:
-            context_bits.append(
-                "Other channels pointing differently: " + ", ".join(opp) + "."
+        if context_line:
+            why_parts.append(
+                _evidence_block(
+                    esc,
+                    "context",
+                    "Context — not an input",
+                    f"<p>{esc(context_line)}</p>",
+                )
             )
-        context_html = (
-            f'<div class="prima-evidence" data-prima-evidence="context">'
-            f"{esc(' '.join(context_bits))}</div>"
-            if context_bits
-            else ""
-        )
+
+        contradict = _contradicting_channels(subs, channel, ch_dir)
+        if contradict:
+            why_parts.append(
+                _evidence_block(
+                    esc,
+                    "contradict",
+                    "Contradicting channels",
+                    f"<p>{esc(contradict)}</p>",
+                )
+            )
 
         history_text = esc(_prima_channel_history(channel, trend))
-        history_html = (
-            f'<div class="prima-evidence" data-prima-evidence="history">{history_text}</div>'
+        why_parts.append(
+            _evidence_block(esc, "history", "Run history", f"<p>{history_text}</p>")
         )
 
         meta = _prima_series_meta(channel)
         product_id = meta.get("product_id")
         statcan_url = _statcan_table_url(product_id if isinstance(product_id, int) else None)
-        driver_line = next(
-            (
-                d
-                for d in drivers
-                if (channel == "imported_pressure" and "RMPI" in d)
-                or (channel == "production_network_pressure" and "IPPI" in d)
-                or (channel == "shock_persistence" and "Brent" in d)
-            ),
-            "",
-        )
+        channel_driver_lines = _driver_lines_for_channel(channel, drivers)
         rule_id = (ev_entry or {}).get("rule") if ev_entry else _CHANNEL_RULE_IDS.get(channel, "")
-        raw_bits = [
-            f"Rule id: {esc(str(rule_id or ''))}",
-            f"Series: {esc(str(meta.get('series_id') or ''))}",
-            f"Table: {esc(str(meta.get('table') or ''))}",
-            f"Vector: {esc(str(meta.get('vector_id') or ''))}",
-        ]
+        thresh = _prima_channel_threshold_line(channel)
+        raw_bits = [f"Rule id: {esc(str(rule_id or ''))}"]
+        if thresh:
+            raw_bits.append(esc(thresh))
+        if meta:
+            title = _series_title_short(meta)
+            if title:
+                raw_bits.append(f"Series title: {esc(title)}")
+            raw_bits.append(f"Series id: {esc(str(meta.get('series_id') or ''))}")
+            raw_bits.append(f"Units: {esc(str(meta.get('units') or ''))}")
+            raw_bits.append(f"Seasonal: {esc(str(meta.get('seasonal_status') or ''))}")
+            raw_bits.append(f"Table: {esc(str(meta.get('table') or ''))}")
+            raw_bits.append(f"Vector: {esc(str(meta.get('vector_id') or ''))}")
         if statcan_url:
             raw_bits.append(f'<a href="{esc(statcan_url)}">StatCan table</a>')
-        if driver_line:
-            raw_bits.append(f"Stored driver: {esc(driver_line)}")
+        for drv in channel_driver_lines:
+            raw_bits.append(f"Stored driver (this run): {esc(drv)}")
+        if channel == "shock_persistence":
+            for drv in drivers:
+                if "Brent" in drv:
+                    raw_bits.append(f"Brent contract (this run): {esc(drv)}")
         if current_source:
             raw_bits.append(f"Source id: {esc(current_source)}")
         if trend and isinstance(trend[-1], Mapping):
@@ -616,10 +824,9 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
             f'<summary class="prima-ch-summary">{"".join(summary_bits)}</summary>'
             f'<div class="prima-why" data-prima-why="{esc(channel)}">'
             f'<p class="prima-why-title">{esc(why_title)}</p>'
-            f'<div class="prima-evidence" data-prima-evidence="rule">{rule}</div>'
-            f"{direct_html}{missing_html}{context_html}{history_html}"
+            f"{''.join(why_parts)}"
             f'<details class="prima-raw" data-prima-raw="{esc(channel)}">'
-            f"<summary>Source and calculation</summary>"
+            f'<summary class="prima-raw-summary">Source and calculation</summary>'
             f'<div class="prima-raw-body">{"".join(f"<div>{b}</div>" for b in raw_bits)}</div>'
             f"</details></div></details>"
         )
@@ -654,6 +861,20 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
             + "".join(f"<li>{esc(x)}</li>" for x in offsetting)
             + "</ul></div>"
         )
+    neutral_html = ""
+    if neutral_list:
+        neutral_html = (
+            '<div class="prima-lists"><div class="prima-list-label">Neutral</div><ul>'
+            + "".join(f"<li>{esc(x)}</li>" for x in neutral_list)
+            + "</ul></div>"
+        )
+    unavailable_html = ""
+    if unavailable_list:
+        unavailable_html = (
+            '<div class="prima-lists"><div class="prima-list-label">Unavailable</div><ul>'
+            + "".join(f"<li>{esc(x)}</li>" for x in unavailable_list)
+            + "</ul></div>"
+        )
 
     stale_badge = '<span class="prima-stale-badge">Stale inputs</span>' if current.get("stale") else ""
 
@@ -669,12 +890,13 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f'<span class="prima-headline-dir">{esc(_prima_dir_phrase(direction))}</span>'
         f'<span class="prima-headline-change">{esc(headline_change)}</span></div>'
         f'<div class="prima-summary">{summary_html}</div>'
-        f"{supporting_html}{offset_html}"
+        f"{supporting_html}{offset_html}{neutral_html}{unavailable_html}"
         f"{mpr_html}"
         f'<div class="prima-channels">{"".join(channel_html_parts)}</div>'
         f"{strip_html}"
         f'<p class="prima-meta-line">{esc(meta_line)}</p>'
-        f'<details class="prima-raw" data-prima-raw="run"><summary>Run provenance</summary>'
+        f'<details class="prima-raw prima-raw-run" data-prima-raw="run">'
+        f'<summary class="prima-raw-summary">Run provenance</summary>'
         f'<div class="prima-raw-body">{"".join(run_raw)}</div></details>'
         f"</div>"
     )

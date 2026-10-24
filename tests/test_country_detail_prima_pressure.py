@@ -774,6 +774,36 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.assertEqual(packet2.get("packet_sha256"), packet.get("packet_sha256"))
             self.assertFalse(hist_path.exists())
 
+    def test_stable_channel_not_listed_under_offsetting(self) -> None:
+        presentation = _presentation_from_block(
+            _rising_block(
+                direction="RISING",
+                subcomponent_directions={
+                    "shock_persistence": "RISING",
+                    "production_network_pressure": "STABLE",
+                    "imported_pressure": "FALLING",
+                    "consumer_price_breadth": "RISING",
+                    "demand_pass_through_constraint": "RISING",
+                },
+            )
+        )
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        prima = html.split('data-prima-pressure="ca"', 1)[1].split(
+            'class="evidence-block context"', 1
+        )[0]
+        offset_block = prima.split('prima-list-label">Offsetting', 1)[1].split(
+            'prima-list-label">Neutral', 1
+        )[0]
+        self.assertNotIn("Production network pressure", offset_block)
+        self.assertIn("Imported pressure", offset_block)
+        neutral_block = prima.split('prima-list-label">Neutral', 1)[1].split("</ul>", 1)[0]
+        self.assertIn("Production network pressure", neutral_block)
+
     def test_prima_trend_chip_and_channel_change_marker(self) -> None:
         subs_rising = {
             "shock_persistence": "RISING",
@@ -838,8 +868,25 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertNotIn("2026-10-21", layer1)
         self.assertIn("was Stable 21 Oct", prima)
         self.assertIn("↓ Falling", prima)
+        self.assertNotIn("Offsetting</div><ul><li>→ Stable Production", prima)
         imported = prima.split('data-prima-why="imported_pressure"', 1)[1]
         self.assertIn("0.40%", imported)
+        self.assertIn("Not stored for this run", imported)
+
+    def test_repo_demand_shows_prior_run_corra_reading(self) -> None:
+        presentation = build_presentation(ROOT)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        demand = html.split('data-prima-why="demand_pass_through_constraint"', 1)[1].split(
+            "</details>", 1
+        )[0]
+        self.assertIn("Earlier stored reading", demand)
+        self.assertIn("22 Oct", demand)
+        self.assertIn("0.50 pp below", demand)
 
     def test_repo_imported_falling_missing_stored_mom(self) -> None:
         presentation = build_presentation(ROOT)

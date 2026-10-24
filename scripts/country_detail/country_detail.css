@@ -368,10 +368,17 @@
 .country-detail .prima-meta-line,
 .country-detail .prima-summary p,
 .country-detail .prima-mpr-glance,
-.country-detail .prima-evidence,
+.country-detail .prima-evidence {
+  margin: 0.5rem 0 0;
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-ink-2, #c5d0db);
+  line-height: 1.5;
+  max-width: 42rem;
+}
+
 .country-detail .prima-raw-body {
   font-size: var(--mw-fs-meta, 12.5px);
-  color: var(--mw-muted, #93a5b6);
+  color: var(--mw-ink-2, #c5d0db);
   line-height: 1.45;
 }
 
@@ -509,11 +516,16 @@
 }
 
 .country-detail .prima-ev-label {
-  font-size: 11px;
+  font-size: var(--mw-fs-meta, 12.5px);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.2rem;
+  color: var(--mw-muted, #93a5b6);
+}
+
+.country-detail .prima-ev-body p {
+  margin: 0.15rem 0 0;
 }
 
 .country-detail .prima-strip {
@@ -542,17 +554,42 @@
   font-size: var(--mw-fs-meta, 12.5px);
 }
 
-.country-detail details.prima-raw summary {
+.country-detail .prima-raw-summary {
   cursor: pointer;
-  min-height: 2.5rem;
+  min-height: 40px;
   display: flex;
   align-items: center;
-  color: var(--mw-muted, #93a5b6);
+  list-style: none;
+  color: var(--mw-ink-2, #c5d0db);
+  font-size: var(--mw-fs-body, 14px);
+  padding: 0.35rem 0;
 }
 
-.country-detail details.prima-raw summary:focus-visible {
+.country-detail .prima-raw-summary::-webkit-details-marker {
+  display: none;
+}
+
+.country-detail .prima-raw-summary::after {
+  content: "▸";
+  margin-left: auto;
+  padding-left: 0.5rem;
+  color: var(--mw-muted, #93a5b6);
+  transition: transform 0.15s ease;
+}
+
+.country-detail details.prima-raw[open] > .prima-raw-summary::after {
+  transform: rotate(90deg);
+}
+
+.country-detail .prima-raw-summary:focus-visible {
   outline: 2px solid var(--mw-warm, #e39d3e);
   outline-offset: 2px;
+}
+
+.country-detail details.prima-raw-run {
+  margin-top: 0.65rem;
+  border-top: 1px solid var(--mw-line, #233140);
+  padding-top: 0.25rem;
 }
 
 .country-detail .prima-stale-badge {
