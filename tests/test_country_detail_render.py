@@ -379,7 +379,7 @@ class CountryDetailRenderTest(unittest.TestCase):
         visible = re.sub(r"<details\b[^>]*>.*?</details>", "", html, flags=re.S)
         self.assertNotIn("mom_change_thousands_sa", visible)
         self.assertNotIn("insufficient_history", visible)
-        self.assertIn("Monthly change in employed persons, seasonally adjusted", visible)
+        self.assertIn("Employment · monthly change", visible)
         self.assertIn("-15.80k", visible)
         self.assertIn("JUL 2026", visible)
         self.assertIn("Labor", visible)

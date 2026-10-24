@@ -68,12 +68,49 @@ def _bucket_chip(bucket: str) -> tuple[str, str]:
     return bucket.replace("_", " ").title(), "mw-chip--info"
 
 
+_MARKET_SOURCE_LABELS: dict[str, str] = {
+    "AU_rates": "Australia government bond yields (RBA F2)",
+    "CA_rates": "Canada government bond yields",
+    "CFTC_positioning": "CFTC positioning",
+    "CME_positioning": "CME FX futures volume / open interest",
+    "EA_rates": "Euro area / Bund reference yields",
+    "FX": "ECB FX reference rates",
+    "JP_rates": "Japan government bond yields (MOF JGB)",
+    "NZ_rates": "New Zealand government bond yields (RBNZ)",
+    "US_rates": "U.S. Treasury par yield curve",
+}
+
+
 def _human_series(row: dict[str, str]) -> str:
+    canonical = str(row.get("canonical_name") or "").strip()
+    if canonical:
+        return canonical
     component = str(row.get("component") or "").replace("_", " ")
-    dimension = str(row.get("dimension") or "")
+    dimension = str(row.get("dimension") or "").replace("_", " ")
     if component and dimension:
-        return f"{component} · {dimension}"
-    return str(row.get("series_id") or "Series")
+        title = component.title() if component.islower() else component
+        dim = dimension.title() if dimension.islower() else dimension
+        return f"{title} · {dim}"
+    return str(row.get("series_id") or "Series").replace("_", " ")
+
+
+def _human_market_detail(note: str, error: str) -> tuple[str, str]:
+    """One-line visible reason and full text for disclosure."""
+    note = str(note or "").strip()
+    error = str(error or "").strip()
+    blob = "\n".join(part for part in (note, error) if part).strip()
+    if not blob:
+        return "", ""
+    lowered = blob.lower()
+    if "cme lasttotals" in lowered or ("cmegroup.com" in lowered and "403" in lowered):
+        visible = "CME volume/open-interest fetch returned HTTP 403 for G10 products"
+    elif "errors={" in blob and "403" in blob:
+        visible = "CME volume/open-interest fetch returned HTTP 403 for G10 products"
+    elif "failed to fetch http" in lowered:
+        visible = "Upstream fetch failed; see raw detail for URLs"
+    else:
+        visible = _one_line(blob.replace("errors=", "errors: "), 140)
+    return visible, blob
 
 
 def _one_line(raw: str, limit: int = 120) -> str:
@@ -238,7 +275,8 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
             )
             lines.append(
                 '<li class="mw-source-row" data-source-row="1" data-source-status="' + esc(bucket) + '">'
-                f'<span class="mw-source-name">{esc(_human_series(row))}</span>'
+                f'<span class="mw-source-name">{esc(_human_series(row))} '
+                f'<span class="mw-raw">{esc(row["series_id"])}</span></span>'
                 f'<span class="mw-chip {chip_css}">{esc(chip_label)}</span>'
                 f'<span class="mw-asof">Obs {esc(obs)}</span>'
                 f'<span class="mw-source-link">{link}</span>'
@@ -264,22 +302,26 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
             link = f'<a href="{esc(url)}" rel="noopener" target="_blank">source</a>' if url.startswith("https://") else "link not recorded"
             note = str(source.get("note") or "")
             error = str(source.get("error") or "")
+            human_label = _MARKET_SOURCE_LABELS.get(key) or str(source.get("name") or "unnamed")
+            note_html = f' <span class="note">{esc(note)}</span>' if note and not error else ""
+            visible_detail, full_blob = _human_market_detail(note, error)
             extra = ""
-            blob = " ".join(part for part in (note, error) if part).strip()
-            if blob:
+            if error and full_blob:
                 extra = (
-                    '<details class="mw-raw"><summary>'
-                    + esc(_one_line(blob))
-                    + "</summary><p>"
-                    + esc(blob)
-                    + "</p></details>"
+                    '<details class="mw-raw mw-source-raw"><summary>'
+                    + esc(visible_detail or "Source detail")
+                    + "</summary><pre>"
+                    + esc(full_blob)
+                    + "</pre></details>"
                 )
+            detail_bit = f" {esc(visible_detail)}" if error and visible_detail else ""
             market_lines.append(
                 "<li data-market-source=\"" + esc(key) + "\">"
-                f'<b>{esc(key)}</b> · {esc(source.get("name") or "unnamed")} · '
+                f'<span class="mw-source-name">{esc(human_label)}</span> '
+                f'<span class="mw-raw">{esc(key)}</span> · '
                 f'status {esc(source.get("status") or "unverified")} · '
-                f'observation {esc(source.get("observation_date") or "none")} · {link}. '
-                f"{extra}"
+                f'observation {esc(source.get("observation_date") or "none")} · {link}.'
+                f"{detail_bit}{note_html} {extra}"
                 "</li>"
             )
     generated = "not published" if not isinstance(packet, dict) else str(packet.get("generated_at") or "timestamp missing")

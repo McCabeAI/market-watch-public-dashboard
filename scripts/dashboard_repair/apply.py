@@ -577,7 +577,9 @@ def apply_dashboard_repair(
     if ingest is None and series is None:
         ingest = load_latest_ingest()
     snapshot = build_source_health_snapshot(catalog_series, ingest, model)
-    html = _replace_section(html, "sources", render_sources(market_state, snapshot))
+    names = {str(spec.get("id") or ""): str(spec.get("canonical_name") or "").strip() for spec in catalog_series}
+    display_rows = [dict(row, canonical_name=names.get(str(row.get("series_id") or ""), "")) for row in snapshot.get("rows") or []]
+    html = _replace_section(html, "sources", render_sources(market_state, snapshot, display_rows))
     html = _replace_header(html, market_state, scores)
     html = _insert_brief(
         html,

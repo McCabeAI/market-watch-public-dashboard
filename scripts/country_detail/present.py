@@ -42,8 +42,9 @@ _TRANSFORMATION_MARKS = (
     ("saar_pct", "annualised"),
     ("mom_sa_pct", "m/m"),
     ("mom_pct", "m/m"),
-    ("mom_change_thousands_sa", "m/m"),
-    ("mm_change_thousands_sa", "m/m"),
+    ("mom_change_thousands_sa", "monthly change"),
+    ("mm_change_thousands_sa", "monthly change"),
+    ("mom_sa_change_thousands", "monthly change"),
     ("ppi_component_mom_pct", "m/m"),
     ("yoy_pct", "y/y"),
     ("qoq_sa_pct", "q/q"),
@@ -55,6 +56,24 @@ _TRANSFORMATION_MARKS = (
     ("diffusion_index", "diffusion"),
     ("percent", "level"),
 )
+
+# Curated trader-facing names for series that appear in WMN, score inputs, and the desk brief.
+_SERIES_DISPLAY_NAMES: dict[str, str] = {
+    "PAYEMS": "Nonfarm payrolls · monthly change",
+    "LFS_1A1_EMPLOYED_PERSONS_SA": "Employment · monthly change",
+    "A84423043C": "Employment · monthly change",
+    "LFS_employment_level_v2062811": "Employment · monthly change",
+    "CO_CONSUMER_SENTIMENT_INDEX_SA": "Consumer sentiment",
+    "UMCSENT": "Consumer sentiment",
+    "AU.Consumer.confidence": "Consumer sentiment",
+    "Ivey_PMI_conflict": "Composite PMI output",
+    "SP_GLOBAL_CA_COMPOSITE": "Composite PMI output",
+    "SP_GLOBAL_AU_COMPOSITE_PMI": "Composite PMI output",
+    "SP_GLOBAL_EA_COMPOSITE_PMI": "Composite PMI output",
+    "SP_GLOBAL_JP_COMPOSITE_PMI": "Composite PMI output",
+    "BUSINESSNZ_PCI_GDP_WEIGHTED": "Composite PMI output",
+    "US.Inflation.mapped_bridge": "Core PCE PPI bridge (mapped)",
+}
 
 
 def transformation_mark(transformation: str | None) -> str:
@@ -97,7 +116,11 @@ def _concise_base(label: str) -> str:
 
 def plain_series_name(obs: Mapping[str, Any]) -> str:
     """Concise series title, disambiguated by its published transformation."""
-    label = str(obs.get("label") or obs.get("series_id") or "Series").strip()
+    series_id = str(obs.get("series_id") or obs.get("id") or "").strip()
+    curated = _SERIES_DISPLAY_NAMES.get(series_id)
+    if curated:
+        return curated
+    label = str(obs.get("label") or series_id or "Series").strip()
     transformation = str(obs.get("transformation") or "")
     suffix = _transformation_words(transformation)
     if suffix:

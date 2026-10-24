@@ -30,8 +30,11 @@
 .traderbook .tb-loading{min-height:80px;display:flex;align-items:center;color:var(--mw-muted);font-size:14px}
 .traderbook .tb-stale{background:var(--mw-warn-wash);border:1px solid rgba(229,168,63,.5);color:var(--mw-ink);padding:10px 12px;border-radius:var(--mw-r);font-size:14px;line-height:1.45}
 .traderbook .tb-flag-list,.traderbook .tb-compare,.traderbook .tb-block ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-.traderbook .tb-flag-list>li{display:grid;gap:4px;padding-top:8px;border-top:1px solid var(--mw-line);min-width:0}
+.traderbook .tb-flag-list>li{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;padding-top:8px;border-top:1px solid var(--mw-line);min-width:0}
+.traderbook .tb-flag-list>li>.mw-chip{flex:0 0 auto;max-width:100%}
+.traderbook .tb-flag-list>li>p,.traderbook .tb-flag-list>li>ul{flex:1 1 12rem;min-width:0}
 .traderbook .tb-flag-list p,.traderbook .tb-flag-list li,.traderbook .tb-thesis,.traderbook .tb-pitch,.traderbook .tb-funding p{margin:0;overflow-wrap:break-word}
+.traderbook .tb-flag-text{color:var(--mw-ink-2)}
 .traderbook .mw-raw{overflow-wrap:anywhere}
 .traderbook .tb-toolbar{display:flex;flex-wrap:wrap;gap:6px;align-items:flex-end;margin:0 0 8px}
 .traderbook .tb-filter,.traderbook .tb-expand,.traderbook .tb-disclose,.traderbook .tb-sort{min-height:40px;cursor:pointer}
@@ -42,10 +45,12 @@
 .traderbook .tb-table-wrap{max-width:100%;overflow-x:auto}
 .traderbook .tb-table{width:100%;border-collapse:collapse;table-layout:fixed}
 .traderbook .tb-table caption{caption-side:top;text-align:left;color:var(--mw-muted);font-size:var(--mw-fs-meta);line-height:1.45;padding:0 0 8px}
-.traderbook .tb-table th{padding:0;text-align:left;vertical-align:bottom;background:var(--mw-panel-3);color:var(--mw-muted);font-size:11px;white-space:normal;border-bottom:1px solid var(--mw-line)}
+.traderbook .tb-table th{padding:0 6px;text-align:left;vertical-align:bottom;background:var(--mw-panel-3);color:var(--mw-muted);font-size:11px;white-space:normal;border-bottom:1px solid var(--mw-line)}
+.traderbook .tb-table th[data-sort="funding"],.traderbook .tb-table th[data-sort="risk"]{padding-left:10px;padding-right:10px;min-width:4.75rem}
 .traderbook .tb-sort{width:100%;background:transparent;border:0;color:var(--mw-muted);font-size:11px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;text-align:left;padding:6px 2px;border-radius:var(--mw-r-sm);line-height:1.2;min-height:36px;white-space:normal;overflow-wrap:normal}
 .traderbook .tb-sort:hover{color:var(--mw-ink);background:var(--mw-panel-3)}
-.traderbook .tb-table td{padding:8px 4px;vertical-align:top;border-top:1px solid var(--mw-line);border-bottom:0;overflow-wrap:break-word;word-break:normal;font-size:13px;text-align:left;background:transparent;color:var(--mw-ink)}
+.traderbook .tb-table td{padding:8px 6px;vertical-align:top;border-top:1px solid var(--mw-line);border-bottom:0;overflow-wrap:break-word;word-break:normal;font-size:13px;text-align:left;background:transparent;color:var(--mw-ink)}
+.traderbook .tb-table td[data-col="funding"],.traderbook .tb-table td[data-col="risk"]{padding-left:10px;padding-right:10px}
 .traderbook .tb-table td[data-col="net"],.traderbook .tb-table td[data-col="gross"],.traderbook .tb-table td[data-col="funding"],.traderbook .tb-table td[data-col="paper"],.traderbook .tb-table td[data-col="conviction"],.traderbook .tb-table td[data-col="flags"],.traderbook .tb-table th[data-sort="net"],.traderbook .tb-table th[data-sort="gross"],.traderbook .tb-table th[data-sort="funding"],.traderbook .tb-table th[data-sort="paper"],.traderbook .tb-table th[data-sort="conviction"],.traderbook .tb-table th[data-sort="flags"]{text-align:right}
 .traderbook .tb-table th[data-sort="net"] .tb-sort,.traderbook .tb-table th[data-sort="gross"] .tb-sort,.traderbook .tb-table th[data-sort="funding"] .tb-sort,.traderbook .tb-table th[data-sort="paper"] .tb-sort,.traderbook .tb-table th[data-sort="conviction"] .tb-sort,.traderbook .tb-table th[data-sort="flags"] .tb-sort{text-align:right}
 .traderbook .tb-table tbody tr,.traderbook .tb-table tbody tr:nth-child(even),.traderbook .tb-table tbody tr:hover{background:transparent}
@@ -90,7 +95,9 @@
 .traderbook .tb-position-risk span{font-size:var(--mw-fs-meta)}
 .traderbook .tb-position-marks{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:6px;font-size:var(--mw-fs-meta);color:var(--mw-muted)}
 .traderbook .tb-position-reason,.traderbook .tb-position-invalidation,.traderbook .tb-position-link,.traderbook .tb-thesis,.traderbook .tb-pitch{margin-top:6px;font-size:14px;line-height:1.45;color:var(--mw-ink-2)}
-.traderbook .tb-position-invalidation{color:#f3cd8a}
+.traderbook .tb-position-invalidation{color:var(--mw-ink-2)}
+.traderbook .tb-position-invalidation>b{color:#e5a83f}
+.traderbook .tb-price-source{font-size:var(--mw-fs-meta);color:var(--mw-muted)}
 .traderbook .tb-muted,.traderbook .tb-empty{color:var(--mw-faint);font-size:14px}
 .traderbook .tb-metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .traderbook .tb-metrics div{background:var(--mw-panel);border:1px solid var(--mw-line);border-radius:var(--mw-r-sm);padding:8px}

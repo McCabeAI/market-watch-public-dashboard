@@ -150,6 +150,17 @@
     return raw.replace(/_/g, " ");
   }
 
+  function humaniseDiagnostic(text) {
+    var out = String(text || "");
+    out = out.replace(/\(latest_observation=None\)/gi, "(no official observation available)");
+    out = out.replace(/\blatest_observation=None\b/gi, "no official observation available");
+    out = out.replace(/\bmarket_state\.([A-Za-z0-9_.-]+)/g, function (_match, path) {
+      return path.replace(/_/g, " ").replace(/\./g, " ");
+    });
+    out = out.replace(/\bweighted_average_paper_mid\b/gi, "weighted average paper mid");
+    return out.replace(/\s{2,}/g, " ").trim();
+  }
+
   function tzLabel(text) {
     var value = String(text || "");
     if (/Z$/i.test(value)) return " UTC";
@@ -440,8 +451,9 @@
     var who = parts.join(" and ");
     var reason = funding && funding.reason ? funding.reason : "";
     if (reason) reason = reason.charAt(0).toUpperCase() + reason.slice(1);
-    if (!who) return reason;
-    return reason ? who + ". " + reason : who;
+    if (!who) return humaniseDiagnostic(reason);
+    var text = reason ? who + ". " + reason : who;
+    return humaniseDiagnostic(text);
   }
 
   function fleetSnapshot(seats) {
@@ -677,9 +689,12 @@
     if (!finite(price) && !asOf && !source) return "";
     var shown = finite(price) ? level(price) : "—";
     var title = finite(price) ? ' title="' + esc(String(price)) + '"' : "";
+    var sourceHtml = source
+      ? ' <span class="tb-price-source">Source <span class="mw-raw">' + esc(source) + "</span></span>"
+      : "";
     return "<span>" + esc(label) + ' <b class="mw-num"' + title + ">" + esc(shown) + "</b>" +
       (asOf ? ' <span class="mw-asof">' + esc(formatStamp(asOf, true)) + "</span>" : "") +
-      (source ? ' <span class="mw-raw">' + esc(source) + "</span>" : "") + "</span>";
+      sourceHtml + "</span>";
   }
 
   function renderPosition(pos) {
@@ -879,14 +894,14 @@
   function flagHtml(flags) {
     var items = [];
     if (flags.funding && (flags.funding.seatCount || flags.funding.pmCount)) {
-      items.push('<li><span class="mw-chip mw-chip--bad">Funding accrual failed closed</span><p>' +
+      items.push('<li><span class="mw-chip mw-chip--bad">Funding accrual failed closed</span><p class="tb-flag-text">' +
         esc(describeFunding(flags.funding)) + "</p><p class=\"tb-flag-note\">Seat flag counts omit this shared failure.</p></li>");
     }
     if (flags.paperMarks.length) {
       var marks = flags.paperMarks.map(function (row) {
         var times = row.count > 1 ? " · recorded " + row.count + " times" : "";
         return "<li>" + esc(row.label) + " · " + esc(row.human) + ' <span class="mw-raw">' + esc(row.instrument) +
-          "</span> · " + esc(row.reason) + esc(times) + "</li>";
+          "</span> · " + esc(humaniseDiagnostic(row.reason)) + esc(times) + "</li>";
       }).join("");
       items.push('<li><span class="mw-chip mw-chip--bad">Paper mark unavailable</span><ul>' + marks + "</ul></li>");
     }
@@ -913,7 +928,7 @@
       var quarantine = (restriction.quarantined || []).map(function (row) {
         return "<li>" + esc(row.label) + " · " + esc(row.human || row.instrument) +
           (row.instrument ? ' <span class="mw-raw">' + esc(row.instrument) + "</span>" : "") +
-          (row.reason ? " · " + esc(row.reason) : "") + "</li>";
+          (row.reason ? " · " + esc(humaniseDiagnostic(row.reason)) : "") + "</li>";
       }).join("");
       var gateChip = restrictedState ? "mw-chip--warn" : "mw-chip--info";
       var gateText = restrictedState ? "New risk restricted" : "New risk eligible";
@@ -1018,8 +1033,10 @@
         return;
       }
       var line = item.text;
-      if (item.kind === "funding") line = "Funding accrual failed closed. " + item.reason;
-      if (item.kind === "paper_mark") line = "Paper mark unavailable for " + humaniseInstrument(item.instrument) + ": " + item.reason;
+      if (item.kind === "funding") line = "Funding accrual failed closed. " + humaniseDiagnostic(item.reason);
+      if (item.kind === "paper_mark") {
+        line = "Paper mark unavailable for " + humaniseInstrument(item.instrument) + ": " + humaniseDiagnostic(item.reason);
+      }
       seenFlag[key] = { line: line, raw: item.instrument || item.positionId || "", count: 1 };
       flags.push(seenFlag[key]);
     });
@@ -1035,7 +1052,7 @@
       var title = item.raw && item.text !== item.raw ? ' title="' + esc(item.raw) + '"' : "";
       var times = item.count > 1 ? " (recorded " + item.count + " times)" : "";
       var raw = item.raw && item.line ? ' <span class="mw-raw">' + esc(item.raw) + "</span>" : "";
-      return "<li" + title + ">" + esc(item.line || item.text) + raw + esc(times) + "</li>";
+      return "<li" + title + ">" + esc(humaniseDiagnostic(item.line || item.text)) + raw + esc(times) + "</li>";
     }).join("") + "</ul>";
   }
 

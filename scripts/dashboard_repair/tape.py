@@ -11,7 +11,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from scripts.dashboard_repair.brief import format_packet_time
+from scripts.dashboard_repair.brief import format_freeze_day, format_packet_time
 from scripts.dashboard_repair.htmlutil import esc
 
 TAPE_ITEMS = (
@@ -384,7 +384,8 @@ def _asof_line(card: dict[str, Any]) -> str:
     as_of = str(card.get("as_of") or "").strip()
     if not as_of or as_of == "date missing":
         return '<div class="mw-asof">date missing</div>'
-    return f'<div class="mw-asof">{esc(as_of)}</div>'
+    display = format_freeze_day(as_of) if as_of else "date missing"
+    return f'<div class="mw-asof">{esc(display)}</div>'
 
 
 def render_tape(packet: dict[str, Any] | None) -> str:

@@ -12,7 +12,8 @@ from zoneinfo import ZoneInfo
 from scripts.apply_six_economy_dashboard import apply_six_economy_dashboard
 from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html
 from scripts.dashboard_repair.brief import ranked_impulses, ranked_moves
-from scripts.dashboard_repair.calendar_view import build_release_model
+from scripts.dashboard_repair.calendar_view import build_release_model, render_releases
+from scripts.dashboard_repair.sources_view import render_sources
 from scripts.dashboard_repair.official_schedule import parse_abs_future_releases, parse_stats_nz_next_release
 from scripts.dashboard_repair.scoreboard import score_cards
 from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
@@ -626,6 +627,111 @@ class DebateTests(unittest.TestCase):
         self.assertIn("Not a book instruction", html)
         self.assertEqual(render_debate_html({"available": True, "seat_count": 13, "trades": trades[:13]}), "")
         self.assertEqual(render_debate_html({"available": False, "seat_count": 14, "trades": trades}), "")
+
+
+class DashboardPresentationTests(unittest.TestCase):
+    def test_unknown_dates_stay_unavailable_in_render(self):
+        model = build_release_model(
+            NOW,
+            series=[_series("US.Inflation.core_pce")],
+            score_as_of="2026-09-21",
+        )
+        html = render_releases(model)
+        self.assertIn("date unavailable", html)
+
+    def test_compact_row_keeps_feed_and_provenance_collapsed(self):
+        model = build_release_model(NOW, score_as_of="2026-09-21")
+        html = render_releases(model)
+        self.assertIn("Feeds score:", html)
+        self.assertIn("Provenance and score context", html)
+        self.assertIn("standing", html.lower())
+
+    def test_status_chips_use_human_labels_and_bucket_sum(self):
+        series = [
+            _series("US.Labor.wages", weight=0.2),
+            _series("US.Inflation.core_pce"),
+            _series("CA.Labor.unemployment", weight=0.7),
+        ]
+        ingest = {
+            "launch_id": "mwl-test",
+            "checked_at": "2026-10-22T11:09:51Z",
+            "stage_status": "succeeded",
+            "source": "fixture",
+            "rows": [
+                {
+                    "series_id": "US.Labor.wages",
+                    "status": "new_observation",
+                    "observation_period": "2026-09",
+                    "error": None,
+                },
+                {
+                    "series_id": "US.Inflation.core_pce",
+                    "status": "source_failed",
+                    "observation_period": "2026-07",
+                    "error": "The read operation timed out after 30 seconds while contacting upstream",
+                    "source_health": {
+                        "carried_forward": True,
+                        "retrieved_at": "2026-09-21T14:41:19Z",
+                        "fetch_status": "source_failed",
+                    },
+                },
+            ],
+        }
+        snapshot = build_source_health_snapshot(series, ingest, None)
+        html = render_sources(None, snapshot)
+        self.assertIn("Checked ·", html)
+        self.assertIn("Failure ·", html)
+        self.assertIn("Not checked ·", html)
+        self.assertIn("date unavailable", html)
+        bucket_total = sum(
+            snapshot["counts"][name]
+            for name in ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")
+        )
+        self.assertEqual(bucket_total, len(snapshot["rows"]))
+        self.assertNotIn("carried_forward:", html)
+        self.assertIn("Stage check", html)
+        self.assertNotIn("new_observation", html.split("Stage ledger notes")[0])
+        self.assertRegex(html, r"<details[^>]*class=\"[^\"]*mw-raw")
+        self.assertNotRegex(
+            html,
+            r"The read operation timed out after 30 seconds while contacting upstream</li>",
+        )
+
+    def test_empty_ledger_shows_not_checked_wording(self):
+        snapshot = build_source_health_snapshot([_series("US.Inflation.core_pce")], None, None)
+        html = render_sources(None, snapshot)
+        self.assertIn("not checked", html.lower())
+        self.assertIn("No succeeded Stage 01", html)
+
+    def test_market_cme_error_is_human_by_default(self):
+        packet = {
+            "generated_at": "2026-10-23T12:00:00Z",
+            "sources": {
+                "CME_positioning": {
+                    "name": "CME Group FX futures and options volume/open-interest service",
+                    "status": "unavailable",
+                    "error": "CME LastTotals returned no mapped G10 FX products; errors={'EUR': 'failed to fetch https://www.cmegroup.com/x: HTTP Error 403: Forbidden'}",
+                    "url": "https://www.cmegroup.com/market-data/volume-open-interest.html",
+                }
+            },
+        }
+        html = render_sources(packet, {"rows": [], "counts": {}})
+        self.assertIn("CME FX futures volume / open interest", html)
+        self.assertIn("HTTP 403 for G10 products", html)
+        self.assertNotIn("errors={'EUR'", html.split("</summary>")[0])
+
+    def test_theme_has_tokens_focus_and_print(self):
+        theme = ROOT / "scripts/dashboard_repair/theme.css"
+        css = theme.read_text(encoding="utf-8")
+        self.assertIn(":root", css)
+        self.assertIn("--mw-bg", css)
+        self.assertIn(":focus-visible", css)
+        self.assertIn("@media print", css)
+
+    def test_theme_labels_avoid_live_wording(self):
+        theme = ROOT / "scripts/dashboard_repair/theme.css"
+        css = theme.read_text(encoding="utf-8")
+        self.assertNotRegex(css, r"\blive\b", msg="theme.css should not use 'live' in labels")
 
 
 if __name__ == "__main__":
