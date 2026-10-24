@@ -466,15 +466,54 @@ def build_release_model(
     }
 
 
+def _display_date(value: date | None) -> str:
+    if value is None:
+        return "date unavailable"
+    return f"{value.day} {value.strftime('%b %Y')}"
+
+
+def _weekday(value: date | None) -> str:
+    if value is None:
+        return ""
+    return value.strftime("%A")
+
+
+def _impact_feed(impacts: list[str]) -> tuple[str, str]:
+    for text in impacts:
+        if text.startswith("Scored input:"):
+            head = text.removeprefix("Scored input:").strip().split("·", 1)[0].strip()
+            return f"Feeds score: {head}", "mw-chip--ok"
+        if "Context only" in text or "Bridge input" in text or "zero score weight" in text:
+            return "Context only", "mw-chip--info"
+    return "Context only", "mw-chip--info"
+
+
+def _row_times(item: dict[str, Any]) -> tuple[str, str]:
+    local = str(item.get("local_display") or "")
+    et = str(item.get("et_display") or "")
+    if item.get("clock") == "standing":
+        local = local.replace(" standing clock", "")
+        et = et.replace(" if the standing clock holds", "")
+    return local, et
+
+
+def _ledger_status(actual: str) -> str:
+    if actual == "not observed in the score ledger":
+        return "Actual not yet in score ledger"
+    return f"Actual: {actual}"
+
+
 def _event_html(item: dict[str, Any]) -> str:
     names = item.get("names") or [item.get("name")]
     if len(names) == 1:
-        title = names[0]
-        name_block = ""
+        title = str(names[0])
     else:
         title = f"{item.get('publisher') or 'Release'} · {len(names)} series"
-        name_block = "<details><summary>Series names</summary><p>" + esc("; ".join(names)) + "</p></details>"
-    impacts = "".join(f"<li>{esc(text)}</li>" for text in item.get("impacts") or [item.get("impact")])
+    impacts = list(item.get("impacts") or [item.get("impact")])
+    feed_label, feed_class = _impact_feed([str(text) for text in impacts if text])
+    when = item.get("et_date") or item.get("local_date")
+    day_label = _display_date(when if isinstance(when, date) else None)
+    weekday = _weekday(when if isinstance(when, date) else None)
     link = ""
     if str(item.get("source_url") or "").startswith("https://"):
         link = f'<a href="{esc(item["source_url"])}" rel="noopener" target="_blank">Official source</a>'
@@ -485,20 +524,43 @@ def _event_html(item: dict[str, Any]) -> str:
     )
     clock_note = ""
     if item.get("clock") == "standing":
-        clock_note = " Clock is the standing publisher time, not a time reprinted on the future-date line."
+        clock_note = "Clock is the standing publisher time, not a time reprinted on the future-date line."
     elif item.get("clock") == "tba":
-        clock_note = " Time is TBA. No ET hour is shown."
+        clock_note = "Time is TBA. No ET hour is shown."
+    impact_lines = "".join(f"<li>{esc(text)}</li>" for text in impacts)
+    names_detail = ""
+    if len(names) > 1:
+        names_detail = "<p><span class=\"mw-label\">Series</span> " + esc("; ".join(names)) + "</p>"
+    detail_bits = [
+        f"<p>Verification: {esc(item.get('provenance') or 'pinned timestamp')}.</p>",
+        names_detail,
+        f"<p>Reference period: {esc(item.get('reference_period') or 'not pinned')}. "
+        f"Publisher: {esc(item.get('publisher') or 'not recorded')}. {link}</p>",
+        f"<ul>{impact_lines}</ul>" if impact_lines else "",
+        f"<p>{esc(item.get('actual'))}. Prior: {esc(item.get('prior'))}. No consensus is published here.</p>",
+        f"<p>{esc(freeze_text)}</p>",
+    ]
+    if clock_note:
+        detail_bits.insert(1, f"<p>{esc(clock_note)}</p>")
+    details = (
+        '<details class="mw-release-detail"><summary>Provenance and score context</summary>'
+        + "".join(detail_bits)
+        + "</details>"
+    )
+    local_show, et_show = _row_times(item)
     return (
-        '<article class="release-card" data-release-country="' + esc(item.get("country")) + '">'
-        f'<header><b>{esc(item.get("country"))}</b> · {esc(title)}</header>'
-        f"{name_block}"
-        f'<p>ET: {esc(item.get("et_display"))}. Local: {esc(item.get("local_display"))}.{esc(clock_note)}</p>'
-        f'<p>Reference period: {esc(item.get("reference_period") or "not pinned")}. '
-        f'Publisher: {esc(item.get("publisher") or "not recorded")}. {link}</p>'
-        f'<p>Verification: {esc(item.get("provenance") or "pinned timestamp")}.</p>'
-        f"<ul>{impacts}</ul>"
-        f'<p>Actual: {esc(item.get("actual"))}. Prior: {esc(item.get("prior"))}. No consensus is published here.</p>'
-        f"<p>{esc(freeze_text)}</p>"
+        '<article class="release-card mw-release-row" data-release-country="' + esc(item.get("country")) + '">'
+        f'<div class="mw-release-date"><span class="mw-num">{esc(day_label)}</span>'
+        + (f'<span class="mw-asof">{esc(weekday)}</span>' if weekday else "")
+        + "</div>"
+        f'<span class="mw-chip">{esc(item.get("country"))}</span>'
+        f'<div class="mw-release-main"><b>{esc(title)}</b>'
+        f'<span class="mw-asof">{esc(item.get("publisher") or "Publisher not recorded")}</span></div>'
+        f'<div class="mw-release-times mw-asof"><span>Local {esc(local_show)}</span>'
+        f'<span>ET {esc(et_show)}</span></div>'
+        f'<span class="mw-chip {feed_class}">{esc(feed_label)}</span>'
+        f'<span class="mw-asof mw-release-status">{esc(_ledger_status(str(item.get("actual") or "")))}</span>'
+        f"{details}"
         "</article>"
     )
 
@@ -525,6 +587,20 @@ def _fetch_note(model: dict[str, Any]) -> str:
     return note
 
 
+def _day_key(item: dict[str, Any]) -> tuple[str, str]:
+    when = item.get("et_date") or item.get("local_date")
+    if isinstance(when, date):
+        heading = f"{_display_date(when)} · {_weekday(when)}"
+        if item.get("clock") == "tba":
+            heading += " · ET time TBA"
+        return heading, heading
+    if item.get("clock") == "tba":
+        local = item.get("local_date")
+        label = f"{_display_date(local if isinstance(local, date) else None)} · ET time TBA"
+        return label, label
+    return "date unavailable", "date unavailable"
+
+
 def render_releases(model: dict[str, Any]) -> str:
     def day_groups(items: list[dict[str, Any]]) -> str:
         if not items:
@@ -533,17 +609,21 @@ def render_releases(model: dict[str, Any]) -> str:
         current = None
         bucket: list[str] = []
         for item in items:
-            label = str(item.get("et_date") or item.get("local_date") or "undated")
-            if item.get("clock") == "tba":
-                label = f"{item.get('local_date')} local date, ET time TBA"
+            _, label = _day_key(item)
             if label != current:
                 if bucket:
-                    chunks.append(f'<section class="release-day"><h3>{esc(current)}</h3>{"".join(bucket)}</section>')
+                    chunks.append(
+                        f'<section class="release-day"><h3 class="mw-release-dayhead">{esc(current)}</h3>'
+                        f'<div class="mw-release-list">{"".join(bucket)}</div></section>'
+                    )
                 current = label
                 bucket = []
             bucket.append(_event_html(item))
         if bucket:
-            chunks.append(f'<section class="release-day"><h3>{esc(current)}</h3>{"".join(bucket)}</section>')
+            chunks.append(
+                f'<section class="release-day"><h3 class="mw-release-dayhead">{esc(current)}</h3>'
+                f'<div class="mw-release-list">{"".join(bucket)}</div></section>'
+            )
         return "".join(chunks)
 
     by_country: dict[str, list[dict[str, Any]]] = {}
@@ -557,14 +637,21 @@ def render_releases(model: dict[str, Any]) -> str:
         )
         tba_blocks.append(f"<details><summary>{esc(country)} · {len(rows)} scored series with no verified future date</summary><ul>{lines}</ul></details>")
     later = day_groups(model["later"]) if model["later"] else '<p class="note">No later verified timestamp is pinned.</p>'
+    window_line = (
+        f"Window {_display_date(model['window_start'])} through {_display_date(model['window_end'])} "
+        f"(America/New_York). Score freeze {esc(model['score_freeze'])}."
+    )
+    window_detail = (
+        "<p>Cadence is not a date. A missing official timestamp stays TBA / date unavailable. "
+        "Actual values appear only when the score ledger holds that reference period.</p>"
+        f"<p>{esc(_fetch_note(model))}</p>"
+    )
     return (
         '<section class="page releases" data-release-calendar="repair">'
         '<div class="stitle">Releases · next 14 days</div>'
-        f'<p class="note">Window {esc(model["window_start"])} through {esc(model["window_end"])} '
-        f'(America/New_York dates, 14 calendar days). Score freeze {esc(model["score_freeze"])}. '
-        "Cadence is not a date. A missing official timestamp stays TBA / date unavailable. "
-        "Actual values appear only when the score ledger holds that reference period. "
-        f'{esc(_fetch_note(model))}</p>'
+        f'<p class="note mw-release-intro">{esc(window_line)} '
+        '<details class="mw-release-window"><summary>Window, freeze and schedule fetch</summary>'
+        f"{window_detail}</details></p>"
         '<h2>Upcoming</h2>'
         + (day_groups(model["upcoming"]) if model["upcoming"] else '<p class="note" data-empty-upcoming="1">No verified release with a confirmed clock falls in the next 14 days.</p>')
         + "<h2>Just released</h2>"

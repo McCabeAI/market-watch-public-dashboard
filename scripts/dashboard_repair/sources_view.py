@@ -7,6 +7,7 @@ a fresh check.
 from __future__ import annotations
 
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -17,6 +18,69 @@ ROOT = Path(__file__).resolve().parents[2]
 AUDIT_PATH = ROOT / "data" / "temperature_history" / "macro_source_audit.json"
 
 _CHECKED = {"checked_unchanged", "new_observation", "revision_applied"}
+
+_BUCKET_LABELS: list[tuple[str, str, str, str]] = [
+    ("checked", "Checked", "mw-chip--ok", "New observation or confirmed unchanged at the stage check."),
+    (
+        "carried_forward",
+        "Carried forward",
+        "mw-chip--warn",
+        "Latest verified vintage reused; no new release due at this check.",
+    ),
+    ("failure", "Failure", "mw-chip--bad", "Fetch failed; last good value is not shown as fresh."),
+    ("blocked", "Blocked", "mw-chip--warn", "Publisher blocks automated access."),
+    ("partial", "Partial", "mw-chip--warn", "Stage check completed with gaps for this series."),
+    ("not_applicable", "Not applicable", "mw-chip--info", "Outside the Stage 01 check scope for this row."),
+    ("not_checked", "Not checked", "mw-chip--info", "No succeeded stage check recorded for this series."),
+]
+
+
+def _format_stage_date(raw: str) -> str:
+    text = str(raw or "").strip()
+    if not text:
+        return ""
+    try:
+        if text.endswith("Z"):
+            stamp = text.replace("Z", "+00:00")
+            parsed = datetime.fromisoformat(stamp)
+            return f"{parsed.day} {parsed.strftime('%b %Y')}"
+    except ValueError:
+        return text[:10]
+    return text[:10]
+
+
+def _format_stage_utc(raw: str) -> str:
+    text = str(raw or "").strip()
+    if not text:
+        return ""
+    try:
+        stamp = text.replace("Z", "+00:00") if text.endswith("Z") else text
+        parsed = datetime.fromisoformat(stamp)
+        return f"{parsed.day} {parsed.strftime('%b %Y %H:%M')} UTC"
+    except ValueError:
+        return text
+
+
+def _bucket_chip(bucket: str) -> tuple[str, str]:
+    for key, label, css, _ in _BUCKET_LABELS:
+        if key == bucket:
+            return label, css
+    return bucket.replace("_", " ").title(), "mw-chip--info"
+
+
+def _human_series(row: dict[str, str]) -> str:
+    component = str(row.get("component") or "").replace("_", " ")
+    dimension = str(row.get("dimension") or "")
+    if component and dimension:
+        return f"{component} · {dimension}"
+    return str(row.get("series_id") or "Series")
+
+
+def _one_line(raw: str, limit: int = 120) -> str:
+    text = " ".join(str(raw or "").split())
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1] + "…"
 
 
 def _state_label(row: dict[str, Any], audit: dict[str, Any] | None) -> str:
@@ -93,47 +157,100 @@ def load_audit(path: Path | None = None) -> dict[str, Any] | None:
 def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows: list[dict[str, str]] | None = None) -> str:
     rows = rows if rows is not None else list(snapshot.get("rows") or [])
     counts = snapshot.get("counts") or {}
-    count_bits = "".join(f"<li>{esc(name)}: {count}</li>" for name, count in sorted(counts.items()))
+    row_total = len(rows)
+    bucket_total = sum(int(counts.get(key, 0) or 0) for key, *_ in _BUCKET_LABELS if key != "carried_forward")
+    checked_n = int(counts.get("checked", 0) or 0)
+    stage_when = _format_stage_date(str(snapshot.get("stage_checked_at") or ""))
     if snapshot.get("stage_checked_at"):
+        summary_line = (
+            f"{checked_n} of {row_total} series checked"
+            + (f" at the {stage_when} stage check" if stage_when else " at the latest stage check")
+            + "."
+        )
+        stage_utc = _format_stage_utc(str(snapshot.get("stage_checked_at") or ""))
+        audit_visible = (
+            f"Stage check {stage_utc}. Ledger dates are observation vintages, not check times; "
+            "failed or blocked rows are not treated as healthy."
+        )
         audit_note = (
             f"Stage 01 ingest {snapshot.get('launch_id') or 'unknown launch'} "
             f"ran at {snapshot.get('stage_checked_at')}. "
-            "Last successful check is set only for new_observation, checked_unchanged, or revision_applied. "
+            "Successful check applies only to new_observation, checked_unchanged, or revision_applied. "
             "Ledger retrieval is the observation vintage, not the check. "
             "source_failed, license_gap, and rows missing from the ledger are not healthy. "
             + str(snapshot.get("audit_ledger") or "")
         )
     else:
-        audit_note = (
+        summary_line = f"0 of {row_total} series checked. No stage check time was invented."
+        audit_visible = (
             "No succeeded Stage 01 ingest ledger was available. "
-            "Every series is not checked. No check time was invented. "
-            + str(snapshot.get("audit_ledger") or "")
+            "Every series is not checked. No check time was invented."
+        )
+        audit_note = audit_visible + " " + str(snapshot.get("audit_ledger") or "")
+    chip_blocks = []
+    for key, label, css, definition in _BUCKET_LABELS:
+        count = int(counts.get(key, 0) or 0)
+        chip_blocks.append(
+            f'<div class="mw-source-stat"><span class="mw-chip {css}">{esc(label)} · {count}</span>'
+            f'<p class="note">{esc(definition)}</p></div>'
         )
     by_country: dict[str, list[dict[str, str]]] = {}
     for row in rows:
         by_country.setdefault(row["country"] or "unassigned", []).append(row)
     blocks = []
     for country, group in by_country.items():
+        mini = []
+        for key, label, css, _ in _BUCKET_LABELS:
+            if key == "carried_forward":
+                continue
+            n = sum(1 for row in group if row.get("bucket") == key)
+            if n:
+                mini.append(f'<span class="mw-chip {css}">{esc(label)} {n}</span>')
+        mini_html = " ".join(mini) if mini else '<span class="mw-asof">No bucket counts</span>'
         lines = []
         for row in group:
-            link = f'<a href="{esc(row["url"])}" rel="noopener" target="_blank">{esc(row["publisher"] or "source")}</a>' if row["url"] else esc(row["publisher"] or "publisher not recorded")
+            bucket = str(row.get("bucket") or row.get("status") or "not_checked")
+            chip_label, chip_css = _bucket_chip(bucket)
+            link = (
+                f'<a href="{esc(row["url"])}" rel="noopener" target="_blank">{esc(row["publisher"] or "source")}</a>'
+                if row["url"]
+                else esc(row["publisher"] or "publisher not recorded")
+            )
+            obs = row.get("observation_period") or "none"
+            error = str(row.get("error") or "")
+            error_block = ""
+            if error:
+                error_block = (
+                    '<details class="mw-raw mw-source-raw"><summary>'
+                    + esc(_one_line(error))
+                    + "</summary><pre>"
+                    + esc(error)
+                    + "</pre></details>"
+                )
+            meta = (
+                f"Series id {esc(row['series_id'])}. Weight {esc(row['weight'])} · {esc(row['role'])}. "
+                f"Publisher series {esc(row.get('publisher_series') or 'none')}. "
+                f"Ledger retrieval {esc(row.get('ledger_retrieval') or 'not recorded')}. "
+                f"Stage attempt {esc(row.get('stage_attempt') or 'not in the stage 01 ledger')}. "
+                f"Successful check {esc(row.get('last_successful_check') or 'none')}. "
+                f"Expected next {esc(row.get('expected_next') or 'date unavailable')}. "
+                f"Carried forward {esc(row.get('carried_forward') or 'no')}."
+            )
             lines.append(
-                '<li data-source-row="1" data-source-status="' + esc(row.get("bucket") or row.get("status")) + '">'
-                f'<b>{esc(row["series_id"])}</b> · {esc(row["dimension"])} · {esc(row["component"])} · '
-                f'weight {esc(row["weight"])} · {esc(row["role"])}. '
-                f'{link}. Publisher series {esc(row.get("publisher_series") or "none")}. '
-                f'Observation period {esc(row.get("observation_period") or "none")}. '
-                f'Ledger retrieval {esc(row.get("ledger_retrieval") or "not recorded")}. '
-                f'Stage attempt {esc(row.get("stage_attempt") or "not in the stage 01 ledger")}. '
-                f'Last successful check {esc(row.get("last_successful_check") or "none")}. '
-                f'Expected next {esc(row.get("expected_next") or "date unavailable")}. '
-                f'Carried forward {esc(row.get("carried_forward") or "no")}. '
-                f'Status {esc(row.get("bucket") or row.get("status"))}'
-                + (f' ({esc(row.get("error"))})' if row.get("error") else "")
-                + ".</li>"
+                '<li class="mw-source-row" data-source-row="1" data-source-status="' + esc(bucket) + '">'
+                f'<span class="mw-source-name">{esc(_human_series(row))}</span>'
+                f'<span class="mw-chip {chip_css}">{esc(chip_label)}</span>'
+                f'<span class="mw-asof">Obs {esc(obs)}</span>'
+                f'<span class="mw-source-link">{link}</span>'
+                f"{error_block}"
+                f'<details class="mw-raw"><summary>Row metadata</summary><p>{meta}</p></details>'
+                "</li>"
             )
         blocks.append(
-            f'<details class="source-country"><summary>{esc(country)} · {len(group)} series</summary><ul>{"".join(lines)}</ul></details>'
+            f'<details class="source-country"><summary class="mw-source-country-summary">'
+            f'<span class="mw-source-country-label">{esc(country)} · {len(group)} series</span>'
+            f'<span class="mw-source-mini">{mini_html}</span></summary>'
+            f'<ul class="mw-source-list">{"".join(lines)}</ul></details>'
         )
     market_lines = []
     sources = (packet or {}).get("sources") if isinstance(packet, dict) else None
@@ -145,22 +262,38 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
                 continue
             url = str(source.get("url") or "")
             link = f'<a href="{esc(url)}" rel="noopener" target="_blank">source</a>' if url.startswith("https://") else "link not recorded"
+            note = str(source.get("note") or "")
+            error = str(source.get("error") or "")
+            extra = ""
+            blob = " ".join(part for part in (note, error) if part).strip()
+            if blob:
+                extra = (
+                    '<details class="mw-raw"><summary>'
+                    + esc(_one_line(blob))
+                    + "</summary><p>"
+                    + esc(blob)
+                    + "</p></details>"
+                )
             market_lines.append(
                 "<li data-market-source=\"" + esc(key) + "\">"
                 f'<b>{esc(key)}</b> · {esc(source.get("name") or "unnamed")} · '
                 f'status {esc(source.get("status") or "unverified")} · '
                 f'observation {esc(source.get("observation_date") or "none")} · {link}. '
-                f'{esc(source.get("note") or "")} {esc(source.get("error") or "")}'
+                f"{extra}"
                 "</li>"
             )
     generated = "not published" if not isinstance(packet, dict) else str(packet.get("generated_at") or "timestamp missing")
     return (
         '<section class="page sources" data-source-health="repair">'
         '<div class="stitle">Sources · provenance and freshness</div>'
-        f'<p class="note">{esc(audit_note)}</p>'
+        f'<p class="note mw-source-audit">{esc(audit_visible)} '
+        f'<details class="mw-raw"><summary>Stage ledger notes</summary><p>{esc(audit_note)}</p></details></p>'
         '<div class="source-summary">'
-        f"<p>Market-state packet generated {esc(generated)}.</p>"
-        f"<ul>{count_bits}</ul>"
+        f"<p class=\"mw-source-summary-line\"><b>{esc(summary_line)}</b></p>"
+        f'<div class="mw-source-stats">{"".join(chip_blocks)}</div>'
+        f"<p class=\"note\">Market-state packet generated {esc(generated)}."
+        + (f" Bucket rows total {bucket_total} of {row_total}." if row_total else "")
+        + "</p>"
         '<label for="source-filter">Filter sources</label> '
         '<input id="source-filter" type="search" aria-label="Filter sources" placeholder="Country, series, publisher">'
         "</div>"
