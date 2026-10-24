@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-10-22T07:09:51.753996-04:00",
+  "as_of": "2026-10-23T15:46:45.247147-04:00",
   "central_bank_research": [
     {
       "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
@@ -173,7 +173,7 @@
       }
     },
     {
-      "headline": "Price of Physical Oil Barrels Slides Just as Crude Futures Rally",
+      "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -182,27 +182,27 @@
           "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
-          "shock": 0,
+          "shock": 2,
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 7
+        "score": 9
       },
-      "published_at": "2026-10-21T22:33:00-04:00",
-      "summary": "The oil market is gripped by a divergence between futures and physical prices across closely watched Brent benchmarks.",
+      "published_at": "2026-10-23T07:26:00-04:00",
+      "summary": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
       "transmission": {
         "affected_assets": [
-          "Brent",
-          "WTI"
+          "USD",
+          "UST"
         ],
-        "channel": "oil_energy_tot",
+        "channel": "usd_rates",
         "channels": [
-          "oil_energy_tot"
+          "usd_rates"
         ],
         "components": {
           "asset_named": 2,
@@ -211,23 +211,72 @@
           "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
           "subject_penalty": 0
         },
         "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
+        "reason_code": "usd_rates_repricing",
+        "score": 9
       }
     },
     {
-      "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+      "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-23T06:15:00-04:00",
+      "summary": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
       "market_salience": {
         "components": {
           "asset_named": 3,
-          "channel_china_spillover": 5,
-          "channel_credit_funding": 0,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
           "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
@@ -236,41 +285,140 @@
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
-          "shock": 2,
+          "shock": 3,
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 10
+        "score": 11
       },
-      "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+      "published_at": "2026-10-22T22:08:17.710000-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
-          "AUD",
-          "iron_ore"
+          "credit_spreads",
+          "UST"
         ],
-        "channel": "china_spillover",
+        "channel": "credit_funding",
         "channels": [
-          "china_spillover"
+          "credit_funding"
         ],
         "components": {
           "asset_named": 3,
-          "channel_china_spillover": 5,
-          "channel_credit_funding": 0,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
           "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
           "channel_usd_rates": 0,
-          "shock": 2,
+          "shock": 3,
           "subject_penalty": 0
         },
         "disposition": "show",
-        "reason_code": "china_commodity_spillover",
-        "score": 10
+        "reason_code": "ai_capex_credit",
+        "score": 11
       }
     },
     {
-      "headline": "Housing is flashing warning signs just as the Fed weighs more interest rate hikes",
+      "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-23T14:57:17-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-23T14:24:49-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -290,11 +438,11 @@
         "distribution": "standard",
         "score": 9
       },
-      "published_at": "2026-10-21T07:20:58-04:00",
+      "published_at": "2026-10-23T12:10:01.987000-04:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
-          "USD"
+          "CAD"
         ],
         "channel": "g10_policy",
         "channels": [
@@ -318,7 +466,7 @@
       }
     },
     {
-      "headline": "French 10-year bond yield hits 5% for first time since 2002 amid unrest",
+      "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -338,7 +486,153 @@
         "distribution": "standard",
         "score": 9
       },
-      "published_at": "2026-10-21T06:40:01-04:00",
+      "published_at": "2026-10-23T08:03:00-04:00",
+      "summary": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-23T05:32:14.419000-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "credit_funding_stress",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Morning Bid: Wake up! The long bond's up two points!",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-23T04:19:00-04:00",
+      "summary": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-23T04:06:37-04:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
@@ -367,17 +661,17 @@
       }
     },
     {
-      "headline": "UK inflation jumps to 3.5% \u2014 cementing rate hike expectations",
+      "headline": "Rathbones Warms to Longer UK Gilts on Bets for Budget Discipline",
       "market_salience": {
         "components": {
           "asset_named": 2,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
+          "channel_usd_rates": 0,
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
@@ -387,31 +681,28 @@
         "distribution": "standard",
         "score": 9
       },
-      "published_at": "2026-10-21T03:50:10-04:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "published_at": "2026-10-22T19:15:00-04:00",
+      "summary": "Rathbones Asset Management Ltd. is warming up to longer-maturity UK government debt on signs Chancellor of the Exchequer John Healey will avoid the confusion and market ructions that accompanied his ...",
       "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
+        "affected_assets": [],
+        "channel": "g10_policy",
         "channels": [
-          "usd_rates"
+          "g10_policy"
         ],
         "components": {
           "asset_named": 2,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
+          "channel_usd_rates": 0,
           "shock": 2,
           "subject_penalty": 0
         },
         "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
+        "reason_code": "g10_policy_path",
         "score": 9
       }
     },
@@ -465,6 +756,298 @@
       }
     },
     {
+      "headline": "CFTC Takes Oil Trading Oversight \u2018Very Seriously,\u2019 Selig Says",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-10-23T04:26:00-04:00",
+      "summary": "The top US derivatives regulator said Friday that his agency takes market oversight \u201cvery seriously\u201d and the agency\u2019s enforcement division has been looking at oil trading during the Iran war.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
+    },
+    {
+      "headline": "SLB Sees Growth Driven by Middle East Oil Field Recovery",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-10-23T04:12:00-04:00",
+      "summary": "SLB, the world\u2019s biggest oil field services provider, said it has seen a gradual recovery in its Middle East business despite disruptions from the Iran war.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
+    },
+    {
+      "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-22T21:45:00-04:00",
+      "summary": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+      "transmission": {
+        "affected_assets": [
+          "JPY"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "10-year Treasury yield tumbles below 5% to lowest level in nearly a month",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-10-22T16:05:13-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 5,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 10
+      },
+      "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+      "transmission": {
+        "affected_assets": [
+          "AUD",
+          "iron_ore"
+        ],
+        "channel": "china_spillover",
+        "channels": [
+          "china_spillover"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 5,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "china_commodity_spillover",
+        "score": 10
+      }
+    },
+    {
+      "headline": "Brent crude oil tops $116, a six-month high, as tensions swell in the Middle East",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-10-23T15:21:12-04:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
+    },
+    {
       "headline": "Treasury yields fall as investors weigh Middle East tensions and await fresh jobs data",
       "market_salience": {
         "components": {
@@ -514,107 +1097,57 @@
       }
     },
     {
-      "headline": "Morning Bid: Rattled by oil, tech and France",
+      "headline": "Housing is flashing warning signs just as the Fed weighs more interest rate hikes",
       "market_salience": {
         "components": {
           "asset_named": 2,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 5,
+          "channel_oil_energy": 0,
           "channel_usd_rates": 0,
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
-          "shock": 0,
+          "shock": 2,
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 7
+        "score": 9
       },
-      "published_at": "2026-10-22T06:38:28.448000-04:00",
+      "published_at": "2026-10-21T07:20:58-04:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
-          "Brent",
-          "WTI"
+          "USD"
         ],
-        "channel": "oil_energy_tot",
+        "channel": "g10_policy",
         "channels": [
-          "oil_energy_tot"
+          "g10_policy"
         ],
         "components": {
           "asset_named": 2,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 5,
+          "channel_oil_energy": 0,
           "channel_usd_rates": 0,
-          "shock": 0,
+          "shock": 2,
           "subject_penalty": 0
         },
         "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "Saudi Arabia Seeks Access to Overseas Oil Storage for Aramco",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 7
-      },
-      "published_at": "2026-10-21T21:31:00-04:00",
-      "summary": "Saudi Arabia is in talks with foreign governments to give Aramco access to strategic oil storage to make supplies more resilient during disruptions.",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
+        "reason_code": "g10_policy_path",
+        "score": 9
       }
     }
   ],
-  "overnight_run_id": "overnight-20261022",
+  "overnight_run_id": "overnight-20261023",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Overnight tape is led by a wide oil split\u2014WTI near 97 and Brent near 109 on the 21st\u2014alongside gold near 4150 and equities holding the S&P near 7757 and Nasdaq near 26702, with VIX near 17. Gulf risk remains the energy driver: Iran is hitting more ship engine rooms, Aramco warns stockpile buffers are thin, LNG through Hormuz has rebounded, yet physical barrels are sliding even as futures stay firm and China's demand comeback is losing steam. Treasuries are mixed against housing warning signs and talk of more Fed tightening; European stress shows in France's 10-year near 5% and UK CPI at 3.5%. AI credit jitters around CoreWeave persist though bank spillover is described as limited. Canada's activity impulse looks warm while oil-curve persistence keeps inflation-pressure proxies elevated; Australia pairs cooling labor with warm inflation. New Zealand inflation could not be verified and NZ government rates are unusable for new NZ risk.",
+  "summary": "Overnight markets leaned defensive: Gulf shipping attacks and thin spare-capacity rhetoric kept crude firm while AI-related equity stress pulled the U.S. long bond back toward 5% and lifted volatility. Brent and WTI sit at 113.17 and 99.47; gold is softer near 4060 after a prior spike. The dollar is mixed\u2014yen firmer on risk aversion, euro under French debt pressure, loonie a touch stronger versus USD. Canada\u2019s rate path stays in focus with polls pointing to a 28 October hike toward 2.50% and another move by end-March; oil-linked inflation pressure is rising at a moderate pace. Japan\u2019s September core CPI at 2.1% keeps the BoJ in a cautious stance amid AI-market warnings. Watch megacap earnings and the upcoming Fed meeting, plus BoC on 28 October, while Hormuz/LNG and Middle East field recovery narratives compete for the oil narrative.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }

@@ -7105,37 +7105,37 @@
   },
   "market_state": {
     "cross_assets": {
-      "generated_at": "2026-10-23T20:10:49Z",
+      "generated_at": "2026-10-24T03:20:26Z",
       "marks": [
         {
-          "as_of": "2026-10-22",
+          "as_of": "2026-10-23",
           "id": "WTI",
           "label": "WTI futures",
           "source": "Yahoo Finance",
           "status": "ok",
           "symbol": "CL=F",
           "unit": "USD/bbl",
-          "value": 99.47000122070312
+          "value": 103.44000244140625
         },
         {
-          "as_of": "2026-10-22",
+          "as_of": "2026-10-23",
           "id": "BRENT",
           "label": "Brent futures",
           "source": "Yahoo Finance",
           "status": "ok",
           "symbol": "BZ=F",
           "unit": "USD/bbl",
-          "value": 113.16999816894531
+          "value": 111.66000366210938
         },
         {
-          "as_of": "2026-10-22",
+          "as_of": "2026-10-23",
           "id": "GOLD",
           "label": "Gold futures",
           "source": "Yahoo Finance",
           "status": "ok",
           "symbol": "GC=F",
           "unit": "USD/oz",
-          "value": 4060.39990234375
+          "value": 4010.0
         },
         {
           "as_of": "2026-10-21",
@@ -7158,34 +7158,34 @@
           "value": 26008.86
         },
         {
-          "as_of": "2026-10-22",
+          "as_of": "2026-10-23",
           "id": "DOW",
           "label": "Dow Jones",
           "source": "FRED / original series publisher",
           "status": "ok",
           "symbol": "DJIA",
           "unit": "index",
-          "value": 52867.98
+          "value": 52215.16
         },
         {
-          "as_of": "2026-10-22",
+          "as_of": "2026-10-23",
           "id": "RUSSELL",
           "label": "Russell 2000",
           "source": "Yahoo Finance",
           "status": "ok",
           "symbol": "^RUT",
           "unit": "index",
-          "value": 2784.030029296875
+          "value": 2775.898681640625
         },
         {
-          "as_of": "2026-10-22",
+          "as_of": "2026-10-23",
           "id": "COPPER",
           "label": "Copper futures",
           "source": "Yahoo Finance",
           "status": "ok",
           "symbol": "HG=F",
           "unit": "USD/lb",
-          "value": 6.362500190734863
+          "value": 6.497499942779541
         },
         {
           "as_of": "2026-10-22",
@@ -7199,7 +7199,7 @@
         }
       ],
       "provenance": "frozen_market_state",
-      "status": "ok"
+      "status": "partial"
     },
     "fx": {
       "pairs": {
@@ -7387,7 +7387,7 @@
       "source_observation": "2026-10-23",
       "status": "ok"
     },
-    "generated_at": "2026-10-23T20:10:49Z",
+    "generated_at": "2026-10-24T03:20:26Z",
     "official_curves": {
       "curves": {
         "AU": {
@@ -8148,1457 +8148,8 @@
           }
         },
         "CA": {
-          "as_of": "2026-10-07",
-          "compounding": "BoC published zero yields converted to semi-annual government-bond proxy discount factors",
-          "curve_type": "government_zero_curve_proxy",
-          "discount_factors": {
-            "0.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 0.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9940632639
-            },
-            "0.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 0.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9872865628
-            },
-            "0.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 0.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.979820157
-            },
-            "1.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9631904198
-            },
-            "1.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9548389595
-            },
-            "1.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9463643504
-            },
-            "10.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6680977076
-            },
-            "10.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6605532793
-            },
-            "10.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6530929778
-            },
-            "10Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6757218861
-            },
-            "11.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6384315112
-            },
-            "11.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6312336936
-            },
-            "11.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6241267242
-            },
-            "11Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6457183572
-            },
-            "12.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6101846965
-            },
-            "12.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6033496152
-            },
-            "12.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5966046353
-            },
-            "12Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6171101273
-            },
-            "13.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5833802547
-            },
-            "13.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5768973423
-            },
-            "13.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5704998104
-            },
-            "13Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5899486151
-            },
-            "14.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5579492793
-            },
-            "14.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5517924523
-            },
-            "14.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5457126395
-            },
-            "14Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5641844084
-            },
-            "15.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5337721288
-            },
-            "15.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5279076061
-            },
-            "15.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5221100958
-            },
-            "15Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5397060934
-            },
-            "16.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5107101095
-            },
-            "16.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.5051032931
-            },
-            "16.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4995556162
-            },
-            "16Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.516378716
-            },
-            "17.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4886326086
-            },
-            "17.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4832542684
-            },
-            "17.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4779282173
-            },
-            "17Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4940660225
-            },
-            "18.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4674317051
-            },
-            "18.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4622589247
-            },
-            "18.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4571346196
-            },
-            "18Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4726549698
-            },
-            "19.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4470292268
-            },
-            "19.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4420466121
-            },
-            "19.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.437110262
-            },
-            "19Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4520584481
-            },
-            "1Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9717218329
-            },
-            "2.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.929263677
-            },
-            "2.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9207123867
-            },
-            "2.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9121922623
-            },
-            "20.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4273749984
-            },
-            "20.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4225745628
-            },
-            "20.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4178198917
-            },
-            "20Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4322198367
-            },
-            "21.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.408444824
-            },
-            "21.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4038237694
-            },
-            "21.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3992488654
-            },
-            "21Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.4131098056
-            },
-            "22.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3902328088
-            },
-            "22.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3857918567
-            },
-            "22.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3813974547
-            },
-            "22Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3947180867
-            },
-            "23.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3727435934
-            },
-            "23.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3684860223
-            },
-            "23.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3642736824
-            },
-            "23Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3770475766
-            },
-            "24.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3559884333
-            },
-            "24.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3519156857
-            },
-            "24.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3478893424
-            },
-            "24Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3601079328
-            },
-            "25.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3399761473
-            },
-            "25.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3360902617
-            },
-            "25.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3322510313
-            },
-            "25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3439090534
-            },
-            "26.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3247135665
-            },
-            "26.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3210145801
-            },
-            "26.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3173624168
-            },
-            "26Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3284589245
-            },
-            "27.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3101978371
-            },
-            "27.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3066846368
-            },
-            "27.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3032175197
-            },
-            "27Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.3137566897
-            },
-            "28.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2964207514
-            },
-            "28.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2930902912
-            },
-            "28.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2898043001
-            },
-            "28Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2997960853
-            },
-            "29.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2833657258
-            },
-            "29.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2802123213
-            },
-            "29.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2771025589
-            },
-            "29Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2865631862
-            },
-            "2Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.937824775
-            },
-            "3.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.895286331
-            },
-            "3.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8869066392
-            },
-            "3.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8785727812
-            },
-            "30Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 30.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.2740344158
-            },
-            "3Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.9037150064
-            },
-            "4.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8620172271
-            },
-            "4.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8537811476
-            },
-            "4.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8455629665
-            },
-            "4Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8702784779
-            },
-            "5.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8291555508
-            },
-            "5.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8209561656
-            },
-            "5.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8127559294
-            },
-            "5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8373562072
-            },
-            "6.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7963467441
-            },
-            "6.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7881398695
-            },
-            "6.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7799338668
-            },
-            "6Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.8045527745
-            },
-            "7.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7635407003
-            },
-            "7.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7553635735
-            },
-            "7.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7472068734
-            },
-            "7Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.771732708
-            },
-            "8.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7309778467
-            },
-            "8.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7229186136
-            },
-            "8.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.714905396
-            },
-            "8Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7390758715
-            },
-            "9.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.25,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6990382224
-            },
-            "9.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.5,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.691196985
-            },
-            "9.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.75,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.6834227134
-            },
-            "9Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.0,
-              "source": "BOC_ZERO_DERIVED_DF",
-              "value": 0.7069431664
-            }
-          },
-          "forward_rates": {},
-          "source_page": "https://www.bankofcanada.ca/rates/interest-rates/bond-yield-curves/",
-          "source_url": "https://www.bankofcanada.ca/stats/results/csv?lookupPage=lookup_yield_curve.php&startRange=1986-01-01&searchRange=&dFrom=2026-08-24&dTo=2026-10-23",
-          "status": "ok",
-          "zero_yields": {
-            "0.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 0.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 2.39601
-            },
-            "0.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 0.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 2.57543
-            },
-            "0.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 0.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 2.73672
-            },
-            "1.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.02295
-            },
-            "1.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.10469
-            },
-            "1.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.17509
-            },
-            "10.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.9738
-            },
-            "10.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.98856
-            },
-            "10.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.00265
-            },
-            "10Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 10.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.9584
-            },
-            "11.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.02885
-            },
-            "11.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.04097
-            },
-            "11.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.05244
-            },
-            "11Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 11.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.01608
-            },
-            "12.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.07353
-            },
-            "12.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.08319
-            },
-            "12.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.09229
-            },
-            "12Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 12.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.06329
-            },
-            "13.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.10893
-            },
-            "13.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.11654
-            },
-            "13.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.1237
-            },
-            "13Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 13.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.10086
-            },
-            "14.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.13685
-            },
-            "14.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.1429
-            },
-            "14.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.14863
-            },
-            "14Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 14.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.13046
-            },
-            "15.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.15929
-            },
-            "15.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.16427
-            },
-            "15.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.16906
-            },
-            "15Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 15.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.15409
-            },
-            "16.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.17814
-            },
-            "16.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.18248
-            },
-            "16.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.18672
-            },
-            "16Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 16.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.17367
-            },
-            "17.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.19495
-            },
-            "17.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.19897
-            },
-            "17.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.20296
-            },
-            "17Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 17.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.19087
-            },
-            "18.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.21085
-            },
-            "18.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.21477
-            },
-            "18.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.21869
-            },
-            "18Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 18.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.20691
-            },
-            "19.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.22654
-            },
-            "19.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.23048
-            },
-            "19.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.23443
-            },
-            "19Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 19.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.22261
-            },
-            "1Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 1.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 2.88924
-            },
-            "2.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.28729
-            },
-            "2.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.33175
-            },
-            "2.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.37006
-            },
-            "20.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.24236
-            },
-            "20.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.24635
-            },
-            "20.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.25034
-            },
-            "20Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 20.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.23839
-            },
-            "21.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.25834
-            },
-            "21.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.26235
-            },
-            "21.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.26634
-            },
-            "21Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 21.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.25434
-            },
-            "22.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.2743
-            },
-            "22.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.27826
-            },
-            "22.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.28218
-            },
-            "22Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 22.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.27033
-            },
-            "23.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.28994
-            },
-            "23.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.29375
-            },
-            "23.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.29752
-            },
-            "23Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 23.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.28608
-            },
-            "24.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.30488
-            },
-            "24.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.30846
-            },
-            "24.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.31197
-            },
-            "24Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 24.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.30123
-            },
-            "25.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.31876
-            },
-            "25.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.32202
-            },
-            "25.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.32519
-            },
-            "25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 25.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.31541
-            },
-            "26.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.33123
-            },
-            "26.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.3341
-            },
-            "26.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.33686
-            },
-            "26Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 26.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.32826
-            },
-            "27.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.34204
-            },
-            "27.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.34446
-            },
-            "27.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.34676
-            },
-            "27Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 27.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.33951
-            },
-            "28.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.35099
-            },
-            "28.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.35292
-            },
-            "28.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.35473
-            },
-            "28Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 28.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.34894
-            },
-            "29.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.35797
-            },
-            "29.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.3594
-            },
-            "29.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.3607
-            },
-            "29Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 29.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.35641
-            },
-            "2Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 2.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.2355
-            },
-            "3.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.43256
-            },
-            "3.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.45858
-            },
-            "3.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.48214
-            },
-            "30Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 30.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 4.36189
-            },
-            "3Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 3.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.40334
-            },
-            "4.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.52434
-            },
-            "4.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.54393
-            },
-            "4.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.563
-            },
-            "4Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 4.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.50389
-            },
-            "5.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.60055
-            },
-            "5.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.61937
-            },
-            "5.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.63834
-            },
-            "5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 5.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.58181
-            },
-            "6.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.67692
-            },
-            "6.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.69651
-            },
-            "6.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.71627
-            },
-            "6Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 6.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.65752
-            },
-            "7.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.75606
-            },
-            "7.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.77595
-            },
-            "7.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.79574
-            },
-            "7Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 7.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.73614
-            },
-            "8.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.83475
-            },
-            "8.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.85382
-            },
-            "8.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.8725
-            },
-            "8Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 8.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.81537
-            },
-            "9.25Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.25,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.90851
-            },
-            "9.5Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.5,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.92572
-            },
-            "9.75Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.75,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.94237
-            },
-            "9Y": {
-              "as_of": "2026-10-07",
-              "maturity_years": 9.0,
-              "source": "BOC_ZERO_CURVE",
-              "value": 3.89075
-            }
-          }
+          "error": "BoC zero curve endpoint returned HTML instead of curve data",
+          "status": "unavailable"
         },
         "EA": {
           "country": "EA",
@@ -10273,7 +8824,7 @@
         }
       },
       "generated_at": null,
-      "status": "ok",
+      "status": "partial",
       "warning": null
     },
     "policy_paths": {
@@ -10325,71 +8876,9 @@
           "status": "ok"
         },
         "CA": {
-          "contracts_1m": [
-            {
-              "code": "COAV26",
-              "expiry": "2026-10",
-              "implied_rate": 2.2975
-            },
-            {
-              "code": "COAX26",
-              "expiry": "2026-11",
-              "implied_rate": 2.46
-            },
-            {
-              "code": "COAZ26",
-              "expiry": "2026-12",
-              "implied_rate": 2.585
-            },
-            {
-              "code": "COAF27",
-              "expiry": "2027-01",
-              "implied_rate": 2.645
-            }
-          ],
-          "contracts_3m": [
-            {
-              "code": "CRAU26",
-              "expiry": "2026-09",
-              "implied_rate": 2.395
-            },
-            {
-              "code": "CRAZ26",
-              "expiry": "2026-12",
-              "implied_rate": 2.72
-            },
-            {
-              "code": "CRAH27",
-              "expiry": "2027-03",
-              "implied_rate": 2.995
-            },
-            {
-              "code": "CRAM27",
-              "expiry": "2027-06",
-              "implied_rate": 3.195
-            },
-            {
-              "code": "CRAU27",
-              "expiry": "2027-09",
-              "implied_rate": 3.34
-            },
-            {
-              "code": "CRAZ27",
-              "expiry": "2027-12",
-              "implied_rate": 3.435
-            },
-            {
-              "code": "CRAH28",
-              "expiry": "2028-03",
-              "implied_rate": 3.51
-            },
-            {
-              "code": "CRAM28",
-              "expiry": "2028-06",
-              "implied_rate": 3.56
-            }
-          ],
-          "status": "ok"
+          "contracts_1m": [],
+          "contracts_3m": [],
+          "status": "unavailable"
         },
         "EA": {
           "contracts_1m": [],
@@ -10489,48 +8978,48 @@
             {
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.17
+              "implied_rate": 4.18
             },
             {
               "code": "SR3H7",
               "expiry": "2027-03",
-              "implied_rate": 4.37
+              "implied_rate": 4.415
             },
             {
               "code": "SR3M7",
               "expiry": "2027-06",
-              "implied_rate": 4.51
+              "implied_rate": 4.565
             },
             {
               "code": "SR3U7",
               "expiry": "2027-09",
-              "implied_rate": 4.56
+              "implied_rate": 4.615
             },
             {
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.55
+              "implied_rate": 4.6
             },
             {
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.53
+              "implied_rate": 4.58
             },
             {
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.51
+              "implied_rate": 4.555
             },
             {
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.495
+              "implied_rate": 4.54
             }
           ],
           "status": "ok"
         }
       },
-      "status": "ok"
+      "status": "partial"
     },
     "rate_rv": {
       "AU-EA_10Y": {
@@ -11195,9 +9684,9 @@
           }
         ],
         "pctile_1y": 7.738095238095238,
-        "pctile_5y": 3.6634460547504024,
+        "pctile_5y": 3.6663980660757454,
         "z_1y": -1.4235791267392153,
-        "z_5y": -1.2023583687038124
+        "z_5y": -1.2017667560970449
       },
       "CA-EA_2Y": {
         "as_of": "2026-10-22",
@@ -11243,9 +9732,9 @@
           }
         ],
         "pctile_1y": 13.492063492063492,
-        "pctile_5y": 2.737520128824477,
+        "pctile_5y": 2.73972602739726,
         "z_1y": -1.3113312168535152,
-        "z_5y": -1.5504505306762688
+        "z_5y": -1.549767156806844
       },
       "CA-EA_5Y": {
         "as_of": "2026-10-22",
@@ -11291,9 +9780,9 @@
           }
         ],
         "pctile_1y": 6.746031746031746,
-        "pctile_5y": 2.536231884057971,
+        "pctile_5y": 2.538275584206285,
         "z_1y": -1.651650531538156,
-        "z_5y": -1.3552053058396847
+        "z_5y": -1.3544233546271154
       },
       "CA-JP_10Y": {
         "as_of": "2026-10-22",
@@ -11339,9 +9828,9 @@
           }
         ],
         "pctile_1y": 31.547619047619047,
-        "pctile_5y": 6.714527027027027,
+        "pctile_5y": 6.720202874049028,
         "z_1y": -0.8005408156137893,
-        "z_5y": -1.721565528249228
+        "z_5y": -1.722261733302457
       },
       "CA-JP_2Y": {
         "as_of": "2026-10-22",
@@ -11387,9 +9876,9 @@
           }
         ],
         "pctile_1y": 20.03968253968254,
-        "pctile_5y": 10.092905405405405,
+        "pctile_5y": 10.016906170752325,
         "z_1y": -0.9635218354046684,
-        "z_5y": -1.1670930007849951
+        "z_5y": -1.1695284395473433
       },
       "CA-JP_5Y": {
         "as_of": "2026-10-22",
@@ -11435,9 +9924,9 @@
           }
         ],
         "pctile_1y": 33.92857142857143,
-        "pctile_5y": 7.474662162162162,
+        "pctile_5y": 7.396449704142012,
         "z_1y": -0.5849361300601805,
-        "z_5y": -1.3564062549586207
+        "z_5y": -1.358091991906187
       },
       "CA-NZ_10Y": {
         "as_of": null,
@@ -11525,9 +10014,9 @@
           }
         ],
         "pctile_1y": 7.341269841269841,
-        "pctile_5y": 9.415584415584416,
+        "pctile_5y": 9.42323314378554,
         "z_1y": -1.6324996057268584,
-        "z_5y": -1.2193158184954433
+        "z_5y": -1.2188737852692015
       },
       "CA-US_2Y": {
         "as_of": "2026-10-22",
@@ -11573,9 +10062,9 @@
           }
         ],
         "pctile_1y": 10.119047619047619,
-        "pctile_5y": 4.667207792207792,
+        "pctile_5y": 4.670999187652315,
         "z_1y": -1.437049384503093,
-        "z_5y": -1.5013824788095738
+        "z_5y": -1.5010572971054745
       },
       "CA-US_5Y": {
         "as_of": "2026-10-22",
@@ -11621,9 +10110,9 @@
           }
         ],
         "pctile_1y": 8.134920634920634,
-        "pctile_5y": 8.035714285714286,
+        "pctile_5y": 8.042242079610073,
         "z_1y": -1.5582198374408809,
-        "z_5y": -1.3929566697124884
+        "z_5y": -1.3928564079397774
       },
       "EA-JP_10Y": {
         "as_of": "2026-10-22",
@@ -11669,9 +10158,9 @@
           }
         ],
         "pctile_1y": 36.30952380952381,
-        "pctile_5y": 17.975206611570247,
+        "pctile_5y": 17.907361455748553,
         "z_1y": -0.4924746279978684,
-        "z_5y": -0.9936865773156875
+        "z_5y": -0.9968443040371584
       },
       "EA-JP_2Y": {
         "as_of": "2026-10-22",
@@ -11717,9 +10206,9 @@
           }
         ],
         "pctile_1y": 72.42063492063492,
-        "pctile_5y": 43.18181818181818,
+        "pctile_5y": 43.13482216708023,
         "z_1y": 0.6243179772412476,
-        "z_5y": -0.32958217979684673
+        "z_5y": -0.3317018919148454
       },
       "EA-JP_5Y": {
         "as_of": "2026-10-22",
@@ -11765,9 +10254,9 @@
           }
         ],
         "pctile_1y": 64.88095238095238,
-        "pctile_5y": 28.71900826446281,
+        "pctile_5y": 28.66004962779156,
         "z_1y": 0.48758956987073987,
-        "z_5y": -0.5201543184196646
+        "z_5y": -0.5230247379655759
       },
       "EA-US_10Y": {
         "as_of": "2026-10-23",
@@ -11813,9 +10302,9 @@
           }
         ],
         "pctile_1y": 5.555555555555555,
-        "pctile_5y": 53.942075623491554,
+        "pctile_5y": 53.90499194847021,
         "z_1y": -1.9475931390737775,
-        "z_5y": -0.03520486802640517
+        "z_5y": -0.03531311570885161
       },
       "EA-US_2Y": {
         "as_of": "2026-10-23",
@@ -11861,9 +10350,9 @@
           }
         ],
         "pctile_1y": 4.563492063492063,
-        "pctile_5y": 60.05631536604988,
+        "pctile_5y": 60.10466988727858,
         "z_1y": -1.690199061557316,
-        "z_5y": 0.3522434142103829
+        "z_5y": 0.3545203981471078
       },
       "EA-US_5Y": {
         "as_of": "2026-10-23",
@@ -11909,9 +10398,9 @@
           }
         ],
         "pctile_1y": 5.753968253968254,
-        "pctile_5y": 56.19469026548673,
+        "pctile_5y": 56.23993558776167,
         "z_1y": -1.8543244339977465,
-        "z_5y": 0.13938431595717105
+        "z_5y": 0.1398906427519974
       },
       "JP-US_10Y": {
         "as_of": "2026-10-22",
@@ -11957,9 +10446,9 @@
           }
         ],
         "pctile_1y": 37.1031746031746,
-        "pctile_5y": 77.65151515151516,
+        "pctile_5y": 77.71693344566133,
         "z_1y": -0.1226111965591075,
-        "z_5y": 1.0722688748261304
+        "z_5y": 1.0752161792121826
       },
       "JP-US_2Y": {
         "as_of": "2026-10-22",
@@ -12005,9 +10494,9 @@
           }
         ],
         "pctile_1y": 18.452380952380953,
-        "pctile_5y": 68.64478114478115,
+        "pctile_5y": 68.70261162594777,
         "z_1y": -0.9408155205389994,
-        "z_5y": 0.5496132069555342
+        "z_5y": 0.5532661525614503
       },
       "JP-US_5Y": {
         "as_of": "2026-10-22",
@@ -12053,9 +10542,9 @@
           }
         ],
         "pctile_1y": 14.484126984126984,
-        "pctile_5y": 71.42255892255892,
+        "pctile_5y": 71.48272957034541,
         "z_1y": -1.2140210784111232,
-        "z_5y": 0.6974473732430504
+        "z_5y": 0.7010083733510836
       },
       "NZ-EA_10Y": {
         "as_of": null,
@@ -12459,140 +10948,9 @@
           "status": "ok"
         },
         "CORRA": {
-          "benchmark": {
-            "as_of": "2026-10-22",
-            "name": "CORRA",
-            "rate": 2.25
-          },
-          "contract_period_months": 3,
-          "contracts": [
-            {
-              "change_from_overnight_bps": 14.5,
-              "code": "CRAU26",
-              "expiry": "2026-09",
-              "implied_rate": 2.395,
-              "open_interest": null,
-              "price": 97.605,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 47.0,
-              "code": "CRAZ26",
-              "expiry": "2026-12",
-              "implied_rate": 2.72,
-              "open_interest": null,
-              "price": 97.28,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 74.5,
-              "code": "CRAH27",
-              "expiry": "2027-03",
-              "implied_rate": 2.995,
-              "open_interest": null,
-              "price": 97.005,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 94.5,
-              "code": "CRAM27",
-              "expiry": "2027-06",
-              "implied_rate": 3.195,
-              "open_interest": null,
-              "price": 96.805,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 109.0,
-              "code": "CRAU27",
-              "expiry": "2027-09",
-              "implied_rate": 3.34,
-              "open_interest": null,
-              "price": 96.66,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 118.5,
-              "code": "CRAZ27",
-              "expiry": "2027-12",
-              "implied_rate": 3.435,
-              "open_interest": null,
-              "price": 96.565,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 126.0,
-              "code": "CRAH28",
-              "expiry": "2028-03",
-              "implied_rate": 3.51,
-              "open_interest": null,
-              "price": 96.49,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 131.0,
-              "code": "CRAM28",
-              "expiry": "2028-06",
-              "implied_rate": 3.56,
-              "open_interest": null,
-              "price": 96.44,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 133.0,
-              "code": "CRAU28",
-              "expiry": "2028-09",
-              "implied_rate": 3.58,
-              "open_interest": null,
-              "price": 96.42,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 132.5,
-              "code": "CRAZ28",
-              "expiry": "2028-12",
-              "implied_rate": 3.575,
-              "open_interest": null,
-              "price": 96.425,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 130.0,
-              "code": "CRAH29",
-              "expiry": "2029-03",
-              "implied_rate": 3.55,
-              "open_interest": null,
-              "price": 96.45,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 127.0,
-              "code": "CRAM29",
-              "expiry": "2029-06",
-              "implied_rate": 3.52,
-              "open_interest": null,
-              "price": 96.48,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            }
-          ],
           "country": "CA",
-          "instrument": "Montr\u00e9al Exchange Three-Month CORRA futures",
-          "mark_convention": "implied_rate = 100 - futures price",
-          "product_code": "CRA",
-          "source_url": "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations",
-          "status": "ok"
+          "error": "CORRA tradable futures strip unavailable",
+          "status": "unavailable"
         },
         "ESTR": {
           "benchmark": {
@@ -13172,505 +11530,505 @@
           "contract_period_months": 3,
           "contracts": [
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 27.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 28.0,
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.17,
-              "observation_date": "2026-10-22",
-              "open_interest": 1566590.0,
-              "price": 95.83,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 711546.0
+              "implied_rate": 4.18,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.82,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 47.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 51.5,
               "code": "SR3H7",
               "expiry": "2027-03",
-              "implied_rate": 4.37,
-              "observation_date": "2026-10-22",
-              "open_interest": 1359464.0,
-              "price": 95.63,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 653182.0
+              "implied_rate": 4.415,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.585,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 61.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 66.5,
               "code": "SR3M7",
               "expiry": "2027-06",
-              "implied_rate": 4.51,
-              "observation_date": "2026-10-22",
-              "open_interest": 1260932.0,
-              "price": 95.49,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 552232.0
+              "implied_rate": 4.565,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.435,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 66.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 71.5,
               "code": "SR3U7",
               "expiry": "2027-09",
-              "implied_rate": 4.56,
-              "observation_date": "2026-10-22",
-              "open_interest": 1070636.0,
-              "price": 95.44,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 471498.0
+              "implied_rate": 4.615,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.385,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 65.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 70.0,
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.55,
-              "observation_date": "2026-10-22",
-              "open_interest": 1651579.0,
-              "price": 95.45,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 603259.0
+              "implied_rate": 4.6,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.4,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 63.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 68.0,
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.53,
-              "observation_date": "2026-10-22",
-              "open_interest": 831516.0,
-              "price": 95.47,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 321472.0
+              "implied_rate": 4.58,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.42,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 61.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 65.5,
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.51,
-              "observation_date": "2026-10-22",
-              "open_interest": 636471.0,
-              "price": 95.49,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 281668.0
+              "implied_rate": 4.555,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.445,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 59.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 64.0,
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.495,
-              "observation_date": "2026-10-22",
-              "open_interest": 676741.0,
-              "price": 95.505,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 245581.0
+              "implied_rate": 4.54,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.46,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 57.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 62.0,
               "code": "SR3Z8",
               "expiry": "2028-12",
-              "implied_rate": 4.475,
-              "observation_date": "2026-10-22",
-              "open_interest": 542344.0,
-              "price": 95.525,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 220125.0
+              "implied_rate": 4.52,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.48,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 56.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 60.0,
               "code": "SR3H9",
               "expiry": "2029-03",
-              "implied_rate": 4.46,
-              "observation_date": "2026-10-22",
-              "open_interest": 382026.0,
-              "price": 95.54,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 134876.0
+              "implied_rate": 4.5,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.5,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 55.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 58.5,
               "code": "SR3M9",
               "expiry": "2029-06",
-              "implied_rate": 4.45,
-              "observation_date": "2026-10-22",
-              "open_interest": 382203.0,
-              "price": 95.55,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 124958.0
+              "implied_rate": 4.485,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.515,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 54.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 58.0,
               "code": "SR3U9",
               "expiry": "2029-09",
-              "implied_rate": 4.44,
-              "observation_date": "2026-10-22",
-              "open_interest": 318885.0,
-              "price": 95.56,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 112543.0
+              "implied_rate": 4.48,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.52,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 53.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 57.5,
               "code": "SR3Z9",
               "expiry": "2029-12",
-              "implied_rate": 4.435,
-              "observation_date": "2026-10-22",
-              "open_interest": 241835.0,
-              "price": 95.565,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 71356.0
+              "implied_rate": 4.475,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.525,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 54.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 58.0,
               "code": "SR3H0",
               "expiry": "2030-03",
-              "implied_rate": 4.44,
-              "observation_date": "2026-10-22",
-              "open_interest": 177899.0,
-              "price": 95.56,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 51128.0
+              "implied_rate": 4.48,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.52,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 54.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 59.0,
               "code": "SR3M0",
               "expiry": "2030-06",
-              "implied_rate": 4.445,
-              "observation_date": "2026-10-22",
-              "open_interest": 157777.0,
-              "price": 95.555,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 42325.0
+              "implied_rate": 4.49,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.51,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 55.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 60.5,
               "code": "SR3U0",
               "expiry": "2030-09",
-              "implied_rate": 4.455,
-              "observation_date": "2026-10-22",
-              "open_interest": 143895.0,
-              "price": 95.545,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 55150.0
+              "implied_rate": 4.505,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.495,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 57.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 62.0,
               "code": "SR3Z0",
               "expiry": "2030-12",
-              "implied_rate": 4.47,
-              "observation_date": "2026-10-22",
-              "open_interest": 116482.0,
-              "price": 95.53,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 42370.0
+              "implied_rate": 4.52,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.48,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 59.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 64.5,
               "code": "SR3H1",
               "expiry": "2031-03",
-              "implied_rate": 4.495,
-              "observation_date": "2026-10-22",
-              "open_interest": 92312.0,
-              "price": 95.505,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 37473.0
+              "implied_rate": 4.545,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.455,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 62.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 67.5,
               "code": "SR3M1",
               "expiry": "2031-06",
-              "implied_rate": 4.52,
-              "observation_date": "2026-10-22",
-              "open_interest": 69978.0,
-              "price": 95.48,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 32015.0
+              "implied_rate": 4.575,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.425,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 65.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 71.0,
               "code": "SR3U1",
               "expiry": "2031-09",
-              "implied_rate": 4.55,
-              "observation_date": "2026-10-22",
-              "open_interest": 35785.0,
-              "price": 95.45,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 34348.0
+              "implied_rate": 4.61,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.39,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 68.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 73.0,
               "code": "SR3Z1",
               "expiry": "2031-12",
-              "implied_rate": 4.58,
-              "observation_date": "2026-10-22",
-              "open_interest": 8183.0,
-              "price": 95.42,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 1303.0
+              "implied_rate": 4.63,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.37,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 71.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 78.0,
               "code": "SR3H2",
               "expiry": "2032-03",
-              "implied_rate": 4.61,
-              "observation_date": "2026-10-22",
-              "open_interest": 2008.0,
-              "price": 95.39,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 1206.0
+              "implied_rate": 4.68,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.32,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 73.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 79.0,
               "code": "SR3M2",
               "expiry": "2032-06",
-              "implied_rate": 4.635,
-              "observation_date": "2026-10-22",
-              "open_interest": 823.0,
-              "price": 95.365,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 287.0
+              "implied_rate": 4.69,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.31,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 76.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 82.0,
               "code": "SR3U2",
               "expiry": "2032-09",
-              "implied_rate": 4.665,
-              "observation_date": "2026-10-22",
-              "open_interest": 576.0,
-              "price": 95.335,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 35.0
+              "implied_rate": 4.72,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.28,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 79.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 84.5,
               "code": "SR3Z2",
               "expiry": "2032-12",
-              "implied_rate": 4.69,
-              "observation_date": "2026-10-22",
-              "open_interest": 164.0,
-              "price": 95.31,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.745,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.255,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 82.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 87.5,
               "code": "SR3H3",
               "expiry": "2033-03",
-              "implied_rate": 4.72,
-              "observation_date": "2026-10-22",
-              "open_interest": 35.0,
-              "price": 95.28,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.775,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.225,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 84.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 90.0,
               "code": "SR3M3",
               "expiry": "2033-06",
-              "implied_rate": 4.745,
-              "observation_date": "2026-10-22",
-              "open_interest": 1.0,
-              "price": 95.255,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.8,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.2,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 87.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 92.5,
               "code": "SR3U3",
               "expiry": "2033-09",
-              "implied_rate": 4.77,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.23,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.825,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.175,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 89.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 95.0,
               "code": "SR3Z3",
               "expiry": "2033-12",
-              "implied_rate": 4.795,
-              "observation_date": "2026-10-22",
-              "open_interest": 11.0,
-              "price": 95.205,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.85,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.15,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 91.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 96.5,
               "code": "SR3H4",
               "expiry": "2034-03",
-              "implied_rate": 4.81,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.19,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.865,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.135,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 94.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 99.5,
               "code": "SR3M4",
               "expiry": "2034-06",
-              "implied_rate": 4.84,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.16,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.895,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.105,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 95.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 100.5,
               "code": "SR3U4",
               "expiry": "2034-09",
-              "implied_rate": 4.85,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.15,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.905,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.095,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 99.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 105.0,
               "code": "SR3Z4",
               "expiry": "2034-12",
-              "implied_rate": 4.895,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.105,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.95,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.05,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 100.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 106.0,
               "code": "SR3H5",
               "expiry": "2035-03",
-              "implied_rate": 4.905,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.095,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.96,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.04,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 103.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 108.5,
               "code": "SR3M5",
               "expiry": "2035-06",
-              "implied_rate": 4.93,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.07,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 4.985,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 95.015,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 105.5,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 111.0,
               "code": "SR3U5",
               "expiry": "2035-09",
-              "implied_rate": 4.955,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.045,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 5.01,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 94.99,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 110.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 115.5,
               "code": "SR3Z5",
               "expiry": "2035-12",
-              "implied_rate": 5.0,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 95.0,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 5.055,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 94.945,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-22",
-              "change_from_overnight_bps": 111.0,
+              "as_of": "2026-10-23",
+              "change_from_overnight_bps": 116.5,
               "code": "SR3H6",
               "expiry": "2036-03",
-              "implied_rate": 5.01,
-              "observation_date": "2026-10-22",
-              "open_interest": 0.0,
-              "price": 94.99,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "implied_rate": 5.065,
+              "observation_date": "2026-10-23",
+              "open_interest": null,
+              "price": 94.935,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             }
           ],
           "country": "US",
           "instrument": "CME Three-Month SOFR futures",
           "mark_convention": "implied_rate = 100 - futures price",
           "product_code": "SR3",
-          "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/22/2026&strategy=DEFAULT&pageSize=500",
+          "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
           "status": "ok"
         },
         "TONA": {
@@ -13897,7 +12255,7 @@
         }
       },
       "generated_at": null,
-      "status": "ok",
+      "status": "partial",
       "warning": null
     },
     "warnings": []
@@ -13952,18 +12310,21 @@
       "capital_normalized": false,
       "competition_cohort_size": 3,
       "competition_eligible": true,
-      "competition_rank": 1,
-      "competitive_rank": 1,
-      "drawdown_usd": 56395.55,
-      "gap_to_best_trader_usd": 872671.42,
+      "competition_rank": 2,
+      "competitive_rank": 2,
+      "drawdown_usd": 860728.88,
+      "gap_to_best_trader_usd": 68338.09,
       "high_water_nav_usd": 1001140647.92,
       "max_drawdown_usd": 50000000.0,
-      "net_after_funding_pnl_usd": 1084252.37,
-      "pressure_flags": [],
-      "raw_pnl_rank": 1,
-      "spread_to_leader_pm_usd": 0.0,
+      "net_after_funding_pnl_usd": 279919.04,
+      "pressure_flags": [
+        "behind_leading_pm",
+        "competitive_pressure"
+      ],
+      "raw_pnl_rank": 2,
+      "spread_to_leader_pm_usd": -450580.96,
       "status": "ok",
-      "total_pnl_usd": 1127500.0
+      "total_pnl_usd": 327500.0
     },
     "learning": {
       "competition_eligible": true,
@@ -13982,7 +12343,7 @@
         "source_run_id": "overnight-20261023"
       }
     ],
-    "memory_context_sha256": "6f105f3470327e8f2d30d3c1e83bacb0c81425820c8771677301a1be443b5990",
+    "memory_context_sha256": "3e5addcdbf5e8388ba9c23af7bdead31515f598cd95322490becd2d1c8506b3f",
     "open_positions": [],
     "owner_id": "swinger",
     "owner_type": "pm",
@@ -14109,7 +12470,7 @@
     "recent_performance_reflections": [],
     "reflections_due": []
   },
-  "memory_context_sha256": "6f105f3470327e8f2d30d3c1e83bacb0c81425820c8771677301a1be443b5990",
+  "memory_context_sha256": "3e5addcdbf5e8388ba9c23af7bdead31515f598cd95322490becd2d1c8506b3f",
   "opportunity_instruction": "Scan the full frozen market evidence in this packet. Trader Room decisions are an input and a challenge set. The permitted opportunity universe is that frozen evidence. Originate independent trades when the packet can mark and risk them. Emit a small opportunity_scan of the best ideas you independently considered.",
   "overnight_books": {
     "as_of": "2026-10-23T15:46:45.247147-04:00",
@@ -16226,7 +14587,7 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-swinger-overnight-20261023-review-001",
-  "review_packet_sha256": "7cd487dbdc00872fd02dde8017c908754749b1ba4e43872ef0da729a9d03bd19",
+  "review_packet_sha256": "e6fb457123507cca2ecf3f8c51b74f22f1895c0597f2c85ae33ea080fe2ef0e0",
   "risk_capital_limit_usd": 100000000,
   "risk_capital_remaining_usd": 100000000.0,
   "risk_capital_usd": 0.0,
