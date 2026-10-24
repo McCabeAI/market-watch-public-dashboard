@@ -226,9 +226,9 @@ python3 scripts/visual_qa/capture.py --serve _site_<name> /tmp/qa/<name> [--full
 | --- | --- | --- |
 | W1 Front + Country | Grok 4.7 | `scripts/dashboard_repair/{apply,tape,scoreboard,brief}.py`, `scripts/country_detail/{render,present}.py`, `scripts/country_detail/country_detail.css`, `scripts/apply_country_detail.py`, related tests |
 | W2 Trader Book + PM | Grok 4.7 | `patch_v13/*`, Trader Book/PM dashboard tests |
-| W3 Design system + Market Data / Releases / Sources | Composer 2.5 | `scripts/dashboard_repair/theme.css` (below the token block), `scripts/dashboard_repair/{calendar_view,sources_view}.py`, `patch_v12/market_data.css`, new `tests/test_dashboard_presentation.py` |
+| W3 Design system + Market Data / Releases / Sources | Composer 2.5 | `scripts/dashboard_repair/theme.css` (below the token block), `scripts/dashboard_repair/{calendar_view,sources_view}.py`, `patch_v12/market_data.css`, presentation tests (merged into `tests/test_dashboard_repair.py`, which CI already runs) |
 | V Independent verification | Composer 2.5 | read-only review against §6 |
-| I Integration | Grok 4.7 | fixes from V; full build; tests |
+| I Integration | Composer 2.5 (planned Grok 4.7; the repository subagent hook rejected that slug) | fixes from V; full build; tests |
 
 ## 6. Acceptance criteria (design QA)
 
@@ -278,8 +278,8 @@ portfolio logic, source pipelines and workflows are unchanged.
   `pm-books.json`, `trader-room.json` and `market-state.json` are
   byte-identical. `release-calendar.json` differs only in schedule-fetch
   metadata, because the offline replay skips the live fetch.
-- Trader and PM fleet totals match BEFORE ($16.1k funding and $1.01m), as do
-  all 14 seats. All 24 score-board cells equal `temperature_scores.json`.
+- Trader and PM fleet totals ($16.1k and $1.01m) match BEFORE, as do all 14
+  seats. All 24 score-board cells equal `temperature_scores.json`.
 - Zero horizontal overflow and zero page errors on all 11 views at 1920,
   1440 and 390 px. BEFORE had 276 px of overflow on iPhone Front and 235 px
   on Sources.
