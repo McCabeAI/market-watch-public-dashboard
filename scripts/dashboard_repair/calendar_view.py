@@ -44,6 +44,18 @@ _MONTHS = {
     "december": 12,
 }
 
+_AU_CPI_IDS = frozenset({"AU.Inflation.headline", "AU.Inflation.underlying"})
+_NZ_CPI_IDS = frozenset({"NZ.Inflation.headline", "NZ.Inflation.underlying"})
+_RELEASE_FAMILY_TITLES = {
+    "au_cpi": "Consumer Price Index, Australia (headline and trimmed-mean inflation)",
+    "au_labour_force": "Labour Force, Australia",
+    "chicago_fed_lmi": "Chicago Fed Labor Market Indicators (unemployment nowcast and flows)",
+    "us_empsit": "Employment Situation",
+    "us_empsit_derived": "Employment Situation (derived household context)",
+    "us_cpi": "Consumer Price Index",
+    "nz_cpi": "Consumers Price Index",
+}
+
 
 def _aware(now: datetime) -> datetime:
     if now.tzinfo is None:
@@ -229,6 +241,47 @@ def _candidate_slots(row: dict[str, Any]) -> list[dict[str, Any]]:
     return slots
 
 
+@lru_cache(maxsize=1)
+def _catalog_rows_by_id() -> dict[str, dict[str, Any]]:
+    return {str(row.get("id") or ""): row for row in load_catalog()["series"]}
+
+
+def _release_family_key(series_id: str) -> str:
+    if series_id in _AU_CPI_IDS:
+        return "au_cpi"
+    if series_id in _NZ_CPI_IDS:
+        return "nz_cpi"
+    if series_id.startswith("AU.Labor."):
+        return "au_labour_force"
+    row = _catalog_rows_by_id().get(series_id) or {}
+    method = str(row.get("retrieval_method") or "")
+    if method == "chicago_fed_lmi_json":
+        return "chicago_fed_lmi"
+    urls = " ".join(str(url) for url in row.get("registry_urls") or [])
+    if series_id.startswith("US.Labor."):
+        if method == "derived_employment_context" or "derived://us-employment-context" in str(row.get("endpoint") or ""):
+            return "us_empsit_derived"
+        if method.startswith("bls_empsit") or "empsit" in urls or row.get("employment_section"):
+            return "us_empsit"
+    if series_id.startswith("US.Inflation.cpi"):
+        return "us_cpi"
+    return series_id
+
+
+def _event_title(item: dict[str, Any]) -> str:
+    names = [str(name) for name in (item.get("names") or [item.get("name")]) if name]
+    series_ids = [str(series_id) for series_id in (item.get("series_ids") or [item.get("series_id")]) if series_id]
+    if len(names) == 1:
+        return names[0]
+    families = {_release_family_key(series_id) for series_id in series_ids}
+    if len(families) == 1:
+        family = next(iter(families))
+        titled = _RELEASE_FAMILY_TITLES.get(family)
+        if titled:
+            return titled
+    return names[0]
+
+
 def _row_shell(row: dict[str, Any], slot: dict[str, Any] | None, *, clock: str, local_date: date | None) -> dict[str, Any]:
     instant = None if slot is None else slot["instant"]
     if instant is not None:
@@ -268,9 +321,9 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     for row in rows:
         key = (
             row["country"],
-            row["publisher"],
             row["instant"].isoformat() if row["instant"] is not None else f"tba:{row['local_date']}",
             row["clock"],
+            _release_family_key(str(row.get("series_id") or "")),
         )
         current = grouped.get(key)
         if current is None:
@@ -531,10 +584,7 @@ def _ledger_status(actual: str) -> str:
 
 def _event_html(item: dict[str, Any]) -> str:
     names = item.get("names") or [item.get("name")]
-    if len(names) == 1:
-        title = str(names[0])
-    else:
-        title = f"{item.get('publisher') or 'Release'} · {len(names)} series"
+    title = _event_title(item)
     impacts = list(item.get("impacts") or [item.get("impact")])
     feed_label, feed_class = _impact_feed([str(text) for text in impacts if text])
     when = item.get("et_date") or item.get("local_date")
@@ -586,8 +636,8 @@ def _event_html(item: dict[str, Any]) -> str:
     local_show, et_show = _row_times(item)
     return (
         '<article class="release-card mw-release-row" data-release-country="' + esc(item.get("country")) + '">'
-        f'<div class="mw-release-date"><span class="mw-num">{esc(day_label)}</span>'
-        + (f'<span class="mw-asof">{esc(weekday)}</span>' if weekday else "")
+        f'<div class="mw-release-date"><span class="mw-num mw-release-day">{esc(day_label)}</span>'
+        + (f'<span class="mw-asof mw-release-weekday">{esc(weekday)}</span>' if weekday else "")
         + "</div>"
         f'<span class="mw-chip">{esc(item.get("country"))}</span>'
         f'<div class="mw-release-main"><b>{esc(title)}</b>'

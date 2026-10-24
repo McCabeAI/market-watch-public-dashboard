@@ -372,6 +372,15 @@ label:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,i
 .mw-release-intro details{border:0;background:transparent;padding:0;margin-top:6px}
 .mw-release-dayhead{font-size:var(--mw-fs-title);color:var(--mw-ink);margin:18px 0 8px;font-weight:750}
 .mw-release-list{display:flex;flex-direction:column;gap:8px}
+.mw-release-date{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:2px;
+  line-height:1.25;
+  min-width:0;
+}
+.mw-release-date .mw-release-weekday{display:block}
 .mw-release-row{
   display:grid;
   grid-template-columns:120px 52px minmax(140px,1.4fr) minmax(160px,1fr) minmax(130px,.9fr) minmax(150px,1fr);
