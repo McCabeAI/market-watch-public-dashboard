@@ -1196,6 +1196,64 @@
       "run_id": "overnight-20261022",
       "schema_version": 1,
       "thesis": "Mar27 SOFR already sits at 4.55 against cash 3.88, so a large hike path is in the price and further tightening is the high bar. The dated repricing mechanism is the Fed meeting plus housing and jobs: if those fail to validate the priced path, the contract has to reprice toward cash. Hormuz/oil is the competing tape that can keep hike odds sticky, which is why the existing short is a hold, not an add."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-fca0c79a2e45",
+          "rationale": "Cut half the 20 million short. Oil remains a live inflation print and the Fed meeting is still a dated path, but the hike-repricing mechanism is already damaged by the printed rally to 4.37. Residual 10 million stub only; do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 40,
+      "decision_fingerprint": "b6f4eb4573d887d0091e9707573c3548e0507a865109bf8f6d028794a79f480c",
+      "event_id": "jde-f93d4ebac90d4259",
+      "funding_view": null,
+      "invalidation": "Flatten the residual if oil loses the war premium before the meeting, if the AI-stress duration bid extends and takes hike optionality off the strip, or if the Fed meeting delivers a clean skip with no hawkish oil addendum.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-fca0c79a2e45"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-fca0c79a2e45"
+      ],
+      "memory_context_sha256": "0ba23cd5f58b59f8ea5db4fa0417f066843b48bfb87adc6f719190758a1883b1",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1f99e45072309376dbcd9082837d5ec91c0c4943b71b503ea19e6894397dc718"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_hash": "23e032ee8b45ed46cd3f5acf1c94c9c8887cba1c3a4566bbf19f860580cca1b5",
+        "overnight_run_id": "overnight-20261023",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Oil is still bid at WTI 99.47 and Brent 113.17, and the upcoming Fed meeting remains a dated mechanism that could put skip-then-hike back on the table. That is no longer a clean path for the full short: March 2027 SOFR has already rallied from 4.55 to 4.37 on printed AI-stress duration demand, so a competing catalyst has done the near-term repricing work. Cut 10 million and keep a 10 million stub into the meeting; do not add.",
+      "run_id": "overnight-20261023",
+      "schema_version": 1,
+      "thesis": "Oil is still bid at WTI 99.47 and Brent 113.17, and the upcoming Fed meeting remains a dated mechanism that could put skip-then-hike back on the table. That is no longer a clean path for the full short: March 2027 SOFR has already rallied from 4.55 to 4.37 on printed AI-stress duration demand, so a competing catalyst has done the near-term repricing work. Cut 10 million and keep a 10 million stub into the meeting; do not add."
     }
   ],
   "schema_version": 1,

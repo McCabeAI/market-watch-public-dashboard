@@ -1246,6 +1246,66 @@
       "run_id": "overnight-20261022",
       "schema_version": 1,
       "thesis": "The US 10-year backup is still the live trend: cash 10Y is 5.13 after a 17bp one-month rise, and SOFR Mar27 at 4.55 versus cash 3.88 continues to price a higher policy path. Housing warnings are not a reversal while price, the SOFR strip, and hike talk remain aligned; covering on a 2bp adverse mark from 5.15 is a premature fade. Keep the pay in the confirming 10Y tenor; Mar27 has not stopped confirming, so there is no rotation into STIR."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 75000000,
+          "position_id": "pos-06e7a6ec76da",
+          "rationale": "US 10-year at 5.00 has broken the higher-yield trend from the 5.15 short. Close the 75 million; a trend seat does not fade into a long here.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 80,
+      "decision_fingerprint": "f917f364d5e28ab849c1c01f74a15b68f3ee4d4d7daffd708c5ad2f911da74c4",
+      "event_id": "jde-30336f9934754aa8",
+      "funding_view": null,
+      "invalidation": "Re-open a short only if a later packet shows the 10-year backing up through 5.15 on a confirmed yield uptrend rather than a one-day AI-stress dip.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-06e7a6ec76da"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-06e7a6ec76da"
+      ],
+      "memory_context_sha256": "65fcd2dd91ec764974d51f6b8bc8c961cce93216d6c284b12a607ea92c98cf24",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "97c40632c0fd3a16ac84443de6baccdf543b62891c10c597e3488b5921d3e6d8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_hash": "23e032ee8b45ed46cd3f5acf1c94c9c8887cba1c3a4566bbf19f860580cca1b5",
+        "overnight_run_id": "overnight-20261023",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The short 10-year needed a persistent yield uptrend. The live tape is a break: US 10-year at 5.00 after 5.13, against entry 5.15, with an AI-stress duration rally and equities wobbling. That is the opposite of a confirmed bear-steepening or higher-yield trend. Close the 75 million short; do not reverse into a long from this seat.",
+      "run_id": "overnight-20261023",
+      "schema_version": 1,
+      "thesis": "The short 10-year needed a persistent yield uptrend. The live tape is a break: US 10-year at 5.00 after 5.13, against entry 5.15, with an AI-stress duration rally and equities wobbling. That is the opposite of a confirmed bear-steepening or higher-yield trend. Close the 75 million short; do not reverse into a long from this seat."
     }
   ],
   "schema_version": 1,

@@ -474,6 +474,86 @@
       "run_id": "overnight-20261022",
       "seq": 20,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          250000.0,
+          62500.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "event_id": "pse-000021",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261023",
+      "seq": 21,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0012,
+        "defensiveness": 0.0067,
+        "external_pressure": 0.0018,
+        "frustration": 0.0104,
+        "revenge_pressure": 0.0044,
+        "self_trust": -0.0023,
+        "thesis_attachment": 0.0018
+      },
+      "event_id": "pse-000022",
+      "kind": "session_loss",
+      "magnitude": 0.11763542,
+      "mismatch": false,
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261023",
+      "scale": 1.0,
+      "seq": 22,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -58817.71
+      }
+    },
+    {
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.038,
+        "external_pressure": 0.0627,
+        "frustration": 0.0264
+      },
+      "event_id": "pse-000023",
+      "kind": "rank_drop_minor",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261023",
+      "scale": 1.0,
+      "seq": 23,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": 3
+      }
     }
   ],
   "owner_id": "rate-hawk",

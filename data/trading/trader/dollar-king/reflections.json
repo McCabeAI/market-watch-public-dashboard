@@ -64,6 +64,41 @@
         "profit_giveback"
       ],
       "what_happened_vs_expected": "Expected the US-CA rate gap to keep a USD/CAD long valid and expected three-digit oil plus rising Canadian impulse to force harvest rather than peak-size hold. That harvest ran (20m to 15m). Giveback of about 80 percent of MFE on the residual was larger than a clean hold-the-reduced-book path; WTI at 97.15 is friendlier to remaining USD/CAD edge than the prior three-digit oil regime, but it did not arrive as a full offset to rising prima and CAD hike pricing. Peak open profit was not a level the 15m book was entitled to keep."
+    },
+    {
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "attribution": [
+        "thesis",
+        "reaction_function",
+        "catalyst",
+        "timing",
+        "sizing",
+        "variance"
+      ],
+      "causal": {
+        "assumptions_right": "The dollar still has a clean rate advantage versus CAD, USDCAD is the right dollar-spot expression of that gap, and a leftover rates stub can remain after harvest.",
+        "assumptions_wrong_or_underweighted": "Three-digit oil plus rising Canadian impulse is a harvest catalyst at winner size, not residual noise; the hike poll compresses policy optics on the CAD leg.",
+        "causal_divergence": "The rate-gap thesis still explains why some dollar-versus-CAD edge exists. It does not explain keeping winner size after the harvest trigger printed. The break is post-extension sizing, not a failed dollar-versus-CAD expression.",
+        "decision_quality_attribution": "sizing",
+        "future_implication": "After a material USDCAD win, three-digit oil plus rising Canadian impulse remains the harvest trigger; leftover US rate edge is expressed in reduced size, not winner size.",
+        "observed_reality": "A material winner then a large giveback, with spot through entry, coincident with three-digit oil, rising Canadian impulse, and a Bank of Canada hike poll to 2.50.",
+        "original_belief": "The US-Canada rate gap would keep winner-size long USDCAD intact through oil and CAD-impulse noise after the material extension.",
+        "same_information_counterfactual": "The same frozen tape already implied cutting winner size and, at most, a reduced residual long. Holding 8 million was not implied by the rate gap alone; initiating 8 million from flat on this packet would also have been a no."
+      },
+      "chase_or_revenge": "no",
+      "no_new_lesson": "This is ordinary variance around the prior harvest rule: after a material USDCAD win, three-digit oil plus rising Canadian impulse is the known harvest trigger. The original process remains sound if winner size is now cut and only a residual rate stub is kept.",
+      "overconfidence_risk": "yes",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "pressure_effect": "none",
+      "reflection_due_id": "rfd-3ab5f778376d",
+      "reflection_id": "prf-05c871c98eec",
+      "run_id": "overnight-20261023",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The book treated the SOFR/CORRA and US2/CA2 gap as sufficient to hold winner-size long USDCAD after a material run. Observed path was a large giveback with spot now 1.3995 through the 1.401 entry, while three-digit oil, rising Canadian impulse, and a Bank of Canada hike poll supported CAD. That is harvest-trigger tape, not a dip that validates winner size."
     }
   ],
   "schema_version": 1,

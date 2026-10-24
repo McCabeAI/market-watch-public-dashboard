@@ -1260,6 +1260,77 @@
       "run_id": "overnight-20261022",
       "schema_version": 1,
       "thesis": "Both existing Mar-27 receives still harvest cash-implied gaps versus unchanged policy: CORRA cash 2.25 versus Mar-27 2.975 (72.5bp) and AONIA cash 4.60 versus Mar-27 4.85 (25bp). Prima RISING oil (WTI 97.15, Brent 108.82) is a narrative tape, not a cash-policy change, and does not pay us to flatten the CAD receive while that gap remains wide. Patient expression is to keep collecting those implied backups in STIR, not to chase spot CAD (negative USD-CAD cash differential) or to add size into the oil print."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Primary carry: receive CORRA March 2027 while cash is 2.25 and the contract is 2.995.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Secondary receive: AONIA cash 4.60 versus March 2027 4.845 still pays the receiver.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "018cf80870e3d6eede0f4fbb536a37ba4b924588e4b65f6f6ff9c49340c7910a",
+      "event_id": "jde-d47126663c44469a",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 CORRA revisits cash-plus a delivered hike path through 2.50, or if AONIA March 2027 loses its cash gap as Australian policy re-tightens in a way that erases carry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8c91ac7ecefa85f18a8f1772e435e8d69c5a44af0a183ba2b126648b1147d6a5",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "23e4ccd928af5f809d52192862b2ad3e884f730ded82b42288ffa459476153b0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_hash": "23e032ee8b45ed46cd3f5acf1c94c9c8887cba1c3a4566bbf19f860580cca1b5",
+        "overnight_run_id": "overnight-20261023",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA at 2.25 versus March 2027 at 2.995 and cash AONIA at 4.60 versus March 2027 at 4.845 still pay the receiver while official SOFR is the funding benchmark. Both existing receives remain the carry expression; the Canada hike poll and three-digit oil cap further gains but do not flip the cash-to-strip gap. Hold both 25 million lines; do not add.",
+      "run_id": "overnight-20261023",
+      "schema_version": 1,
+      "thesis": "Cash CORRA at 2.25 versus March 2027 at 2.995 and cash AONIA at 4.60 versus March 2027 at 4.845 still pay the receiver while official SOFR is the funding benchmark. Both existing receives remain the carry expression; the Canada hike poll and three-digit oil cap further gains but do not flip the cash-to-strip gap. Hold both 25 million lines; do not add."
     }
   ],
   "schema_version": 1,

@@ -28,6 +28,35 @@
       "trade_ids": [
         "trd-trader-positioning-cynic-pos-142ad113f303"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Before adding spot FX as a crowded-dollar fade or CAD-bull, list existing rates and leftover FX ownership. If the new trade is the same CAD-bull overlay, skip spot and hold the existing rates pay. Do not mint a March 2027 CORRA receive to balance a closed FX short.",
+      "lesson_id": "les-5d2f8db65ad4",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-385c423b1b90"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261023",
+      "status": "active",
+      "text": "A profitable CAD-bull spot fade is still a bad expression if the desk already owns the same CAD-bull through dove and carry receives and leftover dollar-king positioning. Uniqueness of ownership is the trade, not a restatement of the CAD tape.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-ccb6655acbad"
+      ]
     }
   ],
   "as_of": "2026-10-23T15:46:45.247147-04:00",
@@ -71,9 +100,9 @@
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 14,
-    "competition_eligible": false,
+    "competition_eligible": true,
     "competition_rank": 1,
-    "competitive_rank": null,
+    "competitive_rank": 1,
     "drawdown_usd": 10070.06,
     "giveback_usd": 10070.06,
     "high_water_nav_usd": 100211705.18,
@@ -88,27 +117,18 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -9945.83,
     "status": "ok"
   },
   "learning": {
-    "competition_eligible": false,
-    "learning_default_age_runs": 1,
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
     "learning_default_count": 2,
-    "learning_status": "learning_default",
+    "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-385c423b1b90",
-      "owner_id": "positioning-cynic",
-      "owner_type": "trader",
-      "reference": "trd-trader-positioning-cynic-pos-ccb6655acbad",
-      "source_run_id": "overnight-20261021"
-    }
-  ],
-  "memory_context_sha256": "bda2ee19590ffce7e7c4b7fe12f4641fafe62195676eb8351d20f426986ac7dd",
+  "learning_obligations": [],
+  "memory_context_sha256": "142358284154e851958436dbe0246f109aa90afa51d6de5ef3710a20ce2581bb",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -158,31 +178,7 @@
   ],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-10-21T08:22:07.869994-04:00",
-      "created_run_id": "overnight-20261021",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-10-21T08:22:07.869994-04:00",
-        "conviction": 56,
-        "entry_mark": 1.42,
-        "exit_mark": 1.41,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 1651270,
-        "instrument": "USDCAD",
-        "invalidation": "The fade is wrong if USDCAD holds bid or squeezes higher while the desk remains or adds long, implying the long is not a crowded supply source.",
-        "opened_at": "2026-10-02T05:40:56.963171-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 205385.05,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-385c423b1b90",
-      "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -203,7 +199,7 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
@@ -212,13 +208,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.32
+        "trend": "down",
+        "value": 0.25
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.19
+        "trend": "down",
+        "value": 0.16
       },
       "revenge_pressure": {
         "band": "calm",
@@ -227,8 +223,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "down",
-        "value": 0.48
+        "trend": "up",
+        "value": 0.5
       },
       "thesis_attachment": {
         "band": "calm",
@@ -246,11 +242,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "trade_win_close",
-        "magnitude": 0.41077009999999997,
-        "run_id": "overnight-20261021"
-      },
-      {
         "kind": "size_escalation_after_streak",
         "magnitude": 1.0,
         "run_id": "overnight-20261021"
@@ -259,11 +250,16 @@
         "kind": "learning_default_entered",
         "magnitude": 1.0,
         "run_id": "overnight-20261022"
+      },
+      {
+        "kind": "learning_default_cleared",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261023"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "fc1c785911e2bf2d155eae4b06fc1dea1f9ab17c2220213d0d0ef90b9ea6bfd2",
+    "state_sha256": "8719e33f9875cbae69fb43922d0d58a7e0e17642b11bc1aaa74fb7f2751062a7",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

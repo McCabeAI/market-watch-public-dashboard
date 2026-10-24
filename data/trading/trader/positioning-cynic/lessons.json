@@ -37,6 +37,44 @@
         "trd-trader-positioning-cynic-pos-142ad113f303"
       ],
       "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-10-23T15:46:45.247147-04:00",
+      "future_rule": "Before adding spot FX as a crowded-dollar fade or CAD-bull, list existing rates and leftover FX ownership. If the new trade is the same CAD-bull overlay, skip spot and hold the existing rates pay. Do not mint a March 2027 CORRA receive to balance a closed FX short.",
+      "history": [
+        {
+          "at": "2026-10-23T15:46:45.247147-04:00",
+          "op": "add",
+          "run_id": "overnight-20261023"
+        }
+      ],
+      "lesson_id": "les-5d2f8db65ad4",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-385c423b1b90"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261023",
+      "status": "active",
+      "text": "A profitable CAD-bull spot fade is still a bad expression if the desk already owns the same CAD-bull through dove and carry receives and leftover dollar-king positioning. Uniqueness of ownership is the trade, not a restatement of the CAD tape.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-ccb6655acbad"
+      ],
+      "updated_at": "2026-10-23T15:46:45.247147-04:00"
     }
   ],
   "schema_version": 1,

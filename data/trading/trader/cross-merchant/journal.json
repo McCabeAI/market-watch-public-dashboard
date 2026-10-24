@@ -1240,6 +1240,62 @@
       "run_id": "overnight-20261022",
       "schema_version": 1,
       "thesis": "CADJPY is the clean isolation of Canadian terms-of-trade and a still-wider CA policy path against Japan's energy-import and funding-yen complex; USDCAD or USDJPY would contaminate that differential with Fed/DXY. Prima RISING continues to tax JPY as the funding leg. Harvest is due on the existing long, but the same CA-JP gap would still be initiated if the book were flat, so this is a full-size HOLD not a USD rewrite and not an AUDCAD flip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": 15000000,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "BoC hike-poll and oil versus TONA 1.227 still isolate CAD over JPY in this spot cross; keep 15 million.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "5635244362ced3d0020c87d6fa75117c5a31e902fd17ed69ff0cdf79076fd798",
+      "event_id": "jde-1ca344593cec48a0",
+      "funding_view": null,
+      "invalidation": "Thesis breaks if the Bank of Canada hike poll fails to confirm or if oil support in Brent and WTI fails while TONA remains the easy-yen anchor. A dollar-factor dip that leaves the BoC-BoJ-oil differential intact is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "33242433267758b283a9f33fab6b422db82ff48fc4295873bdf3bcd5dd538c4b",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "39dbf515edf8f86886b46aa00a88abf56d9616961977015af81f9c562f8d585e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_hash": "23e032ee8b45ed46cd3f5acf1c94c9c8887cba1c3a4566bbf19f860580cca1b5",
+        "overnight_run_id": "overnight-20261023",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CADJPY at 112.04 versus entry 110.90 still isolates hawkish Bank of Canada plus oil-linked CAD against easy yen at TONA 1.227, with Brent 113.17 and WTI 99.47. A USD pair would smuggle Fed beta into the same view; AUDCAD is not the substitute. The modest pullback from last mark 112.40 stays inside that cross, so hold the 15 million long.",
+      "run_id": "overnight-20261023",
+      "schema_version": 1,
+      "thesis": "CADJPY at 112.04 versus entry 110.90 still isolates hawkish Bank of Canada plus oil-linked CAD against easy yen at TONA 1.227, with Brent 113.17 and WTI 99.47. A USD pair would smuggle Fed beta into the same view; AUDCAD is not the substitute. The modest pullback from last mark 112.40 stays inside that cross, so hold the 15 million long."
     }
   ],
   "schema_version": 1,

@@ -555,6 +555,92 @@
       "run_id": "overnight-20261022",
       "seq": 23,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          750000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "event_id": "pse-000024",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261023",
+      "seq": 24,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0023,
+        "defensiveness": 0.0071,
+        "external_pressure": 0.0032,
+        "frustration": 0.0139,
+        "revenge_pressure": 0.0047,
+        "self_trust": -0.0038,
+        "thesis_attachment": 0.0029
+      },
+      "event_id": "pse-000025",
+      "kind": "session_loss",
+      "magnitude": 0.1951625,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261023",
+      "scale": 1.0,
+      "seq": 25,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -97581.25
+      }
+    },
+    {
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0021,
+        "defensiveness": 0.0085,
+        "frustration": 0.02,
+        "revenge_pressure": 0.018,
+        "self_trust": -0.0066,
+        "thesis_attachment": 0.005
+      },
+      "event_id": "pse-000026",
+      "kind": "trade_loss_close",
+      "magnitude": 0.225,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261023",
+      "scale": 1.0,
+      "seq": 26,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "bond",
+        "notional_usd": 75000000.0,
+        "realized_pnl_usd": -112500.0,
+        "side": "short",
+        "trade_id": "trd-trader-trend-follower-pos-06e7a6ec76da"
+      }
     }
   ],
   "owner_id": "trend-follower",

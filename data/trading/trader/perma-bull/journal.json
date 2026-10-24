@@ -1331,6 +1331,92 @@
       "run_id": "overnight-20261022",
       "schema_version": 1,
       "thesis": "The Hormuz/Brent overlay is a growth scare, not a realized supply shock: physical crude is still softer than WTI 97.15 and Brent 108.82, gold at 4150 is crowded defense, and risk appetite is intact with SPX 7757 and VIX 17.31. Fed hike talk versus a housing warning is residual North American demand strength, not a license to collapse the policy path, and UK CPI at 3.5% plus France\u2019s 5% 10-year are local inflation/fiscal facts that keep global fronts bid rather than a synchronized downturn. The live 2027-03 pay stack in SOFR, CORRA and AONIA is already the cleanest pro-cyclical expression of that higher path; CORRA\u2019s slide from 3.13 to 2.975 is the pessimism to lean against, not a cover signal."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Canada pay remains the growth-resilient BoC path; 2.995 versus cash 2.25 is still a hike cycle, not a cover.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "AONIA 4.60 versus March 2027 4.845 still underprices a commodity-supported RBA path; keep 25m, no add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "SOFR March 2027 at 4.37 versus cash 3.90 is the live higher-path expression after an AI-stress rally; hold 50m.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 40,
+      "decision_fingerprint": "99f7aacd3f49ed3064746a8caffe3319a50ee01ae65cad559b7d2d0216de0d93",
+      "event_id": "jde-080d9faf0d904c38",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 SOFR keeps falling from 4.37 while equities and crude also break; if the Bank of Canada hike is cancelled and CORRA March 2027 reverses lower from 2.995; or if Hormuz de-escalation collapses oil without growth re-acceleration.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d6be71c321348d63ac7cb163fb89100f424509e4c4bb2f29eea133e937738f98",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1a583b14eb697840d8933dd524add26a775fdde0aba4fabe0639a9bac196f3d9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_hash": "23e032ee8b45ed46cd3f5acf1c94c9c8887cba1c3a4566bbf19f860580cca1b5",
+        "overnight_run_id": "overnight-20261023",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Equities are still functioning with Nasdaq 26009, SPX 7757 and VIX 19.03, while March 2027 SOFR has already rallied from 4.55 to 4.37 against cash 3.90 and the 10-year has eased to 5.00. That duration move looks like an AI-stress overshoot rather than a realized growth break, and oil at WTI 99.47 / Brent 113.17 plus a Bank of Canada poll to 2.50 keep inflation impulse under the policy path. The existing March 2027 pay stack in CORRA, AONIA and SOFR is already the pro-growth expression; mark moves are not a reason to add.",
+      "run_id": "overnight-20261023",
+      "schema_version": 1,
+      "thesis": "Equities are still functioning with Nasdaq 26009, SPX 7757 and VIX 19.03, while March 2027 SOFR has already rallied from 4.55 to 4.37 against cash 3.90 and the 10-year has eased to 5.00. That duration move looks like an AI-stress overshoot rather than a realized growth break, and oil at WTI 99.47 / Brent 113.17 plus a Bank of Canada poll to 2.50 keep inflation impulse under the policy path. The existing March 2027 pay stack in CORRA, AONIA and SOFR is already the pro-growth expression; mark moves are not a reason to add."
     }
   ],
   "schema_version": 1,

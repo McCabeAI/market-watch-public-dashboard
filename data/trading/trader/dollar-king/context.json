@@ -62,7 +62,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 2,
-    "competitive_rank": 1,
+    "competitive_rank": 2,
     "drawdown_usd": 768460.5,
     "giveback_usd": 768460.5,
     "high_water_nav_usd": 100952555.22,
@@ -77,7 +77,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 80000.0,
     "risk_capital_utilization": 0.008,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 28786.99,
     "status": "ok"
   },
   "learning": {
@@ -87,22 +87,13 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "performance_reflection",
-      "obligation_id": "rfd-3ab5f778376d",
-      "owner_id": "dollar-king",
-      "owner_type": "trader",
-      "reference": "rfd-3ab5f778376d",
-      "source_run_id": null
-    }
-  ],
-  "memory_context_sha256": "11f4ac8be029b7ba9cad1c242d19b35c9a42267da89299a2baeadc99b079eb44",
+  "learning_obligations": [],
+  "memory_context_sha256": "26bab6fbc327e3d7b87ef6d6bcefbabc65d041fa161956fe9d0a53d70d6cc665",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 64,
-      "current_notional_usd": 8000000.0,
+      "current_notional_usd": 3000000.0,
       "entry_mark": 1.4,
       "harvest": {
         "asset_class": "spot_fx",
@@ -113,7 +104,7 @@
         "entry_mark": 1.4010471204188482,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 767576.89,
+        "giveback_usd": 772971.77,
         "holding_seconds": 2912995,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -126,7 +117,7 @@
         "pending_review": {
           "mechanical_order": false,
           "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 8000000.0,
+          "residual_notional_usd": 3000000.0,
           "status": "due",
           "triggers": [
             "material_winner",
@@ -136,9 +127,9 @@
         "position_id": "pos-5317bc96d4eb",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
-        "realized_pnl_usd": 165838.01,
+        "realized_pnl_usd": 160443.13,
         "recorded_mfe_usd": 953561.41,
-        "retained_mfe_fraction": 0.195,
+        "retained_mfe_fraction": 0.1894,
         "review_required": true,
         "review_threshold_usd": 550000.0,
         "review_triggers": [
@@ -146,7 +137,7 @@
           "giveback"
         ],
         "side": "long",
-        "total_pnl_usd": 185984.52,
+        "total_pnl_usd": 180589.64,
         "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb",
         "unrealized_pnl_usd": 20146.51
       },
@@ -185,37 +176,37 @@
       "complacency": {
         "band": "calm",
         "trend": "up",
-        "value": 0.19
+        "value": 0.24
       },
       "defensiveness": {
         "band": "calm",
         "trend": "down",
-        "value": 0.31
+        "value": 0.3
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.21
+        "trend": "down",
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.23
+        "value": 0.2
       },
       "revenge_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.09
+        "value": 0.08
       },
       "self_trust": {
         "band": "steady",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.53
       },
       "thesis_attachment": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.37
+        "value": 0.36
       }
     },
     "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
@@ -230,27 +221,22 @@
       {
         "kind": "self_report_admission_overconfidence",
         "magnitude": 1.0,
-        "run_id": "overnight-20261021"
+        "run_id": "overnight-20261022"
       },
       {
         "kind": "self_report_admission_pressure_distorting",
         "magnitude": 1.0,
-        "run_id": "overnight-20261021"
+        "run_id": "overnight-20261022"
       },
       {
         "kind": "self_report_admission_overconfidence",
         "magnitude": 1.0,
-        "run_id": "overnight-20261022"
-      },
-      {
-        "kind": "self_report_admission_pressure_distorting",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261022"
+        "run_id": "overnight-20261023"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "16a6d1a0cfd928780ecc9c86eef341338d1d3c5e6e7a957507f54bde630951ca",
+    "state_sha256": "9abc9e33a27ca3c19f9a4406153ee079a58b3d220221af4d1b1cdbd16299a989",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 5,
@@ -260,6 +246,26 @@
   "recent_closed_trades": [],
   "recent_funding_views": [],
   "recent_performance_reflections": [
+    {
+      "attribution": [
+        "thesis",
+        "reaction_function",
+        "catalyst",
+        "timing",
+        "sizing",
+        "variance"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "This is ordinary variance around the prior harvest rule: after a material USDCAD win, three-digit oil plus rising Canadian impulse is the known harvest trigger. The original process remains sound if winner size is now cut and only a residual rate stub is kept.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-05c871c98eec",
+      "run_id": "overnight-20261023",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The book treated the SOFR/CORRA and US2/CA2 gap as sufficient to hold winner-size long USDCAD after a material run. Observed path was a large giveback with spot now 1.3995 through the 1.401 entry, while three-digit oil, rising Canadian impulse, and a Bank of Canada hike poll supported CAD. That is harvest-trigger tape, not a dip that validates winner size."
+    },
     {
       "attribution": [
         "reaction_function",
@@ -295,26 +301,7 @@
       "what_happened_vs_expected": "The expected path was a grind higher in dollar-Canada while United States yields stayed restrictive versus Canada. The realized path was an overshoot to a large peak, then a giveback as oil held above 100 and Canada's relative impulse improved. Residual profit is still positive versus entry but far below the maximum favorable excursion, which is a harvest failure rather than a thesis reversal on the dollar leg."
     }
   ],
-  "reflections_due": [
-    {
-      "created_at": "2026-10-23T15:46:45.247147-04:00",
-      "created_run_id": null,
-      "facts": {
-        "competition_rank": 2,
-        "drawdown_usd": 768460.5,
-        "lesson_ids": [],
-        "net_pnl_usd": 184094.72,
-        "prior_competition_rank": 2,
-        "trade_ids": [
-          "trd-trader-dollar-king-pos-5317bc96d4eb"
-        ]
-      },
-      "reflection_due_id": "rfd-3ab5f778376d",
-      "trigger_ids": [
-        "profit_giveback"
-      ]
-    }
-  ],
+  "reflections_due": [],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

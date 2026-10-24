@@ -62,7 +62,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 12,
-    "competitive_rank": 11,
+    "competitive_rank": 12,
     "drawdown_usd": 53001.48,
     "giveback_usd": 53001.48,
     "high_water_nav_usd": 100009786.12,
@@ -70,14 +70,14 @@
     "nav_usd": 99956784.64,
     "net_pnl_usd": -43215.36,
     "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": -1,
     "raw_pnl_rank": 12,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1250000.0,
     "risk_capital_utilization": 0.125,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 81385.42,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d6be71c321348d63ac7cb163fb89100f424509e4c4bb2f29eea133e937738f98",
+  "memory_context_sha256": "36292189490a65443956d7b3c01faea31a7d84fffd00ee7c7b9ede28716ffc3c",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -200,7 +200,7 @@
         "horizon_status": "unspecified",
         "instrument": "SOFR_2027-03",
         "intended_horizon_days": null,
-        "mae_usd": 0.0,
+        "mae_usd": -75000.0,
         "mechanical_order": false,
         "mfe_usd": 15000.0,
         "order_policy": "review_only",
@@ -253,8 +253,8 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
@@ -263,18 +263,18 @@
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.05
+        "trend": "up",
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.5
+        "value": 0.49
       },
       "thesis_attachment": {
         "band": "calm",
@@ -290,13 +290,19 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.16277084,
+        "run_id": "overnight-20261023"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1a583b14eb697840d8933dd524add26a775fdde0aba4fabe0639a9bac196f3d9",
+    "state_sha256": "b205519a6fb2ab4f0bdb43c49833434f55df66d8c42d6bc20d3ca2c173598c02",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
+      "session_loss": 2,
       "session_win": 0
     }
   },

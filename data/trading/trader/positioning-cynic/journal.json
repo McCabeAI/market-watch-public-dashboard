@@ -1248,6 +1248,62 @@
       "run_id": "overnight-20261022",
       "schema_version": 1,
       "thesis": "The desk is still heavy receive on CORRA into Mar27 while overnight CORRA sits at 2.25 and the contract is 2.975, so the crowd is selling a large hike path into RISING Prima and 97/109 oil. That receive is the crowded idea; the live 50m pay/short at 2.995 (mark 2.975) is the ownership-asymmetric hold, not a new receive and not an add. Short USDCAD already paid +205385 from 1.42 to 1.41 and is closed; chasing CAD or overlaying more CAD-bull risk would stack the same consensus the pay is meant to fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Existing March 2027 pay is the unique leftover expression; do not overlay another CAD-bull.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "10f7989930cdaec9cf877e9dc51f32921e9dceb2b025e23f40ebf672e8d53297",
+      "event_id": "jde-3c0c69f821f2410e",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 CORRA collapses toward cash 2.25 while the desk's receive crowdedness disappears, or if a later packet shows the pay is itself the crowded side with no uniqueness left.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "bda2ee19590ffce7e7c4b7fe12f4641fafe62195676eb8351d20f426986ac7dd",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "fc1c785911e2bf2d155eae4b06fc1dea1f9ab17c2220213d0d0ef90b9ea6bfd2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-23T15:46:45.247147-04:00",
+        "evidence_hash": "23e032ee8b45ed46cd3f5acf1c94c9c8887cba1c3a4566bbf19f860580cca1b5",
+        "overnight_run_id": "overnight-20261023",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The unique remaining expression is the existing 50 million March 2027 CORRA pay, not another CAD-bull overlay. Carry and dove already own the receive, dollar-king still has leftover long USDCAD, and a closed short USDCAD taught that spot was a duplicate. Hold the pay; do not add a receive or a new FX fade.",
+      "run_id": "overnight-20261023",
+      "schema_version": 1,
+      "thesis": "The unique remaining expression is the existing 50 million March 2027 CORRA pay, not another CAD-bull overlay. Carry and dove already own the receive, dollar-king still has leftover long USDCAD, and a closed short USDCAD taught that spot was a duplicate. Hold the pay; do not add a receive or a new FX fade."
     }
   ],
   "schema_version": 1,

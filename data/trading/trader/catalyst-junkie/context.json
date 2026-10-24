@@ -39,7 +39,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 6,
-    "competitive_rank": 5,
+    "competitive_rank": 6,
     "drawdown_usd": 21.56,
     "giveback_usd": 21.56,
     "high_water_nav_usd": 100002993.16,
@@ -47,14 +47,14 @@
     "nav_usd": 100002971.6,
     "net_pnl_usd": 2971.6,
     "pressure_flags": [],
-    "prior_competition_rank": 6,
-    "rank_change": 0,
+    "prior_competition_rank": 10,
+    "rank_change": -4,
     "raw_pnl_rank": 6,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 36021.67,
     "status": "ok"
   },
   "learning": {
@@ -65,12 +65,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0ba23cd5f58b59f8ea5db4fa0417f066843b48bfb87adc6f719190758a1883b1",
+  "memory_context_sha256": "83a98b703e76341e5e40776a62e8068f31a05e5383e174ff96a803329ed46aec",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 67,
-      "current_notional_usd": 20000000.0,
+      "current_notional_usd": 10000000.0,
       "entry_mark": 4.52,
       "harvest": {
         "asset_class": "rates",
@@ -81,27 +81,27 @@
         "entry_mark": 4.52,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 15000.0,
         "holding_seconds": 281725,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "SOFR_2027-03",
         "intended_horizon_days": null,
-        "mae_usd": 0.0,
+        "mae_usd": -15000.0,
         "mechanical_order": false,
         "mfe_usd": 6000.0,
         "order_policy": "review_only",
         "position_id": "pos-fca0c79a2e45",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": -15000.0,
         "recorded_mfe_usd": 6000.0,
-        "retained_mfe_fraction": 1.0,
+        "retained_mfe_fraction": -1.5,
         "review_required": false,
         "review_threshold_usd": 200000.0,
         "review_triggers": [],
         "side": "short",
-        "total_pnl_usd": 6000.0,
+        "total_pnl_usd": -9000.0,
         "trade_id": "trd-trader-catalyst-junkie-pos-fca0c79a2e45",
         "unrealized_pnl_usd": 6000.0
       },
@@ -130,8 +130,8 @@
     "axes": {
       "chase_pressure": {
         "band": "elevated",
-        "trend": "down",
-        "value": 0.28
+        "trend": "up",
+        "value": 0.38
       },
       "complacency": {
         "band": "calm",
@@ -144,14 +144,14 @@
         "value": 0.2
       },
       "external_pressure": {
-        "band": "calm",
-        "trend": "down",
-        "value": 0.2
+        "band": "elevated",
+        "trend": "up",
+        "value": 0.35
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.12
+        "trend": "up",
+        "value": 0.19
       },
       "revenge_pressure": {
         "band": "calm",
@@ -160,8 +160,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "down",
+        "value": 0.48
       },
       "thesis_attachment": {
         "band": "calm",
@@ -179,14 +179,14 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "flat_with_market",
+        "kind": "rank_shock",
         "magnitude": 1.0,
-        "run_id": "overnight-20261019"
+        "run_id": "overnight-20261023"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1f99e45072309376dbcd9082837d5ec91c0c4943b71b503ea19e6894397dc718",
+    "state_sha256": "1d3ac4d15c1a776bf8d96e5443875cf474fb7960b13378202ed192f51c362fad",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -34,7 +34,7 @@
     "competition_cohort_size": 14,
     "competition_eligible": true,
     "competition_rank": 9,
-    "competitive_rank": 8,
+    "competitive_rank": 9,
     "drawdown_usd": 97940.73,
     "giveback_usd": 97940.73,
     "high_water_nav_usd": 100092016.81,
@@ -42,14 +42,14 @@
     "nav_usd": 99994076.08,
     "net_pnl_usd": -5923.92,
     "pressure_flags": [],
-    "prior_competition_rank": 9,
-    "rank_change": 0,
+    "prior_competition_rank": 12,
+    "rank_change": -3,
     "raw_pnl_rank": 9,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 625000.0,
     "risk_capital_utilization": 0.0625,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 58817.71,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "42b53c9f95b65cfe889131de120c0099bb7b368f5305875037f86f46f85312bc",
+  "memory_context_sha256": "462da7e6f269880fb458e51f35f4d5bc7a504ed94f3d9e36fcb832ead1b86129",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -82,7 +82,7 @@
         "horizon_status": "unspecified",
         "instrument": "SOFR_2027-09",
         "intended_horizon_days": null,
-        "mae_usd": -20000.0,
+        "mae_usd": -48750.0,
         "mechanical_order": false,
         "mfe_usd": 70000.0,
         "order_policy": "review_only",
@@ -215,8 +215,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.18
       },
       "complacency": {
         "band": "calm",
@@ -225,18 +225,18 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.23
+        "trend": "up",
+        "value": 0.28
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.16
       },
       "revenge_pressure": {
         "band": "calm",
@@ -262,13 +262,24 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.11763542,
+        "run_id": "overnight-20261023"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261023"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "7bcca302608592ab1648ee398e3e904c794285b81f4e5fda97192a3f8fd51114",
+    "state_sha256": "63a8beebcf23e1208ef966c3575ac8f33880939e29ed9b11cab7724e0e52283d",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
+      "session_loss": 2,
       "session_win": 0
     }
   },
