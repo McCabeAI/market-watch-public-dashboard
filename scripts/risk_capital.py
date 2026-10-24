@@ -2,11 +2,14 @@
 
 Risk capital is the absolute paper MTM loss from the agreed standard shock:
 - spot FX: 1% adverse price move;
-- outright rates: 1 percentage-point / 100bp adverse rate move;
-- curve and rates-RV: 100bp adverse spread move.
+- supported rate contracts and DV01-balanced structures: 100bp adverse move
+  in the canonical mark, using that contract's DV01 and currency conversion;
+- legacy unstamped rates vintages: 100bp under the historical duration-one
+  identity, kept so stored ledgers are not silently restated;
+- options: an explicit shocked MTM, otherwise unavailable.
 
-That is deliberately a common risk unit. Equal shocked P&L receives equal SOFR
-funding treatment regardless of asset class. Notional itself is descriptive.
+Equal shocked P&L receives equal SOFR funding treatment. Notional is descriptive.
+Missing FX or DV01 is unavailable rather than a fabricated conversion.
 """
 
 from __future__ import annotations
@@ -40,25 +43,9 @@ def risk_factor_mark(position: Mapping[str, Any]) -> float | None:
 
 def position_risk_capital(position: Mapping[str, Any]) -> float | None:
     """Absolute P&L from the standard 1%/100bp adverse move."""
-    notional = _number(position.get("notional_usd"))
-    if notional is None:
-        return None
-    notional = abs(notional)
-    if notional == 0:
-        return 0.0
+    from scripts.rates.valuation import shock_risk_usd
 
-    asset = str(position.get("asset_class") or "")
-    if asset == "spot_fx":
-        return round(notional * SPOT_SHOCK_FRACTION, 2)
-    if asset == "rates":
-        return round(notional * RATE_SHOCK_PERCENTAGE_POINTS / 100.0, 2)
-    if asset in {"curve", "rates_rv"}:
-        return round(notional * CURVE_SHOCK_BPS / 10_000.0, 2)
-    if asset == "options":
-        # Options need an actual deterministic shocked MTM rather than a notional proxy.
-        explicit = _number(position.get("shock_1pct_pnl_usd"))
-        return None if explicit is None else round(abs(explicit), 2)
-    return None
+    return shock_risk_usd(position)
 
 
 def position_can_force_exit(position: Mapping[str, Any]) -> bool:
@@ -92,9 +79,13 @@ def already_force_flattened_ids(book: Mapping[str, Any]) -> set[str]:
 
 
 def attach_position_risk(position: dict[str, Any]) -> dict[str, Any]:
+    from scripts.rates.valuation import INSTRUMENT_METHOD, valuation_mode
+
     capital = position_risk_capital(position)
     position["risk_capital_usd"] = capital
-    position["risk_capital_method"] = RISK_CAPITAL_METHOD
+    position["risk_capital_method"] = (
+        "instrument_dv01_100bp" if valuation_mode(position) == INSTRUMENT_METHOD else RISK_CAPITAL_METHOD
+    )
     position["risk_shock"] = {
         "spot_fraction": SPOT_SHOCK_FRACTION,
         "rates_percentage_points": RATE_SHOCK_PERCENTAGE_POINTS,

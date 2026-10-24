@@ -338,6 +338,39 @@ def _futures_strip_average(state: Mapping[str, Any], expression: Mapping[str, An
     }
 
 
+def _structure_mark(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
+    from scripts.rates.structures import StructureError, build_structure, package_mark_bp, update_leg_marks
+
+    try:
+        built = build_structure(expression, side="long", target_dv01_usd=1.0, market_state=state)
+    except StructureError as exc:
+        raise PaperMarkError(str(exc)) from exc
+    sources: list[str] = []
+    dates: list[str] = []
+    rates: dict[str, float] = {}
+    for leg in built["legs"]:
+        mark = _tradable_curve_contract_mark(state, str(leg["curve_id"]), str(leg["expiry"]))
+        rates[str(leg["instrument"])] = float(mark["value"])
+        sources.append(str(mark["source"]))
+        if mark.get("as_of"):
+            dates.append(str(mark["as_of"]))
+    update_leg_marks(built["legs"], rates)
+    value = package_mark_bp(str(built["type"]), built["legs"])
+    if value is None:
+        raise PaperMarkError("structure mark unavailable")
+    return {
+        "value": round(value, 8),
+        "quote_unit": "bps",
+        "source": f"derived:{built['type']}[" + ",".join(sources) + "]",
+        "as_of": min(dates) if dates else state.get("generated_at"),
+        "kind": "derived",
+        "expression": deepcopy(dict(expression)),
+        "leg_rates": rates,
+        "mark_definition": built["mark_definition"],
+        "structure_label": built["type"],
+    }
+
+
 def _official_curve_df(
     state: Mapping[str, Any],
     country: str,
@@ -496,7 +529,13 @@ def resolve_paper_mid(
         if kind == "forward_swap":
             return _forward_swap(market_state, expression)
         if kind == "futures_strip_average":
+            if asset_class == "curve":
+                raise PaperMarkError(
+                    "futures_strip_average is a strip average, not a curve spread"
+                )
             return _futures_strip_average(market_state, expression)
+        if kind in {"calendar_spread", "butterfly", "outright_rv", "curve_rv"}:
+            return _structure_mark(market_state, expression)
         raise PaperMarkError(f"unsupported paper expression type {kind!r}")
     if not instrument:
         raise PaperMarkError("instrument is required for a paper mid")
@@ -517,10 +556,55 @@ def _position_lookup(books: Mapping[str, Any], seat: str, position_id: str) -> M
     return find_position(list(positions or []), position_id, owner=seat)
 
 
+def hydrate_structure_rates(position: dict[str, Any], market_state: Mapping[str, Any] | None) -> None:
+    """Fill missing leg rates from the frozen curve. Does not invent a level."""
+    if not position.get("legs"):
+        return
+    if not isinstance(market_state, Mapping):
+        if any(leg.get("entry_rate") is None for leg in position["legs"]):
+            raise PaperMarkError("structure leg rates are missing and market_state was not supplied")
+        return
+    mark = resolve_paper_mid(
+        market_state,
+        str(position.get("instrument") or ""),
+        asset_class=position.get("asset_class"),
+        expression=position.get("paper_expression"),
+    )
+    from scripts.rates.structures import package_mark_bp, update_leg_marks
+
+    rates = mark.get("leg_rates") or {}
+    update_leg_marks(position["legs"], rates)
+    for leg in position["legs"]:
+        if leg.get("entry_rate") is None:
+            if leg.get("mark_rate") is None:
+                raise PaperMarkError(f"structure leg {leg.get('instrument')} has no implied rate")
+            leg["entry_rate"] = leg["mark_rate"]
+    kind = None
+    expression = position.get("paper_expression")
+    if isinstance(expression, Mapping):
+        kind = expression.get("type")
+    kind = kind or position.get("structure_label")
+    package = package_mark_bp(str(kind or ""), position["legs"])
+    if package is None:
+        raise PaperMarkError("structure package mark unavailable")
+    position["entry_price"] = package
+    position["mark_price"] = package
+    position["mark_price_source"] = mark.get("source")
+    position["entry_price_source"] = mark.get("source")
+    position["mark_price_as_of"] = mark.get("as_of")
+    position["entry_price_as_of"] = mark.get("as_of")
+
+
 def apply_resolved_mark(position: dict[str, Any], mark: Mapping[str, Any]) -> None:
     position["mark_price"] = mark["value"]
     position["mark_price_source"] = mark["source"]
     position["mark_price_as_of"] = mark.get("as_of")
+    rates = mark.get("leg_rates")
+    if isinstance(rates, Mapping) and position.get("legs"):
+        from scripts.rates.structures import update_leg_marks
+
+        update_leg_marks(position["legs"], rates)
+        position["_leg_marks_current"] = True
 
 
 def clear_unresolved_mark(position: dict[str, Any]) -> None:

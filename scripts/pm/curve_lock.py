@@ -20,6 +20,13 @@ def expression_family(
             if curve_id not in {"sofr", "corra", "aonia"}:
                 raise CurveLockError("futures_strip_average curve_id must be SOFR, CORRA or AONIA")
             return curve_id
+        if kind in {"calendar_spread", "butterfly"}:
+            curve_id = str(expression.get("curve_id") or "").lower()
+            if curve_id not in {"sofr", "corra", "aonia"}:
+                raise CurveLockError(f"{kind} curve_id must be SOFR, CORRA or AONIA")
+            return curve_id
+        if kind in {"outright_rv", "curve_rv"}:
+            return "cross_market"
         if kind == "forward_swap":
             return "bond"
         if kind == "linear_combo":

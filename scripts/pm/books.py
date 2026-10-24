@@ -592,7 +592,7 @@ def apply_action(
 
     had_prior = bool(book.get("last_decision_at") or book.get("last_action"))
     if kind == "OPEN":
-        _open_position(book, action, run_id=run_id, when=stamp)
+        _open_position(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "ADD":
         _resize(book, action, factor=1, run_id=run_id, when=stamp)
     elif kind == "REDUCE":
@@ -600,7 +600,7 @@ def apply_action(
     elif kind == "CLOSE":
         _close(book, action, run_id=run_id, when=stamp)
     elif kind == "HEDGE":
-        _hedge(book, action, run_id=run_id, when=stamp)
+        _hedge(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind in {"HOLD", "NO_TRADE"}:
         pass
 
@@ -612,7 +612,14 @@ def apply_action(
     return mark_pm_book(book, when=stamp, run_id=run_id)
 
 
-def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> dict[str, Any]:
+def _open_position(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     notional = _require_notional(action)
     instrument = action.get("instrument")
     side = action.get("side")
@@ -649,7 +656,35 @@ def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str 
         "hedge_of": action.get("hedge_of"),
         "unrealized_pnl_usd": None,
         "pnl_unavailable": False,
+        "expected_mark_direction": action.get("expected_mark_direction"),
     }
+    from scripts.rates.structures import STRUCTURE_TYPES, StructureError, build_structure
+    from scripts.rates.valuation import stamp_open_valuation
+
+    expression = position.get("paper_expression") if isinstance(position.get("paper_expression"), dict) else None
+    if expression and expression.get("type") in STRUCTURE_TYPES:
+        try:
+            built = build_structure(
+                expression,
+                side=str(side),
+                notional_usd=notional,
+                market_state=market_state,
+            )
+        except (StructureError, SchemaError) as exc:
+            raise SchemaError(str(exc)) from exc
+        position["legs"] = built["legs"]
+        position["spread_dv01_usd"] = built["spread_dv01_usd"]
+        position["structure_label"] = built["type"]
+        position["mark_definition"] = built["mark_definition"]
+        if built.get("package_mark_bp") is not None:
+            position["entry_price"] = built["package_mark_bp"]
+            position["mark_price"] = built["package_mark_bp"]
+        from scripts.overnight.paper_marks import hydrate_structure_rates
+
+        hydrate_structure_rates(position, market_state)
+    stamp_open_valuation(position, market_state)
+    if position.get("valuation_method") == "unavailable":
+        raise SchemaError(position.get("isolation_reason") or "instrument economics unavailable")
     action["position_id"] = position["position_id"]
     preview = deepcopy(book)
     preview["positions"] = list(preview.get("positions") or []) + [position]
@@ -672,8 +707,13 @@ def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id
         if delta > float(position["notional_usd"]) + 1e-9:
             raise SchemaError("REDUCE exceeds position notional")
         exit_price = _require_mark(action, kind="REDUCE", pm_id=book["pm_id"])
+        old_n = float(position["notional_usd"])
         realized = realized_increment(position, exit_price=exit_price, closed_notional=delta)
-        position["notional_usd"] = round(float(position["notional_usd"]) - delta, 2)
+        position["notional_usd"] = round(old_n - delta, 2)
+        if position.get("legs") and old_n > 0:
+            from scripts.rates.structures import scale_legs
+
+            scale_legs(position["legs"], position["notional_usd"] / old_n, average_entries=False)
         book["realized_pnl_usd"] = round(float(book["realized_pnl_usd"]) + realized, 2)
         action["realized_pnl_usd"] = realized
         if position["notional_usd"] <= 1e-9:
@@ -691,8 +731,16 @@ def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id
         preview = deepcopy(book)
         preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
         preview_pos["notional_usd"] = round(old_n + delta, 2)
+        if preview_pos.get("legs") and old_n > 0:
+            from scripts.rates.structures import scale_legs
+
+            scale_legs(preview_pos["legs"], preview_pos["notional_usd"] / old_n, average_entries=True)
         assert_cap(preview)
         position["notional_usd"] = round(old_n + delta, 2)
+        if position.get("legs") and old_n > 0:
+            from scripts.rates.structures import scale_legs
+
+            scale_legs(position["legs"], position["notional_usd"] / old_n, average_entries=True)
     action["run_id"] = run_id
     action["at"] = isoformat(when)
     action["locked_expression_family"] = position.get("locked_expression_family")
@@ -706,7 +754,14 @@ def _close(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, 
     _resize(book, action, factor=-1, run_id=run_id, when=when)
 
 
-def _hedge(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> None:
+def _hedge(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> None:
     target_id = action.get("hedge_of") or action.get("position_id")
     if not target_id:
         raise SchemaError("HEDGE requires hedge_of or position_id of the existing risk")
@@ -725,7 +780,7 @@ def _hedge(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, 
     hedge.setdefault("paper_expression", target.get("paper_expression"))
     if "side" not in hedge:
         hedge["side"] = "short" if target["side"] == "long" else "long"
-    _open_position(book, hedge, run_id=run_id, when=when)
+    _open_position(book, hedge, run_id=run_id, when=when, market_state=market_state)
     action["position_id"] = hedge.get("position_id")
     action["locked_expression_family"] = hedge.get("locked_expression_family")
 

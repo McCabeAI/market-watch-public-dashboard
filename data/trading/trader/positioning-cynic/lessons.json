@@ -19,16 +19,25 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
-        "catalyst_type": null,
-        "countries": [],
-        "currencies": [],
-        "decision_dimension": null,
-        "failure_mode": null,
-        "instrument_family": null,
-        "instruments": [],
+        "instruments": [
+          "CORRA_2027-03",
+          "CORRA_2027-06",
+          "CORRA_2027-09",
+          "CORRA_2027-12"
+        ],
+        "instrument_family": "corra",
+        "asset_class": "rates",
+        "countries": [
+          "CA"
+        ],
+        "currencies": [
+          "CAD"
+        ],
+        "setup_type": "futures_strip_average",
         "market_drivers": [],
-        "setup_type": null
+        "catalyst_type": null,
+        "failure_mode": null,
+        "decision_dimension": null
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
@@ -36,7 +45,24 @@
       "trade_ids": [
         "trd-trader-positioning-cynic-pos-142ad113f303"
       ],
-      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+      "updated_at": "2026-09-29T04:44:08.485973-04:00",
+      "scope_evidence": {
+        "method": "ledger_identity_fields",
+        "trade_id": "trd-trader-positioning-cynic-pos-142ad113f303",
+        "fields": [
+          "asset_class",
+          "instrument",
+          "paper_expression.curve_id",
+          "paper_expression.curve_id.country",
+          "paper_expression.curve_id.currency",
+          "paper_expression.expiries",
+          "paper_expression.type"
+        ],
+        "retrievals_backfilled": false,
+        "text_modified": false,
+        "history_modified": false,
+        "status": "scoped_from_trade"
+      }
     },
     {
       "contradiction_count": 0,
@@ -57,16 +83,21 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
-        "catalyst_type": null,
-        "countries": [],
-        "currencies": [],
-        "decision_dimension": null,
-        "failure_mode": null,
+        "instruments": [
+          "USDCAD"
+        ],
         "instrument_family": null,
-        "instruments": [],
+        "asset_class": "spot_fx",
+        "countries": [],
+        "currencies": [
+          "USD",
+          "CAD"
+        ],
+        "setup_type": null,
         "market_drivers": [],
-        "setup_type": null
+        "catalyst_type": null,
+        "failure_mode": null,
+        "decision_dimension": null
       },
       "source_run_id": "overnight-20261023",
       "status": "active",
@@ -74,7 +105,20 @@
       "trade_ids": [
         "trd-trader-positioning-cynic-pos-ccb6655acbad"
       ],
-      "updated_at": "2026-10-23T15:46:45.247147-04:00"
+      "updated_at": "2026-10-23T15:46:45.247147-04:00",
+      "scope_evidence": {
+        "method": "ledger_identity_fields",
+        "trade_id": "trd-trader-positioning-cynic-pos-ccb6655acbad",
+        "fields": [
+          "asset_class",
+          "instrument",
+          "instrument.fx_pair"
+        ],
+        "retrievals_backfilled": false,
+        "text_modified": false,
+        "history_modified": false,
+        "status": "scoped_from_trade"
+      }
     }
   ],
   "schema_version": 1,

@@ -28,6 +28,14 @@ from pathlib import Path
 from typing import Mapping, Sequence
 
 from scripts.australia_housing_data import collect_australia_housing, validate_australia_housing
+
+
+def _relative_rate_analytics(tradable: object, fx_pairs: object) -> dict:
+    from scripts.rates.read_model import build_relative_analytics
+
+    pairs = fx_pairs if isinstance(fx_pairs, dict) else {}
+    curves = tradable if isinstance(tradable, dict) else {}
+    return build_relative_analytics({"tradable_rate_curves": curves, "fx": {"pairs": pairs}})
 from scripts.canada_housing_data import collect_canada_housing, validate_canada_housing
 from scripts.country_registry import (
     extra_rate_tenor,
@@ -1460,6 +1468,7 @@ def build_snapshot(
             ),
         },
         "opportunities": opportunities,
+        "relative_rate_analytics": _relative_rate_analytics(tradable_rate_curves, fx),
         "positioning": positioning,
         "canada_prima_pressure": canada_prima_pressure,
         "schema_version": 1,

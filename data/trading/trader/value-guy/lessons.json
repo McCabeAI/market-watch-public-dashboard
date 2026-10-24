@@ -19,16 +19,18 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
-        "catalyst_type": null,
+        "instruments": [
+          "SOFR-CORRA_2Y_2027H1"
+        ],
+        "instrument_family": null,
+        "asset_class": "rates_rv",
         "countries": [],
         "currencies": [],
-        "decision_dimension": null,
-        "failure_mode": null,
-        "instrument_family": null,
-        "instruments": [],
+        "setup_type": "linear_combo",
         "market_drivers": [],
-        "setup_type": null
+        "catalyst_type": null,
+        "failure_mode": null,
+        "decision_dimension": null
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
@@ -36,7 +38,20 @@
       "trade_ids": [
         "trd-trader-value-guy-pos-cdde326460b4"
       ],
-      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+      "updated_at": "2026-09-29T04:44:08.485973-04:00",
+      "scope_evidence": {
+        "method": "ledger_identity_fields",
+        "trade_id": "trd-trader-value-guy-pos-cdde326460b4",
+        "fields": [
+          "asset_class",
+          "instrument",
+          "paper_expression.type"
+        ],
+        "retrievals_backfilled": false,
+        "text_modified": false,
+        "history_modified": false,
+        "status": "scoped_from_trade"
+      }
     }
   ],
   "schema_version": 1,

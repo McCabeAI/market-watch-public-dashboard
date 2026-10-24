@@ -407,17 +407,24 @@ class PMFundingTests(unittest.TestCase):
         )
         book = books["pms"]["chatgpt"]
         self.assertEqual(book["gross_utilization_usd"], 200_000_000)
-        self.assertEqual(book["funded_draw_usd"], 2_000_000.0)
-        self.assertEqual(book["risk_capital_usd"], 2_000_000.0)
+        # SR3 face USD 1,000,000 and DV01 USD 25: 200 contracts × 100bp = USD 500,000.
+        self.assertEqual(book["funded_draw_usd"], 500_000.0)
+        self.assertEqual(book["risk_capital_usd"], 500_000.0)
         self.assertEqual(book["unused_cash_usd"], CASH_CAPITAL_USD)
         self.assertNotEqual(book["gross_utilization_usd"], book["funded_draw_usd"])
         self.assertEqual(book["gross_notional_limit_usd"], GROSS_NOTIONAL_LIMIT_USD)
 
     def test_rates_futures_fund_standard_shocked_risk_not_full_notional(self) -> None:
-        for instrument, asset in (("SOFR_2027-03", "rates"), ("CORRA_2027-03", "rates"), ("AONIA_2026-10", "rates")):
-            basis = classify_funding_basis({"instrument": instrument, "asset_class": asset, "notional_usd": 50_000_000})
-            self.assertEqual(basis["funding_basis_status"], "risk_capital_1pct_shock")
-            self.assertEqual(basis["funding_draw_usd"], 500_000.0)
+        sofr = classify_funding_basis({"instrument": "SOFR_2027-03", "asset_class": "rates", "notional_usd": 50_000_000})
+        self.assertEqual(sofr["funding_basis_status"], "risk_capital_1pct_shock")
+        # 50 SR3 contracts × USD 25 × 100bp. Not 1% of face.
+        self.assertEqual(sofr["funding_draw_usd"], 125_000.0)
+        self.assertNotEqual(sofr["funding_draw_usd"], 50_000_000)
+        for instrument in ("CORRA_2027-03", "AONIA_2026-10"):
+            basis = classify_funding_basis({"instrument": instrument, "asset_class": "rates", "notional_usd": 50_000_000})
+            self.assertEqual(basis["funding_basis_status"], "unresolved")
+            self.assertEqual(basis["funding_draw_usd"], 0.0)
+            self.assertIsNone(basis["risk_capital_usd"])
 
     def test_spot_funds_one_percent_shocked_risk_and_common_cash_hurdle(self) -> None:
         books = apply_decision(

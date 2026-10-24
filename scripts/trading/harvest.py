@@ -176,13 +176,38 @@ def _risk_notional(trade: dict[str, Any], position: dict[str, Any] | None) -> fl
     return None
 
 
+def _intent_context(trade: dict[str, Any], position: dict[str, Any] | None, entry: float | None, mark: float | None) -> dict[str, Any]:
+    expected = _text((position or {}).get("expected_mark_direction")) or _text((trade or {}).get("expected_mark_direction"))
+    if expected not in {"lower", "higher"} or entry is None or mark is None:
+        versus = "unknown"
+    elif mark == entry:
+        versus = "flat"
+    elif expected == "lower":
+        versus = "with_intent" if mark < entry else "against_intent"
+    else:
+        versus = "with_intent" if mark > entry else "against_intent"
+    return {"expected_mark_direction": expected, "move_versus_entry_intent": versus}
+
+
 def material_winner_threshold_usd(trade: dict[str, Any], position: dict[str, Any] | None) -> float | None:
-    """Review threshold in dollars. None when risk capital cannot be measured and no floor applies."""
+    """Review threshold in dollars. Uses instrument DV01 when that vintage is stamped."""
     notional = _risk_notional(trade, position)
     asset = (position or {}).get("asset_class") or (trade or {}).get("asset_class")
     capital = None
-    if notional is not None and asset:
-        capital = position_risk_capital({"asset_class": asset, "notional_usd": notional})
+    probe = dict(position or {})
+    if asset:
+        probe["asset_class"] = asset
+    if notional is not None:
+        probe["notional_usd"] = notional
+    if probe.get("legs"):
+        current = _money((position or {}).get("notional_usd"))
+        base = position_risk_capital(position or {})
+        if base is not None and current and notional is not None and current > 0:
+            capital = base * (notional / current)
+        elif base is not None and notional is None:
+            capital = base
+    elif notional is not None and asset:
+        capital = position_risk_capital(probe)
     if capital is None:
         return MATERIAL_WINNER_MIN_USD
     return round(max(MATERIAL_WINNER_MIN_USD, MATERIAL_WINNER_RISK_MULTIPLE * float(capital)), 2)
@@ -289,6 +314,8 @@ def harvest_metrics(
         "catalyst_logic": None if lifecycle is None else lifecycle.get("catalyst_logic"),
         "catalyst_by": catalyst_by,
         "review_threshold_usd": threshold,
+        "risk_context": "instrument_dv01" if (position or {}).get("valuation_method") == "instrument_dv01" or (position or {}).get("legs") else "legacy_or_spot",
+        **_intent_context(trade, position, entry, current_mark),
         "review_required": bool(triggers),
         "review_triggers": triggers,
         "full_size_hold_requires_reunderwrite": "horizon_expired" in triggers,
