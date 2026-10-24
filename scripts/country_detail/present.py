@@ -76,6 +76,14 @@ _SERIES_DISPLAY_NAMES: dict[str, str] = {
 }
 
 
+# Spelled-out change phrases that duplicate the short transformation mark.
+_CHANGE_PHRASES: dict[str, str] = {
+    "q/q": r"(?i),?\s*quarter[- ]over[- ]quarter(?:\s+percent)?(?:\s+change)?",
+    "m/m": r"(?i),?\s*month[- ]over[- ]month(?:\s+percent)?(?:\s+change)?",
+    "y/y": r"(?i),?\s*(?:year[- ]over[- ]year(?:\s+percent)?(?:\s+change)?|(?:12-month|annual)\s+(?:percent|rate of)\s+change)",
+}
+
+
 def transformation_mark(transformation: str | None) -> str:
     """Short disambiguator for a published transformation. Empty when unmapped."""
     text = str(transformation or "").strip().lower()
@@ -130,8 +138,10 @@ def plain_series_name(obs: Mapping[str, Any]) -> str:
     if transformation.lower().startswith("level") and re.search(r"\bchange\b", label, flags=re.I):
         label = re.sub(r"(?i)^monthly change in ", "Level of ", label)
         label = re.sub(r"(?i)^change in ", "Level of ", label)
-    label = _concise_base(label)
     mark = transformation_mark(transformation)
+    if mark in _CHANGE_PHRASES:
+        label = re.sub(_CHANGE_PHRASES[mark], "", label).strip(" ,")
+    label = _concise_base(label)
     if mark and f"· {mark}" not in label:
         label = f"{label} · {mark}"
     return label or "Series"
