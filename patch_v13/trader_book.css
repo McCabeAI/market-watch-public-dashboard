@@ -129,6 +129,8 @@
 @media(max-width:720px){
   .traderbook .tb-header{flex-direction:column;align-items:flex-start}
   .traderbook .tb-header h2{font-size:22px}
+  .traderbook .tb-flag-list>li{flex-direction:column;align-items:flex-start}
+  .traderbook .tb-flag-list>li>p,.traderbook .tb-flag-list>li>ul{flex:0 0 auto;width:100%}
   .traderbook .tb-system-summary,.traderbook .tb-kpis,.traderbook .tb-metrics{grid-template-columns:1fr 1fr}
   .traderbook .tb-kpi-wide{grid-column:span 2}
   .traderbook .tb-table{display:block;table-layout:auto}
