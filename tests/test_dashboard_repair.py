@@ -306,7 +306,9 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertNotIn("$92.33", tape)
         self.assertIn("DXY is omitted", self.html)
         self.assertNotIn("Live 1–100 Score Board", self.html)
-        self.assertIn("Published score freeze 2026-09-21", self.html)
+        self.assertIn("calibration anchor 21 Sep 2026", self.html)
+        self.assertIn("inputs last ingested", self.html)
+        self.assertNotIn("score freeze", self.html.lower())
         self.assertIn("Equal-weight summary", self.html)
         self.assertIn(">Inflation<", self.html)
         self.assertIn("63.1 warm", self.html)
@@ -373,14 +375,15 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertNotIn("Momentum Watch", repaired)
         self.assertNotIn("short-run cooler", repaired)
         self.assertIn('data-momentum="removed"', repaired)
-        self.assertIn("Published score freeze 2026-09-21", repaired)
+        self.assertIn("calibration anchor 21 Sep 2026", repaired)
         for code in ("us", "ca", "au", "nz", "ea", "jp"):
             self.assertIn(f'data-country="{code}"', repaired)
         self.assertIn('id="country-detail"', repaired)
         self.assertNotIn('for="p-feed"', repaired)
         self.assertNotIn('for="p-relative"', repaired)
         self.assertNotIn("8 SEP 2026", repaired)
-        self.assertIn("Scores frozen 21 Sep 2026", repaired)
+        self.assertIn("calibration anchor 21 Sep 2026", repaired)
+        self.assertIn("inputs last ingested", repaired)
         self.assertIn("September base-page country snapshot — not refreshed; figures may be superseded", repaired)
 
 
@@ -443,7 +446,8 @@ class BriefHeaderArchiveTests(unittest.TestCase):
             series=[_series("US.Inflation.core_pce")],
         )
         self.assertNotIn("8 SEP 2026", html)
-        self.assertIn("Scores frozen 21 Sep 2026", html)
+        self.assertIn("calibration anchor 21 Sep 2026", html)
+        self.assertIn("inputs last ingested", html)
         self.assertIn("22 Oct 2026 14:00 UTC", html)
         self.assertIn("Dated official data · not a quote feed", html)
         self.assertIn("Daily research snapshot", html)

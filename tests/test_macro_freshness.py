@@ -130,7 +130,8 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertEqual(assessed["model_calls"], 0)
         state = load_state()
         self.assertEqual(state["as_of"], "2026-09-21")
-        self.assertEqual(state["last_refresh_date"], "2026-09-21")
+        self.assertEqual(state["calibration_anchor_date"], "2026-09-21")
+        self.assertGreater(state["last_refresh_date"], "2026-09-21")
 
     def test_sep23_without_a_new_check_is_not_stamped_fresh(self) -> None:
         at_collect = assess_macro_family(ROOT, when=SEP23)
@@ -323,9 +324,11 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertEqual(result["ingested"], ["US.Labor.unemployment"])
         state = result["score_state"]
         self.assertEqual(state["as_of"], "2026-09-21")
-        self.assertEqual(state["last_refresh_date"], "2026-09-21")
+        self.assertEqual(state["calibration_anchor_date"], "2026-09-21")
+        self.assertGreater(state["last_refresh_date"], "2026-09-21")
         self.assertNotEqual(state["countries"]["US"]["Labor"]["level"], before["countries"]["US"]["Labor"]["level"])
         unemployment = state["countries"]["US"]["Labor"]["component_state"]["unemployment"]
+        self.assertTrue(str(unemployment.get("retrieved_at") or "").startswith("2026-10-06"))
         self.assertEqual(unemployment["as_of"], "2026-10")
         self.assertEqual(unemployment["transform_value"], 6.5)
         self.assertEqual(state["countries"]["US"]["Labor"]["components"], before["countries"]["US"]["Labor"]["components"])

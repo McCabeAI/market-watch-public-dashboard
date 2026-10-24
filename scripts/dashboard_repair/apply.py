@@ -13,7 +13,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from scripts.dashboard_repair.brief import format_freeze_day, format_packet_time, render_brief
+from scripts.dashboard_repair.brief import format_packet_time, render_brief
+from scripts.dashboard_repair.score_dates import score_dates_summary
 from scripts.dashboard_repair.calendar_view import build_release_model, render_releases
 from scripts.dashboard_repair.htmlutil import balanced_element_end, esc, replace_element_containing
 from scripts.dashboard_repair.scoreboard import render_scoreboard
@@ -510,12 +511,13 @@ def _replace_header(html: str, packet: dict[str, Any] | None, scores: dict[str, 
             when = format_packet_time(packet.get("generated_at")) if isinstance(packet, dict) else ""
             if not when:
                 when = "Market packet time unavailable"
-            freeze = format_freeze_day(scores.get("as_of"))
-            freeze_line = f"Scores frozen {freeze}" if freeze else "Score freeze date unavailable"
+            score_line = score_dates_summary(scores, prefix="")
+            if not score_line:
+                score_line = "Score dates unavailable"
             replacement = (
                 '<div class="meta">'
                 f'<b class="mw-asof">{esc(when)}</b><br/>'
-                f'<span class="mw-asof">{esc(freeze_line)}</span><br/>'
+                f'<span class="mw-asof">{esc(score_line)}</span><br/>'
                 "Dated official data · not a quote feed"
                 "</div>"
             )
@@ -569,7 +571,8 @@ def apply_dashboard_repair(
     model = build_release_model(
         now,
         series=catalog_series,
-        score_as_of=str(scores.get("as_of") or "2026-09-21"),
+        score_as_of=str(scores.get("calibration_anchor_date") or scores.get("as_of") or "2026-09-21"),
+        score_inputs_last_ingested_at=scores.get("score_inputs_last_ingested_at"),
         fetched_slots=(schedule_fetch or {}).get("slots"),
         schedule_fetch=schedule_fetch,
     )
