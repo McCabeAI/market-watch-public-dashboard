@@ -186,6 +186,51 @@ class TestPrimaPressureProxy(unittest.TestCase):
         disclaimer = block["disclaimer"]
         self.assertIn("not a reconstruction", disclaimer.lower())
 
+    def test_channel_evidence_imported_rmpi_fields(self):
+        bundle = _stable_flat_bundle()
+        bundle["producer_prices"]["series"] = [
+            {
+                **_producer_series("rmpi_ex_crude_energy", -0.005),
+                "table": "18-10-0268-01",
+                "vector_id": 1230998148,
+                "units": "index",
+                "seasonal_status": "NSA",
+                "prior_period": "2026-07",
+                "prior_value": 101.2,
+                "release_time": "2026-09-15T12:30:00",
+            },
+            _producer_series("ippi_ex_energy", 0.0),
+        ]
+        proxy = compute_prima_proxy(bundle)
+        block = compact_block(proxy)
+        ev = block["channel_evidence"]["imported_pressure"]
+        self.assertEqual(ev["direction"], "FALLING")
+        self.assertEqual(ev["rule"], "rmpi_ex_crude_energy_mom_band")
+        self.assertEqual(len(ev["inputs"]), 1)
+        inp = ev["inputs"][0]
+        self.assertAlmostEqual(inp["mom"], -0.005)
+        self.assertEqual(inp["band"], contract.RMPI_EX_ENERGY_MOM_BAND)
+        self.assertEqual(inp["vector_id"], 1230998148)
+        self.assertEqual(inp["prior_period"], "2026-07")
+        self.assertEqual(inp["prior_value"], 101.2)
+
+    def test_compact_block_directions_unchanged_with_channel_evidence(self):
+        bundle = _stable_flat_bundle()
+        bundle["oil_curve"]["brent_last_day"]["points"] = [
+            _curve_point(0, 0.0, contract_month="2026-11"),
+            _curve_point(12, 0.03),
+            _curve_point(24, 0.03),
+        ]
+        proxy = compute_prima_proxy(bundle)
+        block = compact_block(proxy)
+        self.assertEqual(block["direction"], proxy["direction"])
+        self.assertEqual(
+            block["subcomponent_directions"],
+            {ch: proxy["subcomponents"][ch]["direction"] for ch in contract.CHANNELS},
+        )
+        self.assertIn("channel_evidence", block)
+        self.assertEqual(len(block["channel_evidence"]), 5)
+
     def test_no_score_key_and_internal_net_vote_int(self):
         bundle = _stable_flat_bundle()
         bundle["oil_curve"]["brent_last_day"]["points"] = [

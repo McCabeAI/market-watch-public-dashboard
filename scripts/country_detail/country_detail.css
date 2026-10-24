@@ -352,207 +352,225 @@
 
 .country-detail .prima-pressure {
   min-width: 0;
-}
-
-.country-detail .prima-context-note,
-.country-detail .prima-meta,
-.country-detail .prima-history,
-.country-detail .prima-means,
-.country-detail .prima-step-note {
-  font-size: 0.8rem;
+  max-width: 100%;
+  margin-top: 0.65rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--mw-line, #233140);
+  border-radius: 0.5rem;
+  background: var(--mw-panel, #111922);
+  color: var(--mw-ink, #e7edf3);
+  font-size: var(--mw-fs-body, 14px);
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
-.country-detail .prima-badges {
+.country-detail .prima-caveat,
+.country-detail .prima-meta-line,
+.country-detail .prima-summary p,
+.country-detail .prima-mpr-glance,
+.country-detail .prima-evidence,
+.country-detail .prima-raw-body {
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-muted, #93a5b6);
+  line-height: 1.45;
+}
+
+.country-detail .prima-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--mw-ink, #e7edf3);
+}
+
+.country-detail .prima-caveat {
+  margin: 0.25rem 0 0;
+}
+
+.country-detail .prima-headline {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem;
-  margin: 0.35rem 0;
+  align-items: baseline;
+  gap: 0.35rem 0.65rem;
+  margin: 0.55rem 0 0.35rem;
 }
 
-.country-detail .prima-badge {
-  display: inline-block;
-  max-width: 100%;
-  padding: 0.12rem 0.45rem;
-  border: 1px solid var(--cd-border, #233140);
-  border-radius: 999px;
-  background: var(--mw-panel, #111922);
-  color: var(--cd-ink, #e7edf3);
-  font-size: 0.72rem;
-  line-height: 1.35;
-}
-
-.country-detail .prima-direction {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.12rem;
-  margin: 0.35rem 0;
+.country-detail .prima-headline-dir {
+  font-size: 1.25rem;
   font-weight: 750;
-  font-size: 1.35rem;
-  line-height: 1.15;
+  color: var(--mw-ink, #e7edf3);
 }
 
-.country-detail .prima-vs,
-.country-detail .prima-stale {
-  font-size: 0.8rem;
-  font-weight: 650;
-  line-height: 1.35;
-  color: var(--cd-ink, #e7edf3);
-}
-
-.country-detail .prima-stale {
-  color: var(--mw-warn, #e5a83f);
-}
-
-.country-detail .prima-direction[data-prima-direction="RISING"] .prima-direction-word {
+.country-detail .prima-headline[data-prima-direction="RISING"] .prima-headline-dir {
   color: var(--mw-warm, #e39d3e);
 }
 
-.country-detail .prima-direction[data-prima-direction="FALLING"] .prima-direction-word {
-  color: var(--mw-cooling, #74b6dc);
+.country-detail .prima-headline[data-prima-direction="FALLING"] .prima-headline-dir {
+  color: var(--mw-cool, #74b6dc);
 }
 
-.country-detail .prima-direction[data-prima-direction="STABLE"] .prima-direction-word {
-  color: var(--mw-static, #8e9ba8);
+.country-detail .prima-headline-change {
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-muted, #93a5b6);
 }
 
-.country-detail .prima-direction[data-prima-direction="UNAVAILABLE"] .prima-direction-word {
-  color: var(--mw-faint, #6f8294);
+.country-detail .prima-summary p {
+  margin: 0.25rem 0;
+  color: var(--mw-ink-2, #c5d0db);
 }
 
-.country-detail .prima-kicker {
-  margin: 0.65rem 0 0.25rem;
-  color: var(--cd-muted, #93a5b6);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  line-height: 1.3;
-  text-transform: uppercase;
-}
-
-.country-detail .prima-means {
-  margin: 0.45rem 0;
-  padding: 0.55rem 0.65rem;
-  border: 1px solid var(--cd-border, #233140);
-  border-radius: 0.375rem;
-  background: var(--mw-panel, #111922);
-}
-
-.country-detail .prima-means p {
+.country-detail .prima-lists {
   margin: 0.35rem 0;
 }
 
-.country-detail .prima-timeline,
-.country-detail .prima-transitions,
-.country-detail .prima-drivers {
-  margin: 0.2rem 0 0.35rem;
-  padding: 0;
-  list-style: none;
+.country-detail .prima-list-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--mw-muted, #93a5b6);
 }
 
-.country-detail .prima-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.country-detail .prima-step {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-  min-width: 0;
-  padding: 0.35rem 0.5rem;
-  border: 1px solid var(--cd-border, #233140);
-  border-left-width: 3px;
-  border-radius: 0.375rem;
-  background: var(--cd-surface, #16202b);
-}
-
-.country-detail .prima-step-dir {
-  font-weight: 750;
-}
-
-.country-detail .prima-step[data-prima-step-direction="RISING"] {
-  border-left-color: var(--mw-warm, #e39d3e);
-}
-
-.country-detail .prima-step[data-prima-step-direction="FALLING"] {
-  border-left-color: var(--mw-cooling, #74b6dc);
-}
-
-.country-detail .prima-step[data-prima-step-direction="STABLE"] {
-  border-left-color: var(--mw-static, #8e9ba8);
-}
-
-.country-detail .prima-step[data-prima-step-direction="UNAVAILABLE"] {
-  border-left-color: var(--mw-faint, #6f8294);
+.country-detail .prima-lists ul {
+  margin: 0.15rem 0 0;
+  padding-left: 1.1rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-ink-2, #c5d0db);
 }
 
 .country-detail .prima-channels {
   display: flex;
   flex-direction: column;
+  gap: 0.35rem;
+  margin: 0.55rem 0;
   min-width: 0;
 }
 
-.country-detail .prima-channel {
-  padding: 0.28rem 0 0.28rem 0.45rem;
-  border-bottom: 1px solid var(--cd-border, #233140);
-  border-left: 3px solid var(--mw-faint, #6f8294);
-  font-size: 0.85rem;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
+.country-detail details.prima-ch {
+  border: 1px solid var(--mw-line, #233140);
+  border-radius: 0.375rem;
+  background: var(--mw-panel-2, #16202b);
 }
 
-.country-detail .prima-channel[data-prima-channel-direction="RISING"] {
-  border-left-color: var(--mw-warm, #e39d3e);
-}
-
-.country-detail .prima-channel[data-prima-channel-direction="FALLING"] {
-  border-left-color: var(--mw-cooling, #74b6dc);
-}
-
-.country-detail .prima-channel[data-prima-channel-direction="STABLE"] {
-  border-left-color: var(--mw-static, #8e9ba8);
-}
-
-.country-detail .prima-channel[data-prima-channel-direction="UNAVAILABLE"] {
-  border-left-color: var(--mw-faint, #6f8294);
-}
-
-.country-detail .prima-drivers,
-.country-detail .prima-transitions {
-  padding-left: 1.1rem;
-  list-style: disc;
-}
-
-@media (min-width: 720px) {
-  .country-detail .prima-timeline {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
-
-  .country-detail .prima-step {
-    flex: 1 1 9rem;
-  }
-}
-
-.country-detail .prima-detail {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-}
-
-.country-detail .prima-detail summary {
+.country-detail .prima-ch-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.55rem;
+  min-height: 40px;
+  padding: 0.45rem 0.55rem;
   cursor: pointer;
-  min-height: 2.75rem;
+  list-style: none;
+  font-size: var(--mw-fs-body, 14px);
+  color: var(--mw-ink, #e7edf3);
+}
+
+.country-detail .prima-ch-summary::-webkit-details-marker {
+  display: none;
+}
+
+.country-detail .prima-ch-summary::after {
+  content: "▸";
+  margin-left: auto;
+  color: var(--mw-muted, #93a5b6);
+  transition: transform 0.15s ease;
+}
+
+.country-detail details.prima-ch[open] > .prima-ch-summary::after {
+  transform: rotate(90deg);
+}
+
+.country-detail .prima-ch-summary:focus-visible {
+  outline: 2px solid var(--mw-warm, #e39d3e);
+  outline-offset: 2px;
+}
+
+.country-detail .prima-ch-label {
+  font-weight: 650;
+}
+
+.country-detail .prima-ch-dir {
+  font-weight: 700;
+}
+
+.country-detail .prima-ch-snippet,
+.country-detail .prima-ch-changed {
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-muted, #93a5b6);
+}
+
+.country-detail .prima-why {
+  padding: 0 0.55rem 0.55rem;
+  border-top: 1px solid var(--mw-line, #233140);
+}
+
+.country-detail .prima-why-title {
+  margin: 0.45rem 0 0.25rem;
+  font-weight: 650;
+  font-size: var(--mw-fs-body, 14px);
+}
+
+.country-detail .prima-ev-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.15rem;
+}
+
+.country-detail .prima-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.55rem;
+  margin: 0.45rem 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--mw-fs-meta, 12.5px);
+}
+
+.country-detail .prima-strip-item {
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.25rem;
+  background: var(--mw-panel-2, #16202b);
+  border: 1px solid var(--mw-line, #233140);
+}
+
+.country-detail .prima-strip-changed {
+  border-color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail details.prima-raw {
+  margin-top: 0.45rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+}
+
+.country-detail details.prima-raw summary {
+  cursor: pointer;
+  min-height: 2.5rem;
   display: flex;
   align-items: center;
+  color: var(--mw-muted, #93a5b6);
 }
 
-.country-detail .prima-detail summary:focus-visible {
-  outline: 2px solid var(--cd-focus, #2563eb);
+.country-detail details.prima-raw summary:focus-visible {
+  outline: 2px solid var(--mw-warm, #e39d3e);
   outline-offset: 2px;
+}
+
+.country-detail .prima-stale-badge {
+  margin-left: 0.35rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .score-summary .prima-glance {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--mw-line, #233140);
+  background: var(--mw-panel-2, #16202b);
+  font-size: var(--mw-fs-meta, 12.5px);
+  font-weight: 600;
+  color: var(--mw-muted, #93a5b6);
 }
 
 .country-detail .history-table {
