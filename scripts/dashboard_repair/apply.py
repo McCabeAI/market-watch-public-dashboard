@@ -348,11 +348,22 @@ def _research_link(html: str, packet: dict[str, Any] | None) -> str:
     return html.replace(marker, block + marker, 1)
 
 
+THEME_PATH = Path(__file__).resolve().parent / "theme.css"
+
+
+def theme_css() -> str:
+    return '<style id="mw-theme-css">\n' + THEME_PATH.read_text(encoding="utf-8") + "\n</style>\n"
+
+
 def _style_and_script(html: str) -> str:
     if 'id="dashboard-repair-css"' in html:
         html = replace_element_containing(html, 'id="dashboard-repair-css"', CSS)
     elif "</head>" in html:
         html = html.replace("</head>", CSS + "</head>", 1)
+    if 'id="mw-theme-css"' in html:
+        html = replace_element_containing(html, 'id="mw-theme-css"', theme_css())
+    elif "</head>" in html:
+        html = html.replace("</head>", theme_css() + "</head>", 1)
     if 'id="dashboard-repair-script"' in html:
         html = replace_element_containing(html, 'id="dashboard-repair-script"', SCRIPT)
     elif "</body>" in html:

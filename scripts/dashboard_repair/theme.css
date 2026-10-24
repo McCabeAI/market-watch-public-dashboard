@@ -1,0 +1,80 @@
+/* Market Watch workstation theme. Injected last by scripts/dashboard_repair/apply.py
+   so it wins over the immutable v6 base stylesheet and the per-tab patch CSS.
+   Tokens first; surface overrides below. Colour never carries meaning alone:
+   every semantic colour is paired with a word, sign or arrow in the markup. */
+:root {
+  color-scheme: dark;
+  /* surfaces, darkest to most raised */
+  --mw-bg: #0a0f15;
+  --mw-bg-top: #0f1720;
+  --mw-panel: #111922;
+  --mw-panel-2: #16202b;
+  --mw-panel-3: #1c2835;
+  --mw-line: #233140;
+  --mw-line-strong: #34475b;
+  /* text */
+  --mw-ink: #e7edf3;
+  --mw-ink-2: #c4d0db;
+  --mw-muted: #93a5b6;
+  --mw-faint: #6f8294;
+  /* interaction */
+  --mw-accent: #5ea8e4;
+  --mw-accent-strong: #8cc6f5;
+  --mw-focus: #9fd0ff;
+  /* semantics */
+  --mw-pos: #43b883;
+  --mw-neg: #f07a72;
+  --mw-ok: #43b883;
+  --mw-warn: #e5a83f;
+  --mw-bad: #f07a72;
+  --mw-info: #5ea8e4;
+  --mw-ok-wash: rgba(67, 184, 131, .13);
+  --mw-warn-wash: rgba(229, 168, 63, .13);
+  --mw-bad-wash: rgba(240, 122, 114, .13);
+  --mw-info-wash: rgba(94, 168, 228, .13);
+  /* temperature scale keeps its cold -> hot order */
+  --mw-cold: #4f8fd0;
+  --mw-cool: #74b6dc;
+  --mw-neutral: #8e9ba8;
+  --mw-warm: #e39d3e;
+  --mw-hot: #ea6552;
+  --mw-warming: #e39d3e;
+  --mw-cooling: #74b6dc;
+  --mw-static: #8e9ba8;
+  /* type */
+  --mw-font: Inter, "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  --mw-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --mw-fs-micro: 11px;   /* uppercase labels only */
+  --mw-fs-meta: 12.5px;  /* dates, units, captions */
+  --mw-fs-body: 14px;
+  --mw-fs-title: 16px;
+  --mw-fs-kpi: 22px;
+  --mw-fs-page: 26px;
+  /* space, radius, depth */
+  --mw-s1: 4px; --mw-s2: 8px; --mw-s3: 12px; --mw-s4: 16px; --mw-s5: 24px; --mw-s6: 32px;
+  --mw-r-sm: 6px; --mw-r: 8px; --mw-r-lg: 12px;
+  --mw-shadow-1: inset 0 1px 0 rgba(255, 255, 255, .035), 0 1px 2px rgba(0, 0, 0, .45);
+  --mw-shadow-2: inset 0 1px 0 rgba(255, 255, 255, .05), 0 10px 28px rgba(0, 0, 0, .38);
+
+  /* legacy variable names used by the v6 base page and the tab patches */
+  --navy: #0d141c; --ink: var(--mw-ink); --muted: var(--mw-muted); --line: var(--mw-line);
+  --bg: var(--mw-bg); --panel: var(--mw-panel);
+  --cold: var(--mw-cold); --cool: var(--mw-cool); --neutral: var(--mw-neutral);
+  --warm: var(--mw-warm); --hot: var(--mw-hot);
+  --cooling: var(--mw-cooling); --warming: var(--mw-warming); --static: var(--mw-static);
+  --good: var(--mw-pos); --bad: var(--mw-neg);
+  --bluewash: var(--mw-info-wash); --amberwash: var(--mw-warn-wash);
+  --shadow: var(--mw-shadow-1);
+}
+
+/* ---- shared component vocabulary (mw-*) ---- */
+.mw-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;border:1px solid var(--mw-line-strong);background:var(--mw-panel-2);color:var(--mw-ink-2);font-size:var(--mw-fs-meta);font-weight:650;line-height:1.5;white-space:nowrap}
+.mw-chip--ok{border-color:rgba(67,184,131,.45);background:var(--mw-ok-wash);color:#9be3c0}
+.mw-chip--warn{border-color:rgba(229,168,63,.5);background:var(--mw-warn-wash);color:#f3cd8a}
+.mw-chip--bad{border-color:rgba(240,122,114,.5);background:var(--mw-bad-wash);color:#f8b4ae}
+.mw-chip--info{border-color:rgba(94,168,228,.45);background:var(--mw-info-wash);color:#b5dafa}
+.mw-asof{color:var(--mw-muted);font-size:var(--mw-fs-meta);font-variant-numeric:tabular-nums;white-space:nowrap}
+.mw-label{color:var(--mw-muted);font-size:var(--mw-fs-micro);font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.mw-num{font-variant-numeric:tabular-nums}
+.mw-up{color:var(--mw-pos)} .mw-down{color:var(--mw-neg)} .mw-flat{color:var(--mw-muted)}
+.mw-raw{font-family:var(--mw-mono);font-size:12px;color:var(--mw-muted);overflow-wrap:anywhere}
