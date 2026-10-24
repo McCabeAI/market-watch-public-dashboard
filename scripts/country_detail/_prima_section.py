@@ -254,7 +254,7 @@ def _prima_summary_sentences(
                 offset_channels.append(_CHANNEL_OFFSET_NOUN.get(ch, label))
     if offset_channels:
         if len(offset_channels) == 1:
-            second_bits.append(f"{offset_channels[0]} is the offset")
+            second_bits.append(f"{offset_channels[0]} are the offset")
         else:
             second_bits.append(
                 "; ".join(offset_channels[:-1]) + f"; and {offset_channels[-1]} are offsets"
