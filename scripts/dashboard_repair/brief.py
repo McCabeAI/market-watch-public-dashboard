@@ -319,6 +319,20 @@ def _upcoming_week(model: Mapping[str, Any] | None) -> list[dict[str, Any]]:
     return rows
 
 
+def _packet_ingestion_relation(generated: date, ingested_day: date) -> str:
+    days = (generated - ingested_day).days
+    when = _fmt_day(generated)
+    if days == 0:
+        return f"Market packet {when}, same day as the latest score-input ingestion."
+    if days == 1:
+        return f"Market packet {when}, 1 day after the latest score-input ingestion."
+    if days > 1:
+        return f"Market packet {when}, {days} days after the latest score-input ingestion."
+    if days == -1:
+        return f"Market packet {when}, 1 day before the latest score-input ingestion."
+    return f"Market packet {when}, {abs(days)} days before the latest score-input ingestion."
+
+
 def _score_lineage_caption(scores: Mapping[str, Any], packet: Mapping[str, Any] | None) -> str:
     anchor = _parse_date(scores.get("calibration_anchor_date") or scores.get("as_of"))
     ingested = scores.get("score_inputs_last_ingested_at")
@@ -334,12 +348,9 @@ def _score_lineage_caption(scores: Mapping[str, Any], packet: Mapping[str, Any] 
     else:
         return "Score dates are not in this build."
     if generated:
-        days = (generated - anchor).days if anchor else 0
-        if days >= 0:
-            relation = f"Market packet {_fmt_day(generated)} is {days} days after the calibration anchor."
-        else:
-            relation = f"Market packet {_fmt_day(generated)} is {abs(days)} days before the calibration anchor."
-        return f"{base} {relation}"
+        if ingested_day:
+            return f"{base} {_packet_ingestion_relation(generated, ingested_day)}"
+        return f"{base} Market packet {_fmt_day(generated)}."
     return f"{base} The market packet has no generated date."
 
 
