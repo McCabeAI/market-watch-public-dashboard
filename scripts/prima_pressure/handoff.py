@@ -28,6 +28,7 @@ def unavailable_block(reason: str) -> dict[str, Any]:
         "staleness": "not computed",
         "status": "unavailable",
         "reason": reason,
+        "channel_evidence": {},
     }
 
 

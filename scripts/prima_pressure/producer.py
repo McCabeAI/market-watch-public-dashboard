@@ -83,8 +83,11 @@ def build_producer_prices(as_of: date, opener: Opener) -> dict[str, Any]:
         points_raw = by_vector.get(vid) or []
         points_sorted = sorted(points_raw, key=lambda p: _period_from_ref(str(p.get("refPer", ""))))
         latest = points_sorted[-1] if points_sorted else None
+        prior_pt = points_sorted[-2] if len(points_sorted) >= 2 else None
         period = None
         value = None
+        prior_period = None
+        prior_value = None
         release_time = None
         release_date = None
         if latest:
@@ -95,6 +98,12 @@ def build_producer_prices(as_of: date, opener: Opener) -> dict[str, Any]:
                 value = None
             release_time = latest.get("releaseTime")
             release_date = _parse_release_date(str(release_time) if release_time else None)
+        if prior_pt:
+            prior_period = _period_from_ref(str(prior_pt.get("refPer", "")))
+            try:
+                prior_value = float(prior_pt.get("value"))
+            except (TypeError, ValueError):
+                prior_value = None
 
         stale = False
         status = "ok"
@@ -112,6 +121,8 @@ def build_producer_prices(as_of: date, opener: Opener) -> dict[str, Any]:
                 **row,
                 "period": period,
                 "value": value,
+                "prior_period": prior_period,
+                "prior_value": prior_value,
                 "release_time": release_time,
                 "mom": mom,
                 "status": status,
