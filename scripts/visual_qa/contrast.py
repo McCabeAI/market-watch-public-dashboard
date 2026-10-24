@@ -6,7 +6,7 @@ Usage:
 
 Serves the site directory over HTTP (see capture.serve), opens every country drilldown,
 and writes a JSON report plus element screenshots. Exits non-zero on failures outside
-``.prima-pressure``. Not used by CI.
+Not used by CI.
 """
 
 from __future__ import annotations
@@ -173,6 +173,7 @@ CONTRAST_AUDIT_SCRIPT = """
     const large = fs >= 24 || (fs >= 18.66 && isBold(st));
     const need = large ? 3.0 : 4.5;
     const inPrima = !!el.closest(".prima-pressure");
+    const buckets = failures;
     const row = {
       text: text.slice(0, 120),
       selector: selectorPath(el),
@@ -184,17 +185,20 @@ CONTRAST_AUDIT_SCRIPT = """
     };
     if (ratio < need) {
       row.kind = "contrast";
-      (inPrima ? primaFailures : failures).push(row);
+      buckets.push(row);
+      if (inPrima) primaFailures.push(row);
       continue;
     }
     if (fs > 0 && fs < 11) {
       row.kind = "font_tiny";
-      (inPrima ? primaFailures : failures).push(row);
+      buckets.push(row);
+      if (inPrima) primaFailures.push(row);
       continue;
     }
     if (fs > 0 && fs < 12 && !isMicroLabel(st)) {
       row.kind = "font_small";
-      (inPrima ? primaFailures : failures).push(row);
+      buckets.push(row);
+      if (inPrima) primaFailures.push(row);
     }
   }
 
