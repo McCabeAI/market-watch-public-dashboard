@@ -186,6 +186,21 @@ class TestPrimaPressureProxy(unittest.TestCase):
         disclaimer = block["disclaimer"]
         self.assertIn("not a reconstruction", disclaimer.lower())
 
+    def test_curve_driver_observation_and_base_dates(self):
+        point = {
+            "symbol": "BZ",
+            "contract_month": "2027-12",
+            "maturity_months": 12,
+            "price": 70.0,
+            "observation_date": "2026-10-23",
+            "changes": {"1m": {"abs": 1.0, "pct": 0.03, "prior_date": "2026-09-20"}},
+        }
+        from scripts.prima_pressure.proxy import _curve_driver
+
+        drv = _curve_driver(point, "brent_last_day")
+        self.assertEqual(drv["observation_date"], "2026-10-23")
+        self.assertEqual(drv["change_1m_base_date"], "2026-09-20")
+
     def test_channel_evidence_imported_rmpi_fields(self):
         bundle = _stable_flat_bundle()
         bundle["producer_prices"]["series"] = [

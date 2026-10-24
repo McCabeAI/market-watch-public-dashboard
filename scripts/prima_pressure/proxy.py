@@ -63,7 +63,7 @@ def _mom_direction(mom: float | None, band: float) -> str:
 def _curve_driver(point: dict, label: str) -> dict:
     abs_chg, pct_chg = _change_1m(point)
     bucket = (point.get("changes") or {}).get("1m") or {}
-    obs_date = bucket.get("prior_date") or point.get("as_of") or point.get("observation_date")
+    obs_date = point.get("observation_date") or point.get("as_of")
     return {
         "label": label,
         "symbol": point.get("symbol"),
@@ -73,6 +73,7 @@ def _curve_driver(point: dict, label: str) -> dict:
         "change_1m_abs": abs_chg,
         "change_1m_pct": pct_chg,
         "observation_date": obs_date,
+        "change_1m_base_date": bucket.get("prior_date"),
     }
 
 
