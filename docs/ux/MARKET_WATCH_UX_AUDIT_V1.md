@@ -252,3 +252,47 @@ python3 scripts/visual_qa/capture.py --serve _site_<name> /tmp/qa/<name> [--full
 9. All existing CI greps in `deploy-pages.yml` and all existing tests pass.
    Six countries, existing tabs and removed tabs (Feed, Relative, Trader Room)
    stay as they are.
+
+## 7. Change inventory
+
+Presentation only. Score math, data contracts, JSON sidecars, trading and
+portfolio logic, source pipelines and workflows are unchanged.
+
+| Area | Files | Change |
+| --- | --- | --- |
+| Design tokens | `scripts/dashboard_repair/theme.css` | `--mw-*` colour, type, spacing and status tokens. Shared chips, as-of stamps, numeric and raw-disclosure classes. Nav, focus ring, tables, panels, print and reduced-motion. Mobile nav wraps to two rows. |
+| Front header and brief | `scripts/dashboard_repair/apply.py`, `brief.py` (new) | Dated header with the score-freeze date. Desk brief: largest score impulses, prints released after the freeze, largest rates moves (bp) and FX moves (%) as separate lists, and caveats. Undated September panels fenced in a labelled "archived" disclosure. |
+| Market tape | `scripts/dashboard_repair/tape.py` | Compact cards with unit, change and date. Series with no change field say so and are left out of rankings. Source detail moved into a disclosure. |
+| Score board | `scripts/dashboard_repair/scoreboard.py` | LEVEL and IMPULSE matrix per country and dimension, with the as-of date. Values are read straight from `temperature_scores.json`. |
+| Country Detail | `scripts/apply_country_detail.py`, `scripts/country_detail/{render,present}.py`, `country_detail.css` | September hero and momentum fenced as a stale snapshot. Policy and Transmission stay visible. Plain series names with a short transformation mark (`· m/m`, `· y/y`). Raw codes moved into Technical detail. |
+| Trader Book and PMs | `patch_v13/trader-book.js`, `trader_book.css`, `trader_book_page.html` | Fleet KPIs (P&L, risk used, best and worst seat, drawdown, funding). Fleet flags aggregated by type, with shared failures stated once. Sortable and filterable seat and PM tables with drawers. Latest dated tickets first, full history collapsed. Instrument names humanised (`USD/CAD`, `SOFR Sep 2027`). |
+| Market Data | `patch_v12/market_data.css` | Dark workstation surfaces. Mobile rows stack. |
+| Releases | `scripts/dashboard_repair/calendar_view.py` | Compact release rows with status chips and their definitions. |
+| Sources | `scripts/dashboard_repair/sources_view.py`, `apply.py` | Human series names (display only, so the `source-health.json` contract is unchanged). Status chips with definitions. Raw errors and URLs moved into disclosures. |
+| Visual QA tooling | `scripts/visual_qa/{build_site,capture}.py` | Local copy of the Pages build, with a fast offline replay, and Playwright captures at 1920, 1440 and 390 px. |
+| Tests | `tests/test_dashboard_repair.py`, `tests/test_pm_dashboard.py`, `tests/test_country_detail_{present,render}.py`, `tests/trader_book_{presentation,ui_smoke}.js` | Presentation assertions added to modules CI already runs. No new workflow or job. |
+
+## 8. Final QA results
+
+- Data parity with BEFORE: `source-health.json`, `trader-books.json`,
+  `pm-books.json`, `trader-room.json` and `market-state.json` are
+  byte-identical. `release-calendar.json` differs only in schedule-fetch
+  metadata, because the offline replay skips the live fetch.
+- Trader and PM fleet totals match BEFORE ($16.1k funding and $1.01m), as do
+  all 14 seats. All 24 score-board cells equal `temperature_scores.json`.
+- Zero horizontal overflow and zero page errors on all 11 views at 1920,
+  1440 and 390 px. BEFORE had 276 px of overflow on iPhone Front and 235 px
+  on Sources.
+- The full CI-equivalent build (`scripts/visual_qa/build_site.py`, with
+  workflow tests and the live schedule fetch) ends in `BUILD OK`. The
+  targeted unit modules and `node --check` pass.
+- Three test failures exist on `main` (239b3e60) without this change:
+  `test_country_detail_prima_pressure` ×2 and `test_country_detail_travel`
+  (`au_household_spending`). They come from data drift, are not run by the
+  Pages workflow, and are left unchanged.
+- §6 acceptance criteria 1–9 pass on the final captures.
+
+Known limits: cross-asset series have no change field in the packet, so
+they show "Change not in packet" rather than a computed move. Score values
+are as of the 21 Sep 2026 freeze and are labelled that way. No fresher score
+is implied.
