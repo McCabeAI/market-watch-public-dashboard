@@ -66,7 +66,7 @@ def _spot_memo(instrument: str = "USDCAD") -> dict:
 
 def _rates_memo(selected: str = "rates") -> dict:
     return with_tenor_scan({
-        "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+        "rates_candidate": {"instrument": "SOFR_2027-03", "asset_class": "rates", "rationale": "SR3 outright"},
         "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
         "options_candidate": None,
         "selected": selected,
@@ -410,9 +410,14 @@ class BookTransitionTests(unittest.TestCase):
                                 {"effective_date": "2026-09-19", "percent_rate": 3.60, "source": "NY_FED"},
                             ],
                         },
+                        "contracts_3m": [{"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.70}],
                     }
                 }
-            }
+            },
+            "tradable_rate_curves": {
+                "status": "ok",
+                "curves": {"SOFR": {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 3.70, "as_of": "2026-09-18"}]}},
+            },
         }
         apply_action(
             skeptic,
@@ -433,10 +438,10 @@ class BookTransitionTests(unittest.TestCase):
             skeptic,
             {
                 "action": "OPEN",
-                "instrument": "US 10Y",
+                "instrument": "SOFR_2027-03",
                 "side": "long",
-                "notional_usd": 40_000_000,
-                "price": 4.20,
+                "notional_usd": 160_000_000,
+                "price": 3.70,
                 "asset_class": "rates",
                 "expression_memo": memo,
             },
@@ -644,10 +649,10 @@ class BookTransitionTests(unittest.TestCase):
             hawk,
             {
                 "action": "OPEN",
-                "instrument": "US 10Y",
+                "instrument": "SOFR_2027-03",
                 "side": "long",
-                "notional_usd": 500_000_000,
-                "price": 4.20,
+                "notional_usd": 2_000_000_000,
+                "price": 3.70,
                 "asset_class": "rates",
                 "expression_memo": _rates_memo("rates"),
                 "thesis": "Risk-equivalent rates size.",
@@ -656,7 +661,7 @@ class BookTransitionTests(unittest.TestCase):
             run_id="rates-over-notional",
             when=AS_OF,
         )
-        self.assertEqual(deployed_notional(hawk), 500_000_000)
+        self.assertEqual(deployed_notional(hawk), 2_000_000_000)
         self.assertEqual(hawk["risk_capital_usd"], 5_000_000.0)
         self.assertLess(hawk["risk_capital_usd"], hawk["risk_capital_limit_usd"])
         apply_action(

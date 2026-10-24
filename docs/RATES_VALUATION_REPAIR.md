@@ -10,7 +10,7 @@ Supported outright futures use exchange DV01 instead of a duration-one identity:
 | --- | --- | --- | --- | --- | --- |
 | SR3 | CME | USD | 1,000,000 USD | 25 USD | implied rate, percent; index = 100 − rate |
 | CRA | Montréal Exchange | CAD | 1,000,000 CAD | 25 CAD | implied rate, percent; index = 100 − rate |
-| IB | ASX | AUD | 3,000,000 AUD | 3,000,000 × 0.01% × days in month / 365 AUD | implied rate, percent; AONIA month average |
+| IB | ASX | AUD | 3,000,000 AUD | published A$24.66 per bp on a fixed 30/365 quotation | implied rate, percent; monthly average OCR is the settlement reference only |
 
 A 100bp adverse move on one SR3 is 2,500 USD, which is 0.25% of face, not 1%. CRA and IB convert to USD only with a frozen FX pair (`USDCAD` or `AUDUSD`). Missing FX leaves USD P&L and risk unavailable.
 
@@ -24,15 +24,25 @@ These are mechanics checks, not sample portfolios.
 
 - Long 1 SR3, implied rate 4.00 → 3.99 (−1bp): P&L = +25 USD.
 - Long 1 CRA, USDCAD 1.36, implied rate −1bp: P&L = +25 / 1.36 USD.
-- IB November 2026 (30 days): DV01 = 24.6575342466 AUD. IB October 2026 (31 days): DV01 = 25.4794520548 AUD.
+- IB, every expiry month: DV01 = A$24.66, the published value of a 0.01 price move. February and 31-day months use the same BPV. The unrounded 30/365 identity is about 24.6575 and is not the valuation.
 - DV01-balanced SR3 calendar, both rates +1bp: package P&L = 0. Near rate +1bp and far unchanged, long calendar (pay near / receive far): P&L = +near DV01.
 - A four-contract strip average is not given a curve-spread label and is not assigned single-contract DV01 when leg quantities were never stored.
+
+## Review repairs
+
+- Trader OPEN/HEDGE admission builds the same whole-lot legs as the booked position before the risk cap. A USD 2bn SR3 calendar is 2,000 lots and a USD 5m 100bp-spread shock, not 1% of face.
+- A failed or partial structure mark clears the package and every leg. Current and realized P&L stay unavailable. REDUCE/CLOSE with no current mark is `pending_mark` and does not invent a fill. A missing harvest review still does not block a marked REDUCE/CLOSE.
+- New bookings use whole exchange lots. Descriptive notional is not rewritten onto the lot count. Floor-toward-zero is the anchor policy (`13.6` lots books `13`, residual disclosed). Hedge legs use nearest half-up.
+- Entry FX is stored and kept. Current USD DV01 and P&L use the latest frozen fixing only. A missing or stale fixing does not fall back to the entry rate.
+- A new rates, curve, or rates-RV open without verified legs or contract DV01 fails closed. Rows that already have a position id and no instrument stamp keep the legacy vintage for restatement.
 
 ## Historical ledgers
 
 `scripts/rates/restatement.py` builds a read-only report. It does not write `data/overnight/books/latest.json`, `data/pm/books/latest.json`, trade files, or realized P&L. Stored rows that already have a position id and no `valuation_method` keep the legacy duration-one formula on the next mark-to-market. New outright futures stamp `instrument_dv01`. New strips stamp the legacy vintage and `corrected_valuation_status=unavailable` because the old booking was one synthetic mark.
 
-Corrected USD P&L for an existing CRA or IB line is unavailable until that line carries a frozen FX observation for the mark. Those rates are not backfilled.
+Corrected USD P&L for an existing CRA or IB line is unavailable until that line carries a frozen FX observation for the mark. Those rates are not backfilled. Relative analytics still list observed levels only. They do not add historical distributions or carry/roll.
+
+The three pinned-file assertions that fail on this branch also fail against `origin/main` with the same bytes: flat `trend-follower` net is already −191,227.75, flat `swinger` net is already 279,919.04, and the value-guy trade SHA-256 is `a86cff7b…` rather than the older pin `bf9bb075…`. This repair does not rewrite those files.
 
 ## Harvest and lessons
 

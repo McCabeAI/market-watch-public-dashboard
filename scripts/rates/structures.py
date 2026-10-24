@@ -14,11 +14,14 @@ from typing import Any, Mapping
 from scripts.overnight.errors import SchemaError
 from scripts.rates.contract_economics import (
     CURVE_SPEC,
+    HEDGE_LOT_ROUNDING_POLICY,
+    LOT_ROUNDING_POLICY,
     ParsedContract,
     contracts_from_face_usd,
+    current_fx_quote,
     dv01_per_contract,
-    fx_usd_per_unit,
     parse_contract_id,
+    whole_lots,
 )
 
 STRUCTURE_TYPES = ("calendar_spread", "butterfly", "outright_rv", "curve_rv")
@@ -39,7 +42,7 @@ def _curve_contract(curve_id: str, expiry: str) -> ParsedContract:
     return parsed
 
 
-def _fx_for(parsed: ParsedContract, market_state: Mapping[str, Any] | None, explicit: Mapping[str, Any] | None) -> tuple[float, str | None]:
+def _fx_for(parsed: ParsedContract, market_state: Mapping[str, Any] | None, explicit: Mapping[str, Any] | None) -> dict[str, Any]:
     if isinstance(explicit, Mapping) and parsed.spec.currency in explicit:
         try:
             rate = float(explicit[parsed.spec.currency])
@@ -47,14 +50,20 @@ def _fx_for(parsed: ParsedContract, market_state: Mapping[str, Any] | None, expl
             raise StructureError(f"fx for {parsed.spec.currency} is not numeric") from exc
         if rate <= 0:
             raise StructureError(f"fx for {parsed.spec.currency} must be positive")
-        return rate, "expression.fx_usd_per_unit"
-    rate, pair = fx_usd_per_unit(parsed.spec.currency, market_state)
-    if rate is None:
+        return {
+            "status": "ok",
+            "usd_per_unit": rate,
+            "pair": None,
+            "as_of": None,
+            "source": "expression.fx_usd_per_unit",
+        }
+    quote = current_fx_quote(parsed.spec.currency, market_state)
+    if quote.get("status") != "ok" or quote.get("usd_per_unit") is None:
         raise StructureError(
-            f"{parsed.spec.currency} USD conversion is unavailable for {parsed.alias}; "
-            "refusing to invent an FX rate"
+            f"{parsed.spec.currency} USD conversion is {quote.get('status') or 'unavailable'} for {parsed.alias}; "
+            "refusing to reuse an older FX fixing or invent a rate"
         )
-    return rate, pair
+    return quote
 
 
 def _leg(
@@ -62,14 +71,19 @@ def _leg(
     *,
     role: str,
     template_side: str,
-    contracts: float,
-    fx_rate: float,
-    fx_pair: str | None,
+    contracts: int,
+    contracts_unrounded: float,
+    fx_quote: Mapping[str, Any],
     entry_rate: float | None,
+    rounding_policy: str,
 ) -> dict[str, Any]:
     local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
     if local is None:
         raise StructureError(f"DV01 unavailable for {parsed.alias}")
+    if int(contracts) != contracts or contracts < 0:
+        raise StructureError(f"{parsed.alias} contracts must be a whole lot count")
+    fx_rate = float(fx_quote["usd_per_unit"])
+    residual_contracts = float(contracts_unrounded) - int(contracts)
     return {
         "role": role,
         "instrument": parsed.alias,
@@ -78,16 +92,27 @@ def _leg(
         "venue": parsed.spec.venue,
         "expiry": parsed.expiry,
         "side": template_side,
-        "contracts": contracts,
+        "contracts": int(contracts),
+        "contracts_unrounded": contracts_unrounded,
+        "residual_contracts": residual_contracts,
+        "rounding_policy": rounding_policy,
         "currency": parsed.spec.currency,
         "face_notional": parsed.spec.face_notional,
         "dv01_per_contract_local": local,
-        "dv01_local": local * contracts,
-        "fx_usd_per_unit": fx_rate,
-        "fx_pair": fx_pair,
-        "dv01_usd": local * contracts * fx_rate,
+        "dv01_local": local * int(contracts),
+        "entry_fx_usd_per_unit": fx_rate,
+        "entry_fx_pair": fx_quote.get("pair"),
+        "entry_fx_as_of": fx_quote.get("as_of"),
+        "entry_fx_source": fx_quote.get("source"),
+        "mark_fx_usd_per_unit": fx_rate,
+        "mark_fx_pair": fx_quote.get("pair"),
+        "mark_fx_as_of": fx_quote.get("as_of"),
+        "mark_fx_source": fx_quote.get("source"),
+        "mark_fx_status": "ok",
+        "dv01_usd": local * int(contracts) * fx_rate,
         "entry_rate": entry_rate,
         "mark_rate": entry_rate,
+        "mark_status": "ok" if entry_rate is not None else "pending",
         "quote_unit": "implied_rate_percent",
         "economics_source": parsed.spec.source,
     }
@@ -102,14 +127,21 @@ def _apply_package_side(legs: list[dict[str, Any]], side: str) -> None:
         leg["side"] = "short" if leg["side"] == "long" else "long"
 
 
-def _balance_to(target_dv01_usd: float, parsed: ParsedContract, fx_rate: float) -> float:
+def _lots_for_target(target_dv01_usd: float, parsed: ParsedContract, fx_rate: float, *, policy: str) -> tuple[int, float, float]:
     local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
     if local is None or fx_rate <= 0:
         raise StructureError(f"cannot size {parsed.alias}")
     per_contract = local * fx_rate
     if per_contract <= 0:
         raise StructureError(f"cannot size {parsed.alias}")
-    return target_dv01_usd / per_contract
+    raw = target_dv01_usd / per_contract
+    lots = whole_lots(raw, policy=policy)
+    if lots < 1:
+        raise StructureError(
+            f"{parsed.alias} target is {raw:.4f} lots, below one exchange contract; "
+            "refusing a fractional booking"
+        )
+    return lots, raw, lots * per_contract
 
 
 def _anchor_contracts(
@@ -118,22 +150,26 @@ def _anchor_contracts(
     notional_usd: float | None,
     target_dv01_usd: float | None,
     fx_rate: float,
-) -> tuple[float, float]:
-    """Return (contracts, usd dv01 of that leg)."""
+) -> tuple[int, float, float]:
+    """Return (whole lots, unrounded lots, achieved USD DV01)."""
     local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
     if local is None:
         raise StructureError(f"DV01 unavailable for {parsed.alias}")
     if target_dv01_usd is not None:
         if target_dv01_usd <= 0:
             raise StructureError("target_dv01_usd must be positive")
-        contracts = _balance_to(float(target_dv01_usd), parsed, fx_rate)
-        return contracts, float(target_dv01_usd)
+        return _lots_for_target(float(target_dv01_usd), parsed, fx_rate, policy=LOT_ROUNDING_POLICY)
     if notional_usd is None or notional_usd <= 0:
         raise StructureError("structure sizing needs target_dv01_usd or a positive notional_usd face")
-    contracts = contracts_from_face_usd(parsed.spec, float(notional_usd), fx_rate)
-    if contracts is None:
+    raw = contracts_from_face_usd(parsed.spec, float(notional_usd), fx_rate)
+    if raw is None:
         raise StructureError(f"cannot convert face for {parsed.alias}")
-    return contracts, local * contracts * fx_rate
+    lots = whole_lots(raw, policy=LOT_ROUNDING_POLICY)
+    if lots < 1:
+        raise StructureError(
+            f"{parsed.alias} descriptive notional is {raw:.4f} lots, below one exchange contract"
+        )
+    return lots, raw, lots * local * fx_rate
 
 
 def _rate_from_expression(expression: Mapping[str, Any], key: str) -> float | None:
@@ -176,13 +212,17 @@ def build_structure(
             raise StructureError("calendar near and far expiries must differ")
         if near.expiry > far.expiry:
             raise StructureError("calendar near_expiry must be earlier than far_expiry")
-        near_fx, near_pair = _fx_for(near, market_state, explicit_fx)
-        far_fx, far_pair = _fx_for(far, market_state, explicit_fx)
-        contracts, dv01 = _anchor_contracts(near, notional_usd=notional_usd, target_dv01_usd=target_dv01, fx_rate=near_fx)
-        far_contracts = _balance_to(dv01, far, far_fx)
+        near_fx = _fx_for(near, market_state, explicit_fx)
+        far_fx = _fx_for(far, market_state, explicit_fx)
+        contracts, raw_near, dv01 = _anchor_contracts(
+            near, notional_usd=notional_usd, target_dv01_usd=target_dv01, fx_rate=float(near_fx["usd_per_unit"])
+        )
+        far_lots, raw_far, _far_dv01 = _lots_for_target(
+            dv01, far, float(far_fx["usd_per_unit"]), policy=HEDGE_LOT_ROUNDING_POLICY
+        )
         legs = [
-            _leg(near, role="near", template_side="short", contracts=contracts, fx_rate=near_fx, fx_pair=near_pair, entry_rate=rates.get(near.alias) or _rate_from_expression(expression, "near_rate")),
-            _leg(far, role="far", template_side="long", contracts=far_contracts, fx_rate=far_fx, fx_pair=far_pair, entry_rate=rates.get(far.alias) or _rate_from_expression(expression, "far_rate")),
+            _leg(near, role="near", template_side="short", contracts=contracts, contracts_unrounded=raw_near, fx_quote=near_fx, rounding_policy=LOT_ROUNDING_POLICY, entry_rate=rates.get(near.alias) or _rate_from_expression(expression, "near_rate")),
+            _leg(far, role="far", template_side="long", contracts=far_lots, contracts_unrounded=raw_far, fx_quote=far_fx, rounding_policy=HEDGE_LOT_ROUNDING_POLICY, entry_rate=rates.get(far.alias) or _rate_from_expression(expression, "far_rate")),
         ]
         mark_definition = "far implied rate minus near implied rate, in basis points"
         quote = "bps"
@@ -193,16 +233,24 @@ def build_structure(
         order = [wing1.expiry, body.expiry, wing2.expiry]
         if order != sorted(order) or len(set(order)) != 3:
             raise StructureError("butterfly expiries must be three distinct dates in wing1 < body < wing2 order")
-        w1_fx, w1_pair = _fx_for(wing1, market_state, explicit_fx)
-        body_fx, body_pair = _fx_for(body, market_state, explicit_fx)
-        w2_fx, w2_pair = _fx_for(wing2, market_state, explicit_fx)
-        contracts, dv01 = _anchor_contracts(wing1, notional_usd=notional_usd, target_dv01_usd=target_dv01, fx_rate=w1_fx)
+        w1_fx = _fx_for(wing1, market_state, explicit_fx)
+        body_fx = _fx_for(body, market_state, explicit_fx)
+        w2_fx = _fx_for(wing2, market_state, explicit_fx)
+        contracts, raw_wing, dv01 = _anchor_contracts(
+            wing1, notional_usd=notional_usd, target_dv01_usd=target_dv01, fx_rate=float(w1_fx["usd_per_unit"])
+        )
         # Long the canonical mark (2*body - wing1 - wing2) profits when that mark falls:
         # short the wings, long twice the body, in futures space.
+        body_lots, raw_body, _body_dv01 = _lots_for_target(
+            2.0 * dv01, body, float(body_fx["usd_per_unit"]), policy=HEDGE_LOT_ROUNDING_POLICY
+        )
+        wing2_lots, raw_wing2, _wing2_dv01 = _lots_for_target(
+            dv01, wing2, float(w2_fx["usd_per_unit"]), policy=HEDGE_LOT_ROUNDING_POLICY
+        )
         legs = [
-            _leg(wing1, role="wing1", template_side="short", contracts=contracts, fx_rate=w1_fx, fx_pair=w1_pair, entry_rate=rates.get(wing1.alias) or _rate_from_expression(expression, "wing1_rate")),
-            _leg(body, role="body", template_side="long", contracts=_balance_to(2.0 * dv01, body, body_fx), fx_rate=body_fx, fx_pair=body_pair, entry_rate=rates.get(body.alias) or _rate_from_expression(expression, "body_rate")),
-            _leg(wing2, role="wing2", template_side="short", contracts=_balance_to(dv01, wing2, w2_fx), fx_rate=w2_fx, fx_pair=w2_pair, entry_rate=rates.get(wing2.alias) or _rate_from_expression(expression, "wing2_rate")),
+            _leg(wing1, role="wing1", template_side="short", contracts=contracts, contracts_unrounded=raw_wing, fx_quote=w1_fx, rounding_policy=LOT_ROUNDING_POLICY, entry_rate=rates.get(wing1.alias) or _rate_from_expression(expression, "wing1_rate")),
+            _leg(body, role="body", template_side="long", contracts=body_lots, contracts_unrounded=raw_body, fx_quote=body_fx, rounding_policy=HEDGE_LOT_ROUNDING_POLICY, entry_rate=rates.get(body.alias) or _rate_from_expression(expression, "body_rate")),
+            _leg(wing2, role="wing2", template_side="short", contracts=wing2_lots, contracts_unrounded=raw_wing2, fx_quote=w2_fx, rounding_policy=HEDGE_LOT_ROUNDING_POLICY, entry_rate=rates.get(wing2.alias) or _rate_from_expression(expression, "wing2_rate")),
         ]
         mark_definition = "(2 × body implied rate − wing1 − wing2), in basis points"
         quote = "bps"
@@ -213,12 +261,17 @@ def build_structure(
         short_leg = _curve_contract(str(pay.get("curve_id") or ""), str(pay.get("expiry") or ""))
         if long_leg.spec.curve_id == short_leg.spec.curve_id and long_leg.expiry == short_leg.expiry:
             raise StructureError("outright RV legs must not be the same contract")
-        long_fx, long_pair = _fx_for(long_leg, market_state, explicit_fx)
-        short_fx, short_pair = _fx_for(short_leg, market_state, explicit_fx)
-        contracts, dv01 = _anchor_contracts(long_leg, notional_usd=notional_usd, target_dv01_usd=target_dv01, fx_rate=long_fx)
+        long_fx = _fx_for(long_leg, market_state, explicit_fx)
+        short_fx = _fx_for(short_leg, market_state, explicit_fx)
+        contracts, raw_long, dv01 = _anchor_contracts(
+            long_leg, notional_usd=notional_usd, target_dv01_usd=target_dv01, fx_rate=float(long_fx["usd_per_unit"])
+        )
+        short_lots, raw_short, _short_dv01 = _lots_for_target(
+            dv01, short_leg, float(short_fx["usd_per_unit"]), policy=HEDGE_LOT_ROUNDING_POLICY
+        )
         legs = [
-            _leg(long_leg, role="receive", template_side="long", contracts=contracts, fx_rate=long_fx, fx_pair=long_pair, entry_rate=rates.get(long_leg.alias) or _rate_from_expression(receive, "rate")),
-            _leg(short_leg, role="pay", template_side="short", contracts=_balance_to(dv01, short_leg, short_fx), fx_rate=short_fx, fx_pair=short_pair, entry_rate=rates.get(short_leg.alias) or _rate_from_expression(pay, "rate")),
+            _leg(long_leg, role="receive", template_side="long", contracts=contracts, contracts_unrounded=raw_long, fx_quote=long_fx, rounding_policy=LOT_ROUNDING_POLICY, entry_rate=rates.get(long_leg.alias) or _rate_from_expression(receive, "rate")),
+            _leg(short_leg, role="pay", template_side="short", contracts=short_lots, contracts_unrounded=raw_short, fx_quote=short_fx, rounding_policy=HEDGE_LOT_ROUNDING_POLICY, entry_rate=rates.get(short_leg.alias) or _rate_from_expression(pay, "rate")),
         ]
         mark_definition = "receive implied rate minus pay implied rate, in basis points"
         quote = "bps"
@@ -301,8 +354,6 @@ def package_mark_bp(kind: str, legs: list[dict[str, Any]]) -> float | None:
     for leg in legs:
         rate = leg.get("mark_rate")
         if rate is None:
-            rate = leg.get("entry_rate")
-        if rate is None:
             return None
         rates[leg["role"]] = float(rate)
     if kind == "calendar_spread":
@@ -329,9 +380,14 @@ def package_mark_bp(kind: str, legs: list[dict[str, Any]]) -> float | None:
 
 
 def leg_pnl_usd(leg: Mapping[str, Any]) -> float | None:
+    """Current USD P&L. Uses the mark FX vintage only, never the entry fixing."""
+    if leg.get("mark_status") == "unavailable":
+        return None
     entry = leg.get("entry_rate")
     mark = leg.get("mark_rate")
-    fx = leg.get("fx_usd_per_unit")
+    fx = leg.get("mark_fx_usd_per_unit")
+    if leg.get("mark_fx_status") not in (None, "ok"):
+        return None
     local = leg.get("dv01_per_contract_local")
     contracts = leg.get("contracts")
     if entry is None or mark is None or fx is None or local is None or contracts is None:
@@ -339,7 +395,7 @@ def leg_pnl_usd(leg: Mapping[str, Any]) -> float | None:
     bp = (float(mark) - float(entry)) * 100.0
     sign = 1.0 if leg.get("side") == "long" else -1.0
     # Long futures: profit when the implied rate falls.
-    return -sign * float(contracts) * float(local) * bp * float(fx)
+    return -sign * int(contracts) * float(local) * bp * float(fx)
 
 
 def structure_pnl_usd(legs: list[Mapping[str, Any]] | None) -> float | None:
@@ -365,15 +421,48 @@ def update_leg_marks(legs: list[dict[str, Any]], rates: Mapping[str, float]) -> 
             leg["mark_rate"] = float(rates[role])
 
 
+def recompute_leg_dv01(leg: dict[str, Any]) -> None:
+    contracts = int(leg.get("contracts") or 0)
+    leg["contracts"] = contracts
+    local = float(leg["dv01_per_contract_local"])
+    leg["dv01_local"] = local * contracts
+    fx = leg.get("mark_fx_usd_per_unit")
+    leg["dv01_usd"] = None if fx in (None, "") else local * contracts * float(fx)
+
+
 def scale_legs(legs: list[dict[str, Any]], ratio: float, *, average_entries: bool = False) -> None:
+    """Resize to whole lots. The descriptive notional is not written back onto contracts."""
     if ratio < 0:
         raise StructureError("leg scale cannot be negative")
     for leg in legs:
-        if average_entries and ratio > 1 and leg.get("entry_rate") is not None and leg.get("mark_rate") is not None:
-            added = ratio - 1.0
-            leg["entry_rate"] = (float(leg["entry_rate"]) + added * float(leg["mark_rate"])) / ratio
-        leg["contracts"] = float(leg["contracts"]) * ratio
-        local = float(leg["dv01_per_contract_local"])
-        fx = float(leg["fx_usd_per_unit"])
-        leg["dv01_local"] = local * float(leg["contracts"])
-        leg["dv01_usd"] = leg["dv01_local"] * fx
+        old = int(leg.get("contracts") or 0)
+        new_lots = whole_lots(old * ratio, policy=LOT_ROUNDING_POLICY)
+        if average_entries and new_lots > old and leg.get("entry_rate") is not None and leg.get("mark_rate") is not None and old > 0:
+            added = new_lots - old
+            leg["entry_rate"] = (float(leg["entry_rate"]) * old + float(leg["mark_rate"]) * added) / new_lots
+        leg["contracts"] = new_lots
+        leg["rounding_policy"] = LOT_ROUNDING_POLICY
+        recompute_leg_dv01(leg)
+
+
+def apply_mark_fx(legs: list[dict[str, Any]], market_state: Mapping[str, Any] | None) -> bool:
+    """Write the current frozen FX onto every leg. Returns False if any fixing is unusable."""
+    ok = True
+    for leg in legs:
+        quote = current_fx_quote(str(leg.get("currency") or ""), market_state)
+        if quote.get("status") != "ok" or quote.get("usd_per_unit") is None:
+            leg["mark_fx_usd_per_unit"] = None
+            leg["mark_fx_status"] = quote.get("status") or "unavailable"
+            leg["mark_fx_as_of"] = quote.get("as_of")
+            leg["mark_fx_source"] = quote.get("source")
+            leg["mark_fx_pair"] = quote.get("pair")
+            leg["dv01_usd"] = None
+            ok = False
+            continue
+        leg["mark_fx_usd_per_unit"] = quote["usd_per_unit"]
+        leg["mark_fx_pair"] = quote.get("pair")
+        leg["mark_fx_as_of"] = quote.get("as_of")
+        leg["mark_fx_source"] = quote.get("source")
+        leg["mark_fx_status"] = "ok"
+        recompute_leg_dv01(leg)
+    return ok

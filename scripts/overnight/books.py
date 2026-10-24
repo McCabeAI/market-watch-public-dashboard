@@ -155,19 +155,12 @@ def _projected_risk_capital(
         "notional_usd": source.get("notional_usd"),
         "entry_price": source.get("price"),
         "mark_price": source.get("mark_price", source.get("price")),
-        "paper_expression": source.get("paper_expression"),
-        "valuation_method": source.get("valuation_method"),
-        "fx_usd_per_unit": source.get("fx_usd_per_unit"),
-        "contracts": source.get("contracts"),
-        "contract_currency": source.get("contract_currency"),
-        "legs": source.get("legs"),
-        "spread_dv01_usd": source.get("spread_dv01_usd"),
-        "structure_label": source.get("structure_label"),
+        "paper_expression": deepcopy(source.get("paper_expression")) if isinstance(source.get("paper_expression"), dict) else source.get("paper_expression"),
     }
-    if market_state is not None:
-        from scripts.rates.valuation import stamp_open_valuation
-
-        stamp_open_valuation(position, market_state)
+    try:
+        _install_rates_economics(position, market_state)
+    except SchemaError:
+        return None
     added = position_risk_capital(position)
     return None if added is None else round(current + added, 2)
 
@@ -769,7 +762,13 @@ def apply_action(
     seat_book["risk_put_on"] = action.get("risk_put_on") if "risk_put_on" in action else action.get("risk")
     seat_book["evidence_cutoff"] = action.get("evidence_cutoff") or seat_book.get("evidence_cutoff")
     seat_book["history"].append(
-        _history_entry(action, when=stamp, run_id=run_id, result="applied", extra={"blocked_families": blocked})
+        _history_entry(
+            action,
+            when=stamp,
+            run_id=run_id,
+            result="pending_mark" if action.get("pending_mark") else "applied",
+            extra={"blocked_families": blocked},
+        )
     )
     return mark_to_market(seat_book, when=stamp, run_id=run_id)
 
@@ -817,6 +816,43 @@ def _require_notional(action: dict[str, Any]) -> float:
     return notional
 
 
+def _install_rates_economics(
+    position: dict[str, Any],
+    market_state: dict[str, Any] | None,
+    *,
+    side: str | None = None,
+) -> None:
+    """Build the same legs, lots, FX vintage, and DV01 the booking path will keep."""
+    from scripts.overnight.paper_marks import PaperMarkError, hydrate_structure_rates
+    from scripts.rates.structures import STRUCTURE_TYPES, StructureError, build_structure
+    from scripts.rates.valuation import stamp_open_valuation
+
+    expression = position.get("paper_expression") if isinstance(position.get("paper_expression"), dict) else None
+    if expression and expression.get("type") in STRUCTURE_TYPES:
+        try:
+            built = build_structure(
+                expression,
+                side=str(side or position.get("side") or "long"),
+                notional_usd=float(position.get("notional_usd") or 0.0),
+                market_state=market_state,
+            )
+        except (StructureError, SchemaError, PaperMarkError) as exc:
+            raise SchemaError(str(exc)) from exc
+        position["legs"] = built["legs"]
+        position["spread_dv01_usd"] = built["spread_dv01_usd"]
+        position["structure_label"] = built["type"]
+        position["mark_definition"] = built["mark_definition"]
+        position["residual_dv01_usd"] = round(
+            sum(float(leg.get("residual_contracts") or 0.0) * float(leg.get("dv01_per_contract_local") or 0.0) * float(leg.get("mark_fx_usd_per_unit") or 0.0) for leg in built["legs"]),
+            6,
+        )
+        try:
+            hydrate_structure_rates(position, market_state)
+        except PaperMarkError as exc:
+            raise SchemaError(str(exc)) from exc
+    stamp_open_valuation(position, market_state)
+
+
 def _open_position(
     seat_book: dict[str, Any],
     action: dict[str, Any],
@@ -860,31 +896,7 @@ def _open_position(
         "pnl_unavailable": action.get("price") in (None, ""),
         "expected_mark_direction": action.get("expected_mark_direction"),
     }
-    from scripts.rates.structures import STRUCTURE_TYPES, StructureError, build_structure
-    from scripts.rates.valuation import stamp_open_valuation
-
-    expression = position.get("paper_expression") if isinstance(position.get("paper_expression"), dict) else None
-    if expression and expression.get("type") in STRUCTURE_TYPES:
-        try:
-            built = build_structure(
-                expression,
-                side=str(side),
-                notional_usd=notional,
-                market_state=market_state,
-            )
-        except (StructureError, SchemaError) as exc:
-            raise SchemaError(str(exc)) from exc
-        position["legs"] = built["legs"]
-        position["spread_dv01_usd"] = built["spread_dv01_usd"]
-        position["structure_label"] = built["type"]
-        position["mark_definition"] = built["mark_definition"]
-        if built.get("package_mark_bp") is not None:
-            position["entry_price"] = built["package_mark_bp"]
-            position["mark_price"] = built["package_mark_bp"]
-        from scripts.overnight.paper_marks import hydrate_structure_rates
-
-        hydrate_structure_rates(position, market_state)
-    stamp_open_valuation(position, market_state)
+    _install_rates_economics(position, market_state, side=str(side))
     if position.get("valuation_method") == "unavailable":
         raise SchemaError(position.get("isolation_reason") or "instrument economics unavailable")
     action["position_id"] = position["position_id"]
@@ -893,29 +905,14 @@ def _open_position(
 
 
 def _refresh_structure_marks(position: dict[str, Any], market_state: dict[str, Any] | None) -> None:
-    if not position.get("legs") or not isinstance(market_state, dict):
+    if not position.get("legs"):
         return
-    from scripts.overnight.paper_marks import resolve_paper_mid
+    from scripts.overnight.paper_marks import clear_unresolved_mark, refresh_positions
 
-    try:
-        mark = resolve_paper_mid(
-            market_state,
-            str(position.get("instrument") or ""),
-            asset_class=position.get("asset_class"),
-            expression=position.get("paper_expression"),
-        )
-    except SchemaError:
+    if not isinstance(market_state, dict):
+        clear_unresolved_mark(position, reason="market state missing; structure marks invalidated")
         return
-    rates = mark.get("leg_rates") if isinstance(mark, dict) else None
-    if isinstance(rates, dict):
-        from scripts.rates.structures import package_mark_bp, update_leg_marks
-
-        update_leg_marks(position["legs"], rates)
-        kind = (position.get("paper_expression") or {}).get("type") or position.get("structure_label")
-        package = package_mark_bp(str(kind or ""), position["legs"])
-        if package is not None:
-            position["mark_price"] = package
-        position["_leg_marks_current"] = True
+    refresh_positions([position], market_state)
 
 
 def _scale_open_legs(position: dict[str, Any], old_notional: float, new_notional: float, *, average_entries: bool) -> None:
@@ -925,7 +922,8 @@ def _scale_open_legs(position: dict[str, Any], old_notional: float, new_notional
     from scripts.rates.structures import scale_legs
 
     scale_legs(legs, new_notional / old_notional, average_entries=average_entries)
-    position["spread_dv01_usd"] = round(float(position.get("spread_dv01_usd") or 0.0) * (new_notional / old_notional), 8)
+    dv01s = [abs(float(leg.get("dv01_usd") or 0.0)) for leg in legs]
+    position["spread_dv01_usd"] = round(max(dv01s) if dv01s else 0.0, 8)
 
 
 def _resize(
@@ -943,17 +941,35 @@ def _resize(
     if factor < 0:
         if delta > float(position["notional_usd"]) + 1e-9:
             raise SchemaError("REDUCE exceeds position notional")
+        from scripts.overnight.paper_marks import marks_are_current
+
+        if position.get("legs") and not marks_are_current(position):
+            action["pending_mark"] = True
+            action["realized_pnl_usd"] = None
+            position["exit_status"] = "pending_mark"
+            position["pnl_unavailable"] = True
+            seat_book["alerts"].append(
+                f"{position['position_id']} REDUCE/CLOSE left pending: current leg marks or FX are unavailable; no fill or P&L was invented"
+            )
+            return
         exit_price = action.get("price", position.get("mark_price"))
         old_n = float(position["notional_usd"])
         if exit_price in (None, "") and not position.get("legs"):
             realized = 0.0
             seat_book["alerts"].append(f"{position['position_id']} reduced without a price; realized P&L left at 0")
         else:
+            if position.get("legs"):
+                from scripts.rates.contract_economics import whole_lots
+
+                anchor_before = int(position["legs"][0].get("contracts") or 0)
+                remaining = whole_lots(anchor_before * ((old_n - delta) / old_n)) if old_n else 0
+                position["_closed_lots"] = max(0, anchor_before - remaining)
             realized = realized_increment(
                 position,
                 exit_price=float(exit_price if exit_price not in (None, "") else position.get("mark_price") or 0.0),
                 closed_notional=delta,
             )
+            position.pop("_closed_lots", None)
         position["notional_usd"] = round(old_n - delta, 2)
         if position.get("legs") and old_n > 0:
             _scale_open_legs(position, old_n, position["notional_usd"], average_entries=False)

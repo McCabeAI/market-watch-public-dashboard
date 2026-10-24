@@ -15,10 +15,12 @@ from typing import Any, Mapping
 from scripts.overnight.errors import SchemaError
 from scripts.rates.contract_economics import (
     contracts_from_face_usd,
+    current_fx_quote,
     dv01_per_contract,
-    fx_usd_per_unit,
     is_sovereign_instrument,
+    lots_from_face_usd,
     parse_contract_id,
+    whole_lots,
 )
 from scripts.rates.structures import (
     STRIP_TYPE,
@@ -152,7 +154,13 @@ def _contract_pnl(position: Mapping[str, Any], *, exit_price: float | None, clos
             "isolated": True,
             "contract": parsed.as_dict(),
         }
-    fx, pair = fx_usd_per_unit(parsed.spec.currency, position=position)
+    if parsed.spec.currency == "USD":
+        fx, pair = 1.0, None
+    else:
+        fx = _number(position.get("mark_fx_usd_per_unit"))
+        pair = position.get("mark_fx_pair")
+        if fx is None or position.get("mark_fx_status") not in (None, "ok"):
+            fx = None
     local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
     if fx is None or local is None:
         return {
@@ -167,7 +175,8 @@ def _contract_pnl(position: Mapping[str, Any], *, exit_price: float | None, clos
     contracts = position.get("contracts")
     contracts_f = _number(contracts)
     if contracts_f is None:
-        contracts_f = contracts_from_face_usd(parsed.spec, abs(notional), fx)
+        raw = contracts_from_face_usd(parsed.spec, abs(notional), fx)
+        contracts_f = None if raw is None else float(whole_lots(raw))
     if contracts_f is None:
         return {
             "unrealized_pnl_usd": None,
@@ -227,12 +236,29 @@ def _annotate_legacy(position: Mapping[str, Any], result: dict[str, Any]) -> dic
 def value_position(position: Mapping[str, Any], *, exit_price: float | None = None, closed_notional: float | None = None) -> dict[str, Any]:
     mode = valuation_mode(position)
     if position.get("legs"):
+        legs = list(position.get("legs") or [])
+        if position.get("mark_status") == "unavailable" or any(
+            leg.get("mark_status") == "unavailable" or leg.get("mark_rate") is None for leg in legs
+        ):
+            return {
+                "unrealized_pnl_usd": None,
+                "pnl_unavailable": True,
+                "pnl_note": "structure mark is unavailable; stale leg rates are not a current P&L",
+                "valuation_method": UNAVAILABLE,
+                "isolated": True,
+                "mark_status": "unavailable",
+                "structure_label": _expression(position).get("type") or position.get("structure_label"),
+            }
         fraction = 1.0
-        notional = _number(position.get("notional_usd"))
-        closed = _number(closed_notional)
-        if closed is not None and notional not in (None, 0):
-            fraction = closed / notional
-        total = structure_pnl_usd(list(position.get("legs") or []))
+        closed_lots = _number(position.get("_closed_lots"))
+        open_lots = _number((legs[0] or {}).get("contracts")) if legs else None
+        if closed_lots is not None and open_lots not in (None, 0):
+            fraction = closed_lots / open_lots
+        elif closed_notional is not None:
+            notional = _number(position.get("notional_usd"))
+            if notional not in (None, 0):
+                fraction = float(closed_notional) / notional
+        total = structure_pnl_usd(legs)
         if total is None:
             return {
                 "unrealized_pnl_usd": None,
@@ -294,25 +320,23 @@ def shock_risk_usd(position: Mapping[str, Any]) -> float | None:
     notional = _number(position.get("notional_usd"))
     asset = str(position.get("asset_class") or "")
     if position.get("legs"):
-        dv01 = _number(position.get("spread_dv01_usd"))
-        if dv01 is None:
-            sample = structure_pnl_usd(list(position.get("legs") or []))
-            # Reconstruct spread DV01 from a 1bp canonical move when stored.
-            roles = {leg.get("role"): leg for leg in position.get("legs") or []}
-            kind = _expression(position).get("type") or position.get("structure_label")
-            if kind == "butterfly":
-                dv01 = abs(float(roles["wing1"]["dv01_usd"])) if "wing1" in roles else None
-            elif kind == "outright_rv":
-                dv01 = abs(float(roles["receive"]["dv01_usd"])) if "receive" in roles else None
-            elif kind == "curve_rv":
-                dv01 = abs(float(roles["long_calendar_near"]["dv01_usd"])) if "long_calendar_near" in roles else None
-            elif roles:
-                first = next(iter(roles.values()))
-                dv01 = abs(float(first.get("dv01_usd") or 0.0))
-            if sample is None and dv01 is None:
-                return None
-        if dv01 is None:
+        if position.get("mark_status") == "unavailable":
             return None
+        dv01s: list[float] = []
+        for leg in position.get("legs") or []:
+            if leg.get("mark_status") == "unavailable" or leg.get("dv01_usd") is None:
+                return None
+            dv01s.append(abs(float(leg["dv01_usd"])))
+        if not dv01s:
+            return None
+        kind = _expression(position).get("type") or position.get("structure_label")
+        if kind == "butterfly":
+            roles = {leg.get("role"): leg for leg in position.get("legs") or []}
+            wing = roles.get("wing1")
+            dv01 = abs(float(wing["dv01_usd"])) if wing and wing.get("dv01_usd") is not None else max(dv01s)
+        else:
+            # Largest current leg captures FX-drift imbalance instead of a stale matched DV01.
+            dv01 = max(dv01s)
         return round(abs(dv01) * STANDARD_SHOCK_BP, 2)
     mode = valuation_mode(position)
     if mode == INSTRUMENT_METHOD:
@@ -321,13 +345,19 @@ def shock_risk_usd(position: Mapping[str, Any]) -> float | None:
             return None
         if notional is None:
             return None
-        fx, _pair = fx_usd_per_unit(parsed.spec.currency, position=position)
+        if parsed.spec.currency == "USD":
+            fx = 1.0
+        else:
+            fx = _number(position.get("mark_fx_usd_per_unit"))
+            if fx is None or position.get("mark_fx_status") not in (None, "ok"):
+                fx = None
         local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
         if fx is None or local is None:
             return None
         contracts = _number(position.get("contracts"))
         if contracts is None:
-            contracts = contracts_from_face_usd(parsed.spec, abs(notional), fx)
+            raw = contracts_from_face_usd(parsed.spec, abs(notional), fx)
+            contracts = None if raw is None else float(whole_lots(raw))
         if contracts is None:
             return None
         return round(abs(contracts * local * fx * STANDARD_SHOCK_BP), 2)
@@ -359,63 +389,75 @@ def stamp_open_valuation(position: dict[str, Any], market_state: Mapping[str, An
     """Attach the valuation vintage for a newly opened position. Does not invent FX."""
     expression = _expression(position)
     kind = expression.get("type")
-    if kind == STRIP_TYPE:
-        position["valuation_method"] = LEGACY_METHOD
-        position["structure_label"] = STRIP_TYPE
-        position["corrected_valuation_status"] = UNAVAILABLE
-        position["isolated"] = True
-        position["isolation_reason"] = (
+    if kind == STRIP_TYPE and not position.get("legs"):
+        return _reject_new_rates(
+            position,
             "futures_strip_average is a strip average, not a curve spread and not a single contract; "
-            "corrected DV01 is unavailable until leg quantities are stored"
+            "a new strip cannot be booked without verified leg quantities",
         )
-        return position
     if kind in STRUCTURE_TYPES and position.get("legs"):
+        if any(int(leg.get("contracts") or 0) != leg.get("contracts") for leg in position["legs"]):
+            return _reject_new_rates(position, "structure legs must be whole exchange lots")
         position["valuation_method"] = INSTRUMENT_METHOD
         position["structure_label"] = kind
         position["isolated"] = False
         position["corrected_valuation_status"] = "instrument_dv01"
+        position["mark_status"] = "ok"
         return position
+    if kind in STRUCTURE_TYPES and not position.get("legs"):
+        return _reject_new_rates(position, f"new {kind} is missing verified legs")
     instrument = position.get("instrument") if isinstance(position.get("instrument"), str) else None
     parsed = parse_contract_id(instrument)
     if parsed is not None and kind not in STRUCTURE_TYPES:
-        fx, pair = fx_usd_per_unit(parsed.spec.currency, market_state, position)
+        quote = current_fx_quote(parsed.spec.currency, market_state)
         local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
-        if fx is None or local is None:
-            position["valuation_method"] = UNAVAILABLE
-            position["isolated"] = True
-            position["corrected_valuation_status"] = UNAVAILABLE
-            position["isolation_reason"] = (
-                f"{parsed.spec.currency} USD conversion or month DV01 is unavailable for {parsed.alias}; "
-                "position isolated rather than valued with a generic duration"
+        if quote.get("status") != "ok" or quote.get("usd_per_unit") is None or local is None:
+            return _reject_new_rates(
+                position,
+                f"{parsed.spec.currency} USD conversion is {quote.get('status') or 'unavailable'} for {parsed.alias}; "
+                "new position is not booked on a generic duration",
             )
-            position["contract"] = parsed.as_dict()
-            return position
+        fx = float(quote["usd_per_unit"])
         notional = _number(position.get("notional_usd")) or 0.0
-        contracts = contracts_from_face_usd(parsed.spec, abs(notional), fx)
+        sized = lots_from_face_usd(parsed.spec, abs(notional), fx)
+        if sized is None or int(sized["contracts"]) < 1:
+            return _reject_new_rates(position, f"{parsed.alias} descriptive notional is below one exchange lot")
         position["valuation_method"] = INSTRUMENT_METHOD
         position["isolated"] = False
         position["corrected_valuation_status"] = "instrument_dv01"
         position["contract_currency"] = parsed.spec.currency
-        position["fx_usd_per_unit"] = fx
-        position["fx_pair"] = pair
-        position["contracts"] = contracts
+        position["contracts"] = int(sized["contracts"])
+        position["contracts_unrounded"] = sized["contracts_unrounded"]
+        position["residual_contracts"] = sized["residual_contracts"]
+        position["rounding_policy"] = sized["rounding_policy"]
+        position["entry_fx_usd_per_unit"] = fx
+        position["entry_fx_pair"] = quote.get("pair")
+        position["entry_fx_as_of"] = quote.get("as_of")
+        position["entry_fx_source"] = quote.get("source")
+        position["mark_fx_usd_per_unit"] = fx
+        position["mark_fx_pair"] = quote.get("pair")
+        position["mark_fx_as_of"] = quote.get("as_of")
+        position["mark_fx_source"] = quote.get("source")
+        position["mark_fx_status"] = "ok"
+        position["mark_status"] = "ok"
         position["contract"] = parsed.as_dict()
         position["structure_label"] = "outright_future"
         return position
-    if is_sovereign_instrument(instrument) or position.get("asset_class") in {"rates", "curve", "rates_rv"}:
-        if is_sovereign_instrument(instrument) or (
-            position.get("asset_class") in {"rates", "curve", "rates_rv"} and parsed is None and kind not in STRUCTURE_TYPES
-        ):
-            # Generic curve/RV labels and sovereigns have no verified DV01.
-            if is_sovereign_instrument(instrument):
-                position["valuation_method"] = LEGACY_METHOD
-                position["corrected_valuation_status"] = UNAVAILABLE
-                position["isolated"] = True
-                position["isolation_reason"] = (
-                    "sovereign holding has no verified modified duration or DV01; "
-                    "legacy ledger P&L is retained and corrected P&L is unavailable"
-                )
-                return position
+    if position.get("asset_class") in {"rates", "curve", "rates_rv"} or is_sovereign_instrument(instrument) or kind:
+        return _reject_new_rates(
+            position,
+            "new rates position has no verified contract DV01 or executable legs; "
+            "legacy duration-one valuation is only retained on historical rows",
+        )
     position.setdefault("valuation_method", LEGACY_METHOD)
     position.setdefault("isolated", False)
+    return position
+
+
+def _reject_new_rates(position: dict[str, Any], reason: str) -> dict[str, Any]:
+    position["valuation_method"] = UNAVAILABLE
+    position["isolated"] = True
+    position["corrected_valuation_status"] = UNAVAILABLE
+    position["mark_status"] = "unavailable"
+    position["isolation_reason"] = reason
     return position

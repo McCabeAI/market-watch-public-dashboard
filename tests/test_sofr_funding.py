@@ -201,7 +201,7 @@ class TraderFundingTests(unittest.TestCase):
     def test_same_risk_capital_gets_same_sofr_charge_for_skeptic(self) -> None:
         seat = empty_seat("no-trade-skeptic")
         memo = with_tenor_scan({
-            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "rates_candidate": {"instrument": "SOFR_2027-03", "asset_class": "rates", "rationale": "SR3 outright"},
             "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
             "options_candidate": None,
             "selected": "rates",
@@ -219,9 +219,9 @@ class TraderFundingTests(unittest.TestCase):
             seat,
             {
                 "action": "OPEN",
-                "instrument": "US 10Y",
+                "instrument": "SOFR_2027-03",
                 "side": "long",
-                "notional_usd": 40_000_000,
+                "notional_usd": 160_000_000,
                 "price": 4.20,
                 "asset_class": "rates",
                 "expression_memo": memo,
@@ -477,7 +477,7 @@ class PMFundingTests(unittest.TestCase):
             "market_state": {"status": "fresh", "data": MARKET},
         }
         rates_memo = with_tenor_scan({
-            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "rates_candidate": {"instrument": "SOFR_2027-03", "asset_class": "rates", "rationale": "SR3 outright"},
             "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
             "options_candidate": None,
             "selected": "rates",
@@ -500,13 +500,32 @@ class PMFundingTests(unittest.TestCase):
             },
             selected_bucket="cross_market_rv",
         )
+        curve_memo = with_tenor_scan(
+            {
+                "rates_candidate": {
+                "instrument": "SOFR_2026-12/2027-09",
+                "asset_class": "curve",
+                    "rationale": "calendar",
+                },
+                "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
+                "options_candidate": None,
+                "selected": "rates",
+                "rationale": "Rates-first comparison complete.",
+            },
+            selected_bucket="curve",
+        )
         specs = [
-            ("dollar-king", "USDCAD", "spot_fx", 1.36, _spot_memo()),
-            ("rate-hawk", "US 10Y", "rates", 4.20, rates_memo),
-            ("value-guy", "SOFR-CORRA_2Y", "rates_rv", 35.0, rv_memo),
+            ("dollar-king", "USDCAD", "spot_fx", 1.36, 100_000_000, _spot_memo(), None),
+            ("rate-hawk", "SOFR_2027-03", "rates", 3.70, 400_000_000, rates_memo, None),
+            ("value-guy", "SOFR_2026-12/2027-09", "curve", -25.0, 400_000_000, curve_memo, {
+                "type": "calendar_spread",
+                "curve_id": "SOFR",
+                "near_expiry": "2026-12",
+                "far_expiry": "2027-09",
+            }),
         ]
         charges = []
-        for seat_id, instrument, asset, price, memo in specs:
+        for seat_id, instrument, asset, price, notional, memo, expression in specs:
             seat = empty_seat(seat_id)
             apply_action(seat, {"action": "HOLD", "expression_memo": memo}, families=families, run_id="eq-1", when=AS_OF, market_state=MARKET)
             apply_action(
@@ -515,10 +534,11 @@ class PMFundingTests(unittest.TestCase):
                     "action": "OPEN",
                     "instrument": instrument,
                     "side": "long",
-                    "notional_usd": 100_000_000,
+                    "notional_usd": notional,
                     "price": price,
                     "asset_class": asset,
                     "expression_memo": memo,
+                    **({"paper_expression": expression} if expression else {}),
                 },
                 families=families,
                 run_id="eq-2",

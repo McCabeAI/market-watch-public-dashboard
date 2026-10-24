@@ -337,7 +337,7 @@ def mark_pm_book(
         _force_pm_drawdown_flatten(book, when=when, run_id=run_id)
         return mark_pm_book(book, when=when, run_id=run_id, enforce_stop=False)
 
-    if not book.get("risk_stopped"):
+    if not book.get("risk_stopped") and not book.get("risk_capital_unavailable_positions"):
         assert_cap(book)
     return book
 
@@ -594,11 +594,11 @@ def apply_action(
     if kind == "OPEN":
         _open_position(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "ADD":
-        _resize(book, action, factor=1, run_id=run_id, when=stamp)
+        _resize(book, action, factor=1, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "REDUCE":
-        _resize(book, action, factor=-1, run_id=run_id, when=stamp)
+        _resize(book, action, factor=-1, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "CLOSE":
-        _close(book, action, run_id=run_id, when=stamp)
+        _close(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "HEDGE":
         _hedge(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind in {"HOLD", "NO_TRADE"}:
@@ -608,7 +608,14 @@ def apply_action(
     book["last_action"] = kind
     _set_decision_fields(book, action, decision)
     book["decision_status"] = _derive_status(book, kind=kind, had_prior_decision=had_prior)
-    book["history"].append(_history_entry(action, when=stamp, run_id=run_id, result="applied"))
+    book["history"].append(
+        _history_entry(
+            action,
+            when=stamp,
+            run_id=run_id,
+            result="pending_mark" if action.get("pending_mark") else "applied",
+        )
+    )
     return mark_pm_book(book, when=stamp, run_id=run_id)
 
 
@@ -658,31 +665,9 @@ def _open_position(
         "pnl_unavailable": False,
         "expected_mark_direction": action.get("expected_mark_direction"),
     }
-    from scripts.rates.structures import STRUCTURE_TYPES, StructureError, build_structure
-    from scripts.rates.valuation import stamp_open_valuation
+    from scripts.overnight.books import _install_rates_economics
 
-    expression = position.get("paper_expression") if isinstance(position.get("paper_expression"), dict) else None
-    if expression and expression.get("type") in STRUCTURE_TYPES:
-        try:
-            built = build_structure(
-                expression,
-                side=str(side),
-                notional_usd=notional,
-                market_state=market_state,
-            )
-        except (StructureError, SchemaError) as exc:
-            raise SchemaError(str(exc)) from exc
-        position["legs"] = built["legs"]
-        position["spread_dv01_usd"] = built["spread_dv01_usd"]
-        position["structure_label"] = built["type"]
-        position["mark_definition"] = built["mark_definition"]
-        if built.get("package_mark_bp") is not None:
-            position["entry_price"] = built["package_mark_bp"]
-            position["mark_price"] = built["package_mark_bp"]
-        from scripts.overnight.paper_marks import hydrate_structure_rates
-
-        hydrate_structure_rates(position, market_state)
-    stamp_open_valuation(position, market_state)
+    _install_rates_economics(position, market_state, side=str(side))
     if position.get("valuation_method") == "unavailable":
         raise SchemaError(position.get("isolation_reason") or "instrument economics unavailable")
     action["position_id"] = position["position_id"]
@@ -694,7 +679,15 @@ def _open_position(
     return position
 
 
-def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id: str | None, when: datetime) -> None:
+def _resize(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    factor: int,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> None:
     position = _find_position(book, action.get("position_id") or "")
     delta = _require_notional(action)
     assert_family_locked(
@@ -706,6 +699,20 @@ def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id
     if factor < 0:
         if delta > float(position["notional_usd"]) + 1e-9:
             raise SchemaError("REDUCE exceeds position notional")
+        from scripts.overnight.paper_marks import marks_are_current, refresh_positions
+
+        if position.get("legs") and isinstance(market_state, dict):
+            refresh_positions([position], market_state)
+
+        if position.get("legs") and not marks_are_current(position):
+            action["pending_mark"] = True
+            action["realized_pnl_usd"] = None
+            position["exit_status"] = "pending_mark"
+            position["pnl_unavailable"] = True
+            book.setdefault("alerts", []).append(
+                f"{position['position_id']} REDUCE/CLOSE left pending: current leg marks or FX are unavailable; no fill or P&L was invented"
+            )
+            return
         exit_price = _require_mark(action, kind="REDUCE", pm_id=book["pm_id"])
         old_n = float(position["notional_usd"])
         realized = realized_increment(position, exit_price=exit_price, closed_notional=delta)
@@ -746,12 +753,19 @@ def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id
     action["locked_expression_family"] = position.get("locked_expression_family")
 
 
-def _close(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> None:
+def _close(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> None:
     position = _find_position(book, action.get("position_id") or "")
     action["notional_usd"] = position["notional_usd"]
     action["instrument"] = position["instrument"]
     action.setdefault("asset_class", position.get("asset_class"))
-    _resize(book, action, factor=-1, run_id=run_id, when=when)
+    _resize(book, action, factor=-1, run_id=run_id, when=when, market_state=market_state)
 
 
 def _hedge(

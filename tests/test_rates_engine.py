@@ -74,7 +74,9 @@ class ContractEconomicsTests(unittest.TestCase):
                 "entry_price": 3.195,
                 "mark_price": 3.185,
                 "valuation_method": "instrument_dv01",
-                "fx_usd_per_unit": 1.0 / 1.36,
+                "mark_fx_usd_per_unit": 1.0 / 1.36,
+                "mark_fx_status": "ok",
+                "mark_fx_pair": "USDCAD",
                 "contract_currency": "CAD",
             }
         )
@@ -95,13 +97,17 @@ class ContractEconomicsTests(unittest.TestCase):
         self.assertIsNone(missing["unrealized_pnl_usd"])
         self.assertTrue(missing["isolated"])
 
-    def test_ib_dv01_uses_days_in_the_contract_month(self) -> None:
-        november = dv01_per_contract(IB, year=2026, month=11)
+    def test_ib_dv01_is_the_published_fixed_basis_point_value(self) -> None:
+        from scripts.rates.contract_economics import IB_PUBLISHED_BPV_AUD, IB_UNROUNDED_30_365_BPV_AUD
+
+        february = dv01_per_contract(IB, year=2027, month=2)
         october = dv01_per_contract(IB, year=2026, month=10)
-        self.assertAlmostEqual(november, 3_000_000 * 0.0001 * 30 / 365, places=8)
-        self.assertAlmostEqual(october, 3_000_000 * 0.0001 * 31 / 365, places=8)
-        self.assertIsNone(dv01_per_contract(IB))
+        self.assertEqual(february, IB_PUBLISHED_BPV_AUD)
+        self.assertEqual(october, IB_PUBLISHED_BPV_AUD)
+        self.assertEqual(dv01_per_contract(IB), 24.66)
+        self.assertAlmostEqual(round(IB_UNROUNDED_30_365_BPV_AUD, 2), 24.66, places=2)
         self.assertNotEqual(SR3.currency, IB.currency)
+        self.assertEqual(dv01_per_contract(SR3), 25.0)
 
     def test_historical_row_keeps_duration_one_until_restated(self) -> None:
         historical = {
