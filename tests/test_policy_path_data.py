@@ -61,6 +61,31 @@ class PolicyPathParserTests(unittest.TestCase):
         self.assertEqual(result["1m"][0]["implied_rate"], 2.305)
         self.assertEqual(result["3m"][-1]["change_from_overnight_bps"], 123.0)
 
+    def test_mx_tmx_outage_notice_exposes_no_prices(self):
+        html = """
+        <html><body>
+          <p>Our websites are currently unavailable. Due to security vulnerabilities related to PHP,
+          TMX has undertaken measures to mitigate potential security risks.</p>
+          <p>Nos sites Web sont actuellement indisponibles.</p>
+        </body></html>
+        """
+        with self.assertRaises(ValueError) as ctx:
+            parse_mx_expectations_html(html, benchmark=2.29)
+        message = str(ctx.exception)
+        self.assertIn("TMX public websites are unavailable", message)
+        self.assertIn("MX expectations page did not expose CORRA futures rows", message)
+        self.assertIn("No substitute prices were used", message)
+        self.assertNotIn("implied_rate", message)
+
+    def test_mx_page_without_outage_notice_stays_a_row_failure(self):
+        html = "<html><body><p>Interest rate expectations</p><table><tr><td>No contracts</td></tr></table></body></html>"
+        with self.assertRaises(ValueError) as ctx:
+            parse_mx_expectations_html(html, benchmark=2.29)
+        self.assertEqual(
+            str(ctx.exception),
+            "MX expectations page did not expose CORRA futures rows",
+        )
+
     def test_nyfed_sofr(self):
         payload = '{"refRates":[{"type":"SOFR","effectiveDate":"2026-09-18","percentRate":3.75}]}'
         result = parse_nyfed_sofr_json(payload)

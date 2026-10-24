@@ -356,14 +356,186 @@
 
 .country-detail .prima-context-note,
 .country-detail .prima-meta,
-.country-detail .prima-history {
+.country-detail .prima-history,
+.country-detail .prima-means,
+.country-detail .prima-step-note {
   font-size: 0.8rem;
   line-height: 1.45;
   overflow-wrap: anywhere;
 }
 
+.country-detail .prima-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.35rem 0;
+}
+
+.country-detail .prima-badge {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.12rem 0.45rem;
+  border: 1px solid var(--cd-border, #233140);
+  border-radius: 999px;
+  background: var(--mw-panel, #111922);
+  color: var(--cd-ink, #e7edf3);
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
 .country-detail .prima-direction {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.12rem;
+  margin: 0.35rem 0;
+  font-weight: 750;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+
+.country-detail .prima-vs,
+.country-detail .prima-stale {
+  font-size: 0.8rem;
+  font-weight: 650;
+  line-height: 1.35;
+  color: var(--cd-ink, #e7edf3);
+}
+
+.country-detail .prima-stale {
+  color: var(--mw-warn, #e5a83f);
+}
+
+.country-detail .prima-direction[data-prima-direction="RISING"] .prima-direction-word {
+  color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .prima-direction[data-prima-direction="FALLING"] .prima-direction-word {
+  color: var(--mw-cooling, #74b6dc);
+}
+
+.country-detail .prima-direction[data-prima-direction="STABLE"] .prima-direction-word {
+  color: var(--mw-static, #8e9ba8);
+}
+
+.country-detail .prima-direction[data-prima-direction="UNAVAILABLE"] .prima-direction-word {
+  color: var(--mw-faint, #6f8294);
+}
+
+.country-detail .prima-kicker {
+  margin: 0.65rem 0 0.25rem;
+  color: var(--cd-muted, #93a5b6);
+  font-size: 0.72rem;
   font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
+.country-detail .prima-means {
+  margin: 0.45rem 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid var(--cd-border, #233140);
+  border-radius: 0.375rem;
+  background: var(--mw-panel, #111922);
+}
+
+.country-detail .prima-means p {
+  margin: 0.35rem 0;
+}
+
+.country-detail .prima-timeline,
+.country-detail .prima-transitions,
+.country-detail .prima-drivers {
+  margin: 0.2rem 0 0.35rem;
+  padding: 0;
+  list-style: none;
+}
+
+.country-detail .prima-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.country-detail .prima-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--cd-border, #233140);
+  border-left-width: 3px;
+  border-radius: 0.375rem;
+  background: var(--cd-surface, #16202b);
+}
+
+.country-detail .prima-step-dir {
+  font-weight: 750;
+}
+
+.country-detail .prima-step[data-prima-step-direction="RISING"] {
+  border-left-color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .prima-step[data-prima-step-direction="FALLING"] {
+  border-left-color: var(--mw-cooling, #74b6dc);
+}
+
+.country-detail .prima-step[data-prima-step-direction="STABLE"] {
+  border-left-color: var(--mw-static, #8e9ba8);
+}
+
+.country-detail .prima-step[data-prima-step-direction="UNAVAILABLE"] {
+  border-left-color: var(--mw-faint, #6f8294);
+}
+
+.country-detail .prima-channels {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.country-detail .prima-channel {
+  padding: 0.28rem 0 0.28rem 0.45rem;
+  border-bottom: 1px solid var(--cd-border, #233140);
+  border-left: 3px solid var(--mw-faint, #6f8294);
+  font-size: 0.85rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.country-detail .prima-channel[data-prima-channel-direction="RISING"] {
+  border-left-color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .prima-channel[data-prima-channel-direction="FALLING"] {
+  border-left-color: var(--mw-cooling, #74b6dc);
+}
+
+.country-detail .prima-channel[data-prima-channel-direction="STABLE"] {
+  border-left-color: var(--mw-static, #8e9ba8);
+}
+
+.country-detail .prima-channel[data-prima-channel-direction="UNAVAILABLE"] {
+  border-left-color: var(--mw-faint, #6f8294);
+}
+
+.country-detail .prima-drivers,
+.country-detail .prima-transitions {
+  padding-left: 1.1rem;
+  list-style: disc;
+}
+
+@media (min-width: 720px) {
+  .country-detail .prima-timeline {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .country-detail .prima-step {
+    flex: 1 1 9rem;
+  }
 }
 
 .country-detail .prima-detail {

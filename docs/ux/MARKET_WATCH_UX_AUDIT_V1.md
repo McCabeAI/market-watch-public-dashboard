@@ -296,3 +296,24 @@ Known limits: cross-asset series have no change field in the packet, so
 they show "Change not in packet" rather than a computed move. Score values
 are as of the 21 Sep 2026 freeze and are labelled that way. No fresher score
 is implied.
+
+## 9. Follow-up: Canada Prima Pressure and the CORRA smoke
+
+Canada Inflation still opens in the same place. The Prima Pressure block now
+reads the stored Market Watch proxy at a glance: current direction, whether
+that category changed versus the previous stored observation, a categorical
+timeline, the five channel directions, quoted driver lines, and the stored
+last-MPR comparison. It stays context only and does not feed the Inflation
+score. Direction categories are not drawn as a numeric chart, and no Prima
+score is added.
+
+The two `test_country_detail_prima_pressure` failures in §8 expected one
+all-RISING snapshot. Accepted overnight runs now store a longer RISING
+history whose channels are not all RISING. Those tests follow the stored
+snapshot. `test_country_detail_travel` (`au_household_spending`) is unchanged.
+
+The Canadian CORRA live smoke is a required source check. On 24 Oct 2026 the
+Montréal Exchange expectations URL returned HTTP 200 with TMX's website
+outage notice and no CORRA futures rows. Bank of Canada CORRA JSON still
+responded. The parser names that outage and still fails closed. It does not
+substitute a price.

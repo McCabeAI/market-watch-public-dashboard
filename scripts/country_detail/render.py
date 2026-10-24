@@ -723,6 +723,191 @@ _PRIMA_CHANNEL_LABELS = {
     "consumer_price_breadth": "Consumer price breadth",
     "demand_pass_through_constraint": "Demand pass-through constraint",
 }
+_PRIMA_CATEGORIES = ("RISING", "STABLE", "FALLING")
+# Oil context is claimed only when a stored line names one of these products.
+# "ex-energy" and a bare "oil curve" freshness label do not match.
+_PRIMA_OIL_TOKEN = re.compile(
+    r"(?i)(?<![A-Za-z])(?:brent|wti|crude|rbob|ulsd|heating oil|gasoline|natural gas)(?![A-Za-z])"
+)
+
+
+def _prima_day(observed_at: str) -> str:
+    text = observed_at.strip()
+    match = re.match(r"(\d{4}-\d{2}-\d{2})", text)
+    return match.group(1) if match else text
+
+
+def _prima_last_transition(transitions: list[Any]) -> Mapping[str, Any] | None:
+    for item in reversed(transitions):
+        if isinstance(item, Mapping):
+            return item
+    return None
+
+
+def _prima_vs_previous(direction: str, transitions: list[Any]) -> tuple[str, str]:
+    """Glance phrase and a stable kind. Kinds are not magnitudes."""
+    if direction not in _PRIMA_CATEGORIES:
+        return "Stored direction unavailable", "unavailable"
+    last = _prima_last_transition(transitions)
+    if last is None:
+        return "No previous stored observation", "no-previous"
+    previous = str(last.get("from_direction") or "")
+    current = str(last.get("to_direction") or "")
+    label = str(last.get("label") or "").strip()
+    if previous in _PRIMA_CATEGORIES and current == direction and previous == current:
+        return "Unchanged vs previous stored observation", "unchanged"
+    if previous in _PRIMA_CATEGORIES and current == direction and previous != current:
+        return f"Changed vs previous stored observation ({previous} → {current})", "changed"
+    if label:
+        return f"Latest stored transition: {label}", "recorded"
+    return "Previous stored observation is on file", "recorded"
+
+
+def _prima_oil_hits(drivers: list[str], change_text: str) -> tuple[list[str], bool]:
+    hits = [item for item in drivers if _PRIMA_OIL_TOKEN.search(item)]
+    mpr_names_oil = bool(
+        change_text
+        and change_text.lower() != "unavailable"
+        and _PRIMA_OIL_TOKEN.search(change_text)
+    )
+    return hits, mpr_names_oil
+
+
+def _prima_means_sentences(
+    *,
+    direction: str,
+    subs: Mapping[str, Any],
+    transitions: list[Any],
+    trend: list[Any],
+    drivers: list[str],
+    change_text: str,
+    staleness: str | None,
+    stale: bool,
+    mpr_status: Any,
+    conditioning_date: Any,
+    vs_phrase: str,
+) -> list[str]:
+    """Plain sentences from stored proxy fields. No score and no new oil math."""
+    sentences: list[str] = [
+        (
+            "This is the Market Watch deterministic proxy, not the Bank of Canada's Prima model. "
+            "It does not feed the Inflation score."
+        )
+    ]
+    if direction in _PRIMA_CATEGORIES:
+        sentences.append(f"Current stored direction is {direction}.")
+    else:
+        sentences.append("Current stored direction is unavailable.")
+    sentences.append(vs_phrase + ".")
+    sentences.append(
+        "The aggregate signal is a direction category. No numeric Prima score or magnitude is stored."
+    )
+
+    stored = [point for point in trend if isinstance(point, Mapping)]
+    if not stored:
+        sentences.append("No stored observation is on file.")
+    elif len(stored) == 1:
+        sentences.append(
+            "One stored observation is on file, so there is no transition to a previous observation."
+        )
+    else:
+        sentences.append(
+            f"{len(stored)} stored observations are on file. "
+            "Transitions compare consecutive stored runs only."
+        )
+
+    last = _prima_last_transition(transitions)
+    if last is not None:
+        label = str(last.get("label") or "").strip()
+        if not label:
+            label = (
+                f"{last.get('from_direction') or 'UNAVAILABLE'} → "
+                f"{last.get('to_direction') or 'UNAVAILABLE'}"
+            )
+        sentences.append(
+            "Latest stored transition: "
+            f"{label} ({last.get('from_observed_at') or ''} → {last.get('to_observed_at') or ''})."
+        )
+
+    if direction in _PRIMA_CATEGORIES:
+        matching: list[str] = []
+        differing: list[str] = []
+        missing: list[str] = []
+        for key, label in _PRIMA_CHANNEL_LABELS.items():
+            channel_direction = str(subs.get(key) or "UNAVAILABLE")
+            if channel_direction == direction:
+                matching.append(label)
+            elif channel_direction in _PRIMA_CATEGORIES:
+                differing.append(f"{label} {channel_direction}")
+            else:
+                missing.append(label)
+        if matching:
+            sentences.append(
+                "Channels stored in the current direction: " + ", ".join(matching) + "."
+            )
+        else:
+            sentences.append("No stored channel is in the current direction.")
+        if differing:
+            sentences.append("Other stored channel directions: " + "; ".join(differing) + ".")
+        if missing:
+            sentences.append(
+                "Channels without a stored direction: " + ", ".join(missing) + "."
+            )
+    else:
+        sentences.append(
+            "There is no aggregate direction to match. Channel directions are listed below."
+        )
+
+    imported = str(subs.get("imported_pressure") or "UNAVAILABLE")
+    sentences.append(f"Imported pressure is stored as {imported}.")
+
+    oil_drivers, mpr_names_oil = _prima_oil_hits(drivers, change_text)
+    if oil_drivers:
+        sentences.append(
+            "Oil context in stored driver lines: "
+            + "; ".join(oil_drivers)
+            + ". Quoted as stored. This view does not add an oil weight, contribution, or forecast."
+        )
+        if mpr_names_oil:
+            sentences.append(
+                "The stored last-MPR comparison also names Brent, WTI, crude, or a listed oil product. "
+                "It is quoted below and is not recomputed. No oil contribution is shown beyond that stored text."
+            )
+    elif mpr_names_oil:
+        sentences.append(
+            "No stored driver line names Brent, WTI, crude, or a listed oil product. "
+            "The stored last-MPR comparison does. It is quoted below and is not recomputed. "
+            "No oil contribution is shown."
+        )
+    else:
+        sentences.append(
+            "No stored driver line or last-MPR comparison names Brent, WTI, crude, or a listed oil product. "
+            "No oil contribution is shown."
+        )
+
+    if staleness:
+        sentences.append(f"Staleness as stored: {staleness}.")
+    else:
+        sentences.append("Staleness is not recorded.")
+    sentences.append(
+        "This observation is marked stale." if stale else "This observation is not marked stale."
+    )
+
+    if not change_text or change_text.lower() == "unavailable":
+        sentences.append("The comparison versus the last BoC MPR is unavailable.")
+    else:
+        bits: list[str] = []
+        if mpr_status is not None and str(mpr_status).strip():
+            bits.append(f"MPR status {mpr_status}")
+        if conditioning_date:
+            bits.append(f"conditioning date {conditioning_date}")
+        suffix = f" ({', '.join(bits)})" if bits else ""
+        sentences.append(
+            "A stored comparison versus the last BoC MPR is on file"
+            + suffix
+            + ". The wording below is quoted as stored and is not recomputed here."
+        )
+    return sentences
 
 
 def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
@@ -775,7 +960,7 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
     else:
         confidence_text = "confidence unavailable"
 
-    stale_label = " Stale" if current.get("stale") else ""
+    stale = bool(current.get("stale"))
     status = str(current.get("status") or "").strip().lower()
     reason = str(current.get("reason") or "").strip()
     status_bits: list[str] = []
@@ -784,7 +969,7 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
     if reason:
         status_bits.append(_esc(reason) + ".")
 
-    aggregate_available = direction in {"RISING", "STABLE", "FALLING"}
+    aggregate_available = direction in _PRIMA_CATEGORIES
     partial_channels = [
         label
         for key, label in _PRIMA_CHANNEL_LABELS.items()
@@ -797,45 +982,86 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
             + " unavailable."
         )
 
-    drivers = current.get("largest_drivers")
-    driver_text = ""
-    if isinstance(drivers, list) and drivers:
-        driver_text = (
-            '<div class="prima-meta">Largest drivers: '
-            + _esc("; ".join(str(item) for item in drivers[:3]))
-            + "</div>"
+    driver_values = current.get("largest_drivers")
+    drivers = (
+        [str(item).strip() for item in driver_values if str(item).strip()]
+        if isinstance(driver_values, list)
+        else []
+    )
+    if drivers:
+        driver_items = "".join(f"<li>{_esc(item)}</li>" for item in drivers)
+        driver_html = (
+            '<div class="prima-kicker">Largest drivers</div>'
+            f'<ul class="prima-drivers">{driver_items}</ul>'
+        )
+    else:
+        driver_html = (
+            '<div class="prima-kicker">Largest drivers</div>'
+            '<p class="prima-meta">No stored driver lines.</p>'
         )
 
     history_note = str(block.get("history_note") or "")
-    history_state = str(block.get("history_state") or "")
     trend = block.get("trend") if isinstance(block.get("trend"), list) else []
     transitions = block.get("transitions") if isinstance(block.get("transitions"), list) else []
+    vs_phrase, vs_kind = _prima_vs_previous(direction, transitions)
 
-    history_lines: list[str] = []
-    if history_state == "trend" and trend:
-        for point in trend:
-            if not isinstance(point, Mapping):
-                continue
-            at = str(point.get("observed_at") or "")
-            dir_word = str(point.get("direction") or "UNAVAILABLE")
-            history_lines.append(f"<div>{_esc(at)} · {_esc(dir_word)}</div>")
-        for transition in transitions:
-            if not isinstance(transition, Mapping):
-                continue
-            label = str(transition.get("label") or "")
-            from_at = str(transition.get("from_observed_at") or "")
-            to_at = str(transition.get("to_observed_at") or "")
-            if label:
-                history_lines.append(
-                    f"<div>{_esc(from_at)} → {_esc(to_at)}: {_esc(label)}</div>"
-                )
-    history_body = "".join(history_lines)
+    timeline_steps: list[str] = []
+    for point in trend:
+        if not isinstance(point, Mapping):
+            continue
+        at = str(point.get("observed_at") or "")
+        dir_word = str(point.get("direction") or "UNAVAILABLE")
+        staleness_point = str(point.get("staleness") or "").strip()
+        note = (
+            f'<span class="prima-step-note">{_esc(staleness_point)}</span>'
+            if staleness_point
+            else ""
+        )
+        timeline_steps.append(
+            f'<li class="prima-step" data-prima-step-direction="{_esc(dir_word)}">'
+            f'<span class="prima-step-dir">{_esc(dir_word)}</span>'
+            f'<time datetime="{_esc(at)}">{_esc(_prima_day(at))}</time>'
+            f"{note}</li>"
+        )
+    if timeline_steps:
+        timeline_html = (
+            '<div class="prima-kicker">Stored direction timeline</div>'
+            '<ol class="prima-timeline">'
+            + "".join(timeline_steps)
+            + "</ol>"
+            '<p class="prima-meta">Direction categories and dates only. Not a numeric chart.</p>'
+        )
+    else:
+        timeline_html = (
+            '<div class="prima-kicker">Stored direction timeline</div>'
+            '<p class="prima-meta">No stored direction timeline. History is not fabricated.</p>'
+        )
+
+    transition_lines: list[str] = []
+    for transition in transitions:
+        if not isinstance(transition, Mapping):
+            continue
+        label = str(transition.get("label") or "")
+        from_at = str(transition.get("from_observed_at") or "")
+        to_at = str(transition.get("to_observed_at") or "")
+        if label or from_at or to_at:
+            transition_lines.append(
+                f"<li>{_esc(from_at)} → {_esc(to_at)}: {_esc(label)}</li>"
+            )
+    if transition_lines:
+        transition_html = (
+            '<div class="prima-kicker">Stored transitions</div>'
+            f'<ul class="prima-transitions">{"".join(transition_lines)}</ul>'
+        )
+    else:
+        transition_html = ""
 
     channel_rows = []
     for channel, label in _PRIMA_CHANNEL_LABELS.items():
         ch_dir = str(subs.get(channel) or "UNAVAILABLE")
         channel_rows.append(
-            f'<div data-prima-channel="{_esc(channel)}">{_esc(label)}: {_esc(ch_dir)}</div>'
+            f'<div class="prima-channel" data-prima-channel="{_esc(channel)}" '
+            f'data-prima-channel-direction="{_esc(ch_dir)}">{_esc(label)}: {_esc(ch_dir)}</div>'
         )
 
     mpr_status = current.get("mpr_status")
@@ -843,11 +1069,15 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
     change_since = current.get("change_since_last_mpr")
     change_text = str(change_since or "").strip()
     if not change_text or change_text.lower() == "unavailable":
-        mpr_body = (
-            "<p>The comparison versus the last BoC MPR is unavailable.</p>"
-        )
+        mpr_body = "<p>The comparison versus the last BoC MPR is unavailable.</p>"
     else:
-        mpr_body = f"<p>{_esc(change_text)}</p>"
+        gloss = ""
+        if "brent_end_2027_vs_prose" in change_text:
+            gloss = (
+                '<p class="prima-meta">Stored line name: Brent end-2027 versus the MPR prose assumption. '
+                "The figure below is quoted as stored.</p>"
+            )
+        mpr_body = gloss + f"<p>{_esc(change_text)}</p>"
     mpr_meta = []
     if conditioning_date:
         mpr_meta.append(f"Conditioning date: {_esc(conditioning_date)}")
@@ -855,6 +1085,23 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
         mpr_meta.append(f"MPR status: {_esc(mpr_status)}")
     if mpr_meta:
         mpr_body = f'<p class="prima-meta">{". ".join(mpr_meta)}</p>{mpr_body}'
+
+    staleness = current.get("staleness")
+    staleness_text = str(staleness).strip() if staleness is not None and str(staleness).strip() else None
+    means = _prima_means_sentences(
+        direction=direction,
+        subs=subs,
+        transitions=transitions,
+        trend=trend,
+        drivers=drivers,
+        change_text=change_text,
+        staleness=staleness_text,
+        stale=stale,
+        mpr_status=mpr_status,
+        conditioning_date=conditioning_date,
+        vs_phrase=vs_phrase,
+    )
+    means_html = "".join(f"<p>{_esc(sentence)}</p>" for sentence in means)
 
     disclaimer = str(
         current.get("disclaimer")
@@ -865,24 +1112,72 @@ def _render_prima_pressure(block: Mapping[str, Any] | None) -> str:
         )
     )
 
+    tech_lines: list[str] = []
+    history_state = str(block.get("history_state") or "")
+    if history_state:
+        tech_lines.append(f"history_state: {history_state}")
+    for flag in ("feeds_inflation_score", "score_inputs_changed"):
+        if flag not in block:
+            continue
+        value = block.get(flag)
+        if value is True:
+            rendered_flag = "true"
+        elif value is False:
+            rendered_flag = "false"
+        else:
+            rendered_flag = str(value)
+        tech_lines.append(f"{flag}: {rendered_flag}")
+    limitations = block.get("limitations")
+    if isinstance(limitations, list) and limitations:
+        tech_lines.append("limitations: " + "; ".join(str(item) for item in limitations))
+    for channel, _label in _PRIMA_CHANNEL_LABELS.items():
+        tech_lines.append(f"{channel} = {subs.get(channel) or 'UNAVAILABLE'}")
+    for point in trend:
+        if not isinstance(point, Mapping):
+            continue
+        bits = [
+            str(point.get("observed_at") or ""),
+            str(point.get("direction") or "UNAVAILABLE"),
+        ]
+        for field in ("status", "staleness", "source_id", "run_id", "review_id", "source_kind"):
+            value = point.get(field)
+            if value:
+                bits.append(f"{field} {value}")
+        tech_lines.append(" · ".join(bits))
+    tech_html = "".join(f"<div>{_esc(line)}</div>" for line in tech_lines)
+
     status_html = (
         f'<div class="prima-meta">{" ".join(status_bits)}</div>' if status_bits else ""
     )
+    stale_html = '<span class="prima-stale">Stale</span>' if stale else ""
+    freshness = staleness_text or "staleness not recorded"
 
     return (
         f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
         f'<div class="evidence-title">Prima Pressure</div>'
+        f'<div class="prima-badges">'
+        f'<span class="prima-badge">Market Watch proxy</span>'
+        f'<span class="prima-badge">Not the Bank of Canada Prima model</span>'
+        f"</div>"
         f'<div class="prima-context-note">context only — does not feed Inflation score</div>'
-        f'<div class="prima-meta">{_esc(disclaimer)}</div>'
-        f'<div class="prima-direction" data-prima-direction="{_esc(direction)}">{_esc(direction)}{_esc(stale_label)}</div>'
-        f'<div class="prima-meta">{_esc(coverage_text)} · {_esc(confidence_text)}</div>'
+        f'<div class="prima-direction" data-prima-direction="{_esc(direction)}" data-prima-vs="{_esc(vs_kind)}">'
+        f'<span class="prima-direction-word">{_esc(direction)}</span>'
+        f"{stale_html}"
+        f'<span class="prima-vs">{_esc(vs_phrase)}</span>'
+        f"</div>"
+        f'<div class="prima-meta">{_esc(coverage_text)} · {_esc(confidence_text)} · {_esc(freshness)}</div>'
+        f'<div class="prima-means"><div class="prima-kicker">What this shows</div>{means_html}</div>'
+        f"{timeline_html}"
+        f"{transition_html}"
+        f'<div class="prima-history">{_esc(history_note)}</div>'
+        f"{driver_html}"
+        f'<div class="prima-kicker">Channel directions</div>'
+        f'<div class="prima-channels">{"".join(channel_rows)}</div>'
+        f'<div class="prima-mpr"><div class="prima-kicker">Versus last BoC MPR</div>{mpr_body}</div>'
         f"{status_html}"
-        f"{driver_text}"
-        f'<div class="prima-history">{_esc(history_note)}{history_body}</div>'
-        f'<details class="prima-detail"><summary>Component attribution</summary>'
-        f'<div class="prima-meta">{"".join(channel_rows)}</div></details>'
-        f'<details class="prima-detail"><summary>Versus last BoC MPR</summary>'
-        f"{mpr_body}</details>"
+        f'<div class="prima-meta">{_esc(disclaimer)}</div>'
+        f'<details class="prima-detail"><summary>Technical detail</summary>'
+        f'<div class="prima-meta">{tech_html}</div></details>'
         f"</div>"
     )
 
