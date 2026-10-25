@@ -21,10 +21,15 @@ DEFAULT_HORIZON_DAYS = {"tactical": 10, "swing": 45, "structural": 120}
 MIN_HORIZON_DAYS = 1
 MAX_HORIZON_DAYS = 366
 
-# One standard-shock unit is a delivered move, not the first green print.
-# The dollar floor keeps a tiny-risk line from flapping on noise.
+# Legacy vintages and spot still mature after one full standard-shock unit.
+# Instrument-correct STIR review uses a much smaller delivered move so a 100bp
+# shock is not required before a trader re-underwrites. These bands are review
+# clocks, not targets, stops, or a preferred strategy.
 MATERIAL_WINNER_RISK_MULTIPLE = 1.0
 MATERIAL_WINNER_MIN_USD = 100_000.0
+STIR_REVIEW_MOVE_BP = {"tactical": 5.0, "swing": 10.0, "structural": 20.0}
+STIR_REVIEW_MOVE_BP_UNSPECIFIED = 10.0
+STIR_REVIEW_NOISE_FLOOR_BP = 5.0
 # After that winner exists, giving back this much of MFE re-opens the review.
 GIVEBACK_RETAINED_FRACTION = 0.70
 # A deeper giveback can open a causal reflection. It still does not write a lesson.
@@ -176,13 +181,101 @@ def _risk_notional(trade: dict[str, Any], position: dict[str, Any] | None) -> fl
     return None
 
 
+def _intent_context(trade: dict[str, Any], position: dict[str, Any] | None, entry: float | None, mark: float | None) -> dict[str, Any]:
+    expected = _text((position or {}).get("expected_mark_direction")) or _text((trade or {}).get("expected_mark_direction"))
+    if expected not in {"lower", "higher"} or entry is None or mark is None:
+        versus = "unknown"
+    elif mark == entry:
+        versus = "flat"
+    elif expected == "lower":
+        versus = "with_intent" if mark < entry else "against_intent"
+    else:
+        versus = "with_intent" if mark > entry else "against_intent"
+    return {"expected_mark_direction": expected, "move_versus_entry_intent": versus}
+
+
+def _expected_move_bp(trade: dict[str, Any], position: dict[str, Any] | None, lifecycle: dict[str, Any] | None) -> float | None:
+    for source in (lifecycle or {}, trade or {}, position or {}):
+        if not isinstance(source, dict):
+            continue
+        raw = source.get("expected_move_bp")
+        if raw in (None, ""):
+            continue
+        try:
+            value = float(raw)
+        except (TypeError, ValueError):
+            continue
+        if value > 0:
+            return value
+    return None
+
+
+def _instrument_dv01_per_bp(position: dict[str, Any] | None) -> float | None:
+    position = position or {}
+    if position.get("valuation_method") != "instrument_dv01" and not position.get("legs"):
+        return None
+    if position.get("legs"):
+        dv01s = [abs(float(leg["dv01_usd"])) for leg in position["legs"] if leg.get("dv01_usd") is not None]
+        if not dv01s:
+            return None
+        kind = (position.get("paper_expression") or {}).get("type") if isinstance(position.get("paper_expression"), dict) else None
+        kind = kind or position.get("structure_label")
+        if kind == "butterfly":
+            for leg in position["legs"]:
+                if leg.get("role") == "wing1" and leg.get("dv01_usd") is not None:
+                    return abs(float(leg["dv01_usd"]))
+        return max(dv01s)
+    contracts = position.get("contracts")
+    local = None
+    contract = position.get("contract") if isinstance(position.get("contract"), dict) else {}
+    local = contract.get("dv01_per_contract_local")
+    fx = 1.0 if position.get("contract_currency") in (None, "USD") else position.get("mark_fx_usd_per_unit")
+    if contracts in (None, "") or local in (None, "") or fx in (None, ""):
+        return None
+    try:
+        return abs(float(contracts) * float(local) * float(fx))
+    except (TypeError, ValueError):
+        return None
+
+
+def stir_review_move_bp(trade: dict[str, Any], position: dict[str, Any] | None) -> float | None:
+    """Bp of instrument DV01 that matures a review. None keeps the legacy shock unit."""
+    if _instrument_dv01_per_bp(position) is None:
+        return None
+    lifecycle = active_lifecycle(trade)
+    framing = None if lifecycle is None else lifecycle.get("framing")
+    bp = STIR_REVIEW_MOVE_BP.get(framing, STIR_REVIEW_MOVE_BP_UNSPECIFIED)
+    expected = _expected_move_bp(trade, position, lifecycle)
+    if expected is not None:
+        # A stored opportunity can pull the review earlier. It cannot demand
+        # the full 100bp risk shock, and it cannot drop through the noise floor.
+        bp = min(bp, max(STIR_REVIEW_NOISE_FLOOR_BP, 0.5 * expected))
+    return bp
+
+
 def material_winner_threshold_usd(trade: dict[str, Any], position: dict[str, Any] | None) -> float | None:
-    """Review threshold in dollars. None when risk capital cannot be measured and no floor applies."""
+    """Review threshold in dollars. STIR uses a small delivered move, not the 100bp shock."""
+    review_bp = stir_review_move_bp(trade, position or {})
+    dv01 = _instrument_dv01_per_bp(position)
+    if review_bp is not None and dv01 is not None:
+        return round(max(MATERIAL_WINNER_MIN_USD, dv01 * review_bp), 2)
     notional = _risk_notional(trade, position)
     asset = (position or {}).get("asset_class") or (trade or {}).get("asset_class")
     capital = None
-    if notional is not None and asset:
-        capital = position_risk_capital({"asset_class": asset, "notional_usd": notional})
+    probe = dict(position or {})
+    if asset:
+        probe["asset_class"] = asset
+    if notional is not None:
+        probe["notional_usd"] = notional
+    if probe.get("legs"):
+        current = _money((position or {}).get("notional_usd"))
+        base = position_risk_capital(position or {})
+        if base is not None and current and notional is not None and current > 0:
+            capital = base * (notional / current)
+        elif base is not None and notional is None:
+            capital = base
+    elif notional is not None and asset:
+        capital = position_risk_capital(probe)
     if capital is None:
         return MATERIAL_WINNER_MIN_USD
     return round(max(MATERIAL_WINNER_MIN_USD, MATERIAL_WINNER_RISK_MULTIPLE * float(capital)), 2)
@@ -289,6 +382,9 @@ def harvest_metrics(
         "catalyst_logic": None if lifecycle is None else lifecycle.get("catalyst_logic"),
         "catalyst_by": catalyst_by,
         "review_threshold_usd": threshold,
+        "review_move_bp": stir_review_move_bp(trade, position),
+        "risk_context": "instrument_dv01_small_move" if stir_review_move_bp(trade, position) else "legacy_or_spot",
+        **_intent_context(trade, position, entry, current_mark),
         "review_required": bool(triggers),
         "review_triggers": triggers,
         "full_size_hold_requires_reunderwrite": "horizon_expired" in triggers,

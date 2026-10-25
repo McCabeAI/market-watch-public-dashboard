@@ -338,6 +338,75 @@ def _futures_strip_average(state: Mapping[str, Any], expression: Mapping[str, An
     }
 
 
+def _structure_leg_specs(expression: Mapping[str, Any]) -> list[tuple[str, str, str]]:
+    kind = str(expression.get("type") or "")
+    if kind == "calendar_spread":
+        curve = str(expression.get("curve_id") or "")
+        return [
+            ("near", curve, str(expression.get("near_expiry") or "")),
+            ("far", curve, str(expression.get("far_expiry") or "")),
+        ]
+    if kind == "butterfly":
+        curve = str(expression.get("curve_id") or "")
+        return [
+            ("wing1", curve, str(expression.get("wing1_expiry") or "")),
+            ("body", curve, str(expression.get("body_expiry") or "")),
+            ("wing2", curve, str(expression.get("wing2_expiry") or "")),
+        ]
+    if kind == "outright_rv":
+        receive = expression.get("receive") if isinstance(expression.get("receive"), Mapping) else {}
+        pay = expression.get("pay") if isinstance(expression.get("pay"), Mapping) else {}
+        return [
+            ("receive", str(receive.get("curve_id") or ""), str(receive.get("expiry") or "")),
+            ("pay", str(pay.get("curve_id") or ""), str(pay.get("expiry") or "")),
+        ]
+    if kind == "curve_rv":
+        long_cal = expression.get("long_calendar") if isinstance(expression.get("long_calendar"), Mapping) else {}
+        short_cal = expression.get("short_calendar") if isinstance(expression.get("short_calendar"), Mapping) else {}
+        return [
+            ("long_calendar_near", str(long_cal.get("curve_id") or ""), str(long_cal.get("near_expiry") or "")),
+            ("long_calendar_far", str(long_cal.get("curve_id") or ""), str(long_cal.get("far_expiry") or "")),
+            ("short_calendar_near", str(short_cal.get("curve_id") or ""), str(short_cal.get("near_expiry") or "")),
+            ("short_calendar_far", str(short_cal.get("curve_id") or ""), str(short_cal.get("far_expiry") or "")),
+        ]
+    raise PaperMarkError(f"unsupported structure type {kind!r}")
+
+
+def _structure_mark(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
+    """Mark structure legs from the frozen curves without resizing contracts."""
+    from scripts.rates.contract_economics import parse_contract_id
+    from scripts.rates.structures import package_mark_bp
+
+    sources: list[str] = []
+    dates: list[str] = []
+    rates: dict[str, float] = {}
+    preview: list[dict[str, Any]] = []
+    for role, curve_id, expiry in _structure_leg_specs(expression):
+        parsed = parse_contract_id(f"{curve_id}_{expiry}")
+        if parsed is None:
+            raise PaperMarkError(f"structure leg {curve_id} {expiry} is not a supported contract")
+        mark = _tradable_curve_contract_mark(state, curve_id, expiry)
+        rates[parsed.alias] = float(mark["value"])
+        rates[role] = float(mark["value"])
+        preview.append({"role": role, "mark_rate": float(mark["value"]), "entry_rate": float(mark["value"])})
+        sources.append(str(mark["source"]))
+        if mark.get("as_of"):
+            dates.append(str(mark["as_of"]))
+    value = package_mark_bp(str(expression.get("type") or ""), preview)
+    if value is None:
+        raise PaperMarkError("structure mark unavailable")
+    return {
+        "value": round(value, 8),
+        "quote_unit": "bps",
+        "source": f"derived:{expression.get('type')}[" + ",".join(sources) + "]",
+        "as_of": min(dates) if dates else state.get("generated_at"),
+        "kind": "derived",
+        "expression": deepcopy(dict(expression)),
+        "leg_rates": rates,
+        "structure_label": expression.get("type"),
+    }
+
+
 def _official_curve_df(
     state: Mapping[str, Any],
     country: str,
@@ -496,7 +565,13 @@ def resolve_paper_mid(
         if kind == "forward_swap":
             return _forward_swap(market_state, expression)
         if kind == "futures_strip_average":
+            if asset_class == "curve":
+                raise PaperMarkError(
+                    "futures_strip_average is a strip average, not a curve spread"
+                )
             return _futures_strip_average(market_state, expression)
+        if kind in {"calendar_spread", "butterfly", "outright_rv", "curve_rv"}:
+            return _structure_mark(market_state, expression)
         raise PaperMarkError(f"unsupported paper expression type {kind!r}")
     if not instrument:
         raise PaperMarkError("instrument is required for a paper mid")
@@ -517,16 +592,137 @@ def _position_lookup(books: Mapping[str, Any], seat: str, position_id: str) -> M
     return find_position(list(positions or []), position_id, owner=seat)
 
 
+def hydrate_structure_rates(position: dict[str, Any], market_state: Mapping[str, Any] | None) -> None:
+    """Fill missing leg rates from the frozen curve. Does not invent a level."""
+    if not position.get("legs"):
+        return
+    if not isinstance(market_state, Mapping):
+        if any(leg.get("entry_rate") is None for leg in position["legs"]):
+            raise PaperMarkError("structure leg rates are missing and market_state was not supplied")
+        return
+    mark = resolve_paper_mid(
+        market_state,
+        str(position.get("instrument") or ""),
+        asset_class=position.get("asset_class"),
+        expression=position.get("paper_expression"),
+    )
+    from scripts.rates.structures import package_mark_bp, update_leg_marks
+
+    rates = mark.get("leg_rates") or {}
+    update_leg_marks(position["legs"], rates)
+    from scripts.rates.structures import apply_mark_fx
+
+    if not apply_mark_fx(position["legs"], market_state):
+        raise PaperMarkError("current FX fixing missing or stale for a structure leg")
+    for leg in position["legs"]:
+        leg["mark_status"] = "ok"
+        if leg.get("entry_rate") is None:
+            if leg.get("mark_rate") is None:
+                raise PaperMarkError(f"structure leg {leg.get('instrument')} has no implied rate")
+            leg["entry_rate"] = leg["mark_rate"]
+    kind = None
+    expression = position.get("paper_expression")
+    if isinstance(expression, Mapping):
+        kind = expression.get("type")
+    kind = kind or position.get("structure_label")
+    package = package_mark_bp(str(kind or ""), position["legs"])
+    if package is None:
+        raise PaperMarkError("structure package mark unavailable")
+    position["entry_price"] = package
+    position["mark_price"] = package
+    position["mark_price_source"] = mark.get("source")
+    position["entry_price_source"] = mark.get("source")
+    position["mark_price_as_of"] = mark.get("as_of")
+    position["entry_price_as_of"] = mark.get("as_of")
+
+
+def marks_are_current(position: Mapping[str, Any]) -> bool:
+    if position.get("mark_status") == "unavailable":
+        return False
+    if (
+        not position.get("legs")
+        and position.get("valuation_method") == "instrument_dv01"
+        and position.get("contract_currency") not in (None, "USD")
+        and (
+            position.get("mark_fx_usd_per_unit") in (None, "")
+            or position.get("mark_fx_status") not in (None, "ok")
+        )
+    ):
+        return False
+    legs = position.get("legs")
+    if not legs:
+        return position.get("mark_price") not in (None, "")
+    for leg in legs:
+        if not isinstance(leg, Mapping):
+            return False
+        if leg.get("mark_status") == "unavailable" or leg.get("mark_rate") is None:
+            return False
+        if leg.get("currency") not in (None, "USD") and (
+            leg.get("mark_fx_usd_per_unit") is None or leg.get("mark_fx_status") not in (None, "ok")
+        ):
+            return False
+    return position.get("mark_price") not in (None, "")
+
+
 def apply_resolved_mark(position: dict[str, Any], mark: Mapping[str, Any]) -> None:
-    position["mark_price"] = mark["value"]
+    legs = position.get("legs")
+    if legs:
+        rates = mark.get("leg_rates") if isinstance(mark.get("leg_rates"), Mapping) else {}
+        missing = [str(leg.get("instrument")) for leg in legs if str(leg.get("instrument")) not in rates]
+        if missing:
+            clear_unresolved_mark(position, reason=f"partial leg marks missing: {missing}")
+            return
+        from scripts.rates.structures import apply_mark_fx, package_mark_bp, update_leg_marks
+
+        update_leg_marks(position["legs"], rates)
+        for leg in position["legs"]:
+            leg["mark_status"] = "ok"
+            leg["mark_as_of"] = mark.get("as_of")
+            leg["mark_source"] = mark.get("source")
+        if not apply_mark_fx(position["legs"], mark.get("market_state") if isinstance(mark.get("market_state"), Mapping) else None):
+            # apply_mark_fx needs the live state; callers pass it via refresh_positions.
+            pass
+        kind = None
+        expression = position.get("paper_expression")
+        if isinstance(expression, Mapping):
+            kind = expression.get("type")
+        package = package_mark_bp(str(kind or position.get("structure_label") or ""), position["legs"])
+        position["mark_status"] = "ok"
+        position.pop("mark_unavailable_reason", None)
+        position["mark_price"] = package
+        if package is None or not marks_are_current(position):
+            clear_unresolved_mark(position, reason="structure package or FX mark incomplete")
+            return
+    else:
+        position["mark_price"] = mark["value"]
     position["mark_price_source"] = mark["source"]
     position["mark_price_as_of"] = mark.get("as_of")
+    position["mark_status"] = "ok"
+    position.pop("mark_unavailable_reason", None)
 
 
-def clear_unresolved_mark(position: dict[str, Any]) -> None:
+def clear_unresolved_mark(position: dict[str, Any], *, reason: str | None = None) -> None:
+    """Drop the package mark and every leg mark together. Stale legs cannot keep a P&L."""
     position["mark_price"] = None
     position["mark_price_source"] = None
     position["mark_price_as_of"] = None
+    position["mark_status"] = "unavailable"
+    position["pnl_unavailable"] = True
+    if reason:
+        position["mark_unavailable_reason"] = reason
+    for leg in position.get("legs") or []:
+        if not isinstance(leg, dict):
+            continue
+        leg["mark_rate"] = None
+        leg["mark_status"] = "unavailable"
+        leg["mark_as_of"] = None
+        leg["mark_source"] = None
+        leg["mark_fx_usd_per_unit"] = None
+        leg["mark_fx_status"] = "unavailable"
+        leg["dv01_usd"] = None
+    if not position.get("legs") and position.get("valuation_method") == "instrument_dv01":
+        position["mark_fx_usd_per_unit"] = None
+        position["mark_fx_status"] = "unavailable"
 
 
 def refresh_positions(
@@ -545,11 +741,38 @@ def refresh_positions(
                 expression=position.get("paper_expression"),
             )
         except PaperMarkError as exc:
-            clear_unresolved_mark(position)
+            clear_unresolved_mark(position, reason=str(exc))
             if alerts is not None:
                 alerts.append(f"Paper mark unavailable for {position.get('instrument')}: {exc}")
             continue
+        mark = dict(mark)
+        mark["market_state"] = market_state
         apply_resolved_mark(position, mark)
+        if position.get("valuation_method") == "instrument_dv01" and not position.get("legs"):
+            from scripts.rates.lifecycle import refresh_outright_fx
+
+            if not refresh_outright_fx(position, market_state):
+                if alerts is not None:
+                    alerts.append(f"FX mark unavailable for {position.get('instrument')}")
+                continue
+        if position.get("legs"):
+            from scripts.rates.structures import apply_mark_fx, package_mark_bp
+
+            if not apply_mark_fx(position["legs"], market_state):
+                clear_unresolved_mark(position, reason="current FX fixing missing or stale")
+                if alerts is not None:
+                    alerts.append(f"FX mark unavailable for {position.get('instrument')}")
+                continue
+            kind = None
+            expression = position.get("paper_expression")
+            if isinstance(expression, Mapping):
+                kind = expression.get("type")
+            package = package_mark_bp(str(kind or position.get("structure_label") or ""), position["legs"])
+            if package is None:
+                clear_unresolved_mark(position, reason="structure package mark incomplete after FX")
+                continue
+            position["mark_price"] = package
+            position["spread_dv01_usd"] = max(abs(float(leg.get("dv01_usd") or 0.0)) for leg in position["legs"])
     return positions
 
 

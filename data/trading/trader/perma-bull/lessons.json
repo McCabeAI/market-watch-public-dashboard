@@ -19,22 +19,30 @@
       ],
       "reinforcement_count": 1,
       "scope": {
+        "instruments": [],
+        "instrument_family": null,
         "asset_class": null,
-        "catalyst_type": null,
         "countries": [],
         "currencies": [],
-        "decision_dimension": null,
-        "failure_mode": null,
-        "instrument_family": null,
-        "instruments": [],
+        "setup_type": null,
         "market_drivers": [],
-        "setup_type": null
+        "catalyst_type": null,
+        "failure_mode": null,
+        "decision_dimension": null
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
       "text": "A rank drop that dwarfs a 0.5bp adverse tick in the live implied is competition variance, not a thesis break, and a recovered rank is not permission to add.",
       "trade_ids": [],
-      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+      "updated_at": "2026-09-29T04:44:08.485973-04:00",
+      "scope_evidence": {
+        "method": "ledger_identity_fields",
+        "status": "insufficient_evidence",
+        "trade_ids": [],
+        "retrievals_backfilled": false,
+        "text_modified": false,
+        "history_modified": false
+      }
     }
   ],
   "schema_version": 1,

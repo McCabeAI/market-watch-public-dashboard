@@ -354,16 +354,16 @@ def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
             "conviction": 70,
             "thesis": "US inflation persistence is cleaner in outright duration than in USD spot.",
             "invalidation": "A decisive downside Core PCE print that removes upside policy risk.",
-            "expression_memo": _rates_memo("US 10Y", "USDJPY", "rates", "Rates-first: short duration is cleaner than USD spot."),
+            "expression_memo": _rates_memo("SOFR_2027-03", "USDJPY", "rates", "Rates-first: short duration is cleaner than USD spot."),
             "actions": [
                 {
                     "action": "OPEN",
-                    "instrument": "US 10Y",
+                    "instrument": "SOFR_2027-03",
                     "side": "short",
                     "notional_usd": 15_000_000,
                     "price": 4.20,
                     "asset_class": "rates",
-                    "expression_memo": _rates_memo("US 10Y", "USDJPY", "rates", "Rates-first: short duration is cleaner than USD spot."),
+                    "expression_memo": _rates_memo("SOFR_2027-03", "USDJPY", "rates", "Rates-first: short duration is cleaner than USD spot."),
                 }
             ],
         }
@@ -372,16 +372,16 @@ def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
             "conviction": 58,
             "thesis": "Easing risk is underpriced in the US front end.",
             "invalidation": "Labor re-acceleration that restores a hike premium.",
-            "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: long front-end duration vs fading USD spot."),
+            "expression_memo": _rates_memo("SOFR_2026-12", "USDJPY", "rates", "Rates-first: long front-end duration vs fading USD spot."),
             "actions": [
                 {
                     "action": "OPEN",
-                    "instrument": "US 2Y",
+                    "instrument": "SOFR_2026-12",
                     "side": "long",
                     "notional_usd": 12_000_000,
                     "price": 3.70,
                     "asset_class": "rates",
-                    "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: long front-end duration vs fading USD spot."),
+                    "expression_memo": _rates_memo("SOFR_2026-12", "USDJPY", "rates", "Rates-first: long front-end duration vs fading USD spot."),
                 }
             ],
         }
@@ -426,16 +426,16 @@ def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
             "conviction": 48,
             "thesis": "The live US policy-path catalyst still belongs on the USD curve first.",
             "invalidation": "The next official US print removes the policy-path surprise.",
-            "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: the catalyst is a front-end policy-path mispricing."),
+            "expression_memo": _rates_memo("SOFR_2026-12", "USDJPY", "rates", "Rates-first: the catalyst is a front-end policy-path mispricing."),
             "actions": [
                 {
                     "action": "OPEN",
-                    "instrument": "US 2Y",
+                    "instrument": "SOFR_2026-12",
                     "side": "short",
                     "notional_usd": 4_000_000,
                     "price": 3.70,
                     "asset_class": "rates",
-                    "expression_memo": _rates_memo("US 2Y", "USDJPY", "rates", "Rates-first: the catalyst is a front-end policy-path mispricing."),
+                    "expression_memo": _rates_memo("SOFR_2026-12", "USDJPY", "rates", "Rates-first: the catalyst is a front-end policy-path mispricing."),
                 }
             ],
         }
@@ -470,7 +470,7 @@ def dry_run_reviews(*, scenario: str = "default") -> dict[str, Any]:
                 "position_id": "__first__",
                 "notional_usd": 5_000_000,
                 "price": 4.25,
-                "expression_memo": _rates_memo("US 10Y", "USDJPY", "rates", "Reduce duration after comparing spot."),
+                "expression_memo": _rates_memo("SOFR_2027-03", "USDJPY", "rates", "Reduce duration after comparing spot."),
             }
         ]
         reviews["perma-bull"]["actions"] = [

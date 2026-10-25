@@ -201,7 +201,7 @@ class TraderFundingTests(unittest.TestCase):
     def test_same_risk_capital_gets_same_sofr_charge_for_skeptic(self) -> None:
         seat = empty_seat("no-trade-skeptic")
         memo = with_tenor_scan({
-            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "rates_candidate": {"instrument": "SOFR_2027-03", "asset_class": "rates", "rationale": "SR3 outright"},
             "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
             "options_candidate": None,
             "selected": "rates",
@@ -219,9 +219,9 @@ class TraderFundingTests(unittest.TestCase):
             seat,
             {
                 "action": "OPEN",
-                "instrument": "US 10Y",
+                "instrument": "SOFR_2027-03",
                 "side": "long",
-                "notional_usd": 40_000_000,
+                "notional_usd": 160_000_000,
                 "price": 4.20,
                 "asset_class": "rates",
                 "expression_memo": memo,
@@ -407,17 +407,24 @@ class PMFundingTests(unittest.TestCase):
         )
         book = books["pms"]["chatgpt"]
         self.assertEqual(book["gross_utilization_usd"], 200_000_000)
-        self.assertEqual(book["funded_draw_usd"], 2_000_000.0)
-        self.assertEqual(book["risk_capital_usd"], 2_000_000.0)
+        # SR3 face USD 1,000,000 and DV01 USD 25: 200 contracts × 100bp = USD 500,000.
+        self.assertEqual(book["funded_draw_usd"], 500_000.0)
+        self.assertEqual(book["risk_capital_usd"], 500_000.0)
         self.assertEqual(book["unused_cash_usd"], CASH_CAPITAL_USD)
         self.assertNotEqual(book["gross_utilization_usd"], book["funded_draw_usd"])
         self.assertEqual(book["gross_notional_limit_usd"], GROSS_NOTIONAL_LIMIT_USD)
 
     def test_rates_futures_fund_standard_shocked_risk_not_full_notional(self) -> None:
-        for instrument, asset in (("SOFR_2027-03", "rates"), ("CORRA_2027-03", "rates"), ("AONIA_2026-10", "rates")):
-            basis = classify_funding_basis({"instrument": instrument, "asset_class": asset, "notional_usd": 50_000_000})
-            self.assertEqual(basis["funding_basis_status"], "risk_capital_1pct_shock")
-            self.assertEqual(basis["funding_draw_usd"], 500_000.0)
+        sofr = classify_funding_basis({"instrument": "SOFR_2027-03", "asset_class": "rates", "notional_usd": 50_000_000})
+        self.assertEqual(sofr["funding_basis_status"], "risk_capital_1pct_shock")
+        # 50 SR3 contracts × USD 25 × 100bp. Not 1% of face.
+        self.assertEqual(sofr["funding_draw_usd"], 125_000.0)
+        self.assertNotEqual(sofr["funding_draw_usd"], 50_000_000)
+        for instrument in ("CORRA_2027-03", "AONIA_2026-10"):
+            basis = classify_funding_basis({"instrument": instrument, "asset_class": "rates", "notional_usd": 50_000_000})
+            self.assertEqual(basis["funding_basis_status"], "unresolved")
+            self.assertEqual(basis["funding_draw_usd"], 0.0)
+            self.assertIsNone(basis["risk_capital_usd"])
 
     def test_spot_funds_one_percent_shocked_risk_and_common_cash_hurdle(self) -> None:
         books = apply_decision(
@@ -470,7 +477,7 @@ class PMFundingTests(unittest.TestCase):
             "market_state": {"status": "fresh", "data": MARKET},
         }
         rates_memo = with_tenor_scan({
-            "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "duration"},
+            "rates_candidate": {"instrument": "SOFR_2027-03", "asset_class": "rates", "rationale": "SR3 outright"},
             "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
             "options_candidate": None,
             "selected": "rates",
@@ -493,13 +500,32 @@ class PMFundingTests(unittest.TestCase):
             },
             selected_bucket="cross_market_rv",
         )
+        curve_memo = with_tenor_scan(
+            {
+                "rates_candidate": {
+                "instrument": "SOFR_2026-12/2027-09",
+                "asset_class": "curve",
+                    "rationale": "calendar",
+                },
+                "spot_candidate": {"instrument": "USDJPY", "asset_class": "spot_fx", "rationale": "spot alt"},
+                "options_candidate": None,
+                "selected": "rates",
+                "rationale": "Rates-first comparison complete.",
+            },
+            selected_bucket="curve",
+        )
         specs = [
-            ("dollar-king", "USDCAD", "spot_fx", 1.36, _spot_memo()),
-            ("rate-hawk", "US 10Y", "rates", 4.20, rates_memo),
-            ("value-guy", "SOFR-CORRA_2Y", "rates_rv", 35.0, rv_memo),
+            ("dollar-king", "USDCAD", "spot_fx", 1.36, 100_000_000, _spot_memo(), None),
+            ("rate-hawk", "SOFR_2027-03", "rates", 3.70, 400_000_000, rates_memo, None),
+            ("value-guy", "SOFR_2026-12/2027-09", "curve", -25.0, 400_000_000, curve_memo, {
+                "type": "calendar_spread",
+                "curve_id": "SOFR",
+                "near_expiry": "2026-12",
+                "far_expiry": "2027-09",
+            }),
         ]
         charges = []
-        for seat_id, instrument, asset, price, memo in specs:
+        for seat_id, instrument, asset, price, notional, memo, expression in specs:
             seat = empty_seat(seat_id)
             apply_action(seat, {"action": "HOLD", "expression_memo": memo}, families=families, run_id="eq-1", when=AS_OF, market_state=MARKET)
             apply_action(
@@ -508,10 +534,11 @@ class PMFundingTests(unittest.TestCase):
                     "action": "OPEN",
                     "instrument": instrument,
                     "side": "long",
-                    "notional_usd": 100_000_000,
+                    "notional_usd": notional,
                     "price": price,
                     "asset_class": asset,
                     "expression_memo": memo,
+                    **({"paper_expression": expression} if expression else {}),
                 },
                 families=families,
                 run_id="eq-2",

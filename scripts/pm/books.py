@@ -337,7 +337,7 @@ def mark_pm_book(
         _force_pm_drawdown_flatten(book, when=when, run_id=run_id)
         return mark_pm_book(book, when=when, run_id=run_id, enforce_stop=False)
 
-    if not book.get("risk_stopped"):
+    if not book.get("risk_stopped") and not book.get("risk_capital_unavailable_positions"):
         assert_cap(book)
     return book
 
@@ -372,6 +372,17 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str | None
         "locked_expression_family": action.get("locked_expression_family"),
         "realized_pnl_usd": action.get("realized_pnl_usd"),
     }
+    for key in (
+        "fill_status",
+        "size_reject_reason",
+        "minimum_executable_increment_usd",
+        "minimum_executable_fraction",
+        "minimum_executable_notional_usd",
+        "package_policy",
+        "zero_lot_policy",
+    ):
+        if action.get(key) not in (None, ""):
+            row[key] = action[key]
     if extra:
         row.update(extra)
     return row
@@ -592,15 +603,15 @@ def apply_action(
 
     had_prior = bool(book.get("last_decision_at") or book.get("last_action"))
     if kind == "OPEN":
-        _open_position(book, action, run_id=run_id, when=stamp)
+        _open_position(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "ADD":
-        _resize(book, action, factor=1, run_id=run_id, when=stamp)
+        _resize(book, action, factor=1, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "REDUCE":
-        _resize(book, action, factor=-1, run_id=run_id, when=stamp)
+        _resize(book, action, factor=-1, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "CLOSE":
-        _close(book, action, run_id=run_id, when=stamp)
+        _close(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "HEDGE":
-        _hedge(book, action, run_id=run_id, when=stamp)
+        _hedge(book, action, run_id=run_id, when=stamp, market_state=market_state)
     elif kind in {"HOLD", "NO_TRADE"}:
         pass
 
@@ -608,11 +619,31 @@ def apply_action(
     book["last_action"] = kind
     _set_decision_fields(book, action, decision)
     book["decision_status"] = _derive_status(book, kind=kind, had_prior_decision=had_prior)
-    book["history"].append(_history_entry(action, when=stamp, run_id=run_id, result="applied"))
+    book["history"].append(
+        _history_entry(
+            action,
+            when=stamp,
+            run_id=run_id,
+            result=(
+                "pending_mark"
+                if action.get("pending_mark")
+                else action.get("fill_status")
+                if action.get("fill_status") in {"zero_lot", "size_rejected"}
+                else "applied"
+            ),
+        )
+    )
     return mark_pm_book(book, when=stamp, run_id=run_id)
 
 
-def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> dict[str, Any]:
+def _open_position(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     notional = _require_notional(action)
     instrument = action.get("instrument")
     side = action.get("side")
@@ -649,7 +680,13 @@ def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str 
         "hedge_of": action.get("hedge_of"),
         "unrealized_pnl_usd": None,
         "pnl_unavailable": False,
+        "expected_mark_direction": action.get("expected_mark_direction"),
     }
+    from scripts.overnight.books import _install_rates_economics
+
+    _install_rates_economics(position, market_state, side=str(side))
+    if position.get("valuation_method") == "unavailable":
+        raise SchemaError(position.get("isolation_reason") or "instrument economics unavailable")
     action["position_id"] = position["position_id"]
     preview = deepcopy(book)
     preview["positions"] = list(preview.get("positions") or []) + [position]
@@ -659,7 +696,15 @@ def _open_position(book: dict[str, Any], action: dict[str, Any], *, run_id: str 
     return position
 
 
-def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id: str | None, when: datetime) -> None:
+def _resize(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    factor: int,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> None:
     position = _find_position(book, action.get("position_id") or "")
     delta = _require_notional(action)
     assert_family_locked(
@@ -668,45 +713,159 @@ def _resize(book: dict[str, Any], action: dict[str, Any], *, factor: int, run_id
         asset_class=action.get("asset_class") or position.get("asset_class"),
         expression=action.get("paper_expression"),
     )
+    old_n = float(position["notional_usd"])
+    if factor < 0 and delta > old_n + 1e-9:
+        raise SchemaError("REDUCE exceeds position notional")
+    new_n = round(old_n - delta, 2) if factor < 0 else round(old_n + delta, 2)
+    from scripts.rates.lifecycle import stamp_structure_nofill, structure_resize_block
+
+    blocked = structure_resize_block(position, old_notional=old_n, new_notional=new_n, market_state=market_state)
+    if blocked:
+        stamp_structure_nofill(action, blocked)
+        if blocked["fill_status"] == "size_rejected":
+            book.setdefault("alerts", []).append(
+                f"{position['position_id']} resize rejected: {blocked.get('reason')}"
+            )
+        return
+    from scripts.overnight.paper_marks import clear_unresolved_mark, marks_are_current, refresh_positions
+
+    stamped = bool(position.get("legs") or position.get("valuation_method") == "instrument_dv01")
+    if stamped and isinstance(market_state, dict):
+        refresh_positions([position], market_state)
+    elif stamped and (position.get("legs") or position.get("contract_currency") not in (None, "USD")):
+        clear_unresolved_mark(position, reason="market state missing; current marks invalidated")
+    if stamped and not marks_are_current(position):
+        action["pending_mark"] = True
+        action["fill_status"] = "pending_mark"
+        action["realized_pnl_usd"] = None
+        action["lots_closed"] = 0
+        action["lots_added"] = 0
+        position["exit_status"] = "pending_mark"
+        position["pnl_unavailable"] = True
+        book.setdefault("alerts", []).append(
+            f"{position['position_id']} {action.get('action') or 'resize'} left pending: current marks or FX are unavailable; no fill or P&L was invented"
+        )
+        return
     if factor < 0:
-        if delta > float(position["notional_usd"]) + 1e-9:
-            raise SchemaError("REDUCE exceeds position notional")
-        exit_price = _require_mark(action, kind="REDUCE", pm_id=book["pm_id"])
-        realized = realized_increment(position, exit_price=exit_price, closed_notional=delta)
-        position["notional_usd"] = round(float(position["notional_usd"]) - delta, 2)
+        old_n = float(position["notional_usd"])
+        new_n = round(old_n - delta, 2)
+        if stamped:
+            from scripts.rates.lifecycle import apply_book_resize
+
+            result = apply_book_resize(position, old_notional=old_n, new_notional=new_n, market_state=market_state)
+            if result.get("pending_mark"):
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                action["realized_pnl_usd"] = None
+                position["exit_status"] = "pending_mark"
+                return
+            if result.get("zero_lot"):
+                action["fill_status"] = "zero_lot"
+                action["lots_closed"] = 0
+                action["realized_pnl_usd"] = 0.0
+                action["zero_lot_policy"] = "sub_lot_request_is_not_a_fill"
+                return
+            realized = float(result["realized_pnl_usd"])
+            action["lots_closed"] = result.get("lots_closed")
+            action["fill_status"] = "executed"
+            position["notional_usd"] = new_n
+            position.pop("_closed_lots", None)
+        else:
+            exit_price = _require_mark(action, kind="REDUCE", pm_id=book["pm_id"])
+            realized = realized_increment(position, exit_price=exit_price, closed_notional=delta)
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
         book["realized_pnl_usd"] = round(float(book["realized_pnl_usd"]) + realized, 2)
         action["realized_pnl_usd"] = realized
-        if position["notional_usd"] <= 1e-9:
+        flat_lots = stamped and (
+            (not position.get("legs") and int(position.get("contracts") or 0) == 0)
+            or (position.get("legs") and all(int(leg.get("contracts") or 0) == 0 for leg in position["legs"]))
+        )
+        if position["notional_usd"] <= 1e-9 or flat_lots:
             book["positions"] = [p for p in book["positions"] if p["position_id"] != position["position_id"]]
     else:
         add_price = _require_mark(action, kind="ADD", pm_id=book["pm_id"])
         old_n = float(position["notional_usd"])
-        if position.get("entry_price") not in (None, ""):
-            position["entry_price"] = (float(position["entry_price"]) * old_n + add_price * delta) / (old_n + delta)
-            position["mark_price"] = action.get("mark_price", add_price)
-            position["entry_price_source"] = "weighted_average_paper_mid"
-            position["entry_price_as_of"] = action.get("paper_mid_as_of")
-            position["mark_price_source"] = action.get("paper_mid_source")
-            position["mark_price_as_of"] = action.get("paper_mid_as_of")
-        preview = deepcopy(book)
-        preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
-        preview_pos["notional_usd"] = round(old_n + delta, 2)
-        assert_cap(preview)
-        position["notional_usd"] = round(old_n + delta, 2)
+        new_n = round(old_n + delta, 2)
+        stamped = bool(position.get("legs") or position.get("valuation_method") == "instrument_dv01")
+        if stamped:
+            from scripts.rates.lifecycle import apply_book_resize
+
+            preview = deepcopy(book)
+            preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
+            preview_result = apply_book_resize(
+                preview_pos,
+                old_notional=old_n,
+                new_notional=new_n,
+                add_price=add_price,
+                market_state=market_state,
+            )
+            if preview_result.get("pending_mark"):
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                return
+            if not preview_result.get("zero_lot"):
+                preview_pos["notional_usd"] = new_n
+            assert_cap(preview)
+            result = apply_book_resize(
+                position,
+                old_notional=old_n,
+                new_notional=new_n,
+                add_price=add_price,
+                market_state=market_state,
+            )
+            if result.get("zero_lot"):
+                action["fill_status"] = "zero_lot"
+                action["lots_added"] = 0
+                action["realized_pnl_usd"] = 0.0
+                action["zero_lot_policy"] = "sub_lot_request_is_not_a_fill"
+                return
+            position["notional_usd"] = new_n
+            action["lots_added"] = result.get("lots_added")
+            action["fill_status"] = "executed"
+            position["entry_price_source"] = "weighted_average_of_actual_lots"
+        else:
+            if position.get("entry_price") not in (None, ""):
+                position["entry_price"] = (float(position["entry_price"]) * old_n + add_price * delta) / new_n
+                position["mark_price"] = action.get("mark_price", add_price)
+                position["entry_price_source"] = "weighted_average_paper_mid"
+                position["entry_price_as_of"] = action.get("paper_mid_as_of")
+                position["mark_price_source"] = action.get("paper_mid_source")
+                position["mark_price_as_of"] = action.get("paper_mid_as_of")
+            preview = deepcopy(book)
+            preview_pos = next(p for p in preview["positions"] if p["position_id"] == position["position_id"])
+            preview_pos["notional_usd"] = new_n
+            assert_cap(preview)
+            position["notional_usd"] = new_n
+            action["fill_status"] = "executed"
     action["run_id"] = run_id
     action["at"] = isoformat(when)
     action["locked_expression_family"] = position.get("locked_expression_family")
 
 
-def _close(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> None:
+def _close(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> None:
     position = _find_position(book, action.get("position_id") or "")
     action["notional_usd"] = position["notional_usd"]
     action["instrument"] = position["instrument"]
     action.setdefault("asset_class", position.get("asset_class"))
-    _resize(book, action, factor=-1, run_id=run_id, when=when)
+    _resize(book, action, factor=-1, run_id=run_id, when=when, market_state=market_state)
 
 
-def _hedge(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, when: datetime) -> None:
+def _hedge(
+    book: dict[str, Any],
+    action: dict[str, Any],
+    *,
+    run_id: str | None,
+    when: datetime,
+    market_state: dict[str, Any] | None = None,
+) -> None:
     target_id = action.get("hedge_of") or action.get("position_id")
     if not target_id:
         raise SchemaError("HEDGE requires hedge_of or position_id of the existing risk")
@@ -725,7 +884,7 @@ def _hedge(book: dict[str, Any], action: dict[str, Any], *, run_id: str | None, 
     hedge.setdefault("paper_expression", target.get("paper_expression"))
     if "side" not in hedge:
         hedge["side"] = "short" if target["side"] == "long" else "long"
-    _open_position(book, hedge, run_id=run_id, when=when)
+    _open_position(book, hedge, run_id=run_id, when=when, market_state=market_state)
     action["position_id"] = hedge.get("position_id")
     action["locked_expression_family"] = hedge.get("locked_expression_family")
 

@@ -55,6 +55,18 @@ def _bucket_payload(item: Any, *, field: str) -> dict[str, Any]:
                 raise SchemaError(f"{field}.instrument must be null or a non-empty string")
         if asset_class not in (None, "", *RATES_ASSET_CLASSES, *ASSET_CLASSES):
             raise SchemaError(f"{field}.asset_class invalid")
+    expression = item.get("expression") if isinstance(item.get("expression"), dict) else item.get("paper_expression")
+    if isinstance(expression, dict):
+        kind = expression.get("type")
+        bucket_name = field.rsplit(".", 1)[-1]
+        if bucket_name == "curve" and kind == "futures_strip_average":
+            raise SchemaError(f"{field} futures_strip_average is a strip average, not a curve spread")
+        if bucket_name == "curve" and kind not in {None, "calendar_spread", "butterfly", "forward_swap", "linear_combo"}:
+            raise SchemaError(f"{field} curve expression type {kind!r} is not a calendar, butterfly, or bond forward")
+        if bucket_name == "cross_market_rv" and kind not in {None, "outright_rv", "curve_rv", "linear_combo"}:
+            raise SchemaError(f"{field} cross-market expression type {kind!r} is not an outright or four-leg curve RV")
+        if bucket_name == "stir_policy_path" and kind in {"calendar_spread", "butterfly", "outright_rv", "curve_rv"}:
+            raise SchemaError(f"{field} {kind} is a relative structure, not a STIR outright or strip")
     return item | {"status": status, "rationale": rationale}
 
 

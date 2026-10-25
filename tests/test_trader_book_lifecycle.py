@@ -270,13 +270,13 @@ class TraderBookLifecycleTests(unittest.TestCase):
             skeptic,
             {
                 "action": "OPEN",
-                "instrument": "US 10Y",
+                "instrument": "SOFR_2027-03",
                 "side": "long",
-                "notional_usd": 1_000_000_000,
-                "price": 4.2,
+                "notional_usd": 4_000_000_000,
+                "price": 3.70,
                 "asset_class": "rates",
                 "expression_memo": with_tenor_scan({
-                    "rates_candidate": {"instrument": "US 10Y", "asset_class": "rates", "rationale": "r"},
+                    "rates_candidate": {"instrument": "SOFR_2027-03", "asset_class": "rates", "rationale": "r"},
                     "spot_candidate": {"instrument": "USDCAD", "asset_class": "spot_fx", "rationale": "s"},
                     "options_candidate": None,
                     "selected": "rates",
@@ -288,7 +288,7 @@ class TraderBookLifecycleTests(unittest.TestCase):
             run_id="tr-skeptic-ok",
             when=AS_OF,
         )
-        self.assertEqual(deployed_notional(skeptic), 1_000_000_000)
+        self.assertEqual(deployed_notional(skeptic), 4_000_000_000)
         self.assertEqual(skeptic["risk_capital_usd"], allocation_limit_usd())
         apply_action(
             skeptic,
