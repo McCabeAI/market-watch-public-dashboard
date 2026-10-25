@@ -143,7 +143,7 @@ def _projected_risk_capital(
                 market_state=market_state,
             )
             # A mark that cannot be priced adds no risk. The booking path records pending_mark.
-            if preview.get("pending_mark") or preview.get("zero_lot"):
+            if preview.get("pending_mark") or preview.get("zero_lot") or preview.get("size_rejected"):
                 return current
             projected["notional_usd"] = new_n
         else:
@@ -576,6 +576,17 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str, resul
         "paper_mid_kind": action.get("paper_mid_kind"),
         "realized_pnl_usd": action.get("realized_pnl_usd"),
     }
+    for key in (
+        "fill_status",
+        "size_reject_reason",
+        "minimum_executable_increment_usd",
+        "minimum_executable_fraction",
+        "minimum_executable_notional_usd",
+        "package_policy",
+        "zero_lot_policy",
+    ):
+        if action.get(key) not in (None, ""):
+            row[key] = action[key]
     if extra:
         row.update(extra)
     return row
@@ -780,7 +791,13 @@ def apply_action(
             action,
             when=stamp,
             run_id=run_id,
-            result="pending_mark" if action.get("pending_mark") else ("zero_lot" if action.get("fill_status") == "zero_lot" else "applied"),
+            result=(
+                "pending_mark"
+                if action.get("pending_mark")
+                else action.get("fill_status")
+                if action.get("fill_status") in {"zero_lot", "size_rejected"}
+                else "applied"
+            ),
             extra={"blocked_families": blocked},
         )
     )
@@ -946,9 +963,25 @@ def _resize(
 ) -> None:
     position = _find_position(seat_book, action.get("position_id") or "")
     delta = _require_notional(action)
-    _refresh_live_marks(position, market_state)
-    if factor < 0 and delta > float(position["notional_usd"]) + 1e-9:
+    old_n = float(position["notional_usd"])
+    if factor < 0 and delta > old_n + 1e-9:
         raise SchemaError("REDUCE exceeds position notional")
+    new_n = round(old_n - delta, 2) if factor < 0 else round(old_n + delta, 2)
+    from scripts.rates.lifecycle import stamp_structure_nofill, structure_resize_block
+
+    blocked = structure_resize_block(position, old_notional=old_n, new_notional=new_n, market_state=market_state)
+    if blocked:
+        stamp_structure_nofill(action, blocked)
+        if blocked["fill_status"] == "size_rejected":
+            seat_book["alerts"].append(
+                f"{position['position_id']} resize rejected: {blocked.get('reason')}"
+            )
+        else:
+            seat_book["alerts"].append(
+                f"{position['position_id']} resize was below one lot on every leg; contracts were left unchanged"
+            )
+        return
+    _refresh_live_marks(position, market_state)
     from scripts.overnight.paper_marks import marks_are_current
 
     if _instrument_position(position) and not marks_are_current(position):

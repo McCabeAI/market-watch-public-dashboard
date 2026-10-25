@@ -372,6 +372,17 @@ def _history_entry(action: dict[str, Any], *, when: datetime, run_id: str | None
         "locked_expression_family": action.get("locked_expression_family"),
         "realized_pnl_usd": action.get("realized_pnl_usd"),
     }
+    for key in (
+        "fill_status",
+        "size_reject_reason",
+        "minimum_executable_increment_usd",
+        "minimum_executable_fraction",
+        "minimum_executable_notional_usd",
+        "package_policy",
+        "zero_lot_policy",
+    ):
+        if action.get(key) not in (None, ""):
+            row[key] = action[key]
     if extra:
         row.update(extra)
     return row
@@ -616,7 +627,9 @@ def apply_action(
             result=(
                 "pending_mark"
                 if action.get("pending_mark")
-                else ("zero_lot" if action.get("fill_status") == "zero_lot" else "applied")
+                else action.get("fill_status")
+                if action.get("fill_status") in {"zero_lot", "size_rejected"}
+                else "applied"
             ),
         )
     )
@@ -700,6 +713,20 @@ def _resize(
         asset_class=action.get("asset_class") or position.get("asset_class"),
         expression=action.get("paper_expression"),
     )
+    old_n = float(position["notional_usd"])
+    if factor < 0 and delta > old_n + 1e-9:
+        raise SchemaError("REDUCE exceeds position notional")
+    new_n = round(old_n - delta, 2) if factor < 0 else round(old_n + delta, 2)
+    from scripts.rates.lifecycle import stamp_structure_nofill, structure_resize_block
+
+    blocked = structure_resize_block(position, old_notional=old_n, new_notional=new_n, market_state=market_state)
+    if blocked:
+        stamp_structure_nofill(action, blocked)
+        if blocked["fill_status"] == "size_rejected":
+            book.setdefault("alerts", []).append(
+                f"{position['position_id']} resize rejected: {blocked.get('reason')}"
+            )
+        return
     from scripts.overnight.paper_marks import clear_unresolved_mark, marks_are_current, refresh_positions
 
     stamped = bool(position.get("legs") or position.get("valuation_method") == "instrument_dv01")
@@ -707,8 +734,6 @@ def _resize(
         refresh_positions([position], market_state)
     elif stamped and (position.get("legs") or position.get("contract_currency") not in (None, "USD")):
         clear_unresolved_mark(position, reason="market state missing; current marks invalidated")
-    if factor < 0 and delta > float(position["notional_usd"]) + 1e-9:
-        raise SchemaError("REDUCE exceeds position notional")
     if stamped and not marks_are_current(position):
         action["pending_mark"] = True
         action["fill_status"] = "pending_mark"

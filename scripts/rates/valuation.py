@@ -260,8 +260,21 @@ def value_position(position: Mapping[str, Any], *, exit_price: float | None = No
                 total = structure_pnl_for_closed_lots(legs, {str(k): int(v) for k, v in explicit.items()})
             else:
                 plan = plan_structure_resize(legs, notional, notional - float(closed_notional))
-                closed_map = {str(row["role"]): int(row["closed_lots"]) for row in plan["per_leg"]}
-                total = structure_pnl_for_closed_lots(legs, closed_map)
+                if plan.get("size_rejected"):
+                    return {
+                        "unrealized_pnl_usd": None,
+                        "pnl_unavailable": True,
+                        "pnl_note": plan.get("reason") or "structure resize rejected; partial package P&L not invented",
+                        "valuation_method": UNAVAILABLE,
+                        "isolated": True,
+                        "structure_label": _expression(position).get("type") or position.get("structure_label"),
+                        "fill_status": "size_rejected",
+                    }
+                if plan.get("zero_lot"):
+                    total = 0.0
+                else:
+                    closed_map = {str(row["role"]): int(row["closed_lots"]) for row in plan["per_leg"]}
+                    total = structure_pnl_for_closed_lots(legs, closed_map)
         else:
             total = structure_pnl_usd(legs)
         if total is None:
