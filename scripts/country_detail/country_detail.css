@@ -492,6 +492,12 @@
   color: var(--mw-muted, #93a5b6);
 }
 
+.country-detail .prima-shadow-readings {
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
 .country-detail .prima-shadow-links {
   display: flex;
   flex-wrap: wrap;
@@ -500,6 +506,41 @@
 
 .country-detail .prima-shadow-links a {
   color: var(--mw-cool, #74b6dc);
+}
+
+.country-detail .prima-shadow-summary {
+  cursor: pointer;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  list-style: none;
+  margin-top: 0.35rem;
+  color: var(--mw-ink-2, #c5d0db);
+  font-size: var(--mw-fs-body, 14px);
+}
+
+.country-detail .prima-shadow-summary::-webkit-details-marker {
+  display: none;
+}
+
+.country-detail .prima-shadow-summary::after {
+  content: "▸";
+  margin-left: auto;
+  padding-left: 0.5rem;
+  color: var(--mw-muted, #93a5b6);
+}
+
+.country-detail details.prima-shadow-more[open] > .prima-shadow-summary::after {
+  transform: rotate(90deg);
+}
+
+.country-detail .prima-shadow-summary:focus-visible {
+  outline: 2px solid var(--mw-warm, #e39d3e);
+  outline-offset: 2px;
+}
+
+.country-detail .prima-shadow-details-body {
+  padding-bottom: 0.2rem;
 }
 
 .country-detail details.prima-ch {

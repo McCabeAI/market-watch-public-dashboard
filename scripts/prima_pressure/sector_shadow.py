@@ -19,16 +19,6 @@ def format_percent(change: float) -> str:
     return f"{text}%"
 
 
-def _band_direction(change: float | None, band: float) -> str:
-    if change is None:
-        return "UNAVAILABLE"
-    if change >= band:
-        return "RISING"
-    if change <= -band:
-        return "FALLING"
-    return "STABLE"
-
-
 def _as_of_date(value: Any) -> date | None:
     if isinstance(value, date):
         return value
@@ -137,8 +127,6 @@ def _sector_row(raw: dict | None, *, series_id: str, as_of: date | None) -> dict
         "table": contract.SECTOR_PPI_TABLE,
         "vector_id": pinned.get("vector_id"),
         "stale": False,
-        "unvalidated_band_direction": "UNAVAILABLE",
-        "unvalidated_band_applied_to_score": False,
     }
     if not raw:
         base["reason"] = "series_not_in_layer"
@@ -178,9 +166,6 @@ def _sector_row(raw: dict | None, *, series_id: str, as_of: date | None) -> dict
             "change_display": format_percent(change_f),
             "quarters_in_change": 2,
             "distinct_release_times": vintages,
-            "unvalidated_band_direction": _band_direction(change_f, contract.IPPI_EX_ENERGY_MOM_BAND),
-            "unvalidated_band": contract.IPPI_EX_ENERGY_MOM_BAND,
-            "unvalidated_band_applied_to_score": False,
         }
     )
     return base
@@ -268,36 +253,10 @@ def _sentence_revision(layer: dict) -> str:
     )
 
 
-def _sentence_sensitivity(rows: list[dict], aggregate: dict) -> str:
-    bits: list[str] = []
-    for row in rows:
-        if row.get("change") is None:
-            continue
-        count = row.get("observation_count")
-        vintages = row.get("distinct_release_times")
-        sample = []
-        if isinstance(count, int):
-            sample.append(f"{count} released observations")
-        if isinstance(vintages, int):
-            sample.append(f"{vintages} release vintage" if vintages == 1 else f"{vintages} release vintages")
-        sample.append("2 adjacent quarters in the latest change")
-        bits.append(
-            f"{row.get('label')} {row.get('change_display')} q/q would read "
-            f"{row.get('unvalidated_band_direction')} ({'; '.join(sample)})"
-        )
-    band = format_percent(contract.IPPI_EX_ENERGY_MOM_BAND)
-    legacy = (
-        f"Legacy scored signal stays {aggregate.get('direction')} "
-        f"{aggregate.get('strength')}, net vote {aggregate.get('internal_net_vote')}."
-    )
-    if not bits:
-        return (
-            "No unvalidated quarterly sensitivity is shown because no sector q/q was released "
-            f"by this as-of. The frozen monthly bands are unchanged. {legacy} Proposed scored change: none."
-        )
+def _sentence_sensitivity() -> str:
     return (
-        f"Unvalidated sensitivity applies the frozen {band} monthly IPPI band to each quarterly "
-        "q/q and does not change the score or the bands. " + "; ".join(bits) + f". {legacy} "
+        "Quarterly q/q readings are not classified with the monthly IPPI or RMPI bands. "
+        "The monthly bands are unchanged, and these quarterly changes are not in the scored vote. "
         "Proposed scored change: none."
     )
 
@@ -358,7 +317,7 @@ def build_sector_shadow(bundle: dict | None, aggregate: dict | None) -> dict[str
             "to the Energy sector."
         ),
         "revision": _sentence_revision(layer),
-        "sensitivity": _sentence_sensitivity(sector_rows, aggregate),
+        "sensitivity": _sentence_sensitivity(),
     }
     ex = monthly_rows["ippi_ex_energy"]
     raw = monthly_rows["rmpi_ex_crude_energy"]
@@ -425,7 +384,6 @@ def build_sector_shadow(bundle: dict | None, aggregate: dict | None) -> dict[str
                     "label": row.get("label"),
                     "change": row.get("change"),
                     "change_display": row.get("change_display"),
-                    "unvalidated_band_direction": row.get("unvalidated_band_direction"),
                     "applied_to_score": False,
                     "observation_count": row.get("observation_count"),
                     "distinct_release_times": row.get("distinct_release_times"),

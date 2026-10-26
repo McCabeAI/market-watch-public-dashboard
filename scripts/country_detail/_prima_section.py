@@ -584,87 +584,74 @@ def _prima_channel_history(channel: str, trend: list[Any]) -> str:
     return " → ".join(bits)
 
 
-def _shadow_row_html(row: Any, esc: Any) -> str:
+def _shadow_reading_html(row: Any, esc: Any) -> str:
+    """One quarterly sector line: name, quarter, q/q, and age. No direction label."""
     if not isinstance(row, Mapping):
         return ""
     label = str(row.get("label") or row.get("series_id") or "Series")
-    freq = str(row.get("frequency") or "")
-    status = str(row.get("status") or "unavailable")
     if row.get("change_display"):
-        kind = "q/q" if row.get("change_kind") == "qoq" else "m/m"
+        bits = [label]
         period = str(row.get("period") or "")
-        bits = [label, freq, period, f"{row.get('change_display')} {kind}"]
-        if row.get("release_time"):
-            bits.append(f"released {row.get('release_time')}")
+        if period:
+            bits.append(period)
+        bits.append(f"{row.get('change_display')} q/q")
         age = row.get("data_age_days")
         if isinstance(age, int) and not isinstance(age, bool):
             bits.append(f"age {age} days")
-        count = row.get("observation_count")
-        if isinstance(count, int) and not isinstance(count, bool):
-            bits.append(f"{count} observations")
         if row.get("stale"):
             bits.append("stale")
-        sens = row.get("unvalidated_band_direction")
-        if sens and sens != "UNAVAILABLE" and row.get("frequency") == "quarterly":
-            bits.append(f"monthly-band sensitivity {sens}, not applied")
-        body = " · ".join(bit for bit in bits if bit)
+        body = " · ".join(bits)
     else:
-        reason = str(row.get("reason") or status)
-        body = f"{label} · {freq} · unavailable ({reason})"
-    note = row.get("coverage_note")
-    note_html = f'<div class="prima-shadow-note">{esc(str(note))}</div>' if note else ""
-    return f'<div class="prima-shadow-row">{esc(body)}</div>{note_html}'
+        reason = str(row.get("reason") or row.get("status") or "unavailable")
+        body = f"{label} · unavailable ({reason})"
+    return f'<li class="prima-shadow-row">{esc(body)}</li>'
+
+
+def _shadow_sector_rows(shadow: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    rows: list[Mapping[str, Any]] = []
+    direct = shadow.get("direct_energy") if isinstance(shadow.get("direct_energy"), Mapping) else {}
+    quarterly = direct.get("quarterly")
+    if isinstance(quarterly, Mapping):
+        rows.append(quarterly)
+    others = shadow.get("other_sectors") if isinstance(shadow.get("other_sectors"), list) else []
+    for row in others:
+        if isinstance(row, Mapping):
+            rows.append(row)
+    return rows
 
 
 def _render_prima_shadow(shadow: Any, esc: Any) -> str:
     if not isinstance(shadow, Mapping):
         return ""
     sentences = shadow.get("sentences") if isinstance(shadow.get("sentences"), Mapping) else {}
-    parts: list[str] = []
+    reading_html = "".join(_shadow_reading_html(row, esc) for row in _shadow_sector_rows(shadow))
+    if not reading_html and not sentences:
+        return ""
+
+    detail_parts: list[str] = []
     for key in (
         "score_guard",
-        "headline_versus_ex_energy",
-        "raw_materials",
         "do_not_sum",
         "no_pass_through_model",
-        "revision",
         "sensitivity",
+        "revision",
     ):
         text = sentences.get(key)
         if text:
-            parts.append(f"<p>{esc(str(text))}</p>")
-
-    direct = shadow.get("direct_energy") if isinstance(shadow.get("direct_energy"), Mapping) else {}
-    direct_rows = [
-        direct.get("quarterly"),
-        direct.get("monthly_ippi_energy"),
-        direct.get("monthly_rmpi_crude_energy"),
-    ]
-    direct_html = "".join(_shadow_row_html(row, esc) for row in direct_rows)
-    if direct_html:
-        parts.append('<div class="prima-shadow-kicker">Direct energy shock, not in the vote</div>')
-        parts.append(direct_html)
-
-    others = shadow.get("other_sectors") if isinstance(shadow.get("other_sectors"), list) else []
-    other_html = "".join(_shadow_row_html(row, esc) for row in others)
-    if other_html:
-        parts.append('<div class="prima-shadow-kicker">Other quarterly sectors, not summed with energy</div>')
-        parts.append(other_html)
-
-    transmission = (
-        shadow.get("transmission_monthly")
-        if isinstance(shadow.get("transmission_monthly"), Mapping)
-        else {}
-    )
-    scored_rows = [
-        transmission.get("ippi_ex_energy"),
-        transmission.get("rmpi_ex_crude_energy"),
-    ]
-    scored_html = "".join(_shadow_row_html(row, esc) for row in scored_rows)
-    if scored_html:
-        parts.append('<div class="prima-shadow-kicker">Monthly readings already in the vote</div>')
-        parts.append(scored_html)
-
+            detail_parts.append(f"<p>{esc(str(text))}</p>")
+    seen_notes: set[str] = set()
+    for row in _shadow_sector_rows(shadow):
+        note = row.get("coverage_note")
+        if not note:
+            continue
+        text = str(note).strip()
+        if not text or text in seen_notes:
+            continue
+        seen_notes.add(text)
+        label = str(row.get("label") or row.get("series_id") or "Sector")
+        detail_parts.append(
+            f'<p class="prima-shadow-note"><b>{esc(label)}.</b> {esc(text)}</p>'
+        )
     links = [
         ("StatCan table 18-10-0292-01", shadow.get("source_url")),
         ("CSV", shadow.get("csv_url")),
@@ -678,15 +665,27 @@ def _render_prima_shadow(shadow: Any, esc: Any) -> str:
         if url
     )
     if link_html:
-        parts.append(f'<p class="prima-shadow-links">{link_html}</p>')
-    if not parts:
-        return ""
+        detail_parts.append(f'<p class="prima-shadow-links">{link_html}</p>')
+
+    details_html = ""
+    if detail_parts:
+        details_html = (
+            '<details class="prima-shadow-more" data-prima-shadow-details>'
+            '<summary class="prima-shadow-summary">Methodology, revisions and sources</summary>'
+            f'<div class="prima-shadow-details-body">{"".join(detail_parts)}</div>'
+            "</details>"
+        )
     status = esc(str(shadow.get("status") or "unavailable"))
+    readings = (
+        f'<ul class="prima-shadow-readings" data-prima-shadow-readings>{reading_html}</ul>'
+        if reading_html
+        else ""
+    )
     return (
         f'<section class="prima-shadow" data-prima-shadow="sector-ppi" data-prima-shadow-status="{status}">'
         f'<div class="prima-shadow-title">Quarterly sector prices '
         f'<span class="prima-ch-layer">Shadow · not in the vote</span></div>'
-        f"{''.join(parts)}</section>"
+        f"{readings}{details_html}</section>"
     )
 
 
