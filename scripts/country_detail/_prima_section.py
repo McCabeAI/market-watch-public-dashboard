@@ -10,13 +10,7 @@ from scripts.prima_pressure import contract as prima_contract
 # Re-exported into render module namespace via import *
 
 
-_PRIMA_CHANNEL_LABELS = {
-    "shock_persistence": "Shock persistence",
-    "production_network_pressure": "Production network pressure",
-    "imported_pressure": "Imported pressure",
-    "consumer_price_breadth": "Consumer price breadth",
-    "demand_pass_through_constraint": "Demand pass-through constraint",
-}
+_PRIMA_CHANNEL_LABELS = dict(prima_contract.CHANNEL_DISPLAY_LABELS)
 _PRIMA_CATEGORIES = ("RISING", "STABLE", "FALLING")
 _PRIMA_DIR_ARROW = {
     "RISING": "↑",
@@ -72,7 +66,7 @@ _COUNT_WORDS = {
     5: "five",
 }
 _CHANNEL_OFFSET_NOUN = {
-    "imported_pressure": "non-energy raw-material prices (imported pressure)",
+    "imported_pressure": "raw-material prices excluding crude energy",
     "production_network_pressure": "non-energy producer prices (production network)",
     "shock_persistence": "Brent curve persistence (shock persistence)",
     "consumer_price_breadth": "CPI breadth (consumer price breadth)",
@@ -517,14 +511,17 @@ def _prima_channel_rule_text(channel: str) -> str:
     if channel == "production_network_pressure":
         b = _prima_band_pct(prima_contract.IPPI_EX_ENERGY_MOM_BAND)
         return (
-            f"Rising means IPPI excluding energy rose {b} or more month over month; "
-            f"falling means a drop of {b} or more; between those bands is stable."
+            f"Monthly layer. Rising means IPPI excluding energy rose {b} or more month over month; "
+            f"falling means a drop of {b} or more; between those bands is stable. "
+            "The quarterly sector PPI is shadow-only and is not an input."
         )
     if channel == "imported_pressure":
         b = _prima_band_pct(prima_contract.RMPI_EX_ENERGY_MOM_BAND)
         return (
-            f"Falling means StatCan raw-materials prices excluding crude energy dropped {b} or more "
-            f"month over month. Rising needs +{b} or more; anything in between is Stable."
+            f"Monthly layer. Falling means StatCan raw-materials prices excluding crude energy "
+            f"dropped {b} or more month over month. Rising needs +{b} or more; anything in between "
+            "is Stable. This is not an import-price index: RMPI includes Canadian raw-material purchases. "
+            "No import-price series is pinned. The stored channel id remains imported_pressure."
         )
     if channel == "consumer_price_breadth":
         rise = prima_contract.BREADTH_RISING_SHARE * 100
@@ -585,6 +582,112 @@ def _prima_channel_history(channel: str, trend: list[Any]) -> str:
         else:
             bits.append(f"{day} {word}")
     return " → ".join(bits)
+
+
+def _shadow_row_html(row: Any, esc: Any) -> str:
+    if not isinstance(row, Mapping):
+        return ""
+    label = str(row.get("label") or row.get("series_id") or "Series")
+    freq = str(row.get("frequency") or "")
+    status = str(row.get("status") or "unavailable")
+    if row.get("change_display"):
+        kind = "q/q" if row.get("change_kind") == "qoq" else "m/m"
+        period = str(row.get("period") or "")
+        bits = [label, freq, period, f"{row.get('change_display')} {kind}"]
+        if row.get("release_time"):
+            bits.append(f"released {row.get('release_time')}")
+        age = row.get("data_age_days")
+        if isinstance(age, int) and not isinstance(age, bool):
+            bits.append(f"age {age} days")
+        count = row.get("observation_count")
+        if isinstance(count, int) and not isinstance(count, bool):
+            bits.append(f"{count} observations")
+        if row.get("stale"):
+            bits.append("stale")
+        sens = row.get("unvalidated_band_direction")
+        if sens and sens != "UNAVAILABLE" and row.get("frequency") == "quarterly":
+            bits.append(f"monthly-band sensitivity {sens}, not applied")
+        body = " · ".join(bit for bit in bits if bit)
+    else:
+        reason = str(row.get("reason") or status)
+        body = f"{label} · {freq} · unavailable ({reason})"
+    note = row.get("coverage_note")
+    note_html = f'<div class="prima-shadow-note">{esc(str(note))}</div>' if note else ""
+    return f'<div class="prima-shadow-row">{esc(body)}</div>{note_html}'
+
+
+def _render_prima_shadow(shadow: Any, esc: Any) -> str:
+    if not isinstance(shadow, Mapping):
+        return ""
+    sentences = shadow.get("sentences") if isinstance(shadow.get("sentences"), Mapping) else {}
+    parts: list[str] = []
+    for key in (
+        "score_guard",
+        "headline_versus_ex_energy",
+        "raw_materials",
+        "do_not_sum",
+        "no_pass_through_model",
+        "revision",
+        "sensitivity",
+    ):
+        text = sentences.get(key)
+        if text:
+            parts.append(f"<p>{esc(str(text))}</p>")
+
+    direct = shadow.get("direct_energy") if isinstance(shadow.get("direct_energy"), Mapping) else {}
+    direct_rows = [
+        direct.get("quarterly"),
+        direct.get("monthly_ippi_energy"),
+        direct.get("monthly_rmpi_crude_energy"),
+    ]
+    direct_html = "".join(_shadow_row_html(row, esc) for row in direct_rows)
+    if direct_html:
+        parts.append('<div class="prima-shadow-kicker">Direct energy shock, not in the vote</div>')
+        parts.append(direct_html)
+
+    others = shadow.get("other_sectors") if isinstance(shadow.get("other_sectors"), list) else []
+    other_html = "".join(_shadow_row_html(row, esc) for row in others)
+    if other_html:
+        parts.append('<div class="prima-shadow-kicker">Other quarterly sectors, not summed with energy</div>')
+        parts.append(other_html)
+
+    transmission = (
+        shadow.get("transmission_monthly")
+        if isinstance(shadow.get("transmission_monthly"), Mapping)
+        else {}
+    )
+    scored_rows = [
+        transmission.get("ippi_ex_energy"),
+        transmission.get("rmpi_ex_crude_energy"),
+    ]
+    scored_html = "".join(_shadow_row_html(row, esc) for row in scored_rows)
+    if scored_html:
+        parts.append('<div class="prima-shadow-kicker">Monthly readings already in the vote</div>')
+        parts.append(scored_html)
+
+    links = [
+        ("StatCan table 18-10-0292-01", shadow.get("source_url")),
+        ("CSV", shadow.get("csv_url")),
+        ("The Daily, 9 October 2026", shadow.get("daily_url")),
+        ("SAP 2026-46 sector methodology", shadow.get("methodology_url")),
+        ("SAP 2026-47 Prima overview", shadow.get("prima_overview_url")),
+    ]
+    link_html = "".join(
+        f'<a href="{esc(str(url))}">{esc(label)}</a>'
+        for label, url in links
+        if url
+    )
+    if link_html:
+        parts.append(f'<p class="prima-shadow-links">{link_html}</p>')
+    if not parts:
+        return ""
+    status = esc(str(shadow.get("status") or "unavailable"))
+    return (
+        f'<section class="prima-shadow" data-prima-shadow="sector-ppi" data-prima-shadow-status="{status}">'
+        f'<div class="prima-shadow-title">Quarterly sector prices '
+        f'<span class="prima-ch-layer">Shadow · not in the vote</span></div>'
+        f"{''.join(parts)}</section>"
+    )
 
 
 def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> str:
@@ -688,6 +791,8 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         ]
         if snippet:
             summary_bits.append(f'<span class="prima-ch-snippet">{esc(snippet)}</span>')
+        if channel in ("production_network_pressure", "imported_pressure"):
+            summary_bits.append('<span class="prima-ch-layer">Monthly</span>')
         if changed:
             summary_bits.append(f'<span class="prima-ch-changed">{esc(changed)}</span>')
 
@@ -717,12 +822,14 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                     continue
                 pieces = []
                 for key in (
+                    "frequency",
                     "mom",
                     "value",
                     "period",
                     "prior_value",
                     "prior_period",
                     "release_time",
+                    "release_age_days",
                     "change_1m_pct",
                     "gap",
                     "corra_rate",
@@ -766,9 +873,17 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                 )
 
         context_line = ""
-        if channel == "imported_pressure":
+        if channel == "production_network_pressure":
             context_line = (
-                "Crude energy is excluded from this channel; oil moves enter through Shock persistence."
+                "This channel is monthly IPPI excluding energy and petroleum products. "
+                "Headline IPPI and the quarterly Energy sector include the energy shock, so oil can "
+                "move those readings while this channel does not. Energy is not added to this vote."
+            )
+        elif channel == "imported_pressure":
+            context_line = (
+                "Crude energy is excluded from this channel; oil moves enter through Shock persistence. "
+                "RMPI excluding crude energy is a raw-material purchase index, including Canadian-produced "
+                "materials. It is not an import-price index, and imported cost pressure is not labeled."
             )
         if context_line:
             why_parts.append(
@@ -818,6 +933,13 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
             raw_bits.append(f'<a href="{esc(statcan_url)}">StatCan table</a>')
         for drv in channel_driver_lines:
             raw_bits.append(f"Stored driver (this run): {esc(drv)}")
+        if channel == "production_network_pressure":
+            raw_bits.append("Layer: monthly. Quarterly sector PPI is not an input.")
+        if channel == "imported_pressure":
+            raw_bits.append(
+                "Interpretation: raw-material purchase prices, not an import price index. "
+                "Stored channel id: imported_pressure."
+            )
         if channel == "shock_persistence":
             for drv in drivers:
                 if "Brent" in drv:
@@ -886,6 +1008,7 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         )
 
     stale_badge = '<span class="prima-stale-badge">Stale inputs</span>' if current.get("stale") else ""
+    shadow_html = _render_prima_shadow(current.get("shadow_sector_layer"), esc)
 
     summary_html = "".join(f"<p>{esc(s)}</p>" for s in summary_sents)
     mpr_html = f'<p class="prima-mpr-glance">{esc(mpr_line)}</p>' if mpr_line else ""
@@ -902,6 +1025,7 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f"{supporting_html}{offset_html}{neutral_html}{unavailable_html}"
         f"{mpr_html}"
         f'<div class="prima-channels">{"".join(channel_html_parts)}</div>'
+        f"{shadow_html}"
         f"{strip_html}"
         f'<p class="prima-meta-line">{esc(meta_line)}</p>'
         f'<details class="prima-raw prima-raw-run" data-prima-raw="run">'

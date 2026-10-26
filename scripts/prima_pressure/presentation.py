@@ -113,6 +113,9 @@ def project_block(block: dict[str, Any]) -> dict[str, Any]:
     }
     if channel_evidence is not None:
         projected["channel_evidence"] = channel_evidence
+    shadow = block.get("shadow_sector_layer")
+    if isinstance(shadow, dict):
+        projected["shadow_sector_layer"] = shadow
     return projected
 
 

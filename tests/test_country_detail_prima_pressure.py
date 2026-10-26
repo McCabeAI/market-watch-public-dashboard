@@ -800,7 +800,11 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             'prima-list-label">Neutral', 1
         )[0]
         self.assertNotIn("Production network pressure", offset_block)
-        self.assertIn("Imported pressure", offset_block)
+        self.assertIn("Raw-material cost pressure", offset_block)
+        self.assertNotIn("Imported pressure", offset_block)
+        self.assertIn('class="prima-ch-layer">Monthly', prima)
+        self.assertIn("not an import-price index", prima)
+        self.assertIn("Headline IPPI and the quarterly Energy sector", prima)
         neutral_block = prima.split('prima-list-label">Neutral', 1)[1].split("</ul>", 1)[0]
         self.assertIn("Production network pressure", neutral_block)
 
@@ -884,11 +888,13 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         demand = html.split('data-prima-why="demand_pass_through_constraint"', 1)[1].split(
             "</details>", 1
         )[0]
-        self.assertIn("Earlier stored reading", demand)
-        self.assertIn("22 Oct", demand)
-        self.assertIn("0.50 pp below", demand)
+        self.assertIn('data-prima-evidence="direct"', demand)
+        self.assertIn("gap: -0.5", demand)
+        self.assertIn("corra_rate: 2.25", demand)
+        self.assertIn("22 Oct Rising", demand)
+        self.assertIn("26 Oct Rising", demand)
 
-    def test_repo_imported_falling_missing_stored_mom(self) -> None:
+    def test_repo_imported_falling_shows_stored_mom(self) -> None:
         presentation = build_presentation(ROOT)
         html = render_country_detail(
             "CA",
@@ -899,11 +905,15 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         imported = html.split('data-prima-why="imported_pressure"', 1)[1].split(
             "</details>", 1
         )[0]
-        self.assertIn('data-prima-evidence="missing"', imported)
-        self.assertIn("23 Oct", imported)
+        self.assertIn('data-prima-evidence="direct"', imported)
+        self.assertIn("not an import-price index", imported)
+        self.assertIn("value: 183.2", imported)
+        self.assertIn("prior_value: 184.0", imported)
+        self.assertIn("period: 2026-09", imported)
         self.assertIn("21 Oct Rising → 22 Oct Unavailable", imported)
-        self.assertIn("Falling", imported)
+        self.assertIn("23 Oct Falling → 26 Oct Falling", imported)
         self.assertIn('data-prima-channel-direction="FALLING"', html)
+        self.assertNotIn("Imported pressure", html)
 
     def test_imported_pressure_snippet_names_exact_series(self) -> None:
         """The short label must not imply all energy components were removed."""

@@ -32,7 +32,8 @@ STABLE_USD = 2.0
 PATH_PERSISTENCE_PCT = 0.02
 
 # Producer-price month-over-month bands. Energy-inclusive IPPI and crude-energy
-# RMPI are not allowed to drive the production-network or imported channels.
+# RMPI do not drive the scored production-network or raw-material channels.
+# Quarterly sector PPI changes are not scored with these bands.
 IPPI_EX_ENERGY_MOM_BAND = 0.003
 RMPI_EX_ENERGY_MOM_BAND = 0.004
 PRODUCER_STALE_RELEASE_DAYS = 75
@@ -130,7 +131,8 @@ PRODUCER_SERIES = (
         "seasonal_status": "NSA",
         "units": "index",
         "frequency": "monthly",
-        "channel_role": "production_network_fallback",
+        "channel_role": "production_network_scored_monthly",
+        "legacy_channel_role": "production_network_fallback",
     },
     {
         "series_id": "ippi_energy",
@@ -178,19 +180,154 @@ PRODUCER_SERIES = (
         "seasonal_status": "NSA",
         "units": "index",
         "frequency": "monthly",
-        "channel_role": "imported_pressure_fallback",
+        "channel_role": "raw_material_cost_pressure",
+        "legacy_channel_role": "imported_pressure_fallback",
+        "import_price_index": False,
     },
 )
 
-SECTOR_PPI_GAP = {
-    "series_id": "sector_ppi",
+# Table 18-10-0292-01, locked 2026-10-26 from the 2026-10-09 public release.
+# WDS getSeriesInfoFromCubePidCoord and getDataFromVectorsAndLatestNPeriods,
+# and the English CSV 18100292. frequencyCode 9 is quarterly. memberUomCode 398
+# is Index, 2018=100. Coordinates are the 10-part WDS form; CSV coordinates are
+# the unpadded member path. Sector labels are the official member names.
+SECTOR_PPI_TABLE = "18-10-0292-01"
+SECTOR_PPI_PRODUCT_ID = 18100292
+SECTOR_PPI_FREQUENCY = "quarterly"
+SECTOR_PPI_FREQUENCY_CODE = 9
+SECTOR_PPI_MEMBER_UOM_CODE = 398
+SECTOR_PPI_UNITS = "index_2018_100"
+SECTOR_PPI_SEASONAL_STATUS = "NSA"
+SECTOR_PPI_FIRST_PUBLIC_RELEASE = "2026-10-09"
+SECTOR_PPI_SURVEY = "5435"
+# Monitoring freshness only, not a Prima parameter. The first vintage covered
+# 2026-Q2 and was released 2026-10-09 (101 days after 2026-06-30). 120 days
+# after release_time keeps that vintage from being marked stale before another
+# quarterly Daily can arrive. A release 120 days old is still fresh; 121 is stale.
+SECTOR_PPI_STALE_RELEASE_DAYS = 120
+SECTOR_PPI_LATEST_N = 200
+SECTOR_PPI_REVISION_QUARTERS = 2
+SECTOR_PPI_QUARTER_START_MONTHS = (1, 4, 7, 10)
+SECTOR_PPI_TABLE_URL = "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1810029201"
+SECTOR_PPI_CSV_URL = "https://www150.statcan.gc.ca/n1/tbl/csv/18100292-eng.zip"
+SECTOR_PPI_DAILY_URL = "https://www150.statcan.gc.ca/n1/daily-quotidien/261009/dq261009f-eng.htm"
+SECTOR_PPI_METHODOLOGY_URL = "https://www.bankofcanada.ca/wp-content/uploads/2026/09/sap2026-46.pdf"
+SECTOR_PPI_DOI = "https://doi.org/10.34989/sap-2026-46"
+PRIMA_OVERVIEW_URL = "https://www.bankofcanada.ca/wp-content/uploads/2026/09/sap2026-47.pdf"
+
+SECTOR_PPI_SERIES = (
+    {
+        "series_id": "sector_ppi_energy",
+        "sector_label": "Energy",
+        "title": "Canada;Energy",
+        "table": SECTOR_PPI_TABLE,
+        "product_id": SECTOR_PPI_PRODUCT_ID,
+        "coordinate": "1.1.0.0.0.0.0.0.0.0",
+        "csv_coordinate": "1.1",
+        "vector_id": 1951246998,
+        "frequency": SECTOR_PPI_FREQUENCY,
+        "frequency_code": SECTOR_PPI_FREQUENCY_CODE,
+        "seasonal_status": SECTOR_PPI_SEASONAL_STATUS,
+        "units": SECTOR_PPI_UNITS,
+        "member_uom_code": SECTOR_PPI_MEMBER_UOM_CODE,
+        "channel_role": "shadow_direct_energy",
+        "scored": False,
+        "coverage_note": (
+            "Official StatCan sector Energy. Bank of Canada Staff Analytical Paper 2026-46 "
+            "groups NAICS 211 oil and gas extraction, 2121 coal mining, and 22 utilities. "
+            "This is the direct quarterly energy producer-price aggregate."
+        ),
+    },
+    {
+        "series_id": "sector_ppi_non_energy",
+        "sector_label": "Non-Energy",
+        "title": "Canada;Non-Energy",
+        "table": SECTOR_PPI_TABLE,
+        "product_id": SECTOR_PPI_PRODUCT_ID,
+        "coordinate": "1.2.0.0.0.0.0.0.0.0",
+        "csv_coordinate": "1.2",
+        "vector_id": 1951246999,
+        "frequency": SECTOR_PPI_FREQUENCY,
+        "frequency_code": SECTOR_PPI_FREQUENCY_CODE,
+        "seasonal_status": SECTOR_PPI_SEASONAL_STATUS,
+        "units": SECTOR_PPI_UNITS,
+        "member_uom_code": SECTOR_PPI_MEMBER_UOM_CODE,
+        "channel_role": "shadow_non_energy_commodities",
+        "scored": False,
+        "coverage_note": (
+            "Official StatCan sector Non-Energy. SAP 2026-46 defines it as selected agriculture, "
+            "forestry, fishing, metal-ore mining, and non-metallic mineral mining. It is not IPPI "
+            "excluding energy and it is not a residual of all non-energy producer prices."
+        ),
+    },
+    {
+        "series_id": "sector_ppi_goods",
+        "sector_label": "Goods",
+        "title": "Canada;Goods",
+        "table": SECTOR_PPI_TABLE,
+        "product_id": SECTOR_PPI_PRODUCT_ID,
+        "coordinate": "1.3.0.0.0.0.0.0.0.0",
+        "csv_coordinate": "1.3",
+        "vector_id": 1951247000,
+        "frequency": SECTOR_PPI_FREQUENCY,
+        "frequency_code": SECTOR_PPI_FREQUENCY_CODE,
+        "seasonal_status": SECTOR_PPI_SEASONAL_STATUS,
+        "units": SECTOR_PPI_UNITS,
+        "member_uom_code": SECTOR_PPI_MEMBER_UOM_CODE,
+        "channel_role": "shadow_goods",
+        "scored": False,
+        "coverage_note": (
+            "Official StatCan sector Goods. SAP 2026-46 includes manufacturing, whose price source "
+            "is total IPPI vector 1230995983 (energy and petroleum products included), plus selected "
+            "residential and non-residential building construction. It is not a non-energy goods index "
+            "and must not be added to the Energy sector."
+        ),
+    },
+    {
+        "series_id": "sector_ppi_services",
+        "sector_label": "Services",
+        "title": "Canada;Services",
+        "table": SECTOR_PPI_TABLE,
+        "product_id": SECTOR_PPI_PRODUCT_ID,
+        "coordinate": "1.4.0.0.0.0.0.0.0.0",
+        "csv_coordinate": "1.4",
+        "vector_id": 1951247001,
+        "frequency": SECTOR_PPI_FREQUENCY,
+        "frequency_code": SECTOR_PPI_FREQUENCY_CODE,
+        "seasonal_status": SECTOR_PPI_SEASONAL_STATUS,
+        "units": SECTOR_PPI_UNITS,
+        "member_uom_code": SECTOR_PPI_MEMBER_UOM_CODE,
+        "channel_role": "shadow_services",
+        "scored": False,
+        "coverage_note": (
+            "Official StatCan sector Services. SAP 2026-46 covers selected wholesale, retail, rail "
+            "freight, truck transportation, couriers, and commercial machinery rental and leasing. "
+            "Coverage is incomplete and the index starts later than the other three sectors. This is "
+            "an observed sector price, not an estimated pass-through elasticity."
+        ),
+    },
+)
+
+IMPORT_PRICE_MEASURE = {
     "status": "unavailable",
-    "reason": "authoritative_sector_ppi_series_not_locked",
+    "reason": "no_pinned_import_price_series",
+    "series_id": None,
     "documentation": (
-        "Joo et al., Sector-based producer price indexes, Bank of Canada Staff Analytical Paper 2026-46 "
-        "(https://doi.org/10.34989/sap-2026-46). No machine-readable cube or vector was locked in this "
-        "repository on 2026-10-20. IPPI excluding energy and RMPI excluding crude energy are the official fallback."
+        "RMPI table 18-10-0268-01 prices raw materials purchased by Canadian manufacturers and "
+        "includes domestically produced materials. It is not an import price index. Prima's import "
+        "node in Staff Analytical Paper 2026-47 is not identified with RMPI. No import-price cube "
+        "is pinned here, so imported cost pressure is not labeled."
     ),
+}
+
+# Stored channel id imported_pressure is unchanged so earlier snapshots still line up.
+# The display label is the corrected reading of that id.
+CHANNEL_DISPLAY_LABELS = {
+    "shock_persistence": "Shock persistence",
+    "production_network_pressure": "Production network pressure",
+    "imported_pressure": "Raw-material cost pressure",
+    "consumer_price_breadth": "Consumer price breadth",
+    "demand_pass_through_constraint": "Demand pass-through constraint",
 }
 
 # Official CPI identities already locked in scripts/canadian_cpi_release/contract.py.
@@ -281,6 +418,8 @@ LAST_MPR_ANCHOR = {
     },
 }
 
+# imported_pressure remains the stored key. Its display label is raw-material cost
+# pressure. Do not describe it as imported cost pressure: no import-price series is pinned.
 CHANNELS = (
     "shock_persistence",
     "production_network_pressure",
@@ -288,6 +427,36 @@ CHANNELS = (
     "consumer_price_breadth",
     "demand_pass_through_constraint",
 )
+
+
+def sector_ppi_unavailable(reason: str, *, detail: str | None = None) -> dict:
+    """Fail-closed quarterly sector layer. No index levels and no changes."""
+    payload = {
+        "schema_version": "canada_prima_sector_ppi_v1",
+        "series_id": "sector_ppi",
+        "status": "unavailable",
+        "reason": reason,
+        "frequency": SECTOR_PPI_FREQUENCY,
+        "table": SECTOR_PPI_TABLE,
+        "product_id": SECTOR_PPI_PRODUCT_ID,
+        "scored": False,
+        "shadow_only": True,
+        "applied_to_net_vote": False,
+        "source_url": SECTOR_PPI_TABLE_URL,
+        "csv_url": SECTOR_PPI_CSV_URL,
+        "daily_url": SECTOR_PPI_DAILY_URL,
+        "methodology_url": SECTOR_PPI_METHODOLOGY_URL,
+        "prima_overview_url": PRIMA_OVERVIEW_URL,
+        "first_public_release": SECTOR_PPI_FIRST_PUBLIC_RELEASE,
+        "series": [],
+        "documentation": (
+            "Statistics Canada table 18-10-0292-01 (Sector-based Producer Price Indexes, quarterly) "
+            "was first released on 2026-10-09. This block contains no quarterly observations."
+        ),
+    }
+    if detail:
+        payload["detail"] = detail[:300]
+    return payload
 
 
 def contract_symbol(root: str, year: int, month: int) -> str:
