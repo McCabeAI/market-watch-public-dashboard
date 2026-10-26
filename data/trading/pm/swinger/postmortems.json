@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-10-26T08:50:55.331461-04:00",
+      "causal": {
+        "assumptions_right": "Concentrated unhedged receive while March 2027 was rich to cash; implied-rate compression, not FX or oil, was the driver; exiting at 3.00 locked the move before dual central-bank week.",
+        "assumptions_wrong_or_underweighted": "Once the mark reached 3.00, leftover versus cash was event binary on the 28 October 2.50 decision rather than residual swing edge.",
+        "causal_divergence": "The 13bp compression was the original mispricing being extracted. After 3.00 the remaining gap versus cash was meeting-week binary, which is why the book was closed rather than held.",
+        "decision_quality_attribution": "timing",
+        "future_implication": "Do not reopen the same CORRA receive within a few basis points of a just-booked exit unless a new dislocation appears versus cash or versus the announced Bank of Canada path.",
+        "observed_reality": "The mark fell 13bp from 3.13 to 3.00 as the priced Canadian hike path compressed; leftover versus cash then became event risk rather than extractable mispricing.",
+        "original_belief": "Receive March 2027 CORRA while the contract was rich to cash; implied would compress toward cash 2.25 and a near-term 2.50 Bank of Canada outcome.",
+        "same_information_counterfactual": "Holding through Bank of Canada and the Fed would have converted a harvested 13bp swing into a binary on the 28 October 2.50 decision. A hawkish March 2027 repricing back through 3.13 before the close would have erased the trade."
+      },
+      "expression_assessment": "Outright March 2027 CORRA receive isolated implied-rate compression rather than FX or oil.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-10-23T23:16:17.729526-04:00",
+        "conviction": 72,
+        "entry_mark": 3.13,
+        "exit_mark": 3.0,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2939013,
+        "instrument": "CORRA_2027-03",
+        "invalidation": "Close if BoC delivers or explicitly endorses a 2027 path consistent with CRAH27 holding at or above the 3.13 entry, or if Canada CPI-trim/median leave the packet 1.9/2.0 zone higher while employment/wages reverse the August -42k / +2.0% cooling. Close if CRAH27 implied rises toward CRAM27 3.365 rather than cheapening. A US-only SOFR selloff that leaves CORRA_2027-03 unchanged is not invalidation. Energy headlines without a core/labor break are not invalidation. No hedge: if the thesis fails, close.",
+        "opened_at": "2026-09-19T22:52:44.433062-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 327500.0,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": "Do not reopen the same CORRA receive within a few basis points of a just-booked exit unless a new dislocation appears versus cash or versus the announced Bank of Canada path.",
+      "lesson": "A realized receive that has already compressed to the event-implied print is finished; the next 10bp is meeting-week binary, not the original mispricing.",
+      "no_new_lesson": null,
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-81b056918e01",
+      "run_id": "overnight-20261026",
+      "sizing_assessment": "Size came from the adverse path, not notional hunger, and the close did not leave a warehouse stub.",
+      "tags": [],
+      "thesis_assessment": "Rich-to-cash receive was the right concentrated expression while 3.13 still sat well above cash and the near-term 2.50 path.",
+      "timing_assessment": "The 3.00 exit locked the 13bp before dual central-bank week converted leftover versus cash into event binary.",
+      "trade_id": "trd-pm-swinger-pm-swinger-2070479ca321",
+      "what_failed": "Nothing material. Tape now 3.005 versus 3.00 exit; almost no residual edge was left on the table.",
+      "what_worked": "Concentrated unhedged receive while March 2027 CORRA was rich to cash; sized from adverse P&L path rather than notional hunger; exited at 3.00 instead of warehousing a finished gap into event week."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

@@ -1400,6 +1400,77 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "Canada\u2019s impulse is still rising and the 28 October decision is live, so the existing March CORRA receive is already the concentrated rates expression into hike risk. Overnight markets were defensive, with crude firm and the U.S. long bond grinding toward five percent, but that tape does not create a trusted offset while new risk for this seat is closed. The quarantined New Zealand versus U.S. ten-year residual stays parked because it cannot be marked or flattened at a trusted price."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the markable CAD March 2027 receive. New risk is unavailable while the New Zealand versus US 10-year residual cannot be marked. No add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Unmarkable residual. Hold only. No invented New Zealand exit price, no close, no hedge.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-26T08:50:55.493602-04:00",
+      "conviction": 38,
+      "decision_fingerprint": "cd3753c842f53a879ac0ae1b8c0e33fe989654a83f09d6dd03b81597519c3691",
+      "event_id": "jde-85e9e18b26bd46ff",
+      "funding_view": null,
+      "invalidation": "NZ-US 10Y becomes independently markable with a trusted close/hedge path; CORRA Mar-27 reprices higher through 3.005 toward a durable 2.50 hold that breaks the receive; or the new-risk freeze lifts and a cleaner expression appears in the frozen tape.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-3afafe53c6d7",
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9405455b689dbc3e979c1352e155069c6aee51000a933dc07951bf443a213c95",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4d05e89ba62aa9d9834043518bc8cab8b0f719b04dd13746999acce396f3086d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "c2923c5580ea169d6883e231feb6e3cdee4b18b52baeda7b8743aec40ea7aae8",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261026-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The markable book is a 450mm receive in CORRA Mar-27 (cash 2.25 versus 3.005 futures, BoC poll 2.50 on 28 Oct) held through this week's Fed. The 80mm short NZ-US 10Y residual cannot be marked, so this seat has no new risk capacity and will not invent an NZ exit price. Trader Room tickets are non-expansive (holds, closes, no-trade); contested USD STIR and FX names are not funded while the residual is unmanageable. Capital preservation dominates the allocator grind until the NZ-US line can be marked.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "The markable book is a 450mm receive in CORRA Mar-27 (cash 2.25 versus 3.005 futures, BoC poll 2.50 on 28 Oct) held through this week's Fed. The 80mm short NZ-US 10Y residual cannot be marked, so this seat has no new risk capacity and will not invent an NZ exit price. Trader Room tickets are non-expansive (holds, closes, no-trade); contested USD STIR and FX names are not funded while the residual is unmanageable. Capital preservation dominates the allocator grind until the NZ-US line can be marked."
     }
   ],
   "schema_version": 1,

@@ -99,6 +99,39 @@
         "profit_giveback"
       ],
       "what_happened_vs_expected": "The book treated the SOFR/CORRA and US2/CA2 gap as sufficient to hold winner-size long USDCAD after a material run. Observed path was a large giveback with spot now 1.3995 through the 1.401 entry, while three-digit oil, rising Canadian impulse, and a Bank of Canada hike poll supported CAD. That is harvest-trigger tape, not a dip that validates winner size."
+    },
+    {
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "attribution": [
+        "sizing",
+        "catalyst",
+        "thesis"
+      ],
+      "causal": {
+        "assumptions_right": "The United States still pays more than Canada (3.90 versus 2.25, ten-year near 5.00). Dollar-Canada, not a cross, was the right expression of that gap.",
+        "assumptions_wrong_or_underweighted": "Three-digit oil as a Canadian terms-of-trade and currency impulse; Canada's willingness to hike toward 2.50; the idea that leftover size after a paid win is a free option on peak recapture.",
+        "causal_divergence": "The rate gap remained, but oil and the Canadian hiking impulse became the binding near-term drivers, so the residual behaved like a short-oil and short-Canada-policy hold rather than a pure rate-differential position.",
+        "decision_quality_attribution": "sizing",
+        "future_implication": "After a material dollar-Canada win, three-digit oil plus a rising Canadian impulse is a harvest to flat when you would not initiate from zero. Reduced leftover size is still a peak-recapture hold.",
+        "observed_reality": "Crude stayed three-digit even after a more-than-2% session drop, Canadian hike impulse rose into the 28 Oct meeting, and the residual gave back profits instead of recapturing the peak.",
+        "original_belief": "United States policy-rate premium versus Canada would keep dollar-Canada supported, so a residual long after the first cut would still earn the gap and could recapture the high.",
+        "same_information_counterfactual": "With oil already three-digit and a Canadian hike in the poll, the first harvest should have gone to flat, not to a still-large 3 million leftover that required a second review after giveback."
+      },
+      "chase_or_revenge": "no",
+      "lesson_id": "les-6cdc8a548aec",
+      "no_new_lesson": null,
+      "overconfidence_risk": "yes",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "pressure_effect": "distorting",
+      "reflection_due_id": "rfd-34f75a9feeff",
+      "reflection_id": "prf-0ec2750b8142",
+      "run_id": "overnight-20261026",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "Expected the leftover rate premium to stabilize or lift dollar-Canada; instead profits were given back as oil stayed three-digit and Canada priced a hike."
     }
   ],
   "schema_version": 1,

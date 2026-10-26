@@ -1296,6 +1296,64 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "CADJPY at 112.04 versus entry 110.90 still isolates hawkish Bank of Canada plus oil-linked CAD against easy yen at TONA 1.227, with Brent 113.17 and WTI 99.47. A USD pair would smuggle Fed beta into the same view; AUDCAD is not the substitute. The modest pullback from last mark 112.40 stays inside that cross, so hold the 15 million long."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CADJPY",
+          "notional_usd": 15000000,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "Close the long CADJPY residual. The oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy carry is not an edge that would be initiated from flat into the Bank of Canada date.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "3ef0fa4cbee044ede324f0a951b4e1a445c3eaf6a08fada2a0e098c434185583",
+      "event_id": "jde-1733a8f239c44200",
+      "funding_view": null,
+      "invalidation": "A fresh packet print that oil has stabilized or reversed while the CA\u2013JP policy/growth gap widens, such that CADJPY would be initiated from flat as a clean non-USD expression; no price levels in packet (null).",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-44de67c4b24f"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-44de67c4b24f"
+      ],
+      "memory_context_sha256": "c7835a87f8d8ef614bce9b8d99395b4bd532ef0552ff3d3fb7b802b109207db2",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7ab356985c951e47bd6136400ade7c28c9ef4fbe5c15886c280a3219a4540920"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the long CADJPY residual. Verified tape is CADJPY 112.04, CORRA 2.25 versus an easy-yen/TONA backdrop (BoJ call ~1.25), WTI 103.27 and Brent 116.72 with session oil down more than 2%, and a 28 Oct BoC poll at 2.50; any USD pair would still smuggle Fed beta. the oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy/carry is not an edge I would initiate from flat into the BoC date. Unknowns are valuation, exact TONA, and whether 2.50 is hold or hike versus the overnight setting; none of that supports a residual or a replacement cross, and AUDCAD stays flat per lesson.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "Close the long CADJPY residual. Verified tape is CADJPY 112.04, CORRA 2.25 versus an easy-yen/TONA backdrop (BoJ call ~1.25), WTI 103.27 and Brent 116.72 with session oil down more than 2%, and a 28 Oct BoC poll at 2.50; any USD pair would still smuggle Fed beta. the oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy/carry is not an edge I would initiate from flat into the BoC date. Unknowns are valuation, exact TONA, and whether 2.50 is hold or hike versus the overnight setting; none of that supports a residual or a replacement cross, and AUDCAD stays flat per lesson."
     }
   ],
   "schema_version": 1,

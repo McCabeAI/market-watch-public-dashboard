@@ -47,6 +47,32 @@
       "postmortem_id": "pmd-6734b7229e26",
       "status": "submitted",
       "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
+    },
+    {
+      "created_at": "2026-10-26T07:37:10.682323-04:00",
+      "created_run_id": "overnight-20261026",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-26T07:37:10.682323-04:00",
+        "conviction": 58,
+        "entry_mark": 110.9,
+        "exit_mark": 112.04,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2080573,
+        "instrument": "CADJPY",
+        "invalidation": "The CADJPY long is wrong if Brent no longer supports cheap CAD versus JPY, if the cheapness is a yen-haven bid rather than CAD lag, or if a non-recycled AU-versus-CA gap becomes the clearer cross.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 154437.38,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-ecc05f983487",
+      "status": "due",
+      "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
     }
   ],
   "schema_version": 1,

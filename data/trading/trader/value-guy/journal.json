@@ -1254,6 +1254,60 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "CA-US 2Y at -143bp sits in the 10th percentile of the 1-year range, but cash SOFR-CORRA is already 165bp (3.90 versus 2.25), so the 2Y spread is cloning the policy gap rather than pricing a duration or valuation residual. USDCAD at 1.3995 (84th percentile over 5 years) does not make that pack cheap; with the 2Y-minus-cash residual negligible, CAD cheapness if any lives in spot, and this packet still supplies no REER, PPP, terms-of-trade, or external-balance anchor that would force a spot expression now. NZ cross-market RV is unmarkable, so the flat book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The marked cash SOFR-CORRA gap is 165bp while Canada-US 10-year already sits inside that policy gap. A CAD rates pack would clone the cash differential rather than a residual dislocation, and USDCAD has no valuation anchor in this packet. Stay flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 35,
+      "decision_fingerprint": "159e1bd11e7e0e893e6e6178097bdf0995a7de8572402ed21a5e5cdac8dfe16a",
+      "event_id": "jde-4bdb07297e7d4504",
+      "funding_view": null,
+      "invalidation": "Stand-down is wrong if a later packet prints 2Y SOFR\u2013CORRA materially wider than cash 165bp (a non-cloned rates residual) or a REER/PPP/terms-of-trade dislocation versus USDCAD 1.3995. A marked AU/EA/JP cross-market yield relationship that is historically extreme versus Canada or the US would also reopen the remit.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f383d5b0cfe367b32c07341573277e1f7c41435c303cece48de9f77da7a7ca1a",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c30049baee76d46569155541bca2df25d36c736652c4feffaced9f0b15049eaf"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The marked cash SOFR\u2013CORRA gap is 165bp (3.90 vs 2.25) while CA\u2013US 10Y is already \u2212118bp, so the bond spread sits inside the policy gap rather than offering unused cheap-CAD carry. Two-year SOFR\u2013CORRA is unmarked, so any CAD rates pack would clone that cash policy differential instead of a residual dislocation. USDCAD 1.3995 has no packeted REER, PPP, terms-of-trade or historical-z anchor, and AU/EA/JP/NZ rates RV are unmarked or unmarkable; with a flat book that is not a convergence setup.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "The marked cash SOFR\u2013CORRA gap is 165bp (3.90 vs 2.25) while CA\u2013US 10Y is already \u2212118bp, so the bond spread sits inside the policy gap rather than offering unused cheap-CAD carry. Two-year SOFR\u2013CORRA is unmarked, so any CAD rates pack would clone that cash policy differential instead of a residual dislocation. USDCAD 1.3995 has no packeted REER, PPP, terms-of-trade or historical-z anchor, and AU/EA/JP/NZ rates RV are unmarked or unmarkable; with a flat book that is not a convergence setup."
     }
   ],
   "schema_version": 1,

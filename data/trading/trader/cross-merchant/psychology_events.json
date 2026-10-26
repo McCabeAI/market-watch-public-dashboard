@@ -614,6 +614,61 @@
       "subject": {
         "session_pnl_change_usd": -49113.04
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "event_id": "pse-000027",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261026",
+      "seq": 27,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0132,
+        "defensiveness": -0.0013,
+        "frustration": -0.0016,
+        "revenge_pressure": -0.0009,
+        "self_trust": 0.0092,
+        "thesis_attachment": -0.0016
+      },
+      "event_id": "pse-000028",
+      "kind": "trade_win_close",
+      "magnitude": 0.30887476,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261026",
+      "scale": 1.0,
+      "seq": 28,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "CADJPY",
+        "notional_usd": 15000000.0,
+        "realized_pnl_usd": 154437.38,
+        "side": "long",
+        "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
+      }
     }
   ],
   "owner_id": "cross-merchant",

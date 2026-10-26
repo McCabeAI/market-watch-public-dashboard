@@ -71,16 +71,16 @@
   ],
   "as_of": "2026-10-26T07:37:10.682323-04:00",
   "calibration": {
-    "average_holding_seconds": 399819,
-    "average_realized_pnl_usd": -42866.74,
+    "average_holding_seconds": 960070,
+    "average_realized_pnl_usd": 22901.3,
     "breakeven": 0,
     "by_asset_class": {
       "spot_fx": {
-        "count": 2,
-        "total_realized_pnl_usd": -85733.48
+        "count": 3,
+        "total_realized_pnl_usd": 68703.9
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -93,15 +93,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -42866.74,
-        "count": 2,
-        "hit_rate": 0.0
+        "average_pnl_usd": 22901.3,
+        "count": 3,
+        "hit_rate": 0.3333
       }
     },
     "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -85733.48,
-    "wins": 0
+    "total_realized_pnl_usd": 68703.9,
+    "wins": 1
   },
   "capital_owner": null,
   "consequence": {
@@ -123,7 +123,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 48.75,
     "status": "ok"
   },
   "learning": {
@@ -134,60 +134,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c7835a87f8d8ef614bce9b8d99395b4bd532ef0552ff3d3fb7b802b109207db2",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 58,
-      "current_notional_usd": 15000000.0,
-      "entry_mark": 110.9,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": null,
-        "current_mark": 112.03957867858283,
-        "current_notional_usd": 15000000.0,
-        "entry_mark": 110.89779434607021,
-        "expected_mark_direction": null,
-        "framing": null,
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 67641.16,
-        "holding_seconds": 2080573,
-        "horizon_elapsed_fraction": null,
-        "horizon_status": "unspecified",
-        "instrument": "CADJPY",
-        "intended_horizon_days": null,
-        "mae_usd": -22766.21,
-        "mechanical_order": false,
-        "mfe_usd": 222078.54,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-44de67c4b24f",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": null,
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 222078.54,
-        "retained_mfe_fraction": 0.6954,
-        "review_move_bp": null,
-        "review_required": true,
-        "review_threshold_usd": 150000.0,
-        "review_triggers": [
-          "material_winner"
-        ],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": 154437.38,
-        "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f",
-        "unrealized_pnl_usd": 154437.38
-      },
-      "instrument": "CADJPY",
-      "opened_at": "2026-10-02T05:40:56.963171-04:00",
-      "position_id": "pos-44de67c4b24f",
-      "risk_capital_usd": 150000.0,
-      "side": "long",
-      "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
-    }
-  ],
+  "memory_context_sha256": "79cb2b7ef1c3b4e139119b8040e43c4963cbce35c32cba4c3ebeac125541fab1",
+  "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -197,9 +145,7 @@
     "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "review_required_position_ids": [
-      "pos-44de67c4b24f"
-    ]
+    "review_required_position_ids": []
   },
   "psychology": {
     "active_flags": [],
@@ -212,8 +158,8 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.16
       },
       "defensiveness": {
         "band": "calm",
@@ -222,13 +168,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.15
+        "trend": "down",
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.11
+        "trend": "flat",
+        "value": 0.1
       },
       "revenge_pressure": {
         "band": "calm",
@@ -237,8 +183,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "up",
+        "value": 0.51
       },
       "thesis_attachment": {
         "band": "calm",
@@ -256,19 +202,19 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_gain",
-        "magnitude": 0.22921818,
-        "run_id": "overnight-20261020"
-      },
-      {
         "kind": "session_loss",
         "magnitude": 0.09822608000000001,
         "run_id": "overnight-20261023"
+      },
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.30887476,
+        "run_id": "overnight-20261026"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "7ab356985c951e47bd6136400ade7c28c9ef4fbe5c15886c280a3219a4540920",
+    "state_sha256": "564507e812235582c82a45136bc64286fa29f1bdda0cabe28730ed5be08cf5e1",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
@@ -276,6 +222,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 58,
+      "holding_duration_seconds": 2080573,
+      "instrument": "CADJPY",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "realized_pnl_usd": 154437.38,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-09-29T04:44:08.485973-04:00",

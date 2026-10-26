@@ -790,6 +790,108 @@
       "subject": {
         "reflection_id": "prf-05c871c98eec"
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "event_id": "pse-000034",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261026",
+      "seq": 34,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0159,
+        "defensiveness": -0.0015,
+        "frustration": -0.0029,
+        "revenge_pressure": -0.0011,
+        "self_trust": 0.0087,
+        "thesis_attachment": -0.0023
+      },
+      "event_id": "pse-000035",
+      "kind": "trade_win_close",
+      "magnitude": 0.31441240000000004,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261026",
+      "scale": 1.0,
+      "seq": 35,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "USDCAD",
+        "notional_usd": 55000000.0,
+        "realized_pnl_usd": 157206.2,
+        "side": "long",
+        "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
+      }
+    },
+    {
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0506
+      },
+      "event_id": "pse-000036",
+      "kind": "self_report_admission_overconfidence",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261026",
+      "scale": 1.0,
+      "seq": 36,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-0ec2750b8142"
+      }
+    },
+    {
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "external_pressure": 0.0405,
+        "self_trust": -0.0161
+      },
+      "event_id": "pse-000037",
+      "kind": "self_report_admission_pressure_distorting",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261026",
+      "scale": 1.0,
+      "seq": 37,
+      "soften": false,
+      "source": {
+        "layer": "self_report"
+      },
+      "subject": {
+        "reflection_id": "prf-0ec2750b8142"
+      }
     }
   ],
   "owner_id": "dollar-king",

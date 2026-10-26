@@ -19,30 +19,66 @@
       ],
       "reinforcement_count": 1,
       "scope": {
-        "instruments": [],
-        "instrument_family": null,
         "asset_class": null,
+        "catalyst_type": null,
         "countries": [],
         "currencies": [],
-        "setup_type": null,
-        "market_drivers": [],
-        "catalyst_type": null,
+        "decision_dimension": null,
         "failure_mode": null,
-        "decision_dimension": null
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "scope_evidence": {
+        "history_modified": false,
+        "method": "ledger_identity_fields",
+        "retrievals_backfilled": false,
+        "status": "insufficient_evidence",
+        "text_modified": false,
+        "trade_ids": []
       },
       "source_run_id": "overnight-20261021",
       "status": "active",
       "text": "After a material dollar-Canada win, three-digit oil plus a rising Canadian impulse is a harvest trigger. Remaining United States rate edge belongs in reduced size, not in a full-size hold that waits to recapture the peak.",
       "trade_ids": [],
-      "updated_at": "2026-10-21T08:22:07.869994-04:00",
-      "scope_evidence": {
-        "method": "ledger_identity_fields",
-        "status": "insufficient_evidence",
-        "trade_ids": [],
-        "retrievals_backfilled": false,
-        "text_modified": false,
-        "history_modified": false
-      }
+      "updated_at": "2026-10-21T08:22:07.869994-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-10-26T07:37:10.682323-04:00",
+      "future_rule": "The first cut from 8 million to 3 million was not a completed harvest. When three-digit oil and a rising Canadian hike impulse arrive after a paid dollar-Canada win, flatten if you would not initiate from zero; leftover reduced size still waits on peak recapture.",
+      "history": [
+        {
+          "at": "2026-10-26T07:37:10.682323-04:00",
+          "op": "add",
+          "run_id": "overnight-20261026"
+        }
+      ],
+      "lesson_id": "les-6cdc8a548aec",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-0ec2750b8142"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261026",
+      "status": "active",
+      "text": "The first cut from 8 million to 3 million was not a completed harvest. When three-digit oil and a rising Canadian hike impulse arrive after a paid dollar-Canada win, flatten if you would not initiate from zero; leftover reduced size still waits on peak recapture.",
+      "trade_ids": [],
+      "updated_at": "2026-10-26T07:37:10.682323-04:00"
     }
   ],
   "schema_version": 1,

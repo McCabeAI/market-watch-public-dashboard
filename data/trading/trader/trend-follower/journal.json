@@ -1306,6 +1306,62 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "The short 10-year needed a persistent yield uptrend. The live tape is a break: US 10-year at 5.00 after 5.13, against entry 5.15, with an AI-stress duration rally and equities wobbling. That is the opposite of a confirmed bear-steepening or higher-yield trend. Close the 75 million short; do not reverse into a long from this seat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat after the failed 10-year higher-yield short. Cash 10-year is still about 5.00 with no new yield high, and March SOFR has not confirmed a persistent pay path. Stay flat; do not re-open the broken backup.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 48,
+      "decision_fingerprint": "01e1783719d6e98657eb1ab9b5f53d7b6850b30c3335c0b78764ba5247149eea",
+      "event_id": "jde-7561f31e150847c1",
+      "funding_view": null,
+      "invalidation": "The flat stance is wrong if US_10Y prints a confirmed new yield high that re-establishes backup continuation, or if yields make a confirmed new low with SOFR implied moving lower in the same direction. Break levels for either signal are not in the packet and are null. A same-direction STIR plus 10-year print is required before any re-entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "35247e3190a617f7d95290b978dea53f063fa445926eab4e3709e7ab59b60e5e",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d45505ff9970a82f4a43685044c5ee05c4ebe0ff4d0326a5f71fe48db875c850"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "the book is flat after the US 10-year higher-yield short was closed 5.15 to 5.00 for -112500; cash 10-year is still ~5.00 with no new yield high; SOFR March 2027 is 4.41 versus prior lower marks; this is Fed week. the documented backup is not a living trend, and STIR has not confirmed a persistent pay path either, so there is no clean continuation in either direction. the missing 2s/5s/curve/FX tape and the Fed outcome. Stay flat; do not re-open the broken 10-year pay and do not flip to a receive until a confirmed new yield trend prints.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "the book is flat after the US 10-year higher-yield short was closed 5.15 to 5.00 for -112500; cash 10-year is still ~5.00 with no new yield high; SOFR March 2027 is 4.41 versus prior lower marks; this is Fed week. the documented backup is not a living trend, and STIR has not confirmed a persistent pay path either, so there is no clean continuation in either direction. the missing 2s/5s/curve/FX tape and the Fed outcome. Stay flat; do not re-open the broken 10-year pay and do not flip to a receive until a confirmed new yield trend prints."
     }
   ],
   "schema_version": 1,

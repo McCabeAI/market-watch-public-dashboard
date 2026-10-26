@@ -1417,6 +1417,92 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "Equities are still functioning with Nasdaq 26009, SPX 7757 and VIX 19.03, while March 2027 SOFR has already rallied from 4.55 to 4.37 against cash 3.90 and the 10-year has eased to 5.00. That duration move looks like an AI-stress overshoot rather than a realized growth break, and oil at WTI 99.47 / Brent 113.17 plus a Bank of Canada poll to 2.50 keep inflation impulse under the policy path. The existing March 2027 pay stack in CORRA, AONIA and SOFR is already the pro-growth expression; mark moves are not a reason to add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Lead pay: March 2027 CORRA still prints 3.005 versus cash 2.25, so the priced hike path has not been retraced.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Hold the March 2027 SOFR pay with the same higher-for-longer family; do not flatten on a one-day oil headline.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Hold the March 2027 AONIA pay: 4.845 versus cash 4.60 is the same unretraced hike path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "eac67a5a5c421ead1773434a830fdebdb5535ca9c1ab3ad98776d4587dddedd5",
+      "event_id": "jde-502307bf8e894d87",
+      "funding_view": null,
+      "invalidation": "Mar-27 implieds retrace toward cash (CORRA toward 2.25, SOFR toward 3.90, AONIA toward 4.60); or WTI and equities sell together, marking a demand scare rather than a supply headline; or Fed/BoC deliver an easing path that collapses the cash-to-implied hike gap. Triggers not present in the tape stay null.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f041bd29fa33ec2c78c5420117a19d6f2fceb491436415a0148a762c5ec1dd57",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b205519a6fb2ab4f0bdb43c49833434f55df66d8c42d6bc20d3ca2c173598c02"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar-27 STIRs still print above cash (CORRA 3.005 vs 2.25, SOFR 4.41 vs 3.90, AONIA 4.845 vs 4.60), so the priced hike path has not been retraced. Firmer equities with oil down more than 2% is risk-on, not a growth break, and WTI still at 103 keeps the energy impulse alive into Fed/BoC week. Flattening the pay on a one-day Iran/oil headline would treat a non-retrace as a dovish reset. Stay short CORRA_2027-03 as the lead higher-for-longer growth expression; hold the SOFR and AONIA pays with it.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "Mar-27 STIRs still print above cash (CORRA 3.005 vs 2.25, SOFR 4.41 vs 3.90, AONIA 4.845 vs 4.60), so the priced hike path has not been retraced. Firmer equities with oil down more than 2% is risk-on, not a growth break, and WTI still at 103 keeps the energy impulse alive into Fed/BoC week. Flattening the pay on a one-day Iran/oil headline would treat a non-retrace as a dovish reset. Stay short CORRA_2027-03 as the lead higher-for-longer growth expression; hold the SOFR and AONIA pays with it."
     }
   ],
   "schema_version": 1,

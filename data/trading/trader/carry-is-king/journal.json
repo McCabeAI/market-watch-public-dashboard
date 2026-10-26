@@ -1331,6 +1331,77 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.25 versus March 2027 at 2.995 and cash AONIA at 4.60 versus March 2027 at 4.845 still pay the receiver while official SOFR is the funding benchmark. Both existing receives remain the carry expression; the Canada hike poll and three-digit oil cap further gains but do not flip the cash-to-strip gap. Hold both 25 million lines; do not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Secondary receive: AONIA cash 4.60 versus March 2027 4.845 still pays the receiver. Dual central-bank week is a reason not to add, not a reason to flatten.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Primary carry: receive CORRA March 2027 while cash is 2.25 and the contract is 3.005. Session oil weakness weakens the inflation-backup case to exit.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "5ffde3cd701d46cbd33ca00892ca98e2e48ac3c1cadba1755c64f31fc4c95c30",
+      "event_id": "jde-ab71d23085b54286",
+      "funding_view": null,
+      "invalidation": "The holds fail if cash policy rates themselves rise toward the March 2027 implied fixings, or if the Bank of Canada outcome implies a path beyond a one-move catch-up toward the 2.50 percent poll and March continues to reprice higher rather than converge. A lasting oil-driven inflation backup that is clearly more than a brief headline wobble would also cut the carry case. Coupon-curve, euro, and yen marks are absent from the tape and are not treated as evidence. Entry, stop, and target remain null.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8021db06e1b3c5d67ac96f27889b827058ac04401fd8b56d412111a39b02326c",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "efa1e19ff8b01c3014eaa4c03ec1547f69561d218d7ee7d4512129b64f954ad8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 Canadian and Australian overnight-index forwards still sit well above cash, so the existing receives are paid to wait if policy undershoots those implied paths. Session weakness in crude weakens the inflation-backup story that would threaten those holdings; it is a reason to stay patient, not to exit. This week's Federal Reserve meeting and a Bank of Canada poll at 2.50 percent argue against adding risk, not against keeping the positions that already harvest the extra hike premium. Spot currency is the worse expression: buying the Canadian dollar would pay the United States short-rate gap, while the rate contracts isolate the mispriced path.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "March 2027 Canadian and Australian overnight-index forwards still sit well above cash, so the existing receives are paid to wait if policy undershoots those implied paths. Session weakness in crude weakens the inflation-backup story that would threaten those holdings; it is a reason to stay patient, not to exit. This week's Federal Reserve meeting and a Bank of Canada poll at 2.50 percent argue against adding risk, not against keeping the positions that already harvest the extra hike premium. Spot currency is the worse expression: buying the Canadian dollar would pay the United States short-rate gap, while the rate contracts isolate the mispriced path."
     }
   ],
   "schema_version": 1,

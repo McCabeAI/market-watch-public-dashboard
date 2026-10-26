@@ -1286,6 +1286,64 @@
       "run_id": "overnight-20261023",
       "schema_version": 1,
       "thesis": "US cash at 3.90 and 2s at 4.69 still dominate CORRA 2.25 and Canadian 2s at 3.22, so a leftover dollar-versus-CAD spot edge exists. It does not underwrite winner size: USDCAD is 1.3995 through the 1.401 entry after an 80 percent giveback of a material run, with WTI 99.47, Brent 113.17, rising Canadian impulse, and a Bank of Canada poll to 2.50 on 28 October. Cut 5 million and keep a 3 million residual; do not hold 8 million and do not rotate into a CAD cross."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": 3000000,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Flatten the entire leftover long. Oil is still three-digit and Canada is polled to hike in two days; leftover United States rate edge is not tradeable at 1.3995 from a flat book. Last cycle already cut 8 million to 3 million and that residual gave back.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 73,
+      "decision_fingerprint": "f4201893e0801943ebee0bf41989b5514dec316e6d141be2ebc5994db06b921e",
+      "event_id": "jde-26fda1ac9f3b4991",
+      "funding_view": null,
+      "invalidation": "The harvest is wrong only if crude loses three-digit status and Canada does not deliver the polled hike, restoring the policy-rate gap as the dominant dollar-Canada driver; that would justify a fresh smaller long, not a reinstatement of this residual. A Fed event this week alone is not enough to keep leftover size while oil stays three-digit into a Canadian meeting. Stop, target, and re-entry prints are null.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5317bc96d4eb"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-5317bc96d4eb"
+      ],
+      "memory_context_sha256": "a19e1ce106102bd657f8ebeb99d95ccb9c6fb8cdd645572f406584cc81f656bc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9abc9e33a27ca3c19f9a4406153ee079a58b3d220221af4d1b1cdbd16299a989"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+        "evidence_hash": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+        "overnight_run_id": "overnight-20261026",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The leftover dollar-Canada long is a paid rate-gap trade that has already given back rather than recaptured its high. The United States still pays 3.90 versus Canada's 2.25, and the ten-year sits near 5.00 after a midweek bid, but three-digit crude and a Canadian hike into 2.50 this week are now the binding other leg. I would not start a dollar-Canada long from a flat book at 1.3995 with WTI at 103.27, so this residual is harvested rather than warehoused. Any later dollar view versus Canada has to be a new, smaller initiation after the Canadian meeting, not leftover size hoping the old peak returns.",
+      "run_id": "overnight-20261026",
+      "schema_version": 1,
+      "thesis": "The leftover dollar-Canada long is a paid rate-gap trade that has already given back rather than recaptured its high. The United States still pays 3.90 versus Canada's 2.25, and the ten-year sits near 5.00 after a midweek bid, but three-digit crude and a Canadian hike into 2.50 this week are now the binding other leg. I would not start a dollar-Canada long from a flat book at 1.3995 with WTI at 103.27, so this residual is harvested rather than warehoused. Any later dollar view versus Canada has to be a new, smaller initiation after the Canadian meeting, not leftover size hoping the old peak returns."
     }
   ],
   "schema_version": 1,

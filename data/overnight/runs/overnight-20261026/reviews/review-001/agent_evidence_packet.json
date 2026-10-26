@@ -1,0 +1,2100 @@
+{
+  "base_evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+  "base_packet_sha256": "331fe22a0831d63ef2b4b3797ecc13c7f11c6d2b4935411672a93640e700677c",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-10-22",
+    "funding_rate_annual": 0.039,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+  "learning_obligations": {
+    "manifest_sha256": "0ba395c7bb76f43d08ff0d46465f10d5ed6afad0d149037b226aaf201df892dc",
+    "obligation_count": 3
+  },
+  "overnight_run_id": "overnight-20261026",
+  "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal."
+      },
+      {
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero."
+      },
+      {
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September."
+      }
+    ],
+    "news": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+        "id": "news:f6dd7213c1fb52e9",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 1,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "high",
+          "score": 18
+        },
+        "primary_category": "rates",
+        "published_at": "2026-10-25T20:15:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22",
+            "distribution_weight": "high",
+            "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+            "published_at": "2026-10-25T20:15:00-04:00",
+            "snippet": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+            "source_name": "Bloomberg",
+            "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs"
+          }
+        ],
+        "source_name": "Bloomberg",
+        "summary": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "channels": [
+            "g10_policy",
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "g10_policy_path",
+          "score": 15
+        },
+        "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+        "id": "news:13bcd45a2d7d6e87",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 17
+        },
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-26T06:11:19-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+            "distribution_weight": "standard",
+            "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+            "published_at": "2026-10-26T06:11:19-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": "CNBC",
+            "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html"
+          }
+        ],
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "channels": [
+            "g10_policy",
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "g10_policy_path",
+          "score": 15
+        },
+        "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 4,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 15
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+            "published_at": "2026-10-20T01:31:00-04:00",
+            "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+        "transmission": {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "channels": [
+            "oil_energy_tot",
+            "geopolitics_haven"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 4,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "oil_supply_shock",
+          "score": 15
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 4,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 15
+        },
+        "primary_category": "macro",
+        "published_at": "",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+            "published_at": null,
+            "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+        "transmission": {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "channels": [
+            "oil_energy_tot",
+            "geopolitics_haven"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 4,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "oil_supply_shock",
+          "score": 15
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 4,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 15
+        },
+        "primary_category": "macro",
+        "published_at": "",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+            "published_at": null,
+            "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "LNG shipments through Hormuz extended a rebound that began in September.",
+        "transmission": {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "channels": [
+            "oil_energy_tot",
+            "geopolitics_haven"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 4,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "oil_supply_shock",
+          "score": 15
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [],
+        "headline": "Neocloud stocks fall as Elon Musk says more than 200 of them face 'guppy-level death'",
+        "id": "news:f32b4375caa087d4",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 13
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-25T21:42:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.bing.com/news/search?q=site%3Acnbc.com%20%28CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%20OR%20%22credit%20default%20swap%22%29&format=rss&qft=interval%3d%227%22",
+            "distribution_weight": "standard",
+            "headline": "Neocloud stocks fall as Elon Musk says more than 200 of them face 'guppy-level death'",
+            "published_at": "2026-10-25T21:42:00-04:00",
+            "snippet": "Investors are already questioning the debt-fueled expansion of neoclouds and whether the large AI infrastructure build-out will generate long-term returns.",
+            "source_name": "CNBC",
+            "url": "https://www.cnbc.com/2026/10/26/neocloud-stocks-today-coreweave-nebius-iren-elon-musk.html"
+          }
+        ],
+        "source_name": "CNBC",
+        "summary": "Investors are already questioning the debt-fueled expansion of neoclouds and whether the large AI infrastructure build-out will generate long-term returns.",
+        "transmission": {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "channels": [
+            "credit_funding"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "ai_capex_credit",
+          "score": 11
+        },
+        "url": "https://www.cnbc.com/2026/10/26/neocloud-stocks-today-coreweave-nebius-iren-elon-musk.html",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [],
+        "headline": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says\\n",
+        "id": "news:7b2979b13fc7ae08",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 13
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-25T20:37:51-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+            "distribution_weight": "standard",
+            "headline": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says\\n",
+            "published_at": "2026-10-25T20:37:51-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": "CNBC",
+            "url": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html"
+          }
+        ],
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "channels": [
+            "credit_funding"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "ai_capex_credit",
+          "score": 11
+        },
+        "url": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [],
+        "headline": "Musk says SpaceX raised $40 billion in debt deal, predicts neocloud shakeout",
+        "id": "news:51e84d7ba9dc30ea",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 12
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-25T09:04:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+            "distribution_weight": "standard",
+            "headline": "Musk says SpaceX raised $40 billion in debt deal, predicts neocloud shakeout",
+            "published_at": "2026-10-25T09:04:00-04:00",
+            "snippet": "Elon Musk said SpaceX \u200bhad closed $40 billion \u200cin debt financing for graphics processing \u200bunits, adding \u200bthe company's investment-grade status \u2060and revenue \u200bfrom its Starlink \u200bsatellite internet and ...",
+            "source_name": "Reuters",
+            "url": "https://www.reuters.com/business/media-telecom/musk-says-spacex-raised-40-billion-debt-gpus-2026-10-25/"
+          }
+        ],
+        "source_name": "Reuters",
+        "summary": "Elon Musk said SpaceX \u200bhad closed $40 billion \u200cin debt financing for graphics processing \u200bunits, adding \u200bthe company's investment-grade status \u2060and revenue \u200bfrom its Starlink \u200bsatellite internet and ...",
+        "transmission": {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "channels": [
+            "credit_funding"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "ai_capex_credit",
+          "score": 11
+        },
+        "url": "https://www.reuters.com/business/media-telecom/musk-says-spacex-raised-40-billion-debt-gpus-2026-10-25/",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 11
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-22T22:08:17.710000-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
+            "published_at": "2026-10-22T22:08:17.710000-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "channels": [
+            "credit_funding"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "ai_capex_credit",
+          "score": 11
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 11
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-19T20:30:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+            "published_at": "2026-10-19T20:30:00-04:00",
+            "snippet": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+        "transmission": {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "channels": [
+            "credit_funding"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 3,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "ai_capex_credit",
+          "score": 11
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 5,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 10
+        },
+        "primary_category": "macro",
+        "published_at": "",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+            "published_at": null,
+            "snippet": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+        "transmission": {
+          "affected_assets": [
+            "AUD",
+            "iron_ore"
+          ],
+          "channel": "china_spillover",
+          "channels": [
+            "china_spillover"
+          ],
+          "components": {
+            "asset_named": 3,
+            "channel_china_spillover": 5,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "show",
+          "reason_code": "china_commodity_spillover",
+          "score": 10
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [],
+        "headline": "Stock futures tick higher as oil prices drop to begin the week: Live updates",
+        "id": "news:23d45502244b3690",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 0,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "energy",
+        "published_at": "2026-10-26T07:36:25-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+            "distribution_weight": "standard",
+            "headline": "Stock futures tick higher as oil prices drop to begin the week: Live updates",
+            "published_at": "2026-10-26T07:36:25-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": "CNBC",
+            "url": "https://www.cnbc.com/2026/10/25/stock-market-today-live-updates.html"
+          }
+        ],
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "channels": [
+            "oil_energy_tot"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "shock": 0,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "oil_supply_shock",
+          "score": 7
+        },
+        "url": "https://www.cnbc.com/2026/10/25/stock-market-today-live-updates.html",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [],
+        "headline": "Oil slides over 2% as traders weigh Saudi attack risks, demand destruction",
+        "id": "news:8086ad62114c954f",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 0,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "energy",
+        "published_at": "2026-10-26T01:18:01-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+            "distribution_weight": "standard",
+            "headline": "Oil slides over 2% as traders weigh Saudi attack risks, demand destruction",
+            "published_at": "2026-10-26T01:18:01-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": "CNBC",
+            "url": "https://www.cnbc.com/2026/10/26/oil-prices-today-wti-brent.html"
+          }
+        ],
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "channels": [
+            "oil_energy_tot"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "shock": 0,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "oil_supply_shock",
+          "score": 7
+        },
+        "url": "https://www.cnbc.com/2026/10/26/oil-prices-today-wti-brent.html",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "US stock futures edge up as oil falls heading into earnings barrage",
+        "id": "news:c465f485b398fbd7",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 1,
+            "recency": 1,
+            "shock": 0,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "energy",
+        "published_at": "2026-10-25T23:02:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+            "distribution_weight": "standard",
+            "headline": "US stock futures edge up as oil falls heading into earnings barrage",
+            "published_at": "2026-10-25T23:02:00-04:00",
+            "snippet": "US stock index futures ticked higher on Monday as crude oil prices retreated from \u200clast week's surge, lifting sentiment at the start of a week dominated by corporate earnings and the Federal Reserve's ...",
+            "source_name": "Reuters",
+            "url": "https://www.reuters.com/business/us-stock-futures-edge-up-oil-falls-heading-into-earnings-barrage-2026-10-26/"
+          }
+        ],
+        "source_name": "Reuters",
+        "summary": "US stock index futures ticked higher on Monday as crude oil prices retreated from \u200clast week's surge, lifting sentiment at the start of a week dominated by corporate earnings and the Federal Reserve's ...",
+        "transmission": {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "channels": [
+            "oil_energy_tot"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 5,
+            "channel_usd_rates": 0,
+            "shock": 0,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "oil_supply_shock",
+          "score": 7
+        },
+        "url": "https://www.reuters.com/business/us-stock-futures-edge-up-oil-falls-heading-into-earnings-barrage-2026-10-26/",
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T14:57:17-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+            "published_at": "2026-10-23T14:57:17-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T14:24:49-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+            "published_at": "2026-10-23T14:24:49-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T12:10:01.987000-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
+            "published_at": "2026-10-23T12:10:01.987000-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "CAD"
+          ],
+          "channel": "g10_policy",
+          "channels": [
+            "g10_policy"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "g10_policy_path",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T08:03:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
+            "published_at": "2026-10-23T08:03:00-04:00",
+            "snippet": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T07:26:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
+            "published_at": "2026-10-23T07:26:00-04:00",
+            "snippet": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T06:15:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+            "published_at": "2026-10-23T06:15:00-04:00",
+            "snippet": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T05:32:14.419000-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+            "published_at": "2026-10-23T05:32:14.419000-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "credit_spreads"
+          ],
+          "channel": "credit_funding",
+          "channels": [
+            "credit_funding"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 5,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "credit_funding_stress",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Morning Bid: Wake up! The long bond's up two points!",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T04:19:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Morning Bid: Wake up! The long bond's up two points!",
+            "published_at": "2026-10-23T04:19:00-04:00",
+            "snippet": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-23T04:06:37-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+            "published_at": "2026-10-23T04:06:37-04:00",
+            "snippet": "Headline-only public metadata; article body was not retrieved.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "transmission": {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "channels": [
+            "usd_rates"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 0,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 5,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "usd_rates_repricing",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+        "id": "news:e3b0c44298fc1c14",
+        "market_salience": {
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "distribution_weight": 0,
+            "novelty": 0,
+            "recency": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "distribution": "standard",
+          "score": 9
+        },
+        "primary_category": "macro",
+        "published_at": "2026-10-22T21:45:00-04:00",
+        "source_edges": [
+          {
+            "discovery_surface": null,
+            "distribution_weight": "standard",
+            "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+            "published_at": "2026-10-22T21:45:00-04:00",
+            "snippet": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+            "source_name": null,
+            "url": null
+          }
+        ],
+        "source_name": null,
+        "summary": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+        "transmission": {
+          "affected_assets": [
+            "JPY"
+          ],
+          "channel": "g10_policy",
+          "channels": [
+            "g10_policy"
+          ],
+          "components": {
+            "asset_named": 2,
+            "channel_china_spillover": 0,
+            "channel_credit_funding": 0,
+            "channel_g10_policy": 5,
+            "channel_geopolitics": 0,
+            "channel_global_risk": 0,
+            "channel_oil_energy": 0,
+            "channel_usd_rates": 0,
+            "shock": 2,
+            "subject_penalty": 0
+          },
+          "disposition": "assess",
+          "reason_code": "g10_policy_path",
+          "score": 9
+        },
+        "url": null,
+        "verification_status": "single_source"
+      }
+    ],
+    "presentation_caps": {
+      "last_24_hours": 6,
+      "top_market_drivers": 3
+    },
+    "sources": [
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+        "published_at": "2026-10-25T20:15:00-04:00",
+        "snippet": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+        "published_at": "2026-10-26T06:11:19-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "published_at": null,
+        "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "published_at": null,
+        "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Acnbc.com%20%28CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%20OR%20%22credit%20default%20swap%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "standard",
+        "headline": "Neocloud stocks fall as Elon Musk says more than 200 of them face 'guppy-level death'",
+        "published_at": "2026-10-25T21:42:00-04:00",
+        "snippet": "Investors are already questioning the debt-fueled expansion of neoclouds and whether the large AI infrastructure build-out will generate long-term returns.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/26/neocloud-stocks-today-coreweave-nebius-iren-elon-musk.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says\\n",
+        "published_at": "2026-10-25T20:37:51-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "standard",
+        "headline": "Musk says SpaceX raised $40 billion in debt deal, predicts neocloud shakeout",
+        "published_at": "2026-10-25T09:04:00-04:00",
+        "snippet": "Elon Musk said SpaceX \u200bhad closed $40 billion \u200cin debt financing for graphics processing \u200bunits, adding \u200bthe company's investment-grade status \u2060and revenue \u200bfrom its Starlink \u200bsatellite internet and ...",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/business/media-telecom/musk-says-spacex-raised-40-billion-debt-gpus-2026-10-25/"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
+        "published_at": "2026-10-22T22:08:17.710000-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+        "published_at": "2026-10-19T20:30:00-04:00",
+        "snippet": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+        "published_at": null,
+        "snippet": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Stock futures tick higher as oil prices drop to begin the week: Live updates",
+        "published_at": "2026-10-26T07:36:25-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/25/stock-market-today-live-updates.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Oil slides over 2% as traders weigh Saudi attack risks, demand destruction",
+        "published_at": "2026-10-26T01:18:01-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/26/oil-prices-today-wti-brent.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "standard",
+        "headline": "US stock futures edge up as oil falls heading into earnings barrage",
+        "published_at": "2026-10-25T23:02:00-04:00",
+        "snippet": "US stock index futures ticked higher on Monday as crude oil prices retreated from \u200clast week's surge, lifting sentiment at the start of a week dominated by corporate earnings and the Federal Reserve's ...",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/business/us-stock-futures-edge-up-oil-falls-heading-into-earnings-barrage-2026-10-26/"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+        "published_at": "2026-10-23T14:57:17-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+        "published_at": "2026-10-23T14:24:49-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
+        "published_at": "2026-10-23T12:10:01.987000-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
+        "published_at": "2026-10-23T08:03:00-04:00",
+        "snippet": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
+        "published_at": "2026-10-23T07:26:00-04:00",
+        "snippet": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+        "published_at": "2026-10-23T06:15:00-04:00",
+        "snippet": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+        "published_at": "2026-10-23T05:32:14.419000-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Morning Bid: Wake up! The long bond's up two points!",
+        "published_at": "2026-10-23T04:19:00-04:00",
+        "snippet": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+        "published_at": "2026-10-23T04:06:37-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+        "published_at": "2026-10-22T21:45:00-04:00",
+        "snippet": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+        "source_name": null,
+        "url": null
+      }
+    ],
+    "summary": "U.S. yields are little changed into the Fed after a sharp midweek safety bid that took the 10-year back to 5 percent. Official SOFR is 3.90 percent, but the futures strip still prices a higher path through 2027. Oil is down more than 2 percent on the session, yet WTI and Brent remain elevated near 103 and 117 as Hormuz disruption and thin spare capacity stay in the tape. Equities are firmer on the crude slide; gold holds near 4,008 and VIX is around 19. The dollar is mixed: the euro is soft on French debt, the yen firmer on AI risk-off, and USDCAD sits near 1.40 with a Bank of Canada hike poll for 28 October. Japan core CPI printed 2.1 percent, keeping normalization live. Watch the Fed, Canadian hike risk, and whether oil's drop is demand destruction or just a pause in the Hormuz shock.",
+    "top_market_driver_candidates": [
+      "news:f6dd7213c1fb52e9",
+      "news:13bcd45a2d7d6e87",
+      "news:e3b0c44298fc1c14"
+    ]
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "block_why": null,
+    "blocked_expressions": [
+      "macro:NZ"
+    ],
+    "blocked_sources": [
+      "NZ.Inflation.headline",
+      "NZ.Inflation.underlying"
+    ],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence"
+        ],
+        "scored_status": "ok"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.business_surveys"
+        ],
+        "scored_status": "partial"
+      },
+      "NZ": {
+        "eligible": false,
+        "gaps": [
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Inflation.headline",
+          "NZ.Inflation.underlying",
+          "NZ.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "hold_decisions_emitted": 0,
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "quarantine_mode": "isolate",
+    "quarantine_reason": "unsupported_mark_source",
+    "quarantined_positions": [
+      {
+        "asset_class": "rates_rv",
+        "dependency": "NZ_rates",
+        "dependency_status": "unavailable",
+        "instrument": "NZ-US_10Y",
+        "live_marked": false,
+        "observation_date": null,
+        "pnl_available": false,
+        "position_id": "pm-pragmatist-3afafe53c6d7",
+        "quarantined": true,
+        "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+        "reason_code": "unsupported_mark_source",
+        "scoring": false,
+        "seat": "pragmatist"
+      }
+    ],
+    "restricted_seats": [
+      "pragmatist"
+    ],
+    "seat_risk": {
+      "pragmatist": "unavailable_new_risk"
+    },
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.manufacturing_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.services_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      }
+    ],
+    "synthetic_holds": false,
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "AU",
+      "EA",
+      "JP"
+    ]
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

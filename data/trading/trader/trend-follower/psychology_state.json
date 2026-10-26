@@ -4,65 +4,65 @@
     "chase_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0043,
+      "delta_last_cycle": -0.0036,
       "half_life_cycles": 4.0,
-      "value": 0.1229
+      "value": 0.1193
     },
     "complacency": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0043,
+      "delta_last_cycle": 0.0007,
       "half_life_cycles": 5.0,
-      "value": 0.0947
+      "value": 0.0954
     },
     "defensiveness": {
       "band": "calm",
       "baseline": 0.2,
-      "delta_last_cycle": 0.0149,
+      "delta_last_cycle": -0.0024,
       "half_life_cycles": 6.0,
-      "value": 0.222
+      "value": 0.2196
     },
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0064,
+      "delta_last_cycle": -0.0089,
       "half_life_cycles": 6.0,
-      "value": 0.1814
+      "value": 0.1725
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0306,
+      "delta_last_cycle": -0.011,
       "half_life_cycles": 2.4000000000000004,
-      "value": 0.1437
+      "value": 0.1327
     },
     "revenge_pressure": {
       "band": "calm",
       "baseline": 0.05,
-      "delta_last_cycle": 0.0212,
+      "delta_last_cycle": -0.0077,
       "half_life_cycles": 2.0,
-      "value": 0.0762
+      "value": 0.0685
     },
     "self_trust": {
       "band": "steady",
       "baseline": 0.5,
-      "delta_last_cycle": -0.0096,
+      "delta_last_cycle": 0.0013,
       "half_life_cycles": 12.0,
-      "value": 0.4763
+      "value": 0.4776
     },
     "thesis_attachment": {
       "band": "calm",
       "baseline": 0.25,
-      "delta_last_cycle": 0.0076,
+      "delta_last_cycle": -0.001,
       "half_life_cycles": 8.0,
-      "value": 0.2623
+      "value": 0.2613
     }
   },
-  "cycle_count": 17,
+  "cycle_count": 18,
   "engine_version": 1,
   "flags": [
     {
-      "basis": "revenge_pressure 0.08 families bond",
+      "basis": "revenge_pressure 0.07 families bond",
       "check": "required",
       "families": [
         "bond"
@@ -77,16 +77,16 @@
   ],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 26,
+  "last_event_seq": 27,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261023",
+  "last_run_id": "overnight-20261026",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 17,
+    "self_report_clean_cycles": 18,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -95,9 +95,9 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "d45505ff9970a82f4a43685044c5ee05c4ebe0ff4d0326a5f71fe48db875c850",
+  "state_sha256": "cdc17bf38b070e1d16d4ae76abd4c41ec7406e587cb13ca0e4264c588150acc0",
   "streaks": {
-    "flat_cycles": 0,
+    "flat_cycles": 1,
     "session_loss": 1,
     "session_win": 0,
     "trade_loss": 2,
@@ -112,7 +112,7 @@
         "run_id": null,
         "side": "short",
         "trade_id": "trd-trader-trend-follower-pos-06e7a6ec76da",
-        "ttl": 3
+        "ttl": 2
       }
     ]
   },

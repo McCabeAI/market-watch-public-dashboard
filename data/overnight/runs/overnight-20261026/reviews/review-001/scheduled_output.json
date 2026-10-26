@@ -1,0 +1,3249 @@
+{
+  "agent_packet": {
+    "base_evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+    "base_packet_sha256": "331fe22a0831d63ef2b4b3797ecc13c7f11c6d2b4935411672a93640e700677c",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-10-22",
+      "funding_rate_annual": 0.039,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+    "learning_obligations": {
+      "manifest_sha256": "0ba395c7bb76f43d08ff0d46465f10d5ed6afad0d149037b226aaf201df892dc",
+      "obligation_count": 3
+    },
+    "overnight_run_id": "overnight-20261026",
+    "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+    "research_supplement": {
+      "central_bank_research": [
+        {
+          "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+          "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal."
+        },
+        {
+          "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+          "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero."
+        },
+        {
+          "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+          "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September."
+        }
+      ],
+      "news": [
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+          "id": "news:f6dd7213c1fb52e9",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 1,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "high",
+            "score": 18
+          },
+          "primary_category": "rates",
+          "published_at": "2026-10-25T20:15:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22",
+              "distribution_weight": "high",
+              "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+              "published_at": "2026-10-25T20:15:00-04:00",
+              "snippet": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+              "source_name": "Bloomberg",
+              "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs"
+            }
+          ],
+          "source_name": "Bloomberg",
+          "summary": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST",
+              "GBP"
+            ],
+            "channel": "g10_policy",
+            "channels": [
+              "g10_policy",
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "g10_policy_path",
+            "score": 15
+          },
+          "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+          "id": "news:13bcd45a2d7d6e87",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 17
+          },
+          "primary_category": "monetary_policy",
+          "published_at": "2026-10-26T06:11:19-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+              "distribution_weight": "standard",
+              "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+              "published_at": "2026-10-26T06:11:19-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": "CNBC",
+              "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html"
+            }
+          ],
+          "source_name": "CNBC",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "g10_policy",
+            "channels": [
+              "g10_policy",
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "g10_policy_path",
+            "score": 15
+          },
+          "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 4,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 15
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-20T01:31:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+              "published_at": "2026-10-20T01:31:00-04:00",
+              "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+          "transmission": {
+            "affected_assets": [
+              "Brent",
+              "USD",
+              "WTI",
+              "CAD",
+              "UST"
+            ],
+            "channel": "oil_energy_tot",
+            "channels": [
+              "oil_energy_tot",
+              "geopolitics_haven"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 4,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "oil_supply_shock",
+            "score": 15
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 4,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 15
+          },
+          "primary_category": "macro",
+          "published_at": "",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+              "published_at": null,
+              "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+          "transmission": {
+            "affected_assets": [
+              "Brent",
+              "USD",
+              "WTI",
+              "CAD",
+              "UST"
+            ],
+            "channel": "oil_energy_tot",
+            "channels": [
+              "oil_energy_tot",
+              "geopolitics_haven"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 4,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "oil_supply_shock",
+            "score": 15
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 4,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 15
+          },
+          "primary_category": "macro",
+          "published_at": "",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+              "published_at": null,
+              "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "LNG shipments through Hormuz extended a rebound that began in September.",
+          "transmission": {
+            "affected_assets": [
+              "Brent",
+              "USD",
+              "WTI",
+              "CAD",
+              "UST"
+            ],
+            "channel": "oil_energy_tot",
+            "channels": [
+              "oil_energy_tot",
+              "geopolitics_haven"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 4,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "oil_supply_shock",
+            "score": 15
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [],
+          "headline": "Neocloud stocks fall as Elon Musk says more than 200 of them face 'guppy-level death'",
+          "id": "news:f32b4375caa087d4",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 13
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-25T21:42:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.bing.com/news/search?q=site%3Acnbc.com%20%28CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%20OR%20%22credit%20default%20swap%22%29&format=rss&qft=interval%3d%227%22",
+              "distribution_weight": "standard",
+              "headline": "Neocloud stocks fall as Elon Musk says more than 200 of them face 'guppy-level death'",
+              "published_at": "2026-10-25T21:42:00-04:00",
+              "snippet": "Investors are already questioning the debt-fueled expansion of neoclouds and whether the large AI infrastructure build-out will generate long-term returns.",
+              "source_name": "CNBC",
+              "url": "https://www.cnbc.com/2026/10/26/neocloud-stocks-today-coreweave-nebius-iren-elon-musk.html"
+            }
+          ],
+          "source_name": "CNBC",
+          "summary": "Investors are already questioning the debt-fueled expansion of neoclouds and whether the large AI infrastructure build-out will generate long-term returns.",
+          "transmission": {
+            "affected_assets": [
+              "credit_spreads",
+              "UST"
+            ],
+            "channel": "credit_funding",
+            "channels": [
+              "credit_funding"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "ai_capex_credit",
+            "score": 11
+          },
+          "url": "https://www.cnbc.com/2026/10/26/neocloud-stocks-today-coreweave-nebius-iren-elon-musk.html",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [],
+          "headline": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says\\n",
+          "id": "news:7b2979b13fc7ae08",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 13
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-25T20:37:51-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+              "distribution_weight": "standard",
+              "headline": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says\\n",
+              "published_at": "2026-10-25T20:37:51-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": "CNBC",
+              "url": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html"
+            }
+          ],
+          "source_name": "CNBC",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "credit_spreads",
+              "UST"
+            ],
+            "channel": "credit_funding",
+            "channels": [
+              "credit_funding"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "ai_capex_credit",
+            "score": 11
+          },
+          "url": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [],
+          "headline": "Musk says SpaceX raised $40 billion in debt deal, predicts neocloud shakeout",
+          "id": "news:51e84d7ba9dc30ea",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 12
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-25T09:04:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+              "distribution_weight": "standard",
+              "headline": "Musk says SpaceX raised $40 billion in debt deal, predicts neocloud shakeout",
+              "published_at": "2026-10-25T09:04:00-04:00",
+              "snippet": "Elon Musk said SpaceX \u200bhad closed $40 billion \u200cin debt financing for graphics processing \u200bunits, adding \u200bthe company's investment-grade status \u2060and revenue \u200bfrom its Starlink \u200bsatellite internet and ...",
+              "source_name": "Reuters",
+              "url": "https://www.reuters.com/business/media-telecom/musk-says-spacex-raised-40-billion-debt-gpus-2026-10-25/"
+            }
+          ],
+          "source_name": "Reuters",
+          "summary": "Elon Musk said SpaceX \u200bhad closed $40 billion \u200cin debt financing for graphics processing \u200bunits, adding \u200bthe company's investment-grade status \u2060and revenue \u200bfrom its Starlink \u200bsatellite internet and ...",
+          "transmission": {
+            "affected_assets": [
+              "credit_spreads",
+              "UST"
+            ],
+            "channel": "credit_funding",
+            "channels": [
+              "credit_funding"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "ai_capex_credit",
+            "score": 11
+          },
+          "url": "https://www.reuters.com/business/media-telecom/musk-says-spacex-raised-40-billion-debt-gpus-2026-10-25/",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 11
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-22T22:08:17.710000-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
+              "published_at": "2026-10-22T22:08:17.710000-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "credit_spreads",
+              "UST"
+            ],
+            "channel": "credit_funding",
+            "channels": [
+              "credit_funding"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "ai_capex_credit",
+            "score": 11
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 11
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-19T20:30:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+              "published_at": "2026-10-19T20:30:00-04:00",
+              "snippet": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+          "transmission": {
+            "affected_assets": [
+              "credit_spreads",
+              "UST"
+            ],
+            "channel": "credit_funding",
+            "channels": [
+              "credit_funding"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 3,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "ai_capex_credit",
+            "score": 11
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 5,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 10
+          },
+          "primary_category": "macro",
+          "published_at": "",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+              "published_at": null,
+              "snippet": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+          "transmission": {
+            "affected_assets": [
+              "AUD",
+              "iron_ore"
+            ],
+            "channel": "china_spillover",
+            "channels": [
+              "china_spillover"
+            ],
+            "components": {
+              "asset_named": 3,
+              "channel_china_spillover": 5,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "show",
+            "reason_code": "china_commodity_spillover",
+            "score": 10
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [],
+          "headline": "Stock futures tick higher as oil prices drop to begin the week: Live updates",
+          "id": "news:23d45502244b3690",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 0,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "energy",
+          "published_at": "2026-10-26T07:36:25-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+              "distribution_weight": "standard",
+              "headline": "Stock futures tick higher as oil prices drop to begin the week: Live updates",
+              "published_at": "2026-10-26T07:36:25-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": "CNBC",
+              "url": "https://www.cnbc.com/2026/10/25/stock-market-today-live-updates.html"
+            }
+          ],
+          "source_name": "CNBC",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "Brent",
+              "WTI"
+            ],
+            "channel": "oil_energy_tot",
+            "channels": [
+              "oil_energy_tot"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "shock": 0,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "oil_supply_shock",
+            "score": 7
+          },
+          "url": "https://www.cnbc.com/2026/10/25/stock-market-today-live-updates.html",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [],
+          "headline": "Oil slides over 2% as traders weigh Saudi attack risks, demand destruction",
+          "id": "news:8086ad62114c954f",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 0,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "energy",
+          "published_at": "2026-10-26T01:18:01-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+              "distribution_weight": "standard",
+              "headline": "Oil slides over 2% as traders weigh Saudi attack risks, demand destruction",
+              "published_at": "2026-10-26T01:18:01-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": "CNBC",
+              "url": "https://www.cnbc.com/2026/10/26/oil-prices-today-wti-brent.html"
+            }
+          ],
+          "source_name": "CNBC",
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "Brent",
+              "WTI"
+            ],
+            "channel": "oil_energy_tot",
+            "channels": [
+              "oil_energy_tot"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "shock": 0,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "oil_supply_shock",
+            "score": 7
+          },
+          "url": "https://www.cnbc.com/2026/10/26/oil-prices-today-wti-brent.html",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "US stock futures edge up as oil falls heading into earnings barrage",
+          "id": "news:c465f485b398fbd7",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 1,
+              "recency": 1,
+              "shock": 0,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "energy",
+          "published_at": "2026-10-25T23:02:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+              "distribution_weight": "standard",
+              "headline": "US stock futures edge up as oil falls heading into earnings barrage",
+              "published_at": "2026-10-25T23:02:00-04:00",
+              "snippet": "US stock index futures ticked higher on Monday as crude oil prices retreated from \u200clast week's surge, lifting sentiment at the start of a week dominated by corporate earnings and the Federal Reserve's ...",
+              "source_name": "Reuters",
+              "url": "https://www.reuters.com/business/us-stock-futures-edge-up-oil-falls-heading-into-earnings-barrage-2026-10-26/"
+            }
+          ],
+          "source_name": "Reuters",
+          "summary": "US stock index futures ticked higher on Monday as crude oil prices retreated from \u200clast week's surge, lifting sentiment at the start of a week dominated by corporate earnings and the Federal Reserve's ...",
+          "transmission": {
+            "affected_assets": [
+              "Brent",
+              "WTI"
+            ],
+            "channel": "oil_energy_tot",
+            "channels": [
+              "oil_energy_tot"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 5,
+              "channel_usd_rates": 0,
+              "shock": 0,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "oil_supply_shock",
+            "score": 7
+          },
+          "url": "https://www.reuters.com/business/us-stock-futures-edge-up-oil-falls-heading-into-earnings-barrage-2026-10-26/",
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T14:57:17-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+              "published_at": "2026-10-23T14:57:17-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T14:24:49-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+              "published_at": "2026-10-23T14:24:49-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T12:10:01.987000-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
+              "published_at": "2026-10-23T12:10:01.987000-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "CAD"
+            ],
+            "channel": "g10_policy",
+            "channels": [
+              "g10_policy"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "g10_policy_path",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T08:03:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
+              "published_at": "2026-10-23T08:03:00-04:00",
+              "snippet": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T07:26:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
+              "published_at": "2026-10-23T07:26:00-04:00",
+              "snippet": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T06:15:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+              "published_at": "2026-10-23T06:15:00-04:00",
+              "snippet": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T05:32:14.419000-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+              "published_at": "2026-10-23T05:32:14.419000-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "credit_spreads"
+            ],
+            "channel": "credit_funding",
+            "channels": [
+              "credit_funding"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 5,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "credit_funding_stress",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Morning Bid: Wake up! The long bond's up two points!",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T04:19:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Morning Bid: Wake up! The long bond's up two points!",
+              "published_at": "2026-10-23T04:19:00-04:00",
+              "snippet": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-23T04:06:37-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+              "published_at": "2026-10-23T04:06:37-04:00",
+              "snippet": "Headline-only public metadata; article body was not retrieved.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "Headline-only public metadata; article body was not retrieved.",
+          "transmission": {
+            "affected_assets": [
+              "USD",
+              "UST"
+            ],
+            "channel": "usd_rates",
+            "channels": [
+              "usd_rates"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 0,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 5,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "usd_rates_repricing",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        },
+        {
+          "country_codes": [
+            "US"
+          ],
+          "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+          "id": "news:e3b0c44298fc1c14",
+          "market_salience": {
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "distribution_weight": 0,
+              "novelty": 0,
+              "recency": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "distribution": "standard",
+            "score": 9
+          },
+          "primary_category": "macro",
+          "published_at": "2026-10-22T21:45:00-04:00",
+          "source_edges": [
+            {
+              "discovery_surface": null,
+              "distribution_weight": "standard",
+              "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+              "published_at": "2026-10-22T21:45:00-04:00",
+              "snippet": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+              "source_name": null,
+              "url": null
+            }
+          ],
+          "source_name": null,
+          "summary": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+          "transmission": {
+            "affected_assets": [
+              "JPY"
+            ],
+            "channel": "g10_policy",
+            "channels": [
+              "g10_policy"
+            ],
+            "components": {
+              "asset_named": 2,
+              "channel_china_spillover": 0,
+              "channel_credit_funding": 0,
+              "channel_g10_policy": 5,
+              "channel_geopolitics": 0,
+              "channel_global_risk": 0,
+              "channel_oil_energy": 0,
+              "channel_usd_rates": 0,
+              "shock": 2,
+              "subject_penalty": 0
+            },
+            "disposition": "assess",
+            "reason_code": "g10_policy_path",
+            "score": 9
+          },
+          "url": null,
+          "verification_status": "single_source"
+        }
+      ],
+      "presentation_caps": {
+        "last_24_hours": 6,
+        "top_market_drivers": 3
+      },
+      "sources": [
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "high",
+          "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+          "published_at": "2026-10-25T20:15:00-04:00",
+          "snippet": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+          "published_at": "2026-10-26T06:11:19-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html"
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+          "published_at": "2026-10-20T01:31:00-04:00",
+          "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+          "published_at": null,
+          "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+          "published_at": null,
+          "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Acnbc.com%20%28CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%20OR%20%22credit%20default%20swap%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "standard",
+          "headline": "Neocloud stocks fall as Elon Musk says more than 200 of them face 'guppy-level death'",
+          "published_at": "2026-10-25T21:42:00-04:00",
+          "snippet": "Investors are already questioning the debt-fueled expansion of neoclouds and whether the large AI infrastructure build-out will generate long-term returns.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/26/neocloud-stocks-today-coreweave-nebius-iren-elon-musk.html"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says\\n",
+          "published_at": "2026-10-25T20:37:51-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html"
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "standard",
+          "headline": "Musk says SpaceX raised $40 billion in debt deal, predicts neocloud shakeout",
+          "published_at": "2026-10-25T09:04:00-04:00",
+          "snippet": "Elon Musk said SpaceX \u200bhad closed $40 billion \u200cin debt financing for graphics processing \u200bunits, adding \u200bthe company's investment-grade status \u2060and revenue \u200bfrom its Starlink \u200bsatellite internet and ...",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/business/media-telecom/musk-says-spacex-raised-40-billion-debt-gpus-2026-10-25/"
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Euro sinks on French debt worries, yen gains for week on AI rout",
+          "published_at": "2026-10-22T22:08:17.710000-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "CoreWeave debt selloff poses limited risk to global banks, J.P. Morgan says",
+          "published_at": "2026-10-19T20:30:00-04:00",
+          "snippet": "J.P. Morgan argues the CoreWeave debt selloff poses limited risk to global banks.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "China Oil Comeback Loses Steam as Iran War Drags On",
+          "published_at": null,
+          "snippet": "Chinese oil demand recovery is faltering as the Middle East conflict and limited Iranian supply keep crude high.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "Stock futures tick higher as oil prices drop to begin the week: Live updates",
+          "published_at": "2026-10-26T07:36:25-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/25/stock-market-today-live-updates.html"
+        },
+        {
+          "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+          "distribution_weight": "standard",
+          "headline": "Oil slides over 2% as traders weigh Saudi attack risks, demand destruction",
+          "published_at": "2026-10-26T01:18:01-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/26/oil-prices-today-wti-brent.html"
+        },
+        {
+          "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+          "distribution_weight": "standard",
+          "headline": "US stock futures edge up as oil falls heading into earnings barrage",
+          "published_at": "2026-10-25T23:02:00-04:00",
+          "snippet": "US stock index futures ticked higher on Monday as crude oil prices retreated from \u200clast week's surge, lifting sentiment at the start of a week dominated by corporate earnings and the Federal Reserve's ...",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/business/us-stock-futures-edge-up-oil-falls-heading-into-earnings-barrage-2026-10-26/"
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "CoreWeave\u2019s market confidence erodes as bond yields spike and stock sinks",
+          "published_at": "2026-10-23T14:57:17-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "10-year Treasury yield drops back to 5% this week as investors seek cover from AI worries",
+          "published_at": "2026-10-23T14:24:49-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "POLL Bank of Canada to raise rates to 2.50% on October 28 and once again by end-March",
+          "published_at": "2026-10-23T12:10:01.987000-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Next week brings major risks for the stock market, just as the AI trade keeps faltering",
+          "published_at": "2026-10-23T08:03:00-04:00",
+          "snippet": "Next week will bring major risks for a stock market that's trying to find its footing as the AI trade continues to stumble, with several megacap earnings, a Federal Reserve meeting and a key inflation ...",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Florida Retiree Mega-Complex\u2019s Muni Bond Deal Sees Strong Demand",
+          "published_at": "2026-10-23T07:26:00-04:00",
+          "snippet": "Investors snapped up almost $180 million in high-yield bonds this week sold to finance an expansion of the Villages, a 57,000-acre retirement community in Florida.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Kalshi Courts Wall Street in Bid to Be the \u2018Inflation Exchange\u2019",
+          "published_at": "2026-10-23T06:15:00-04:00",
+          "snippet": "Kalshi Inc. is opening up a new frontier in its rivalry with traditional financial exchanges by pitching the world\u2019s largest banks and hedge funds on a futures market tied to US inflation.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "UK watchdog restricts six private credit firms over anti-money laundering controls",
+          "published_at": "2026-10-23T05:32:14.419000-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Morning Bid: Wake up! The long bond's up two points!",
+          "published_at": "2026-10-23T04:19:00-04:00",
+          "snippet": "It's not every day you wake up to see the US long bond up 2 full points in price, but that's what happened overnight. Ten-year yields dived 19 \u200bbasis points in the biggest daily move since early 2023, ...",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Japan core inflation in September surges to its highest this year at 2.1%",
+          "published_at": "2026-10-23T04:06:37-04:00",
+          "snippet": "Headline-only public metadata; article body was not retrieved.",
+          "source_name": null,
+          "url": null
+        },
+        {
+          "discovery_surface": null,
+          "distribution_weight": "standard",
+          "headline": "Bank of Japan warns of risks from AI market shock, cyberattacks",
+          "published_at": "2026-10-22T21:45:00-04:00",
+          "snippet": "The Bank of Japan warned \u200con Friday of rising risks caused by AI, including growing cybersecurity threats and potential market shocks, that could spill over to the country's banking system.",
+          "source_name": null,
+          "url": null
+        }
+      ],
+      "summary": "U.S. yields are little changed into the Fed after a sharp midweek safety bid that took the 10-year back to 5 percent. Official SOFR is 3.90 percent, but the futures strip still prices a higher path through 2027. Oil is down more than 2 percent on the session, yet WTI and Brent remain elevated near 103 and 117 as Hormuz disruption and thin spare capacity stay in the tape. Equities are firmer on the crude slide; gold holds near 4,008 and VIX is around 19. The dollar is mixed: the euro is soft on French debt, the yen firmer on AI risk-off, and USDCAD sits near 1.40 with a Bank of Canada hike poll for 28 October. Japan core CPI printed 2.1 percent, keeping normalization live. Watch the Fed, Canadian hike risk, and whether oil's drop is demand destruction or just a pause in the Hormuz shock.",
+      "top_market_driver_candidates": [
+        "news:f6dd7213c1fb52e9",
+        "news:13bcd45a2d7d6e87",
+        "news:e3b0c44298fc1c14"
+      ]
+    },
+    "review_id": "review-001",
+    "schema_version": 1,
+    "trade_permissions": {
+      "block_why": null,
+      "blocked_expressions": [
+        "macro:NZ"
+      ],
+      "blocked_sources": [
+        "NZ.Inflation.headline",
+        "NZ.Inflation.underlying"
+      ],
+      "countries": {
+        "AU": {
+          "eligible": true,
+          "gaps": [
+            "AU.Activity.business_surveys",
+            "AU.Consumer.confidence"
+          ],
+          "scored_status": "partial"
+        },
+        "CA": {
+          "eligible": true,
+          "gaps": [
+            "CA.Consumer.confidence"
+          ],
+          "scored_status": "ok"
+        },
+        "EA": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        },
+        "JP": {
+          "eligible": true,
+          "gaps": [
+            "JP.Activity.business_surveys"
+          ],
+          "scored_status": "partial"
+        },
+        "NZ": {
+          "eligible": false,
+          "gaps": [
+            "NZ.Activity.gdp_domestic_demand",
+            "NZ.Consumer.income",
+            "NZ.Consumer.retail",
+            "NZ.Consumer.spending",
+            "NZ.Inflation.headline",
+            "NZ.Inflation.underlying",
+            "NZ.Labor.wages"
+          ],
+          "scored_status": "partial"
+        },
+        "US": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        }
+      },
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "expansion_rule": "country_and_expression_specific",
+      "hold_decisions_emitted": 0,
+      "partial_expressions": [
+        "activity:US",
+        "activity:CA",
+        "activity:AU",
+        "activity:NZ",
+        "activity:EA",
+        "activity:JP",
+        "macro:AU",
+        "macro:NZ"
+      ],
+      "quarantine_mode": "isolate",
+      "quarantine_reason": "unsupported_mark_source",
+      "quarantined_positions": [
+        {
+          "asset_class": "rates_rv",
+          "dependency": "NZ_rates",
+          "dependency_status": "unavailable",
+          "instrument": "NZ-US_10Y",
+          "live_marked": false,
+          "observation_date": null,
+          "pnl_available": false,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "quarantined": true,
+          "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+          "reason_code": "unsupported_mark_source",
+          "scoring": false,
+          "seat": "pragmatist"
+        }
+      ],
+      "restricted_seats": [
+        "pragmatist"
+      ],
+      "seat_risk": {
+        "pragmatist": "unavailable_new_risk"
+      },
+      "source_health": [
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-Q2",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Activity.gdp_domestic_demand"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.manufacturing_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "HTTP 404",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T16:30:00Z",
+          "series_id": "US.Activity.services_surveys"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.confidence"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.income"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-08",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.retail"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.spending"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Inflation.core_pce"
+        }
+      ],
+      "synthetic_holds": false,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "EA",
+        "JP"
+      ]
+    },
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+  },
+  "base_packet_sha256": "331fe22a0831d63ef2b4b3797ecc13c7f11c6d2b4935411672a93640e700677c",
+  "decisions": {
+    "carry-is-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Secondary receive: AONIA cash 4.60 versus March 2027 4.845 still pays the receiver. Dual central-bank week is a reason not to add, not a reason to flatten.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Secondary receive: AONIA cash 4.60 versus March 2027 4.845 still pays the receiver. Dual central-bank week is a reason not to add, not a reason to flatten.",
+          "reason": "Secondary receive: AONIA cash 4.60 versus March 2027 4.845 still pays the receiver. Dual central-bank week is a reason not to add, not a reason to flatten.",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Primary carry: receive CORRA March 2027 while cash is 2.25 and the contract is 3.005. Session oil weakness weakens the inflation-backup case to exit.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Primary carry: receive CORRA March 2027 while cash is 2.25 and the contract is 3.005. Session oil weakness weakens the inflation-backup case to exit.",
+          "reason": "Primary carry: receive CORRA March 2027 while cash is 2.25 and the contract is 3.005. Session oil weakness weakens the inflation-backup case to exit.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 74,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Secondary receive: AONIA cash 4.60 versus March 2027 4.845 still pays the receiver. Dual central-bank week is a reason not to add, not a reason to flatten.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The holds fail if cash policy rates themselves rise toward the March 2027 implied fixings, or if the Bank of Canada outcome implies a path beyond a one-move catch-up toward the 2.50 percent poll and March continues to reprice higher rather than converge. A lasting oil-driven inflation backup that is clearly more than a brief headline wobble would also cut the carry case. Coupon-curve, euro, and yen marks are absent from the tape and are not treated as evidence. Entry, stop, and target remain null.",
+      "memory_context_sha256": "8021db06e1b3c5d67ac96f27889b827058ac04401fd8b56d412111a39b02326c",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "carry-is-king",
+      "thesis": "March 2027 Canadian and Australian overnight-index forwards still sit well above cash, so the existing receives are paid to wait if policy undershoots those implied paths. Session weakness in crude weakens the inflation-backup story that would threaten those holdings; it is a reason to stay patient, not to exit. This week's Federal Reserve meeting and a Bank of Canada poll at 2.50 percent argue against adding risk, not against keeping the positions that already harvest the extra hike premium. Spot currency is the worse expression: buying the Canadian dollar would pay the United States short-rate gap, while the rate contracts isolate the mispriced path."
+    },
+    "catalyst-junkie": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the residual 10 million March 2027 SOFR pay through this week's Fed. Three-digit oil can still extend the 4.41 versus 3.90 path if the meeting declines to ratify the growth-scare bid.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-fca0c79a2e45",
+          "rationale": "Hold the residual 10 million March 2027 SOFR pay through this week's Fed. Three-digit oil can still extend the 4.41 versus 3.90 path if the meeting declines to ratify the growth-scare bid.",
+          "reason": "Hold the residual 10 million March 2027 SOFR pay through this week's Fed. Three-digit oil can still extend the 4.41 versus 3.90 path if the meeting declines to ratify the growth-scare bid.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 55,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the residual 10 million March 2027 SOFR pay through this week's Fed. Three-digit oil can still extend the 4.41 versus 3.90 path if the meeting declines to ratify the growth-scare bid.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A dovish FOMC (cut, easing bias, or presser that ratifies the midweek duration bid) that drives Mar-27 implied toward cash 3.90; or oil confirmed out of three-digit prints, removing the inflation channel into the decision. No numeric stop: null.",
+      "memory_context_sha256": "36b2352682bdb95f770a95a904409c38728870298d69f6919ccba884aec143f2",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "catalyst-junkie",
+      "thesis": "The only dated repricing mechanism still live is this week's FOMC; the midweek AI-stress duration bid has already printed and is not a new path. Cash SOFR at 3.90 versus Mar-27 at 4.41 is a 51bp re-tightening strip that three-digit oil (WTI 103.27, Brent 116.72) can still extend if the Fed declines to ratify the growth-scare bid, even after a session down more than 2 percent. Hold the residual 10,000,000 short SOFR_2027-03 through the meeting: cutting again in front of a live catalyst treats a timing event as a valuation debate, and adding back last cycle's cut is not required for the path to work."
+    },
+    "cross-merchant": {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "CADJPY remains the isolator of Canada versus Japan and is cleaner than a dollar pair, but the harvest test fails after the oil drop. Rates candidate stays null. Selected none: no residual and no replacement cross.",
+            "selected": "none",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "CADJPY",
+              "rationale": "CADJPY remains the isolator of Canada versus Japan and is cleaner than a dollar pair, but the harvest test fails after the oil drop. Rates candidate stays null. Selected none: no residual and no replacement cross."
+            }
+          },
+          "instrument": "CADJPY",
+          "notional_usd": 15000000,
+          "position_id": "pos-44de67c4b24f",
+          "rationale": "Close the long CADJPY residual. The oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy carry is not an edge that would be initiated from flat into the Bank of Canada date.",
+          "reason": "Close the long CADJPY residual. The oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy carry is not an edge that would be initiated from flat into the Bank of Canada date.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "CADJPY remains the isolator of Canada versus Japan and is cleaner than a dollar pair, but the harvest test fails after the oil drop. Rates candidate stays null. Selected none: no residual and no replacement cross.",
+        "selected": "none",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "CADJPY",
+          "rationale": "CADJPY remains the isolator of Canada versus Japan and is cleaner than a dollar pair, but the harvest test fails after the oil drop. Rates candidate stays null. Selected none: no residual and no replacement cross."
+        }
+      },
+      "harvest_reviews": [
+        {
+          "instrument": "CADJPY",
+          "position_id": "pos-44de67c4b24f",
+          "remaining_edge": false,
+          "remaining_edge_reason": "Session oil down more than 2% removes the CAD terms-of-trade support that funded the residual. Leftover CORRA-over-yen carry is already known and too thin to initiate CADJPY from flat overnight into the 28 Oct BoC date. Packet has no valuation, no new CA\u2013JP policy/growth gap, and no replacement non-USD cross quote.",
+          "thesis_still_valid": false,
+          "would_initiate_flat": "no"
+        }
+      ],
+      "invalidation": "A fresh packet print that oil has stabilized or reversed while the CA\u2013JP policy/growth gap widens, such that CADJPY would be initiated from flat as a clean non-USD expression; no price levels in packet (null).",
+      "memory_context_sha256": "c7835a87f8d8ef614bce9b8d99395b4bd532ef0552ff3d3fb7b802b109207db2",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "cross-merchant",
+      "thesis": "Close the long CADJPY residual. Verified tape is CADJPY 112.04, CORRA 2.25 versus an easy-yen/TONA backdrop (BoJ call ~1.25), WTI 103.27 and Brent 116.72 with session oil down more than 2%, and a 28 Oct BoC poll at 2.50; any USD pair would still smuggle Fed beta. the oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy/carry is not an edge I would initiate from flat into the BoC date. Unknowns are valuation, exact TONA, and whether 2.50 is hold or hike versus the overnight setting; none of that supports a residual or a replacement cross, and AUDCAD stays flat per lesson."
+    },
+    "dollar-king": {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Dedicated spot seat harvest of leftover dollar-Canada. Rates candidate stays null. Selected none because a fresh long is not initiated and no residual is kept.",
+            "selected": "none",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDCAD",
+              "rationale": "Dedicated spot seat harvest of leftover dollar-Canada. Rates candidate stays null. Selected none because a fresh long is not initiated and no residual is kept."
+            }
+          },
+          "instrument": "USDCAD",
+          "notional_usd": 3000000,
+          "position_id": "pos-5317bc96d4eb",
+          "rationale": "Flatten the entire leftover long. Oil is still three-digit and Canada is polled to hike in two days; leftover United States rate edge is not tradeable at 1.3995 from a flat book. Last cycle already cut 8 million to 3 million and that residual gave back.",
+          "reason": "Flatten the entire leftover long. Oil is still three-digit and Canada is polled to hike in two days; leftover United States rate edge is not tradeable at 1.3995 from a flat book. Last cycle already cut 8 million to 3 million and that residual gave back.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 73,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Dedicated spot seat harvest of leftover dollar-Canada. Rates candidate stays null. Selected none because a fresh long is not initiated and no residual is kept.",
+        "selected": "none",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "USDCAD",
+          "rationale": "Dedicated spot seat harvest of leftover dollar-Canada. Rates candidate stays null. Selected none because a fresh long is not initiated and no residual is kept."
+        }
+      },
+      "harvest_reviews": [
+        {
+          "instrument": "USDCAD",
+          "position_id": "pos-5317bc96d4eb",
+          "remaining_edge": false,
+          "remaining_edge_reason": "A 165bp cash-rate gap still prints, but it is not remaining tradeable edge at 1.3995: three-digit WTI and Brent plus a polled Canadian hike on 28 Oct consume that gap for both a leftover hold and a fresh long. The session drop of more than 2% in oil does not take crude out of three digits. Full residual cannot be kept without remaining_edge true and would_initiate_flat yes; neither holds, so the position is closed rather than reduced.",
+          "thesis_still_valid": false,
+          "would_initiate_flat": "no"
+        }
+      ],
+      "invalidation": "The harvest is wrong only if crude loses three-digit status and Canada does not deliver the polled hike, restoring the policy-rate gap as the dominant dollar-Canada driver; that would justify a fresh smaller long, not a reinstatement of this residual. A Fed event this week alone is not enough to keep leftover size while oil stays three-digit into a Canadian meeting. Stop, target, and re-entry prints are null.",
+      "memory_context_sha256": "a19e1ce106102bd657f8ebeb99d95ccb9c6fb8cdd645572f406584cc81f656bc",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "performance_reflections": [
+        {
+          "attribution": [
+            "sizing",
+            "catalyst",
+            "thesis"
+          ],
+          "causal": {
+            "assumptions_right": "The United States still pays more than Canada (3.90 versus 2.25, ten-year near 5.00). Dollar-Canada, not a cross, was the right expression of that gap.",
+            "assumptions_wrong_or_underweighted": "Three-digit oil as a Canadian terms-of-trade and currency impulse; Canada's willingness to hike toward 2.50; the idea that leftover size after a paid win is a free option on peak recapture.",
+            "causal_divergence": "The rate gap remained, but oil and the Canadian hiking impulse became the binding near-term drivers, so the residual behaved like a short-oil and short-Canada-policy hold rather than a pure rate-differential position.",
+            "decision_quality_attribution": "sizing",
+            "future_implication": "After a material dollar-Canada win, three-digit oil plus a rising Canadian impulse is a harvest to flat when you would not initiate from zero. Reduced leftover size is still a peak-recapture hold.",
+            "observed_reality": "Crude stayed three-digit even after a more-than-2% session drop, Canadian hike impulse rose into the 28 Oct meeting, and the residual gave back profits instead of recapturing the peak.",
+            "original_belief": "United States policy-rate premium versus Canada would keep dollar-Canada supported, so a residual long after the first cut would still earn the gap and could recapture the high.",
+            "same_information_counterfactual": "With oil already three-digit and a Canadian hike in the poll, the first harvest should have gone to flat, not to a still-large 3 million leftover that required a second review after giveback."
+          },
+          "chase_or_revenge": "no",
+          "lesson": "The first cut from 8 million to 3 million was not a completed harvest. When three-digit oil and a rising Canadian hike impulse arrive after a paid dollar-Canada win, flatten if you would not initiate from zero; leftover reduced size still waits on peak recapture.",
+          "overconfidence_risk": "yes",
+          "pressure_effect": "distorting",
+          "reflection_due_id": "rfd-34f75a9feeff",
+          "skill_vs_luck": "mixed",
+          "what_happened_vs_expected": "Expected the leftover rate premium to stabilize or lift dollar-Canada; instead profits were given back as oil stayed three-digit and Canada priced a hike."
+        }
+      ],
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "dollar-king",
+      "thesis": "The leftover dollar-Canada long is a paid rate-gap trade that has already given back rather than recaptured its high. The United States still pays 3.90 versus Canada's 2.25, and the ten-year sits near 5.00 after a midweek bid, but three-digit crude and a Canadian hike into 2.50 this week are now the binding other leg. I would not start a dollar-Canada long from a flat book at 1.3995 with WTI at 103.27, so this residual is harvested rather than warehoused. Any later dollar view versus Canada has to be a new, smaller initiation after the Canadian meeting, not leftover size hoping the old peak returns."
+    },
+    "mean-reverter": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the 10 million March 2027 SOFR receive: 4.41 versus cash 3.90 is still a 51bp premium, and the 4bp bounce from last cycle is not a new extreme that warrants adding.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the 10 million March 2027 SOFR receive: 4.41 versus cash 3.90 is still a 51bp premium, and the 4bp bounce from last cycle is not a new extreme that warrants adding.",
+          "reason": "Keep the 10 million March 2027 SOFR receive: 4.41 versus cash 3.90 is still a 51bp premium, and the 4bp bounce from last cycle is not a new extreme that warrants adding.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 55,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Keep the 10 million March 2027 SOFR receive: 4.41 versus cash 3.90 is still a 51bp premium, and the 4bp bounce from last cycle is not a new extreme that warrants adding.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The hold breaks if Mar-27 implied re-widens toward last-cycle 4.55\u20134.58 or through those highs, or if this week's Fed validates a higher path while US 10Y holds near 5.00 and oil stays three-digit. The residual-premium thesis also dies if Mar-27 converges through the cash 3.90 anchor without a new printed stretch.",
+      "memory_context_sha256": "6d1aab87a0190bc5b5b49716c108063872665bae17a12d3cd5d50d47df1a18c1",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "mean-reverter",
+      "thesis": "Mar-27 SOFR implied 4.41 versus cash 3.90 is still a 51bp policy-path premium to a hard cash anchor, so the existing long/receive is still the mapped fade of that gap. The same contract already compressed from about 4.58/4.55 toward 4.37 last cycle; live 4.41 is only a 4bp bounce, not a new extreme, so there is no fresh stretch that warrants adding. US 10Y near 5.00 and still-three-digit oil can sustain the premium into this week's Fed, which means the reversal condition for a size-up or a 10Y receive is not in place. Hold pos-1477172adb86 10mm long SOFR_2027-03; take no new risk in 2s/5s/10s, curve, cross-market RV, or spot FX on this packet."
+    },
+    "no-trade-skeptic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Official SOFR is 3.90 percent and the strip already prices a hiking path well above it. Any overnight risk into the 28 October window is shocked-risk capital that pays 3.90 SOFR with no identified leftover edge. Remain at the zero official-SOFR benchmark.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "Official SOFR is 3.90 percent and the strip already prices a hiking path well above it. Any overnight risk into the 28 October window is shocked-risk capital that pays 3.90 SOFR with no identified leftover edge. Remain at the zero official-SOFR benchmark.",
+          "reason": "Official SOFR is 3.90 percent and the strip already prices a hiking path well above it. Any overnight risk into the 28 October window is shocked-risk capital that pays 3.90 SOFR with no identified leftover edge. Remain at the zero official-SOFR benchmark."
+        }
+      ],
+      "alerts": [],
+      "conviction": 78,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Official SOFR is 3.90 percent and the strip already prices a hiking path well above it. Any overnight risk into the 28 October window is shocked-risk capital that pays 3.90 SOFR with no identified leftover edge. Remain at the zero official-SOFR benchmark.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR 3.90 percent ACT/360 dated 2026-10-22 (realized overnight funding authority).",
+        "forward_funding_assessment": "lower",
+        "implication": "Over this overnight/event-week horizon, realized funding should print near official SOFR 3.90, lower than the SR3 strip. Flat cash is not alpha, but paying 3.90 SOFR on shocked-risk capital into Fed plus BoC with no residual edge is a funded variance bill. Stay at the zero official-SOFR benchmark; do not pay SOFR to warehouse uncompensated 28 Oct event risk.",
+        "sr3_forward_view": "Frozen SR3 strip over the event-week to one-year window: Dec-26 4.18, Mar-27 4.41, Jun-27 4.56, Sep-27 4.61. Near-term path is already 28 bp above spot by Dec-26 and 71 bp above spot by Sep-27."
+      },
+      "invalidation": "Actionable only after a rates-first, dated dislocation versus the frozen SR3 strip and US 10Y 5.00 that still exists after the 28 Oct Fed and BoC prints, with a horizon, carry, and residual that exceeds 3.90 percent SOFR on shocked-risk capital; or an official SOFR fix that breaks 3.90 in a way the strip has not already priced. Null until those prints exist in a later packet.",
+      "memory_context_sha256": "5ada849510d22a5b2f4ab9b720a17cd6b3d6f66e15917092882e647783e722ea",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "no-trade-skeptic",
+      "thesis": "official NY Fed SOFR is 3.90 percent ACT/360 dated 2026-10-22; the frozen SR3 strip is Dec-26 4.18, Mar-27 4.41, Jun-27 4.56, Sep-27 4.61; US 10Y prints 5.00; oil prints 103; Fed and BoC are both 28 Oct; the book is flat. that strip already prices a hiking path well above spot SOFR, so 10Y 5.00 and oil 103 are round tape, not a measured residual versus a funded rates expression, and any overnight risk into the 28 Oct window is shocked-risk capital that pays 3.90 SOFR with no identified leftover edge. NZ blocked is local and is not used as a global veto; it also does not mint a substitute trade. event-vol versus the strip, depth, and any post-cutoff dislocation. Remain at the zero official-SOFR benchmark."
+    },
+    "perma-bear": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the 12.5 million US 10-year long. Cash still sits below the hike-priced strip and a midweek safety bid to 5 percent is unfinished defensive repricing, not a completed long.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "US_10Y",
+          "notional_usd": 12500000,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Hold the 12.5 million US 10-year long. Cash still sits below the hike-priced strip and a midweek safety bid to 5 percent is unfinished defensive repricing, not a completed long.",
+          "reason": "Hold the 12.5 million US 10-year long. Cash still sits below the hike-priced strip and a midweek safety bid to 5 percent is unfinished defensive repricing, not a completed long.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the 12.5 million US 10-year long. Cash still sits below the hike-priced strip and a midweek safety bid to 5 percent is unfinished defensive repricing, not a completed long.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Hawkish Fed that ratifies the 4.18-4.61 SOFR path; AI/credit stress fading with VIX still subdued and risk assets bid; Hormuz/WTI 103 dominating 10s as an inflation shock rather than a growth shock. No numerical yield stop in the packet: stop=null, target=null.",
+      "memory_context_sha256": "6294050119ef1c0675747f1ef7d691fa27d674c74076bc77e21537459f0af79d",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "perma-bear",
+      "thesis": "US 10Y ~5.00 after a 19bp midweek bid on AI stress, SOFR strip 4.18-4.61 versus cash 3.90, VIX 19.03, WTI 103, Fed this week, Hormuz and AI credit stress still on the tape, existing long US_10Y 12,500,000 (pos-5ac8fc69cb81). cash still below the hike-priced path and a 19 VIX mean risk assets are treating the landing as benign, so that 19bp bid is an unfinished defensive repricing rather than a completed long; 5.00 remains a high perch while AI/credit stress is live. Fed outcome, Hormuz path, 2Y/5Y/curve/cross-market yields, and all FX spots (null). Hold the 10Y long; do not fade it on one print, and do not add into FOMC with oil at 103."
+    },
+    "perma-bull": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Lead pay: March 2027 CORRA still prints 3.005 versus cash 2.25, so the priced hike path has not been retraced.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Lead pay: March 2027 CORRA still prints 3.005 versus cash 2.25, so the priced hike path has not been retraced.",
+          "reason": "Lead pay: March 2027 CORRA still prints 3.005 versus cash 2.25, so the priced hike path has not been retraced.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the March 2027 SOFR pay with the same higher-for-longer family; do not flatten on a one-day oil headline.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Hold the March 2027 SOFR pay with the same higher-for-longer family; do not flatten on a one-day oil headline.",
+          "reason": "Hold the March 2027 SOFR pay with the same higher-for-longer family; do not flatten on a one-day oil headline.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the March 2027 AONIA pay: 4.845 versus cash 4.60 is the same unretraced hike path.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Hold the March 2027 AONIA pay: 4.845 versus cash 4.60 is the same unretraced hike path.",
+          "reason": "Hold the March 2027 AONIA pay: 4.845 versus cash 4.60 is the same unretraced hike path.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Lead pay: March 2027 CORRA still prints 3.005 versus cash 2.25, so the priced hike path has not been retraced.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Mar-27 implieds retrace toward cash (CORRA toward 2.25, SOFR toward 3.90, AONIA toward 4.60); or WTI and equities sell together, marking a demand scare rather than a supply headline; or Fed/BoC deliver an easing path that collapses the cash-to-implied hike gap. Triggers not present in the tape stay null.",
+      "memory_context_sha256": "f041bd29fa33ec2c78c5420117a19d6f2fceb491436415a0148a762c5ec1dd57",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "perma-bull",
+      "thesis": "Mar-27 STIRs still print above cash (CORRA 3.005 vs 2.25, SOFR 4.41 vs 3.90, AONIA 4.845 vs 4.60), so the priced hike path has not been retraced. Firmer equities with oil down more than 2% is risk-on, not a growth break, and WTI still at 103 keeps the energy impulse alive into Fed/BoC week. Flattening the pay on a one-day Iran/oil headline would treat a non-retrace as a dovish reset. Stay short CORRA_2027-03 as the lead higher-for-longer growth expression; hold the SOFR and AONIA pays with it."
+    },
+    "positioning-cynic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the existing 50 million March 2027 CORRA pay. A new receive or USDCAD short would duplicate CAD-bull already owned by carry, dove, and leftover dollar-Canada inventory.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Hold the existing 50 million March 2027 CORRA pay. A new receive or USDCAD short would duplicate CAD-bull already owned by carry, dove, and leftover dollar-Canada inventory.",
+          "reason": "Hold the existing 50 million March 2027 CORRA pay. A new receive or USDCAD short would duplicate CAD-bull already owned by carry, dove, and leftover dollar-Canada inventory.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 55,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the existing 50 million March 2027 CORRA pay. A new receive or USDCAD short would duplicate CAD-bull already owned by carry, dove, and leftover dollar-Canada inventory.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "This hold is wrong if CAD-receive inventory is gone and the pay becomes the crowded side, or if the leftover is no longer unique versus the same CAD-bull overlay. No price trigger: entry, stop, and target are null because the packet supplied none.",
+      "memory_context_sha256": "0e2d5ad9b79d8a417b80bf52a8238f7518ea55b3c907ef499d03c04d0ab4ea75",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "positioning-cynic",
+      "thesis": "CAD receive into the 28 Oct BoC is already owned: carry and dove sit on CAD receives while Mar-27 CORRA at 3.005 versus 2.25 spot is the contract that crowd wants to fade against a 2.50 poll. The leftover with ownership asymmetry is the existing 50,000,000 short/pay in CORRA Mar-27, not another receive and not a USDCAD short on leftover long-dollar inventory. Hold that pay; do not add; do not overlay spot CAD-bull."
+    },
+    "rate-dove": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the 42.5 million 2027 H-Z receive: the pack still prices a hike cycle above cash 2.25 and a 2.50 poll that cash does not corroborate.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the 42.5 million 2027 H-Z receive: the pack still prices a hike cycle above cash 2.25 and a 2.50 poll that cash does not corroborate.",
+          "reason": "Keep the 42.5 million 2027 H-Z receive: the pack still prices a hike cycle above cash 2.25 and a 2.50 poll that cash does not corroborate.",
+          "side": "long"
+        }
+      ],
+      "alerts": [],
+      "conviction": 67,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Keep the 42.5 million 2027 H-Z receive: the pack still prices a hike cycle above cash 2.25 and a 2.50 poll that cash does not corroborate.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The long-pack thesis breaks if the 28 Oct BoC delivers and guides a hiking path consistent with H27 3.005 through Z27 3.46, or if the poll/cash anchor leaves 2.50 for a cycle the pack already prices. A 25 bp move to the polled 2.50 print alone is not invalidation and is not a harvest.",
+      "memory_context_sha256": "a751191372fdc683a35db3b2c243743a7a8d89d44eca07f5d27033cfbfea340b",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "rate-dove",
+      "thesis": "CORRA cash is 2.25, the 2027 H\u2013Z pack still prints 3.005 / 3.21 / 3.36 / 3.46, and the BoC poll is 2.50 on 28 Oct and still 2.50 by March. the strip is pricing a full hike cycle above a 2.50 print that cash and the poll do not corroborate, so CAD lower-rate repricing remains underpriced in STIR. The existing long pack is already the rates-first expression of that gap; this week\u2019s BoC and Fed are event risk around the same view, not a reason to fade it. 28 Oct hike size/signal, the Fed reaction function, and any CA 2Y/5Y/10Y or USD/CAD prints not in the tape."
+    },
+    "rate-hawk": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the September 2027 SOFR pay: cash 3.90 versus 4.61 still prices only 71bp into a live Fed week, which is not a completed restrictive terminal.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Keep the September 2027 SOFR pay: cash 3.90 versus 4.61 still prices only 71bp into a live Fed week, which is not a completed restrictive terminal.",
+          "reason": "Keep the September 2027 SOFR pay: cash 3.90 versus 4.61 still prices only 71bp into a live Fed week, which is not a completed restrictive terminal.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the March 2027 CORRA pay: a polled 2.50 still leaves about 50bp in the 3.005 contract after the first hike.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 12500000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Keep the March 2027 CORRA pay: a polled 2.50 still leaves about 50bp in the 3.005 contract after the first hike.",
+          "reason": "Keep the March 2027 CORRA pay: a polled 2.50 still leaves about 50bp in the 3.005 contract after the first hike.",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the June 2027 AONIA pay: 4.87 versus cash 4.60 is the thinnest eligible hike path on the tape.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 25000000,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Keep the June 2027 AONIA pay: 4.87 versus cash 4.60 is the thinnest eligible hike path on the tape.",
+          "reason": "Keep the June 2027 AONIA pay: 4.87 versus cash 4.60 is the thinnest eligible hike path on the tape.",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 64,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Keep the September 2027 SOFR pay: cash 3.90 versus 4.61 still prices only 71bp into a live Fed week, which is not a completed restrictive terminal.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "FOMC outcome or path that caps US terminal below Sep-27 4.61; BoC holds 2.25 or marks 2.50 as terminal; RBA guidance that fades Jun-27 AONIA back through 4.60; persistent WTI break from 103.27 that removes the inflation impulse; JP 2.1% core CPI treated as transitory with no policy follow-through. FOMC decision/dots, BoC statement, whether the oil decline persists. Do not invent alternative print levels.",
+      "memory_context_sha256": "e0db033eaf423e01cbc6163352d3f2c8920f7a5ed122a2da020e8a949468737b",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "rate-hawk",
+      "thesis": "Cash SOFR at 3.90 versus Sep-27 at 4.61 still prices only 71bp of tightening into a live Fed week, which is not a completed restrictive terminal if inflation stays sticky. BoC is polled at 2.50 on 28 Oct from CORRA 2.25, yet Mar-27 at 3.005 leaves only about 50bp after that first hike. Jun-27 AONIA at 4.87 versus cash 4.60 prices just 27bp, the thinnest eligible hike path on the tape. WTI at 103.27 is down more than 2% on the session, a near-term disinflation impulse, so the existing shorts stay on rather than being added into the event."
+    },
+    "trend-follower": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The book is flat after the failed 10-year higher-yield short. Cash 10-year is still about 5.00 with no new yield high, and March SOFR has not confirmed a persistent pay path. Stay flat; do not re-open the broken backup.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "The book is flat after the failed 10-year higher-yield short. Cash 10-year is still about 5.00 with no new yield high, and March SOFR has not confirmed a persistent pay path. Stay flat; do not re-open the broken backup.",
+          "reason": "The book is flat after the failed 10-year higher-yield short. Cash 10-year is still about 5.00 with no new yield high, and March SOFR has not confirmed a persistent pay path. Stay flat; do not re-open the broken backup."
+        }
+      ],
+      "alerts": [],
+      "conviction": 48,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "The book is flat after the failed 10-year higher-yield short. Cash 10-year is still about 5.00 with no new yield high, and March SOFR has not confirmed a persistent pay path. Stay flat; do not re-open the broken backup.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The flat stance is wrong if US_10Y prints a confirmed new yield high that re-establishes backup continuation, or if yields make a confirmed new low with SOFR implied moving lower in the same direction. Break levels for either signal are not in the packet and are null. A same-direction STIR plus 10-year print is required before any re-entry.",
+      "memory_context_sha256": "35247e3190a617f7d95290b978dea53f063fa445926eab4e3709e7ab59b60e5e",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "Tenor choice: 10-year was the confirming cash yield versus a SOFR implied that had been drifting the other way. Exit rather than add once the backup failed to extend.",
+            "assumptions_wrong_or_underweighted": "That a backup in progress at 5.15 was still a trend without requiring a confirmed new yield high. That mean-reversion back toward 5.00 was a premature fade rather than the actual path. Fed-week policy-path risk as a reason the backup could stall. Need for STIR to remain aligned if the 10-year pay was to be held.",
+            "causal_divergence": "Belief was persistence of higher yields; reality was an unconfirmed backup that reversed to 5.00. The loss came from holding a continuation that never confirmed, not from fading a live trend.",
+            "decision_quality_attribution": "timing",
+            "future_implication": "A closed higher-yield short at 5.00 with no new high is a dead trend, not a re-entry. Flat is the trend-follower stance until a confirmed new high or a confirmed opposite trend with STIR alignment.",
+            "observed_reality": "Yields moved 5.15 to 5.00, the short was exited last cycle, and the subsequent tape still shows about 5.00 with no new high.",
+            "original_belief": "US 10-year yields would keep backing up from 5.15 as a persistent higher-yield trend, so staying short US 10-year was the continuation.",
+            "same_information_counterfactual": "With the same information (no new US 10-year yield high, SOFR not a clean confirming pay), the seat should have been flat or required a breakout to a new yield high before paying. That rule would have avoided the 5.15 entry."
+          },
+          "expression_assessment": "Tenor choice was mixed-pass: 10-year was the confirming cash yield versus a SOFR implied that had been drifting the other way.",
+          "future_rule": "Do not re-open a higher-yield short in US 10-year unless that tenor prints a confirmed new yield high; a stall at the post-exit yield, especially into Fed week, is stay-flat, not add. If STIR implied and 10-year disagree, do not pay the lagging expression; migrate to the confirming tenor or exit.",
+          "lesson": "Do not treat a stalled backup as a dip to re-short: if US 10-year fails to print a new yield high after a higher-yield short, the trend is invalid and the seat goes flat.",
+          "postmortem_id": "pmd-661371860aba",
+          "sizing_assessment": "The realized loss came from holding a continuation that never confirmed rather than from a scaled invalidation before 5.00.",
+          "thesis_assessment": "The persistence thesis failed: a backup in progress at 5.15 was treated as a living trend without a confirmed new yield high.",
+          "timing_assessment": "Timing treated a late backup as continuation and did not require a new yield high before paying.",
+          "trade_id": "trd-trader-trend-follower-pos-06e7a6ec76da",
+          "what_failed": "The persistence thesis was wrong: a higher-yield continuation from 5.15 never printed a new high and reversed to 5.00. That is a trend-failure, not a dip. Timing treated a late backup as a living trend.",
+          "what_worked": "The short was closed rather than added to after yields failed to extend; the book is now flat, which matches a broken backup. Expression in US 10-year rather than a diverging SOFR pay followed the prior migrate-or-exit rule on tenor confirmation."
+        }
+      ],
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "trend-follower",
+      "thesis": "the book is flat after the US 10-year higher-yield short was closed 5.15 to 5.00 for -112500; cash 10-year is still ~5.00 with no new yield high; SOFR March 2027 is 4.41 versus prior lower marks; this is Fed week. the documented backup is not a living trend, and STIR has not confirmed a persistent pay path either, so there is no clean continuation in either direction. the missing 2s/5s/curve/FX tape and the Fed outcome. Stay flat; do not re-open the broken 10-year pay and do not flip to a receive until a confirmed new yield trend prints."
+    },
+    "value-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The marked cash SOFR-CORRA gap is 165bp while Canada-US 10-year already sits inside that policy gap. A CAD rates pack would clone the cash differential rather than a residual dislocation, and USDCAD has no valuation anchor in this packet. Stay flat.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "The marked cash SOFR-CORRA gap is 165bp while Canada-US 10-year already sits inside that policy gap. A CAD rates pack would clone the cash differential rather than a residual dislocation, and USDCAD has no valuation anchor in this packet. Stay flat.",
+          "reason": "The marked cash SOFR-CORRA gap is 165bp while Canada-US 10-year already sits inside that policy gap. A CAD rates pack would clone the cash differential rather than a residual dislocation, and USDCAD has no valuation anchor in this packet. Stay flat."
+        }
+      ],
+      "alerts": [],
+      "conviction": 35,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "The marked cash SOFR-CORRA gap is 165bp while Canada-US 10-year already sits inside that policy gap. A CAD rates pack would clone the cash differential rather than a residual dislocation, and USDCAD has no valuation anchor in this packet. Stay flat.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Stand-down is wrong if a later packet prints 2Y SOFR\u2013CORRA materially wider than cash 165bp (a non-cloned rates residual) or a REER/PPP/terms-of-trade dislocation versus USDCAD 1.3995. A marked AU/EA/JP cross-market yield relationship that is historically extreme versus Canada or the US would also reopen the remit.",
+      "memory_context_sha256": "f383d5b0cfe367b32c07341573277e1f7c41435c303cece48de9f77da7a7ca1a",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "value-guy",
+      "thesis": "The marked cash SOFR\u2013CORRA gap is 165bp (3.90 vs 2.25) while CA\u2013US 10Y is already \u2212118bp, so the bond spread sits inside the policy gap rather than offering unused cheap-CAD carry. Two-year SOFR\u2013CORRA is unmarked, so any CAD rates pack would clone that cash policy differential instead of a residual dislocation. USDCAD 1.3995 has no packeted REER, PPP, terms-of-trade or historical-z anchor, and AU/EA/JP/NZ rates RV are unmarked or unmarkable; with a flat book that is not a convergence setup."
+    },
+    "vol-convexity": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Fed and Bank of Canada week makes linear spot the wrong payoff while the book is flat. The packet has no trusted listed option prices, so last-resort convexity cannot be marked. Stay out rather than invent a contract or chase spot.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "rationale": "Fed and Bank of Canada week makes linear spot the wrong payoff while the book is flat. The packet has no trusted listed option prices, so last-resort convexity cannot be marked. Stay out rather than invent a contract or chase spot.",
+          "reason": "Fed and Bank of Canada week makes linear spot the wrong payoff while the book is flat. The packet has no trusted listed option prices, so last-resort convexity cannot be marked. Stay out rather than invent a contract or chase spot."
+        }
+      ],
+      "alerts": [],
+      "conviction": 75,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Fed and Bank of Canada week makes linear spot the wrong payoff while the book is flat. The packet has no trusted listed option prices, so last-resort convexity cannot be marked. Stay out rather than invent a contract or chase spot.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "NO_TRADE is invalidated only if a later packet supplies a trusted listed rates or eligible US/CA/AU/EA/JP option mark covering the event window, or if both central-bank events have printed and the residual is a slow spot-rates trend with no remaining binary. Until then any new spot OPEN remains the inferior expression. All contract levels stay null; none are invented.",
+      "memory_context_sha256": "9181f4599f1bdfd6864b7312aad7a69ba2025bf1570761f13117226a19e39eb3",
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "required_pitch": null,
+      "review_id": "review-001",
+      "risk_put_on": null,
+      "seat": "vol-convexity",
+      "thesis": "Fed/BoC event week makes timing the risk, so a linear spot expression in UST 10Y or SOFR is the wrong payoff while the book is flat. VIX 19.03 and oil at 103 are cross-asset facts, not substitute marks for rates or eligible-G10 implieds, and the packet has no trusted listed option prices, strikes, or expiries. Last-resort bounded-risk options would dominate spot if they could be marked; they cannot, so this seat stays out rather than invent a contract or chase spot."
+    }
+  },
+  "execution": {
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.6"
+    ],
+    "auto_used": false,
+    "composer_cap": 2,
+    "declared_composer_calls": 2,
+    "declared_grok_calls": 18,
+    "declared_total_model_calls": 20,
+    "grok_cap": 18,
+    "other_models_calls": 0,
+    "parent_model": "grok-4.6",
+    "total_model_cap": 20
+  },
+  "launch_id": "mwl-20261026T113710Z-1e472b39",
+  "learning_quality_review": {
+    "assessments": [
+      {
+        "adequate": true,
+        "owner_id": "swinger",
+        "owner_type": "pm",
+        "reasons": [
+          "Causal block ties rich-to-cash receive, 13bp compression, and post-3.00 gap to meeting-week binary rather than swing edge.",
+          "Divergence and counterfactual state cause-and-effect for exit timing, not outcome platitude.",
+          "Lesson and future_rule are supported by stated drivers; what_worked and what_failed satisfy assessment requirements."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-81b056918e01",
+        "submission_state": "adequate"
+      },
+      {
+        "adequate": true,
+        "owner_id": "dollar-king",
+        "owner_type": "trader",
+        "reasons": [
+          "Required reflection fields present; causal fields explain why residual long behaved as oil and hike impulse drivers despite persistent rate gap.",
+          "Assumptions wrong/underweighted and divergence identify binding near-term drivers versus rate-differential thesis.",
+          "Counterfactual links same information to harvest-to-flat sizing choice with explicit causal mechanism."
+        ],
+        "submission_kind": "performance_reflection",
+        "submission_ref": "rfd-34f75a9feeff",
+        "submission_state": "adequate"
+      },
+      {
+        "adequate": true,
+        "owner_id": "trend-follower",
+        "owner_type": "trader",
+        "reasons": [
+          "Causal block distinguishes unconfirmed backup from confirmed trend and attributes loss to continuation without new yield high.",
+          "Wrong assumptions and divergence cover STIR-10-year alignment and Fed-week stall as causal factors.",
+          "Lesson and future_rule follow from trend-invalidation logic; what_worked and what_failed provide substantive assessment."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-661371860aba",
+        "submission_state": "adequate"
+      }
+    ],
+    "call_count": 1,
+    "model": "composer-2.5",
+    "role": "learning_quality_examiner"
+  },
+  "overnight_run_id": "overnight-20261026",
+  "pm_decisions": {
+    "grinder": {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "rationale": "Flat book, no OPEN or ADD tickets, dual central-bank event on 28 October, and no challenge-set name whose expected edge clears 3.90 percent SOFR ACT/360 on shocked risk capital. Stay flat.",
+          "reason": "Event-week hurdle fail from a flat book."
+        }
+      ],
+      "conviction": 78,
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR 3.90% ACT/360 dated 2026-10-22, charged on shocked-risk capital (trusted $100m standard-shock limit; $50m HWM drawdown stop). force_deployment=false.",
+        "candidate_assessments": [
+          {
+            "asset_class": "rates",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ rates",
+              "NZ official curve",
+              "Canada official curve",
+              "options IV"
+            ],
+            "instrument": "SOFR_2027-03",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "Markable SOFR 2027-03. Mean HOLD receive versus catalyst HOLD pay is a two-way book, not a thesis. FOMC on 28 Oct is the dominant shocked-P&L driver; expected edge after that path does not cover official SOFR charged on shocked capital. No OPEN ticket and a flat book keep this closed."
+          },
+          {
+            "asset_class": "rates",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ rates",
+              "NZ official curve",
+              "options IV",
+              "CAD/AU cash-curve gaps"
+            ],
+            "instrument": "US_10Y",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "Markable UST 10Y. Bear HOLD into FOMC week is a duration stance whose adverse path (policy surprise, real-rate and term-premium jump) is large versus 3.90% SOFR on shocked capital. From flat, that is an event-week open with no OPEN ticket and no excess edge."
+          },
+          {
+            "asset_class": "spot_fx",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ rates",
+              "NZ official curve",
+              "NZD crosses",
+              "options IV"
+            ],
+            "instrument": "USDCAD",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "Markable spot. Dollar-king's ticket is CLOSE, and Fed plus BoC on the same date is a two-sided policy shock for the cross. Even if forwards were richer, event-week gap risk on shocked capital is not paid by 3.90% SOFR; starting the cross from a flat book fails the hurdle on economics."
+          },
+          {
+            "asset_class": "spot_fx",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "NZ rates",
+              "NZ official curve",
+              "options IV"
+            ],
+            "instrument": "CADJPY",
+            "markable": true,
+            "material_missing_data": [],
+            "rationale": "Markable cross. The only CADJPY ticket is CLOSE. BoC plus USD-led JPY risk-off is a wide adverse P&L path; that shock is not compensated by 3.90% SOFR on risk capital. Opening from flat would expand, not preserve."
+          }
+        ],
+        "chosen_action_rationale": "The four names the frozen packet can both mark and risk-capital fail the official SOFR-on-shocked-capital hurdle on their own event-week economics, not because the packet is imperfect. NZ gaps are ignored throughout. Trader Room has no OPEN/ADD, the book is flat, and conflicting HOLDs plus CLOSE tickets on the FX names argue for stand-down. NO_TRADE is the preservation action; force_deployment remains false."
+      },
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "A post-decision frozen packet showing a coherent, markable dislocation whose expected edge after event vol still exceeds 3.90% SOFR on shocked risk capital, with an aligned OPEN (not a conflicting HOLD) and a de-risk path that respects the $100m shock limit and $50m drawdown stop.",
+      "memory_context_sha256": "ebc265661079ec91de13c1284a403809db03b53171cd93e6d1a3767d761d41c1",
+      "opportunity_scan": [
+        {
+          "instrument": "CORRA_2027-03",
+          "rationale": "BoC 28 Oct; dove/carry receive versus cynic pay; event-week CAD 2027 contract is the core rates challenge, not a carry overlay."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "rationale": "FOMC 28 Oct; mean receive versus catalyst pay; same-contract conflict into the Fed is not a Grinder open."
+        },
+        {
+          "instrument": "US_10Y",
+          "rationale": "Bear HOLD duration into FOMC; UST shock path dominates any residual carry versus 3.90% SOFR on risk capital."
+        },
+        {
+          "instrument": "USDCAD",
+          "rationale": "Dollar-king CLOSE, not open; dual CB week is a de-risking tape, not a fresh FX start from flat."
+        },
+        {
+          "instrument": "AONIA_2027-03",
+          "rationale": "Carry HOLD AU receive is the least-direct event name; still a global-rates open from flat with no OPEN ticket and no excess versus the SOFR hurdle."
+        },
+        {
+          "instrument": "CADJPY",
+          "rationale": "Cross CLOSE; CAD event plus JPY risk-off beta is a reduction signal, not an expand-from-flat signal."
+        }
+      ],
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "pm_id": "grinder",
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "The book is already flat and the Trader Room issued no OPEN or ADD tickets. Fed and BoC both land on 28 Oct, so plausible adverse marks on CAD and USD duration, USTs, and USD/CAD\u2013CADJPY crosses are large versus official 3.90% SOFR ACT/360 charged on shocked risk capital. Receive-versus-pay holds on the same names are disagreement, not a sized edge. Preservation is to stay flat until post-meeting marks reprice the curves."
+    },
+    "pragmatist": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the markable CAD March 2027 receive. New risk is unavailable while the New Zealand versus US 10-year residual cannot be marked. No add.",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Unmarkable residual. Hold only. No invented New Zealand exit price, no close, no hedge.",
+          "side": "short"
+        }
+      ],
+      "conviction": 38,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "NZ-US 10Y becomes independently markable with a trusted close/hedge path; CORRA Mar-27 reprices higher through 3.005 toward a durable 2.50 hold that breaks the receive; or the new-risk freeze lifts and a cleaner expression appears in the frozen tape.",
+      "memory_context_sha256": "9405455b689dbc3e979c1352e155069c6aee51000a933dc07951bf443a213c95",
+      "opportunity_scan": [
+        {
+          "instrument": "CORRA_2027-03",
+          "rationale": "Already long; BoC 28 Oct 2.50 poll vs 2.25 cash and 3.005 Mar-27 is a grindable CAD-STIR receive, but ADD is forbidden."
+        },
+        {
+          "instrument": "SOFR_2027-03",
+          "rationale": "Fed this week, SOFR 3.90; mean receive vs catalyst/hawk pay is two-way. Markable but new risk unavailable."
+        },
+        {
+          "instrument": "US_10Y",
+          "rationale": "Bear HOLD duration; would entangle the unmarkable NZ-US 10Y residual rather than clarify it."
+        },
+        {
+          "instrument": "AONIA_2027-03",
+          "rationale": "Carry-style AUD receive, markable, but same directional STIR-receive beta as the existing CORRA long."
+        },
+        {
+          "instrument": "USDCAD",
+          "rationale": "Dollar-king closing; CAD FX is not a substitute for a rates residual that cannot be marked."
+        },
+        {
+          "instrument": "CADJPY",
+          "rationale": "Cross closing; FX cross does not hedge CORRA or the NZ-US line."
+        }
+      ],
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "pm_id": "pragmatist",
+      "portfolio_construction": {
+        "adverse_scenario": "BoC delivers or prices a 2.50 hold and CORRA Mar-27 marks higher (receive loses) into/after 28 Oct, while this week's Fed lifts USD yields and the unmarkable NZ-US 10Y short cannot be hedged, reduced, or closed at a trusted price. Dual-leg P&L is then one-sided: CAD-STIR pain plus an unriskable residual.",
+        "candidate_interactions": [
+          {
+            "instrument": "SOFR_2027-03",
+            "interaction": "diversify",
+            "rationale": "USD STIR vs existing CAD STIR receive; different CB path, but Fed-week two-way and still new risk."
+          },
+          {
+            "instrument": "US_10Y",
+            "interaction": "duplicate_beta",
+            "rationale": "Overlaps the UST duration leg already embedded in the unmarkable NZ-US 10Y short."
+          },
+          {
+            "instrument": "USDCAD",
+            "interaction": "unrelated",
+            "rationale": "CAD FX beta is not a substitute for CORRA carry or the NZ-US residual."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "interaction": "duplicate_beta",
+            "rationale": "Another front-end receive; stacks STIR-easing beta on the existing CORRA long."
+          },
+          {
+            "instrument": "CADJPY",
+            "interaction": "unrelated",
+            "rationale": "FX cross; does not offset CAD STIR or NZ-US 10Y."
+          },
+          {
+            "instrument": "CORRA_2027-03",
+            "interaction": "duplicate_beta",
+            "rationale": "Same instrument as the live long; ADD would scale identical CAD Mar-27 receive risk."
+          }
+        ],
+        "chosen_actions_rationale": "HOLD both. OPEN/ADD/HEDGE are forbidden while NZ-US_10Y cannot be marked; CLOSE of that residual would require an invented exit price, which is disallowed. The CORRA Mar-27 receive stays as the only markable expression. Rejected complements do not improve the book because they cannot be funded and several duplicate existing beta.",
+        "existing_book_summary": "Long CORRA March 2027 450 million, receive / long duration, markable. Short New Zealand versus US 10-year 80 million, unmarkable residual; new risk unavailable for this seat until it can be marked. No New Zealand exit price is used.",
+        "independent_handoff_opportunities": [
+          {
+            "asset_class": "rates",
+            "instrument": "SOFR_2027-03",
+            "markable": true,
+            "rationale": "Mean HOLD receive vs catalyst HOLD pay into Fed week at SOFR 3.90; independently markable USD STIR."
+          },
+          {
+            "asset_class": "rates",
+            "instrument": "US_10Y",
+            "markable": true,
+            "rationale": "Bear HOLD UST duration; independently markable but overlaps the UST leg of the unmarkable NZ-US residual."
+          },
+          {
+            "asset_class": "spot_fx",
+            "instrument": "USDCAD",
+            "markable": true,
+            "rationale": "Dollar-king CLOSE; independently markable CAD FX, not a rates substitute."
+          },
+          {
+            "asset_class": "spot_fx",
+            "instrument": "CADJPY",
+            "markable": true,
+            "rationale": "Cross CLOSE; independently markable FX cross, no rates hedge."
+          }
+        ],
+        "rejected_complements": [
+          {
+            "instrument": "SOFR_2027-03",
+            "reason": "Markable but new risk unavailable; Fed-week pay/receive split is not a reason to breach the freeze."
+          },
+          {
+            "instrument": "US_10Y",
+            "reason": "Would duplicate/entangle the unmarkable NZ-US 10Y residual rather than complete it."
+          },
+          {
+            "instrument": "USDCAD",
+            "reason": "Handoff is CLOSE; FX does not free the residual or hedge CORRA; cannot OPEN."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "reason": "AUD receive duplicates STIR-easing beta already held in CORRA; ADD forbidden."
+          },
+          {
+            "instrument": "CADJPY",
+            "reason": "Handoff is CLOSE; unrelated FX, cannot OPEN."
+          }
+        ]
+      },
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "The markable book is a 450mm receive in CORRA Mar-27 (cash 2.25 versus 3.005 futures, BoC poll 2.50 on 28 Oct) held through this week's Fed. The 80mm short NZ-US 10Y residual cannot be marked, so this seat has no new risk capacity and will not invent an NZ exit price. Trader Room tickets are non-expansive (holds, closes, no-trade); contested USD STIR and FX names are not funded while the residual is unmanageable. Capital preservation dominates the allocator grind until the NZ-US line can be marked."
+    },
+    "swinger": {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "rationale": "Book is flat. The only recently valid concentrated thesis is the March 2027 CORRA receive, already closed at 3.00. Reopening at 3.005 is the same trade with no new dislocation; dual central-bank week is event binary, not extractable swing.",
+          "reason": "Harvested gap plus event week; hurdles not met."
+        }
+      ],
+      "conviction": 68,
+      "evidence_cutoff": "2026-10-26T07:37:10.682323-04:00",
+      "execution": {
+        "principal_model": "grok-4.6",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "Re-enter only if Mar-27 CORRA gaps 10bp or more versus the 3.00 exit and versus the announced BoC path, or if a post-meeting SOFR or U.S. 10Y move creates a one-way concentrated rates dislocation with a clear mark direction.",
+      "memory_context_sha256": "3e5addcdbf5e8388ba9c23af7bdead31515f598cd95322490becd2d1c8506b3f",
+      "opportunity_scan": [
+        {
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "rationale": "Just harvested receive 3.13 to 3.00; 3.005 is not a new cash or path gap. Paying into BoC is an event bet with 50bp already over 2.50 and oil down 2 percent."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "SOFR_2027-03",
+          "rationale": "Fed week. Cash 3.90 is charged on shocked capital; Mar already 4.41. Strip hike path is priced, not a fresh concentrated dislocation."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "Only 24.5bp over cash 4.60. Too thin to concentrate a swing book."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "US_10Y",
+          "rationale": "Yield near 5.00 with a broken backup. FOMC binary, not a one-way concentrated duration swing."
+        },
+        {
+          "asset_class": "fx",
+          "instrument": "USDCAD",
+          "rationale": "Spot 1.3995. Three-digit oil plus a 2.50 BoC hike is not a setup to initiate."
+        },
+        {
+          "asset_class": "fx",
+          "instrument": "CADJPY",
+          "rationale": "Oil session -2 percent knocks out the terms-of-trade pillar. Would not initiate."
+        }
+      ],
+      "overnight_run_id": "overnight-20261026",
+      "packet_sha256": "141f1c4eb9f44fb9ee43c97cf39dfae2d19d5b9554e7e3a53d0cf15967539c48",
+      "pm_id": "swinger",
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "Concentrated unhedged receive while March 2027 was rich to cash; implied-rate compression, not FX or oil, was the driver; exiting at 3.00 locked the move before dual central-bank week.",
+            "assumptions_wrong_or_underweighted": "Once the mark reached 3.00, leftover versus cash was event binary on the 28 October 2.50 decision rather than residual swing edge.",
+            "causal_divergence": "The 13bp compression was the original mispricing being extracted. After 3.00 the remaining gap versus cash was meeting-week binary, which is why the book was closed rather than held.",
+            "decision_quality_attribution": "timing",
+            "future_implication": "Do not reopen the same CORRA receive within a few basis points of a just-booked exit unless a new dislocation appears versus cash or versus the announced Bank of Canada path.",
+            "observed_reality": "The mark fell 13bp from 3.13 to 3.00 as the priced Canadian hike path compressed; leftover versus cash then became event risk rather than extractable mispricing.",
+            "original_belief": "Receive March 2027 CORRA while the contract was rich to cash; implied would compress toward cash 2.25 and a near-term 2.50 Bank of Canada outcome.",
+            "same_information_counterfactual": "Holding through Bank of Canada and the Fed would have converted a harvested 13bp swing into a binary on the 28 October 2.50 decision. A hawkish March 2027 repricing back through 3.13 before the close would have erased the trade."
+          },
+          "expression_assessment": "Outright March 2027 CORRA receive isolated implied-rate compression rather than FX or oil.",
+          "future_rule": "Do not reopen the same CORRA receive within a few basis points of a just-booked exit unless a new dislocation appears versus cash or versus the announced Bank of Canada path.",
+          "lesson": "A realized receive that has already compressed to the event-implied print is finished; the next 10bp is meeting-week binary, not the original mispricing.",
+          "postmortem_id": "pmd-81b056918e01",
+          "sizing_assessment": "Size came from the adverse path, not notional hunger, and the close did not leave a warehouse stub.",
+          "thesis_assessment": "Rich-to-cash receive was the right concentrated expression while 3.13 still sat well above cash and the near-term 2.50 path.",
+          "timing_assessment": "The 3.00 exit locked the 13bp before dual central-bank week converted leftover versus cash into event binary.",
+          "trade_id": "trd-pm-swinger-pm-swinger-2070479ca321",
+          "what_failed": "Nothing material. Tape now 3.005 versus 3.00 exit; almost no residual edge was left on the table.",
+          "what_worked": "Concentrated unhedged receive while March 2027 CORRA was rich to cash; sized from adverse P&L path rather than notional hunger; exited at 3.00 instead of warehousing a finished gap into event week."
+        }
+      ],
+      "principal_model": "grok-4.6",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Mar-27 CORRA sits at 3.005, half a basis point from the 3.00 print where the concentrated receive was closed last cycle; that is residual, not a new dislocation versus cash at 2.25 or a 2.50 Bank of Canada outcome. This week's Federal Reserve meeting and the 28 October BoC decision turn the remaining 50 basis points over 2.50 into event binary rather than an extractable swing. The 2 percent oil drop undercuts initiating a pay-CORRA or CAD terms-of-trade FX book, and SOFR at 3.90 on shocked capital is a poor warehouse through FOMC. Stay flat until a fresh gap appears."
+    }
+  },
+  "review_id": "review-001",
+  "schedule_id": "market-watch-weekday-0205",
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT"
+}
