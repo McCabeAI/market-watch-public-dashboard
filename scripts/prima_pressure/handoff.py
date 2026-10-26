@@ -73,7 +73,7 @@ def block_from_frozen(packet: dict | None) -> dict[str, Any]:
 
 
 def _label_channel(channel: str) -> str:
-    return channel.replace("_", " ")
+    return contract.CHANNEL_DISPLAY_LABELS.get(channel, channel.replace("_", " "))
 
 
 def render_prima_research_text(block: dict[str, Any]) -> str:

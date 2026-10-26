@@ -152,9 +152,14 @@ class CurveBundleTests(unittest.TestCase):
 
         out = build_producer_prices(as_of, opener)
         self.assertEqual(out["sector_ppi"]["status"], "unavailable")
+        self.assertEqual(out["sector_ppi"]["reason"], "reference_period_not_quarter_start")
+        self.assertNotIn("authoritative_sector_ppi_series_not_locked", json.dumps(out["sector_ppi"]))
         by_id = {row["series_id"]: row for row in out["series"]}
-        self.assertEqual(by_id["ippi_ex_energy"]["channel_role"], "production_network_fallback")
-        self.assertEqual(by_id["rmpi_ex_crude_energy"]["channel_role"], "imported_pressure_fallback")
+        self.assertEqual(by_id["ippi_ex_energy"]["channel_role"], "production_network_scored_monthly")
+        self.assertEqual(by_id["ippi_ex_energy"]["legacy_channel_role"], "production_network_fallback")
+        self.assertEqual(by_id["rmpi_ex_crude_energy"]["channel_role"], "raw_material_cost_pressure")
+        self.assertEqual(by_id["rmpi_ex_crude_energy"]["legacy_channel_role"], "imported_pressure_fallback")
+        self.assertFalse(by_id["rmpi_ex_crude_energy"]["import_price_index"])
         self.assertEqual(by_id["ippi_energy"]["channel_role"], "context_only_energy")
         self.assertEqual(by_id["rmpi_crude_energy"]["channel_role"], "context_only_crude_energy")
 
@@ -195,6 +200,11 @@ class CurveBundleTests(unittest.TestCase):
         self.assertEqual(calls, 0)
         self.assertEqual(bundle["oil_curves"]["brent_last_day"]["status"], "unavailable")
         self.assertEqual(bundle["producer_prices"]["sector_ppi"]["status"], "unavailable")
+        self.assertEqual(bundle["producer_prices"]["sector_ppi"]["reason"], "network_disabled")
+        self.assertNotIn(
+            "authoritative_sector_ppi_series_not_locked",
+            json.dumps(bundle["producer_prices"]["sector_ppi"]),
+        )
 
     def test_refinery_crack_missing_rbob(self):
         as_of = date(2026, 10, 20)

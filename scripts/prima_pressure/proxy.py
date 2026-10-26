@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+from datetime import date, datetime
 from typing import Any
 
 from scripts.prima_pressure import contract
+from scripts.prima_pressure.sector_shadow import build_sector_shadow
 
 CHANNELS = contract.CHANNELS
 
@@ -48,6 +50,30 @@ def _cpi_series_map(cpi: dict | None) -> dict[str, dict]:
         if sid:
             out[str(sid)] = row
     return out
+
+
+def _as_of_date(bundle: dict) -> date | None:
+    raw = bundle.get("as_of")
+    if not raw:
+        return None
+    try:
+        return date.fromisoformat(str(raw)[:10])
+    except ValueError:
+        return None
+
+
+def _release_age_days(as_of: date | None, release_time: Any) -> int | None:
+    if as_of is None or not release_time:
+        return None
+    text = str(release_time)
+    try:
+        released = datetime.fromisoformat(text.replace("Z", "+00:00")).date()
+    except ValueError:
+        try:
+            released = date.fromisoformat(text[:10])
+        except ValueError:
+            return None
+    return (as_of - released).days
 
 
 def _mom_direction(mom: float | None, band: float) -> str:
@@ -180,43 +206,40 @@ def _shock_persistence(bundle: dict) -> tuple[dict, str, list[dict], bool]:
 
 
 def _production_network(bundle: dict) -> tuple[dict, list[dict], bool, str | None]:
+    """Scored channel stays on monthly IPPI excluding energy.
+
+    Quarterly sector PPI is shadow-only, including when that layer reports status ok.
+    """
     producer = bundle.get("producer_prices") or {}
-    sector = producer.get("sector_ppi") or {}
     series = _series_map(producer)
+    as_of = _as_of_date(bundle)
 
     source: str | None = None
     mom: float | None = None
     stale = False
     series_id: str | None = None
-    note: str | None = None
+    note = (
+        "Scored on monthly IPPI excluding energy and petroleum products. "
+        "The quarterly sector PPI layer is shadow-only and is not an input to this channel."
+    )
 
-    if sector.get("status") == "ok":
-        mom = _safe_float(sector.get("mom"))
+    fallback = series.get("ippi_ex_energy")
+    if fallback and fallback.get("status") in ("ok", "stale"):
+        mom = _safe_float(fallback.get("mom"))
         if mom is not None:
-            source = "sector_ppi"
-            series_id = str(sector.get("series_id") or "sector_ppi")
-            stale = bool(sector.get("stale"))
-
-    if source is None:
-        fallback = series.get("ippi_ex_energy")
-        if fallback and fallback.get("status") in ("ok", "stale"):
-            mom = _safe_float(fallback.get("mom"))
-            if mom is not None:
-                source = "ippi_ex_energy"
-                series_id = "ippi_ex_energy"
-                stale = bool(fallback.get("stale"))
-                note = "Sector PPI unavailable; using IPPI excluding energy as the official fallback."
+            source = "ippi_ex_energy"
+            series_id = "ippi_ex_energy"
+            stale = bool(fallback.get("stale"))
 
     direction = _mom_direction(mom, contract.IPPI_EX_ENERGY_MOM_BAND) if source else "UNAVAILABLE"
     drivers: list[dict] = []
     if source and series_id:
-        row_meta = series.get(series_id) if series_id in series else {}
-        if source == "sector_ppi":
-            row_meta = sector
+        row_meta = series.get(series_id) or {}
         drivers.append(
             {
                 "input": source,
                 "series_id": series_id,
+                "frequency": "monthly",
                 "mom": mom,
                 "band": contract.IPPI_EX_ENERGY_MOM_BAND,
                 "table": row_meta.get("table"),
@@ -228,8 +251,10 @@ def _production_network(bundle: dict) -> tuple[dict, list[dict], bool, str | Non
                 "prior_period": row_meta.get("prior_period"),
                 "prior_value": row_meta.get("prior_value"),
                 "release_time": row_meta.get("release_time"),
+                "release_age_days": _release_age_days(as_of, row_meta.get("release_time")),
                 "status": row_meta.get("status"),
                 "stale": row_meta.get("stale"),
+                "sector_ppi_not_used": True,
             }
         )
 
@@ -247,9 +272,11 @@ def _production_network(bundle: dict) -> tuple[dict, list[dict], bool, str | Non
 
 
 def _imported_pressure(bundle: dict) -> tuple[dict, list[dict], bool]:
+    """Stored id stays imported_pressure. The series is not an import price index."""
     producer = bundle.get("producer_prices") or {}
     series = _series_map(producer)
     row = series.get("rmpi_ex_crude_energy")
+    as_of = _as_of_date(bundle)
     mom: float | None = None
     stale = False
     if row:
@@ -259,11 +286,18 @@ def _imported_pressure(bundle: dict) -> tuple[dict, list[dict], bool]:
             mom = None
 
     direction = _mom_direction(mom, contract.RMPI_EX_ENERGY_MOM_BAND) if mom is not None else "UNAVAILABLE"
+    note = (
+        "RMPI excluding crude energy prices raw materials purchased by Canadian manufacturers, "
+        "including domestically produced materials. It is not an import-price index. "
+        "No import-price series is pinned, so this channel is not imported cost pressure. "
+        "The stored id imported_pressure is unchanged so earlier runs stay comparable."
+    )
     drivers: list[dict] = []
     if mom is not None and row:
         drivers.append(
             {
                 "series_id": "rmpi_ex_crude_energy",
+                "frequency": "monthly",
                 "mom": mom,
                 "band": contract.RMPI_EX_ENERGY_MOM_BAND,
                 "table": row.get("table"),
@@ -275,11 +309,19 @@ def _imported_pressure(bundle: dict) -> tuple[dict, list[dict], bool]:
                 "prior_period": row.get("prior_period"),
                 "prior_value": row.get("prior_value"),
                 "release_time": row.get("release_time"),
+                "release_age_days": _release_age_days(as_of, row.get("release_time")),
                 "status": row.get("status"),
                 "stale": row.get("stale"),
+                "interpretation": "raw_material_purchase_prices_not_import_prices",
+                "import_price_supported": False,
+                "display_label": contract.CHANNEL_DISPLAY_LABELS["imported_pressure"],
+                "legacy_channel_id": "imported_pressure",
             }
         )
-    sub = _channel_shell(direction, stale=stale, drivers=drivers)
+    sub = _channel_shell(direction, stale=stale, drivers=drivers, note=note)
+    sub["display_label"] = contract.CHANNEL_DISPLAY_LABELS["imported_pressure"]
+    sub["legacy_channel_id"] = "imported_pressure"
+    sub["import_price_supported"] = False
     attribution = []
     if mom is not None:
         attribution.append(
@@ -627,6 +669,16 @@ def compute_prima_proxy(bundle: dict) -> dict:
     available = sum(1 for d in channel_dirs.values() if d != "UNAVAILABLE")
     mpr_comparison = _mpr_comparison(bundle)
     oil_status = _oil_status(bundle, oil_stale)
+    shadow = build_sector_shadow(
+        bundle,
+        {
+            "direction": direction,
+            "strength": strength,
+            "internal_net_vote": net,
+            "production_direction": prod_sub["direction"],
+            "raw_material_direction": imp_sub["direction"],
+        },
+    )
 
     return {
         "schema_version": contract.SCHEMA_VERSION,
@@ -650,6 +702,7 @@ def compute_prima_proxy(bundle: dict) -> dict:
             "oil": oil_status != "fresh",
             "oil_status": oil_status,
         },
+        "shadow_sector_layer": shadow,
     }
 
 
@@ -701,7 +754,7 @@ def compact_block(proxy: dict) -> dict:
     mpr_status = mpr.get("status") or mpr.get("path_status") or "unavailable"
     conditioning_date = mpr.get("conditioning_date")
 
-    return {
+    block = {
         "title": "Canada Prima-pressure proxy",
         "direction": proxy.get("direction"),
         "strength": proxy.get("strength"),
@@ -722,3 +775,7 @@ def compact_block(proxy: dict) -> dict:
         ),
         "channel_evidence": _build_channel_evidence(subs),
     }
+    shadow = proxy.get("shadow_sector_layer")
+    if isinstance(shadow, dict):
+        block["shadow_sector_layer"] = shadow
+    return block

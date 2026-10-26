@@ -17,8 +17,8 @@ from scripts.prima_pressure.contract import (
     DISCLAIMER,
     LAST_MPR_ANCHOR,
     SCHEMA_VERSION,
-    SECTOR_PPI_GAP,
     iso_date,
+    sector_ppi_unavailable,
 )
 from scripts.prima_pressure.curve import build_curve, build_refinery_margin
 from scripts.prima_pressure.mpr import build_mpr_comparison
@@ -243,7 +243,7 @@ def build_observation_bundle(
         bundle["producer_prices"] = {
             "as_of": iso_date(as_of),
             "status": "unavailable",
-            "sector_ppi": dict(SECTOR_PPI_GAP),
+            "sector_ppi": sector_ppi_unavailable("network_disabled"),
             "series": [],
         }
         bundle["cpi_breadth_inputs"] = {
