@@ -11,16 +11,18 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
+        "asset_class": "rates_rv",
         "catalyst_type": null,
         "countries": [],
         "currencies": [],
         "decision_dimension": null,
         "failure_mode": null,
         "instrument_family": null,
-        "instruments": [],
+        "instruments": [
+          "SOFR-CORRA_2Y_2027H1"
+        ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": "linear_combo"
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
@@ -30,7 +32,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-23T15:46:45.247147-04:00",
+  "as_of": "2026-10-26T07:37:10.682323-04:00",
   "calibration": {
     "average_holding_seconds": 383514,
     "average_realized_pnl_usd": -28000.0,
@@ -68,8 +70,8 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": 13,
-    "competitive_rank": 13,
+    "competition_rank": 11,
+    "competitive_rank": 11,
     "drawdown_usd": 56742.8,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -78,8 +80,8 @@
     "net_pnl_usd": -56742.8,
     "pressure_flags": [],
     "prior_competition_rank": 11,
-    "rank_change": 2,
-    "raw_pnl_rank": 13,
+    "rank_change": 0,
+    "raw_pnl_rank": 11,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 0.0,
@@ -95,7 +97,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "19614e0f04cf1474aa054b225e5dc42c060384dd9b3865adb2f729c0127a9435",
+  "memory_context_sha256": "f383d5b0cfe367b32c07341573277e1f7c41435c303cece48de9f77da7a7ca1a",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",

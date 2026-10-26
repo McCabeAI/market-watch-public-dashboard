@@ -1,0 +1,37 @@
+{
+  "identities": "standing_traders_and_automated_pms",
+  "manifest_sha256": "0ba395c7bb76f43d08ff0d46465f10d5ed6afad0d149037b226aaf201df892dc",
+  "obligations": [
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "3e5addcdbf5e8388ba9c23af7bdead31515f598cd95322490becd2d1c8506b3f",
+      "obligation_id": "pmd-81b056918e01",
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "reference": "trd-pm-swinger-pm-swinger-2070479ca321",
+      "source_run_id": "overnight-20261023"
+    },
+    {
+      "kind": "performance_reflection",
+      "memory_context_sha256": "a19e1ce106102bd657f8ebeb99d95ccb9c6fb8cdd645572f406584cc81f656bc",
+      "obligation_id": "rfd-34f75a9feeff",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "rfd-34f75a9feeff",
+      "source_run_id": null
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "35247e3190a617f7d95290b978dea53f063fa445926eab4e3709e7ab59b60e5e",
+      "obligation_id": "pmd-661371860aba",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "reference": "trd-trader-trend-follower-pos-06e7a6ec76da",
+      "source_run_id": "overnight-20261023"
+    }
+  ],
+  "overnight_run_id": "overnight-20261026",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "type": "LEARNING_OBLIGATION_MANIFEST"
+}

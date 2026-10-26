@@ -11,16 +11,25 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
+        "asset_class": "rates",
         "catalyst_type": null,
-        "countries": [],
-        "currencies": [],
+        "countries": [
+          "CA"
+        ],
+        "currencies": [
+          "CAD"
+        ],
         "decision_dimension": null,
         "failure_mode": null,
-        "instrument_family": null,
-        "instruments": [],
+        "instrument_family": "corra",
+        "instruments": [
+          "CORRA_2027-03",
+          "CORRA_2027-06",
+          "CORRA_2027-09",
+          "CORRA_2027-12"
+        ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": "futures_strip_average"
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
@@ -40,14 +49,19 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
+        "asset_class": "spot_fx",
         "catalyst_type": null,
         "countries": [],
-        "currencies": [],
+        "currencies": [
+          "USD",
+          "CAD"
+        ],
         "decision_dimension": null,
         "failure_mode": null,
         "instrument_family": null,
-        "instruments": [],
+        "instruments": [
+          "USDCAD"
+        ],
         "market_drivers": [],
         "setup_type": null
       },
@@ -59,7 +73,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-23T15:46:45.247147-04:00",
+  "as_of": "2026-10-26T07:37:10.682323-04:00",
   "calibration": {
     "average_holding_seconds": 628505,
     "average_realized_pnl_usd": 70711.68,
@@ -103,12 +117,12 @@
     "competition_eligible": true,
     "competition_rank": 1,
     "competitive_rank": 1,
-    "drawdown_usd": 10070.06,
-    "giveback_usd": 10070.06,
+    "drawdown_usd": 124.23,
+    "giveback_usd": 124.23,
     "high_water_nav_usd": 100211705.18,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100201635.12,
-    "net_pnl_usd": 201635.12,
+    "nav_usd": 100211580.95,
+    "net_pnl_usd": 211580.95,
     "pressure_flags": [],
     "prior_competition_rank": 1,
     "rank_change": 0,
@@ -117,7 +131,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": -9945.83,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -128,7 +142,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "142358284154e851958436dbe0246f109aa90afa51d6de5ef3710a20ce2581bb",
+  "memory_context_sha256": "0e2d5ad9b79d8a417b80bf52a8238f7518ea55b3c907ef499d03c04d0ab4ea75",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -139,20 +153,22 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": "Flattening of the existing 4.45bn receive, or CRAH27 implied moving up toward the Canada 2Y 3.33 cash yield.",
-        "current_mark": 2.975,
+        "current_mark": 2.995,
         "current_notional_usd": 50000000.0,
         "entry_mark": 2.995,
+        "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 199477,
-        "horizon_elapsed_fraction": 0.077,
+        "holding_seconds": 429302,
+        "horizon_elapsed_fraction": 0.1656,
         "horizon_status": "within",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": 30,
         "mae_usd": -10000.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-df316f59e974",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
@@ -160,13 +176,15 @@
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 0.0,
         "retained_mfe_fraction": null,
+        "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 500000.0,
         "review_triggers": [],
+        "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": -10000.0,
+        "total_pnl_usd": 0.0,
         "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974",
-        "unrealized_pnl_usd": -10000.0
+        "unrealized_pnl_usd": 0.0
       },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-10-21T08:22:07.869994-04:00",

@@ -1,0 +1,251 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If cash sits below the policy-path strip and risk assets treat landing as benign, do not receive that strip as a defensive expression. Sit out, pay the strip if the view is stress, or receive only a tenor where tightening is already extreme in the price.",
+      "lesson_id": "les-0defe89be86a",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-c1fdef4a17b0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "rates",
+        "catalyst_type": null,
+        "countries": [
+          "AU"
+        ],
+        "currencies": [
+          "AUD"
+        ],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": "aonia",
+        "instruments": [
+          "AONIA_2027-06",
+          "AONIA_2027-03",
+          "AONIA_2027-04",
+          "AONIA_2027-05"
+        ],
+        "market_drivers": [],
+        "setup_type": "futures_strip_average"
+      },
+      "source_run_id": "overnight-20261001",
+      "status": "active",
+      "text": "A receive of a STIR or policy-path strip that prices hikes while cash is still below that strip is a fade of tightening, not a defensive slowdown trade.",
+      "trade_ids": [
+        "trd-trader-perma-bear-pos-3b40ade3da2c"
+      ]
+    }
+  ],
+  "as_of": "2026-10-26T07:37:10.682323-04:00",
+  "calibration": {
+    "average_holding_seconds": 886370,
+    "average_realized_pnl_usd": -12718.75,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": -12718.75
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": -12718.75,
+        "count": 1,
+        "hit_rate": 0.0
+      }
+    },
+    "losses": 1,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -12718.75,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 5,
+    "competitive_rank": 5,
+    "drawdown_usd": 13.54,
+    "giveback_usd": 13.54,
+    "high_water_nav_usd": 100034912.15,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100034898.61,
+    "net_pnl_usd": 34898.61,
+    "pressure_flags": [],
+    "prior_competition_rank": 5,
+    "rank_change": 0,
+    "raw_pnl_rank": 5,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 125000.0,
+    "risk_capital_utilization": 0.0125,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "6294050119ef1c0675747f1ef7d691fa27d674c74076bc77e21537459f0af79d",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 64,
+      "current_notional_usd": 12500000.0,
+      "entry_mark": 5.24,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 5.0,
+        "current_notional_usd": 12500000.0,
+        "entry_mark": 5.24,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 0.0,
+        "holding_seconds": 2080573,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "US_10Y",
+        "intended_horizon_days": null,
+        "mae_usd": -17500.0,
+        "mechanical_order": false,
+        "mfe_usd": 48750.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-5ac8fc69cb81",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 18750.0,
+        "recorded_mfe_usd": 37500.0,
+        "retained_mfe_fraction": 1.0,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 250000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 48750.0,
+        "trade_id": "trd-trader-perma-bear-pos-5ac8fc69cb81",
+        "unrealized_pnl_usd": 30000.0
+      },
+      "instrument": "US_10Y",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "position_id": "pos-5ac8fc69cb81",
+      "risk_capital_usd": 125000.0,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bear-pos-5ac8fc69cb81"
+    }
+  ],
+  "owner_id": "perma-bear",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.51
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.4
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "b7c7efd353839e7edc8ce0c92ca6a81946970d1e34eb80a9b87282be0d85f1ea",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-30T04:49:40.475210-04:00",
+      "conviction": 64,
+      "holding_duration_seconds": 886370,
+      "instrument": "AONIA_2027-06",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -12718.75,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bear-pos-3b40ade3da2c"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

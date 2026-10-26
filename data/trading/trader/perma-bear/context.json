@@ -11,16 +11,25 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
+        "asset_class": "rates",
         "catalyst_type": null,
-        "countries": [],
-        "currencies": [],
+        "countries": [
+          "AU"
+        ],
+        "currencies": [
+          "AUD"
+        ],
         "decision_dimension": null,
         "failure_mode": null,
-        "instrument_family": null,
-        "instruments": [],
+        "instrument_family": "aonia",
+        "instruments": [
+          "AONIA_2027-06",
+          "AONIA_2027-03",
+          "AONIA_2027-04",
+          "AONIA_2027-05"
+        ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": "futures_strip_average"
       },
       "source_run_id": "overnight-20261001",
       "status": "active",
@@ -30,7 +39,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-23T15:46:45.247147-04:00",
+  "as_of": "2026-10-26T07:37:10.682323-04:00",
   "calibration": {
     "average_holding_seconds": 886370,
     "average_realized_pnl_usd": -12718.75,
@@ -70,12 +79,12 @@
     "competition_eligible": true,
     "competition_rank": 5,
     "competitive_rank": 5,
-    "drawdown_usd": 5148.44,
-    "giveback_usd": 5148.44,
-    "high_water_nav_usd": 100023810.59,
+    "drawdown_usd": 13.54,
+    "giveback_usd": 13.54,
+    "high_water_nav_usd": 100034912.15,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100018662.15,
-    "net_pnl_usd": 18662.15,
+    "nav_usd": 100034898.61,
+    "net_pnl_usd": 34898.61,
     "pressure_flags": [],
     "prior_competition_rank": 5,
     "rank_change": 0,
@@ -84,7 +93,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 125000.0,
     "risk_capital_utilization": 0.0125,
-    "session_pnl_change_usd": -16236.46,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -95,7 +104,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "12a8f3f15d19032444f1cdbefeb4f455c5e926805a99f3e68a027b11e80efc74",
+  "memory_context_sha256": "6294050119ef1c0675747f1ef7d691fa27d674c74076bc77e21537459f0af79d",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -106,34 +115,38 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 5.13,
+        "current_mark": 5.0,
         "current_notional_usd": 12500000.0,
         "entry_mark": 5.24,
+        "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 5000.0,
-        "holding_seconds": 1850748,
+        "giveback_usd": 0.0,
+        "holding_seconds": 2080573,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "US_10Y",
         "intended_horizon_days": null,
         "mae_usd": -17500.0,
         "mechanical_order": false,
-        "mfe_usd": 37500.0,
+        "mfe_usd": 48750.0,
+        "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-5ac8fc69cb81",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 18750.0,
         "recorded_mfe_usd": 37500.0,
-        "retained_mfe_fraction": 0.8667,
+        "retained_mfe_fraction": 1.0,
+        "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 250000.0,
         "review_triggers": [],
+        "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 32500.0,
+        "total_pnl_usd": 48750.0,
         "trade_id": "trd-trader-perma-bear-pos-5ac8fc69cb81",
-        "unrealized_pnl_usd": 13750.0
+        "unrealized_pnl_usd": 30000.0
       },
       "instrument": "US_10Y",
       "opened_at": "2026-10-02T05:40:56.963171-04:00",

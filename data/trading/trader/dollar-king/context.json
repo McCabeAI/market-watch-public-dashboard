@@ -28,7 +28,7 @@
       "trade_ids": []
     }
   ],
-  "as_of": "2026-10-23T15:46:45.247147-04:00",
+  "as_of": "2026-10-26T07:37:10.682323-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -63,21 +63,21 @@
     "competition_eligible": true,
     "competition_rank": 2,
     "competitive_rank": 2,
-    "drawdown_usd": 768460.5,
-    "giveback_usd": 768460.5,
+    "drawdown_usd": 797247.49,
+    "giveback_usd": 797247.49,
     "high_water_nav_usd": 100952555.22,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100184094.72,
-    "net_pnl_usd": 184094.72,
+    "nav_usd": 100155307.73,
+    "net_pnl_usd": 155307.73,
     "pressure_flags": [],
     "prior_competition_rank": 2,
     "rank_change": 0,
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 80000.0,
-    "risk_capital_utilization": 0.008,
-    "session_pnl_change_usd": 28786.99,
+    "risk_capital_usd": 30000.0,
+    "risk_capital_utilization": 0.003,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -87,8 +87,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "26bab6fbc327e3d7b87ef6d6bcefbabc65d041fa161956fe9d0a53d70d6cc665",
+  "learning_obligations": [
+    {
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-34f75a9feeff",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "rfd-34f75a9feeff",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "a19e1ce106102bd657f8ebeb99d95ccb9c6fb8cdd645572f406584cc81f656bc",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -99,13 +108,14 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 1.404575396118925,
-        "current_notional_usd": 8000000.0,
+        "current_mark": 1.3995354239256679,
+        "current_notional_usd": 3000000.0,
         "entry_mark": 1.4010471204188482,
+        "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 772971.77,
-        "holding_seconds": 2912995,
+        "giveback_usd": 796355.21,
+        "holding_seconds": 3142820,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "USDCAD",
@@ -113,6 +123,7 @@
         "mae_usd": -24023.29,
         "mechanical_order": false,
         "mfe_usd": 953561.41,
+        "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "pending_review": {
           "mechanical_order": false,
@@ -129,22 +140,24 @@
         "realization_logic": null,
         "realized_pnl_usd": 160443.13,
         "recorded_mfe_usd": 953561.41,
-        "retained_mfe_fraction": 0.1894,
+        "retained_mfe_fraction": 0.1649,
+        "review_move_bp": null,
         "review_required": true,
         "review_threshold_usd": 550000.0,
         "review_triggers": [
           "material_winner",
           "giveback"
         ],
+        "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 180589.64,
+        "total_pnl_usd": 157206.2,
         "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb",
-        "unrealized_pnl_usd": 20146.51
+        "unrealized_pnl_usd": -3236.93
       },
       "instrument": "USDCAD",
       "opened_at": "2026-09-19T22:36:50.082404-04:00",
       "position_id": "pos-5317bc96d4eb",
-      "risk_capital_usd": 80000.0,
+      "risk_capital_usd": 30000.0,
       "side": "long",
       "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
     }
@@ -301,7 +314,26 @@
       "what_happened_vs_expected": "The expected path was a grind higher in dollar-Canada while United States yields stayed restrictive versus Canada. The realized path was an overshoot to a large peak, then a giveback as oil held above 100 and Canada's relative impulse improved. Residual profit is still positive versus entry but far below the maximum favorable excursion, which is a harvest failure rather than a thesis reversal on the dollar leg."
     }
   ],
-  "reflections_due": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-10-26T07:37:10.682323-04:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 2,
+        "drawdown_usd": 797247.49,
+        "lesson_ids": [],
+        "net_pnl_usd": 155307.73,
+        "prior_competition_rank": 2,
+        "trade_ids": [
+          "trd-trader-dollar-king-pos-5317bc96d4eb"
+        ]
+      },
+      "reflection_due_id": "rfd-34f75a9feeff",
+      "trigger_ids": [
+        "profit_giveback"
+      ]
+    }
+  ],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

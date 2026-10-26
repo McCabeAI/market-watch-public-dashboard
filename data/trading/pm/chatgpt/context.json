@@ -9,16 +9,26 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "asset_class": null,
+        "asset_class": "rates",
         "catalyst_type": null,
-        "countries": [],
-        "currencies": [],
+        "countries": [
+          "CA"
+        ],
+        "currencies": [
+          "CAD"
+        ],
         "decision_dimension": null,
         "failure_mode": null,
-        "instrument_family": null,
-        "instruments": [],
+        "instrument_family": "corra",
+        "instruments": [
+          "CORRA_2027H-Z",
+          "CORRA_2027-03",
+          "CORRA_2027-06",
+          "CORRA_2027-09",
+          "CORRA_2027-12"
+        ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": "futures_strip_average"
       },
       "source_run_id": "tr-20260920T020818Z-ondemand",
       "status": "active",
@@ -28,7 +38,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-23T23:20:27.721334-04:00",
+  "as_of": "2026-10-26T07:37:10.682323-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -89,7 +99,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b4073b3b31d52af290f28e743d2c307e25ba21eee3bad289787ed6b327626f79",
+  "memory_context_sha256": "64d42f147a0a3e8904f230b8a0461f0593ac45d8eb412abed5308ec8900830a4",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -103,10 +113,11 @@
         "current_mark": 3.2525,
         "current_notional_usd": 500000000.0,
         "entry_mark": 3.4,
+        "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 2938173,
+        "holding_seconds": 3140776,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027H-Z",
@@ -114,6 +125,7 @@
         "mae_usd": -118750.0,
         "mechanical_order": false,
         "mfe_usd": 737500.0,
+        "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pm-chatgpt-595561a1b90f",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
@@ -121,9 +133,11 @@
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 737500.0,
         "retained_mfe_fraction": 1.0,
+        "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 5000000.0,
         "review_triggers": [],
+        "risk_context": "legacy_or_spot",
         "side": "long",
         "total_pnl_usd": 737500.0,
         "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
