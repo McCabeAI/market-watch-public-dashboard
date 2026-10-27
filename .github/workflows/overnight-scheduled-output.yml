@@ -115,6 +115,10 @@ jobs:
               raise SystemExit("scheduled output run id does not match manual freeze")
           if not remote_freeze_verified(launch_dir):
               raise SystemExit("manual freeze lacks verified remote attestation")
+          from scripts.market_watch_launch.milestones import trader_acceptance_refusal
+          refusal = trader_acceptance_refusal(Path("."), launch)
+          if refusal:
+              raise SystemExit(f"trader output refused: {refusal}")
           print(launch_id)
           PY
 

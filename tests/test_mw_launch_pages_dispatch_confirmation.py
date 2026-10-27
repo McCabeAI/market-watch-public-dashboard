@@ -452,8 +452,9 @@ class LaunchChainTests(unittest.TestCase):
         self.assertEqual(current["stages"]["08_pages"]["status"], "pending")
         self.assertNotEqual(current["stages"]["08_pages"]["reason"], PAGES_RECONCILED)
         nxt = self._next_day()
-        self.assertEqual(nxt["status"], "blocked")
-        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
+        self.assertNotEqual(nxt["status"], "blocked")
+        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
+        self.assertEqual(current["status"], "running")
         self._assert_untouched()
 
     def test_confirmed_dispatch_then_successful_deploy_allows_the_next_day(self) -> None:
@@ -474,7 +475,8 @@ class LaunchChainTests(unittest.TestCase):
         self.assertEqual(again["run_id"], RUN_ID)
         self.assertFalse(again["production_published"])
         blocked_next = self._next_day()
-        self.assertEqual(blocked_next["status"], "blocked")
+        self.assertNotEqual(blocked_next["status"], "blocked")
+        self.assertEqual(blocked_next["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
 
         current = self.store.load_launch(LAUNCH_ID)
         evidence = {
@@ -528,7 +530,9 @@ class LaunchChainTests(unittest.TestCase):
         self.assertEqual(current["status"], "running")
         self.assertEqual(current["stages"]["08_pages"]["status"], "pending")
         nxt = self._next_day()
-        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
+        self.assertNotEqual(nxt["status"], "blocked")
+        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
+        self.assertEqual(current["status"], "running")
         self._assert_untouched()
 
 
@@ -627,7 +631,9 @@ class WorkflowRunReconciliationTests(unittest.TestCase):
             handlers=_handlers(),
             when=NEXT_DAY,
         )
-        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
+        self.assertNotEqual(nxt["status"], "blocked")
+        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
+        self.assertEqual(LaunchStateStore(root).load_launch(LAUNCH_ID)["status"], "running")
 
     def test_manual_deploy_without_a_pending_launch_is_a_noop(self) -> None:
         root, head = self._repo()

@@ -68,8 +68,22 @@ OPTIONAL_GAP_STATUSES: frozenset[str] = frozenset(
 )
 
 AWAITING_ACP = "awaiting_acp_one_shot_authority"
+AWAITING_RESEARCH_PUBLICATION = "awaiting_research_publication"
 BOT_ORIGIN_FORBIDDEN = "bot_origin_forbidden"
 CONCURRENCY_BLOCK = "concurrency_one_live_launch"
+SUPERSEDED_BY_NEWER_FREEZE = "superseded_by_newer_freeze"
+
+TWO_TRIGGER_CONTRACT = "two_trigger_v1"
+
+PHASE_COLLECTING = "collecting"
+PHASE_RESEARCH_PUBLISHING = "research_publishing"
+PHASE_RESEARCH_READY = "research_ready"
+PHASE_AWAITING_TRADER = "awaiting_trader"
+PHASE_TRADER_ACCEPTED = "trader_accepted"
+PHASE_FINAL_PUBLISHED = "final_published"
+PHASE_SUPERSEDED = "superseded"
+PHASE_FAILED = "failed"
+PHASE_BLOCKED = "blocked"
 
 
 def empty_stage(name: str) -> dict[str, Any]:

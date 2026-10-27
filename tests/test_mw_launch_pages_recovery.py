@@ -137,6 +137,10 @@ class Oct2PagesRecoveryTests(unittest.TestCase):
             "oct5": _sha256_file(self._launch_path(OCT5)),
             "sentinel": _sha256_file(self.sentinel),
         }
+        store = LaunchStateStore(self.state_root)
+        for lid in (OCT2, OCT5):
+            launch = json.loads(self._launch_path(lid).read_text(encoding="utf-8"))
+            store._sync_index_row(launch)
         self.root_status = subprocess.check_output(["git", "status", "--porcelain"], cwd=ROOT)
 
     def tearDown(self) -> None:
@@ -205,17 +209,6 @@ class Oct2PagesRecoveryTests(unittest.TestCase):
             self.assertEqual(payload["stages"][name]["status"], "succeeded", name)
 
     def test_proven_oct2_deploy_releases_the_guard_without_touching_later_launches(self) -> None:
-        blocked = run_launch(
-            self._request(),
-            root=self.state_root,
-            state_root=self.state_root,
-            when=WHEN,
-            through="00_authenticate",
-        )
-        self.assertEqual(blocked["launch_id"], OCT5)
-        self.assertEqual(blocked["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
-        self.assertEqual(_sha256_file(self._launch_path(OCT2)), self.before["oct2"])
-
         decision = self._apply()
         self.assertTrue(decision["changed"])
         self.assertFalse(decision["already_reconciled"])
@@ -291,18 +284,16 @@ class Oct2PagesRecoveryTests(unittest.TestCase):
         store = LaunchStateStore(self.state_root)
         self.assertEqual(store.load_launch(OCT2)["status"], "running")
         self.assertEqual(store.load_launch(OCT2)["stages"]["08_pages"]["status"], "pending")
-        index = json.loads(
-            (self.state_root / "data" / "market_watch_launches" / "index.json").read_text(encoding="utf-8")
-        )
-        self.assertEqual(index["live_launch_id"], OCT2)
-        blocked = run_launch(
+        store = LaunchStateStore(self.state_root)
+        self.assertIsNone(store.data_collection_holder(None))
+        allowed = run_launch(
             self._request(),
             root=self.state_root,
             state_root=self.state_root,
             when=WHEN,
             through="00_authenticate",
         )
-        self.assertEqual(blocked["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
+        self.assertEqual(allowed["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
         self._assert_untouched_inputs()
 
     def test_fail_closed_on_mismatched_launch_id(self) -> None:
