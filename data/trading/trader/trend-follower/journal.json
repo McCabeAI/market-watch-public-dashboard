@@ -1362,6 +1362,62 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "the book is flat after the US 10-year higher-yield short was closed 5.15 to 5.00 for -112500; cash 10-year is still ~5.00 with no new yield high; SOFR March 2027 is 4.41 versus prior lower marks; this is Fed week. the documented backup is not a living trend, and STIR has not confirmed a persistent pay path either, so there is no clean continuation in either direction. the missing 2s/5s/curve/FX tape and the Fed outcome. Stay flat; do not re-open the broken 10-year pay and do not flip to a receive until a confirmed new yield trend prints."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Book is flat. No confirmed new rates extreme. Fed+BoC 28 Oct is event-binary, not a continuation tape.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "6d526ef968b6cb0bc93f553e99bca0aa1440bf030895e195611ed3dfe9b12ad9",
+      "event_id": "jde-6a20321b1cde4fb6",
+      "funding_view": null,
+      "invalidation": "Reopen a continuation book only on a fresh US 10Y yield high or a post-decision strip reprice that extends beyond the already-priced SR3 and CORRA path. Mean-reversion into the dual meeting is not a trend-follower trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2270ebd9a0a5498ec40adfc5be056ba0bba625cc932b6241e447e7a36d616fb9",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cdc17bf38b070e1d16d4ae76abd4c41ec7406e587cb13ca0e4264c588150acc0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US 10Y holds 5.00, unchanged on the day and 18bp lower over a month, with no new yield high, so there is no confirmed continuation after the prior duration long was taken off on an unconfirmed backup. March SR3 at 4.45 versus 3.92 cash and CORRA March at 3.01 versus 2.24 keep a hike path priced, but that is a path into the 28 Oct Fed and BoC decisions, not a persistent duration trend. Stay flat through that event binary; do not fade the one-month yield decline and do not re-own 10s without a new extreme.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "US 10Y holds 5.00, unchanged on the day and 18bp lower over a month, with no new yield high, so there is no confirmed continuation after the prior duration long was taken off on an unconfirmed backup. March SR3 at 4.45 versus 3.92 cash and CORRA March at 3.01 versus 2.24 keep a hike path priced, but that is a path into the 28 Oct Fed and BoC decisions, not a persistent duration trend. Stay flat through that event binary; do not fade the one-month yield decline and do not re-own 10s without a new extreme."
     }
   ],
   "schema_version": 1,

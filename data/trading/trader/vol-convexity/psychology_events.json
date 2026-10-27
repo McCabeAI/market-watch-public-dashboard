@@ -801,6 +801,52 @@
       "subject": {
         "flat_cycles": 18
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 19,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "event_id": "pse-000036",
+      "flat_cycles": 19,
+      "kind": "decay_tick",
+      "owner_id": "vol-convexity",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261027",
+      "seq": 36,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0214,
+        "external_pressure": 0.0081,
+        "frustration": 0.0103
+      },
+      "event_id": "pse-000037",
+      "kind": "flat_with_market",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "vol-convexity",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261027",
+      "scale": 1.0,
+      "seq": 37,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "flat_cycles": 19
+      }
     }
   ],
   "owner_id": "vol-convexity",

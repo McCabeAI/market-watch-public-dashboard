@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "553c5240bdf7ae3e35667e8871d3d1a1ce882294b1f65d773fd33b83b811b633",
+  "memory_context_sha256": "e6336e533febb78d1564842963a6cd5f1567100d373145cfbb56cbebea6e8609",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -130,30 +130,36 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261022"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261023"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261026"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261027"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "4d46ad24aa4131347b8ebc973221e386063a0f8ff3def684e9fc35046afbbc4b",
+    "state_sha256": "5ce7b9c9b66c40b2aa132935ff7201b49b1619a51209d483c561f0177b32adf2",
     "streaks": {
-      "flat_cycles": 18,
+      "flat_cycles": 19,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "Official NY Fed SOFR 3.92% ACT/360 dated 2026-10-23",
+      "forward_funding_assessment": "lower",
+      "implication": "Realized overnight funding should print below the SR3 strip into 28 Oct; that gap is the priced hike path, not leftover edge. Stay at the zero official-SOFR benchmark rather than paying 3.92% SOFR on shocked-risk capital.",
+      "sr3_forward_view": "Dec-26 4.20, Mar-27 4.45, Jun-27 4.605, Sep-27 4.65"
+    },
     {
       "current_sofr": "Official NY Fed SOFR 3.90 percent ACT/360 dated 2026-10-22 (realized overnight funding authority).",
       "forward_funding_assessment": "lower",
@@ -185,12 +191,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Remain at the zero official-SOFR benchmark. Flat cash is not alpha, but with no residual edge the alternative is worse: paying SOFR on shocked-risk capital to own a hike path already printed in Dec26 4.255 / Mar27 4.55 / Jun27 4.725 / Sep27 4.785. Do not fund a new risk book off 3.88 SOFR until realized funding is shown, with a dated catalyst, to print away from that strip.",
       "sr3_forward_view": "Over the decision horizon the SR3 strip already embeds a steep tightening path versus the 3.88 official fixing: Dec26 4.255, Mar27 4.55, Jun27 4.725, Sep27 4.785. That is a front-loaded hike sequence of roughly 37.5bp into year-end 2026 and about 90bp by Sep27, so apparent funding-tightening or hawkish-repricing edges are the curve, not a mispricing of it. No unpriced residual versus those four contracts is identified in the frozen funding_context."
-    },
-    {
-      "current_sofr": "NY Fed official SOFR 3.88 percent, 20 Oct, ACT/360. That fixing is the zero benchmark and the realized funding authority for this review.",
-      "forward_funding_assessment": "lower",
-      "implication": "Remain at the zero official-SOFR benchmark. Shocked-risk capital would pay 3.88 percent ACT/360 with no residual edge after funding. The strip, US 10Y 5.12, and CORRA 2.26 versus 2.995 already embed the hike and receive views; paying SOFR to warehouse overnight Hormuz/oil gap risk with NZ/AU closed and no listed vol is a funding cost, not a trade. Flat cash is not alpha; paying SOFR on uncompensated overnight risk is worse.",
-      "sr3_forward_view": "Over an overnight horizon the listed strip is deferred, not a one-session funding forecast: Dec26 4.245, Mar27 4.525, Jun27 4.685, Sep27 4.74. That path already prices a front-loaded rise from 3.88 toward 4.245 by Dec26 and 4.74 by Sep27. Overnight realized funding is the official SOFR print, not those deferred contracts."
     }
   ],
   "recent_performance_reflections": [],

@@ -19,21 +19,34 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "instruments": [
-          "AUDCAD"
-        ],
-        "instrument_family": null,
         "asset_class": "spot_fx",
+        "catalyst_type": null,
         "countries": [],
         "currencies": [
           "AUD",
           "CAD"
         ],
-        "setup_type": null,
-        "market_drivers": [],
-        "catalyst_type": null,
+        "decision_dimension": null,
         "failure_mode": null,
-        "decision_dimension": null
+        "instrument_family": null,
+        "instruments": [
+          "AUDCAD"
+        ],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "scope_evidence": {
+        "fields": [
+          "asset_class",
+          "instrument",
+          "instrument.fx_pair"
+        ],
+        "history_modified": false,
+        "method": "ledger_identity_fields",
+        "retrievals_backfilled": false,
+        "status": "scoped_from_trade",
+        "text_modified": false,
+        "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a"
       },
       "source_run_id": "overnight-20260930",
       "status": "active",
@@ -41,20 +54,7 @@
       "trade_ids": [
         "trd-trader-cross-merchant-pos-00661cabb94a"
       ],
-      "updated_at": "2026-09-30T04:49:40.475210-04:00",
-      "scope_evidence": {
-        "method": "ledger_identity_fields",
-        "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a",
-        "fields": [
-          "asset_class",
-          "instrument",
-          "instrument.fx_pair"
-        ],
-        "retrievals_backfilled": false,
-        "text_modified": false,
-        "history_modified": false,
-        "status": "scoped_from_trade"
-      }
+      "updated_at": "2026-09-30T04:49:40.475210-04:00"
     },
     {
       "contradiction_count": 0,
@@ -75,21 +75,34 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "instruments": [
-          "AUDCAD"
-        ],
-        "instrument_family": null,
         "asset_class": "spot_fx",
+        "catalyst_type": null,
         "countries": [],
         "currencies": [
           "AUD",
           "CAD"
         ],
-        "setup_type": null,
-        "market_drivers": [],
-        "catalyst_type": null,
+        "decision_dimension": null,
         "failure_mode": null,
-        "decision_dimension": null
+        "instrument_family": null,
+        "instruments": [
+          "AUDCAD"
+        ],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "scope_evidence": {
+        "fields": [
+          "asset_class",
+          "instrument",
+          "instrument.fx_pair"
+        ],
+        "history_modified": false,
+        "method": "ledger_identity_fields",
+        "retrievals_backfilled": false,
+        "status": "scoped_from_trade",
+        "text_modified": false,
+        "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
       },
       "source_run_id": "overnight-20260930",
       "status": "active",
@@ -97,20 +110,45 @@
       "trade_ids": [
         "trd-trader-cross-merchant-pos-27d002b448b1"
       ],
-      "updated_at": "2026-09-30T04:49:40.475210-04:00",
-      "scope_evidence": {
-        "method": "ledger_identity_fields",
-        "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1",
-        "fields": [
-          "asset_class",
-          "instrument",
-          "instrument.fx_pair"
-        ],
-        "retrievals_backfilled": false,
-        "text_modified": false,
-        "history_modified": false,
-        "status": "scoped_from_trade"
-      }
+      "updated_at": "2026-09-30T04:49:40.475210-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-10-27T05:32:12.602790-04:00",
+      "future_rule": "Into a BoC decision week, CADJPY and AUDCAD may be opened only as from-flat initiations with a live oil/ToT or policy differential; never as re-entry or reverse of a just-closed CADJPY long, and never on leftover pips after the pillar has already failed.",
+      "history": [
+        {
+          "at": "2026-10-27T05:32:12.602790-04:00",
+          "op": "add",
+          "run_id": "overnight-20261027"
+        }
+      ],
+      "lesson_id": "les-d399941f614f",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-ecc05f983487"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261027",
+      "status": "active",
+      "text": "After a CADJPY ToT-carry long is closed because oil impaired the CAD pillar, do not reopen CADJPY and do not reverse AUDCAD unless that exact cross would be initiated from a flat book on new, independent AU-CA or CA-JP evidence.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-44de67c4b24f"
+      ],
+      "updated_at": "2026-10-27T05:32:12.602790-04:00"
     }
   ],
   "schema_version": 1,

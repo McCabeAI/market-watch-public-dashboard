@@ -1354,6 +1354,60 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "Close the long CADJPY residual. Verified tape is CADJPY 112.04, CORRA 2.25 versus an easy-yen/TONA backdrop (BoJ call ~1.25), WTI 103.27 and Brent 116.72 with session oil down more than 2%, and a 28 Oct BoC poll at 2.50; any USD pair would still smuggle Fed beta. the oil slide knocks out the CAD terms-of-trade pillar that justified holding the cross overnight, and leftover policy/carry is not an edge I would initiate from flat into the BoC date. Unknowns are valuation, exact TONA, and whether 2.50 is hold or hike versus the overnight setting; none of that supports a residual or a replacement cross, and AUDCAD stays flat per lesson."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Would not open CADJPY from flat into BoC 28 Oct with the CAD oil ToT pillar impaired and BoJ hawkish-hold risk against still-positive but insufficient carry. Would not open AUDCAD as the reverse of the closed CAD expression. EURJPY short is the only remaining non-USD candidate (176.15 vs a hawkish BoJ) but EA policy, inflation, and growth are null, so it is not initiated.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 35,
+      "decision_fingerprint": "1430ad5c45a5cc38ff23cc2d143cd06a8cbd2efb8ffed4efe0731de4f7c010ea",
+      "event_id": "jde-898f76fdcc30463a",
+      "funding_view": null,
+      "invalidation": "A live AU-CA or CA-JP gap that would be opened from a zero book on its own policy or terms-of-trade pillars\u2014not residual CADJPY momentum and not an AUDCAD reverse\u2014or a complete EA-JP inflation/growth/policy tape that makes EURJPY a from-flat trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a7e85fe5ce091e9cbcb97b40ebf4d53445d757b271e3f3dd4392f38799a70168",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "564507e812235582c82a45136bc64286fa29f1bdda0cabe28730ed5be08cf5e1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. CADJPY at 112.23 is not a from-flat initiation into the 28 Oct BoC: the oil terms-of-trade pillar that justified owning CAD is already impaired, BoJ is an expected hold with a hawkish lean, and leftover carry (CORRA 2.24 vs TONA 1.227) plus 19 pips of post-exit drift are not a new CA-JP gap. AUDCAD 0.9854 has no independent AU-versus-CA policy, growth, or inflation differential in this tape, so buying or fading it would only be the mirror of the closed CAD-over-JPY expression. EURJPY 176.15 is the least-dirty non-USD way to isolate a hawkish BoJ against EA, but EA inflation, growth, and policy path are unknown here, so it is not funded.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Stay flat. CADJPY at 112.23 is not a from-flat initiation into the 28 Oct BoC: the oil terms-of-trade pillar that justified owning CAD is already impaired, BoJ is an expected hold with a hawkish lean, and leftover carry (CORRA 2.24 vs TONA 1.227) plus 19 pips of post-exit drift are not a new CA-JP gap. AUDCAD 0.9854 has no independent AU-versus-CA policy, growth, or inflation differential in this tape, so buying or fading it would only be the mirror of the closed CAD-over-JPY expression. EURJPY 176.15 is the least-dirty non-USD way to isolate a hawkish BoJ against EA, but EA inflation, growth, and policy path are unknown here, so it is not funded."
     }
   ],
   "schema_version": 1,

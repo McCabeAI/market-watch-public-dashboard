@@ -1338,6 +1338,62 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "Mar-27 SOFR implied 4.41 versus cash 3.90 is still a 51bp policy-path premium to a hard cash anchor, so the existing long/receive is still the mapped fade of that gap. The same contract already compressed from about 4.58/4.55 toward 4.37 last cycle; live 4.41 is only a 4bp bounce, not a new extreme, so there is no fresh stretch that warrants adding. US 10Y near 5.00 and still-three-digit oil can sustain the premium into this week's Fed, which means the reversal condition for a size-up or a 10Y receive is not in place. Hold pos-1477172adb86 10mm long SOFR_2027-03; take no new risk in 2s/5s/10s, curve, cross-market RV, or spot FX on this packet."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the existing SOFR_2027-03 long.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "9cd6120bc0827ccc30d8808a263cf77786da2c2be3c8ae9461310d5dc70362cd",
+      "event_id": "jde-74bb96df71bb49b3",
+      "funding_view": null,
+      "invalidation": "Drop the hold if Mar-27 re-prices through the 4.58 entry and stays there after the decision, or if cash itself rises toward the forward so the 53 bp gap closes from the wrong side.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0d977433efcc00d02fde203c7a5c158a556eea666c34f3d46a9cc088c1d84f28",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9088e8de2348a9f0ce0f747a76ee57fae2bb5749dba9eb111bc45bda61a7137c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar-27 SOFR still sits 53 bp above cash at 3.92 after already slipping 13 bp from 4.58, so the hike path remains rich versus overnight. Hold the existing 10 million receive and do not add ahead of the 28 Oct FOMC: the residual is still large enough to extract after event vol, but a new slice only buys the meeting.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Mar-27 SOFR still sits 53 bp above cash at 3.92 after already slipping 13 bp from 4.58, so the hike path remains rich versus overnight. Hold the existing 10 million receive and do not add ahead of the 28 Oct FOMC: the residual is still large enough to extract after event vol, but a new slice only buys the meeting."
     }
   ],
   "schema_version": 1,

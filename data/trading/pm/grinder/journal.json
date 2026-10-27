@@ -1337,6 +1337,62 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "The book is already flat and the Trader Room issued no OPEN or ADD tickets. Fed and BoC both land on 28 Oct, so plausible adverse marks on CAD and USD duration, USTs, and USD/CAD\u2013CADJPY crosses are large versus official 3.90% SOFR ACT/360 charged on shocked risk capital. Receive-versus-pay holds on the same names are disagreement, not a sized edge. Preservation is to stay flat until post-meeting marks reprice the curves."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The PM book is flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T06:47:18.514818-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "30072dd8b035958647c190d77687bbe0e8d5daebb782726950d5d5f56fa9930c",
+      "event_id": "jde-d61f2ceb853e4dbc",
+      "funding_view": null,
+      "invalidation": "A post-28 Oct dislocation that remains markable on this tape (cash, listed futures, or spot) and whose residual expected edge exceeds official SOFR 3.92 percent ACT/360 on a conservative shocked-capital path would reopen deployment. A one-way sized OPEN after the events would also reopen review. Unchanged two-way HOLDs would not.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "382d6c6157dc7426649d417851306e98f650cc81afeb6ee15d926c0ef842d20f",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f141b4d61510f63ba8f48ba6517ed60401b8f195dc1bc3313a0c2c9825a947ba"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "44689fd181b886d05c0165dcf8613cc4363e986a92c9ec537d8a3cf77b028b70",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261027-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The PM book is flat. The accepted 14-seat handoff has no OPEN or ADD tickets; receive-versus-pay HOLDs on CORRA Mar and conflicting SOFR Mar inventory are disagreement, not a sized edge. Cash-to-contract premia (SOFR 3.92 vs Mar 4.45, CORRA 2.24 vs Mar 3.01, AONIA 4.60 vs Mar 4.87) and US 10Y at 5.00 with WTI 101.76 do not produce a one-sided expected path that covers official SOFR 3.92 percent ACT/360 charged on shocked-risk capital into the 28 Oct Fed and BoC prints. Preservation-first sizing with force_deployment false is to stay flat.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "The PM book is flat. The accepted 14-seat handoff has no OPEN or ADD tickets; receive-versus-pay HOLDs on CORRA Mar and conflicting SOFR Mar inventory are disagreement, not a sized edge. Cash-to-contract premia (SOFR 3.92 vs Mar 4.45, CORRA 2.24 vs Mar 3.01, AONIA 4.60 vs Mar 4.87) and US 10Y at 5.00 with WTI 101.76 do not produce a one-sided expected path that covers official SOFR 3.92 percent ACT/360 charged on shocked-risk capital into the 28 Oct Fed and BoC prints. Preservation-first sizing with force_deployment false is to stay flat."
     }
   ],
   "schema_version": 1,

@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "causal": {
+        "assumptions_right": "USD rates advantage versus CAD was real and funded the harvested win. USDCAD spot was the clean expression of that gap.",
+        "assumptions_wrong_or_underweighted": "Treated leftover size as inexpensive peak-recapture optionality and underweighted three-digit oil as a CAD impulse that can stall USDCAD even with a 168bp front-end gap.",
+        "causal_divergence": "Core P&L came from harvesting the rates-gap trade. Residual risk was a 1.40/1.40 round trip because what remained was oil-and-event inventory, not the original rates gap.",
+        "decision_quality_attribution": "sizing",
+        "future_implication": "Harvest-to-flat is mandatory on USDCAD after a material win when oil is three-digit. No reopen at 1.4028 this dual-CB week.",
+        "observed_reality": "Oil printed three-digit and is still there (WTI 101.76, Brent 115.81), Canadian impulse rose, and the leftover exited at the same 1.40 it was opened at, with Fed and BoC immediately ahead.",
+        "original_belief": "The SOFR-CORRA and UST-CAN 10Y gap would keep USDCAD bid, so a smaller leftover could recapture the prior peak without needing full size.",
+        "same_information_counterfactual": "Going fully flat when oil went three-digit and CAD impulse rose would have kept the realized win and avoided carrying remnant risk into Fed and BoC."
+      },
+      "expression_assessment": "Spot USDCAD was the right pair: both legs visible, no extra EUR or oil-beta cross. Expression was not the error.",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-26T07:37:10.682323-04:00",
+        "conviction": 64,
+        "entry_mark": 1.4,
+        "exit_mark": 1.4,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 3142820,
+        "instrument": "USDCAD",
+        "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 157206.2,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": "Do not leave a reduced USDCAD leftover waiting on peak recapture when oil is three-digit. Re-enter only if the desk would initiate from flat at the live print, and not into dual Fed/BoC week.",
+      "lesson": "After a material USDCAD harvest, three-digit oil plus rising Canadian impulse means flatten fully.",
+      "no_new_lesson": null,
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-9088ab3d7c83",
+      "run_id": "overnight-20261027",
+      "sizing_assessment": "Cutting down after the win was correct; not cutting to zero was the miss. Reduced leftover is not a free call on peak recapture.",
+      "tags": [],
+      "thesis_assessment": "Long USD versus CAD on the policy-rate and 10Y gap was directionally right and is why the trade paid. That thesis did not license leftover inventory once oil became a CAD impulse.",
+      "timing_assessment": "The 19 Sep entry caught the rates gap. Holding the remnant into three-digit oil and the 28 Oct dual sitting was late. Exit at 1.40 closed the leftover without giving back the harvested core.",
+      "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb",
+      "what_failed": "A reduced leftover was left on to recapture a prior peak. It round-tripped 1.40 to 1.40 over about 36 days while oil went three-digit and Canadian impulse rose into Fed/BoC week.",
+      "what_worked": "The USD-CAD rates gap paid. Expressing it in USDCAD spot, not a cross, let the core be harvested for a material realized gain."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

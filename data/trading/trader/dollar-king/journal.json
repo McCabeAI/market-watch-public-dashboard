@@ -1344,6 +1344,60 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "The leftover dollar-Canada long is a paid rate-gap trade that has already given back rather than recaptured its high. The United States still pays 3.90 versus Canada's 2.25, and the ten-year sits near 5.00 after a midweek bid, but three-digit crude and a Canadian hike into 2.50 this week are now the binding other leg. I would not start a dollar-Canada long from a flat book at 1.3995 with WTI at 103.27, so this residual is harvested rather than warehoused. Any later dollar view versus Canada has to be a new, smaller initiation after the Canadian meeting, not leftover size hoping the old peak returns."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book. Would not initiate USDCAD at 1.4028 into Fed and BoC 28 Oct with WTI 101.76 and Brent 115.81 still three-digit. No frozen print on EUR, AUD, or JPY. NZ new-risk blocked.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 35,
+      "decision_fingerprint": "2fa2ec7da3fe34e0f85e4cc248fb4e9d804fd4bcd800daaffeb70efa4b793c0e",
+      "event_id": "jde-060eb6a3c72c4ff5",
+      "funding_view": null,
+      "invalidation": "The flat call breaks if oil leaves three-digit and the post-28 Oct Fed/BoC reaction is a USD-CAD rates re-widening the desk would actually buy from cash. A fresh long is only live if it would be initiated at the offered print, not as a leftover of the prior 1.40 clip. Short USDCAD is not the seat: the rate gap still points the wrong way and oil would be the real driver. Other G10 USD pairs stay off-limits until the tape prints them.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5d60c8bc229f359a18d4fd63a70bb1f3c7492fae5733df5bc20b1226704342a7",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5629678a2935c546c21537820fe12f9bad340bb8de85ccde1ebec8e2c1aa584b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR still sits 168bp over CORRA and the US 10Y is 117bp over Canada, so the USD leg remains the cleaner rates story versus CAD. That gap is not a bid at 1.4028 with WTI 101.76 and Brent 115.81 still three-digit and both Fed and BoC on 28 Oct, BoC polled toward 2.50. I would not initiate USDCAD from flat at this print, and the tape has no EUR, AUD, or JPY levels to rotate into. Book stays flat.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "SOFR still sits 168bp over CORRA and the US 10Y is 117bp over Canada, so the USD leg remains the cleaner rates story versus CAD. That gap is not a bid at 1.4028 with WTI 101.76 and Brent 115.81 still three-digit and both Fed and BoC on 28 Oct, BoC polled toward 2.50. I would not initiate USDCAD from flat at this print, and the tape has no EUR, AUD, or JPY levels to rotate into. Book stays flat."
     }
   ],
   "schema_version": 1,

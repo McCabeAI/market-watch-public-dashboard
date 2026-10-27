@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-27T05:32:12.602790-04:00",
+  "as_of": "2026-10-27T06:47:18.927980-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,8 +30,8 @@
     "wins": 0
   },
   "capital_owner": {
-    "allocator_pressure": 11,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 12,
+    "credible_opportunities": "none",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -46,8 +46,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 216418.45,
-    "best_trader_outearn_streak": 2,
+    "best_trader_net_pnl_usd": 218864.01,
+    "best_trader_outearn_streak": 3,
     "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
     "competition_cohort_size": 3,
@@ -55,7 +55,7 @@
     "competition_rank": 3,
     "competitive_rank": 3,
     "drawdown_usd": 0.0,
-    "gap_to_best_trader_usd": -216418.45,
+    "gap_to_best_trader_usd": -218864.01,
     "high_water_nav_usd": 1000000000.0,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 0.0,
@@ -77,7 +77,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "382d6c6157dc7426649d417851306e98f650cc81afeb6ee15d926c0ef842d20f",
+  "memory_context_sha256": "f16f038311c5c3a32cfeb55e22b9fcb1ac2621ab1a1b69f964bb4affff5452e7",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -140,7 +140,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.49
+        "value": 0.5
       },
       "thesis_attachment": {
         "band": "calm",
@@ -160,17 +160,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261022"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261023"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261026"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261027"
       }
     ],
     "required_checks": {
@@ -180,9 +180,9 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "f141b4d61510f63ba8f48ba6517ed60401b8f195dc1bc3313a0c2c9825a947ba",
+    "state_sha256": "b7adab45447fa90cd4d3ac73f7770c2a39c584d83c98fde587583b39a869541b",
     "streaks": {
-      "flat_cycles": 18,
+      "flat_cycles": 19,
       "session_loss": 0,
       "session_win": 0
     }

@@ -1336,6 +1336,62 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "CORRA cash is 2.25, the 2027 H\u2013Z pack still prints 3.005 / 3.21 / 3.36 / 3.46, and the BoC poll is 2.50 on 28 Oct and still 2.50 by March. the strip is pricing a full hike cycle above a 2.50 print that cash and the poll do not corroborate, so CAD lower-rate repricing remains underpriced in STIR. The existing long pack is already the rates-first expression of that gap; this week\u2019s BoC and Fed are event risk around the same view, not a reason to fade it. 28 Oct hike size/signal, the Fed reaction function, and any CA 2Y/5Y/10Y or USD/CAD prints not in the tape."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the existing CORRA_2027H-Z long.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 63,
+      "decision_fingerprint": "2354c2f20b34cb1b859dafd5a6dea3e99b6837b965cbae6ec8c551e022a7ec68",
+      "event_id": "jde-c0766dfe558843c0",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if tomorrow\u2019s BoC, with the Fed the same day, ratifies Mar-27 at 3.01 and Dec-27 at 3.47 as a floor rather than a fade. If Sep-27 and Dec-27 hold or cheapen from 3.365/3.47 after the decisions, cover. An oil-led impulse that reverses the US 10Y midweek bid at 5.00 into a selloff would be the same signal.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5475e35181977554be549524d2f1c76d3fd3744be7df09ac3de38404fba8755d",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8a840a6c43bed6bf82a3928387642685616fef50dc11556d975df501c269bbbd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA is 2.24 and the BoC is polled at 2.50, but Mar-27 still sits at 3.01 and the 2027 H\u2013Z strip prints 3.215/3.365/3.47. That is nearly a full extra tightening cycle after tomorrow\u2019s meeting, too much if restriction is already biting demand. A midweek bid in the US 10Y at 5.00 and SOFR only 53bp through March do not make CAD 2027 implieds a hold-to-3.47 story. Stay received in the live 2027 H\u2013Z; fade the forward hike path, not the 28 Oct cash print.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Cash CORRA is 2.24 and the BoC is polled at 2.50, but Mar-27 still sits at 3.01 and the 2027 H\u2013Z strip prints 3.215/3.365/3.47. That is nearly a full extra tightening cycle after tomorrow\u2019s meeting, too much if restriction is already biting demand. A midweek bid in the US 10Y at 5.00 and SOFR only 53bp through March do not make CAD 2027 implieds a hold-to-3.47 story. Stay received in the live 2027 H\u2013Z; fade the forward hike path, not the 28 Oct cash print."
     }
   ],
   "schema_version": 1,

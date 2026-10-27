@@ -1310,6 +1310,64 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "The only dated repricing mechanism still live is this week's FOMC; the midweek AI-stress duration bid has already printed and is not a new path. Cash SOFR at 3.90 versus Mar-27 at 4.41 is a 51bp re-tightening strip that three-digit oil (WTI 103.27, Brent 116.72) can still extend if the Fed declines to ratify the growth-scare bid, even after a session down more than 2 percent. Hold the residual 10,000,000 short SOFR_2027-03 through the meeting: cutting again in front of a live catalyst treats a timing event as a valuation debate, and adding back last cycle's cut is not required for the path to work."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 5000000,
+          "position_id": "pos-fca0c79a2e45",
+          "rationale": "Cut the March 2027 SOFR short in half into a priced Fed path; keep a stub only for an oil-driven hawkish surprise.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 46,
+      "decision_fingerprint": "a9d15b405ba9db418ffb2d23736ec81a73a4be7a39c75ad6f48c1917b2eb2c32",
+      "event_id": "jde-f55e1efd663e4400",
+      "funding_view": null,
+      "invalidation": "Exit the remainder if the Fed validates a path at or below 4.45, or if Mar-27 trades through 4.20 toward Dec-26 without an oil-driven hawkish surprise. Same-day BoC at Mar 3.01 versus a 2.50 poll does not hedge the US short if Powell is on the priced strip.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-fca0c79a2e45"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-fca0c79a2e45"
+      ],
+      "memory_context_sha256": "d9f4324fcf2d52f5053ffc0e34d46beb0c9d47339ebdef9b48bb985159e1b298",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ec57f75e89f0d3873b97a3e6fc16ca889281c0ad98ad5dbef0fdccbd44b11fe4"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Oct 28 Fed is a dated catalyst, but Mar-27 SOFR at 4.45 versus spot 3.92 already carries the hiking path, so the 4.52 short is leftover event risk rather than leftover mispricing. Oil at 101.76/115.81 can still map into a hawkish statement and lift the 2027 contract, which is the only reason a stub stays on. Cut the 10m short in half into the print; a path-confirming Fed does not reprice 4.45 higher.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "The Oct 28 Fed is a dated catalyst, but Mar-27 SOFR at 4.45 versus spot 3.92 already carries the hiking path, so the 4.52 short is leftover event risk rather than leftover mispricing. Oil at 101.76/115.81 can still map into a hawkish statement and lift the 2027 contract, which is the only reason a stub stays on. Cut the 10m short in half into the print; a path-confirming Fed does not reprice 4.45 higher."
     }
   ],
   "schema_version": 1,

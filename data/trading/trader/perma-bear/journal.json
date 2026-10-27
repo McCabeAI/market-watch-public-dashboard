@@ -1340,6 +1340,62 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "US 10Y ~5.00 after a 19bp midweek bid on AI stress, SOFR strip 4.18-4.61 versus cash 3.90, VIX 19.03, WTI 103, Fed this week, Hormuz and AI credit stress still on the tape, existing long US_10Y 12,500,000 (pos-5ac8fc69cb81). cash still below the hike-priced path and a 19 VIX mean risk assets are treating the landing as benign, so that 19bp bid is an unfinished defensive repricing rather than a completed long; 5.00 remains a high perch while AI/credit stress is live. Fed outcome, Hormuz path, 2Y/5Y/curve/cross-market yields, and all FX spots (null). Hold the 10Y long; do not fade it on one print, and do not add into FOMC with oil at 103."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 12500000,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Keep the existing US_10Y long.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "1d673c1d190a99f5a36e251ec848676b4318c154f437025523e2e8b92caf73c7",
+      "event_id": "jde-f96959da7db249e4",
+      "funding_view": null,
+      "invalidation": "The hold dies if the 10Y backs up while the SR3 strip holds or extends its hike path after the Fed, with risk assets still bid. An oil/Hormuz term-premium spike that cheapens duration without a growth scare would also end it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8b22b9be9ada970c415c9a9398487e62f89249500cca7c407370856bf05854f8",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d9202a922aad93e494a5119512365fab9357f5f712e71ea249c354057cf50581"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR cash still sits below a hike-priced SR3 strip through September, so the midweek safety bid is unfinished even with the 10Y already in to 5.00 from 5.24. AI/credit unease and gold at 4038 keep growth-fragility underpriced while SPX, Nasdaq and a 19-handle VIX look complacent. Hold the existing long 10Y and want the mark lower; do not add into the Fed with WTI/Brent elevated on Hormuz risk.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "SOFR cash still sits below a hike-priced SR3 strip through September, so the midweek safety bid is unfinished even with the 10Y already in to 5.00 from 5.24. AI/credit unease and gold at 4038 keep growth-fragility underpriced while SPX, Nasdaq and a 19-handle VIX look complacent. Hold the existing long 10Y and want the mark lower; do not add into the Fed with WTI/Brent elevated on Hormuz risk."
     }
   ],
   "schema_version": 1,

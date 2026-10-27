@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-27T05:32:12.602790-04:00",
+  "as_of": "2026-10-27T06:47:18.778714-04:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -72,8 +72,8 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 216418.45,
-    "best_trader_outearn_streak": 2,
+    "best_trader_net_pnl_usd": 218864.01,
+    "best_trader_outearn_streak": 3,
     "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
     "competition_cohort_size": 3,
@@ -81,7 +81,7 @@
     "competition_rank": 2,
     "competitive_rank": 2,
     "drawdown_usd": 860728.88,
-    "gap_to_best_trader_usd": 63500.59,
+    "gap_to_best_trader_usd": 61055.03,
     "high_water_nav_usd": 1001140647.92,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 279919.04,
@@ -102,7 +102,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3e45ee225bdb58d04849425c15b151523dcfb2369a5cc9fa0eb8312e2b245000",
+  "memory_context_sha256": "68eb86eea31d0f9aeb2036a99dc25147fae81efb316717ff77113faf99e4c39a",
   "open_positions": [],
   "owner_id": "swinger",
   "owner_type": "pm",
@@ -121,7 +121,7 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.19
       },
       "complacency": {
@@ -142,7 +142,7 @@
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -178,13 +178,18 @@
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261026"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261027"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5bf65df4f64169bbd6978558e0719d99682153207976e379fd9331c05d1d847f",
+    "state_sha256": "e21260e59e8fd6e61d91d0bcd2879c698e5a60cb9ed8b3443558ed7118fad696",
     "streaks": {
-      "flat_cycles": 1,
+      "flat_cycles": 2,
       "session_loss": 0,
       "session_win": 0
     }

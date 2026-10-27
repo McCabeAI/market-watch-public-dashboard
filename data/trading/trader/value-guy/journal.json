@@ -1308,6 +1308,60 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "The marked cash SOFR\u2013CORRA gap is 165bp (3.90 vs 2.25) while CA\u2013US 10Y is already \u2212118bp, so the bond spread sits inside the policy gap rather than offering unused cheap-CAD carry. Two-year SOFR\u2013CORRA is unmarked, so any CAD rates pack would clone that cash policy differential instead of a residual dislocation. USDCAD 1.3995 has no packeted REER, PPP, terms-of-trade or historical-z anchor, and AU/EA/JP/NZ rates RV are unmarked or unmarkable; with a flat book that is not a convergence setup."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Largest dated residual is March CORRA 3.01 versus cash 2.24, but opening receive into BoC plus Fed tomorrow cannot be sized versus 3.92 percent SOFR from a flat book.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 35,
+      "decision_fingerprint": "7922d664a7d402acad7158bed0417cc8cd2facdafe779c720aa7ee63fe9ce497",
+      "event_id": "jde-86c9002b643f420f",
+      "funding_view": null,
+      "invalidation": "Reopen only if, after both 28 Oct decisions, March CORRA still screens near 3.01 against cash near 2.24, or US 10Y remains at the top of its one-year range with the cash-strip gap intact. If the meetings close those residuals, the value case is spent.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7b3cb8915055799aed60a57affba0fb50822b861c9f542dac850247d463c77db",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "648502513ffcdefddae6ae5ec39a19faf43a2c1478a15fba414c540fc482934b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US 10Y 5.00 sits at the 91st percentile of the past year after an 18bp one-month rally, so any historical cheapness is already being worked and will be rewritten at Fed and BoC tomorrow. March CORRA 3.01 versus cash 2.24 and March SOFR 4.45 versus cash 3.92 are dated cash-strip residuals, but they are the policy path into those meetings, not a dislocation that can be sized against 3.92 percent SOFR from a flat book. US-CA 10Y at 117bp versus a 168bp cash gap is a relative-value observation, not a why-now to pay or receive either long end tonight.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "US 10Y 5.00 sits at the 91st percentile of the past year after an 18bp one-month rally, so any historical cheapness is already being worked and will be rewritten at Fed and BoC tomorrow. March CORRA 3.01 versus cash 2.24 and March SOFR 4.45 versus cash 3.92 are dated cash-strip residuals, but they are the policy path into those meetings, not a dislocation that can be sized against 3.92 percent SOFR from a flat book. US-CA 10Y at 117bp versus a 168bp cash gap is a relative-value observation, not a why-now to pay or receive either long end tonight."
     }
   ],
   "schema_version": 1,

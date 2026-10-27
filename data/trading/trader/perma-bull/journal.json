@@ -1503,6 +1503,92 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "Mar-27 STIRs still print above cash (CORRA 3.005 vs 2.25, SOFR 4.41 vs 3.90, AONIA 4.845 vs 4.60), so the priced hike path has not been retraced. Firmer equities with oil down more than 2% is risk-on, not a growth break, and WTI still at 103 keeps the energy impulse alive into Fed/BoC week. Flattening the pay on a one-day Iran/oil headline would treat a non-retrace as a dovish reset. Stay short CORRA_2027-03 as the lead higher-for-longer growth expression; hold the SOFR and AONIA pays with it."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Keep the existing March CORRA short; the 3.01 mark versus 3.13 entry looks like meeting-eve caution while cash, the 2.50 poll and three-digit oil still argue for higher implieds.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Hold the March 2027 AONIA pay: cash 4.60 versus March 4.87 is the same unretraced hike path as the Canadian lead.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Hold the March 2027 SOFR pay with the same higher-for-longer family; three-digit oil and a contained VIX still argue against an easing regime.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "c89c0877d408fccf210c3975d5f5a33b1642c52951878bfbfa32c3f81c4b3f3d",
+      "event_id": "jde-89a0d66fa38a4471",
+      "funding_view": null,
+      "invalidation": "Stand down if the BoC cuts, skips with a peak-rates signal, or March implieds collapse through 2.50 toward cash. A break in oil back under three-digit prints with a genuine risk-off in equities and VIX, or a Fed-led global dovish pivot that drags the Canadian strip with it, also kills the trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f5ec7b9b558d086209eeeeae374914f40790c16a67278807fddf6bb6fb4498f9",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f9dde781aa594ed3185a52a5477a909dbe3451c59f3c035ed9c6bba21970d5f1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Three-digit oil, elevated equities and a contained VIX show the growth cycle is still risk-on, not rolling into an easing regime. March CORRA has slipped to 3.01 from 3.13 even though cash is 2.24 and the BoC is polled to 2.50 tomorrow, which reads as meeting-eve caution rather than a peak in tightening. Hold the existing March CORRA short: implieds remain well above cash, and a commodity-supported hike path still has room to reprice higher.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Three-digit oil, elevated equities and a contained VIX show the growth cycle is still risk-on, not rolling into an easing regime. March CORRA has slipped to 3.01 from 3.13 even though cash is 2.24 and the BoC is polled to 2.50 tomorrow, which reads as meeting-eve caution rather than a peak in tightening. Hold the existing March CORRA short: implieds remain well above cash, and a commodity-supported hike path still has room to reprice higher."
     }
   ],
   "schema_version": 1,

@@ -1284,6 +1284,60 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "Fed/BoC event week makes timing the risk, so a linear spot expression in UST 10Y or SOFR is the wrong payoff while the book is flat. VIX 19.03 and oil at 103 are cross-asset facts, not substitute marks for rates or eligible-G10 implieds, and the packet has no trusted listed option prices, strikes, or expiries. Last-resort bounded-risk options would dominate spot if they could be marked; they cannot, so this seat stays out rather than invent a contract or chase spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book. Event window 28 Oct Fed+BoC does not authorize a spot substitute; options are unmarkable in this tape.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 75,
+      "decision_fingerprint": "3807c1a60957d81a6e7b9cb3756f42fa2b76b436a729d478f01b8625e655145b",
+      "event_id": "jde-806b50134e8a4db6",
+      "funding_view": null,
+      "invalidation": "Stand-down is wrong only if a markable implied-vol surface and chain for USD/CAD, SOFR, or CORRA around the 28 Oct meetings becomes available and event vol screens cheap on that surface. A post-decision spot print, by itself, does not authorize a spot substitute from this seat. If front-end vol collapses before the meetings with still no chain, the optionality case remains untradeable, not a reason to buy or sell spot.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "da87821e6545861c87b47e83070c5a36aa392ee2a8ce75d4579d733e7c453fe5",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6d4b6378553b0e46f9c1a66f818e68526dbfb2f0cdb79d243541323213a72a47"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Fed and BoC on 28 Oct is an event-vol window with uncertain jump timing, so a bounded-risk option structure would dominate unhedged spot. VIX at 19.45 on 23 Oct flags residual event risk; it is not a substitute for an FX or rates implied-vol surface. this tape has no markable option chain, strikes, or premiums, so nothing in the options last-resort book can be opened. From flat, the seat stays out rather than substituting SOFR, CORRA, US 10Y, or FX spot.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Fed and BoC on 28 Oct is an event-vol window with uncertain jump timing, so a bounded-risk option structure would dominate unhedged spot. VIX at 19.45 on 23 Oct flags residual event risk; it is not a substitute for an FX or rates implied-vol surface. this tape has no markable option chain, strikes, or premiums, so nothing in the options last-resort book can be opened. From flat, the seat stays out rather than substituting SOFR, CORRA, US 10Y, or FX spot."
     }
   ],
   "schema_version": 1,

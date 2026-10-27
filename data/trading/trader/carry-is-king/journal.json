@@ -1402,6 +1402,77 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "March 2027 Canadian and Australian overnight-index forwards still sit well above cash, so the existing receives are paid to wait if policy undershoots those implied paths. Session weakness in crude weakens the inflation-backup story that would threaten those holdings; it is a reason to stay patient, not to exit. This week's Federal Reserve meeting and a Bank of Canada poll at 2.50 percent argue against adding risk, not against keeping the positions that already harvest the extra hike premium. Spot currency is the worse expression: buying the Canadian dollar would pay the United States short-rate gap, while the rate contracts isolate the mispriced path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Keep the existing CORRA_2027-03 long.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Keep the existing AONIA_2027-03 long.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "ec8771e3f2b61e6d9783b8f8178c24e27b09351c773d453fd85c956704e29257",
+      "event_id": "jde-8d7fc830fb014e0a",
+      "funding_view": null,
+      "invalidation": "Stand down the CAD receive only if the BoC path starts to fill the 77bp gap from the cash side or if Mar-27 implieds reprice higher after a hawkish 28 Oct decision rather than another sub-5bp oil backup. Cut AONIA first if its 27bp cash gap is eaten by further implied backup. Unknown remains the Fed/BoC statement mix and whether 101.76 oil is a one-print shock or a hiking input.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "73fe773e7aa528ada87b891065618e164f35e79a9b658b2efd9e9d9bf4423eff",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "605a31bc02c77f478a8f949b2eb24ac10179671d2b0f285e043302a4485b6957"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar-27 CORRA at 3.01 still pays 77bp over cash 2.24 and 51bp over the 2.50 BoC poll, so the existing receive is being paid to sit through 28 Oct. The 1.5bp backup from 2.995 is a sub-5bp oil wiggle around WTI 101.76, not a cash-policy change: CORRA 2.24 and SOFR 3.92 are unchanged. Hold the 25m CAD sleeve as the carry expression; keep the 25m AONIA receive as a thinner 27bp roll-down, and do not replace either with spot USD/CAD even though the 168bp cash differential looks tempting.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Mar-27 CORRA at 3.01 still pays 77bp over cash 2.24 and 51bp over the 2.50 BoC poll, so the existing receive is being paid to sit through 28 Oct. The 1.5bp backup from 2.995 is a sub-5bp oil wiggle around WTI 101.76, not a cash-policy change: CORRA 2.24 and SOFR 3.92 are unchanged. Hold the 25m CAD sleeve as the carry expression; keep the 25m AONIA receive as a thinner 27bp roll-down, and do not replace either with spot USD/CAD even though the 168bp cash differential looks tempting."
     }
   ],
   "schema_version": 1,

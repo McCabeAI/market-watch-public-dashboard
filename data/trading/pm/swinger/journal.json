@@ -1370,6 +1370,60 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "Mar-27 CORRA sits at 3.005, half a basis point from the 3.00 print where the concentrated receive was closed last cycle; that is residual, not a new dislocation versus cash at 2.25 or a 2.50 Bank of Canada outcome. This week's Federal Reserve meeting and the 28 October BoC decision turn the remaining 50 basis points over 2.50 into event binary rather than an extractable swing. The 2 percent oil drop undercuts initiating a pay-CORRA or CAD terms-of-trade FX book, and SOFR at 3.90 on shocked capital is a poor warehouse through FOMC. Stay flat until a fresh gap appears."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No new dislocation versus cash, versus the BoC path, or versus the 3.00 Mar CORRA receive exit. Trader Room CORRA disagreement is not a 10bp swing.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T06:47:18.175354-04:00",
+      "conviction": 86,
+      "decision_fingerprint": "5e21e378a83b85d11960735a44da768105e4e54a82f5f32111ebb9052f919784",
+      "event_id": "jde-17907875ac3c43b2",
+      "funding_view": null,
+      "invalidation": "Mar CORRA cheapens by 10bp or more versus the 3.00 exit against cash or an announced BoC path, or a new 10bp-class dislocation appears in SOFR, AONIA, or US 10Y that can be sized from a plausible adverse P&L path as a single unhedged swing.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3e45ee225bdb58d04849425c15b151523dcfb2369a5cc9fa0eb8312e2b245000",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5bf65df4f64169bbd6978558e0719d99682153207976e379fd9331c05d1d847f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "56be519d81199c3f94d7844b5dfa1a55e357d35723f84a6a58a4d077821ea827",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261027-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Mar-27 CORRA at 3.01 is the same receive closed at 3.00 after a 13bp harvest from 3.13. Cash at 2.24 and a 2.50 BoC poll for 28 Oct do not reprice that path or create a new cash-versus-strip dislocation. Trader Room pay-versus-receive on Mar is disagreement, not a 10bp swing, and the SOFR and AONIA strips plus US 10Y at 5.00 are the same hawkish oil/FOMC tape without a markable concentrated entry. The book stays flat; a flip to pay 1bp after the harvest would be whipsaw, not a thesis.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Mar-27 CORRA at 3.01 is the same receive closed at 3.00 after a 13bp harvest from 3.13. Cash at 2.24 and a 2.50 BoC poll for 28 Oct do not reprice that path or create a new cash-versus-strip dislocation. Trader Room pay-versus-receive on Mar is disagreement, not a 10bp swing, and the SOFR and AONIA strips plus US 10Y at 5.00 are the same hawkish oil/FOMC tape without a markable concentrated entry. The book stays flat; a flip to pay 1bp after the harvest would be whipsaw, not a thesis."
     }
   ],
   "schema_version": 1,

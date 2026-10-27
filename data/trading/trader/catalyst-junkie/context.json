@@ -54,7 +54,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -3989.11,
     "status": "ok"
   },
   "learning": {
@@ -65,12 +65,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d9f4324fcf2d52f5053ffc0e34d46beb0c9d47339ebdef9b48bb985159e1b298",
+  "memory_context_sha256": "5efaf7c6e46bf2c108645cd4dc1ec710e314916bdce9462ca12b6cde55a84f20",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 67,
-      "current_notional_usd": 10000000.0,
+      "current_notional_usd": 5000000.0,
       "entry_mark": 4.52,
       "harvest": {
         "asset_class": "rates",
@@ -82,7 +82,7 @@
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 32000.0,
+        "giveback_usd": 35500.0,
         "holding_seconds": 590452,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -96,16 +96,16 @@
         "position_id": "pos-fca0c79a2e45",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
-        "realized_pnl_usd": -15000.0,
+        "realized_pnl_usd": -18500.0,
         "recorded_mfe_usd": 6000.0,
-        "retained_mfe_fraction": -4.3333,
+        "retained_mfe_fraction": -4.9167,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 200000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": -26000.0,
+        "total_pnl_usd": -29500.0,
         "trade_id": "trd-trader-catalyst-junkie-pos-fca0c79a2e45",
         "unrealized_pnl_usd": -11000.0
       },
@@ -135,7 +135,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.33
+        "value": 0.3
       },
       "complacency": {
         "band": "calm",
@@ -150,12 +150,12 @@
       "external_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.32
+        "value": 0.3
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -190,7 +190,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ec57f75e89f0d3873b97a3e6fc16ca889281c0ad98ad5dbef0fdccbd44b11fe4",
+    "state_sha256": "798b640c9ba8c35c4770999cf723107be22311a77b6cf99c2f450229c6b2c6c2",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -1725,6 +1725,71 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "official NY Fed SOFR is 3.90 percent ACT/360 dated 2026-10-22; the frozen SR3 strip is Dec-26 4.18, Mar-27 4.41, Jun-27 4.56, Sep-27 4.61; US 10Y prints 5.00; oil prints 103; Fed and BoC are both 28 Oct; the book is flat. that strip already prices a hiking path well above spot SOFR, so 10Y 5.00 and oil 103 are round tape, not a measured residual versus a funded rates expression, and any overnight risk into the 28 Oct window is shocked-risk capital that pays 3.90 SOFR with no identified leftover edge. NZ blocked is local and is not used as a global veto; it also does not mint a substitute trade. event-vol versus the strip, depth, and any post-cutoff dislocation. Remain at the zero official-SOFR benchmark."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No leftover edge versus the SR3 strip into the 28 Oct Fed and BoC window; remain at the zero official-SOFR benchmark.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 75,
+      "decision_fingerprint": "88bbbe80c9d88487e34cec36dd964d77f45bd1acf7b9d48a78e92ee5f1fe3f12",
+      "event_id": "jde-7a804fded4644f81",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR 3.92% ACT/360 dated 2026-10-23",
+        "forward_funding_assessment": "lower",
+        "implication": "Realized overnight funding should print below the SR3 strip into 28 Oct; that gap is the priced hike path, not leftover edge. Stay at the zero official-SOFR benchmark rather than paying 3.92% SOFR on shocked-risk capital.",
+        "sr3_forward_view": "Dec-26 4.20, Mar-27 4.45, Jun-27 4.605, Sep-27 4.65"
+      },
+      "invalidation": "This no-trade is wrong if a dated, sizeable dislocation appears versus the Dec-26/Mar-27 strip that is not explained by 28 Oct event premium and can be expressed without paying overnight SOFR on shocked capital into the sitting. A post-meeting strip that fails to reprice after a clear policy surprise would also reopen the case. Until then the priced path and the dual catalyst keep the book flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "553c5240bdf7ae3e35667e8871d3d1a1ce882294b1f65d773fd33b83b811b633",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR 3.92% ACT/360 dated 2026-10-23",
+          "forward_funding_assessment": "lower",
+          "implication": "Realized overnight funding should print below the SR3 strip into 28 Oct; that gap is the priced hike path, not leftover edge. Stay at the zero official-SOFR benchmark rather than paying 3.92% SOFR on shocked-risk capital.",
+          "sr3_forward_view": "Dec-26 4.20, Mar-27 4.45, Jun-27 4.605, Sep-27 4.65"
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4d46ad24aa4131347b8ebc973221e386063a0f8ff3def684e9fc35046afbbc4b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.92% dated 23 Oct; the SR3 strip already sits at Dec-26 4.20, Mar-27 4.45, Jun-27 4.605 and Sep-27 4.65, with the 10Y at 5.00 and CORRA 2.24 versus Mar 3.01, so the 28 Oct Fed and BoC sitting is inside a fully priced hiking path. Overnight risk would pay that 3.92% SOFR on shocked-risk capital for a noisy, crowded dual-event window with no leftover versus the strip. NZ blocked is a local constraint and does not mint a substitute. Remain at the zero official-SOFR benchmark; no trade.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.92% dated 23 Oct; the SR3 strip already sits at Dec-26 4.20, Mar-27 4.45, Jun-27 4.605 and Sep-27 4.65, with the 10Y at 5.00 and CORRA 2.24 versus Mar 3.01, so the 28 Oct Fed and BoC sitting is inside a fully priced hiking path. Overnight risk would pay that 3.92% SOFR on shocked-risk capital for a noisy, crowded dual-event window with no leftover versus the strip. NZ blocked is a local constraint and does not mint a substitute. Remain at the zero official-SOFR benchmark; no trade."
     }
   ],
   "schema_version": 1,

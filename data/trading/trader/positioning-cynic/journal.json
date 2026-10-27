@@ -1360,6 +1360,62 @@
       "run_id": "overnight-20261026",
       "schema_version": 1,
       "thesis": "CAD receive into the 28 Oct BoC is already owned: carry and dove sit on CAD receives while Mar-27 CORRA at 3.005 versus 2.25 spot is the contract that crowd wants to fade against a 2.50 poll. The leftover with ownership asymmetry is the existing 50,000,000 short/pay in CORRA Mar-27, not another receive and not a USDCAD short on leftover long-dollar inventory. Hold that pay; do not add; do not overlay spot CAD-bull."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Keep the existing CORRA_2027-03 short.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-27T05:32:12.602790-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "199bc9b5b2b9bd015a9baa8325c0153dfb6bbfb8e9c1a87217c916a291adfa38",
+      "event_id": "jde-2fd23da34cb2487f",
+      "funding_view": null,
+      "invalidation": "Exit the hold if Mar implied yield comes back through the 2.995 entry on a dovish BoC that pays the receive, or if cash-to-Mar compresses because that crowding has already unwound. Do not substitute spot CAD: FX volumes are missing and the 20 Oct CFTC file has no figures in this tape.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b723bb66731bdf5e675deabd898942e74011cc87c96a3229ba13b6dddbb69d6d",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1fe30aa89f616decd0d3c23465ba19f4adfe12a5b6ea65d3d189a3b6b37aca66"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-27T05:32:12.602790-04:00",
+        "evidence_hash": "f33bb8125a4aac75d02e840de58dd890e581f7e6003b4daca4964b60729b4bad",
+        "overnight_run_id": "overnight-20261027",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The crowded CAD story is still receiving Mar CORRA versus 2.24 cash and a 2.50 BoC poll; Mar at 3.01 is what that crowd is fighting, and the book is already short it from 2.995. Three-digit oil keeps the re-tightening path from looking orphaned, and 1.5bp of mark is not evidence the receive has been run out. Hold the 50m pay into the decision rather than covering into the ownership we are fading.",
+      "run_id": "overnight-20261027",
+      "schema_version": 1,
+      "thesis": "The crowded CAD story is still receiving Mar CORRA versus 2.24 cash and a 2.50 BoC poll; Mar at 3.01 is what that crowd is fighting, and the book is already short it from 2.995. Three-digit oil keeps the re-tightening path from looking orphaned, and 1.5bp of mark is not evidence the receive has been run out. Hold the 50m pay into the decision rather than covering into the ownership we are fading."
     }
   ],
   "schema_version": 1,

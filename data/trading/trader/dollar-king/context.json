@@ -53,6 +53,35 @@
       "status": "active",
       "text": "The first cut from 8 million to 3 million was not a completed harvest. When three-digit oil and a rising Canadian hike impulse arrive after a paid dollar-Canada win, flatten if you would not initiate from zero; leftover reduced size still waits on peak recapture.",
       "trade_ids": []
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not leave a reduced USDCAD leftover waiting on peak recapture when oil is three-digit. Re-enter only if the desk would initiate from flat at the live print, and not into dual Fed/BoC week.",
+      "lesson_id": "les-430144751141",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-9088ab3d7c83"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261027",
+      "status": "active",
+      "text": "After a material USDCAD harvest, three-digit oil plus rising Canadian impulse means flatten fully.",
+      "trade_ids": [
+        "trd-trader-dollar-king-pos-5317bc96d4eb"
+      ]
     }
   ],
   "as_of": "2026-10-27T05:32:12.602790-04:00",
@@ -119,45 +148,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-9088ab3d7c83",
-      "owner_id": "dollar-king",
-      "owner_type": "trader",
-      "reference": "trd-trader-dollar-king-pos-5317bc96d4eb",
-      "source_run_id": "overnight-20261026"
-    }
-  ],
-  "memory_context_sha256": "5d60c8bc229f359a18d4fd63a70bb1f3c7492fae5733df5bc20b1226704342a7",
+  "learning_obligations": [],
+  "memory_context_sha256": "6c6b0c891c6a3c336ad70491dc2dc9d5a080e8653a809371cd23da5121f1cbda",
   "open_positions": [],
   "owner_id": "dollar-king",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-10-26T07:37:10.682323-04:00",
-      "created_run_id": "overnight-20261026",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-10-26T07:37:10.682323-04:00",
-        "conviction": 64,
-        "entry_mark": 1.4,
-        "exit_mark": 1.4,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 3142820,
-        "instrument": "USDCAD",
-        "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 157206.2,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-9088ab3d7c83",
-      "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -177,28 +173,28 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.29
+        "trend": "down",
+        "value": 0.27
       },
       "defensiveness": {
         "band": "calm",
         "trend": "down",
-        "value": 0.29
+        "value": 0.28
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.23
+        "trend": "down",
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.16
       },
       "revenge_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.07
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
@@ -221,11 +217,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "self_report_admission_overconfidence",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261023"
-      },
-      {
         "kind": "trade_win_close",
         "magnitude": 0.31441240000000004,
         "run_id": "overnight-20261026"
@@ -243,9 +234,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5629678a2935c546c21537820fe12f9bad340bb8de85ccde1ebec8e2c1aa584b",
+    "state_sha256": "4218536ebbf8601be2e84e9bc168943ad1a1bcbde1175eb6794f9fc750865cd5",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 5,
       "session_win": 0
     }
