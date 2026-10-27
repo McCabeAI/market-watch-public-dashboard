@@ -52,6 +52,7 @@ jobs:
           PYTHONPATH: .
         run: python3 -m scripts.market_watch_launch.research_pages select
 
+      # Early cost-saving skip when production is busy; deploy-job ordering uses publication_coordinator.
       - name: Refuse while a final Pages deploy is queued or running
         id: gate
         if: steps.select.outputs.eligible == 'true'
@@ -104,16 +105,15 @@ jobs:
     needs: research
     if: needs.research.outputs.eligible == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    # Same group as production deploy-pages. A final deploy dispatched later
-    # cancels this job; this job never cancels an in-progress final deploy.
-    concurrency:
-      group: pages-production
-      cancel-in-progress: false
+    # Research deploys avoid the production Pages concurrency group so they cannot replace a pending final;
+    # ordering is enforced by scripts/market_watch_launch/publication_coordinator.py
+    # (claim here, wait in deploy-pages).
+    timeout-minutes: 12
     permissions:
       contents: read
       pages: write
       id-token: write
+      actions: read
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -122,6 +122,10 @@ jobs:
       page_url: ${{ steps.deployment.outputs.page_url }}
       public_state: ${{ steps.verify.outputs.public_state }}
     steps:
+      - name: Record deploy job start
+        id: start
+        run: echo "since=$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$GITHUB_OUTPUT"
+
       - name: Checkout fresh main
         uses: actions/checkout@v6
         with:
@@ -154,12 +158,22 @@ jobs:
             --site-dir "${RUNNER_TEMP}/research" \
             --public-base-url "$PUBLIC_BASE_URL"
 
+      - name: Yield to production Pages deploys
+        id: claim
+        if: steps.guard.outputs.deploy == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: .
+          SINCE: ${{ steps.start.outputs.since }}
+        run: python3 -m scripts.market_watch_launch.publication_coordinator research-check --repo "$GITHUB_REPOSITORY" --since "$SINCE"
+
       - name: Deploy to GitHub Pages
         id: deployment
-        if: steps.guard.outputs.deploy == 'true'
+        if: steps.guard.outputs.deploy == 'true' && steps.claim.outputs.deploy == 'true'
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages-research-${{ github.run_id }}-${{ github.run_attempt }}
+          timeout: 300000
 
       - name: Verify public page serves this research edition
         id: verify
