@@ -104,7 +104,7 @@ Every production site carries `release.json` with its phase, launch, review, pac
 | `research` | `publish-research-pages.yml` | After a live ACP launch run on `main` completes with Stage 04 verified and remotely attested | Previous accepted books, labeled with their run id, as-of, and acceptance time. Today's cycle is `pending` |
 | `final` | `deploy-pages.yml` (Stage 08) | After Stage 07, unchanged dispatch and reconcile path | Today's accepted books and P&L for the same launch, review, and packet |
 
-The research edition has no `workflow_dispatch` and no schedule. It builds in a throwaway overlay from the frozen evidence packet and the launch's staged lineage scores. Source health is that launch's Stage 01 ingest. News stays the last accepted digest, labeled with its age, until the final edition. It refuses to build when the attestation is missing or does not match, a Stage 00–04 artifact hash drifted, the frozen packet fails `require_snapshot`, staged scores do not match `score_state_sha256`, the quality gate is not `PASS`, or the freeze date is not the session date (`fail`). It skips a stub, fixture, or non-production launch, a launch that is no longer `running`, a session that is no longer today in New York, and a launch whose Stage 06/07 already succeeded or that a newer launch replaced (`skip`).
+The research edition has no `workflow_dispatch` and no schedule. It builds in a throwaway overlay from the frozen evidence packet and the launch's staged lineage scores. Source health is that launch's Stage 01 ingest. News is in two labeled parts (see below). It refuses to build when the attestation is missing or does not match, a Stage 00–04 artifact hash drifted, the frozen packet fails `require_snapshot`, staged scores do not match `score_state_sha256`, the quality gate is not `PASS`, or the freeze date is not the session date (`fail`). It skips a stub, fixture, or non-production launch, a launch that is no longer `running`, a session that is no longer today in New York, and a launch whose Stage 06/07 already succeeded or that a newer launch replaced (`skip`).
 
 The only durable write is `data/market_watch_launches/<launch_id>/research_pages.json`, with one row per deploy run. `launch.json`, `index.json`, and Stage 08 are not touched, so the launch stays `running` and the one-live-launch guard stays closed until the final edition is reconciled. A research build or deploy failure does not affect the ACP handoff, acceptance, or Stage 08.
 
@@ -112,8 +112,46 @@ Publication order is the rank `(session_date, launch stamp, phase)` with researc
 
 * A late or replayed research deploy never replaces the final edition of the same or a newer launch.
 * `gh workflow run deploy-pages.yml --ref main` without `launch_id` (manual refresh) is refused while a newer research edition is live or committed. Wait for the final edition, or dispatch with the finalized `launch_id`.
-* The research deploy job shares the `pages-production` concurrency group without cancelling. A final deploy cancels an in-flight research deploy. The research job does not queue while a production `deploy-pages.yml` run is queued or running.
-* Recovery is a re-run of the same `publish-research-pages.yml` run. It re-derives eligibility from `main` and is idempotent.
+* Recovery is a re-run of the same `publish-research-pages.yml` run ("Re-run all jobs"). It re-derives eligibility from `main` and is idempotent.
+
+### Deploy ordering between the two workflows
+
+The research deploy job is not in the `pages-production` concurrency group. GitHub keeps one pending run per group and a new entrant replaces it, so sharing the group would let research cancel a pending final. `scripts/market_watch_launch/publication_coordinator.py` orders the two through Actions API state instead:
+
+1. Research `Record deploy job start` stores the job start time before checking out `main`. A finalized launch commits Stage 07 to `main` before its `deploy-pages.yml` dispatch, so a final created before that time makes the research guard skip.
+2. Research `Yield to production Pages deploys` runs right before `actions/deploy-pages`. It skips (fail closed) if any production `deploy-pages.yml` run (`workflow_dispatch`, `main`) is not completed, or was created or re-run since the job started, or has unreadable times. Runs are listed newest-first and by every active status, so re-runs of old runs are seen. Research never waits.
+3. Final `Wait for in-flight research deploy` runs right before `actions/deploy-pages` in `deploy-pages.yml`. It polls every 15 s, up to 25 min, while any `Deploy research edition` job is unfinished and its `Deploy to GitHub Pages` step is not completed. The research deploy job has a 12 min timeout, and its Pages step a 5 min timeout. Then it refuses a release whose session is older than the New York date of any successful research deploy step. That covers the gap before the research receipt is committed.
+4. Final `Recheck publication order before deploy` repeats the publication guard against a fresh `main` checkout and the live `release.json`.
+
+If the final is not visible to step 2, it was created after the research job started. The final reaches step 3 only after its multi-minute build, when the research deploy job is long visible. Stale API data only shows earlier states, which makes the final wait. `InterleavingModelTests` in `tests/test_mw_publication_coordinator.py` checks this over a grid of arrival times, API lag, deploy durations, and CDN lag. A negative control drops the wait and finds violations.
+
+The proof assumes four things:
+
+* The API never reports a step completed before it is.
+* `actions/deploy-pages` returns only after the Pages deployment is terminal.
+* Runner and API clocks agree within 120 s.
+* Pages serves the most recently created successful deployment.
+
+Operator notes:
+
+* A research edition skipped because a final was queued is not retried; the final replaces it.
+* A final that times out in step 3 fails without deploying. Use "Re-run all jobs". Artifact names include the run attempt, so "Re-run failed jobs" cannot find the build artifacts.
+* API errors fail closed: research skips, the final fails.
+* Rollback: revert the coordinator steps in both workflows. Restoring the old shared group brings back the pending-replacement race.
+
+### News on the research edition
+
+* **Current verified headlines (as of the Stage 04 news cutoff).** Selected by `scripts/market_watch_launch/research_headlines.py` from `families.news` in the hash-verified `evidence_snapshot.json`. Shown on the Front Page (top 4) and under News & Research (up to 8). Headline, source, time, and link only. There are no summaries or model text, and nothing implies trader acceptance.
+  * An item needs a verification status of `official`, `corroborated`, or `single_source`, and its `id` must match its source edges.
+  * Its frozen and recomputed `score_transmission` disposition must be `show` or `assess`.
+  * One source edge must have an `https` link on the publisher's own host. That edge must come from a known discovery surface with an `ok` acquisition receipt in this run.
+  * Its timestamp must carry a timezone and fall after the later of the previous acceptance and the cutoff minus 24 h, and not after the cutoff.
+  * Items already in the accepted digest, and duplicates, are dropped.
+  * Any other item is rejected and counted by reason in `release.json` under `headlines.counts.rejected`.
+  * With no eligible item, the panel says so and gives the reason and the previous analysis age. When the news family itself fails verification (stale, not live, cutoff outside the freeze, malformed), the panel says it is unavailable.
+* **Previous accepted analysis (as of the last accepted cutoff).** The accepted digest, desk summary, Market News, central-bank research, and analyst text. These stay bound to acceptance and change only with the final edition.
+
+The feed reads only the frozen packet. It does not change `accepted_public_news.json`, the overnight dataset, or the news approval path.
 
 Local, never production:
 
