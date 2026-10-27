@@ -69,7 +69,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-26T07:37:10.682323-04:00",
+  "as_of": "2026-10-27T05:32:12.602790-04:00",
   "calibration": {
     "average_holding_seconds": 960070,
     "average_realized_pnl_usd": 22901.3,
@@ -109,21 +109,21 @@
     "competition_eligible": true,
     "competition_rank": 3,
     "competitive_rank": 3,
-    "drawdown_usd": 67689.75,
-    "giveback_usd": 67689.75,
+    "drawdown_usd": 67738.5,
+    "giveback_usd": 67738.5,
     "high_water_nav_usd": 100135818.43,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100068128.68,
-    "net_pnl_usd": 68128.68,
+    "nav_usd": 100068079.93,
+    "net_pnl_usd": 68079.93,
     "pressure_flags": [],
     "prior_competition_rank": 3,
     "rank_change": 0,
     "raw_pnl_rank": 3,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 150000.0,
-    "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 48.75,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -133,12 +133,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "79cb2b7ef1c3b4e139119b8040e43c4963cbce35c32cba4c3ebeac125541fab1",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-ecc05f983487",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "reference": "trd-trader-cross-merchant-pos-44de67c4b24f",
+      "source_run_id": "overnight-20261026"
+    }
+  ],
+  "memory_context_sha256": "a7e85fe5ce091e9cbcb97b40ebf4d53445d757b271e3f3dd4392f38799a70168",
   "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-10-26T07:37:10.682323-04:00",
+      "created_run_id": "overnight-20261026",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-26T07:37:10.682323-04:00",
+        "conviction": 58,
+        "entry_mark": 110.9,
+        "exit_mark": 112.04,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2080573,
+        "instrument": "CADJPY",
+        "invalidation": "The CADJPY long is wrong if Brent no longer supports cheap CAD versus JPY, if the cheapness is a yen-haven bid rather than CAD lag, or if a non-recycled AU-versus-CA gap becomes the clearer cross.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 154437.38,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-ecc05f983487",
+      "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

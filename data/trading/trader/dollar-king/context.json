@@ -55,7 +55,7 @@
       "trade_ids": []
     }
   ],
-  "as_of": "2026-10-26T07:37:10.682323-04:00",
+  "as_of": "2026-10-27T05:32:12.602790-04:00",
   "calibration": {
     "average_holding_seconds": 3142820,
     "average_realized_pnl_usd": 157206.2,
@@ -95,21 +95,21 @@
     "competition_eligible": true,
     "competition_rank": 2,
     "competitive_rank": 2,
-    "drawdown_usd": 797247.49,
-    "giveback_usd": 797247.49,
+    "drawdown_usd": 797257.24,
+    "giveback_usd": 797257.24,
     "high_water_nav_usd": 100952555.22,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100155307.73,
-    "net_pnl_usd": 155307.73,
+    "nav_usd": 100155297.98,
+    "net_pnl_usd": 155297.98,
     "pressure_flags": [],
     "prior_competition_rank": 2,
     "rank_change": 0,
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 30000.0,
-    "risk_capital_utilization": 0.003,
-    "session_pnl_change_usd": 9.75,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -119,12 +119,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "1d6464e81f15422939268b02deea24ea40ccecd8aae2325b12b4c537a3832144",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-9088ab3d7c83",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-dollar-king-pos-5317bc96d4eb",
+      "source_run_id": "overnight-20261026"
+    }
+  ],
+  "memory_context_sha256": "5d60c8bc229f359a18d4fd63a70bb1f3c7492fae5733df5bc20b1226704342a7",
   "open_positions": [],
   "owner_id": "dollar-king",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-10-26T07:37:10.682323-04:00",
+      "created_run_id": "overnight-20261026",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-10-26T07:37:10.682323-04:00",
+        "conviction": 64,
+        "entry_mark": 1.4,
+        "exit_mark": 1.4,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 3142820,
+        "instrument": "USDCAD",
+        "invalidation": "Fed path recast as one-and-done and/or BoC/energy re-tightens CAD enough to close the policy gap.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 157206.2,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-9088ab3d7c83",
+      "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
