@@ -47,8 +47,6 @@ from scripts.market_watch_launch.publication_release import (
     RESEARCH_RECEIPT_NAME,
     RESEARCH_RECEIPT_TYPE,
     canonical_json,
-    committed_publications,
-    format_et,
     guard_publication,
     launch_stamp,
     release_sha256,
