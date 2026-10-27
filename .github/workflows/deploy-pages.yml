@@ -89,6 +89,8 @@ on:
       - "scripts/apply_dashboard_repair.py"
       - "scripts/dashboard_repair/**"
       - "tests/test_dashboard_repair.py"
+      - "scripts/market_watch_launch/publication_release.py"
+      - "tests/test_mw_publication_release.py"
       - "scripts/trader_room_public.py"
       - "scripts/pm/**"
       - "scripts/pm_layer.py"
@@ -598,8 +600,40 @@ jobs:
               raise SystemExit("failed source was given a successful check time")
           PY
 
+      - name: Stamp final publication edition
+        env:
+          MW_LAUNCH_ID: ${{ github.event.inputs.launch_id }}
+          MW_REVIEW_ID: ${{ github.event.inputs.review_id }}
+          MW_PACKET_SHA256: ${{ github.event.inputs.packet_sha256 }}
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_mw_publication_release
+          python3 -m scripts.market_watch_launch.publication_release stamp-final --site-dir _site
+          test -s _site/release.json
+          grep -Fq 'data-publication-phase="final"' _site/index.html
+
       - name: Configure Pages
+        id: pages
         uses: actions/configure-pages@v5
+
+      # Production only: refuse to replace a newer public or committed edition
+      # (for example a manual refresh of an older dataset over today's research
+      # edition). A finalized launch outranks its own research edition.
+      - name: Refuse to publish over a newer edition
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          PYTHONPATH: .
+          PUBLIC_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python3 -m scripts.market_watch_launch.publication_release guard --site-dir _site --public-base-url "$PUBLIC_BASE_URL"
+
+      - name: Upload publication release
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-release-${{ github.run_attempt }}
+          path: _site/release.json
+          if-no-files-found: error
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
@@ -632,3 +666,23 @@ jobs:
           DATASET_RUN_ID: ${{ needs.build.outputs.dataset_run_id }}
           PYTHONPATH: .
         run: python3 -m scripts.market_watch_launch.pages_dispatch verify-public
+
+      - name: Download publication release
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: publication-release-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/publication
+
+      # Observability of the edition label. The dataset check above remains the
+      # Stage 08 publication contract, so this read-back does not gate it.
+      - name: Report public publication edition
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
+        continue-on-error: true
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          PYTHONPATH: .
+        run: |
+          python3 -m scripts.market_watch_launch.publication_release verify-public \
+            --release "${RUNNER_TEMP}/publication/release.json" \
+            --page-url "$PAGE_URL"
