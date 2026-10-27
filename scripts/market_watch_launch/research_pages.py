@@ -370,6 +370,20 @@ def _superseded_reason(root: Path, launch: dict[str, Any], books: dict[str, Any]
     return None
 
 
+def _already_published(root: Path, launch: dict[str, Any]) -> bool:
+    path = _launch_dir(root, launch["launch_id"]) / RESEARCH_RECEIPT_NAME
+    if not path.is_file():
+        return False
+    receipt = _read_json(path)
+    freeze = _details(launch, "04_freeze")
+    return (
+        isinstance(receipt, dict)
+        and receipt.get("packet_sha256") == freeze.get("packet_sha256")
+        and receipt.get("review_id") == freeze.get("review_id")
+        and bool(receipt.get("deploys"))
+    )
+
+
 def research_contract(
     root: Path,
     launch_id: str | None = None,
@@ -420,6 +434,8 @@ def research_contract(
     superseded = _superseded_reason(root, launch, books)
     if superseded:
         raise _skip(superseded)
+    if _already_published(root, launch):
+        raise _skip("research_already_published")
     news = _accepted_news(root, books["dataset"], session_date=session_date, frozen_at=frozen_at)
     market = packet["families"]["market_state"]
     return {

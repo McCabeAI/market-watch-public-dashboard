@@ -433,7 +433,7 @@ class ReceiptAndOrderingTests(FixtureCase):
         self.assertEqual(self.digest("data/market_watch_launches/index.json"), index_before)
         self.assertEqual(rp.receipt_allowlist(LAUNCH), ((LAUNCH_REL / "research_pages.json").as_posix(),))
         self.assertEqual(self.read("data/market_watch_launches/index.json")["live_launch_id"], LAUNCH)
-        self.assertEqual(self.contract()["launch_id"], LAUNCH)
+        self.assertRefused(rp.SKIP, "research_already_published")
 
     def test_receipt_refuses_local_or_mismatched_release(self):
         local = rp.build_research_release(self.contract(), channel=pr.CHANNEL_LOCAL)

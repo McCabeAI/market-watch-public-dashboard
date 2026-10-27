@@ -95,6 +95,36 @@ Durable status values are `pending`, `running`, `succeeded`, `blocked`, and `fai
 
 State directory: `data/market_watch_launches/<launch_id>/`.
 
+## Two editions on one Pages URL
+
+Every production site carries `release.json` with its phase, launch, review, packet, and session. The visible banner under the header repeats the phase, date, and times.
+
+| Edition | Published by | When | Trader Book shows |
+| --- | --- | --- | --- |
+| `research` | `publish-research-pages.yml` | After a live ACP launch run on `main` completes with Stage 04 verified and remotely attested | Previous accepted books, labeled with their run id, as-of, and acceptance time. Today's cycle is `pending` |
+| `final` | `deploy-pages.yml` (Stage 08) | After Stage 07, unchanged dispatch and reconcile path | Today's accepted books and P&L for the same launch, review, and packet |
+
+The research edition has no `workflow_dispatch` and no schedule. It builds in a throwaway overlay from the frozen evidence packet and the launch's staged lineage scores. Source health is that launch's Stage 01 ingest. News stays the last accepted digest, labeled with its age, until the final edition. It refuses to build when the attestation is missing or does not match, a Stage 00–04 artifact hash drifted, the frozen packet fails `require_snapshot`, staged scores do not match `score_state_sha256`, the quality gate is not `PASS`, or the freeze date is not the session date (`fail`). It skips a stub, fixture, or non-production launch, a launch that is no longer `running`, a session that is no longer today in New York, and a launch whose Stage 06/07 already succeeded or that a newer launch replaced (`skip`).
+
+The only durable write is `data/market_watch_launches/<launch_id>/research_pages.json`, with one row per deploy run. `launch.json`, `index.json`, and Stage 08 are not touched, so the launch stays `running` and the one-live-launch guard stays closed until the final edition is reconciled. A research build or deploy failure does not affect the ACP handoff, acceptance, or Stage 08.
+
+Publication order is the rank `(session_date, launch stamp, phase)` with research < final. Before deploying, both workflows compare against committed research receipts, finalized launches, and the live `release.json`. They refuse anything that is outranked. Equal rank with a different identity also fails closed. Consequences:
+
+* A late or replayed research deploy never replaces the final edition of the same or a newer launch.
+* `gh workflow run deploy-pages.yml --ref main` without `launch_id` (manual refresh) is refused while a newer research edition is live or committed. Wait for the final edition, or dispatch with the finalized `launch_id`.
+* The research deploy job shares the `pages-production` concurrency group without cancelling. A final deploy cancels an in-flight research deploy. The research job does not queue while a production `deploy-pages.yml` run is queued or running.
+* Recovery is a re-run of the same `publish-research-pages.yml` run. It re-derives eligibility from `main` and is idempotent.
+
+Local, never production:
+
+```bash
+PYTHONPATH=. python3 -m scripts.market_watch_launch.research_pages select
+PYTHONPATH=. python3 -m scripts.market_watch_launch.research_pages build \
+  --launch-id <launch_id> --review-id <review_id> --packet-sha256 <sha> --site-dir /tmp/research-site
+```
+
+`--channel production` is refused outside a GitHub Actions run on `main` of this repository.
+
 ## Local rehearsal (no production publish)
 
 ```bash
