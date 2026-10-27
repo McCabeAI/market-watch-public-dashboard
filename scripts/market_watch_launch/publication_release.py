@@ -258,6 +258,17 @@ def _esc(value: Any) -> str:
     return html_lib.escape(str(value if value is not None else ""), quote=True)
 
 
+def _books_run(books: dict[str, Any]) -> str:
+    return str(books.get("books_run_id") or books.get("overnight_run_id") or "none")
+
+
+def _books_dates(books: dict[str, Any]) -> str:
+    text = f"as of {format_et(books.get('as_of'))}"
+    if books.get("accepted_at") and books.get("accepted_at") != books.get("as_of"):
+        text += f", accepted {format_et(books.get('accepted_at'))}"
+    return text
+
+
 EDITION_CSS = """
 .mw-edition{margin:10px 0 12px;padding:10px 14px;border-radius:10px;border:1px solid rgba(148,163,184,.45);background:rgba(15,23,42,.55);color:inherit;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
 .mw-edition b.mw-edition-title{display:block;font-size:14px;letter-spacing:.02em}
@@ -297,8 +308,8 @@ def render_edition_banner(release: dict[str, Any]) -> str:
         books = release.get("books") or {}
         items.append(
             f"Trader &amp; PM cycle for {_esc(session)}: <b>pending</b>. Trader Book shows the "
-            f"previous accepted books (<span class=\"mw-raw\">{_esc(books.get('overnight_run_id') or 'none')}</span>, "
-            f"as of {_esc(format_et(books.get('as_of')))}). They are not today's positions."
+            f"previous accepted books (<span class=\"mw-raw\">{_esc(_books_run(books))}</span>, "
+            f"{_esc(_books_dates(books))}). They are not today's positions."
         )
         news = release.get("news") or {}
         if news.get("current_session"):
@@ -384,8 +395,8 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
             render_panel_note(
                 f"<b>Previous accepted books.</b> The {_esc(session)} trader and PM cycle is pending. "
                 f"Books, P&amp;L and tickets below are from "
-                f"<span class=\"mw-raw\">{_esc(books.get('overnight_run_id') or 'none')}</span> "
-                f"as of {_esc(format_et(books.get('as_of')))} and do not reflect today's decisions.",
+                f"<span class=\"mw-raw\">{_esc(_books_run(books))}</span> "
+                f"({_esc(_books_dates(books))}) and do not reflect today's decisions.",
                 "traderbook",
             ),
         )
@@ -415,7 +426,7 @@ def _edition_book_fields(release: dict[str, Any], packet: dict[str, Any], *, kin
         publication["pm_books_status"] = "previous_cycle"
     publication["reason"] = (
         f"Research edition for {session}: previous accepted books "
-        f"{books.get('overnight_run_id') or 'none'} as of {format_et(books.get('as_of'))}. "
+        f"{_books_run(books)} ({_books_dates(books)}). "
         f"The {session} trader/PM cycle for launch {release.get('launch_id')} is pending; "
         "these are not today's positions."
     )
@@ -425,9 +436,10 @@ def _edition_book_fields(release: dict[str, Any], packet: dict[str, Any], *, kin
         "edition": {
             "phase": PHASE_RESEARCH,
             "books_cycle": "previous_accepted",
-            "books_overnight_run_id": books.get("overnight_run_id"),
+            "books_overnight_run_id": _books_run(books),
             "books_packet_sha256": books.get("packet_sha256"),
             "books_as_of": books.get("as_of"),
+            "books_accepted_at": books.get("accepted_at"),
             "current_cycle_launch_id": release.get("launch_id"),
             "current_cycle_overnight_run_id": release.get("overnight_run_id"),
             "current_cycle_review_id": release.get("review_id"),

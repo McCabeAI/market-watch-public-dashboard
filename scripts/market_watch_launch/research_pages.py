@@ -313,10 +313,14 @@ def _accepted_books(root: Path) -> dict[str, Any]:
     if not run_id or not dataset_path.is_file():
         raise _fail("previous_accepted_dataset_missing", run_id)
     dataset = _read_json(dataset_path)
+    books_path = Path(root) / "data" / "overnight" / "books" / "latest.json"
+    books = _read_json(books_path) if books_path.is_file() else {}
     return {
         "overnight_run_id": run_id,
         "packet_sha256": dataset.get("packet_sha256"),
-        "as_of": latest.get("as_of"),
+        "accepted_at": latest.get("as_of"),
+        "books_run_id": books.get("overnight_run_id") or run_id,
+        "as_of": books.get("as_of") or latest.get("as_of"),
         "dataset": dataset,
     }
 
@@ -746,6 +750,8 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     published_run = (publication.get("source_publication") or {}).get("overnight_run_id") or trader.get("books_run_id")
     if published_run != books.get("overnight_run_id"):
         raise _fail("trader_books_not_previous_accepted", str(published_run))
+    if trader.get("books_run_id") != books.get("books_run_id") or trader.get("books_as_of") != books.get("as_of"):
+        raise _fail("trader_books_dates_mismatch", f"{trader.get('books_run_id')} {trader.get('books_as_of')}")
     seats = trader.get("seats")
     if not isinstance(seats, list) or len(seats) != TRADER_SEAT_COUNT:
         raise _fail("trader_books_roster_incomplete")

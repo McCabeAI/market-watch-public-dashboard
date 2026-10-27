@@ -43,7 +43,13 @@ def research(**overrides):
         "overnight_run_id": "overnight-20261027",
         "frozen_at": "2026-10-27T05:32:12-04:00",
         "market_state": {"as_of": "2026-10-27T09:50:58Z"},
-        "books": {"overnight_run_id": "overnight-20261026", "as_of": "2026-10-26T08:55:26-04:00", "packet_sha256": PACKET_PREV},
+        "books": {
+            "overnight_run_id": "overnight-20261026",
+            "books_run_id": "overnight-20261026",
+            "as_of": "2026-10-26T07:37:10-04:00",
+            "accepted_at": "2026-10-26T08:55:26-04:00",
+            "packet_sha256": PACKET_PREV,
+        },
         "news": {"as_of": "2026-10-26T07:37:10-04:00", "current_session": False, "age_label": "21 h before this freeze"},
         "scores": {"inputs_last_ingested_at": "2026-10-26T11:37:10Z", "checked_at": "2026-10-27T09:32:12Z"},
         "quality": {"coverage": "PARTIAL", "blocked_expressions": ["macro:NZ"]},
@@ -224,6 +230,7 @@ class StampTests(unittest.TestCase):
         self.assertIn("market data snapshot 27 Oct 2026 05:50 ET", html)
         self.assertIn("PARTIAL coverage (macro:NZ)", html)
         self.assertIn("21 h before this freeze", html)
+        self.assertIn("(as of 26 Oct 2026 07:37 ET, accepted 26 Oct 2026 08:55 ET)", html)
         with self.assertRaises(ValueError):
             pr.stamp_html(html, research())
 

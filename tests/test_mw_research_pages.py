@@ -306,6 +306,7 @@ class SiteTests(FixtureCase):
         self.assertIn("evidence boundary 27 Oct 2026 05:32 ET", html)
         self.assertIn("market data snapshot 27 Oct 2026 05:50 ET", html)
         self.assertIn("Previous accepted books.", html)
+        self.assertIn("overnight-20261026</span> (as of 26 Oct 2026 07:37 ET, accepted 26 Oct 2026 08:55 ET)", html)
         self.assertIn("Previous accepted news.", html)
         self.assertIn("PARTIAL coverage (macro:NZ)", html)
         self.assertNotIn("Final edition", html)
@@ -366,6 +367,7 @@ class SiteTests(FixtureCase):
         restamped = [
             ("trader_books_presented_as_current", json_edit("trader-books.json", lambda t: t["publication"].__setitem__("trader_books_status", "fresh"))),
             ("trader_books_roster_incomplete", json_edit("trader-books.json", lambda t: t.__setitem__("seats", t["seats"][:13]))),
+            ("trader_books_dates_mismatch", json_edit("trader-books.json", lambda t: t.__setitem__("books_as_of", "2026-10-27T05:00:00-04:00"))),
             ("market_state_not_frozen_packet", json_edit("market-state.json", lambda m: m.__setitem__("generated_at", "2026-10-27T13:00:00Z"))),
             ("source_health_not_this_launch", json_edit("source-health.json", lambda h: h.__setitem__("launch_id", PREV_LAUNCH))),
             ("stale_news_labeled_current", html_edit("Last refreshed 26 Oct 2026 · 07:37 ET", "Last refreshed 26 Oct 2026 · 07:37 ET Last refreshed 27 Oct 2026 · 05:32 ET")),
