@@ -624,20 +624,5 @@ class CliTests(FixtureCase):
         code, payload = self.run_cli("guard", "--site-dir", str(site), "--now", NOW.isoformat(), env=self.ACTIONS_ENV)
         self.assertEqual((code, payload["kind"], payload["reason"]), (0, "skip", "final_phase_authorized"))
 
-    def test_gate_refuses_while_final_deploy_is_queued_or_running(self):
-        runs = self.root / "_runs.json"
-        rows = [
-            {"id": 1, "status": "completed", "event": "workflow_dispatch", "head_branch": "main"},
-            {"id": 2, "status": "in_progress", "event": "pull_request", "head_branch": "feature"},
-        ]
-        runs.write_text(json.dumps({"workflow_runs": rows}), encoding="utf-8")
-        self.assertEqual(self.run_cli("gate", "--runs-json", str(runs))[0], 0)
-        for status in ("queued", "in_progress", "waiting", "pending", "requested"):
-            with self.subTest(status=status):
-                runs.write_text(json.dumps({"workflow_runs": rows + [{"id": 3, "status": status, "event": "workflow_dispatch", "head_branch": "main"}]}), encoding="utf-8")
-                code, payload = self.run_cli("gate", "--runs-json", str(runs))
-                self.assertEqual((code, payload["reason"]), (0, "final_pages_deploy_active"))
-
-
 if __name__ == "__main__":
     unittest.main()

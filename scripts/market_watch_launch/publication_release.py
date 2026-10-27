@@ -3,7 +3,8 @@
 Two editions share one GitHub Pages site:
 
 ``research``
-    Published right after Stage 04 is verified and remotely attested. Market
+    Published inside ``launch-market-watch.yml`` after Stage 04 is verified and
+    remotely attested. Market
     data, scores, releases and sources come from the verified freeze. The
     trader/PM cycle for that launch has not been accepted yet, so the Trader
     Book shows explicitly dated previous accepted books.

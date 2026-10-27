@@ -210,6 +210,9 @@ def _publication_evidence_row(evidence: dict[str, Any]) -> dict[str, Any]:
     run_id = evidence.get("run_id")
     if run_id is not None and str(run_id).isdigit():
         row["run_id"] = str(run_id)
+    evidence_source = evidence.get("evidence_source")
+    if isinstance(evidence_source, str) and evidence_source:
+        row["evidence_source"] = evidence_source
     return row
 
 

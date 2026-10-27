@@ -91,8 +91,8 @@ on:
       - "tests/test_dashboard_repair.py"
       - "scripts/market_watch_launch/publication_release.py"
       - "tests/test_mw_publication_release.py"
-      - "scripts/market_watch_launch/publication_coordinator.py"
-      - "tests/test_mw_publication_coordinator.py"
+      - "scripts/market_watch_launch/pages_recovery.py"
+      - "scripts/market_watch_launch/pages.py"
       - "scripts/trader_room_public.py"
       - "scripts/pm/**"
       - "scripts/pm_layer.py"
@@ -129,11 +129,11 @@ permissions:
   id-token: write
 
 concurrency:
-  # Pull-request previews must not cancel a production workflow_dispatch deploy.
-  # Production dispatches still share one group so an older production run is
-  # cancelled instead of publishing over a newer one.
+  # Pull-request previews cancel each other. Production dispatches queue in
+  # pages-production (cancel-in-progress false) so a production dispatch can
+  # never cancel an in-progress research publish job that shares the group.
   group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production' || format('pages-preview-{0}', github.event.pull_request.number || github.ref) }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 jobs:
   build:
@@ -655,9 +655,8 @@ jobs:
       contents: read
       pages: write
       id-token: write
-      actions: read
     steps:
-      - name: Checkout publication coordinator
+      - name: Checkout publication verifier
         if: github.event_name == 'workflow_dispatch'
         uses: actions/checkout@v6
 
@@ -675,16 +674,8 @@ jobs:
           name: publication-release-${{ github.run_attempt }}
           path: ${{ runner.temp }}/publication
 
-      # Research deploy jobs are outside pages-production; the final waits for any
-      # in-flight research deploy so the final is the last writer, then rechecks
-      # order on fresh main before deploying.
-      - name: Wait for in-flight research deploy
-        if: github.event_name == 'workflow_dispatch'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PYTHONPATH: .
-        run: python3 -m scripts.market_watch_launch.publication_coordinator final-wait --repo "$GITHUB_REPOSITORY" --release "${RUNNER_TEMP}/publication/release.json"
-
+      # The whole production run holds pages-production, so this guard on fresh
+      # main sees every research receipt committed by an earlier holder.
       - name: Recheck publication order before deploy
         if: github.event_name == 'workflow_dispatch'
         env:
@@ -718,3 +709,39 @@ jobs:
           python3 -m scripts.market_watch_launch.publication_release verify-public \
             --release "${RUNNER_TEMP}/publication/release.json" \
             --page-url "$PAGE_URL"
+
+  reconcile:
+    name: Reconcile Stage 08 for this deploy
+    # GITHUB_TOKEN-dispatched runs do not start reconcile-published-pages.yml
+    # through workflow_run, so the launch-bound production run records its own
+    # Stage 08 once its deploy job (deploy + dataset read-back) succeeded.
+    needs: [build, deploy]
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.inputs.launch_id != '' &&
+      needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Record this run's successful deploy as Stage 08
+        env:
+          PYTHONPATH: .
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          LAUNCH_ID: ${{ github.event.inputs.launch_id }}
+        run: |
+          set -euo pipefail
+          run_json="${RUNNER_TEMP}/pages-run.json"
+          python3 -m scripts.market_watch_launch.pages_recovery in-run-evidence --deploy-result "$DEPLOY_RESULT" --out "$run_json"
+          RUN_ID="$GITHUB_RUN_ID" PAGES_RUN_JSON="$run_json" GH_REPO="$GITHUB_REPOSITORY" \
+            bash scripts/market_watch_launch/reconcile_published_pages.sh

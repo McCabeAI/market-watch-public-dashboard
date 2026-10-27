@@ -1,7 +1,8 @@
 """Research edition: publish the verified Stage 04 freeze before traders finish.
 
-The research edition is a complete dashboard built from the remotely attested
-Stage 04 freeze of the current live ACP launch:
+The research edition is built inside ``launch-market-watch.yml`` after the
+remote freeze attestation. It is a complete dashboard from the remotely
+attested Stage 04 freeze of the current live ACP launch:
 
 * market data from the frozen evidence packet (``market_state`` family);
 * scores and histories from the launch lineage bound by ``score_state_sha256``;
@@ -13,7 +14,9 @@ It never writes ``launch.json`` or ``index.json`` and never promotes canonical
 scores: the build runs in a throwaway overlay whose ``data/temperature_*``
 files are the staged lineage, so the source checkout is read-only. Its only
 durable write is a separate receipt, ``research_pages.json``, in the launch
-directory. Stage 08 and the one-live-launch guard are untouched.
+directory. A receipt row with ``public_state: matched`` is the research-ready
+milestone that lets Stage 05 write the delegation request and releases the
+data-collection lock (see ``milestones.py``). It still never writes Stage 08.
 
 Eligibility fails closed. Integrity problems (missing or mismatched remote
 attestation, hash drift, mutated packet, unreproducible staged scores,
@@ -972,7 +975,8 @@ def record_research_receipt(
     """Write the research publication receipt. Idempotent per deploy run id.
 
     Only ``research_pages.json`` is written. ``launch.json`` and the launch
-    index stay unchanged, so Stage 08 and the live-launch guard are unaffected.
+    index stay unchanged. A verified public read-back (``public_state:
+    matched``) is the research-ready milestone; Stage 08 is never written here.
     """
     launch_id = str(release.get("launch_id") or "")
     if release.get("phase") != PHASE_RESEARCH or release.get("channel") != CHANNEL_PRODUCTION:
@@ -1016,26 +1020,6 @@ def record_research_receipt(
     }
     path.write_text(canonical_json(receipt), encoding="utf-8")
     return path, True
-
-
-ACTIVE_RUN_STATUSES = frozenset({"queued", "in_progress", "waiting", "pending", "requested"})
-
-
-def production_pages_busy(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Production deploy-pages runs that are queued or running.
-
-    Early cost-saving skip before the research build only. Deploy ordering is
-    enforced by ``publication_coordinator`` immediately before deploy.
-    """
-    busy = []
-    for run in runs:
-        if not isinstance(run, dict):
-            continue
-        if run.get("event") != "workflow_dispatch" or run.get("head_branch") != "main":
-            continue
-        if str(run.get("status") or "") in ACTIVE_RUN_STATUSES:
-            busy.append({"id": run.get("id"), "status": run.get("status"), "html_url": run.get("html_url")})
-    return busy
 
 
 def receipt_allowlist(launch_id: str) -> tuple[str, ...]:
@@ -1098,9 +1082,6 @@ def main(argv: list[str] | None = None) -> int:
     guard_p.add_argument("--public-base-url", default="")
     guard_p.add_argument("--now", default="")
 
-    gate_p = sub.add_parser("gate", help="Refuse while a production deploy-pages run is queued or running")
-    gate_p.add_argument("--runs-json", type=Path, required=True)
-
     record_p = sub.add_parser("record", help="Write the research publication receipt")
     record_p.add_argument("--release", type=Path, required=True)
     record_p.add_argument("--run-id", required=True)
@@ -1162,17 +1143,6 @@ def main(argv: list[str] | None = None) -> int:
                 raise _skip(decision["reason"], json.dumps(decision.get("blocking"), sort_keys=True))
             print(canonical_json(decision), end="")
             _write_outputs({"deploy": "true"})
-            return 0
-        if args.command == "gate":
-            payload = _read_json(Path(args.runs_json))
-            runs = payload.get("workflow_runs") if isinstance(payload, dict) else payload
-            if not isinstance(runs, list):
-                raise _fail("gate_runs_unreadable")
-            busy = production_pages_busy(runs)
-            if busy:
-                raise _skip("final_pages_deploy_active", ",".join(str(row["id"]) for row in busy))
-            print(canonical_json({"gate": "open", "busy": []}), end="")
-            _write_outputs({"gate": "open"})
             return 0
         release = _read_json(Path(args.release))
         path, changed = record_research_receipt(

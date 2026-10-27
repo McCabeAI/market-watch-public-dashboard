@@ -17,13 +17,11 @@ import textwrap
 import unittest
 from pathlib import Path
 
-from scripts.market_watch_launch import publication_coordinator as coordinator
 from scripts.market_watch_launch import research_static_base as base
 
 REPO = Path(__file__).resolve().parents[1]
 WORKFLOWS = REPO / ".github" / "workflows"
 DEPLOY = (WORKFLOWS / "deploy-pages.yml").read_text(encoding="utf-8")
-RESEARCH_WF = (WORKFLOWS / "publish-research-pages.yml").read_text(encoding="utf-8")
 LAUNCH_WF = (WORKFLOWS / "launch-market-watch.yml").read_text(encoding="utf-8")
 RESEARCH_SRC = (REPO / "scripts" / "market_watch_launch" / "research_pages.py").read_text(encoding="utf-8")
 
@@ -34,7 +32,7 @@ EXEMPT_ENTRYPOINTS = {
     "scripts/temperature_level.py": "diagnostic --print-levels; research recomputes scores from the staged histories instead",
     "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",
     "scripts.market_watch_launch.publication_release": "final-edition stamp and guard; research stamps through research_pages",
-    "scripts.market_watch_launch.publication_coordinator": "production publication ordering; the research workflow calls it directly, not the renderer",
+    "scripts.market_watch_launch.pages_recovery": "final-edition Stage 08 in-run reconciliation",
 }
 
 
@@ -142,6 +140,8 @@ class EntrypointCoverageTests(unittest.TestCase):
                 self.assertIn(f'"{entry}"', RESEARCH_SRC, f"{entry} runs in deploy-pages but not in the research renderer")
         for exempt in EXEMPT_ENTRYPOINTS:
             self.assertIn(exempt, entrypoints, f"stale exemption {exempt}")
+            if exempt.startswith("scripts.market_watch_launch."):
+                self.assertIn(exempt, DEPLOY, f"exemption {exempt} must appear in deploy-pages.yml")
 
     def test_static_steps_ported_are_the_ones_in_deploy_pages(self):
         blocks = step_blocks(DEPLOY)
@@ -154,64 +154,78 @@ class EntrypointCoverageTests(unittest.TestCase):
             self.assertIn(name, blocks)
 
 
-class ResearchWorkflowWiringTests(unittest.TestCase):
-    def test_trigger_is_launch_completion_only(self):
-        triggers = re.search(r"^on:\n(.*?)^permissions:", RESEARCH_WF, flags=re.M | re.S).group(1)
-        active = "\n".join(line for line in triggers.splitlines() if not line.strip().startswith("#"))
-        self.assertIn("workflow_run:", active)
-        self.assertIn('workflows: ["Launch Market Watch"]', active)
-        for forbidden in ("workflow_dispatch", "schedule", "push:", "pull_request", "issues:", "repository_dispatch"):
-            self.assertNotIn(forbidden, active)
-        research_job = job_block(RESEARCH_WF, "research")
-        self.assertIn("github.event.workflow_run.head_branch == 'main'", research_job)
+class LaunchResearchWorkflowWiringTests(unittest.TestCase):
+    def test_removed_coordinator_and_research_workflow(self):
+        self.assertFalse((WORKFLOWS / "publish-research-pages.yml").is_file())
+        self.assertFalse((REPO / "scripts/market_watch_launch/publication_coordinator.py").is_file())
+        for wf_path in WORKFLOWS.glob("*.yml"):
+            text = wf_path.read_text(encoding="utf-8")
+            for forbidden in (
+                "publication_coordinator",
+                "final-wait",
+                "research-check",
+                "actions/workflows/deploy-pages.yml/runs",
+            ):
+                self.assertNotIn(forbidden, text, wf_path.name)
 
-    def test_research_deploy_is_outside_production_group_and_yields(self):
-        self.assertNotIn("pages-production", RESEARCH_WF)
-        deploy = job_block(RESEARCH_WF, "deploy")
-        self.assertNotIn("concurrency:", deploy)
-        wf_conc = re.search(r"^concurrency:\n(.*?)^jobs:", RESEARCH_WF, flags=re.M | re.S).group(1)
-        self.assertIn("group: market-watch-research-pages", wf_conc)
-        self.assertIn("cancel-in-progress: false", wf_conc)
-        order = step_order(deploy)
-        self.assertEqual(order[0], "Record deploy job start")
-        self.assertLess(order.index("Record deploy job start"), order.index("Checkout fresh main"))
-        guard_i = order.index("Recheck eligibility and publication order on fresh main")
-        yield_i = order.index("Yield to production Pages deploys")
-        deploy_i = order.index("Deploy to GitHub Pages")
-        self.assertLess(guard_i, yield_i)
-        self.assertEqual(yield_i + 1, deploy_i)
-        self.assertIn("steps.guard.outputs.deploy == 'true'", deploy)
-        self.assertIn("steps.claim.outputs.deploy == 'true'", deploy)
-        self.assertIn("actions: read", deploy)
-        self.assertIn("timeout-minutes: 12", deploy)
-        self.assertIn("timeout: 300000", deploy)
-        self.assertIn(f"name: {coordinator.RESEARCH_DEPLOY_JOB}", RESEARCH_WF)
-        self.assertIn(coordinator.RESEARCH_DEPLOY_STEP, deploy)
-        self.assertIn("ref: main", deploy)
-        self.assertIn("--allow-superseded", deploy)
-
-    def test_build_refuses_while_final_deploy_active(self):
-        research = job_block(RESEARCH_WF, "research")
+    def test_research_job_wiring(self):
+        research = job_block(LAUNCH_WF, "research")
+        self.assertIn("needs: [guard, orchestrate]", research)
+        self.assertIn("github.ref == 'refs/heads/main'", research)
+        self.assertIn("needs.guard.outputs.provider == 'acp'", research)
+        self.assertIn("needs.guard.outputs.mode == 'live'", research)
+        self.assertIn("group: pages-production", research)
+        self.assertIn("cancel-in-progress: false", research)
         order = step_order(research)
-        self.assertLess(order.index("Refuse while a final Pages deploy is queued or running"), order.index("Build and validate research edition"))
-        self.assertIn("research_pages gate", research)
-        self.assertIn("--channel production", research)
+        expected = [
+            "Checkout main",
+            "Set up Python",
+            "Install market-state dependencies",
+            "Select this launch's verified Stage 04 freeze",
+            "Build and validate research edition",
+            "Upload Pages artifact",
+            "Configure Pages",
+            "Recheck eligibility and publication order on fresh main",
+            "Deploy to GitHub Pages",
+            "Verify public page serves this research edition",
+            "Commit research publication receipt",
+            "Fail when the public read-back did not verify",
+        ]
+        self.assertEqual(order, expected)
+        guard_i = order.index("Recheck eligibility and publication order on fresh main")
+        deploy_i = order.index("Deploy to GitHub Pages")
+        self.assertEqual(guard_i + 1, deploy_i)
+        self.assertIn("steps.guard.outputs.deploy == 'true'", research)
+        verify = research[research.index("- name: Verify public page serves this research edition") :]
+        self.assertIn("continue-on-error: true", verify.split("- name: Commit", 1)[0])
+        self.assertNotIn("--allow-superseded", verify)
+        receipt = research[research.index("- name: Commit research publication receipt") :]
+        self.assertIn('receipt="data/market_watch_launches/${LAUNCH_ID}/research_pages.json"', receipt)
+        self.assertIn('git add -- "$receipt"', receipt)
+        self.assertNotIn("git add -A", receipt)
+        self.assertNotIn("git add data", receipt)
 
-    def test_record_job_commits_only_the_receipt(self):
-        record = job_block(RESEARCH_WF, "record")
-        self.assertIn("contents: write", record)
-        self.assertIn('receipt="data/market_watch_launches/${LAUNCH_ID}/research_pages.json"', record)
-        self.assertIn('git add -- "$receipt"', record)
-        self.assertIn("unexpected", record)
-        self.assertNotIn("git add -A", record)
-        self.assertNotIn("git add data", record)
-        for other_job in ("research", "deploy"):
-            self.assertNotIn("contents: write", job_block(RESEARCH_WF, other_job))
+    def test_handoff_job_and_orchestrate_no_longer_handoff(self):
+        handoff = job_block(LAUNCH_WF, "handoff")
+        self.assertIn("needs: [guard, orchestrate, research]", handoff)
+        self.assertIn("--name 05_acp_handoff", handoff)
+        orchestrate = job_block(LAUNCH_WF, "orchestrate")
+        self.assertNotIn("05_acp_handoff", orchestrate)
 
-    def test_research_workflow_has_no_model_or_launch_authority(self):
-        lowered = RESEARCH_WF.lower()
-        for forbidden in ("secrets.", "cursor", "acp_", "05_acp_handoff", "market_watch_launch.cli", "launch.json", "08_pages", "reconcile"):
+    def test_launch_workflow_has_no_polling_or_cross_workflow_hops(self):
+        lowered = LAUNCH_WF.lower()
+        self.assertNotIn("actions: read", LAUNCH_WF)
+        self.assertNotIn("schedule:", LAUNCH_WF)
+        self.assertNotIn("sleep 15", LAUNCH_WF)
+        self.assertNotIn("workflow_run:", LAUNCH_WF)
+        for forbidden in ("secrets.", "cursor", "06_acceptance", "07_finalize", "08_pages", "gh workflow run", "deploy-pages.yml"):
             self.assertNotIn(forbidden, lowered)
+
+    def test_launch_concurrency_routes_only_real_launches(self):
+        conc = re.search(r"^concurrency:\n(.*?)^jobs:", LAUNCH_WF, flags=re.M | re.S).group(1)
+        self.assertIn("market-watch-manual-launch", conc)
+        self.assertIn("[launch-market-watch]", conc)
+        self.assertIn("market-watch-launch-other", conc)
 
 
 class FinalWorkflowWiringTests(unittest.TestCase):
@@ -222,7 +236,7 @@ class FinalWorkflowWiringTests(unittest.TestCase):
             "validate_public_packet(packet)",
             "pages_dispatch bind-checkout",
             "pages_dispatch verify-public",
-            "cancel-in-progress: true",
+            "cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}",
             "group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production'",
         ):
             self.assertIn(needle, DEPLOY)
@@ -237,14 +251,13 @@ class FinalWorkflowWiringTests(unittest.TestCase):
         guard = build[build.index("- name: Refuse to publish over a newer edition") :]
         self.assertIn("if: github.event_name == 'workflow_dispatch'", guard.split("- name:", 2)[1])
 
-    def test_final_deploy_waits_for_research_then_rechecks_order(self):
+    def test_final_deploy_rechecks_order_without_coordinator(self):
         deploy = job_block(DEPLOY, "deploy")
         order = step_order(deploy)
         names = (
-            "Checkout publication coordinator",
+            "Checkout publication verifier",
             "Checkout fresh main for publication order",
             "Download publication release",
-            "Wait for in-flight research deploy",
             "Recheck publication order before deploy",
         )
         indices = [order.index(n) for n in names]
@@ -255,13 +268,29 @@ class FinalWorkflowWiringTests(unittest.TestCase):
         for name in names:
             block = deploy[deploy.index(f"- name: {name}") :]
             self.assertIn("if: github.event_name == 'workflow_dispatch'", block.split("- name:", 2)[1])
-        self.assertIn("actions: read", deploy)
+        self.assertNotIn("actions: read", deploy)
+        self.assertNotIn("publication_coordinator", deploy)
+        self.assertNotIn("Wait for in-flight research deploy", deploy)
         self.assertIn("--root _publication_main", deploy)
         self.assertIn("needs.build.outputs.pages_base_url", deploy)
         build = job_block(DEPLOY, "build")
         self.assertIn("pages_base_url: ${{ steps.pages.outputs.base_url }}", build)
-        self.assertTrue((WORKFLOWS / coordinator.DEPLOY_PAGES_WORKFLOW).is_file())
-        self.assertTrue((WORKFLOWS / coordinator.RESEARCH_WORKFLOW).is_file())
+        self.assertIn("if: github.event_name != 'pull_request'", deploy)
+
+    def test_reconcile_job_records_stage_08_in_run(self):
+        reconcile = job_block(DEPLOY, "reconcile")
+        self.assertIn("needs: [build, deploy]", reconcile)
+        for cond in (
+            "github.event_name == 'workflow_dispatch'",
+            "github.ref == 'refs/heads/main'",
+            "github.event.inputs.launch_id != ''",
+            "needs.deploy.result == 'success'",
+        ):
+            self.assertIn(cond, reconcile)
+        self.assertIn("contents: write", reconcile)
+        self.assertNotIn("concurrency:", reconcile)
+        self.assertIn("pages_recovery in-run-evidence", reconcile)
+        self.assertIn("reconcile_published_pages.sh", reconcile)
 
     def test_release_readback_does_not_gate_stage08(self):
         deploy = job_block(DEPLOY, "deploy")
@@ -275,7 +304,7 @@ class FinalWorkflowWiringTests(unittest.TestCase):
         self.assertNotIn("continue-on-error", verify)
 
     def test_launch_and_recovery_workflows_do_not_depend_on_research(self):
-        for name in ("launch-market-watch.yml", "launch-continuation.yml", "reconcile-published-pages.yml", "deploy-pages.yml"):
+        for name in ("launch-continuation.yml", "reconcile-published-pages.yml", "deploy-pages.yml"):
             text = (WORKFLOWS / name).read_text(encoding="utf-8")
             self.assertNotIn("Publish Market Watch Research Edition", text, name)
             self.assertNotIn("publish-research-pages", text, name)
@@ -287,8 +316,11 @@ class FinalWorkflowWiringTests(unittest.TestCase):
     def test_new_tests_run_in_launch_unit_suite(self):
         for module in (
             "tests.test_mw_publication_release",
-            "tests.test_mw_publication_coordinator",
+            "tests.test_mw_launch_milestones",
+            "tests.test_mw_two_trigger_contract",
             "tests.test_mw_research_pages",
+            "tests.test_mw_research_headlines",
+            "tests.test_mw_pages_in_run_reconcile",
             "tests.test_mw_research_parity",
         ):
             self.assertIn(module, LAUNCH_WF)
