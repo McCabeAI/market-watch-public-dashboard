@@ -4506,8 +4506,18 @@
     "08_pages": {
       "artifact": null,
       "details": {
-        "dispatch_confirmed": true,
-        "dispatch_receipt": {
+        "dry_run": false,
+        "executed": true,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20261026T113710Z-1e472b39",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": true,
+        "publication_evidence": {
+          "conclusion": "success",
           "event": "workflow_dispatch",
           "head_sha": "3b111e6542cc96464776ba603076708d093c68ad",
           "launch_id": "mwl-20261026T113710Z-1e472b39",
@@ -4516,32 +4526,21 @@
           "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/40326298839",
           "workflow": "deploy-pages.yml"
         },
-        "dispatched": true,
-        "dry_run": false,
-        "executed": false,
-        "plan": {
-          "event": "workflow_dispatch",
-          "launch_id": "mwl-20261026T113710Z-1e472b39",
-          "ref": "main",
-          "review_id": "review-001",
-          "workflow": "deploy-pages.yml"
-        },
-        "production_published": false,
-        "publication_state": "dispatch_confirmed"
+        "reconciled": true
       },
       "finished_at": null,
       "input_sha256": "331fe22a0831d63ef2b4b3797ecc13c7f11c6d2b4935411672a93640e700677c",
-      "output_sha256": null,
-      "reason": "pages_dispatch_requested",
+      "output_sha256": "21cb30871291419b7e0253ec1f1eaf369da771da1f8d6c8b47f4c5e056d5cd0a",
+      "reason": "pages_publication_reconciled",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     }
   },
   "starting_pm_books_sha256": "2c94744166ddae4a49367f6f943171e3d13ca396db6da92967798fd57a39295b",
   "starting_trader_books_sha256": "98897012f151db0d416c2c1f4c42d894030692c6559dcee89918c4e63efbd69e",
-  "status": "running",
+  "status": "succeeded",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }
