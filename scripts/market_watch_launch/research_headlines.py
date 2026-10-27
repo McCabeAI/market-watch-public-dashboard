@@ -478,15 +478,17 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
         f'class="mw-headlines" data-current-headlines="{_esc(status)}" data-headlines-panel="{_esc(panel)}" '
         f'data-headlines-as-of="{_esc(as_of)}" data-packet-sha256="{_esc(sha)}"'
     )
-    title = f"<b class=\"mw-headlines-title\">Current verified headlines (as of {_esc(title_as_of)})</b>"
     if status == STATUS_UNAVAILABLE:
         reason = _esc(headlines.get("reason") or "unknown")
+        title = '<b class="mw-headlines-title">Current verified headlines: unavailable</b>'
         body = (
             f"{title}"
             f'<p class="mw-headlines-empty">Current headlines unavailable: the frozen news collection failed verification '
             f"({reason}). Previous accepted analysis is from {_esc(prev_as_of)} ({prev_age}).</p>"
         )
         return f"<section {attrs}>{body}</section>"
+
+    title = f"<b class=\"mw-headlines-title\">Current verified headlines (as of {_esc(title_as_of)})</b>"
 
     sub = (
         f'<p class="mw-headlines-sub">Source-attributed headlines from the frozen Stage 04 news collection '

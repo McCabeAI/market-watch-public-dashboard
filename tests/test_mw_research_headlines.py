@@ -332,7 +332,10 @@ class RenderTests(unittest.TestCase):
             panel="front",
             limit=rh.FRONT_HEADLINES,
         )
+        self.assertIn("<b class=\"mw-headlines-title\">Current verified headlines: unavailable</b>", unavailable)
+        self.assertNotIn("as of time not recorded", unavailable)
         self.assertIn("failed verification", unavailable)
+        self.assertIn('data-current-headlines="unavailable"', unavailable)
         note = rh.render_previous_analysis_note(news)
         self.assertIn("Previous accepted analysis", note)
         self.assertIn("overnight-20261026", note)

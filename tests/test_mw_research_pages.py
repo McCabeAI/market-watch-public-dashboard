@@ -474,6 +474,9 @@ class DegradedHeadlinesTests(FixtureCase):
                 stamped = pr.stamp_html(html, release)
                 self.assertIn(f'data-current-headlines="{status}"', stamped)
                 self.assertIn("mw-headlines-empty", stamped)
+                if status == "unavailable":
+                    self.assertIn("<b class=\"mw-headlines-title\">Current verified headlines: unavailable</b>", stamped)
+                    self.assertNotIn("Current verified headlines (as of time not recorded)", stamped)
                 site = Path(tempfile.mkdtemp(prefix="mw-degraded-"))
                 self.addCleanup(shutil.rmtree, site, True)
                 (site / "index.html").write_text(stamped, encoding="utf-8")
