@@ -1,0 +1,53 @@
+{
+  "base_packet_sha256": "74b06c13f1215b6521678c764356cae8ae2788e19bad038dad0a79f7e35f2109",
+  "binding_relpath": "data/market_watch_launches/mwl-20261027T093212Z-9512d95d/freeze_binding.json",
+  "budget": {
+    "composer_cap": 2,
+    "current_graph": {
+      "composer_calls": 2,
+      "grok_family_calls": 18,
+      "nodes": {
+        "automated_pms": 3,
+        "learning_examiner": 1,
+        "parent": 1,
+        "synthesis": 1,
+        "traders": 14
+      },
+      "total_calls": 20,
+      "version": 1
+    },
+    "frozen_command": ".cursor/commands/overnight-scheduled.md",
+    "grok_cap": 18,
+    "launch_command": ".cursor/commands/manual-market-watch-review.md",
+    "launcher_id": "manual-market-watch-launch-v1",
+    "legacy_schedule_id_inactive": "market-watch-weekday-0205",
+    "parent_model": "grok-4.6",
+    "total_model_cap": 20
+  },
+  "dispatch_when": "freeze-succeeded",
+  "freeze_commit_sha": null,
+  "launch_id": "mwl-20261027T093212Z-9512d95d",
+  "origin": {
+    "actor": "kevinnmccabe-PC",
+    "actor_type": "User",
+    "issue_number": 254,
+    "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/254",
+    "repository_permission": "admin",
+    "source": "github_issue"
+  },
+  "overnight_run_id": "overnight-20261027",
+  "public_verification": {
+    "readable_without_secrets": true,
+    "ref": "main",
+    "repo": "McCabeAI/market-watch-public-dashboard"
+  },
+  "review_id": "review-001",
+  "score_state_sha256": "27c26cdec84e290b381d06926766acaeca64407f5c50279f9ced7eadd009698b",
+  "session_date": "2026-10-27",
+  "single_use": true,
+  "starting_pm_books_sha256": "b08fe0f7693c37e93c0f847aa82425e643fadf9f9440f2ae50053f0a7ee69057",
+  "starting_trader_books_sha256": "441967a79294e0daf73d7312b95daaa0f64c3534784a07faadbd6cfdc0b074ea",
+  "target_repo": "McCabeAI/market-watch-public-dashboard",
+  "type": "MW_ACP_ONE_SHOT_DELEGATION_REQUEST",
+  "version": 1
+}
