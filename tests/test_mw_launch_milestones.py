@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -45,6 +46,8 @@ from scripts.market_watch_launch.publication_release import (
 from scripts.market_watch_launch.research_pages import record_research_receipt
 from scripts.market_watch_launch.state import LaunchStateStore
 from scripts.overnight.store import write_json
+
+REPO = Path(__file__).resolve().parents[1]
 
 
 def _two_trigger_launch(launch_id: str, session_date: str = "2026-10-01") -> dict:
@@ -446,8 +449,8 @@ class CliTests(unittest.TestCase):
             ],
             capture_output=True,
             text=True,
-            cwd="/workspace",
-            env={**dict(__import__("os").environ), "PYTHONPATH": "/workspace"},
+            cwd=str(REPO),
+            env={**os.environ, "PYTHONPATH": str(REPO)},
         )
         self.assertEqual(allowed.returncode, 0)
         phase = subprocess.run(
@@ -463,8 +466,8 @@ class CliTests(unittest.TestCase):
             ],
             capture_output=True,
             text=True,
-            cwd="/workspace",
-            env={**dict(__import__("os").environ), "PYTHONPATH": "/workspace"},
+            cwd=str(REPO),
+            env={**os.environ, "PYTHONPATH": str(REPO)},
         )
         self.assertEqual(phase.returncode, 0)
         self.assertIn(PHASE_AWAITING_TRADER, phase.stdout)
