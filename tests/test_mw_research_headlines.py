@@ -12,7 +12,8 @@ from unittest import mock
 from scripts.market_watch_launch import research_headlines as rh
 from scripts.market_watch_launch.publication_release import format_et
 from scripts.overnight.accepted_news import effective_public_news_context
-from scripts.overnight.news_cluster import _stable_id
+from scripts.overnight.news_cluster import _same_event, _stable_id
+from scripts.overnight.news_relevance import score_transmission
 from scripts.overnight.news_sources import REUTERS_SURFACE
 from scripts.overnight.store import OvernightStore
 
@@ -67,14 +68,40 @@ def _load_fixture() -> tuple[dict, list]:
 
 
 def _select(family: dict, accepted=(), **kwargs):
-    return rh.select_current_headlines(
-        family,
-        frozen_at=FROZEN_AT,
-        previous_accepted_as_of=PREV_AS_OF,
-        previous_accepted_items=accepted,
-        packet_sha256=PACKET_SHA,
-        **kwargs,
-    )
+    params = {
+        "frozen_at": FROZEN_AT,
+        "previous_accepted_as_of": PREV_AS_OF,
+        "previous_accepted_items": list(accepted or ()),
+        "packet_sha256": PACKET_SHA,
+    }
+    params.update(kwargs)
+    return rh.select_current_headlines(family, **params)
+
+
+def _one_item_family(family: dict, item: dict) -> dict:
+    base = copy.deepcopy(family)
+    base["items"] = [copy.deepcopy(item)]
+    return base
+
+
+def _single_edge_item(template: dict, **edge_overrides) -> dict:
+    item = copy.deepcopy(template)
+    edge = copy.deepcopy(item["source_edges"][0])
+    headline = edge_overrides.pop("headline", None)
+    edge.update(edge_overrides)
+    if headline is not None:
+        item["headline"] = headline
+        edge["headline"] = headline
+    item["source_edges"] = [edge]
+    item["id"] = _stable_id(item["source_edges"])
+    return item
+
+
+def _chosen_fields(family: dict, template: dict, *, accepted=()) -> dict:
+    out = _select(_one_item_family(family, template), accepted)
+    if out.get("counts", {}).get("eligible") != 1 or not out.get("items"):
+        raise AssertionError(f"expected one eligible item, got {out}")
+    return out["items"][0]
 
 
 def _eligible_template(family: dict, accepted: list) -> dict:
@@ -110,108 +137,91 @@ class SyntheticRejectionTests(unittest.TestCase):
         cls.family, cls.accepted = _load_fixture()
         cls.template = _eligible_template(cls.family, cls.accepted)
 
-    def _one_item_family(self, item: dict) -> dict:
-        base = copy.deepcopy(self.family)
-        base["items"] = [item]
-        return base
-
     def test_edge_and_item_rejection_reasons(self):
-        def _single_edge_item(**edge_overrides):
-            item = copy.deepcopy(self.template)
-            edge = copy.deepcopy(item["source_edges"][0])
-            headline = edge_overrides.pop("headline", None)
-            edge.update(edge_overrides)
-            if headline is not None:
-                item["headline"] = headline
-                edge["headline"] = headline
-            item["source_edges"] = [edge]
-            item["id"] = _stable_id(item["source_edges"])
-            return item
+        template = self.template
 
-        out = _select(self._one_item_family(_single_edge_item(url="http://www.bloomberg.com/x")), self.accepted)
+        out = _select(_one_item_family(self.family, _single_edge_item(template, url="http://www.bloomberg.com/x")), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("unattributed"), 1)
 
         out = _select(
-            self._one_item_family(
-                _single_edge_item(source_name="CNBC", url="https://www.bloomberg.com/news/articles/x")
+            _one_item_family(
+                self.family,
+                _single_edge_item(template, source_name="CNBC", url="https://www.bloomberg.com/news/articles/x"),
             ),
             self.accepted,
         )
         self.assertEqual(out["counts"]["rejected"].get("unattributed"), 1)
 
-        out = _select(self._one_item_family(_single_edge_item(source_name="Unknown Publisher")), self.accepted)
+        out = _select(_one_item_family(self.family, _single_edge_item(template, source_name="Unknown Publisher")), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("unattributed"), 1)
 
         out = _select(
-            self._one_item_family(
+            _one_item_family(
+                self.family,
                 _single_edge_item(
+                    template,
                     source_name="Reuters",
                     url="https://www.reuters.com/world/research-headlines-test",
                     discovery_surface=REUTERS_SURFACE,
-                )
+                ),
             ),
             self.accepted,
         )
         self.assertEqual(out["counts"]["rejected"].get("rejected_source"), 1)
 
-        out = _select(self._one_item_family(_single_edge_item(discovery_surface=None)), self.accepted)
+        out = _select(_one_item_family(self.family, _single_edge_item(template, discovery_surface=None)), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("unverified_source"), 1)
 
         for published in (None, "", "2026-10-27T05:00:00"):
-            out = _select(self._one_item_family(_single_edge_item(published_at=published)), self.accepted)
+            out = _select(_one_item_family(self.family, _single_edge_item(template, published_at=published)), self.accepted)
             self.assertEqual(out["counts"]["rejected"].get("undated"), 1)
 
-        out = _select(self._one_item_family(_single_edge_item(published_at="2026-10-27T06:00:00-04:00")), self.accepted)
+        out = _select(_one_item_family(self.family, _single_edge_item(template, published_at="2026-10-27T06:00:00-04:00")), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("future_dated"), 1)
 
-        out = _select(self._one_item_family(_single_edge_item(published_at="2026-10-25T12:00:00-04:00")), self.accepted)
+        out = _select(_one_item_family(self.family, _single_edge_item(template, published_at="2026-10-25T12:00:00-04:00")), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("out_of_window"), 1)
 
         item = copy.deepcopy(self.template)
         item["verification_status"] = "unverified"
-        out = _select(self._one_item_family(item), self.accepted)
+        out = _select(_one_item_family(self.family, item), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("unverified"), 1)
 
-        low = _single_edge_item()
+        low = _single_edge_item(template)
         low["transmission"] = {**(low.get("transmission") or {}), "disposition": "suppress"}
-        out = _select(self._one_item_family(low), self.accepted)
+        out = _select(_one_item_family(self.family, low), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("low_relevance"), 1)
 
         item = copy.deepcopy(self.template)
         item["id"] = "news:deadbeefdeadbeef"
-        out = _select(self._one_item_family(item), self.accepted)
+        out = _select(_one_item_family(self.family, item), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("identity_mismatch"), 1)
 
         item = {"id": "news:bad", "headline": "x", "source_edges": []}
-        out = _select(self._one_item_family(item), self.accepted)
+        out = _select(_one_item_family(self.family, item), self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("malformed"), 1)
 
         a = copy.deepcopy(self.template)
         b = copy.deepcopy(self.template)
-        family = self._one_item_family(a)
+        family = _one_item_family(self.family, a)
         family["items"] = [a, b]
         out = _select(family, self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("duplicate"), 1)
 
         dup = _single_edge_item(
+            template,
             headline=self.template["headline"].upper(),
             url="https://www.cnbc.com/duplicate-test-headline",
         )
-        family = self._one_item_family(self.template)
+        family = _one_item_family(self.family, self.template)
         family["items"] = [self.template, dup]
         out = _select(family, self.accepted)
         self.assertEqual(out["counts"]["rejected"].get("duplicate"), 1)
 
-        if self.accepted:
-            item = copy.deepcopy(self.template)
-            out = _select(self._one_item_family(item), self.accepted)
-            if item["id"] in {row.get("id") for row in self.accepted}:
-                self.assertEqual(out["counts"]["rejected"].get("already_accepted"), 1)
-
         eligible = [
             copy.deepcopy(raw)
             for raw in self.family["items"]
-            if _select(self._one_item_family(raw), []).get("counts", {}).get("eligible") == 1
+            if _select(_one_item_family(self.family, raw), []).get("counts", {}).get("eligible") == 1
         ]
         self.assertGreaterEqual(len(eligible), 5)
         family = copy.deepcopy(self.family)
@@ -220,6 +230,90 @@ class SyntheticRejectionTests(unittest.TestCase):
             out = _select(family, [])
         self.assertEqual(len(out["items"]), 3)
         self.assertEqual(out["counts"]["rejected"].get("over_cap"), 2)
+
+
+class AlreadyAcceptedTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.family, _ = _load_fixture()
+        cls.template = _eligible_template(cls.family, [])
+
+    def _reject_already_accepted(self, accepted_row: dict) -> None:
+        out = _select(_one_item_family(self.family, copy.deepcopy(self.template)), [accepted_row])
+        self.assertEqual(out["counts"]["rejected"].get("already_accepted"), 1)
+        self.assertEqual(out["items"], [])
+
+    def test_already_accepted_by_url(self):
+        chosen_url = _chosen_fields(self.family, self.template, accepted=[])["url"]
+        self._reject_already_accepted({"url": chosen_url, "headline": "Unrelated accepted headline"})
+
+    def test_already_accepted_by_source_edge_url(self):
+        chosen_url = _chosen_fields(self.family, self.template, accepted=[])["url"]
+        self._reject_already_accepted({"source_edges": [{"url": chosen_url}]})
+
+    def test_already_accepted_by_same_event_headline(self):
+        chosen = _chosen_fields(self.family, self.template, accepted=[])
+        near_headline = chosen["headline"] + "."
+        self.assertTrue(_same_event(chosen["headline"], near_headline))
+        self.assertNotEqual(
+            chosen["url"],
+            "https://www.cnbc.com/accepted-near-duplicate-headline",
+        )
+        self._reject_already_accepted(
+            {
+                "headline": near_headline,
+                "url": "https://www.cnbc.com/accepted-near-duplicate-headline",
+            }
+        )
+
+
+class LowRelevanceRecomputeTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.family, _ = _load_fixture()
+        cls.template = _eligible_template(cls.family, [])
+
+    def test_low_relevance_when_recomputed_score_suppresses_frozen_show(self):
+        suppress_headline = "Random local sports game tonight"
+        scored = score_transmission(suppress_headline, "")
+        self.assertIn(scored["disposition"], ("suppress", "hold-for-review"))
+        item = _single_edge_item(self.template, headline=suppress_headline, url="https://www.cnbc.com/low-relevance-recompute")
+        item["transmission"] = {**(item.get("transmission") or {}), "disposition": "show"}
+        out = _select(_one_item_family(self.family, item), [])
+        self.assertEqual(out["counts"]["rejected"].get("low_relevance"), 1)
+        self.assertEqual(out["items"], [])
+
+
+class WindowSelectionTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.family, _ = _load_fixture()
+        cls.template = _eligible_template(cls.family, [])
+
+    def test_no_window_after_previous_acceptance_when_prior_meets_cutoff(self):
+        cutoff = self.family["acquisition"]["cutoff"]
+        for previous in (cutoff, "2026-10-27T06:00:00-04:00"):
+            with self.subTest(previous=previous):
+                out = _select(self.family, [], previous_accepted_as_of=previous)
+                self.assertEqual((out["status"], out["reason"]), ("empty", "no_window_after_previous_acceptance"))
+                self.assertEqual(out["items"], [])
+
+    def test_window_boundary_start_out_cutoff_in(self):
+        window = _select(self.family, [])["window"]
+        start = window["start"]
+        cutoff = window["end"]
+        at_start = _select(
+            _one_item_family(self.family, _single_edge_item(self.template, published_at=start)),
+            [],
+        )
+        self.assertEqual(at_start["counts"]["rejected"].get("out_of_window"), 1)
+        self.assertEqual(at_start["items"], [])
+        at_cutoff = _select(
+            _one_item_family(self.family, _single_edge_item(self.template, published_at=cutoff)),
+            [],
+        )
+        self.assertEqual(at_cutoff["counts"]["eligible"], 1)
+        self.assertEqual(len(at_cutoff["items"]), 1)
 
 
 class FamilyLevelTests(unittest.TestCase):
