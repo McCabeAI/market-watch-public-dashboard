@@ -72,6 +72,8 @@ ACCEPTED_GATE_COVERAGE = frozenset({"COMPLETE", "PARTIAL"})
 REQUIRED_NAV = ("p-front", "p-country", "p-marketdata", "p-traderbook", "p-releases", "p-sources")
 COUNTRY_CODES = ("us", "ca", "au", "nz", "ea", "jp")
 TRADER_SEAT_COUNT = 14
+RETIRED_NAV = ("p-feed", "p-relative", "p-traderroom")
+STALE_TAPE_VALUES = ("4.79%", "1.3790", "0.7210", "0.58755", "98.83", "$92.33", "$97.23")
 
 SKIP = "skip"
 FAIL = "fail"
@@ -655,7 +657,7 @@ def build_research_site(
 
 def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Path | None = None) -> dict[str, Any]:
     """Publication contract of a research edition. Raises ``ResearchRefusal``."""
-    from scripts.dashboard_repair.score_dates import format_ingestion_day
+    from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
     from scripts.market_state import MarketStateError, validate_snapshot
     from scripts.overnight.accepted_news import last_refreshed_label, parse_visible_last_refreshed
     from scripts.pm.public import validate_public_packet
@@ -695,7 +697,27 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     for forbidden in ("score freeze", "scores frozen", "scores are frozen"):
         if forbidden in lowered:
             raise _fail("forbidden_wording", forbidden)
-    ingested = (contract.get("scores") or {}).get("inputs_last_ingested_at")
+    for radio in RETIRED_NAV:
+        if f'for="{radio}"' in html or f'id="{radio}"' in html:
+            raise _fail("retired_navigation_present", radio)
+    start = html.find('data-global-tape="repair"')
+    end = html.find('data-score-overview="calibrated"', start)
+    if start < 0 or end < 0:
+        raise _fail("repaired_tape_missing")
+    for stale in STALE_TAPE_VALUES:
+        if stale in html[start:end]:
+            raise _fail("stale_tape_value", stale)
+    if "Live 1–100 Score Board" in html:
+        raise _fail("scoreboard_labeled_live")
+    if "date unavailable" not in html:
+        raise _fail("calendar_unknown_dates_not_unavailable")
+    if "Momentum Watch" in html:
+        raise _fail("static_momentum_watch_survived")
+    scores = contract.get("scores") or {}
+    anchor = scores.get("calibration_anchor_date")
+    if anchor and f"calibration anchor {format_calibration_anchor(anchor)}" not in html:
+        raise _fail("calibration_anchor_label_missing")
+    ingested = scores.get("inputs_last_ingested_at")
     if ingested and f"inputs last ingested {format_ingestion_day(ingested)}" not in html:
         raise _fail("score_ingestion_label_missing")
 
@@ -742,6 +764,18 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     health = _read_json(site / "source-health.json")
     if health.get("launch_id") != contract["launch_id"]:
         raise _fail("source_health_not_this_launch", str(health.get("launch_id")))
+    if not health.get("stage_checked_at"):
+        raise _fail("source_health_check_time_missing")
+    rows = health.get("rows") or []
+    counts = health.get("counts") or {}
+    buckets = ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")
+    if sum(int(counts.get(name) or 0) for name in buckets) != len(rows):
+        raise _fail("source_health_counts_mismatch")
+    if any(row.get("bucket") == "failure" and row.get("last_successful_check") for row in rows):
+        raise _fail("failed_source_given_success_time")
+    room = _read_json(site / "trader-room.json")
+    if room.get("available") is not True or room.get("seat_count") != TRADER_SEAT_COUNT:
+        raise _fail("trader_room_packet_incomplete")
     _ = root
     return release
 
