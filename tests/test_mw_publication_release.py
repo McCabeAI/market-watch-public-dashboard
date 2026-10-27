@@ -24,6 +24,7 @@ PACKET_PREV = "c" * 64
 SITE_HTML = """<!doctype html><html><head><style>body{}</style></head><body>
 <div class="app"><header class="topbar"><div class="brand">MW</div></header>
 <nav class="nav"><label for="p-front">Front</label></nav>
+<div class="news-alert market-alert"><p>alert</p></div>
 <section class="page news"><p>news</p></section>
 <section class="page traderbook"><div class="cd"><header class="cd-head">x</header></div></section>
 </div></body></html>
@@ -50,7 +51,33 @@ def research(**overrides):
             "accepted_at": "2026-10-26T08:55:26-04:00",
             "packet_sha256": PACKET_PREV,
         },
-        "news": {"as_of": "2026-10-26T07:37:10-04:00", "current_session": False, "age_label": "21 h before this freeze"},
+        "news": {
+            "as_of": "2026-10-26T07:37:10-04:00",
+            "overnight_run_id": "overnight-20261026",
+            "current_session": False,
+            "age_label": "21 h before this freeze",
+        },
+        "headlines": {
+            "status": "available",
+            "as_of": "2026-10-27T05:32:12-04:00",
+            "packet_sha256": PACKET_A,
+            "window": {
+                "start": "2026-10-26T07:37:10-04:00",
+                "end": "2026-10-27T05:32:12-04:00",
+                "basis": "previous_acceptance",
+            },
+            "items": [
+                {
+                    "id": "news:abc",
+                    "headline": "Sample headline",
+                    "source_name": "Bloomberg",
+                    "url": "https://www.bloomberg.com/news/sample",
+                    "published_at": "2026-10-27T04:00:00-04:00",
+                    "verification_status": "single_source",
+                    "channel": "global_risk",
+                }
+            ],
+        },
         "scores": {"inputs_last_ingested_at": "2026-10-26T11:37:10Z", "checked_at": "2026-10-27T09:32:12Z"},
         "quality": {"coverage": "PARTIAL", "blocked_expressions": ["macro:NZ"]},
         "trader_cycle": {"status": "pending"},
@@ -229,15 +256,30 @@ class StampTests(unittest.TestCase):
         self.assertIn("evidence boundary 27 Oct 2026 05:32 ET", html)
         self.assertIn("market data snapshot 27 Oct 2026 05:50 ET", html)
         self.assertIn("PARTIAL coverage (macro:NZ)", html)
-        self.assertIn("21 h before this freeze", html)
+        self.assertIn("Current verified headlines (as of 27 Oct 2026 05:32 ET)", html)
+        self.assertIn("Previous accepted analysis (as of 26 Oct 2026 07:37 ET)", html)
+        self.assertIn('data-headlines-panel="front"', html)
+        self.assertIn('data-headlines-panel="news"', html)
+        self.assertIn("mw-headlines", html)
         self.assertIn("(as of 26 Oct 2026 07:37 ET, accepted 26 Oct 2026 08:55 ET)", html)
         with self.assertRaises(ValueError):
             pr.stamp_html(html, research())
 
-    def test_current_session_news_has_no_age_note(self):
-        html = pr.stamp_html(SITE_HTML, research(news={"as_of": "2026-10-27T05:00:00-04:00", "current_session": True}))
-        self.assertNotIn('data-edition-note="news"', html)
-        self.assertIn("News: accepted digest as of 27 Oct 2026 05:00 ET.", html)
+    def test_current_session_news_still_shows_headlines_and_previous_analysis_note(self):
+        html = pr.stamp_html(
+            SITE_HTML,
+            research(
+                news={
+                    "as_of": "2026-10-27T05:00:00-04:00",
+                    "overnight_run_id": "overnight-20261027",
+                    "current_session": True,
+                    "age_label": "0 h before this freeze",
+                }
+            ),
+        )
+        self.assertIn('data-edition-note="news"', html)
+        self.assertIn("Previous accepted analysis (as of 27 Oct 2026 05:00 ET)", html)
+        self.assertIn("Current verified headlines", html)
 
     def test_final_banner_has_no_research_notes(self):
         html = pr.stamp_html(SITE_HTML, final())
@@ -245,6 +287,8 @@ class StampTests(unittest.TestCase):
         self.assertIn("Final edition · Tue 27 Oct 2026", html)
         self.assertNotIn("data-edition-note", html)
         self.assertNotIn("pending", html)
+        self.assertNotIn("Current verified headlines", html)
+        self.assertNotIn("mw-headlines", html)
 
     def test_banner_escapes_identity_text(self):
         html = pr.render_edition_banner(research(review_id='"><script>x</script>'))
@@ -255,6 +299,8 @@ class StampTests(unittest.TestCase):
             pr.stamp_html(SITE_HTML.replace('<header class="topbar">', "<header>"), research())
         with self.assertRaises(ValueError):
             pr.stamp_html(SITE_HTML.replace('<section class="page traderbook">', "<section>"), research())
+        with self.assertRaises(ValueError):
+            pr.stamp_html(SITE_HTML.replace('<div class="news-alert market-alert">', "<div>"), research())
 
     def test_research_site_marks_books_previous_cycle_and_digest_binds_files(self):
         with tempfile.TemporaryDirectory() as tmp:

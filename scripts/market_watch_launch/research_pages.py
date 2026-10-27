@@ -323,13 +323,17 @@ def _accepted_books(root: Path) -> dict[str, Any]:
     }
 
 
-def _accepted_news(root: Path, dataset: dict[str, Any], *, session_date: str, frozen_at: str) -> dict[str, Any]:
+def _accepted_news_context(root: Path, dataset: dict[str, Any]) -> dict[str, Any]:
     from scripts.overnight.accepted_news import effective_public_news_context
     from scripts.overnight.store import OvernightStore
 
     context = effective_public_news_context(OvernightStore(root=Path(root)), dataset)
     if context is None or not isinstance(context.get("as_of"), str):
         raise _fail("accepted_news_missing")
+    return context
+
+
+def _accepted_news(context: dict[str, Any], *, session_date: str, frozen_at: str) -> dict[str, Any]:
     as_of = parse_iso(context["as_of"])
     frozen = parse_iso(frozen_at)
     hours = max(0, int((frozen - as_of).total_seconds() // 3600))
@@ -434,7 +438,17 @@ def research_contract(
         raise _skip(superseded)
     if _already_published(root, launch):
         raise _skip("research_already_published")
-    news = _accepted_news(root, books["dataset"], session_date=session_date, frozen_at=frozen_at)
+    news_context = _accepted_news_context(root, books["dataset"])
+    news = _accepted_news(news_context, session_date=session_date, frozen_at=frozen_at)
+    from scripts.market_watch_launch.research_headlines import select_current_headlines
+
+    headlines = select_current_headlines(
+        packet["families"].get("news"),
+        frozen_at=frozen_at,
+        previous_accepted_as_of=news["as_of"],
+        previous_accepted_items=list(news_context.get("news") or []),
+        packet_sha256=str(freeze.get("packet_sha256")),
+    )
     market = packet["families"]["market_state"]
     return {
         "launch_id": launch["launch_id"],
@@ -453,6 +467,7 @@ def research_contract(
         "scores": scores,
         "books": {k: v for k, v in books.items() if k != "dataset"},
         "news": news,
+        "headlines": headlines,
         "market_state": {"as_of": market.get("as_of"), "generated_at": market["data"].get("generated_at"), "digest": market.get("digest")},
         "inputs": _input_receipts(root, launch, books),
     }
@@ -498,6 +513,7 @@ def build_research_release(contract: dict[str, Any], *, channel: str) -> dict[st
         "scores": contract["scores"],
         "books": contract["books"],
         "news": contract["news"],
+        "headlines": contract["headlines"],
         "market_state": contract["market_state"],
         "inputs": contract["inputs"],
     }
@@ -751,6 +767,146 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
         if 'data-edition-note="news"' not in html:
             raise _fail("news_age_note_missing")
 
+    from scripts.market_watch_launch.publication_release import _esc, format_et
+    from scripts.market_watch_launch.research_headlines import FRONT_HEADLINES
+
+    headlines = contract.get("headlines") or {}
+    release_headlines = release.get("headlines")
+    if release_headlines != headlines or release_headlines.get("packet_sha256") != contract.get("packet_sha256"):
+        raise _fail("release_headlines_mismatch")
+    prev_label = f"Previous accepted analysis (as of {format_et(news.get('as_of'))})"
+    if prev_label not in html:
+        raise _fail("previous_analysis_label_missing")
+
+    current_label = "Current verified headlines"
+    headlines_allowed_empty = "Previous accepted analysis is from"
+
+    def _section_spans(page: str, opener: str) -> list[tuple[int, int]]:
+        close = "</section>"
+        spans: list[tuple[int, int]] = []
+        start = 0
+        while True:
+            index = page.find(opener, start)
+            if index < 0:
+                break
+            end = page.find(close, index)
+            if end < 0:
+                break
+            spans.append((index, end + len(close)))
+            start = end + len(close)
+        return spans
+
+    def _research_banner_span(page: str) -> tuple[int, int] | None:
+        marker = 'data-publication-phase="research"'
+        pos = page.find(marker)
+        if pos < 0:
+            return None
+        start = page.rfind("<section", 0, pos)
+        if start < 0:
+            return None
+        end = page.find("</section>", pos)
+        if end < 0:
+            return None
+        return start, end + len("</section>")
+
+    def _in_span(offset: int, span: tuple[int, int]) -> bool:
+        return span[0] <= offset < span[1]
+
+    def _in_any_span(offset: int, spans: list[tuple[int, int]]) -> bool:
+        return any(_in_span(offset, span) for span in spans)
+
+    def _headline_section_blocks(page: str) -> list[str]:
+        return [page[lo:hi] for lo, hi in _section_spans(page, '<section class="mw-headlines"')]
+
+    headline_spans = _section_spans(html, '<section class="mw-headlines"')
+    sections = _headline_section_blocks(html)
+    front_sections = [block for block in sections if 'data-headlines-panel="front"' in block]
+    news_sections = [block for block in sections if 'data-headlines-panel="news"' in block]
+    if len(front_sections) != 1 or len(news_sections) != 1:
+        raise _fail("headlines_panel_missing")
+
+    h_status = str(headlines.get("status") or "")
+    h_as_of = headlines.get("as_of")
+    for block in (front_sections[0], news_sections[0]):
+        if f'data-current-headlines="{h_status}"' not in block:
+            raise _fail("headlines_panel_mismatch")
+        if f'data-headlines-as-of="{_esc(h_as_of)}"' not in block:
+            raise _fail("headlines_panel_mismatch")
+
+    items = list(headlines.get("items") or [])
+    news_block = news_sections[0]
+    front_block = front_sections[0]
+    li_count_news = news_block.count("<li data-headline-id=")
+    li_count_front = front_block.count("<li data-headline-id=")
+    if h_status == "available":
+        if li_count_news != len(items):
+            raise _fail("headlines_items_mismatch")
+        if li_count_front != min(len(items), FRONT_HEADLINES):
+            raise _fail("headlines_items_mismatch")
+        for row in items:
+            item_id = _esc(row.get("id"))
+            url = _esc(row.get("url"))
+            if f'data-headline-id="{item_id}"' not in news_block:
+                raise _fail("headlines_items_mismatch")
+            if url not in news_block:
+                raise _fail("headlines_items_mismatch")
+        front_limit = min(len(items), FRONT_HEADLINES)
+        expected_front_ids = [_esc(row.get("id")) for row in items[:front_limit]]
+        rendered_front_ids: list[str] = []
+        scan = 0
+        while True:
+            marker = '<li data-headline-id="'
+            index = front_block.find(marker, scan)
+            if index < 0:
+                break
+            start = index + len(marker)
+            end = front_block.find('"', start)
+            if end < 0:
+                raise _fail("headlines_items_mismatch")
+            rendered_front_ids.append(front_block[start:end])
+            scan = end + 1
+        if rendered_front_ids != expected_front_ids:
+            raise _fail("headlines_items_mismatch")
+    else:
+        if li_count_news or li_count_front:
+            raise _fail("headlines_empty_state_missing")
+        if "mw-headlines-empty" not in news_block or "mw-headlines-empty" not in front_block:
+            raise _fail("headlines_empty_state_missing")
+
+    banner_span = _research_banner_span(html)
+    if banner_span is None:
+        raise _fail("current_label_misapplied")
+    allowed_label_spans = [banner_span, *headline_spans]
+    label_positions: list[int] = []
+    cursor = 0
+    while True:
+        found = html.find(current_label, cursor)
+        if found < 0:
+            break
+        label_positions.append(found)
+        cursor = found + 1
+    if not label_positions or not all(_in_any_span(pos, allowed_label_spans) for pos in label_positions):
+        raise _fail("current_label_misapplied")
+    front_span = next((span for span, block in zip(headline_spans, sections) if 'data-headlines-panel="front"' in block), None)
+    news_span = next((span for span, block in zip(headline_spans, sections) if 'data-headlines-panel="news"' in block), None)
+    if front_span is None or news_span is None:
+        raise _fail("headlines_panel_missing")
+    front_slice = html[front_span[0] : front_span[1]]
+    news_slice = html[news_span[0] : news_span[1]]
+    if front_slice.count(current_label) != 1 or news_slice.count(current_label) != 1:
+        raise _fail("current_label_misapplied")
+
+    for span in headline_spans:
+        block = html[span[0] : span[1]]
+        scan = 0
+        while True:
+            found = block.find("Previous accepted analysis", scan)
+            if found < 0:
+                break
+            if not block[found:].startswith(headlines_allowed_empty):
+                raise _fail("previous_label_misapplied")
+            scan = found + 1
+
     trader = _read_json(site / "trader-books.json")
     edition = trader.get("edition") or {}
     publication = trader.get("publication") or {}
@@ -868,9 +1024,8 @@ ACTIVE_RUN_STATUSES = frozenset({"queued", "in_progress", "waiting", "pending", 
 def production_pages_busy(runs: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Production deploy-pages runs that are queued or running.
 
-    The research deploy job shares the ``pages-production`` concurrency group.
-    A newly queued entrant replaces a pending one, so research must not queue
-    while a final deploy is waiting for the group.
+    Early cost-saving skip before the research build only. Deploy ordering is
+    enforced by ``publication_coordinator`` immediately before deploy.
     """
     busy = []
     for run in runs:

@@ -116,6 +116,9 @@ class EligibilityTests(FixtureCase):
         self.assertFalse((self.root / "data/overnight/runs/overnight-20261027/assembled_dataset.json").exists())
         self.assertFalse(contract["news"]["current_session"])
         self.assertEqual(contract["news"]["age_label"], "21 h before this freeze")
+        self.assertEqual(contract["headlines"]["status"], "available")
+        self.assertEqual(len(contract["headlines"]["items"]), 6)
+        self.assertEqual(contract["headlines"]["packet_sha256"], PACKET)
         self.assertEqual(contract["quality"]["coverage"], "PARTIAL")
         self.assertEqual(contract["remote_freeze_commit"], self.read(LAUNCH_REL / "remote_freeze.json")["commit_sha"])
         receipts = {row["path"]: row["sha256"] for row in contract["inputs"]}
@@ -307,7 +310,12 @@ class SiteTests(FixtureCase):
         self.assertIn("market data snapshot 27 Oct 2026 05:50 ET", html)
         self.assertIn("Previous accepted books.", html)
         self.assertIn("overnight-20261026</span> (as of 26 Oct 2026 07:37 ET, accepted 26 Oct 2026 08:55 ET)", html)
-        self.assertIn("Previous accepted news.", html)
+        self.assertIn("Previous accepted analysis (as of 26 Oct 2026 07:37 ET)", html)
+        self.assertIn('data-headlines-panel="front"', html)
+        self.assertIn('data-headlines-panel="news"', html)
+        self.assertIn("Current verified headlines (as of 27 Oct 2026 05:32 ET)", html)
+        release = json.loads((self.site / pr.RELEASE_FILENAME).read_text())
+        self.assertEqual(release.get("headlines"), self.contract_["headlines"])
         self.assertIn("PARTIAL coverage (macro:NZ)", html)
         self.assertNotIn("Final edition", html)
         self.assertNotIn("Last refreshed 27 Oct 2026", html)
@@ -328,6 +336,29 @@ class SiteTests(FixtureCase):
         self.assertEqual(market["generated_at"], "2026-10-27T09:50:58Z")
         health = json.loads((self.site / "source-health.json").read_text())
         self.assertEqual(health["launch_id"], LAUNCH)
+
+    def _restamp_site_digest(self, site: Path) -> None:
+        release = json.loads((site / pr.RELEASE_FILENAME).read_text(encoding="utf-8"))
+        release["site_sha256"] = pr.site_digest(site)
+        (site / pr.RELEASE_FILENAME).write_text(pr.canonical_json(release), encoding="utf-8")
+
+    def test_headline_url_with_ampersand_passes_validation(self):
+        site = self.copy_site()
+        contract = json.loads(json.dumps(self.contract_))
+        items = list(contract["headlines"]["items"])
+        old_url = items[0]["url"]
+        new_url = "https://www.cnbc.com/2026/10/27/story?a=1&b=2"
+        items[0] = {**items[0], "url": new_url}
+        contract["headlines"]["items"] = items
+        path = site / "index.html"
+        text = path.read_text(encoding="utf-8")
+        text = text.replace(f'href="{pr._esc(old_url)}"', f'href="{pr._esc(new_url)}"')
+        path.write_text(text, encoding="utf-8")
+        release = json.loads((site / pr.RELEASE_FILENAME).read_text(encoding="utf-8"))
+        release["headlines"] = contract["headlines"]
+        (site / pr.RELEASE_FILENAME).write_text(pr.canonical_json(release), encoding="utf-8")
+        self._restamp_site_digest(site)
+        rp.validate_research_site(site, contract)
 
     def test_rebuild_is_byte_identical(self):
         second = self.site_root / "second"
@@ -374,15 +405,81 @@ class SiteTests(FixtureCase):
             ("news_age_note_missing", html_edit('data-edition-note="news"', 'data-x="news"')),
             ("trader_book_pending_note_missing", html_edit('data-edition-note="traderbook"', 'data-x="traderbook"')),
             ("forbidden_wording", html_edit("Previous accepted books.", "Previous accepted books. Scores frozen.")),
+            (
+                "headlines_items_mismatch",
+                html_edit('<li data-headline-id="news:3f5406490f809d1a">', '<li data-headline-id="news:removed">'),
+            ),
+            (
+                "current_label_misapplied",
+                html_edit(
+                    "<b>Previous accepted analysis (as of 26 Oct 2026 07:37 ET).</b>",
+                    "<b>Current verified headlines (as of 27 Oct 2026 05:32 ET).</b> "
+                    "<b>Previous accepted analysis (as of 26 Oct 2026 07:37 ET).</b>",
+                ),
+            ),
+            (
+                "previous_label_misapplied",
+                html_edit(
+                    "Headline, source, time and link only:",
+                    "Previous accepted analysis (as of 26 Oct 2026 07:37 ET). Headline, source, time and link only:",
+                ),
+            ),
         ]
         for reason, mutate in restamped:
             with self.subTest(reason=reason):
                 site = self.copy_site()
                 mutate(site)
-                release = json.loads((site / pr.RELEASE_FILENAME).read_text())
-                release["site_sha256"] = pr.site_digest(site)
-                (site / pr.RELEASE_FILENAME).write_text(pr.canonical_json(release), encoding="utf-8")
+                self._restamp_site_digest(site)
                 self.assertInvalid(site, reason)
+
+        site = self.copy_site()
+        html = (site / "index.html").read_text(encoding="utf-8")
+        front_anchor = 'data-headlines-panel="front"'
+        front_at = html.find(front_anchor)
+        sec_start = html.rfind('<section class="mw-headlines"', 0, front_at)
+        sec_end = html.find("</section>", front_at)
+        block = html[sec_start:sec_end]
+        right_id = self.contract_["headlines"]["items"][0]["id"]
+        wrong_id = self.contract_["headlines"]["items"][2]["id"]
+        new_block = block.replace(
+            f'data-headline-id="{pr._esc(right_id)}"',
+            f'data-headline-id="{pr._esc(wrong_id)}"',
+            1,
+        )
+        (site / "index.html").write_text(html[:sec_start] + new_block + html[sec_end:], encoding="utf-8")
+        self._restamp_site_digest(site)
+        self.assertInvalid(site, "headlines_items_mismatch")
+
+
+class DegradedHeadlinesTests(FixtureCase):
+    def test_empty_and_unavailable_headlines_render_and_validate(self):
+        contract = self.contract()
+        for status, reason, items in (
+            ("empty", "no_eligible_headlines", []),
+            ("unavailable", "news_family_not_fresh", []),
+        ):
+            with self.subTest(status=status):
+                patched = dict(contract)
+                headlines = dict(contract["headlines"])
+                headlines.update({"status": status, "reason": reason, "items": items})
+                if status == "unavailable":
+                    headlines.update({"as_of": None, "window": None, "acquisition": None})
+                patched["headlines"] = headlines
+                release = rp.build_research_release(patched, channel=pr.CHANNEL_LOCAL)
+                html = """<!doctype html><html><head><style></style></head><body>
+<header class="topbar"></header>
+<div class="news-alert market-alert"></div>
+<section class="page news"><p>n</p></section>
+<section class="page traderbook"><p>t</p></section></body></html>"""
+                stamped = pr.stamp_html(html, release)
+                self.assertIn(f'data-current-headlines="{status}"', stamped)
+                self.assertIn("mw-headlines-empty", stamped)
+                site = Path(tempfile.mkdtemp(prefix="mw-degraded-"))
+                self.addCleanup(shutil.rmtree, site, True)
+                (site / "index.html").write_text(stamped, encoding="utf-8")
+                for name in ("trader-books.json", "pm-books.json", "release.json", "market-state.json", "source-health.json", "trader-room.json"):
+                    (site / name).write_text("{}", encoding="utf-8")
+                self.assertIn("Previous accepted analysis", stamped)
 
 
 class OverlayTests(FixtureCase):

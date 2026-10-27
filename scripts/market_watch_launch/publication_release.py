@@ -312,14 +312,30 @@ def render_edition_banner(release: dict[str, Any]) -> str:
             f"{_esc(_books_dates(books))}). They are not today's positions."
         )
         news = release.get("news") or {}
-        if news.get("current_session"):
-            items.append(f"News: accepted digest as of {_esc(format_et(news.get('as_of')))}.")
+        headlines = release.get("headlines") or {}
+        h_status = headlines.get("status")
+        h_as_of = format_et(headlines.get("as_of") or release.get("frozen_at"))
+        if h_status == "available":
+            count = len(headlines.get("items") or [])
+            noun = "headline" if count == 1 else "headlines"
+            items.append(
+                f"Current verified headlines (as of {_esc(h_as_of)}): {count} source-attributed {noun} "
+                "from the frozen Stage 04 collection, listed on the Front Page and under News &amp; Research. "
+                "Not reviewed by traders."
+            )
+        elif h_status == "empty":
+            items.append(
+                f"Current verified headlines (as of {_esc(h_as_of)}): none passed verification for this window."
+            )
         else:
             items.append(
-                f"News: last accepted digest {_esc(format_et(news.get('as_of')))} "
-                f"(previous cycle, {_esc(news.get('age_label') or 'age not recorded')}). "
-                "Today's news is published with the final edition after acceptance."
+                "Current verified headlines: unavailable (frozen news collection failed verification)."
             )
+        items.append(
+            f"Previous accepted analysis (as of {_esc(format_et(news.get('as_of')))}, "
+            f"{_esc(news.get('age_label') or 'age not recorded')}): news digest, desk summary and research "
+            "from the last accepted cycle. Today's analysis is published with the final edition after acceptance."
+        )
         scores = release.get("scores") or {}
         items.append(
             "Scores: provisional Stage 04 state pending acceptance; inputs last ingested "
@@ -365,6 +381,13 @@ def _insert_after(html: str, anchor: str, block: str) -> str:
     return html[:index] + block + html[index:]
 
 
+def _insert_before(html: str, anchor: str, block: str) -> str:
+    if html.count(anchor) != 1:
+        raise ValueError(f"edition anchor {anchor!r} is missing or ambiguous")
+    index = html.index(anchor)
+    return html[:index] + block + html[index:]
+
+
 TOPBAR_OPEN = '<header class="topbar">'
 
 
@@ -384,9 +407,21 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
         raise ValueError("site already carries an edition banner")
     if "</style>" not in html:
         raise ValueError("edition CSS anchor missing")
-    out = html.replace("</style>", EDITION_CSS + "\n</style>", 1)
+    extra_css = EDITION_CSS
+    if release.get("phase") == PHASE_RESEARCH:
+        from scripts.market_watch_launch.research_headlines import HEADLINES_CSS
+
+        extra_css = EDITION_CSS + "\n" + HEADLINES_CSS
+    out = html.replace("</style>", extra_css + "\n</style>", 1)
     out = _insert_after_topbar(out, "\n" + render_edition_banner(release))
     if release.get("phase") == PHASE_RESEARCH:
+        from scripts.market_watch_launch.research_headlines import (
+            FRONT_HEADLINES,
+            MAX_HEADLINES,
+            render_headlines_panel,
+            render_previous_analysis_note,
+        )
+
         books = release.get("books") or {}
         session = format_session(release.get("session_date"))
         out = _insert_after(
@@ -401,17 +436,24 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
             ),
         )
         news = release.get("news") or {}
-        if not news.get("current_session"):
-            out = _insert_after(
-                out,
-                '<section class="page news">',
-                render_panel_note(
-                    f"<b>Previous accepted news.</b> Last accepted digest "
-                    f"{_esc(format_et(news.get('as_of')))} ({_esc(news.get('age_label') or 'age not recorded')}). "
-                    "Today's news is not yet accepted for publication.",
-                    "news",
-                ),
-            )
+        headlines = release.get("headlines") or {}
+        prev_note = render_previous_analysis_note(news)
+        out = _insert_before(
+            out,
+            '<div class="news-alert market-alert">',
+            "\n"
+            + render_headlines_panel(headlines, previous_news=news, panel="front", limit=FRONT_HEADLINES)
+            + "\n"
+            + render_panel_note(prev_note, "front-news"),
+        )
+        out = _insert_after(
+            out,
+            '<section class="page news">',
+            "\n"
+            + render_headlines_panel(headlines, previous_news=news, panel="news", limit=MAX_HEADLINES)
+            + "\n"
+            + render_panel_note(prev_note, "news"),
+        )
     return out
 
 
