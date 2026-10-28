@@ -1,0 +1,319 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-10-28T09:46:44+00:00",
+      "release_sha256": "03cd23e1ea3ae2f73c944867e45dd8846807877b5d3806f55bfa100d8fd7d807",
+      "run_attempt": "1",
+      "run_id": "40664210029",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/40664210029",
+      "site_sha256": "f79f31a65f2607ad767505be94d6b779924d57671d31db16de634d37607f2d39"
+    }
+  ],
+  "launch_id": "mwl-20261028T092641Z-4c970004",
+  "launch_terminal": false,
+  "packet_sha256": "6a902a94ff862bf4fa703d6b7d754f2656bd69617285d9560ec7e50fe540123b",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-10-27T06:51:19.199296-04:00",
+      "as_of": "2026-10-27T05:32:12.602790-04:00",
+      "books_run_id": "overnight-20261027",
+      "overnight_run_id": "overnight-20261027",
+      "packet_sha256": "74b06c13f1215b6521678c764356cae8ae2788e19bad038dad0a79f7e35f2109"
+    },
+    "channel": "production",
+    "frozen_at": "2026-10-28T05:26:41.395329-04:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 14,
+        "partial": true
+      },
+      "as_of": "2026-10-28T05:26:41.395329-04:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 3,
+          "unattributed": 6,
+          "unverified_source": 7
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields tick higher ahead of Federal Reserve interest rate decision",
+          "id": "news:ea21a88ce7de1a15",
+          "published_at": "2026-10-28T05:22:26-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/us-treasurys-bonds-yields-federal-reserve.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "AUD",
+            "iron_ore"
+          ],
+          "channel": "china_spillover",
+          "discovery_source": "bloomberg",
+          "headline": "China Refiners Tap African, Brazilian Oil as Freight Rates Fall",
+          "id": "news:dcec3189cabd8123",
+          "published_at": "2026-10-27T19:21:00-04:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-28/china-refiners-tap-african-brazilian-oil-as-freight-rates-fall",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "cnbc",
+          "headline": "AI debt fears ease ahead of Oracle, Alphabet and Amazon updates. Here's what to watch.",
+          "id": "news:53003c0ada4236d7",
+          "published_at": "2026-10-27T17:58:48-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/27/ai-debt-hyperscaler-earnings.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "How investors can position ahead of the Fed's next policy decision",
+          "id": "news:ca80a1d4a2bbbfd6",
+          "published_at": "2026-10-27T17:18:47-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/27/how-investors-can-position-ahead-of-into-the-feds-next-policy-decision.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "U.S. Treasury yields tick higher as Federal Reserve's monetary policy meeting gets underway",
+          "id": "news:d649fb2e9ffdcd5a",
+          "published_at": "2026-10-27T16:03:59-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/27/treasury-yields-federal-reserve-monetary-policy-meeting.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "NZD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "reuters_credit",
+          "headline": "Morning Bid: RBNZ throws markets a curveball",
+          "id": "news:d51bd6120c221125",
+          "published_at": "2026-10-27T13:00:00-04:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/world/china/global-markets-view-europe-2026-10-28/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Fed expected to hold rates steady, but Warsh may point way to more hikes",
+          "id": "news:71abfe50462f18bf",
+          "published_at": "2026-10-27T11:52:26-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/27/federal-reserve-rates-kevin-warsh.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Fed rate hikes are coming, but not this week: CNBC survey",
+          "id": "news:95e1b2806be421ce",
+          "published_at": "2026-10-27T11:51:00-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/27/federal-reserve-rate-hike-timing-expectations.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-10-28T05:26:41.395329-04:00",
+      "news_family_digest": "2012ca782c5d41941bb6664c84b1e86027f531ed90d01ead1f28abf8baa073ff",
+      "packet_sha256": "6a902a94ff862bf4fa703d6b7d754f2656bd69617285d9560ec7e50fe540123b",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-10-28T05:26:41.395329-04:00",
+        "start": "2026-10-27T05:32:12.602790-04:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/freeze_binding.json",
+        "sha256": "44e6df87276971a2d2fb31696dc104e15bc0dfc687ced25627994c162af1b816"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/remote_freeze.json",
+        "sha256": "987c5c6c979c9ce6c0337c225f651ea65d49e349b443d2e88e3c133e0615f3a0"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/artifacts/00_authenticate.json",
+        "sha256": "a9ef6df26030641555afc8a7b19b230924cc626d04ec5d5dba2b7f9324456ba9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/artifacts/01_ingest.json",
+        "sha256": "7c77973cdf3c9b48dbf2f902cb5d3bb3a187c6cc50b8205a22cac795cc9b49d3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/artifacts/02_acquire.json",
+        "sha256": "3fbe78e0b09141db319e62030ad6270f3cd047611c6006a449452b02f0eedc24"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/artifacts/03_quality_gate.json",
+        "sha256": "2860b56a62aa05bb0b9488f03eeed6ebc5db19e548378d2bda43b5e7a8f56dfd"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/artifacts/04_freeze.json",
+        "sha256": "24a2feeb7461355593fb9e752cd77994ad5038dccb105b0079fcb1789271133d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/temperature_scores.json",
+        "sha256": "27850ed39984ff7d7c20aad4d1932a7344125a0884e29e816e9edc3ae4983e5a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/history/ca.json",
+        "sha256": "4dd526db088a2f51d106379a59421322d00b12d875154b4c3f2b5283734aaa3a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/history/ea.json",
+        "sha256": "62d2a974c6d24ff80ea99bafc9d52c1dfaef0b717b0ed6efdaaa2a6c97c17961"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/history/jp.json",
+        "sha256": "04b796e1092892f8d07f7768a9bd97269bdfe26e26f084dbe5cc2cb40a81c490"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/history/nz.json",
+        "sha256": "21bea1e5ec9c56c9bec1038363f6ec43e718126cd6d2fd854889e0fe2d088932"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261028T092641Z-4c970004/lineage/history/us.json",
+        "sha256": "d310dd98d37a99f804895c4f5eedf930cf61d6da5b971dfecbbcdaee2a3d5c92"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261028/reviews/review-001/evidence_snapshot.json",
+        "sha256": "183bd496cfd3459c9507fd31016a587c81ad43175835e46610e35479b4173dd9"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "86d658377dc690b4b76b3bef8ffeee4568e63c6b02728a52e51b733e3024cf16"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261027/assembled_dataset.json",
+        "sha256": "6cb1133717e4e0ee023a65d13887d91cd9045911c7e69a775b2b34ba10891a5d"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "b59a3aea8a37b60123aa36a3395edd63b10eb9a5856e2455963e4a0a917a3437"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "dbcdb224c019ee3cf63c8cafdab990690758254b5b0122d576ba213e06a0371d"
+      }
+    ],
+    "launch_id": "mwl-20261028T092641Z-4c970004",
+    "market_state": {
+      "as_of": "2026-10-28T09:45:19Z",
+      "digest": "d306dc42d18353a1d1a1eb78150f17ade595210e41cffe9debe60745a64adce6",
+      "generated_at": "2026-10-28T09:45:19Z"
+    },
+    "news": {
+      "age_label": "23 h before this freeze",
+      "as_of": "2026-10-27T05:32:12.602790-04:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261027",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261028",
+    "packet_sha256": "6a902a94ff862bf4fa703d6b7d754f2656bd69617285d9560ec7e50fe540123b",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [
+        "macro:NZ"
+      ],
+      "blocked_sources": [
+        "NZ.Inflation.headline",
+        "NZ.Inflation.underlying"
+      ],
+      "coverage": "PARTIAL",
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Activity.gdp_domestic_demand",
+        "NZ.Consumer.income",
+        "NZ.Consumer.retail",
+        "NZ.Consumer.spending",
+        "NZ.Labor.wages"
+      ],
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "EA",
+        "JP"
+      ]
+    },
+    "remote_freeze_commit": "41dd64225323794e7049de46e608d045114be5a9",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 2,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-10-28T09:26:41Z",
+      "inputs_last_ingested_at": "2026-10-28T09:26:41Z",
+      "score_state_sha256": "27850ed39984ff7d7c20aad4d1932a7344125a0884e29e816e9edc3ae4983e5a"
+    },
+    "session_date": "2026-10-28",
+    "site_sha256": "f79f31a65f2607ad767505be94d6b779924d57671d31db16de634d37607f2d39",
+    "source_commit": "652098d72b76731c10a2843e1e2f094713454322",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261028",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "03cd23e1ea3ae2f73c944867e45dd8846807877b5d3806f55bfa100d8fd7d807",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-10-28",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
