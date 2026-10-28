@@ -386,7 +386,7 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIn("How many jobs were added or lost", html)
         self.assertIn("Employment fell 15.80k in Jul 2026, after +80.20k.", visible)
         self.assertIn("Reversal: a decline after 2 straight months of increases.", visible)
-        self.assertIn("Release date not recorded", visible)
+        self.assertIn("no recorded release date", visible)
         self.assertNotIn("Comparable history is too short", visible)
         self.assertNotIn("The latest move sped up", visible)
         self.assertIn("mom_change_thousands_sa", html)

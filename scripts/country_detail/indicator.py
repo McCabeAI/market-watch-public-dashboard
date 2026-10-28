@@ -7,6 +7,7 @@ stored score state; nothing here rescores or changes attention.
 from __future__ import annotations
 
 import calendar
+import math
 import re
 from datetime import date, timedelta
 from typing import Any, Mapping, Sequence
@@ -33,8 +34,13 @@ _MONTHS = "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
 # carried over from an earlier row, so it is not shown as the release date.
 MAX_FIRST_RELEASE_LAG_DAYS = 120
 
-HISTORY_POINTS = {"monthly": 12, "quarterly": 8}
-DEFAULT_HISTORY_POINTS = 12
+# Monthly cards show the latest 12 to 24 months. Quarterly cards show 8 quarters.
+MONTHLY_HISTORY_MIN = 12
+MONTHLY_HISTORY_MAX = 24
+QUARTERLY_HISTORY_POINTS = 8
+HISTORY_POINTS = {"monthly": MONTHLY_HISTORY_MAX, "quarterly": QUARTERLY_HISTORY_POINTS}
+DEFAULT_HISTORY_POINTS = MONTHLY_HISTORY_MIN
+NO_RECORDED_RELEASE_DATE = "no recorded release date"
 
 _PMI_TOKENS = ("pmi", "ism", "purchasing", "ivey", "composite", "business survey")
 _SURVEY_INDEX_TOKENS = ("confidence", "sentiment")
@@ -102,6 +108,36 @@ def parse_day(value: Any) -> date | None:
 
 def day_label(day: date) -> str:
     return f"{day.day} {_MONTHS[day.month - 1]} {day.year}"
+
+
+def ingestion_day(value: Any) -> str | None:
+    """Calendar day of an ingestion timestamp, or None when it is not a date."""
+    day = parse_day(value)
+    return day.isoformat() if day else None
+
+
+def _history_cap(cadence: str) -> int:
+    if cadence == "quarterly":
+        return QUARTERLY_HISTORY_POINTS
+    if cadence == "monthly":
+        return MONTHLY_HISTORY_MAX
+    return DEFAULT_HISTORY_POINTS
+
+
+def _history_floor(cadence: str) -> int:
+    if cadence == "quarterly":
+        return QUARTERLY_HISTORY_POINTS
+    if cadence == "monthly":
+        return MONTHLY_HISTORY_MIN
+    return DEFAULT_HISTORY_POINTS
+
+
+def _finite(value: Any) -> bool:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return False
+    return math.isfinite(number)
 
 
 def credible_release_dates(points: Sequence[Mapping[str, Any]]) -> dict[str, date]:
@@ -191,12 +227,12 @@ def _subject(obs: Mapping[str, Any], kind: str) -> str:
 
 def _series_points(obs: Mapping[str, Any]) -> list[dict[str, Any]]:
     """Committed history of the card's own source series, oldest first."""
-    points = [dict(p) for p in (obs.get("history") or []) if isinstance(p, Mapping) and p.get("value") is not None]
+    points = [dict(p) for p in (obs.get("history") or []) if isinstance(p, Mapping) and _finite(p.get("value"))]
     series = str(obs.get("series_id") or "")
     if any(p.get("series_id") for p in points):
         points = [p for p in points if not p.get("series_id") or p.get("series_id") == series]
     latest_period = str(obs.get("reference_period") or "")
-    if obs.get("value") is not None and latest_period:
+    if _finite(obs.get("value")) and latest_period:
         for point in points:
             if point.get("reference_period") == latest_period:
                 point["value"] = obs["value"]
@@ -224,24 +260,38 @@ def indicator_view(obs: Mapping[str, Any]) -> dict[str, Any]:
     cadence = str(obs.get("cadence") or _cadence_of(period))
     points = _series_points(obs)
     released = credible_release_dates(points)
-    want = HISTORY_POINTS.get(cadence, DEFAULT_HISTORY_POINTS)
-    chart_points = points[-want:]
+    cap = _history_cap(cadence)
+    floor = _history_floor(cadence)
+    chart_points = points[-cap:]
+    obs_ingest = ingestion_day(obs.get("retrieved_at"))
 
-    prints: list[dict[str, Any]] = []
-    for point in reversed(points[-3:]):
+    def _dated(point: Mapping[str, Any]) -> dict[str, Any]:
         p_period = str(point.get("reference_period") or "")
         day = released.get(p_period)
+        ingest = ingestion_day(point.get("retrieved_at"))
+        if ingest is None and p_period == period:
+            # The observation stamp is the ingestion of the latest print only.
+            ingest = obs_ingest
+        release_text = day_label(day) if day else NO_RECORDED_RELEASE_DATE
         first = point.get("revised_from")
-        prints.append(
-            {
-                "period": p_period,
-                "period_label": period_label(p_period),
-                "value": float(point["value"]),
-                "value_text": value_text(point["value"], obs, kind),
-                "released": day_label(day) if day else "",
-                "revised_from_text": value_text(first, obs, kind) if first is not None else "",
-            }
-        )
+        return {
+            "reference_period": p_period,
+            "period": p_period,
+            "period_label": period_label(p_period),
+            "value": float(point["value"]),
+            "value_text": value_text(point["value"], obs, kind),
+            "release_date": day.isoformat() if day else None,
+            "release_text": release_text,
+            "released": day_label(day) if day else "",
+            "ingestion_date": ingest,
+            "revised_from_text": value_text(first, obs, kind) if first is not None else "",
+        }
+
+    dated_history = [_dated(point) for point in chart_points]
+    for point, dated in zip(chart_points, dated_history):
+        point["ingestion_date"] = dated["ingestion_date"]
+        point["release_status_text"] = dated["release_text"]
+    prints: list[dict[str, Any]] = [_dated(point) for point in reversed(points[-3:])]
 
     latest = prints[0] if prints and prints[0]["period"] == period else None
     previous = prints[1] if latest and len(prints) > 1 else None
@@ -253,13 +303,13 @@ def indicator_view(obs: Mapping[str, Any]) -> dict[str, Any]:
     limitations: list[str] = []
     if not release_day:
         limitations.append(
-            "The official release date is not recorded for this print; the source link has the publisher's calendar."
+            f"{NO_RECORDED_RELEASE_DATE}. The source link has the publisher's calendar."
         )
-    if len(points) < want:
+    if len(points) < floor:
         limitations.append(
             f"Only {len(points)} {_unit_word(cadence, len(points))} of this series "
             f"{'is' if len(points) == 1 else 'are'} committed; "
-            f"the chart would normally show {want}."
+            f"the chart would normally show {floor}."
         )
 
     companions = [str(s) for s in obs.get("companion_series") or []]
@@ -282,9 +332,12 @@ def indicator_view(obs: Mapping[str, Any]) -> dict[str, Any]:
         "cadence": cadence,
         "value_text": value_text(obs.get("value"), obs, kind),
         "release_day": release_day,
-        "release_text": f"Released {day_label(release_day)}" if release_day else "Release date not recorded",
+        "release_date": release_day.isoformat() if release_day else None,
+        "ingestion_date": obs_ingest,
+        "release_text": f"Released {day_label(release_day)}" if release_day else NO_RECORDED_RELEASE_DATE,
         "revision": revision,
         "prints": prints,
+        "dated_history": dated_history,
         "latest": latest,
         "previous": previous,
         "delta_text": delta,
@@ -454,6 +507,33 @@ def rationale(finding: Mapping[str, Any], obs: Mapping[str, Any]) -> str:
     return str(finding.get("badge_text") or "Selected by the attention rules.")
 
 
+def score_class(
+    obs: Mapping[str, Any],
+    country_code: str,
+    score_state: Mapping[str, Any],
+) -> str:
+    """``scored`` only when this observation is a positive-weight score input.
+
+    A catalog role of scored is not enough: companion transforms and unobserved
+    components stay context, matching the weight the stored score actually uses.
+    """
+    if not obs.get("score_input"):
+        return "context"
+    located = _component_state(obs, country_code, score_state)
+    if located is None:
+        return "context"
+    _dimension, _spec, state = located
+    if not state.get("observed"):
+        return "context"
+    try:
+        weight = float(state.get("weight") or 0.0)
+    except (TypeError, ValueError):
+        return "context"
+    if weight <= 0:
+        return "context"
+    return "scored"
+
+
 def score_usage(
     obs: Mapping[str, Any],
     country_code: str,
@@ -492,7 +572,7 @@ def score_usage(
         "scored_series": scored_series,
         "same_as_latest": same_value and as_of == view["period"] and not other_series,
         "behind_latest": bool(as_of) and period_key(as_of) < period_key(view["period"]),
-        "released_text": f"released {day_label(released)}" if released else "release date not recorded",
+        "released_text": f"released {day_label(released)}" if released else NO_RECORDED_RELEASE_DATE,
         "contribution": contribution,
     }
 

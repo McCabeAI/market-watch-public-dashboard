@@ -5,6 +5,7 @@ import unittest
 from datetime import date
 
 from scripts.country_detail.indicator import (
+    NO_RECORDED_RELEASE_DATE,
     contribution_sum_text,
     credible_release_dates,
     describe_window,
@@ -12,6 +13,7 @@ from scripts.country_detail.indicator import (
     indicator_view,
     measure_kind,
     rationale,
+    score_class,
     score_usage,
 )
 from scripts.country_detail.render import render_country_detail
@@ -131,9 +133,12 @@ class MeasureAndHeadlineTest(unittest.TestCase):
 
 
 class ViewModelTest(unittest.TestCase):
-    def test_chart_keeps_twelve_months_and_eight_quarters(self) -> None:
+    def test_chart_keeps_twelve_to_twenty_four_months_and_eight_quarters(self) -> None:
         monthly = _retail([float(i % 5) / 10 for i in range(20)])
-        self.assertEqual(len(indicator_view(monthly)["chart_points"]), 12)
+        self.assertEqual(len(indicator_view(monthly)["chart_points"]), 20)
+        longer = _retail([float(i % 5) / 10 for i in range(30)])
+        self.assertEqual(len(indicator_view(longer)["chart_points"]), 24)
+        self.assertEqual(len(indicator_view(longer)["dated_history"]), 24)
         quarters = [{"reference_period": f"{2022 + i // 4}-Q{i % 4 + 1}", "value": 0.1 * i} for i in range(12)]
         quarterly = {
             "label": "Real GDP, quarterly percent change",
@@ -156,12 +161,28 @@ class ViewModelTest(unittest.TestCase):
         self.assertTrue(any("1 other series is stored" in text for text in view["limitations"]))
 
     def test_missing_release_date_is_said_plainly(self) -> None:
-        view = indicator_view(_retail([0.1, 0.2, 0.3]))
-        self.assertEqual(view["release_text"], "Release date not recorded")
         history = _monthly_history([0.1, 0.2, 0.3])
+        history[0]["retrieved_at"] = "2025-02-20T12:00:00Z"
+        history[-1]["retrieved_at"] = "2025-04-18T12:00:00Z"
+        obs = _retail([0.1, 0.2, 0.3], history=history, retrieved_at="2026-10-28T09:26:41Z")
+        view = indicator_view(obs)
+        self.assertEqual(view["release_text"], NO_RECORDED_RELEASE_DATE)
+        self.assertIsNone(view["release_date"])
+        self.assertEqual(view["ingestion_date"], "2026-10-28")
+        self.assertEqual(view["period"], "2025-03")
+        self.assertNotIn(view["ingestion_date"], view["release_text"])
+        latest, _middle, oldest = view["prints"]
+        self.assertEqual([p["period"] for p in view["prints"]], ["2025-03", "2025-02", "2025-01"])
+        self.assertEqual(latest["release_text"], NO_RECORDED_RELEASE_DATE)
+        self.assertEqual(latest["ingestion_date"], "2025-04-18")
+        self.assertEqual(oldest["ingestion_date"], "2025-02-20")
+        self.assertNotEqual(oldest["ingestion_date"], view["ingestion_date"])
+        self.assertTrue(all(p["release_text"] == NO_RECORDED_RELEASE_DATE for p in view["dated_history"]))
         history[-1]["release_date"] = "2025-05-21"
-        dated = indicator_view(_retail([0.1, 0.2, 0.3], history=history))
+        dated = indicator_view(_retail([0.1, 0.2, 0.3], history=history, retrieved_at="2026-10-28T09:26:41Z"))
         self.assertEqual(dated["release_text"], "Released 21 May 2025")
+        self.assertEqual(dated["release_date"], "2025-05-21")
+        self.assertNotEqual(dated["release_date"], dated["ingestion_date"])
 
 
 class ScoreExplanationTest(unittest.TestCase):
@@ -274,7 +295,7 @@ class CardFaceTest(unittest.TestCase):
         for code in (OID, "v1446859483", "mom_pct", "insufficient_history", "CA.Consumer.retail_sales"):
             self.assertNotIn(code, text)
         self.assertIn("Mar 2025", face)
-        self.assertIn("Release date not recorded", face)
+        self.assertIn(NO_RECORDED_RELEASE_DATE, face)
         self.assertIn("+0.60%", face)
         self.assertIn('class="ind-prints"', face)
         self.assertIn("Feeds the", face)
@@ -298,6 +319,102 @@ class CardFaceTest(unittest.TestCase):
             self.assertNotIn(code, summary)
         self.assertIn("+0.60%", summary)
         self.assertIn("Mar 2025", summary)
+
+
+class SixEconomyProvenanceTest(unittest.TestCase):
+    """Shared history keeps release date, reference period, and ingestion date apart."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        from scripts.country_detail.indicator import period_key
+        from scripts.country_detail.projection import build_projection
+        from scripts.temperature_level import load_state
+
+        cls.period_key = staticmethod(period_key)
+        cls.projection = build_projection()
+        cls.scores = load_state()
+
+    def test_every_economy_separates_release_period_and_ingestion(self) -> None:
+        countries = self.projection["countries"]
+        self.assertEqual(set(countries), {"US", "CA", "AU", "NZ", "EA", "JP"})
+        seen = {code: 0 for code in countries}
+        for code, body in countries.items():
+            for obs in body["observations"]:
+                seen[code] += 1
+                view = indicator_view(obs)
+                period = str(obs.get("reference_period") or "")
+                self.assertEqual(view["period"], period)
+                ingest = str(obs.get("retrieved_at") or "")[:10]
+                if len(ingest) == 10:
+                    self.assertEqual(view["ingestion_date"], ingest)
+                else:
+                    self.assertIsNone(view["ingestion_date"])
+                source_release_days = {
+                    str(point.get("release_date") or "")[:10]
+                    for point in obs.get("history") or []
+                    if point.get("release_date")
+                }
+                if obs.get("release_date"):
+                    source_release_days.add(str(obs.get("release_date"))[:10])
+                if view["release_day"] is None:
+                    self.assertEqual(view["release_text"], NO_RECORDED_RELEASE_DATE)
+                    self.assertIsNone(view["release_date"])
+                    self.assertNotIn(view["ingestion_date"], (view["release_text"], view["release_date"]))
+                else:
+                    shown = view["release_date"]
+                    self.assertIn(shown, source_release_days)
+                for row in view["dated_history"]:
+                    self.assertEqual(row["reference_period"], row["period"])
+                    if row["release_date"] is None:
+                        self.assertEqual(row["release_text"], NO_RECORDED_RELEASE_DATE)
+                        self.assertNotEqual(row["release_text"], row.get("ingestion_date"))
+                    else:
+                        self.assertIn(row["release_date"], source_release_days)
+                        self.assertNotEqual(row["release_date"], NO_RECORDED_RELEASE_DATE)
+                series = str(obs.get("series_id") or "")
+                hist = [
+                    point
+                    for point in (obs.get("history") or [])
+                    if isinstance(point, dict) and point.get("value") is not None
+                ]
+                if any(point.get("series_id") for point in hist):
+                    hist = [
+                        point
+                        for point in hist
+                        if not point.get("series_id") or point.get("series_id") == series
+                    ]
+                hist.sort(key=lambda point: self.period_key(str(point.get("reference_period") or "")))
+                expected = [str(point.get("reference_period") or "") for point in hist[-3:]]
+                self.assertEqual([point["period"] for point in view["prints"]], list(reversed(expected)))
+                cadence = view["cadence"]
+                count = len(hist)
+                if cadence == "monthly":
+                    self.assertEqual(len(view["chart_points"]), min(count, 24))
+                    if count >= 12:
+                        self.assertGreaterEqual(len(view["dated_history"]), 12)
+                        self.assertLessEqual(len(view["dated_history"]), 24)
+                elif cadence == "quarterly":
+                    self.assertEqual(len(view["chart_points"]), min(count, 8))
+                self.assertLessEqual(len(view["prints"]), 3)
+                parts = str(obs.get("catalog_id") or "").split(".")
+                expected_class = "context"
+                if len(parts) == 3 and obs.get("score_input"):
+                    state = (
+                        ((self.scores.get("countries") or {}).get(code) or {})
+                        .get(parts[1], {})
+                        .get("component_state", {})
+                        .get(parts[2])
+                    )
+                    if isinstance(state, dict) and state.get("observed"):
+                        try:
+                            weight = float(state.get("weight") or 0.0)
+                        except (TypeError, ValueError):
+                            weight = 0.0
+                        if weight > 0:
+                            expected_class = "scored"
+                self.assertEqual(score_class(obs, code, self.scores), expected_class)
+        for code, count in seen.items():
+            self.assertGreater(count, 0, code)
 
 
 if __name__ == "__main__":
