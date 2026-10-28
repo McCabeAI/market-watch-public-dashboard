@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e6336e533febb78d1564842963a6cd5f1567100d373145cfbb56cbebea6e8609",
+  "memory_context_sha256": "22a9ae52f0d70916f5206701f90b07566f57bfa7d26b5a163d8ce7ec7bdd4da2",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -130,30 +130,40 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261023"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261026"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261027"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261028"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5ce7b9c9b66c40b2aa132935ff7201b49b1619a51209d483c561f0177b32adf2",
+    "state_sha256": "7b395222958882e7c2a0134782b02a0dfd313b632fa313ee4da61c8b4165d8d5",
     "streaks": {
-      "flat_cycles": 19,
+      "flat_cycles": 20,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-10-26",
+        "percent_rate": 3.93,
+        "rate": 3.93
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Stay at the zero official-SOFR benchmark. Do not pay 3.93 percent ACT/360 on shocked-risk capital: the SR3 strip already prices the hike path, so there is no leftover that funds the carry. Flat cash is not alpha; paying SOFR to own a priced event is negative expected value.",
+      "sr3_forward_view": "Frozen SR3 / SOFR 3M implieds as of 27 October: Dec-26 4.205, Mar-27 4.48, Jun-27 4.64, Sep-27 4.685, with the peak near September then slightly lower. March sits about 55bp over official cash SOFR 3.93."
+    },
     {
       "current_sofr": "Official NY Fed SOFR 3.92% ACT/360 dated 2026-10-23",
       "forward_funding_assessment": "lower",
@@ -178,19 +188,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Remain at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital is not justified while realized funding is assessed about the same as the priced strip; flat cash is not alpha.",
       "sr3_forward_view": "December 2026 4.17, March 2027 4.37, June 2027 4.51, September 2027 4.56. That is an upward hike path versus official 3.90, so apparent funding-tightening edges are the curve, not a mispricing of it."
-    },
-    {
-      "current_sofr": {
-        "citation": "official NY Fed SOFR 3.88 percent dated 2026-10-20 ACT/360",
-        "date": "2026-10-20",
-        "day_count": "ACT/360",
-        "percent": 3.88,
-        "rate": 3.88,
-        "source": "NY Fed official SOFR"
-      },
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Remain at the zero official-SOFR benchmark. Flat cash is not alpha, but with no residual edge the alternative is worse: paying SOFR on shocked-risk capital to own a hike path already printed in Dec26 4.255 / Mar27 4.55 / Jun27 4.725 / Sep27 4.785. Do not fund a new risk book off 3.88 SOFR until realized funding is shown, with a dated catalyst, to print away from that strip.",
-      "sr3_forward_view": "Over the decision horizon the SR3 strip already embeds a steep tightening path versus the 3.88 official fixing: Dec26 4.255, Mar27 4.55, Jun27 4.725, Sep27 4.785. That is a front-loaded hike sequence of roughly 37.5bp into year-end 2026 and about 90bp by Sep27, so apparent funding-tightening or hawkish-repricing edges are the curve, not a mispricing of it. No unpriced residual versus those four contracts is identified in the frozen funding_context."
     }
   ],
   "recent_performance_reflections": [],

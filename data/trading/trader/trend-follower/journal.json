@@ -1418,6 +1418,62 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "US 10Y holds 5.00, unchanged on the day and 18bp lower over a month, with no new yield high, so there is no confirmed continuation after the prior duration long was taken off on an unconfirmed backup. March SR3 at 4.45 versus 3.92 cash and CORRA March at 3.01 versus 2.24 keep a hike path priced, but that is a path into the 28 Oct Fed and BoC decisions, not a persistent duration trend. Stay flat through that event binary; do not fade the one-month yield decline and do not re-own 10s without a new extreme."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No confirmed rates or spot trend from a flat book on Fed day; the failed 10-year backup is not a dip to re-short.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 0,
+      "decision_fingerprint": "ab7e028f10ae6354f08e97b5552a65ee9c8ad267cff22c2a9df5816a4d07db0e",
+      "event_id": "jde-b0402e9f0534473e",
+      "funding_view": null,
+      "invalidation": "A confirmed continuation from flat would need a new US 10-year yield high with policy-path confirmation, or a documented yield-down break with STIR confirming an easier path. Re-shorting the 10-year solely because yields bounced after a failed high remains invalid.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "910be9e91fad7c0119c9bf9e0bf5c7f24af11db64dc78298115d7341b212ea03",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c086a781099f3cad19029c9e4884b9a8cc34961179366e9b72f923104f9ad6d6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and there is no confirmed trend to initiate. US 10-year at 4.99 has made lower yields over five days and a month, so the higher-yield short is invalid rather than paused. September SOFR only 3.5bp firmer than an old 4.65 book mark is not confirmation of a live backup while cash 10-year yields are falling. A new duration-long trend is also unconfirmed on Fed day. Stay flat.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The book is flat and there is no confirmed trend to initiate. US 10-year at 4.99 has made lower yields over five days and a month, so the higher-yield short is invalid rather than paused. September SOFR only 3.5bp firmer than an old 4.65 book mark is not confirmation of a live backup while cash 10-year yields are falling. A new duration-long trend is also unconfirmed on Fed day. Stay flat."
     }
   ],
   "schema_version": 1,

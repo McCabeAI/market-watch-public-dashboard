@@ -1393,6 +1393,62 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "The PM book is flat. The accepted 14-seat handoff has no OPEN or ADD tickets; receive-versus-pay HOLDs on CORRA Mar and conflicting SOFR Mar inventory are disagreement, not a sized edge. Cash-to-contract premia (SOFR 3.92 vs Mar 4.45, CORRA 2.24 vs Mar 3.01, AONIA 4.60 vs Mar 4.87) and US 10Y at 5.00 with WTI 101.76 do not produce a one-sided expected path that covers official SOFR 3.92 percent ACT/360 charged on shocked-risk capital into the 28 Oct Fed and BoC prints. Preservation-first sizing with force_deployment false is to stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The PM book is flat. No markable handoff clears official SOFR 3.93 percent ACT/360 on shocked-risk capital into the dual sitting.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-28T06:51:30.561194-04:00",
+      "conviction": 74,
+      "decision_fingerprint": "b5a3d80e4f12884c44cd0e69b27045f890de21a3d6e3dda86250a9d619229d90",
+      "event_id": "jde-c9fa9b8851484cc0",
+      "funding_view": null,
+      "invalidation": "A post-decision dislocation that remains markable and whose residual expected edge exceeds official SOFR 3.93 percent ACT/360 on a conservative shocked-capital path would reopen deployment. Unchanged two-way holds would not.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8e8aae3cbafe4a622d898b04e4858e3f4aab867bae3cb12d98c2fcfcde63ce8d",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b7adab45447fa90cd4d3ac73f7770c2a39c584d83c98fde587583b39a869541b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "5ee65425260195796dd939d3b597a6969000b82dc393023292cb39ddf90e03fb",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261028-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The PM book is flat. The accepted 14-seat handoff has no open or add tickets; receive-versus-pay holds on March CORRA and conflicting March SOFR inventory are disagreement, not a sized edge. Cash-to-contract premia and the US 10-year at 4.99 with WTI at 99.90 do not produce a one-sided expected path that covers official SOFR 3.93 percent ACT/360 charged on shocked-risk capital into the dual sitting. Preservation-first sizing is to stay flat.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The PM book is flat. The accepted 14-seat handoff has no open or add tickets; receive-versus-pay holds on March CORRA and conflicting March SOFR inventory are disagreement, not a sized edge. Cash-to-contract premia and the US 10-year at 4.99 with WTI at 99.90 do not produce a one-sided expected path that covers official SOFR 3.93 percent ACT/360 charged on shocked-risk capital into the dual sitting. Preservation-first sizing is to stay flat."
     }
   ],
   "schema_version": 1,

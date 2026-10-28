@@ -1362,6 +1362,60 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "US 10Y 5.00 sits at the 91st percentile of the past year after an 18bp one-month rally, so any historical cheapness is already being worked and will be rewritten at Fed and BoC tomorrow. March CORRA 3.01 versus cash 2.24 and March SOFR 4.45 versus cash 3.92 are dated cash-strip residuals, but they are the policy path into those meetings, not a dislocation that can be sized against 3.92 percent SOFR from a flat book. US-CA 10Y at 117bp versus a 168bp cash gap is a relative-value observation, not a why-now to pay or receive either long end tonight."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book; no clean rates or spot convergence whose mean-reversion should start now into dual central-bank day.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "8a8ddc2200dad3a780751dc0a8e9bfd46421adb002bd00057e2ce2fac7941f95",
+      "event_id": "jde-ba91ee2d19d64c6a",
+      "funding_view": null,
+      "invalidation": "A post-event tape with a markable cash rates dislocation whose remaining gap still screens cheap after the Fed and Bank of Canada, plus a valuation anchor that agrees, would reopen an open from flat. Pre-print spot euro cheapness alone does not.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cd92da1ec05641e5e34169ad2b3360f1552b7378ec10fd42e39137e11111c8ea",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6b3606e64bbf4d8191f8d561daabf5d4a3c7a2fd62737f0de0a02702bb7b5cc6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat. US 10-year at 4.99 is a high one-year yield percentile, but it has already rallied 18bp into the Fed print, so the timing hook for a from-flat receive fails. EUR at 1.115 looks statistically cheap, yet that is a spot label without a cash-spread, REER, or terms-of-trade screen. Oil at $100 is a Canadian terms-of-trade plus, but Bank of Canada day and missing CAD cash-spread anchors block a CAD value expression. Stay flat.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The book is flat. US 10-year at 4.99 is a high one-year yield percentile, but it has already rallied 18bp into the Fed print, so the timing hook for a from-flat receive fails. EUR at 1.115 looks statistically cheap, yet that is a spot label without a cash-spread, REER, or terms-of-trade screen. Oil at $100 is a Canadian terms-of-trade plus, but Bank of Canada day and missing CAD cash-spread anchors block a CAD value expression. Stay flat."
     }
   ],
   "schema_version": 1,

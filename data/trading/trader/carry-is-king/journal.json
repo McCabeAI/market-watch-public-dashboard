@@ -1473,6 +1473,77 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "Mar-27 CORRA at 3.01 still pays 77bp over cash 2.24 and 51bp over the 2.50 BoC poll, so the existing receive is being paid to sit through 28 Oct. The 1.5bp backup from 2.995 is a sub-5bp oil wiggle around WTI 101.76, not a cash-policy change: CORRA 2.24 and SOFR 3.92 are unchanged. Hold the 25m CAD sleeve as the carry expression; keep the 25m AONIA receive as a thinner 27bp roll-down, and do not replace either with spot USD/CAD even though the 168bp cash differential looks tempting."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Keep the existing March CORRA receive; 76bp over cash and 50bp over the 2.50 poll still pay to sit.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Keep the existing March AONIA receive as a thinner 26bp roll-down; dual meetings do not flatten a still-positive cash gap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "dcbe4659e689895415d16b7ca1bd3df28ca068bc896177a4a03582368a2faf7a",
+      "event_id": "jde-3429d8849bc046c9",
+      "funding_view": null,
+      "invalidation": "Stand down the Canadian receive only if a Bank of Canada hike or path persistently reprices March CORRA toward or through 3.00 as a new cash regime. Cut AONIA first if an RBA hike lifts cash through the March receive and consumes the 26bp cushion.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f1cdd049c9e9561cf55ada6da40543f49b4b1e0d287c30185a979dd07239d1f2",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ce9398eac1fe8197eb76561f0b3a7f90b5d0bdad981cac6d7bc44023969903b1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March CORRA at 3.005 still pays about 76bp over cash 2.24 and about 50bp over a 2.50 Bank of Canada poll, so the existing receive is being paid to sit through 28 October. The 1bp backup from 2.995 is headline beta around WTI at 99.90, not a cash-policy change. Hold the 25 million Canadian sleeve as the carry expression and keep the thinner 26bp March AONIA receive; dual meetings are a reason not to add, not a reason to flatten positive carry that has not been invalidated.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "March CORRA at 3.005 still pays about 76bp over cash 2.24 and about 50bp over a 2.50 Bank of Canada poll, so the existing receive is being paid to sit through 28 October. The 1bp backup from 2.995 is headline beta around WTI at 99.90, not a cash-policy change. Hold the 25 million Canadian sleeve as the carry expression and keep the thinner 26bp March AONIA receive; dual meetings are a reason not to add, not a reason to flatten positive carry that has not been invalidated."
     }
   ],
   "schema_version": 1,

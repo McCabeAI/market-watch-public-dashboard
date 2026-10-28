@@ -130,7 +130,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "910be9e91fad7c0119c9bf9e0bf5c7f24af11db64dc78298115d7341b212ea03",
+  "memory_context_sha256": "b7f6d285fff31745cf3d1ab731fafeb7ca8299e57de38c426c2dbeb87adaf62e",
   "open_positions": [],
   "owner_id": "trend-follower",
   "owner_type": "trader",
@@ -144,27 +144,13 @@
     "review_required_position_ids": []
   },
   "psychology": {
-    "active_flags": [
-      {
-        "basis": "revenge_pressure 0.06 families bond",
-        "check": "required",
-        "families": [
-          "bond"
-        ],
-        "id": "revenge_risk",
-        "relevant_actions": [
-          "OPEN",
-          "ADD"
-        ],
-        "scope": "family"
-      }
-    ],
+    "active_flags": [],
     "applicable": true,
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.12
+        "trend": "up",
+        "value": 0.16
       },
       "complacency": {
         "band": "calm",
@@ -178,17 +164,17 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.16
+        "trend": "up",
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.12
+        "trend": "up",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.06
       },
       "self_trust": {
@@ -212,27 +198,21 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.1951625,
-        "run_id": "overnight-20261023"
-      },
-      {
         "kind": "trade_loss_close",
         "magnitude": 0.225,
         "run_id": "overnight-20261023"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261028"
       }
     ],
-    "required_checks": {
-      "revenge_risk": [
-        "would_take_if_flat_and_unscarred",
-        "size_vs_prior_loss",
-        "what_changed_in_evidence"
-      ]
-    },
+    "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "c086a781099f3cad19029c9e4884b9a8cc34961179366e9b72f923104f9ad6d6",
+    "state_sha256": "ea20674994dab1d691034ee3c909f5c8b0168c7da801db188d2df866ce4eddcf",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 3,
       "session_loss": 1,
       "session_win": 0
     }

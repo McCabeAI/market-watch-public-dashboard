@@ -1911,6 +1911,92 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "Three-digit oil keeps inflation in the Fed and BoC reaction functions into 28 Oct, so 2027 implieds should mark higher, not cheaper. AONIA June at 4.88 versus 4.60 cash still only prices a token hike next to SOFR September 4.65 and CORRA March 3.01, so the existing 2027 pays stay on as the underpriced hawkish lag."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Keep the existing September SOFR short; 4.685 still does not compensate for a hold-then-re-hike regime if energy pass-through persists.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 12500000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Keep the existing March CORRA short; cash 2.24 plus oil argues the 2.50 poll is the dovish error, not the 3.005 strip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 25000000,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Keep the existing June AONIA short as the global-inflation residual, not an independent easing signal.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 65,
+      "decision_fingerprint": "84a931d1ac7cf0fbd7a1b859d286dc96b826dd0441b23791cf2862cb326d2d35",
+      "event_id": "jde-1f728e1fddb844ba",
+      "funding_view": null,
+      "invalidation": "Oil-led inflation dropping out of the Fed or Bank of Canada reaction function, September SOFR losing hike pricing and failing to retrace toward 4.755, or March CORRA repricing toward the 2.50 poll and cash 2.24 would kill the higher-terminal case. June AONIA breaking lower on a domestic easing impulse independent of global energy would cut that sleeve first.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c14918effb04789204a4a285c3b6ebf2e0b93c3b45e3a043f4d84e9eac66b71a",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a2ab0e6341e2d7595e123a17834ddae05de4277fcbbe8715c52d45e2ba15cd9f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Three-digit oil keeps inflation inside the Fed and Bank of Canada reaction functions through 2027, so terminal and path risk is still underpriced to the upside versus live marks. September SOFR at 4.685 versus a 4.755 entry, March CORRA at 3.005 versus 3.06, and June AONIA at 4.88 versus 4.91 are mark noise around an intact higher-for-longer book, not a regime change. Hold the three existing 2027 pays; do not add into the dual sitting.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "Three-digit oil keeps inflation inside the Fed and Bank of Canada reaction functions through 2027, so terminal and path risk is still underpriced to the upside versus live marks. September SOFR at 4.685 versus a 4.755 entry, March CORRA at 3.005 versus 3.06, and June AONIA at 4.88 versus 4.91 are mark noise around an intact higher-for-longer book, not a regime change. Hold the three existing 2027 pays; do not add into the dual sitting."
     }
   ],
   "schema_version": 1,

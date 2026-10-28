@@ -1368,6 +1368,64 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "The Oct 28 Fed is a dated catalyst, but Mar-27 SOFR at 4.45 versus spot 3.92 already carries the hiking path, so the 4.52 short is leftover event risk rather than leftover mispricing. Oil at 101.76/115.81 can still map into a hawkish statement and lift the 2027 contract, which is the only reason a stub stays on. Cut the 10m short in half into the print; a path-confirming Fed does not reprice 4.45 higher."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 5000000,
+          "position_id": "pos-fca0c79a2e45",
+          "rationale": "Close the already-reduced March SOFR short; a surveyed hold cannot extend a 55bp cash-to-contract gap, so the residual is event noise.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "fd6b120211541d014d365549c58127dc9235d1759d7b9f9ebd377d0fde093c09",
+      "event_id": "jde-78984ff843e648ee",
+      "funding_view": null,
+      "invalidation": "Flatten is wrong only if the 28 October statement or press conference explicitly validates further tightening and March SOFR marks higher from 4.48.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-fca0c79a2e45"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-fca0c79a2e45"
+      ],
+      "memory_context_sha256": "75f909bc95b676b368e5b07edd51b149d24cf22cb14271c32924209684d468ce",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "798b640c9ba8c35c4770999cf723107be22311a77b6cf99c2f450229c6b2c6c2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The residual short 5 million March SOFR from 4.52, already reduced, only pays if implieds reprice higher from 4.48. Surveys lock a hold this week, October has no dots, and 55bp of path is already in the contract versus cash 3.93, so the modal print does not lift the mark. Warsh or later hike talk is a personnel tail, not this meeting\u2019s base-case function. Close the leftover; it is event noise, not a catalyst expression.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The residual short 5 million March SOFR from 4.52, already reduced, only pays if implieds reprice higher from 4.48. Surveys lock a hold this week, October has no dots, and 55bp of path is already in the contract versus cash 3.93, so the modal print does not lift the mark. Warsh or later hike talk is a personnel tail, not this meeting\u2019s base-case function. Close the leftover; it is event noise, not a catalyst expression."
     }
   ],
   "schema_version": 1,

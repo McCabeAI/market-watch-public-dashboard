@@ -1408,6 +1408,60 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "Stay flat. CADJPY at 112.23 is not a from-flat initiation into the 28 Oct BoC: the oil terms-of-trade pillar that justified owning CAD is already impaired, BoJ is an expected hold with a hawkish lean, and leftover carry (CORRA 2.24 vs TONA 1.227) plus 19 pips of post-exit drift are not a new CA-JP gap. AUDCAD 0.9854 has no independent AU-versus-CA policy, growth, or inflation differential in this tape, so buying or fading it would only be the mirror of the closed CAD-over-JPY expression. EURJPY 176.15 is the least-dirty non-USD way to isolate a hawkish BoJ against EA, but EA inflation, growth, and policy path are unknown here, so it is not funded."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Would not open CADJPY, AUDCAD, or AUDNZD from flat into the Bank of Canada, and the clean EUR-GBP isolator is not markable.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 70,
+      "decision_fingerprint": "52f6e52cf08f36d52b5d948fad8530152a6d6f46ea8f8c1f21acb6e0b10e2878",
+      "event_id": "jde-54a20a4c649a4967",
+      "funding_view": null,
+      "invalidation": "Revisit only if a listed markable cross would be initiated from flat on its own policy or terms-of-trade pillars, not leftover CADJPY drift and not a reverse of the closed CAD expression.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "84770547b1637fdb09b6b2a4fc3a323bb587850b809652f938e6d4979e220a6f",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "76d469f8fcf128cba5e7b8e6afdb157d3ee70dab0b2c459760b7902447f2fe9e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat after the CADJPY close. EURGBP at 0.8366 is the cleanest non-dollar relative-value print, but it is not independently markable, so it cannot be opened. CADJPY and AUDCAD recycle an impaired Canadian terms-of-trade story into a two-way Bank of Canada day, and leftover carry is not a new CA-JP gap. EURCAD would isolate Ottawa from the Fed but is not the differential this seat would own from a zero book.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "Stay flat after the CADJPY close. EURGBP at 0.8366 is the cleanest non-dollar relative-value print, but it is not independently markable, so it cannot be opened. CADJPY and AUDCAD recycle an impaired Canadian terms-of-trade story into a two-way Bank of Canada day, and leftover carry is not a new CA-JP gap. EURCAD would isolate Ottawa from the Fed but is not the differential this seat would own from a zero book."
     }
   ],
   "schema_version": 1,

@@ -1416,6 +1416,62 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "The crowded CAD story is still receiving Mar CORRA versus 2.24 cash and a 2.50 BoC poll; Mar at 3.01 is what that crowd is fighting, and the book is already short it from 2.995. Three-digit oil keeps the re-tightening path from looking orphaned, and 1.5bp of mark is not evidence the receive has been run out. Hold the 50m pay into the decision rather than covering into the ownership we are fading."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Keep the existing March CORRA short; the crowded receive remains the ownership to fade, and USDCAD would only duplicate that Canada-bull.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "7698f8a3b5b8031b7d49e3fbb551408700ce3c616d0bb721783fd7c2934d31bf",
+      "event_id": "jde-3a73da488f774d46",
+      "funding_view": null,
+      "invalidation": "Stand down if the March CORRA receive is no longer the crowded desk expression because carry and dove have cut or flipped, or if this book is no longer short March CORRA. Do not treat a March rally toward cash or the poll as invalidation of the fade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "da434c4bb9e28c808b240008d9fd15b06f426547818d8dca67b276709aa5a941",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "76bda5cc515e8f088320cf370dc3c43a6c48de4ce9e7469d281593f4e742df0d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book remains short 50 million March CORRA from 2.995 against a 3.005 live mark, fading a still-crowded receive that carry and dove still own. March at 3.005 versus cash 2.24 and a 2.50 poll looks cheap to that receive, which is exactly the false entry the lesson forbids. Do not stack the same Canadian-bull view in USDCAD, and do not flip the pay into the crowded receive into the print.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The book remains short 50 million March CORRA from 2.995 against a 3.005 live mark, fading a still-crowded receive that carry and dove still own. March at 3.005 versus cash 2.24 and a 2.50 poll looks cheap to that receive, which is exactly the false entry the lesson forbids. Do not stack the same Canadian-bull view in USDCAD, and do not flip the pay into the crowded receive into the print."
     }
   ],
   "schema_version": 1,

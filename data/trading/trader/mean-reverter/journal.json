@@ -1394,6 +1394,62 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "Mar-27 SOFR still sits 53 bp above cash at 3.92 after already slipping 13 bp from 4.58, so the hike path remains rich versus overnight. Hold the existing 10 million receive and do not add ahead of the 28 Oct FOMC: the residual is still large enough to extract after event vol, but a new slice only buys the meeting."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the existing March SOFR long; 4.48 versus 4.58 entry and 3.93 cash is still an open stretch, not a new expression.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "c3974d9158c29b57e48905c427b7429c45be2bcd92cacc90bdf6a8fc11119752",
+      "event_id": "jde-90e7d3ad46f34c7d",
+      "funding_view": null,
+      "invalidation": "Hawkish guidance that reprices the 2027 hike path and pushes March SOFR implieds back through the 4.58 entry kills the fade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fe2b73ae0966aebacb99f6dd1e6d5defa7b377657cf610b954689b450b4033ec",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "aa477b5f2ee3ff489ee03733edba9a072b08bea433deaad0af705743c1fcb8d9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The existing long March SOFR from 4.58 still owns stretch versus cash 3.93 and versus the live 4.48 mark. A hold-survey day is still ahead of the cutoff, so hawkish guidance is the named risk that can reprice implieds higher against the long. Do not cut: the cash-to-contract gap is still open and the catalyst has not printed. Do not add.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The existing long March SOFR from 4.58 still owns stretch versus cash 3.93 and versus the live 4.48 mark. A hold-survey day is still ahead of the cutoff, so hawkish guidance is the named risk that can reprice implieds higher against the long. Do not cut: the cash-to-contract gap is still open and the catalyst has not printed. Do not add."
     }
   ],
   "schema_version": 1,

@@ -1396,6 +1396,62 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "SOFR cash still sits below a hike-priced SR3 strip through September, so the midweek safety bid is unfinished even with the 10Y already in to 5.00 from 5.24. AI/credit unease and gold at 4038 keep growth-fragility underpriced while SPX, Nasdaq and a 19-handle VIX look complacent. Hold the existing long 10Y and want the mark lower; do not add into the Fed with WTI/Brent elevated on Hormuz risk."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 12500000,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Keep the existing US 10-year long; receiving the hike-rich strip is a tightening fade, not a slowdown hold.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "e9ce1893659b23275a83b902969d5c7f97128e6abf0649ed94fa678129a97bda",
+      "event_id": "jde-f72f51efecd64572",
+      "funding_view": null,
+      "invalidation": "The hold fails if the 10-year backs up through the 5.24 entry and stays there while oil-driven inflation reprices the long end and equities remain firm. It also fails if the SR3 hike premium over cash 3.93 disappears because policy has already turned easy.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3af405e8e56bf1dbd3a132002b3df90d7246f5a9340f298e4f908fc9a387b0dc",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f17790f6d29887923fa675b1ddd382e308bc0f4669e83ce1f1f1d9c00136a528"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR cash still sits at 3.93 while March SR3 is 4.48 and September is 4.685, so the midweek safety bid is unfinished even with the 10-year already in to 4.99 from a 5.24 entry. AI and credit unease plus gold near 4075 keep growth-fragility underpriced while the S&P near 7723 and a VIX at 18.39 look complacent. Hold the existing long 10-year and want the mark lower; do not add into the Fed with WTI at 99.90 and Brent at 113.88.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "SOFR cash still sits at 3.93 while March SR3 is 4.48 and September is 4.685, so the midweek safety bid is unfinished even with the 10-year already in to 4.99 from a 5.24 entry. AI and credit unease plus gold near 4075 keep growth-fragility underpriced while the S&P near 7723 and a VIX at 18.39 look complacent. Hold the existing long 10-year and want the mark lower; do not add into the Fed with WTI at 99.90 and Brent at 113.88."
     }
   ],
   "schema_version": 1,

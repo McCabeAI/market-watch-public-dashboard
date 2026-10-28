@@ -1542,6 +1542,77 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "The live book is a working CAD receive in CORRA March 2027 and an unmarkable short NZ-US 10Y residual. Official NZ curve remains unavailable this freeze, so the NZ-US line is held at its last valid identity rather than closed or hedged at an invented mark, and no new NZ expression is opened until inflation and the curve can be verified. BoC and Fed both print 28 October; Trader Room supplied only HOLDs, one REDUCE, and NO_TRADEs, with no OPEN or ADD tickets. Capital preservation is to sit both existing lines and refuse adding CORRA into the BoC event."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the existing Canadian receive. The 3.005 mark versus 3.13 entry already favors the long; do not add into the Bank of Canada.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Official New Zealand curve is still unavailable. Hold the unmarkable residual; do not invent an exit or hedge mark.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-28T06:51:30.294798-04:00",
+      "conviction": 64,
+      "decision_fingerprint": "24267bb96fb7d625543f26da3ff8cb8d483c3b60116a4af24c12f3523397eeb9",
+      "event_id": "jde-46ffc0854c42423c",
+      "funding_view": null,
+      "invalidation": "A verified official New Zealand curve that can mark the 10-year spread, or a Bank of Canada outcome that drives March CORRA back through the 3.13 receive while the residual is still unhedgeable, would retire the hold-and-preserve stance.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-3afafe53c6d7",
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9d97ed21ece68cd0af1159d116cd157932bd4d02a2a657ca527ce376252508a6",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b7a969b31ee644bf1d2a69ff521c183bbe9d8c2c295a273f9f8ac30ac087ba21"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "f9d6c4dacf3147a9f403152ad83c2592c38d89b32d6ef7244cc5b886f1ae6ce5",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261028-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The live book is a working Canadian receive in March 2027 CORRA and an unmarkable short NZ-US 10-year residual. The official New Zealand curve is still unavailable, so that residual is held at its last valid identity rather than closed or hedged at an invented mark, and no new risk is added. Bank of Canada and the Fed print the same day; Trader Room supplied only holds, one close, and flats, so capital preservation is to sit both existing lines.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The live book is a working Canadian receive in March 2027 CORRA and an unmarkable short NZ-US 10-year residual. The official New Zealand curve is still unavailable, so that residual is held at its last valid identity rather than closed or hedged at an invented mark, and no new risk is added. Bank of Canada and the Fed print the same day; Trader Room supplied only holds, one close, and flats, so capital preservation is to sit both existing lines."
     }
   ],
   "schema_version": 1,

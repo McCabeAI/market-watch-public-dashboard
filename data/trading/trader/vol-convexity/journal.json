@@ -1338,6 +1338,60 @@
       "run_id": "overnight-20261027",
       "schema_version": 1,
       "thesis": "Fed and BoC on 28 Oct is an event-vol window with uncertain jump timing, so a bounded-risk option structure would dominate unhedged spot. VIX at 19.45 on 23 Oct flags residual event risk; it is not a substitute for an FX or rates implied-vol surface. this tape has no markable option chain, strikes, or premiums, so nothing in the options last-resort book can be opened. From flat, the seat stays out rather than substituting SOFR, CORRA, US 10Y, or FX spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Event risk with uncertain timing is not a spot problem, and no markable options contract exists to express convexity.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-28T05:26:41.395329-04:00",
+      "conviction": 30,
+      "decision_fingerprint": "9e228bd5510e5c2a40e7da22b98336e5d64375b3dee87dab0d5a275ff9d27c47",
+      "event_id": "jde-acf2c389317a41aa",
+      "funding_view": null,
+      "invalidation": "A later freeze that names an independently markable listed options instrument covering this window would reopen a last-resort options expression. Until then the hold is not in play.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c87ddb1612b6e83ca8a8b263cfa9bfb0e674542e43e0f7b52bdb29584e1517d1",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "65e825221bf677e562415b3db4319f25b1ea14ca259ab92256ae1dcfdab18e56"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-28T05:26:41.395329-04:00",
+        "evidence_hash": "6ea411648f893b6cf17a3ff705230aa6340e4d6b21f71cb8ce4dc3e017d569e7",
+        "overnight_run_id": "overnight-20261028",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Fed and Bank of Canada sitting is a real event-vol window whose jump timing is uncertain, so unbounded spot is the wrong instrument. Convexity would dominate if a markable listed option, spread, or risk-reversal existed. No independently markable options contract is in the freeze, and a ticker cannot be invented. The book stays flat.",
+      "run_id": "overnight-20261028",
+      "schema_version": 1,
+      "thesis": "The Fed and Bank of Canada sitting is a real event-vol window whose jump timing is uncertain, so unbounded spot is the wrong instrument. Convexity would dominate if a markable listed option, spread, or risk-reversal existed. No independently markable options contract is in the freeze, and a ticker cannot be invented. The book stays flat."
     }
   ],
   "schema_version": 1,
