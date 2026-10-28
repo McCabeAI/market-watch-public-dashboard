@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import math
+import re
 from pathlib import Path
 from typing import Any
 
@@ -21,6 +22,9 @@ from scripts.temperature_level import (
 )
 
 _FLASH_REVISION = frozenset({"flash", "preliminary", "prelim"})
+_ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+# Per-print facts of the template row. A new print must not inherit them.
+_PER_PRINT_FIELDS = ("release_date", "release_date_status", "raw_level")
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})
 
 
@@ -97,6 +101,27 @@ def _latest_period(
     return max((str(r["reference_period"]) for r in rows), key=period_sort_key)
 
 
+def _break_period(item: Any, *, quarterly: bool) -> str | None:
+    """Boundary of one methodology break as a period key, or None when unusable.
+
+    A break recorded with an ISO ``date`` instead of a ``period`` falls in that
+    date's month, or in the quarter containing it for a quarterly print.
+    """
+    if not isinstance(item, dict):
+        return None
+    period = item.get("period")
+    if period:
+        return str(period)
+    raw = item.get("date")
+    text = raw.strip() if isinstance(raw, str) else ""
+    if _ISO_DATE.fullmatch(text):
+        year, month = int(text[:4]), int(text[5:7])
+        if quarterly:
+            return f"{year}-Q{(month - 1) // 3 + 1}"
+        return f"{year}-{month:02d}"
+    return None
+
+
 def _methodology_blocks(comp: dict[str, Any], period: str) -> bool:
     """Block a print that crosses an unresolved or not-yet-continued break.
 
@@ -106,12 +131,14 @@ def _methodology_blocks(comp: dict[str, Any], period: str) -> bool:
     breaks = comp.get("methodology_breaks")
     if not isinstance(breaks, list) or not breaks:
         return False
+    quarterly = "-Q" in period
     break_keys: list[tuple[int, int]] = []
     for item in breaks:
-        if not isinstance(item, dict) or not item.get("period"):
+        boundary = _break_period(item, quarterly=quarterly)
+        if boundary is None:
             return True
         try:
-            break_keys.append(period_sort_key(str(item["period"])))
+            break_keys.append(period_sort_key(boundary))
         except ValueError:
             return True
     try:
@@ -329,6 +356,8 @@ def _append_row(
     cal_as_of: str,
 ) -> None:
     row = dict(template)
+    for key in _PER_PRINT_FIELDS:
+        row.pop(key, None)
     row.pop("calibration_lookback", None)
     row.pop("notes", None)
     row.pop("source_series_id", None)

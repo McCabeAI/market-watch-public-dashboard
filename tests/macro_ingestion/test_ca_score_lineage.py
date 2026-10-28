@@ -241,12 +241,26 @@ class CaScoreLineageTests(unittest.TestCase):
             self.assertTrue(result["ok"], msg=result.get("error"))
             self.assertNotEqual(result.get("error"), "score_lineage_rejected")
             self.assertEqual(result.get("rejections") or [], [])
-            # This historical store has already been promoted into canonical history.
-            # Replaying it must be idempotent and preserve source provenance.
-            self.assertEqual(result["appended_count"], 0)
-            self.assertEqual(result["appended_points"], [])
+            # Every other series in this store is already in canonical history.
+            # The July 2026 retail print was fetched on 15 Oct but a date-keyed
+            # methodology break blocked every merge, so it is the only append.
+            self.assertEqual(result["appended_count"], 1)
+            [retail] = result["appended_points"]
+            self.assertEqual(retail["catalog_id"], "CA.Consumer.retail")
+            self.assertEqual(retail["period"], "2026-07")
+            self.assertEqual(retail["source_series_id"], "v1446859483")
 
             staged_ca = json.loads((launch_dir / "lineage" / "history" / "ca.json").read_text(encoding="utf-8"))
+            [july] = [
+                o
+                for o in staged_ca["components"]["Consumer.retail"]["observations"]
+                if o.get("reference_period") == "2026-07"
+            ]
+            self.assertEqual(july["series_id"], "retail_total_sa_v1446859483")
+            self.assertAlmostEqual(july["value"], -0.7394128842345915)
+            # The June template row's release date and level are not carried over.
+            self.assertNotIn("release_date", july)
+            self.assertNotIn("raw_level", july)
             labor_expect = {
                 "Labor.employment": (
                     "LFS_employment_level_v2062811",
@@ -727,8 +741,16 @@ class CaInflationOct20LineageTests(unittest.TestCase):
             self.assertAlmostEqual(float(aug_trim["value"]), 1.9)
             self.assertAlmostEqual(float(aug_med["value"]), 2.0)
 
-            self.assertEqual(result["appended_count"], 3)
-            self.assertEqual(len(result["appended_points"]), 3)
+            # Three CPI prints, plus the July 2026 retail print that the
+            # date-keyed methodology break used to block on every launch.
+            self.assertEqual(result["appended_count"], 4)
+            self.assertEqual(len(result["appended_points"]), 4)
+            retail_prov = [
+                (row["period"], row["source_series_id"])
+                for row in result["appended_points"]
+                if row.get("catalog_id") == "CA.Consumer.retail"
+            ]
+            self.assertEqual(retail_prov, [("2026-07", "v1446859483")])
             headline_prov = next(
                 row
                 for row in result["appended_points"]

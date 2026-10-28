@@ -195,6 +195,31 @@ def _mom_pct_from_levels(levels: list[tuple[str, float]]) -> tuple[str, float] |
     return period, (latest / prev_val - 1.0) * 100.0
 
 
+def _mom_pct_series_from_levels(levels: list[tuple[str, float]]) -> list[tuple[str, float]]:
+    """Every m/m change between consecutive fetched months, oldest first.
+
+    Emitting the whole fetched window lets the bridge fill a month that an
+    earlier blocked run skipped, and record publisher revisions of prior months.
+    """
+    out: list[tuple[str, float]] = []
+    for (prev_period, prev_val), (period, latest) in zip(levels, levels[1:]):
+        if prev_val == 0 or month_before(period) != prev_period:
+            continue
+        out.append((period, (latest / prev_val - 1.0) * 100.0))
+    return out
+
+
+def _release_day(points: list[dict[str, Any]], period: str) -> str | None:
+    """WDS ``releaseTime`` date for ``period``, or None when absent."""
+    for point in points:
+        if _month_period(str(point.get("refPer") or "")) != period:
+            continue
+        raw = str(point.get("releaseTime") or "")
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}(T.*)?", raw):
+            return raw[:10]
+    return None
+
+
 def _mom_change_thousands(levels: list[tuple[str, float]]) -> tuple[str, float] | None:
     if len(levels) < 2:
         return None
@@ -321,9 +346,14 @@ def _statcan_points(spec: dict[str, Any], wds_by_vector: dict[int, list[dict[str
         return points
 
     if transform == "mom_sa_pct":
-        latest = _mom_pct_from_levels(_levels_monthly(raw_points))
-        if latest:
-            points.append(_make_point(latest[0], latest[1], transform=transform, source_url=source_url))
+        series = _mom_pct_series_from_levels(_levels_monthly(raw_points))
+        for index, (period, value) in enumerate(series):
+            point = _make_point(period, value, transform=transform, source_url=source_url)
+            # WDS releaseTime is the date of the value's current vintage. Only the
+            # newest month has not been revised since its first publication.
+            if index == len(series) - 1:
+                point["release_date"] = _release_day(raw_points, period)
+            points.append(point)
         return points
 
     if transform == "mom_sa_change_thousands":

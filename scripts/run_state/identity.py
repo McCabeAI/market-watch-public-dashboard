@@ -143,6 +143,9 @@ APPROVED_PROJECTIONS: dict[str, SourceProjection] = {
         seasonal_adjustment=True,
         kind="label",
         rewrite=False,
+        # Same forward-only rule as CA.Inflation.headline: new months append
+        # under the score id; publisher revisions of scored months stay out.
+        rewrite_forward_only=True,
     ),
     "CA.Consumer.income": SourceProjection(
         concept_id="CA.Consumer.income",
