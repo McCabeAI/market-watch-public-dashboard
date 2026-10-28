@@ -8,7 +8,13 @@ from typing import Any
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.call_graph import assert_launch_budget, current_graph
-from scripts.market_watch_launch.contract import AWAITING_ACP, LAUNCHER_ID, LEGACY_SCHEDULE_ID
+from scripts.market_watch_launch.contract import (
+    AWAITING_ACP,
+    AWAITING_RESEARCH_PUBLICATION,
+    LAUNCHER_ID,
+    LEGACY_SCHEDULE_ID,
+)
+from scripts.market_watch_launch.milestones import research_publication, research_required
 from scripts.market_watch_launch.durability import remote_freeze_verified
 
 STAGE = "05_acp_handoff"
@@ -165,6 +171,23 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     provider = _provider(launch)
     launch_dir = Path(ctx["launch_dir"])
     launch_dir.mkdir(parents=True, exist_ok=True)
+
+    research_pub: dict[str, Any] | None = None
+    if research_required(launch):
+        research_pub = research_publication(launch_dir, launch)
+        if research_pub is None:
+            return contract.stage_receipt(
+                STAGE,
+                status="pending",
+                input_sha256=input_sha,
+                reason=AWAITING_RESEARCH_PUBLICATION,
+                details={
+                    "delegation_request_written": False,
+                    "live_provider_dispatched": False,
+                    "live_model_calls": 0,
+                },
+            )
+
     request = build_delegation_request(launch)
     request_path = launch_dir / "acp_one_shot_delegation_request.json"
     request_path.write_text(json.dumps(request, indent=2, sort_keys=True) + "\n", encoding="utf-8")
@@ -187,18 +210,21 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
         )
 
     if not remote_freeze_verified(launch_dir):
+        details_rf: dict[str, Any] = {
+            "delegation_request": request,
+            "remote_freeze_verified": False,
+            "live_provider_dispatched": False,
+            "live_model_calls": 0,
+        }
+        if research_pub is not None:
+            details_rf["research_publication"] = research_pub
         return contract.stage_receipt(
             STAGE,
             status="blocked",
             input_sha256=input_sha,
             reason=AWAITING_REMOTE_FREEZE,
             artifact=str(request_path),
-            details={
-                "delegation_request": request,
-                "remote_freeze_verified": False,
-                "live_provider_dispatched": False,
-                "live_model_calls": 0,
-            },
+            details=details_rf,
         )
 
     grant = _load_grant(launch_dir)
@@ -209,23 +235,26 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
     # Verified remote freeze only means the delegation request is ready for ACP.
     # Grants and local receipts are never treated as live provider dispatch.
     _ = ctx.get("acp_dispatch_implemented")
+    details_acp: dict[str, Any] = {
+        "delegation_request": request,
+        "remote_freeze_verified": True,
+        "grant_present": grant is not None,
+        "grant_verified": grant_ok,
+        "receipt_present": receipt is not None,
+        "receipt_matches": receipt_ok,
+        "handoff_status": "request_ready",
+        "handoff_url": None,
+        "dispatch_implemented": False,
+        "live_provider_dispatched": False,
+        "live_model_calls": 0,
+    }
+    if research_pub is not None:
+        details_acp["research_publication"] = research_pub
     return contract.stage_receipt(
         STAGE,
         status="blocked",
         input_sha256=input_sha,
         reason=AWAITING_ACP,
         artifact=str(request_path),
-        details={
-            "delegation_request": request,
-            "remote_freeze_verified": True,
-            "grant_present": grant is not None,
-            "grant_verified": grant_ok,
-            "receipt_present": receipt is not None,
-            "receipt_matches": receipt_ok,
-            "handoff_status": "request_ready",
-            "handoff_url": None,
-            "dispatch_implemented": False,
-            "live_provider_dispatched": False,
-            "live_model_calls": 0,
-        },
+        details=details_acp,
     )

@@ -18,9 +18,9 @@ from typing import Any, Callable
 
 from scripts.market_watch_launch.contract import (
     CONCURRENCY_BLOCK,
-    LIVE_LAUNCH_STATUSES,
     STAGES,
     TERMINAL_LAUNCH_STATUSES,
+    TWO_TRIGGER_CONTRACT,
     empty_launch,
     stage_receipt,
 )
@@ -61,7 +61,11 @@ def _normalize_request(request: dict[str, Any], when: datetime) -> dict[str, Any
     return normalized
 
 
-def _stale_concurrency_block(launch: dict[str, Any], store: LaunchStateStore) -> bool:
+def _stale_concurrency_block(
+    launch: dict[str, Any],
+    store: LaunchStateStore,
+    today: str | None,
+) -> bool:
     """A concurrency block is stale once the launch that held the lock is terminal.
 
     The blocked attempt stays in history. It must not be replayed as the session's
@@ -79,7 +83,13 @@ def _stale_concurrency_block(launch: dict[str, Any], store: LaunchStateStore) ->
         blocker = store.load_launch(str(blocker_id))
     except FileNotFoundError:
         return True
-    return blocker.get("status") not in LIVE_LAUNCH_STATUSES
+    from scripts.market_watch_launch.milestones import holds_data_collection_lock
+
+    return not holds_data_collection_lock(
+        blocker,
+        launch_dir=store.launch_dir(str(blocker_id)),
+        today=today,
+    )
 
 
 def _launch_status_from_stages(launch: dict[str, Any]) -> str:
@@ -235,6 +245,41 @@ def _verify_succeeded_stage_hashes(launch: dict[str, Any], store: LaunchStateSto
             store.save_launch(launch)
             return False
     return True
+
+
+def _current_session_launch(
+    store: LaunchStateStore,
+    session_date: str,
+    today: str | None,
+) -> dict[str, Any] | None:
+    """Newest launch for the session that is not a stale concurrency-block artifact."""
+    for row in reversed(store.list_launches_for_session(session_date)):
+        launch_id = row.get("launch_id")
+        if not launch_id:
+            continue
+        try:
+            launch = store.load_launch(str(launch_id))
+        except FileNotFoundError:
+            continue
+        if _stale_concurrency_block(launch, store, today):
+            continue
+        return launch
+    return None
+
+
+def _maybe_mark_superseded(
+    store: LaunchStateStore,
+    launch: dict[str, Any],
+    when: datetime,
+) -> None:
+    freeze = (launch.get("stages") or {}).get("04_freeze") or {}
+    if freeze.get("status") != "succeeded":
+        return
+    from scripts.market_watch_launch.milestones import mark_superseded_launches
+
+    mark_superseded_launches(store, launch, when_iso=isoformat(when))
+    if launch.get("supersedes") is not None:
+        store.save_launch(launch)
 
 
 def _wrapper(launch: dict[str, Any], *, returned_existing: bool) -> dict[str, Any]:
@@ -448,9 +493,10 @@ def run_launch(
     if handlers:
         handler_map.update(handlers)
 
+    today = ny_when.date().isoformat()
     if not normalized.get("rerun"):
-        existing = store.current_launch_for_session(normalized["session_date"])
-        if existing is not None and not _stale_concurrency_block(existing, store):
+        existing = _current_session_launch(store, normalized["session_date"], today)
+        if existing is not None and not _stale_concurrency_block(existing, store, today):
             if existing["status"] == "blocked":
                 return _wrapper(existing, returned_existing=True)
             if existing["status"] == "succeeded":
@@ -464,9 +510,10 @@ def run_launch(
                 when=ny_when,
                 through=through,
             )
+            _maybe_mark_superseded(store, resumed, ny_when)
             return _wrapper(resumed, returned_existing=True)
 
-    live = store.live_launch()
+    live = store.data_collection_holder(today)
     if live is not None:
         return _wrapper(
             _blocked_launch(
@@ -479,7 +526,7 @@ def run_launch(
             returned_existing=False,
         )
 
-    prior = store.current_launch_for_session(normalized["session_date"])
+    prior = _current_session_launch(store, normalized["session_date"], today)
     if normalized.get("rerun") and prior is not None:
         normalized = dict(normalized)
         normalized["prior_launch_id"] = prior["launch_id"]
@@ -492,6 +539,12 @@ def run_launch(
         request=normalized,
     )
     launch["overnight_run_id"] = overnight_run_id_for_session(normalized["session_date"])
+    if (
+        normalized.get("provider") == "acp"
+        and normalized.get("mode") == "live"
+        and normalized.get("publish_production") is True
+    ):
+        launch["publication_contract"] = TWO_TRIGGER_CONTRACT
     store.save_launch(launch)
 
     finished = _orchestrate(
@@ -502,6 +555,7 @@ def run_launch(
         when=ny_when,
         through=through,
     )
+    _maybe_mark_superseded(store, finished, ny_when)
     return _wrapper(finished, returned_existing=False)
 
 

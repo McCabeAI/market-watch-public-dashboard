@@ -50,19 +50,33 @@ class LaunchStateStore:
         index["schema_version"] = SCHEMA_VERSION
         write_json(self.index_path(), index)
 
-    def _sync_index_row(self, launch: dict[str, Any]) -> None:
+    def index_rows(self) -> list[dict[str, Any]]:
         index = self._read_index()
+        return list(index.get("launches") or [])
+
+    def _sync_index_row(self, launch: dict[str, Any]) -> None:
+        from scripts.market_watch_launch.milestones import (
+            holds_data_collection_lock,
+            launch_phase,
+            research_publication,
+        )
+
+        index = self._read_index()
+        launch_id = launch["launch_id"]
+        launch_dir = self.launch_dir(launch_id)
+        research_verified = research_publication(launch_dir, launch) is not None
         row = {
-            "launch_id": launch["launch_id"],
+            "launch_id": launch_id,
             "session_date": launch["session_date"],
             "status": launch["status"],
             "rerun": bool(launch.get("rerun")),
             "created_at": launch["created_at"],
+            "phase": launch_phase(launch, research_verified=research_verified),
         }
         launches = index.get("launches") or []
         replaced = False
         for i, existing in enumerate(launches):
-            if existing.get("launch_id") == launch["launch_id"]:
+            if existing.get("launch_id") == launch_id:
                 launches[i] = row
                 replaced = True
                 break
@@ -71,8 +85,24 @@ class LaunchStateStore:
         index["launches"] = launches
         live_id = None
         for entry in launches:
-            if entry.get("status") in LIVE_LAUNCH_STATUSES:
-                live_id = entry.get("launch_id")
+            lid = entry.get("launch_id")
+            if not lid:
+                continue
+            if lid == launch_id:
+                candidate = launch
+            else:
+                if entry.get("status") not in LIVE_LAUNCH_STATUSES:
+                    continue
+                try:
+                    candidate = self.load_launch(str(lid))
+                except FileNotFoundError:
+                    continue
+            if holds_data_collection_lock(
+                candidate,
+                launch_dir=self.launch_dir(str(lid)),
+                today=None,
+            ):
+                live_id = lid
                 break
         index["live_launch_id"] = live_id
         self._write_index(index)
@@ -104,18 +134,27 @@ class LaunchStateStore:
         latest_id = rows[-1]["launch_id"]
         return self.load_launch(latest_id)
 
+    def data_collection_holder(self, today: str | None) -> dict[str, Any] | None:
+        from scripts.market_watch_launch.milestones import holds_data_collection_lock
+
+        for row in self.index_rows():
+            lid = row.get("launch_id")
+            if not lid or row.get("status") not in LIVE_LAUNCH_STATUSES:
+                continue
+            try:
+                launch = self.load_launch(str(lid))
+            except FileNotFoundError:
+                continue
+            if holds_data_collection_lock(
+                launch,
+                launch_dir=self.launch_dir(str(lid)),
+                today=today,
+            ):
+                return launch
+        return None
+
     def live_launch(self) -> dict[str, Any] | None:
-        index = self._read_index()
-        live_id = index.get("live_launch_id")
-        if not live_id:
-            return None
-        try:
-            launch = self.load_launch(live_id)
-        except FileNotFoundError:
-            return None
-        if launch.get("status") not in LIVE_LAUNCH_STATUSES:
-            return None
-        return launch
+        return self.data_collection_holder(None)
 
     def write_artifact(self, launch_id: str, stage: str, body: dict[str, Any]) -> str:
         if stage not in STAGES:

@@ -14,9 +14,11 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
+from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
@@ -201,7 +203,7 @@ def normalize_actions_run(
     tail = run_url.split(marker, 1)[1]
     if tail[:1].isdigit():
         _fail("workflow run id does not match the recovery target")
-    return {
+    normalized = {
         "workflow": DEPLOY_WORKFLOW,
         "event": "workflow_dispatch",
         "ref": "main",
@@ -209,6 +211,53 @@ def normalize_actions_run(
         "head_sha": head_sha,
         "run_url": run_url,
         "run_id": expected_run,
+    }
+    evidence_source = run.get("evidence_source")
+    if isinstance(evidence_source, str) and evidence_source:
+        normalized["evidence_source"] = evidence_source
+    return normalized
+
+
+def in_run_actions_run(env: Mapping[str, str], *, deploy_result: str) -> dict[str, Any]:
+    """Build Actions-run evidence from the in-run reconcile job environment.
+
+    The workflow run is still executing the reconcile job; ``deploy_result``
+    success here means the deploy job (Pages deploy plus dataset read-back)
+    succeeded, as proven by the native ``needs.deploy.result`` dependency.
+    """
+    if deploy_result != "success":
+        _fail("non-success conclusion")
+    run_id = _validate_run_id(env.get("GITHUB_RUN_ID", ""))
+    server = (env.get("GITHUB_SERVER_URL") or "").strip()
+    if server != "https://github.com":
+        _fail("workflow run is not bound to the target repository")
+    repository = (env.get("GITHUB_REPOSITORY") or "").strip()
+    if not repository:
+        _fail("workflow run is not bound to the target repository")
+    head_sha = str(env.get("GITHUB_SHA") or "").strip().lower()
+    if not _SHA_RE.fullmatch(head_sha):
+        _fail("mismatched deploy head SHA")
+    if env.get("GITHUB_EVENT_NAME") != "workflow_dispatch":
+        _fail("non-workflow_dispatch event")
+    if env.get("GITHUB_REF") != "refs/heads/main":
+        _fail("non-main ref")
+    expected_workflow_ref = f"{repository}/.github/workflows/deploy-pages.yml@refs/heads/main"
+    if env.get("GITHUB_WORKFLOW_REF") != expected_workflow_ref:
+        _fail("workflow is not deploy-pages.yml")
+    html_url = f"{server}/{repository}/actions/runs/{run_id}"
+    return {
+        "id": int(run_id),
+        "path": DEPLOY_WORKFLOW_PATH,
+        "event": "workflow_dispatch",
+        "head_branch": "main",
+        "status": "completed",
+        "conclusion": "success",
+        "head_sha": head_sha,
+        "html_url": html_url,
+        "repository": {"full_name": repository},
+        "head_repository": {"full_name": repository},
+        "evidence_source": "in_run_deploy_job",
+        "deploy_job_result": "success",
     }
 
 
@@ -310,6 +359,8 @@ def assess_published_pages(
         "run_id": normalized["run_id"],
         "finalized_launch": json.loads(json.dumps(finalized)),
     }
+    if normalized.get("evidence_source"):
+        evidence["evidence_source"] = normalized["evidence_source"]
     if not already and not publication_evidence_proven(current_launch, evidence):
         _fail("pages publication not proven")
     return {
@@ -713,9 +764,20 @@ def main(argv: list[str] | None = None) -> int:
     workflow_p.add_argument("--state-root", type=Path, default=None)
     workflow_p.add_argument("--decision-out", type=Path, default=None)
 
+    in_run_p = sub.add_parser(
+        "in-run-evidence",
+        help="Write Actions-run JSON from the current deploy-pages reconcile job",
+    )
+    in_run_p.add_argument("--deploy-result", required=True)
+    in_run_p.add_argument("--out", type=Path, required=True)
+
     args = parser.parse_args(argv)
     root = Path(args.repo_root)
     try:
+        if args.command == "in-run-evidence":
+            payload = in_run_actions_run(os.environ, deploy_result=args.deploy_result)
+            args.out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            return 0
         if args.command == "preflight":
             preflight_worktree(root, args.launch_id, remote=args.remote, branch=args.branch)
             return 0

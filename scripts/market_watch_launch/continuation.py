@@ -9,6 +9,7 @@ from typing import Any
 from scripts.market_watch_launch.acceptance import run as acceptance_run
 from scripts.market_watch_launch.contract import AWAITING_ACP
 from scripts.market_watch_launch.finalize import run as finalize_run
+from scripts.market_watch_launch.milestones import trader_acceptance_refusal
 from scripts.market_watch_launch.pages import (
     authorize_pages_dispatch,
     pages_followup_decision,
@@ -110,6 +111,14 @@ def continue_accepted_launch(launch: dict[str, Any], ctx: dict[str, Any]) -> dic
                     "launch_id": launch_id,
                     "status": "blocked",
                     "reason": "awaiting_provider_output",
+                    "production_published": False,
+                }
+            refusal = trader_acceptance_refusal(state_root, launch)
+            if refusal:
+                return {
+                    "launch_id": launch_id,
+                    "status": "blocked",
+                    "reason": refusal,
                     "production_published": False,
                 }
             receipt = acceptance_run(launch, {**ctx, "provider_payload": provider_output})

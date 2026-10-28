@@ -2,9 +2,12 @@ name: Reconcile published Pages
 
 on:
   # After a production deploy-pages run finishes, record stage 08 only when the
-  # run is a successful main workflow_dispatch of a finalized launch. Completion
-  # of this workflow is what releases the one-live-launch guard. A dispatch
-  # request is not enough, and pull_request Pages builds do not start this job.
+  # run is a successful main workflow_dispatch of a finalized launch. Stage 08
+  # for launch-bound production deploys is normally recorded in-run by
+  # deploy-pages.yml's reconcile job (GITHUB_TOKEN dispatches do not start
+  # workflow_run); this workflow still reconciles human-dispatched production
+  # runs and the authorized manual recovery. A dispatch request is not enough,
+  # and pull_request Pages builds do not start this job.
   workflow_run:
     workflows: ["Deploy Market Watch Dashboard"]
     types: [completed]

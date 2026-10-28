@@ -1,0 +1,332 @@
+"""The research renderer stays in lockstep with deploy-pages.yml, and the
+workflow wiring keeps research and final publication separate.
+
+The static-base checks execute the actual deploy-pages heredocs and the
+``research_static_base`` port on the same repository inputs and require
+byte-identical output.
+"""
+
+from __future__ import annotations
+
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import textwrap
+import unittest
+from pathlib import Path
+
+from scripts.market_watch_launch import research_static_base as base
+
+REPO = Path(__file__).resolve().parents[1]
+WORKFLOWS = REPO / ".github" / "workflows"
+DEPLOY = (WORKFLOWS / "deploy-pages.yml").read_text(encoding="utf-8")
+LAUNCH_WF = (WORKFLOWS / "launch-market-watch.yml").read_text(encoding="utf-8")
+RESEARCH_SRC = (REPO / "scripts" / "market_watch_launch" / "research_pages.py").read_text(encoding="utf-8")
+
+# deploy-pages entrypoints the research edition deliberately does not run.
+EXEMPT_ENTRYPOINTS = {
+    "scripts/market_state.py": "research serves the frozen packet's market_state through cross_asset_data.public_snapshot",
+    "scripts/policy_state.py": "research uses the committed policy artifact; it does not refresh live policy data",
+    "scripts/temperature_level.py": "diagnostic --print-levels; research recomputes scores from the staged histories instead",
+    "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",
+    "scripts.market_watch_launch.publication_release": "final-edition stamp and guard; research stamps through research_pages",
+    "scripts.market_watch_launch.pages_recovery": "final-edition Stage 08 in-run reconciliation",
+}
+
+
+def step_blocks(workflow: str) -> dict[str, str]:
+    """Map step name to its dedented ``run: |`` script."""
+    lines = workflow.splitlines()
+    blocks: dict[str, str] = {}
+    for index, line in enumerate(lines):
+        match = re.match(r"^(\s*)- name: (.+)$", line)
+        if not match:
+            continue
+        indent = len(match.group(1))
+        name = match.group(2).strip()
+        for cursor in range(index + 1, len(lines)):
+            current = lines[cursor]
+            if re.match(rf"^\s{{0,{indent}}}- ", current) or (current.strip() and len(current) - len(current.lstrip()) <= indent):
+                break
+            run = re.match(r"^(\s*)run: \|\s*$", current)
+            if run:
+                key_indent = len(run.group(1))
+                body = []
+                for inner in lines[cursor + 1 :]:
+                    if inner.strip() and len(inner) - len(inner.lstrip()) <= key_indent:
+                        break
+                    body.append(inner)
+                blocks[name] = textwrap.dedent("\n".join(body)) + "\n"
+                break
+    return blocks
+
+
+def job_block(workflow: str, job: str) -> str:
+    match = re.search(rf"^  {re.escape(job)}:\n(.*?)(?=^  [A-Za-z0-9_-]+:\n|\Z)", workflow, flags=re.M | re.S)
+    if not match:
+        raise AssertionError(f"job {job} missing")
+    return match.group(1)
+
+
+def step_order(block: str) -> list[str]:
+    return [name.strip() for name in re.findall(r"^\s*- name: (.+)$", block, flags=re.M)]
+
+
+class StaticBaseParityTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls._tmp = tempfile.TemporaryDirectory()
+        cls.work = Path(cls._tmp.name) / "work"
+        cls.scratch = Path(cls._tmp.name) / "scratch"
+        cls.bin = Path(cls._tmp.name) / "bin"
+        for path in (cls.work, cls.scratch, cls.bin):
+            path.mkdir()
+        for name in ("payload_v6", "patch_v7", "patch_v8", "patch_v9", "scripts", "data"):
+            (cls.work / name).symlink_to(REPO / name)
+        (cls.bin / "python").symlink_to(sys.executable)
+        cls.blocks = step_blocks(DEPLOY)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls._tmp.cleanup()
+
+    def run_step(self, name: str) -> None:
+        script = self.blocks[name].replace("/tmp/", f"{self.scratch}/")
+        env = dict(os.environ, PATH=f"{self.bin}{os.pathsep}{os.environ.get('PATH', '')}", PYTHONPATH=str(REPO))
+        proc = subprocess.run(["bash", "-c", script], cwd=self.work, env=env, capture_output=True, text=True, check=False)
+        self.assertEqual(proc.returncode, 0, f"{name}: {proc.stderr[-2000:]}")
+
+    def site_html(self) -> str:
+        return (self.work / "_site" / "index.html").read_text()
+
+    def test_workflow_static_base_steps_match_research_port(self):
+        self.run_step("Rebuild v6 base")
+        v6 = base.rebuild_v6_base(REPO)
+        self.assertEqual((self.scratch / "v6.html").read_bytes(), v6.encode("utf-8"))
+
+        self.run_step("Apply last-24-hours patch")
+        last24 = base.apply_last24(REPO, v6)
+        self.assertEqual(self.site_html(), last24)
+
+        self.run_step("Apply rolling news rollup")
+        rolled = base.apply_news_rollup(REPO, last24)
+        self.assertEqual(self.site_html(), rolled)
+
+        self.run_step("Extend dashboard to six economies")
+        six = self.site_html()
+        base.assert_six_economies(six)
+
+        self.run_step("Restore 1-100 temperature input scores")
+        self.assertEqual(self.site_html(), base.apply_temperature_inputs(REPO, six))
+
+    def test_port_rejects_changed_anchors(self):
+        v6 = base.rebuild_v6_base(REPO)
+        with self.assertRaises(base.StaticBaseError):
+            base.apply_last24(REPO, v6.replace(base.TOP_DRIVERS_ANCHOR, ""))
+        with self.assertRaises(base.StaticBaseError):
+            base.apply_temperature_inputs(REPO, v6.replace('<div class="cdetail nz">', ""))
+
+
+class EntrypointCoverageTests(unittest.TestCase):
+    def test_every_deploy_pages_renderer_runs_in_research_or_is_exempt(self):
+        entrypoints = set(re.findall(r"python3? (?:-m )?(scripts[/.][A-Za-z0-9_/.]+?)(?:\s|$)", DEPLOY))
+        self.assertGreater(len(entrypoints), 15)
+        for entry in sorted(entrypoints):
+            with self.subTest(entry=entry):
+                if entry in EXEMPT_ENTRYPOINTS:
+                    continue
+                self.assertIn(f'"{entry}"', RESEARCH_SRC, f"{entry} runs in deploy-pages but not in the research renderer")
+        for exempt in EXEMPT_ENTRYPOINTS:
+            self.assertIn(exempt, entrypoints, f"stale exemption {exempt}")
+            if exempt.startswith("scripts.market_watch_launch."):
+                self.assertIn(exempt, DEPLOY, f"exemption {exempt} must appear in deploy-pages.yml")
+
+    def test_static_steps_ported_are_the_ones_in_deploy_pages(self):
+        blocks = step_blocks(DEPLOY)
+        for name in (
+            "Rebuild v6 base",
+            "Apply last-24-hours patch",
+            "Apply rolling news rollup",
+            "Restore 1-100 temperature input scores",
+        ):
+            self.assertIn(name, blocks)
+
+
+class LaunchResearchWorkflowWiringTests(unittest.TestCase):
+    def test_removed_coordinator_and_research_workflow(self):
+        self.assertFalse((WORKFLOWS / "publish-research-pages.yml").is_file())
+        self.assertFalse((REPO / "scripts/market_watch_launch/publication_coordinator.py").is_file())
+        for wf_path in WORKFLOWS.glob("*.yml"):
+            text = wf_path.read_text(encoding="utf-8")
+            for forbidden in (
+                "publication_coordinator",
+                "final-wait",
+                "research-check",
+                "actions/workflows/deploy-pages.yml/runs",
+            ):
+                self.assertNotIn(forbidden, text, wf_path.name)
+
+    def test_research_job_wiring(self):
+        research = job_block(LAUNCH_WF, "research")
+        self.assertIn("needs: [guard, orchestrate]", research)
+        self.assertIn("github.ref == 'refs/heads/main'", research)
+        self.assertIn("needs.guard.outputs.provider == 'acp'", research)
+        self.assertIn("needs.guard.outputs.mode == 'live'", research)
+        self.assertIn("group: pages-production", research)
+        self.assertIn("cancel-in-progress: false", research)
+        order = step_order(research)
+        expected = [
+            "Checkout main",
+            "Set up Python",
+            "Install market-state dependencies",
+            "Select this launch's verified Stage 04 freeze",
+            "Build and validate research edition",
+            "Upload Pages artifact",
+            "Configure Pages",
+            "Recheck eligibility and publication order on fresh main",
+            "Deploy to GitHub Pages",
+            "Verify public page serves this research edition",
+            "Commit research publication receipt",
+            "Fail when the public read-back did not verify",
+        ]
+        self.assertEqual(order, expected)
+        guard_i = order.index("Recheck eligibility and publication order on fresh main")
+        deploy_i = order.index("Deploy to GitHub Pages")
+        self.assertEqual(guard_i + 1, deploy_i)
+        self.assertIn("steps.guard.outputs.deploy == 'true'", research)
+        verify = research[research.index("- name: Verify public page serves this research edition") :]
+        self.assertIn("continue-on-error: true", verify.split("- name: Commit", 1)[0])
+        self.assertNotIn("--allow-superseded", verify)
+        receipt = research[research.index("- name: Commit research publication receipt") :]
+        self.assertIn('receipt="data/market_watch_launches/${LAUNCH_ID}/research_pages.json"', receipt)
+        self.assertIn('git add -- "$receipt"', receipt)
+        self.assertNotIn("git add -A", receipt)
+        self.assertNotIn("git add data", receipt)
+
+    def test_handoff_job_and_orchestrate_no_longer_handoff(self):
+        handoff = job_block(LAUNCH_WF, "handoff")
+        self.assertIn("needs: [guard, orchestrate, research]", handoff)
+        self.assertIn("--name 05_acp_handoff", handoff)
+        orchestrate = job_block(LAUNCH_WF, "orchestrate")
+        self.assertNotIn("05_acp_handoff", orchestrate)
+
+    def test_launch_workflow_has_no_polling_or_cross_workflow_hops(self):
+        lowered = LAUNCH_WF.lower()
+        self.assertNotIn("actions: read", LAUNCH_WF)
+        self.assertNotIn("schedule:", LAUNCH_WF)
+        self.assertNotIn("sleep 15", LAUNCH_WF)
+        self.assertNotIn("workflow_run:", LAUNCH_WF)
+        for forbidden in ("secrets.", "cursor", "06_acceptance", "07_finalize", "08_pages", "gh workflow run", "deploy-pages.yml"):
+            self.assertNotIn(forbidden, lowered)
+
+    def test_launch_concurrency_routes_only_real_launches(self):
+        conc = re.search(r"^concurrency:\n(.*?)^jobs:", LAUNCH_WF, flags=re.M | re.S).group(1)
+        self.assertIn("market-watch-manual-launch", conc)
+        self.assertIn("[launch-market-watch]", conc)
+        self.assertIn("market-watch-launch-other", conc)
+
+
+class FinalWorkflowWiringTests(unittest.TestCase):
+    def test_final_publication_contract_is_unchanged(self):
+        for needle in (
+            "REQUIRE_DATASET=(--require-dataset)",
+            'assert packet.get("seat_count") == 14',
+            "validate_public_packet(packet)",
+            "pages_dispatch bind-checkout",
+            "pages_dispatch verify-public",
+            "cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}",
+            "group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production'",
+        ):
+            self.assertIn(needle, DEPLOY)
+
+    def test_stamp_and_guard_order_in_final_build(self):
+        build = job_block(DEPLOY, "build")
+        order = step_order(build)
+        self.assertLess(order.index("Apply dashboard repair"), order.index("Stamp final publication edition"))
+        self.assertLess(order.index("Stamp final publication edition"), order.index("Configure Pages"))
+        self.assertLess(order.index("Configure Pages"), order.index("Refuse to publish over a newer edition"))
+        self.assertLess(order.index("Refuse to publish over a newer edition"), order.index("Upload Pages artifact"))
+        guard = build[build.index("- name: Refuse to publish over a newer edition") :]
+        self.assertIn("if: github.event_name == 'workflow_dispatch'", guard.split("- name:", 2)[1])
+
+    def test_final_deploy_rechecks_order_without_coordinator(self):
+        deploy = job_block(DEPLOY, "deploy")
+        order = step_order(deploy)
+        names = (
+            "Checkout publication verifier",
+            "Checkout fresh main for publication order",
+            "Download publication release",
+            "Recheck publication order before deploy",
+        )
+        indices = [order.index(n) for n in names]
+        for left, right in zip(indices, indices[1:]):
+            self.assertLess(left, right)
+        recheck_i = order.index("Recheck publication order before deploy")
+        self.assertEqual(recheck_i + 1, order.index("Deploy to GitHub Pages"))
+        for name in names:
+            block = deploy[deploy.index(f"- name: {name}") :]
+            self.assertIn("if: github.event_name == 'workflow_dispatch'", block.split("- name:", 2)[1])
+        self.assertNotIn("actions: read", deploy)
+        self.assertNotIn("publication_coordinator", deploy)
+        self.assertNotIn("Wait for in-flight research deploy", deploy)
+        self.assertIn("--root _publication_main", deploy)
+        self.assertIn("needs.build.outputs.pages_base_url", deploy)
+        build = job_block(DEPLOY, "build")
+        self.assertIn("pages_base_url: ${{ steps.pages.outputs.base_url }}", build)
+        self.assertIn("if: github.event_name != 'pull_request'", deploy)
+
+    def test_reconcile_job_records_stage_08_in_run(self):
+        reconcile = job_block(DEPLOY, "reconcile")
+        self.assertIn("needs: [build, deploy]", reconcile)
+        for cond in (
+            "github.event_name == 'workflow_dispatch'",
+            "github.ref == 'refs/heads/main'",
+            "github.event.inputs.launch_id != ''",
+            "needs.deploy.result == 'success'",
+        ):
+            self.assertIn(cond, reconcile)
+        self.assertIn("contents: write", reconcile)
+        self.assertNotIn("concurrency:", reconcile)
+        self.assertIn("pages_recovery in-run-evidence", reconcile)
+        self.assertIn("reconcile_published_pages.sh", reconcile)
+
+    def test_release_readback_does_not_gate_stage08(self):
+        deploy = job_block(DEPLOY, "deploy")
+        report = deploy[deploy.index("- name: Report public publication edition") :]
+        self.assertIn("continue-on-error: true", report)
+        verify = deploy[
+            deploy.index("- name: Verify public page serves this dataset") : deploy.index(
+                "- name: Report public publication edition"
+            )
+        ]
+        self.assertNotIn("continue-on-error", verify)
+
+    def test_launch_and_recovery_workflows_do_not_depend_on_research(self):
+        for name in ("launch-continuation.yml", "reconcile-published-pages.yml", "deploy-pages.yml"):
+            text = (WORKFLOWS / name).read_text(encoding="utf-8")
+            self.assertNotIn("Publish Market Watch Research Edition", text, name)
+            self.assertNotIn("publish-research-pages", text, name)
+            self.assertNotIn("market_watch_launch.research_pages", text, name)
+            self.assertNotIn("research_pages.json", text, name)
+        reconcile = (WORKFLOWS / "reconcile-published-pages.yml").read_text(encoding="utf-8")
+        self.assertIn('workflows: ["Deploy Market Watch Dashboard"]', reconcile)
+
+    def test_new_tests_run_in_launch_unit_suite(self):
+        for module in (
+            "tests.test_mw_publication_release",
+            "tests.test_mw_launch_milestones",
+            "tests.test_mw_two_trigger_contract",
+            "tests.test_mw_research_pages",
+            "tests.test_mw_research_headlines",
+            "tests.test_mw_pages_in_run_reconcile",
+            "tests.test_mw_research_parity",
+        ):
+            self.assertIn(module, LAUNCH_WF)
+        unit = job_block(LAUNCH_WF, "unit-tests")
+        self.assertIn("fetch-depth: 0", unit)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -89,6 +89,10 @@ on:
       - "scripts/apply_dashboard_repair.py"
       - "scripts/dashboard_repair/**"
       - "tests/test_dashboard_repair.py"
+      - "scripts/market_watch_launch/publication_release.py"
+      - "tests/test_mw_publication_release.py"
+      - "scripts/market_watch_launch/pages_recovery.py"
+      - "scripts/market_watch_launch/pages.py"
       - "scripts/trader_room_public.py"
       - "scripts/pm/**"
       - "scripts/pm_layer.py"
@@ -125,17 +129,18 @@ permissions:
   id-token: write
 
 concurrency:
-  # Pull-request previews must not cancel a production workflow_dispatch deploy.
-  # Production dispatches still share one group so an older production run is
-  # cancelled instead of publishing over a newer one.
+  # Pull-request previews cancel each other. Production dispatches queue in
+  # pages-production (cancel-in-progress false) so a production dispatch can
+  # never cancel an in-progress research publish job that shares the group.
   group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production' || format('pages-preview-{0}', github.event.pull_request.number || github.ref) }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
       dataset_run_id: ${{ steps.dataset.outputs.dataset_run_id }}
+      pages_base_url: ${{ steps.pages.outputs.base_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -598,8 +603,40 @@ jobs:
               raise SystemExit("failed source was given a successful check time")
           PY
 
+      - name: Stamp final publication edition
+        env:
+          MW_LAUNCH_ID: ${{ github.event.inputs.launch_id }}
+          MW_REVIEW_ID: ${{ github.event.inputs.review_id }}
+          MW_PACKET_SHA256: ${{ github.event.inputs.packet_sha256 }}
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python -m unittest tests.test_mw_publication_release
+          python3 -m scripts.market_watch_launch.publication_release stamp-final --site-dir _site
+          test -s _site/release.json
+          grep -Fq 'data-publication-phase="final"' _site/index.html
+
       - name: Configure Pages
+        id: pages
         uses: actions/configure-pages@v5
+
+      # Production only: refuse to replace a newer public or committed edition
+      # (for example a manual refresh of an older dataset over today's research
+      # edition). A finalized launch outranks its own research edition.
+      - name: Refuse to publish over a newer edition
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          PYTHONPATH: .
+          PUBLIC_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: python3 -m scripts.market_watch_launch.publication_release guard --site-dir _site --public-base-url "$PUBLIC_BASE_URL"
+
+      - name: Upload publication release
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: publication-release-${{ github.run_attempt }}
+          path: _site/release.json
+          if-no-files-found: error
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v4
@@ -614,16 +651,43 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
+      - name: Checkout publication verifier
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v6
+
+      - name: Checkout fresh main for publication order
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          path: _publication_main
+
+      - name: Download publication release
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/download-artifact@v4
+        with:
+          name: publication-release-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/publication
+
+      # The whole production run holds pages-production, so this guard on fresh
+      # main sees every research receipt committed by an earlier holder.
+      - name: Recheck publication order before deploy
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          PYTHONPATH: .
+          PUBLIC_BASE_URL: ${{ needs.build.outputs.pages_base_url }}
+        run: python3 -m scripts.market_watch_launch.publication_release guard --site-dir "${RUNNER_TEMP}/publication" --root _publication_main --public-base-url "$PUBLIC_BASE_URL"
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
         with:
           artifact_name: github-pages-${{ github.run_attempt }}
-
-      - name: Checkout publication verifier
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
-        uses: actions/checkout@v6
 
       - name: Verify public page serves this dataset
         if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
@@ -632,3 +696,52 @@ jobs:
           DATASET_RUN_ID: ${{ needs.build.outputs.dataset_run_id }}
           PYTHONPATH: .
         run: python3 -m scripts.market_watch_launch.pages_dispatch verify-public
+
+      # Observability of the edition label. The dataset check above remains the
+      # Stage 08 publication contract, so this read-back does not gate it.
+      - name: Report public publication edition
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.launch_id != ''
+        continue-on-error: true
+        env:
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          PYTHONPATH: .
+        run: |
+          python3 -m scripts.market_watch_launch.publication_release verify-public \
+            --release "${RUNNER_TEMP}/publication/release.json" \
+            --page-url "$PAGE_URL"
+
+  reconcile:
+    name: Reconcile Stage 08 for this deploy
+    # GITHUB_TOKEN-dispatched runs do not start reconcile-published-pages.yml
+    # through workflow_run, so the launch-bound production run records its own
+    # Stage 08 once its deploy job (deploy + dataset read-back) succeeded.
+    needs: [build, deploy]
+    if: >-
+      github.event_name == 'workflow_dispatch' &&
+      github.ref == 'refs/heads/main' &&
+      github.event.inputs.launch_id != '' &&
+      needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+      - name: Record this run's successful deploy as Stage 08
+        env:
+          PYTHONPATH: .
+          DEPLOY_RESULT: ${{ needs.deploy.result }}
+          LAUNCH_ID: ${{ github.event.inputs.launch_id }}
+        run: |
+          set -euo pipefail
+          run_json="${RUNNER_TEMP}/pages-run.json"
+          python3 -m scripts.market_watch_launch.pages_recovery in-run-evidence --deploy-result "$DEPLOY_RESULT" --out "$run_json"
+          RUN_ID="$GITHUB_RUN_ID" PAGES_RUN_JSON="$run_json" GH_REPO="$GITHUB_REPOSITORY" \
+            bash scripts/market_watch_launch/reconcile_published_pages.sh

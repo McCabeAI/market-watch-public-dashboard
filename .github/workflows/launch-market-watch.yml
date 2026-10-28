@@ -41,7 +41,9 @@ permissions:
   issues: write
 
 concurrency:
-  group: market-watch-manual-launch
+  # Only real launch requests share the serialized group. Other issues and pull
+  # requests get a unique group so they can never replace a pending launch.
+  group: ${{ (github.event_name == 'workflow_dispatch' || (github.event_name == 'issues' && startsWith(github.event.issue.title, '[launch-market-watch]'))) && 'market-watch-manual-launch' || format('market-watch-launch-other-{0}', github.run_id) }}
   cancel-in-progress: false
 
 jobs:
@@ -190,6 +192,8 @@ jobs:
     if: needs.guard.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    outputs:
+      launch_id: ${{ steps.launch.outputs.launch_id }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -272,13 +276,18 @@ jobs:
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
-      - name: Verify remote freeze before ACP handoff
+      - name: Verify remote freeze attestation
         if: needs.guard.outputs.provider == 'acp' && steps.launch.outputs.launch_id != ''
         env:
           LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
         run: |
           set -euo pipefail
+          attestation="data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json"
           git fetch origin "${GITHUB_REF_NAME}"
+          if [ -f "$attestation" ] && git show "origin/${GITHUB_REF_NAME}:${attestation}" >/dev/null 2>&1; then
+            echo "remote freeze already attested"
+            exit 0
+          fi
           remote_sha="$(git rev-parse "origin/${GITHUB_REF_NAME}")"
           local_binding="data/market_watch_launches/${LAUNCH_ID}/freeze_binding.json"
           if [ ! -f "$local_binding" ]; then
@@ -289,23 +298,217 @@ jobs:
           cmp -s "$local_binding" /tmp/remote-freeze-binding.json
           BINDING="$local_binding" LAUNCH_DIR="data/market_watch_launches/${LAUNCH_ID}" COMMIT_SHA="$remote_sha" \
             PYTHONPATH=. python3 -c 'import json,os; from pathlib import Path; from scripts.market_watch_launch.durability import record_remote_freeze; b=json.load(open(os.environ["BINDING"])); record_remote_freeze(Path(os.environ["LAUNCH_DIR"]), commit_sha=os.environ["COMMIT_SHA"], packet_sha256=str(b.get("packet_sha256") or ""), trader_books_sha256=str(b.get("starting_trader_books_sha256") or ""), pm_books_sha256=str(b.get("starting_pm_books_sha256") or ""), score_state_sha256=str(b.get("score_state_sha256") or ""))'
-          git add "data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json"
+          git add "$attestation"
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
             commit -m "chore: market watch launch ${LAUNCH_ID} remote freeze attestation"
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
           git fetch origin "${GITHUB_REF_NAME}"
-          attested="$(git rev-parse "origin/${GITHUB_REF_NAME}:data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json")"
+          attested="$(git rev-parse "origin/${GITHUB_REF_NAME}:${attestation}")"
           test -n "$attested"
 
-      - name: ACP handoff after verified freeze
-        if: needs.guard.outputs.provider == 'acp' && steps.launch.outputs.launch_id != ''
+      - name: Fail the job when the launch itself failed
+        if: always() && steps.launch.outputs.cli_code == '1'
+        run: exit 1
+
+  research:
+    name: Publish research edition
+    needs: [guard, orchestrate]
+    if: >-
+      needs.orchestrate.result == 'success' &&
+      needs.orchestrate.outputs.launch_id != '' &&
+      needs.guard.outputs.provider == 'acp' &&
+      needs.guard.outputs.mode == 'live' &&
+      github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    # Every production Pages writer runs guard -> deploy -> verify -> receipt
+    # inside this one group, so a final deploy cannot interleave with it.
+    concurrency:
+      group: pages-production
+      cancel-in-progress: false
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    outputs:
+      eligible: ${{ steps.select.outputs.eligible }}
+      verified: ${{ steps.verify.outcome == 'success' }}
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install market-state dependencies
+        run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+
+      - name: Select this launch's verified Stage 04 freeze
+        id: select
         env:
-          LAUNCH_ID: ${{ steps.launch.outputs.launch_id }}
+          PYTHONPATH: .
+          LAUNCH_ID: ${{ needs.orchestrate.outputs.launch_id }}
+        run: python3 -m scripts.market_watch_launch.research_pages select --launch-id "$LAUNCH_ID"
+
+      - name: Build and validate research edition
+        id: build
+        if: steps.select.outputs.eligible == 'true'
+        env:
+          PYTHONPATH: .
+          LAUNCH_ID: ${{ steps.select.outputs.launch_id }}
+          REVIEW_ID: ${{ steps.select.outputs.review_id }}
+          PACKET_SHA256: ${{ steps.select.outputs.packet_sha256 }}
         run: |
           set -euo pipefail
+          python3 -m scripts.market_watch_launch.research_pages build \
+            --launch-id "$LAUNCH_ID" \
+            --review-id "$REVIEW_ID" \
+            --packet-sha256 "$PACKET_SHA256" \
+            --site-dir _site \
+            --channel production \
+            --fetch-schedules --schedule-timeout 6
+          test -s _site/release.json
+          mkdir -p "${RUNNER_TEMP}/research"
+          cp _site/release.json "${RUNNER_TEMP}/research/release.json"
+
+      - name: Upload Pages artifact
+        if: steps.select.outputs.eligible == 'true'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          name: github-pages-research-${{ github.run_id }}-${{ github.run_attempt }}
+          path: _site
+
+      - name: Configure Pages
+        id: pages
+        if: steps.select.outputs.eligible == 'true'
+        uses: actions/configure-pages@v5
+
+      - name: Recheck eligibility and publication order on fresh main
+        id: guard
+        if: steps.select.outputs.eligible == 'true'
+        env:
+          PYTHONPATH: .
+          PUBLIC_BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          set -euo pipefail
+          git fetch origin main && git checkout -q --detach origin/main
+          python3 -m scripts.market_watch_launch.research_pages guard \
+            --site-dir "${RUNNER_TEMP}/research" \
+            --public-base-url "$PUBLIC_BASE_URL"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        if: steps.guard.outputs.deploy == 'true'
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-research-${{ github.run_id }}-${{ github.run_attempt }}
+          timeout: 600000
+
+      - name: Verify public page serves this research edition
+        id: verify
+        if: steps.deployment.outcome == 'success'
+        continue-on-error: true
+        env:
+          PYTHONPATH: .
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          python3 -m scripts.market_watch_launch.publication_release verify-public \
+            --release "${RUNNER_TEMP}/research/release.json" \
+            --page-url "$PAGE_URL"
+
+      - name: Commit research publication receipt
+        if: always() && steps.deployment.outcome == 'success'
+        env:
+          PYTHONPATH: .
+          LAUNCH_ID: ${{ steps.select.outputs.launch_id }}
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+          PUBLIC_STATE: ${{ steps.verify.outputs.public_state }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          receipt="data/market_watch_launches/${LAUNCH_ID}/research_pages.json"
+          for attempt in 1 2 3 4 5; do
+            python3 -m scripts.market_watch_launch.research_pages record \
+              --release "${RUNNER_TEMP}/research/release.json" \
+              --run-id "$GITHUB_RUN_ID" \
+              --run-attempt "$GITHUB_RUN_ATTEMPT" \
+              --run-url "$RUN_URL" \
+              --page-url "$PAGE_URL" \
+              --public-state "${PUBLIC_STATE:-unknown}"
+            git add -- "$receipt"
+            if git diff --cached --quiet; then
+              echo "research receipt already recorded"
+              exit 0
+            fi
+            unexpected="$(git diff --cached --name-only | grep -vxF "$receipt" || true)"
+            if [ -n "$unexpected" ]; then
+              echo "::error::research receipt commit staged unexpected paths: $unexpected"
+              exit 1
+            fi
+            git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -m "chore: market watch launch ${LAUNCH_ID} research pages receipt"
+            if git pull --rebase origin main && git push origin HEAD:main; then
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            git reset --hard origin/main
+            sleep $((attempt * 4))
+            git fetch origin main
+            git reset --hard origin/main
+          done
+          echo "::error::could not push research receipt"
+          exit 1
+
+      - name: Fail when the public read-back did not verify
+        if: always() && steps.deployment.outcome == 'success' && steps.verify.outcome != 'success'
+        run: |
+          echo "::error::public read-back did not verify the deployed research edition"
+          exit 1
+
+  handoff:
+    name: Record Stage 05 delegation request (non-executing)
+    needs: [guard, orchestrate, research]
+    if: >-
+      always() &&
+      needs.orchestrate.result == 'success' &&
+      needs.orchestrate.outputs.launch_id != '' &&
+      needs.guard.outputs.provider == 'acp' &&
+      (needs.research.result == 'success' || (needs.research.result == 'skipped' && needs.guard.outputs.mode != 'live'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Record Stage 05 delegation request
+        env:
+          LAUNCH_ID: ${{ needs.orchestrate.outputs.launch_id }}
+        run: |
+          set -euo pipefail
+          # Stage 05 writes a request only; it does not call ACP or any model.
+          # For two-trigger launches it stays pending until research_pages.json
+          # shows a verified public read-back.
           if [ ! -f "data/market_watch_launches/${LAUNCH_ID}/remote_freeze.json" ]; then
-            echo "remote freeze was not attested; not calling ACP"
+            echo "remote freeze was not attested; not recording stage 05"
             exit 0
           fi
           HANDOFF_RESULT="${RUNNER_TEMP}/handoff-result.json"
@@ -315,13 +518,9 @@ jobs:
             exit 0
           fi
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit -m "chore: market watch launch ${LAUNCH_ID} acp handoff"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-
-      - name: Fail the job when the launch itself failed
-        if: always() && steps.launch.outputs.cli_code == '1'
-        run: exit 1
+            commit -m "chore: market watch launch ${LAUNCH_ID} stage 05 delegation request"
+          git pull --rebase origin main
+          git push origin HEAD:main
 
   unit-tests:
     name: Market Watch launch unit tests
@@ -355,4 +554,11 @@ jobs:
             tests.test_mw_launch_completion \
             tests.test_mw_launch_integration \
             tests.test_mw_launch_pages_dispatch_confirmation \
+            tests.test_mw_publication_release \
+            tests.test_mw_launch_milestones \
+            tests.test_mw_two_trigger_contract \
+            tests.test_mw_research_pages \
+            tests.test_mw_research_headlines \
+            tests.test_mw_pages_in_run_reconcile \
+            tests.test_mw_research_parity \
             -v

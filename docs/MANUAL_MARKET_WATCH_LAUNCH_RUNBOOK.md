@@ -2,7 +2,38 @@
 
 This is the operator command for the dependency-gated launcher. It does not start a clock. ACP weekday schedule `market-watch-weekday-0205` stays disabled. Saying the words in chat does nothing until an authenticated GitHub initiating event exists.
 
-Readiness of this repository build: **GATED_WAITING_ACP**. Stages 00–04 run for a human launch. Stage 05 fail-closes with `awaiting_acp_one_shot_authority` until the ACP one-shot contract in `docs/ACP_ONE_SHOT_AUTHORITY.md` is implemented and verified. The stub provider path is for tests only. It does not call traders and it does not publish production Pages.
+Readiness of this repository build: **two manual triggers**. Trigger A is a human `[launch-market-watch]` issue: one `launch-market-watch.yml` run performs stages 00–04, remote freeze attestation, research build and deploy with public read-back, commits `research_pages.json`, records the non-executing Stage 05 delegation request, then stops (no trader/PM invocation, no ACP launch from this repo). Trigger B is separate human approval through the existing ACP job for that launch; acceptance, books/P&L, stages 06/07, `deploy-pages.yml` dispatch, and in-run Stage 08 reconciliation then run without a third operator action. The stub provider path is for tests only.
+
+## The two commands
+
+1. **Trigger A — open issue** `[launch-market-watch] YYYY-MM-DD` (body optional JSON). One workflow on `main` runs stages 00–04, remote freeze attestation, builds the research edition, deploys to the shared GitHub Pages site, verifies the public read-back, commits `data/market_watch_launches/<id>/research_pages.json`, records the Stage 05 delegation request (request only; no ACP call), then stops.
+
+2. **Trigger B — Run Trader Room**: a human authors the existing ACP one-shot Market Watch job for that `launch_id` through the trusted ACP caller (outside this repository; this repo never opens ACP issues and never dispatches ACP). ACP reads `data/market_watch_launches/<launch_id>/acp_one_shot_delegation_request.json` on `main` and opens the data-only `[overnight-output]` pull request. From there `overnight-scheduled-output.yml` runs acceptance, books/P&L, stages 06 and 07, dispatches `deploy-pages.yml` with `launch_id`, and the `reconcile` job inside that same `deploy-pages.yml` run records Stage 08. There is no third operator action.
+
+Between A and B nothing runs: no timer, no polling, no provider call. B can come hours later, or never.
+
+Before B, optionally confirm the launch is ready from a fresh `main` checkout (read-only, exit 0 means ready):
+
+```bash
+PYTHONPATH=. python3 -m scripts.market_watch_launch.milestones acceptance-gate --launch-id <launch_id>
+```
+
+B is refused at acceptance (`trader output refused: <reason>`, nothing merged, no books change) when:
+
+* `research_publication_not_verified` — `research_pages.json` has no `public_state: matched` row for this launch/review/packet;
+* `delegation_request_not_ready` — Stage 05 is not `blocked` / `awaiting_acp_one_shot_authority` with that same research receipt;
+* `superseded_by_newer_launch` or `superseded_by_newer_freeze:<launch_id>` — a newer Trigger A already froze. Its starting books are what the next trader cycle must use.
+
+**Milestones:** `research_ready` (verified research receipt with `public_state: matched`), `trader_accepted` (stages 06–07), `final_published` (Stage 08 reconciled). A verified research receipt releases the data-collection lock so the next day's Trigger A can run even if Trigger B for an older session never completed. A session that never reached `research_ready` also stops blocking. The lock is not held by launches still in the trader phase. A newer freeze supersedes an older launch's pending trader cycle (recorded as `superseded_by`; its output is refused at acceptance). Trigger B requires the verified research receipt for that launch.
+
+### Failure recovery
+
+* Research build, deploy, or public read-back failure — Trigger B stays blocked. Re-run failed jobs on that launch run, or open the same-day issue again (remote freeze attestation is idempotent). The next day's Trigger A still works once the prior session is `research_ready` or never blocked.
+* Stage 05 not written — re-run the `Record Stage 05 delegation request (non-executing)` job on the launch run.
+* Final deploy failure — "Re-run all jobs" on the `deploy-pages.yml` run (in-run reconcile records Stage 08 when deploy succeeds), or use `reconcile-published-pages.yml` / `reconcile_published_pages.sh` for manual recovery.
+* A superseded older trader output is left unmerged; history remains in its pull request.
+* Trigger A for a new session while a Trigger B for an older session is still running at ACP: this repo cannot see an in-flight ACP job. The new freeze marks the older launch `superseded_by` (`trader_request_observed: false`, `trader_output_accepted: false`) and its later output is refused, not silently applied over newer research. Finish or abandon B before opening the next day's A if you want that trader cycle accepted.
+* A bot commit loses a push race on `data/market_watch_launches/index.json` (for example an acceptance and a next-day freeze landing together): the step fails closed after `git pull --rebase`. Re-run the failed job; every write is idempotent.
 
 ## Exact initiating events
 
@@ -13,7 +44,7 @@ Only these two events start a launch:
 
 Bot-authored issues and bot workflow dispatches are ignored. GitHub Actions must not open an `[agent-run]` issue. The issue author must be the authenticated GitHub user, and that user must have `admin`, `maintain`, or `write` on this repository. A read-only or outside actor is refused at stage 00, before ingestion.
 
-An `acp` launch commits and pushes the stage 04 freeze, rereads that commit on the remote, and only then writes the delegation request. Stage 05 stays `awaiting_remote_freeze` until that attestation exists, and `awaiting_acp_one_shot_authority` after it. A local grant file is not a provider dispatch. After ACP later accepts an `[overnight-output]` pull request, it sends `repository_dispatch` event `market-watch-launch-accepted` with `client_payload` `{launch_id, review_id, base_packet_sha256, provider_run_url}`. That event is handled by `launch-continuation.yml`. Production Pages run only after stages 06 and 07 succeed for that same launch and review.
+An `acp` live launch commits and pushes the stage 04 freeze, rereads that commit on the remote, attests `remote_freeze.json`, publishes the research edition, then writes the Stage 05 delegation request only after research is verified on the public site. Until then Stage 05 is `pending` / `awaiting_research_publication` (and `awaiting_remote_freeze` if attestation is missing); it never calls ACP from this repository. Launch records created before `publication_contract: two_trigger_v1` keep their original Stage 05 behavior. After ACP later accepts an `[overnight-output]` pull request, it sends `repository_dispatch` event `market-watch-launch-accepted` with `client_payload` `{launch_id, review_id, base_packet_sha256, provider_run_url}`. That event is handled by `launch-continuation.yml`. Production final Pages run only after stages 06 and 07 succeed for that same launch and review.
 
 ### Issue created from ChatGPT
 
@@ -49,7 +80,7 @@ Body (raw JSON, or one fenced `json` block). Omitted fields use the defaults.
 | `mode` | `live` or `fixture` | `live` |
 | `provider` | `acp` or `stub` | `acp` |
 
-`provider: acp` is the production path. It freezes trusted evidence, then stops at stage 05 until ACP grants one-shot authority. `provider: stub` is a zero-model rehearsal. It must not be used to publish production Pages.
+`provider: acp` is the production path. It freezes trusted evidence, publishes research on `main`, then records the Stage 05 request. `provider: stub` is a zero-model rehearsal. It must not be used to publish production Pages.
 
 A second issue or dispatch for the same session with `rerun: false` returns the current launch instead of starting another provider cycle.
 
@@ -63,6 +94,8 @@ Workflow: `Launch Market Watch` (`launch-market-watch.yml`), ref `main`.
 | `rerun` | boolean | `false` |
 | `mode` | `live` or `fixture` | `live` |
 | `provider` | `acp` or `stub` | `acp` |
+
+Live ACP launches from `workflow_dispatch` alone are refused; use a human issue for production.
 
 ## What the command reserves
 
@@ -84,16 +117,61 @@ Legacy `schedule_id` `market-watch-weekday-0205` remains only so previously acce
 | 02 | `02_acquire` | Market-state, news, curves, oil, FX, positioning refresh stored |
 | 03 | `03_quality_gate` | `PASS`. Due scored gaps are `BLOCKED` with series ids. Optional PMI gaps are `PARTIAL` and do not become HOLDs |
 | 04 | `04_freeze` | Evidence reread; packet SHA matches. Cutoff is the actual freeze time, not 01:50 ET |
-| 05 | `05_acp_handoff` | Stub rehearsal, or a verified ACP grant once that side exists. Otherwise `awaiting_acp_one_shot_authority` |
+| 05 | `05_acp_handoff` | Non-executing delegation request recorded after verified research receipt (or stub/fixture rehearsal). Does not call ACP from this repo |
 | 06 | `06_acceptance` | Existing `[overnight-output]` validate/apply for this launch's packet, 14 traders, and 3 PMs |
 | 07 | `07_finalize` | Same launch, session, and review; publication gate `may_publish` |
-| 08 | `08_pages` | Explicit `deploy-pages.yml` `workflow_dispatch` after 07, confirmed by an Actions run id. The launch stays `running` until that run's deploy succeeds and is reconciled. Stub runs record a dry-run and do not publish |
+| 08 | `08_pages` | Successful `deploy-pages.yml` `workflow_dispatch` after 07; Stage 08 is reconciled in-run on launch-bound dispatches, or via `reconcile-published-pages.yml` for manual recovery. Stub runs record a dry-run and do not publish |
 
 Accepted `[overnight-output]` merges set `MW_PAGES_REQUIRE_LAUNCH=1`. Production Pages then run only when that payload carries a `launch_id` whose stage 07 succeeded, the provider is `acp`, and `publish_production` is true. A merge with no launch binding skips Pages. Callers that leave `MW_PAGES_REQUIRE_LAUNCH` unset still dispatch Pages, so older handoff tests stay valid. No workflow `push` or `schedule` deploys production Pages.
 
 Durable status values are `pending`, `running`, `succeeded`, `blocked`, and `failed`. Each stage stores input and output hashes. A later stage does not run because an earlier process exited 0.
 
 State directory: `data/market_watch_launches/<launch_id>/`.
+
+## Two editions on one Pages URL
+
+Every production site carries `release.json` with its phase, launch, review, packet, and session. The visible banner under the header repeats the phase, date, and times.
+
+| Edition | Published by | When | Trader Book shows |
+| --- | --- | --- | --- |
+| `research` | `launch-market-watch.yml` (`Publish research edition` job) | After Stage 04 is verified and remotely attested on the same launch run | Previous accepted books, labeled with their run id, as-of, and acceptance time. Today's cycle is `pending` |
+| `final` | `deploy-pages.yml` (Stage 08) | After Stage 07 and successful final deploy | Today's accepted books and P&L for the same launch, review, and packet |
+
+The research edition builds in a throwaway overlay from the frozen evidence packet and the launch's staged lineage scores. Source health is that launch's Stage 01 ingest. News is in two labeled parts (see below). It refuses to build when the attestation is missing or does not match, a Stage 00–04 artifact hash drifted, the frozen packet fails `require_snapshot`, staged scores do not match `score_state_sha256`, the quality gate is not `PASS`, or the freeze date is not the session date (`fail`). It skips a stub, fixture, or non-production launch, a launch that is no longer `running`, a session that is no longer today in New York, and a launch whose Stage 06/07 already succeeded or that a newer launch replaced (`skip`).
+
+The only durable research write is `data/market_watch_launches/<launch_id>/research_pages.json`, with one row per deploy run. `launch.json` and `index.json` are not touched by research publication. A verified public read-back (`public_state: matched`) is the `research_ready` milestone.
+
+Publication order is the rank `(session_date, launch stamp, phase)` with research < final. Before deploying, each production writer rechecks committed receipts and the live `release.json` on fresh `main`.
+
+### Publication ordering
+
+Research and final production deploys both run the full sequence guard → deploy → verify → receipt inside the shared GitHub Actions concurrency group `pages-production` with `cancel-in-progress: false`. Each guard reads committed launch state and the live `release.json` on a fresh `main` checkout. Research for launch *L* must verify before Trigger B for *L* is accepted, so a final deploy for *L* cannot interleave with its own research job. An older final that starts after a newer research receipt is on `main` is refused by the guard (committed research outranks it).
+
+Residual liveness caveat: GitHub keeps one pending entry per concurrency group; a third production entrant can cancel a *pending* run in that group. A cancelled run never deploys. Recovery is to re-run the cancelled or failed workflow.
+
+### News on the research edition
+
+* **Current verified headlines (as of the Stage 04 news cutoff).** Selected by `scripts/market_watch_launch/research_headlines.py` from `families.news` in the hash-verified `evidence_snapshot.json`. Shown on the Front Page (top 4) and under News & Research (up to 8). Headline, source, time, and link only. There are no summaries or model text, and nothing implies trader acceptance.
+  * An item needs a verification status of `official`, `corroborated`, or `single_source`, and its `id` must match its source edges.
+  * Its frozen and recomputed `score_transmission` disposition must be `show` or `assess`.
+  * One source edge must have an `https` link on the publisher's own host. That edge must come from a known discovery surface with an `ok` acquisition receipt in this run.
+  * Its timestamp must carry a timezone and fall after the later of the previous acceptance and the cutoff minus 24 h, and not after the cutoff.
+  * Items already in the accepted digest, and duplicates, are dropped.
+  * Any other item is rejected and counted by reason in `release.json` under `headlines.counts.rejected`.
+  * With no eligible item, the panel says so and gives the reason and the previous analysis age. When the news family itself fails verification (stale, not live, cutoff outside the freeze, malformed), the panel says it is unavailable.
+* **Previous accepted analysis (as of the last accepted cutoff).** The accepted digest, desk summary, Market News, central-bank research, and analyst text. These stay bound to acceptance and change only with the final edition.
+
+The feed reads only the frozen packet. It does not change `accepted_public_news.json`, the overnight dataset, or the news approval path.
+
+Local, never production:
+
+```bash
+PYTHONPATH=. python3 -m scripts.market_watch_launch.research_pages select
+PYTHONPATH=. python3 -m scripts.market_watch_launch.research_pages build \
+  --launch-id <launch_id> --review-id <review_id> --packet-sha256 <sha> --site-dir /tmp/research-site
+```
+
+`--channel production` is refused outside a GitHub Actions run on `main` of this repository.
 
 ## Local rehearsal (no production publish)
 
@@ -148,7 +226,7 @@ git show origin/main:data/overnight/latest.json
 gh workflow run deploy-pages.yml --ref main
 ```
 
-A successful `gh workflow run` exits 0 on HTTP 204 and does not include a run id. That is not a deploy and does not terminal the launch. The acceptance job records stage 08 only after it observes the Actions run. `reconcile-published-pages.yml` then starts from that run's `workflow_run` completion. It marks stage 08 succeeded only when `publication_evidence_proven()` matches the successful `workflow_dispatch` on `main` to the finalized launch. Until then the launch stays `running` and the one-live-launch guard stays closed. A missing run, a failed or cancelled deploy, or a mismatched launch, review, packet, or ref does not release the guard. Pull-request Pages builds are not production.
+A successful `gh workflow run` exits 0 on HTTP 204 and does not include a run id. That is not a deploy. Launch-bound production dispatches record Stage 08 in the `deploy-pages.yml` `reconcile` job when deploy succeeds. `reconcile-published-pages.yml` still reconciles human-dispatched runs and manual recovery when `workflow_run` fires or when invoked with `launch_id` and `run_id`. Pull-request Pages builds are not production.
 
 ## Reconcile a successful Pages deploy
 
@@ -175,6 +253,7 @@ git reset --hard origin/main
 LAUNCH_ID=mwl-20261002T094056Z-1d0ebea5 \
 RUN_ID=37036473785 \
   bash scripts/market_watch_launch/reconcile_published_pages.sh
+```
 
 ## October 22 launch left the guard closed
 
@@ -188,5 +267,4 @@ The idempotent recovery, once this run is the verified deploy, is the same recon
 gh workflow run reconcile-published-pages.yml --ref main \
   -f launch_id=mwl-20261022T110951Z-9a049b03 \
   -f run_id=39779281989
-```
 ```

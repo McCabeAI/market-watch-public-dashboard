@@ -169,7 +169,7 @@ class StalePagesReconciliationTests(unittest.TestCase):
     def _digests(self) -> dict[Path, str]:
         return {path: _sha256_file(path) for path in self.before}
 
-    def test_unproven_pages_stay_live_and_block_the_next_day(self) -> None:
+    def test_unproven_pages_stay_live_but_do_not_block_the_next_day(self) -> None:
         store = LaunchStateStore(self.state_root)
         receipt = reconcile_published_pages(self.launch, None, store=store)
         self.assertEqual(receipt["status"], "blocked")
@@ -192,8 +192,10 @@ class StalePagesReconciliationTests(unittest.TestCase):
             handlers=_success_handlers(),
             when=SEP25_WHEN,
         )
-        self.assertEqual(nxt["status"], "blocked")
-        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
+        self.assertNotEqual(nxt["status"], "blocked")
+        self.assertEqual(nxt["launch"]["stages"]["00_authenticate"]["status"], "succeeded")
+        self.assertNotEqual(nxt["launch"]["stages"]["00_authenticate"]["reason"], CONCURRENCY_BLOCK)
+        self.assertEqual(reloaded["status"], "running")
         self.assertEqual(self._digests(), self.before)
 
     def test_proven_pages_deploy_terminals_prior_launch_and_authenticates_next_day(self) -> None:

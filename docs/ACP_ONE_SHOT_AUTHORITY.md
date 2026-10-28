@@ -8,6 +8,8 @@
 - Requires a verified `remote_freeze.json` on the trusted freeze commit before stage 05 can reach `handoff_status: request_ready`.
 - With a matching grant or receipt file, logs verification only; stages remain blocked until continuation applies provider output from ACP.
 - Does **not** call live models, does **not** open `[agent-run]` issues, and does **not** treat `MW_LAUNCH_ACP_DISPATCH_IMPLEMENTED` as dispatch authority.
+- For launches recorded with `publication_contract: two_trigger_v1`, the delegation request is written only after the research edition for the same launch/review/packet is deployed and its public read-back verified (`research_pages.json`, `public_state: matched`); until then stage 05 is `pending` / `awaiting_research_publication`.
+- Acceptance of `[overnight-output]` refuses a launch without that verified receipt and refuses any launch superseded by a newer frozen launch.
 
 ## ACP contract (single-use)
 
