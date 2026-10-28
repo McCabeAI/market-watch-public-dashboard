@@ -347,12 +347,22 @@ def _statcan_points(spec: dict[str, Any], wds_by_vector: dict[int, list[dict[str
 
     if transform == "mom_sa_pct":
         series = _mom_pct_series_from_levels(_levels_monthly(raw_points))
+        last = len(series) - 1
         for index, (period, value) in enumerate(series):
             point = _make_point(period, value, transform=transform, source_url=source_url)
+            day = _release_day(raw_points, period)
             # WDS releaseTime is the date of the value's current vintage. Only the
-            # newest month has not been revised since its first publication.
-            if index == len(series) - 1:
-                point["release_date"] = _release_day(raw_points, period)
+            # newest month is still on its first publication. The same date on an
+            # earlier month is a revision, and must not be stored as a first release.
+            if index == last:
+                point["revision_status"] = "final"
+                if day:
+                    point["release_date"] = day
+            else:
+                point["revision_status"] = "revised"
+                point["release_date"] = None
+                if day:
+                    point["latest_release_vintage"] = day
             points.append(point)
         return points
 

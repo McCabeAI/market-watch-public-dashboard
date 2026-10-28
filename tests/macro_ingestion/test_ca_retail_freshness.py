@@ -76,6 +76,14 @@ class MethodologyBreakKeyTests(unittest.TestCase):
         self.assertTrue(_methodology_blocks(self._comp([{"note": "harvested from press"}]), "2026-09"))
         self.assertTrue(_methodology_blocks(self._comp([{"date": "March 2023"}]), "2026-09"))
 
+    def test_period_keyed_break_blocks_until_the_series_continues(self) -> None:
+        unresolved = self._comp([{"period": "2024-01", "note": "base year"}], last="2023-12")
+        self.assertTrue(_methodology_blocks(unresolved, "2024-01"))
+        self.assertTrue(_methodology_blocks(unresolved, "2024-02"))
+        continued = self._comp([{"period": "2024-01", "note": "base year"}], last="2024-03")
+        self.assertTrue(_methodology_blocks(continued, "2024-01"))
+        self.assertFalse(_methodology_blocks(continued, "2024-06"))
+
     def test_committed_ca_retail_break_no_longer_blocks(self) -> None:
         history = load_history(HISTORY_DIR)
         comp = history["CA"]["components"]["Consumer.retail"]
@@ -116,8 +124,17 @@ class AdapterWindowTests(unittest.TestCase):
         self.assertAlmostEqual(values["2026-07"], (73684586.0 / 74289929.0 - 1) * 100)
         self.assertAlmostEqual(values["2026-08"], (74567349.0 / 73684586.0 - 1) * 100)
         self.assertEqual(points[-1]["release_date"], "2026-10-23")
-        # Older months carry a revision vintage date, not their first release.
-        self.assertTrue(all(p.get("release_date") is None for p in points[:-1]))
+        self.assertEqual(points[-1]["revision_status"], "final")
+        self.assertNotIn("latest_release_vintage", points[-1])
+        # Earlier months share a later vintage. That date is a revision, not a first release.
+        revised = {p["period"]: p for p in points[:-1]}
+        self.assertEqual(revised["2026-04"]["latest_release_vintage"], "2026-09-24")
+        self.assertEqual(revised["2026-07"]["latest_release_vintage"], "2026-10-23")
+        self.assertEqual(revised["2026-06"]["latest_release_vintage"], "2026-10-23")
+        for point in points[:-1]:
+            self.assertIsNone(point.get("release_date"))
+            self.assertEqual(point["revision_status"], "revised")
+            self.assertNotEqual(point.get("latest_release_vintage"), point.get("release_date"))
 
     def test_month_gap_is_not_bridged(self) -> None:
         levels = [("2026-04", 100.0), ("2026-05", 101.0), ("2026-07", 103.0)]
@@ -132,16 +149,26 @@ class AdapterWindowTests(unittest.TestCase):
 class RetailReachesConsumerScoreTests(unittest.TestCase):
     """Replay the 28 Oct 2026 fetch through the real store-to-history path."""
 
-    def _store_dir(self, tmp: Path) -> Path:
+    def _store_dir(self, tmp: Path, *, reverse_retail: bool = False) -> Path:
         obs = tmp / "observations"
         shutil.copytree(LAUNCH_OBS, obs)
         store = json.loads((obs / "ca.json").read_text(encoding="utf-8"))
         template = next(o for o in store["observations"] if o["series_id"] == "v1446859483")
         store["observations"] = [o for o in store["observations"] if o["series_id"] != "v1446859483"]
+        retail = []
         for point in _adapter_points():
             row = dict(template)
-            row.update(period=point["period"], value=point["value"], release_date=point.get("release_date"))
-            store["observations"].append(row)
+            row.update(
+                period=point["period"],
+                value=point["value"],
+                release_date=point.get("release_date"),
+                revision_status=point.get("revision_status"),
+                latest_release_vintage=point.get("latest_release_vintage"),
+            )
+            retail.append(row)
+        if reverse_retail:
+            retail.reverse()
+        store["observations"].extend(retail)
         (obs / "ca.json").write_text(json.dumps(store), encoding="utf-8")
         return obs
 
@@ -162,8 +189,29 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
         self.assertEqual(retail_skips, {"partial_series_mismatch"})
         rows = {o["reference_period"]: o for o in histories["CA"]["components"]["Consumer.retail"]["observations"]}
         self.assertEqual(rows["2026-08"]["release_date"], "2026-10-23")
+        self.assertEqual(rows["2026-08"]["revision_status"], "final")
+        self.assertNotIn("latest_release_vintage", rows["2026-08"])
+        # July's 2026-10-23 stamp is the August publication revising July, not July's first release.
         self.assertNotIn("release_date", rows["2026-07"])
+        self.assertEqual(rows["2026-07"]["latest_release_vintage"], "2026-10-23")
+        self.assertEqual(rows["2026-07"]["revision_status"], "revised")
+        self.assertNotEqual(rows["2026-07"].get("release_date"), rows["2026-07"]["latest_release_vintage"])
+        frozen = {
+            o["reference_period"]: o
+            for o in base["CA"]["components"]["Consumer.retail"]["observations"]
+        }
+        for period, prior in frozen.items():
+            self.assertLessEqual(period, "2026-06")
+            self.assertEqual(rows[period], prior)
         self.assertEqual(rows["2026-06"]["value"], 0.6)
+        self.assertEqual(rows["2026-06"]["release_date"], "2026-08-21")
+        for code, hist in histories.items():
+            if code == "CA":
+                for key, comp in hist["components"].items():
+                    if key != "Consumer.retail":
+                        self.assertEqual(comp, base["CA"]["components"][key])
+            else:
+                self.assertEqual(hist, base[code])
 
         before = build_score_state(cal, compute_state(cal, base))["countries"]
         after = build_score_state(cal, compute_state(cal, histories))["countries"]
@@ -180,17 +228,116 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
         ]
         self.assertEqual(changed, [("CA", "Consumer")])
         self.assertEqual(before_sha, (_sha(HISTORY_DIR / "ca.json"), _sha(SCORES_PATH)))
+        for code, dims in before.items():
+            for dim, spec in dims.items():
+                after_dim = after[code][dim]
+                if (code, dim) != ("CA", "Consumer"):
+                    self.assertEqual(spec.get("level"), after_dim.get("level"))
+                before_states = spec.get("component_state") or {}
+                after_states = after_dim.get("component_state") or {}
+                for name, state in before_states.items():
+                    if (code, dim, name) == ("CA", "Consumer", "retail"):
+                        continue
+                    self.assertEqual(state, after_states.get(name), msg=f"{code}.{dim}.{name}")
+
+    def test_august_listed_before_july_still_includes_both(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        base = load_history(HISTORY_DIR)
+        with tempfile.TemporaryDirectory() as tmp:
+            points = points_from_observation_stores(
+                observations_dir=self._store_dir(Path(tmp), reverse_retail=True),
+                checked_at=CHECKED_AT,
+            )
+        histories = copy.deepcopy(base)
+        result = merge_scored_points(histories, cal, points, checked_at=CHECKED_AT)
+        self.assertEqual(
+            sorted((a["id"], a["reference_period"]) for a in result["appended"]),
+            [("CA.Consumer.retail", "2026-07"), ("CA.Consumer.retail", "2026-08")],
+        )
+        rows = {o["reference_period"]: o for o in histories["CA"]["components"]["Consumer.retail"]["observations"]}
+        self.assertNotIn("release_date", rows["2026-07"])
+        self.assertEqual(rows["2026-07"]["latest_release_vintage"], "2026-10-23")
+        self.assertEqual(rows["2026-08"]["release_date"], "2026-10-23")
+        self.assertEqual(rows["2026-06"]["value"], 0.6)
+        self.assertEqual(rows["2026-06"]["release_date"], "2026-08-21")
+
+    def test_pre_break_print_does_not_rewrite_stored_history(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        histories = copy.deepcopy(load_history(HISTORY_DIR))
+        retail = histories["CA"]["components"]["Consumer.retail"]
+        before = copy.deepcopy(retail["observations"])
+        point = {
+            "country": "CA",
+            "catalog_id": "CA.Consumer.retail",
+            "role": "scored",
+            "series_id": "retail_total_sa_v1446859483",
+            "period": "2023-02",
+            "value": 9.9,
+            "transformation": "mom_sa_pct",
+            "revision_status": "final",
+            "release_date": "2023-04-21",
+            "source_url": "https://example.invalid/ca/retail",
+        }
+        result = merge_scored_points(histories, cal, [point], checked_at=CHECKED_AT)
+        self.assertEqual(result["appended"], [])
+        self.assertEqual(
+            [row for row in result["skipped"] if row["id"] == "CA.Consumer.retail"],
+            [{"id": "CA.Consumer.retail", "reason": "methodology_break_guard"}],
+        )
+        self.assertEqual(retail["observations"], before)
+
+    def test_store_keeps_revision_vintage_off_the_release_date(self) -> None:
+        from scripts.macro_ingestion.vintage import append_observation
+
+        store = {"country": "CA", "observations": []}
+        append_observation(
+            store,
+            series_id="v1446859483",
+            period="2026-07",
+            transformation="mom_sa_pct",
+            value=-0.81,
+            raw_sha256="a" * 64,
+            retrieved_at=CHECKED_AT,
+            release_date=None,
+            revision_status="revised",
+            latest_release_vintage="2026-10-23",
+        )
+        append_observation(
+            store,
+            series_id="v1446859483",
+            period="2026-08",
+            transformation="mom_sa_pct",
+            value=1.2,
+            raw_sha256="b" * 64,
+            retrieved_at=CHECKED_AT,
+            release_date="2026-10-23",
+            revision_status="final",
+        )
+        july, august = store["observations"]
+        self.assertIsNone(july["release_date"])
+        self.assertEqual(july["latest_release_vintage"], "2026-10-23")
+        self.assertEqual(july["revision_status"], "revised")
+        self.assertNotEqual(july["retrieved_at"][:10], july["latest_release_vintage"])
+        self.assertEqual(august["release_date"], "2026-10-23")
+        # A first release's current vintage is that same publication day.
+        self.assertEqual(august["latest_release_vintage"], "2026-10-23")
+        self.assertNotEqual(july["release_date"], august["release_date"])
 
 
 class CommittedScoresUnchangedTests(unittest.TestCase):
     """This repair changes ingestion only; the published score file is untouched."""
 
     def test_committed_scores_reproduce_from_committed_history(self) -> None:
+        before = {path.name: _sha(path) for path in HISTORY_DIR.glob("*.json")}
+        before[SCORES_PATH.name] = _sha(SCORES_PATH)
         cal = load_calibration(CALIBRATION_PATH)
         state = build_score_state(cal, compute_state(cal, load_history(HISTORY_DIR)))
         committed = json.loads(SCORES_PATH.read_text(encoding="utf-8"))
         self.assertEqual(state["countries"]["CA"]["Consumer"], committed["countries"]["CA"]["Consumer"])
         self.assertEqual(committed["countries"]["CA"]["Consumer"]["component_state"]["retail"]["as_of"], "2026-06")
+        after = {path.name: _sha(path) for path in HISTORY_DIR.glob("*.json")}
+        after[SCORES_PATH.name] = _sha(SCORES_PATH)
+        self.assertEqual(before, after)
 
 
 if __name__ == "__main__":

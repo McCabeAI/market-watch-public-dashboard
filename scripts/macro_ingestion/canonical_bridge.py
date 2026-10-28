@@ -10,7 +10,7 @@ from typing import Any
 
 from scripts.country_registry import history_files
 from scripts.macro_freshness import values_close
-from scripts.macro_ingestion.ca_score_identity import prepare_ca_score_point
+from scripts.macro_ingestion.ca_score_identity import _latest_scored_gate, prepare_ca_score_point
 from scripts.temperature_level import (
     build_paths,
     build_score_state,
@@ -24,7 +24,13 @@ from scripts.temperature_level import (
 _FLASH_REVISION = frozenset({"flash", "preliminary", "prelim"})
 _ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
 # Per-print facts of the template row. A new print must not inherit them.
-_PER_PRINT_FIELDS = ("release_date", "release_date_status", "raw_level")
+_PER_PRINT_FIELDS = (
+    "release_date",
+    "release_date_status",
+    "raw_level",
+    "latest_release_vintage",
+    "earliest_release_vintage",
+)
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})
 
 
@@ -175,14 +181,27 @@ def merge_scored_points(
     appended: list[dict[str, Any]] = []
     skipped: list[dict[str, Any]] = []
     countries_changed: set[str] = set()
+    # Latest period before this merge, per scored series. A later month appended
+    # first must not hide an earlier month the history had not reached yet.
+    baseline_latest: dict[tuple[int, str, str], str | None] = {}
+    # Forward-only source rewrite uses history as this merge started, so a
+    # newer month appended first does not freeze the previous new month out.
+    retail_gates: dict[str, tuple[str | None, float | None] | None] = {}
 
     for point in points:
         point_id = _skip_id(point)
+        catalog_for_gate = str(point.get("catalog_id") or point.get("id") or "")
+        if catalog_for_gate not in retail_gates:
+            retail_gates[catalog_for_gate] = _latest_scored_gate(
+                histories, calibration, catalog_for_gate
+            )
         ca_block = prepare_ca_score_point(
             point,
             checked_at=checked_at,
             histories=histories,
             calibration=calibration,
+            scored_gate=retail_gates[catalog_for_gate],
+            use_supplied_gate=True,
         )
         if ca_block is not None:
             skipped.append({"id": point_id, "reason": ca_block})
@@ -303,9 +322,16 @@ def merge_scored_points(
         if latest is None:
             skipped.append({"id": point_id, "reason": "partial_malformed"})
             continue
+        baseline_key = (id(observations), transformation, series_id)
+        if baseline_key not in baseline_latest:
+            baseline_latest[baseline_key] = latest
+        baseline = baseline_latest[baseline_key]
         if period_sort_key(period) <= period_sort_key(latest):
-            skipped.append({"id": point_id, "reason": "not_a_forward_observation"})
-            continue
+            # Still a forward print relative to history as this merge started.
+            # A newer month already appended in this pass must not block it.
+            if baseline is None or period_sort_key(period) <= period_sort_key(baseline):
+                skipped.append({"id": point_id, "reason": "not_a_forward_observation"})
+                continue
 
         template = _latest_template(
             observations, transformation=transformation, series_id=series_id
@@ -377,9 +403,19 @@ def _append_row(
     source_url = point.get("source_url")
     if isinstance(source_url, str) and source_url:
         row["source_url"] = source_url
+    rev_status = str(point.get("revision_status") or "")
     release_date = point.get("release_date")
+    # A revised vintage date is not the first release, even if the caller also
+    # put it on release_date.
+    if rev_status == "revised":
+        release_date = None
     if isinstance(release_date, str) and release_date and release_date != cal_as_of:
         row["release_date"] = release_date
+    latest_vintage = point.get("latest_release_vintage")
+    if isinstance(latest_vintage, str) and latest_vintage:
+        vintage_day = latest_vintage[:10]
+        if vintage_day and vintage_day != row.get("release_date"):
+            row["latest_release_vintage"] = vintage_day
     src_series = point.get("source_series_id")
     if isinstance(src_series, str) and src_series and src_series != series_id:
         row["source_series_id"] = src_series

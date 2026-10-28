@@ -104,6 +104,7 @@ def points_from_observation_stores(
                 "raw_sha256": obs.get("raw_sha256"),
                 "vintage": obs.get("vintage"),
                 "release_date": obs.get("release_date"),
+                "latest_release_vintage": obs.get("latest_release_vintage"),
                 "retrieved_at": obs.get("retrieved_at") or checked_at,
             }
             if _scoring_point_semantically_valid(candidate):

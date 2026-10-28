@@ -370,6 +370,7 @@ def _classify_points(
                 prior=point.get("prior"),
                 units=point.get("units"),
                 derivation=derivation or None,
+                latest_release_vintage=point.get("latest_release_vintage"),
             )
             if result.duplicate:
                 continue
