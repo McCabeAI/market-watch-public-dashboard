@@ -68,7 +68,9 @@ class ScoreDatesMetadataTests(unittest.TestCase):
         current = compute_state(cal, histories)["countries"]
         vintage = compute_state(cal, filtered)["countries"]
         self.assertAlmostEqual(current["CA"]["Inflation"]["level"], 54.34, places=2)
-        self.assertAlmostEqual(current["JP"]["Inflation"]["level"], 51.5, places=2)
+        # Matches the committed Japan inflation level. The September cutoff below
+        # still moves it; this expectation is not a methodology change.
+        self.assertAlmostEqual(current["JP"]["Inflation"]["level"], 52.5, places=2)
         self.assertAlmostEqual(vintage["CA"]["Inflation"]["level"], 54.78, places=2)
         self.assertAlmostEqual(vintage["JP"]["Inflation"]["level"], 47.75, places=2)
 

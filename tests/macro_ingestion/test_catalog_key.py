@@ -73,14 +73,14 @@ class TestCatalogObservationKey(unittest.TestCase):
                 "observations": [
                     {
                         "series_id": "A130400382R",
-                        "period": "2026-08",
+                        "period": "2026-10",
                         "value": 3.4,
                         "transformation": "yoy_pct",
                         "revision_status": "final",
                         "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia",
-                        "raw_sha256": "fixture-au-underlying-2026-08",
-                        "retrieved_at": "2026-09-24T01:30:00Z",
-                        "release_date": "2026-09-24",
+                        "raw_sha256": "fixture-au-underlying-2026-10",
+                        "retrieved_at": "2026-11-24T01:30:00Z",
+                        "release_date": "2026-11-24",
                     },
                     {
                         "series_id": "A3348586T",
@@ -97,7 +97,7 @@ class TestCatalogObservationKey(unittest.TestCase):
             points = points_from_observation_stores(
                 observations_dir=obs,
                 catalog=catalog,
-                checked_at="2026-09-24T01:30:00Z",
+                checked_at="2026-11-24T01:30:00Z",
             )
             underlying = next(p for p in points if p["series_id"] == "A130400382R")
             self.assertEqual(underlying["catalog_id"], "AU.Inflation.underlying")
@@ -111,7 +111,7 @@ class TestCatalogObservationKey(unittest.TestCase):
                 histories=working,
                 persist_history=False,
                 persist_scores=False,
-                checked_at="2026-09-24T01:30:00Z",
+                checked_at="2026-11-24T01:30:00Z",
             )
             self.assertTrue(result.ok, result.score_recompute)
             reasons = {row["id"]: row["reason"] for row in result.merge["skipped"]}
@@ -122,12 +122,12 @@ class TestCatalogObservationKey(unittest.TestCase):
 
             observations = working["AU"]["components"]["Inflation.underlying"]["observations"]
             latest = observations[-1]
-            self.assertEqual(latest["reference_period"], "2026-08")
+            self.assertEqual(latest["reference_period"], "2026-10")
             self.assertEqual(latest["value"], 3.4)
             self.assertEqual(latest["series_id"], "A130400382R")
 
             state = result.state["countries"]["AU"]["Inflation"]["component_state"]["underlying"]
-            self.assertEqual(state["as_of"], "2026-08")
+            self.assertEqual(state["as_of"], "2026-10")
             self.assertEqual(state["transform_value"], 3.4)
             self.assertEqual(state["level"], 61.25)
             retail_obs = working["AU"]["components"]["Consumer.retail"]["observations"]
