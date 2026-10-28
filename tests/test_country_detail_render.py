@@ -525,6 +525,38 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIn("51.00 = 50 +1.00 unemployment (coverage 50%)", html)
         self.assertIn("Wages is not scored and its 50% weight is left out. No committed wage series yet.", html)
 
+    def test_card_shows_ingestion_separate_from_release(self) -> None:
+        oid = "5555555555555555555555555555555555555555555555555555555555555555"
+        projection = {
+            "observations": [
+                {
+                    "observation_id": oid,
+                    "label": "Synthetic CPI",
+                    "topic": "inflation",
+                    "series_id": "SYN_CPI",
+                    "reference_period": "2026-08",
+                    "value": 2.5,
+                    "units": "percent",
+                    "transformation": "mom_pct",
+                    "release_date": "2026-09-15",
+                    "retrieved_at": "2026-10-28T12:00:00Z",
+                    "history": [
+                        {"reference_period": "2026-07", "value": 2.0},
+                        {"reference_period": "2026-08", "value": 2.5, "release_date": "2026-09-15"},
+                    ],
+                }
+            ]
+        }
+        html = render_country_detail(
+            "US",
+            projection,
+            synthetic_attention_quiet(),
+            synthetic_score_state(),
+        )
+        self.assertIn("Released 15 Sep 2026", html)
+        self.assertIn("Ingested 28 Oct 2026", html)
+        self.assertIn("<th>Ingestion</th>", html)
+
     def test_percent_values_use_two_decimals(self) -> None:
         oid = "4444444444444444444444444444444444444444444444444444444444444444"
         projection = {

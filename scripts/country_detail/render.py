@@ -331,13 +331,29 @@ def _render_score_compact(country_code: str, score_state: Mapping[str, Any]) -> 
     return "".join(parts)
 
 
+def _ingestion_text(iso_day: Any) -> str:
+    if not iso_day:
+        return ""
+    try:
+        from datetime import date
+
+        from scripts.country_detail.indicator import day_label
+
+        return f"Ingested {day_label(date.fromisoformat(str(iso_day)[:10]))}"
+    except ValueError:
+        return ""
+
+
 def _dates_line(view: Mapping[str, Any]) -> str:
-    """Reference period and release date, first on every card."""
+    """Reference period, release date, and ingestion day (when recorded)."""
     released_class = "ind-released" if view["release_day"] else "ind-released ind-missing"
     bits = [
         f'<span class="ind-period">{_esc(view["period_label"])}</span>',
         f'<span class="{released_class}">{_esc(view["release_text"])}</span>',
     ]
+    ingest = _ingestion_text(view.get("ingestion_date"))
+    if ingest:
+        bits.append(f'<span class="ind-ingest">{_esc(ingest)}</span>')
     if view["revision"]:
         bits.append(f'<span class="ind-revision">{_esc(view["revision"])}</span>')
     return "".join(bits)
@@ -368,10 +384,16 @@ def _prints_strip(view: Mapping[str, Any]) -> str:
             if item["revised_from_text"]
             else ""
         )
-        released = f'<span class="ind-p-note">released {_esc(item["released"])}</span>' if item["released"] else ""
+        released = (
+            f'<span class="ind-p-note">{_esc(item["release_text"])}</span>'
+            if item.get("release_text")
+            else ""
+        )
+        ingest = _ingestion_text(item.get("ingestion_date"))
+        ingest_html = f'<span class="ind-p-note">{_esc(ingest)}</span>' if ingest else ""
         items.append(
             f'<li><span class="ind-p-period">{_esc(item["period_label"])}</span>'
-            f'<span class="ind-p-value mw-num">{_esc(item["value_text"])}</span>{released}{revised}</li>'
+            f'<span class="ind-p-value mw-num">{_esc(item["value_text"])}</span>{released}{ingest_html}{revised}</li>'
         )
     return f'<ol class="ind-prints" aria-label="Last {len(prints)} prints, newest first">{"".join(items)}</ol>'
 
@@ -442,27 +464,24 @@ def _chart_svg(obs: Mapping[str, Any], view: Mapping[str, Any]) -> str:
 
 
 def _history_table(obs: Mapping[str, Any], view: Mapping[str, Any]) -> str:
-    from scripts.country_detail.indicator import credible_release_dates, day_label, period_label, value_text
-
-    points = list(view["chart_points"])
-    if not points:
+    dated = list(view.get("dated_history") or [])
+    if not dated:
         return ""
-    released = credible_release_dates(points)
     rows = []
-    for point in reversed(points):
-        period = str(point["reference_period"])
-        day = released.get(period)
+    for row in reversed(dated):
         note = ""
-        if point.get("revised_from") is not None:
-            note = f"first recorded {value_text(point['revised_from'], obs, view['kind'])}"
+        if row.get("revised_from_text"):
+            note = f"first recorded {row['revised_from_text']}"
+        ingest = _ingestion_text(row.get("ingestion_date")) or "—"
         rows.append(
-            f"<tr><td>{_esc(period_label(period))}</td>"
-            f'<td class="mw-num">{_esc(value_text(point["value"], obs, view["kind"]))}</td>'
-            f"<td>{_esc(day_label(day) if day else '—')}</td><td>{_esc(note)}</td></tr>"
+            f"<tr><td>{_esc(row['period_label'])}</td>"
+            f'<td class="mw-num">{_esc(row["value_text"])}</td>'
+            f"<td>{_esc(row['release_text'])}</td>"
+            f"<td>{_esc(ingest)}</td><td>{_esc(note)}</td></tr>"
         )
     return (
         '<table class="history-table"><thead><tr><th>Period</th><th>Value</th>'
-        "<th>Released</th><th>Revision</th></tr></thead><tbody>"
+        "<th>Release</th><th>Ingestion</th><th>Revision</th></tr></thead><tbody>"
         + "".join(rows)
         + "</tbody></table>"
     )
@@ -684,6 +703,9 @@ def _render_evidence_row(
     ]
     if view["revision"]:
         meta_parts.append(f'<span class="ind-revision">{_esc(view["revision"])}</span>')
+    ingest = _ingestion_text(view.get("ingestion_date"))
+    if ingest:
+        meta_parts.append(f'<span class="ind-ingest">{_esc(ingest)}</span>')
     if geo_label:
         meta_parts.append(_esc(geo_label))
     meta_line = " · ".join(p for p in meta_parts if p)
