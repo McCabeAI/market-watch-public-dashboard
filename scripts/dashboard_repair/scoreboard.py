@@ -152,6 +152,7 @@ def render_scoreboard(state: dict[str, Any]) -> str:
                 marker = '<span class="score-peak">Largest impulse</span>'
             cells.append(
                 f'<td class="score-cell" data-dimension="{esc(row["dimension"])}">'
+                f'<span class="score-cell-dim">{esc(row["dimension"])}</span>'
                 f"{_level_face(row)}{_coverage_chip(row['coverage'])}{marker}</td>"
             )
         mean_word = ""

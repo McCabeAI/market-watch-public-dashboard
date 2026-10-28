@@ -992,3 +992,272 @@
   outline: 2px solid var(--cd-focus);
   outline-offset: 2px;
 }
+
+/* Release cards: dates, figure, last prints, history, technical drawer */
+.country-detail .ind-dates {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  color: var(--cd-muted);
+}
+
+.country-detail .ind-dates .wmn-badge {
+  margin: 0;
+}
+
+.country-detail .ind-period {
+  font-weight: 700;
+  color: var(--cd-ink);
+}
+
+.country-detail .ind-missing {
+  font-style: italic;
+}
+
+.country-detail .ind-revision {
+  border: 1px solid var(--cd-border);
+  border-radius: 0.25rem;
+  padding: 0 0.3rem;
+}
+
+.country-detail .ind-name {
+  margin: 0.35rem 0 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--cd-muted);
+}
+
+.country-detail .wmn-finding .wmn-series {
+  font-size: 1rem;
+  line-height: 1.35;
+  margin: 0.15rem 0 0.35rem;
+}
+
+.country-detail .ind-headline {
+  margin: 0.5rem 0 0.35rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.country-detail .ind-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.5rem;
+  margin: 0.2rem 0;
+}
+
+.country-detail .ind-figure .wmn-value,
+.country-detail .ind-figure .ind-value {
+  font-size: 1.35rem;
+  font-weight: 750;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.country-detail .ind-mark,
+.country-detail .ind-delta {
+  font-size: 0.8rem;
+  color: var(--cd-muted);
+}
+
+.country-detail .ind-delta {
+  font-variant-numeric: tabular-nums;
+}
+
+.country-detail .ind-prints {
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.country-detail .ind-prints li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--cd-border);
+  border-radius: 0.3rem;
+  min-width: 0;
+}
+
+.country-detail .ind-prints li:first-child {
+  border-color: var(--mw-accent, #5ea8e4);
+}
+
+.country-detail .ind-p-period,
+.country-detail .ind-p-note {
+  font-size: 0.7rem;
+  color: var(--cd-muted);
+}
+
+.country-detail .ind-p-value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.country-detail .ind-chart {
+  margin: 0.5rem 0 0.25rem;
+}
+
+.country-detail .ind-chart svg {
+  display: block;
+  width: 100%;
+  height: 7rem;
+  background: var(--cd-bar-bg);
+  border-radius: 0.3rem;
+}
+
+.country-detail .ind-chart figcaption {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--cd-muted);
+}
+
+.country-detail .ind-line {
+  fill: none;
+  stroke: var(--mw-accent, #5ea8e4);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.country-detail .ind-dot {
+  fill: var(--mw-accent, #5ea8e4);
+}
+
+.country-detail .ind-ref {
+  stroke: var(--cd-muted);
+  stroke-dasharray: 3 3;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.country-detail .ind-bar-pos {
+  fill: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .ind-bar-neg {
+  fill: var(--mw-cool, #74b6dc);
+}
+
+.country-detail .history-table .mw-num {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.country-detail .ind-limits {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--cd-muted);
+  font-size: 0.78rem;
+}
+
+.country-detail .ind-source {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+}
+
+.country-detail .ind-tech {
+  margin: 0.35rem 0 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.country-detail .ind-tech-row {
+  display: grid;
+  grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.country-detail .ind-tech dt {
+  font-weight: 600;
+}
+
+.country-detail .ind-tech dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.country-detail .evidence-body {
+  padding: 0 0.75rem 0.65rem;
+}
+
+.country-detail .ind-technical {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: var(--cd-muted);
+}
+
+/* Score drawer inputs */
+.country-detail .si-sum {
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+}
+
+.country-detail .si-sum .mw-label {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--cd-muted);
+}
+
+.country-detail .si-sum .mw-num {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.country-detail .si-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 0.75rem;
+  margin: 0 0 0.2rem;
+}
+
+.country-detail .si-used,
+.country-detail .si-latest,
+.country-detail .si-gap {
+  margin: 0.15rem 0;
+  line-height: 1.4;
+}
+
+.country-detail .si-latest,
+.country-detail .si-facts {
+  color: var(--cd-muted);
+}
+
+.country-detail .si-gap {
+  color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .si-missing {
+  color: var(--cd-muted);
+  border-style: dashed;
+}
+
+.country-detail .si-link {
+  font-size: 0.8rem;
+}
+
+@media (max-width: 420px) {
+  .country-detail .ind-tech-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .country-detail .ind-prints {
+    gap: 0.25rem;
+  }
+
+  .country-detail .ind-prints li {
+    padding: 0.25rem 0.3rem;
+  }
+}

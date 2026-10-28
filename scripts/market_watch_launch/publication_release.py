@@ -271,13 +271,17 @@ def _books_dates(books: dict[str, Any]) -> str:
 
 
 EDITION_CSS = """
-.mw-edition{margin:10px 0 12px;padding:10px 14px;border-radius:10px;border:1px solid rgba(148,163,184,.45);background:rgba(15,23,42,.55);color:inherit;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
-.mw-edition b.mw-edition-title{display:block;font-size:14px;letter-spacing:.02em}
-.mw-edition ul{margin:6px 0 0;padding-left:18px}
+.mw-edition{margin:8px 0 10px;padding:6px 12px;border-radius:8px;border:1px solid rgba(148,163,184,.45);background:rgba(15,23,42,.55);color:inherit;font-size:12.5px;line-height:1.45;overflow-wrap:anywhere}
+.mw-edition-strip{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+.mw-edition b.mw-edition-title{font-size:13px;letter-spacing:.02em}
+.mw-edition-gist{color:rgba(226,232,240,.88)}
+.mw-edition-more{margin:0;background:transparent;border:0;padding:0}
+.mw-edition-more>summary{cursor:pointer;font-size:12px;min-height:28px;display:inline-flex;align-items:center;color:var(--mw-accent,#5ea8e4)}
+.mw-edition ul{margin:4px 0 2px;padding-left:18px}
 .mw-edition li{margin:2px 0}
 .mw-edition--research{border-color:rgba(245,158,11,.75);background:rgba(120,53,15,.28)}
 .mw-edition--final{border-color:rgba(34,197,94,.6);background:rgba(20,83,45,.25)}
-.mw-edition-note{margin:8px 0 12px;padding:8px 12px;border-left:4px solid rgba(245,158,11,.85);background:rgba(120,53,15,.22);font-size:13px;line-height:1.45;overflow-wrap:anywhere}
+.mw-edition-note{margin:6px 0 10px;padding:5px 10px;border-left:3px solid rgba(245,158,11,.85);background:rgba(120,53,15,.18);font-size:12.5px;line-height:1.4;overflow-wrap:anywhere}
 .mw-edition .mw-raw{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px}
 @media (max-width:480px){.mw-edition{font-size:12.5px;padding:9px 11px}.mw-edition ul{padding-left:16px}}
 """.strip()
@@ -298,6 +302,10 @@ def render_edition_banner(release: dict[str, Any]) -> str:
     items: list[str] = []
     if phase == PHASE_RESEARCH:
         title = f"Research edition · {session} · provisional"
+        gist = (
+            "Today's trader and PM cycle has not been accepted yet. Books and analysis are from the last "
+            "accepted cycle; scores are provisional. The final edition replaces this page."
+        )
         frozen = format_et(release.get("frozen_at"))
         market = release.get("market_state") or {}
         items.append(
@@ -350,6 +358,9 @@ def render_edition_banner(release: dict[str, Any]) -> str:
         items.append("The final edition replaces this page on the same URL once traders and PMs are accepted.")
     else:
         title = f"Final edition · {session}"
+        gist = f"Accepted trader and PM cycle, finalized {_esc(format_et(release.get('finalized_at')))}."
+        if release.get("trigger") == TRIGGER_REFRESH:
+            gist += " Manual refresh; traders and PMs were not rerun."
         if release.get("launch_id"):
             items.append(
                 f"Accepted trader &amp; PM cycle <span class=\"mw-raw\">{_esc(release.get('overnight_run_id'))}</span> "
@@ -363,11 +374,12 @@ def render_edition_banner(release: dict[str, Any]) -> str:
                 f"Accepted dataset <span class=\"mw-raw\">{_esc(release.get('overnight_run_id') or 'none')}</span> "
                 f"as of {_esc(format_et(release.get('finalized_at')))} (no finalized launch record)."
             )
-        if release.get("trigger") == TRIGGER_REFRESH:
-            items.append("Manual refresh of the latest accepted dataset; it does not rerun traders or PMs.")
     body = "".join(f"<li>{item}</li>" for item in items)
+    more = "What is provisional" if phase == PHASE_RESEARCH else "Edition record"
     return (
-        f"<section {attrs}><b class=\"mw-edition-title\">{_esc(title)}</b><ul>{body}</ul></section>"
+        f"<section {attrs}><div class=\"mw-edition-strip\"><b class=\"mw-edition-title\">{_esc(title)}</b>"
+        f"<span class=\"mw-edition-gist\">{gist}</span></div>"
+        f"<details class=\"mw-edition-more\"><summary>{more}</summary><ul>{body}</ul></details></section>"
     )
 
 
@@ -429,10 +441,9 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
             out,
             '<section class="page traderbook">',
             render_panel_note(
-                f"<b>Previous accepted books.</b> The {_esc(session)} trader and PM cycle is pending. "
-                f"Books, P&amp;L and tickets below are from "
+                f"<b>Previous accepted books.</b> Books, P&amp;L and tickets are from "
                 f"<span class=\"mw-raw\">{_esc(_books_run(books))}</span> "
-                f"({_esc(_books_dates(books))}) and do not reflect today's decisions.",
+                f"({_esc(_books_dates(books))}), not {_esc(session)} decisions.",
                 "traderbook",
             ),
         )

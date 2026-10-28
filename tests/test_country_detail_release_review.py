@@ -7,6 +7,7 @@ is reviewed on its own evidence.
 
 from __future__ import annotations
 
+import re
 import unittest
 
 from scripts.country_detail import policy
@@ -207,8 +208,10 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         self.assertIn('data-country="NZ"', html)
         self.assertIn('class="wmn-finding"', html)
         self.assertNotIn(policy.WMN_QUIET_TEXT, html)
-        face = html.split('<details class="wmn-technical">', 1)[0]
-        self.assertIn("sped up to 2.00%", face)
+        card = html.split('<details class="wmn-technical">', 1)[0]
+        face = re.sub(r"<details\b[^>]*>.*?</details>", "", card, flags=re.S)
+        self.assertIn("rose 2.00% m/m in Aug 2026, after +1.00% in Jul 2026.", face)
+        self.assertIn("Acceleration: a bigger increase than the month before.", face)
         self.assertNotIn("Comparable history is too short", face)
         self.assertNotIn("The latest move sped up", face)
         evidence = html[html.find('class="country-evidence"'):]

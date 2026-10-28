@@ -13,6 +13,7 @@ from pathlib import Path
 from datetime import date
 
 from scripts.country_detail.attention import evaluate_projection
+from scripts.country_detail.indicator import score_windows
 from scripts.country_detail.policy import COUNTRY_CODES
 from scripts.country_detail.policy_rate import rewrite_policy_transmission
 from scripts.policy_state import load_policy_state
@@ -25,7 +26,7 @@ from scripts.country_detail.render import (
     render_country_detail,
 )
 from scripts.country_registry import dashboard_keys, load_country_registry, stale_after_days
-from scripts.temperature_level import load_state
+from scripts.temperature_level import load_calibration, load_history, load_state
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORES_PATH = ROOT / "data" / "temperature_scores.json"
@@ -60,7 +61,20 @@ def load_country_detail_context(root: Path | None = None) -> dict:
         stale_after_days=stale_after_days(registry),
     )
     scores = load_state(_scores_path(root))
-    return {"projection": projection, "attention": attention, "scores": scores}
+    return {
+        "projection": projection,
+        "attention": attention,
+        "scores": scores,
+        "score_windows": _score_windows(root, scores),
+    }
+
+
+def _score_windows(root: Path, scores: dict) -> dict:
+    calibration_path = root / "data" / "temperature_calibration.json"
+    history_dir = root / "data" / "temperature_history"
+    if not calibration_path.is_file() or not history_dir.is_dir():
+        return {}
+    return score_windows(load_calibration(calibration_path), load_history(history_dir), scores)
 
 
 def render_dashboard_sections(root: Path | None = None, context: dict | None = None) -> dict[str, str]:
@@ -68,6 +82,7 @@ def render_dashboard_sections(root: Path | None = None, context: dict | None = N
     projection = ctx["projection"]
     attention = ctx["attention"]
     scores = ctx["scores"]
+    windows = ctx.get("score_windows") or {}
     sections: dict[str, str] = {}
     for code in COUNTRY_CODES:
         sections[code] = render_country_detail(
@@ -75,6 +90,7 @@ def render_dashboard_sections(root: Path | None = None, context: dict | None = N
             projection["countries"][code],
             attention["countries"][code],
             scores,
+            score_windows=windows.get(code),
         )
     return sections
 

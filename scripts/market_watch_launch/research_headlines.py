@@ -491,9 +491,8 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
     title = f"<b class=\"mw-headlines-title\">Current verified headlines (as of {_esc(title_as_of)})</b>"
 
     sub = (
-        f'<p class="mw-headlines-sub">Source-attributed headlines from the frozen Stage 04 news collection '
-        f'(packet <span class="mw-raw">{_esc(sha[:12])}</span>, window {_esc(start_et)} → {_esc(end_et)}). '
-        "Headline, source, time and link only: not reviewed or accepted by the trader room, and no analysis is implied.</p>"
+        f'<p class="mw-headlines-sub">Published {_esc(start_et)} → {_esc(end_et)}. '
+        "Headline, source and link only; not reviewed by the trader room.</p>"
     )
     if status == STATUS_EMPTY:
         reason = _esc(headlines.get("reason") or "no_eligible_headlines")
@@ -529,6 +528,6 @@ def render_previous_analysis_note(news: dict[str, Any]) -> str:
     run_id = _esc(news.get("overnight_run_id") or "run not recorded")
     return (
         f"<b>Previous accepted analysis (as of {_esc(as_of)}).</b> {age}. "
-        "The news digest, desk summary, Market News and central-bank research below are from the last accepted cycle "
-        f'(<span class="mw-raw">{run_id}</span>). Today\'s analysis is published with the final edition after trader acceptance.'
+        "Digest, desk summary and research below are from the last accepted cycle "
+        f'(<span class="mw-raw">{run_id}</span>); today\'s analysis arrives with the final edition.'
     )

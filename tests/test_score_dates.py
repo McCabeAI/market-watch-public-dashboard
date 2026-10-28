@@ -200,6 +200,14 @@ class ScoreDatesPresentationTests(unittest.TestCase):
             self.assertNotIn("scores frozen", lowered)
         self.assertIn('data-score-dates', header)
 
+    def test_scoreboard_cells_carry_their_dimension_for_stacked_mobile_rows(self) -> None:
+        board = render_scoreboard(load_scores())
+        for dimension in ("Inflation", "Labor", "Activity", "Consumer"):
+            self.assertIn(
+                f'<td class="score-cell" data-dimension="{dimension}"><span class="score-cell-dim">{dimension}</span>',
+                board,
+            )
+
 
 class ScoreLineageCaptionTests(unittest.TestCase):
     def test_packet_relation_uses_latest_ingestion_not_anchor(self) -> None:
