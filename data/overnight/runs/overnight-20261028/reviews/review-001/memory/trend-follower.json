@@ -1,0 +1,269 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not keep or add to a SOFR pay whose implied rate is drifting lower while the US 10-year is still making a documented backup; migrate to the confirming tenor or exit.",
+      "lesson_id": "les-1d92cbbe59eb",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-06b0602f8ba0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "rates",
+        "catalyst_type": null,
+        "countries": [
+          "US"
+        ],
+        "currencies": [
+          "USD"
+        ],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": "sofr",
+        "instruments": [
+          "SOFR_2027-03"
+        ],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261021",
+      "status": "active",
+      "text": "When a SOFR contract stops confirming a live US 10-year backup, rotate the pay to the confirming tenor instead of holding or adding to the laggard.",
+      "trade_ids": [
+        "trd-trader-trend-follower-pos-662bff0986be"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not re-open a higher-yield short in US 10-year unless that tenor prints a confirmed new yield high; a stall at the post-exit yield, especially into Fed week, is stay-flat, not add. If STIR implied and 10-year disagree, do not pay the lagging expression; migrate to the confirming tenor or exit.",
+      "lesson_id": "les-3a79c05761f0",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-661371860aba"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261026",
+      "status": "active",
+      "text": "Do not treat a stalled backup as a dip to re-short: if US 10-year fails to print a new yield high after a higher-yield short, the trend is invalid and the seat goes flat.",
+      "trade_ids": [
+        "trd-trader-trend-follower-pos-06e7a6ec76da"
+      ]
+    }
+  ],
+  "as_of": "2026-10-28T05:26:41.395329-04:00",
+  "calibration": {
+    "average_holding_seconds": 1456497,
+    "average_realized_pnl_usd": -94375.0,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 2,
+        "total_realized_pnl_usd": -188750.0
+      }
+    },
+    "closed_trade_count": 2,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": -112500.0,
+        "count": 1,
+        "hit_rate": 0.0
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": -76250.0,
+        "count": 1,
+        "hit_rate": 0.0
+      }
+    },
+    "losses": 2,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -188750.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 14,
+    "competitive_rank": 14,
+    "drawdown_usd": 253244.56,
+    "giveback_usd": 253244.56,
+    "high_water_nav_usd": 100062016.81,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99808772.25,
+    "net_pnl_usd": -191227.75,
+    "pressure_flags": [],
+    "prior_competition_rank": 14,
+    "rank_change": 0,
+    "raw_pnl_rank": 14,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "910be9e91fad7c0119c9bf9e0bf5c7f24af11db64dc78298115d7341b212ea03",
+  "open_positions": [],
+  "owner_id": "trend-follower",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [
+      {
+        "basis": "revenge_pressure 0.06 families bond",
+        "check": "required",
+        "families": [
+          "bond"
+        ],
+        "id": "revenge_risk",
+        "relevant_actions": [
+          "OPEN",
+          "ADD"
+        ],
+        "scope": "family"
+      }
+    ],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.22
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.16
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.06
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.48
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.26
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.1951625,
+        "run_id": "overnight-20261023"
+      },
+      {
+        "kind": "trade_loss_close",
+        "magnitude": 0.225,
+        "run_id": "overnight-20261023"
+      }
+    ],
+    "required_checks": {
+      "revenge_risk": [
+        "would_take_if_flat_and_unscarred",
+        "size_vs_prior_loss",
+        "what_changed_in_evidence"
+      ]
+    },
+    "schema_version": 1,
+    "state_sha256": "c086a781099f3cad19029c9e4884b9a8cc34961179366e9b72f923104f9ad6d6",
+    "streaks": {
+      "flat_cycles": 2,
+      "session_loss": 1,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-10-23T15:46:45.247147-04:00",
+      "conviction": 70,
+      "holding_duration_seconds": 281725,
+      "instrument": "US_10Y",
+      "opened_at": "2026-10-20T09:31:20.120731-04:00",
+      "realized_pnl_usd": -112500.0,
+      "side": "short",
+      "trade_id": "trd-trader-trend-follower-pos-06e7a6ec76da"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 63,
+      "holding_duration_seconds": 2631270,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -76250.0,
+      "side": "short",
+      "trade_id": "trd-trader-trend-follower-pos-662bff0986be"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
