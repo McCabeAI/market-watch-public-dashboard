@@ -6,8 +6,8 @@
   "calibration_anchor_date": "2026-09-21",
   "scoring_cutoff": "2026-09",
   "score_inputs_latest_reference_period": "2026-09",
-  "score_inputs_last_ingested_at": "2026-10-26T11:37:10Z",
-  "last_refresh_date": "2026-10-26",
+  "score_inputs_last_ingested_at": "2026-10-28T09:26:41Z",
+  "last_refresh_date": "2026-10-28",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -445,13 +445,13 @@
     },
     "AU": {
       "Inflation": {
-        "level": 65.75,
-        "impulse": 2.5,
+        "level": 67.25,
+        "impulse": 1.5,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
         "as_of": "2026-09",
-        "latest_reference_period": "2026-08",
+        "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
           "headline": 0.4
@@ -459,27 +459,27 @@
         "component_state": {
           "underlying": {
             "observed": true,
-            "as_of": "2026-08",
+            "as_of": "2026-09",
             "transform_value": 3.6,
             "level": 63.75,
             "impulse": 0.0,
             "weight": 0.6,
             "coverage_contribution": 0.6,
             "short_window": false,
-            "retrieved_at": "2026-10-01T08:50:57Z",
+            "retrieved_at": "2026-10-28T09:26:41Z",
             "release_date": null,
             "release_date_status": "inherited_or_inconsistent"
           },
           "headline": {
             "observed": true,
-            "as_of": "2026-08",
-            "transform_value": 4.0,
-            "level": 68.75,
-            "impulse": 6.25,
+            "as_of": "2026-09",
+            "transform_value": 4.3,
+            "level": 72.5,
+            "impulse": 3.75,
             "weight": 0.4,
             "coverage_contribution": 0.4,
             "short_window": false,
-            "retrieved_at": "2026-10-01T08:50:57Z",
+            "retrieved_at": "2026-10-28T09:26:41Z",
             "release_date": null,
             "release_date_status": "inherited_or_inconsistent"
           }
