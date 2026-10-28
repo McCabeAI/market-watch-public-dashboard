@@ -525,6 +525,41 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIn("51.00 = 50 +1.00 unemployment (coverage 50%)", html)
         self.assertIn("Wages is not scored and its 50% weight is left out. No committed wage series yet.", html)
 
+    def test_dimension_movement_sentence_names_top_contributors(self) -> None:
+        base = synthetic_score_state()
+        score_state = {
+            "baseline_score": 50,
+            "countries": {
+                "US": {
+                    **{dimension: base[dimension] for dimension in policy.SCORE_DIMENSIONS},
+                    "Labor": {
+                        "level": 51.5,
+                        "impulse": -1.54,
+                        "direction": "cooling",
+                        "coverage": 1.0,
+                        "temperature_class": "neutral",
+                        "component_state": {
+                            "unemployment": {
+                                "observed": True,
+                                "level": 51.0,
+                                "weight": 0.7,
+                                "impulse": -2.0,
+                            },
+                            "wages": {"observed": True, "level": 52.0, "weight": 0.2, "impulse": 0.1},
+                            "payrolls": {"observed": True, "level": 54.0, "weight": 0.1, "impulse": 1.0},
+                        },
+                    },
+                }
+            },
+        }
+        html = render_country_detail("US", {"observations": []}, synthetic_attention_quiet(), score_state)
+        move = re.search(r'<p class="si-move">([^<]+)</p>', html)
+        self.assertIsNotNone(move)
+        text = move.group(1)
+        self.assertIn("Unemployment (+0.70 points, cooling impulse -2.00)", text)
+        self.assertIn("dimension impulse is cooling (-1.54 vs prior print)", text)
+        self.assertIn("51.50 = 50 +0.70 unemployment", html)
+
     def test_card_shows_ingestion_separate_from_release(self) -> None:
         oid = "5555555555555555555555555555555555555555555555555555555555555555"
         projection = {

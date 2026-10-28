@@ -195,6 +195,94 @@ def _impulse_markup(spec: Mapping[str, Any]) -> str:
     )
 
 
+def _impulse_direction_word(impulse: float) -> str:
+    if impulse >= 0.05:
+        return "warming"
+    if impulse <= -0.05:
+        return "cooling"
+    return "static"
+
+
+def _component_contribution_points(
+    state: Mapping[str, Any],
+    baseline: float,
+    coverage_f: float,
+) -> float | None:
+    if not state.get("observed") or state.get("level") is None:
+        return None
+    try:
+        weight = float(state["weight"])
+        level = float(state["level"])
+    except (TypeError, ValueError):
+        return None
+    return weight / coverage_f * (level - baseline)
+
+
+def _describe_scored_component(name: str, points: float, state: Mapping[str, Any]) -> str:
+    label = _component_label(name)
+    text = f"{label} ({points:+.2f} points"
+    impulse = state.get("impulse")
+    if impulse is not None:
+        try:
+            imp_f = float(impulse)
+            text += f", {_impulse_direction_word(imp_f)} impulse {imp_f:+.2f}"
+        except (TypeError, ValueError):
+            pass
+    return text + ")"
+
+
+def _dimension_movement_sentence(
+    country_code: str,
+    dimension: str,
+    score_state: Mapping[str, Any],
+) -> str:
+    """One verified sentence on level drivers and dimension impulse. Empty when figures do not reconcile."""
+    reconciliation, _ = contribution_sum_text(country_code, dimension, score_state, _COMPONENT_NAMES)
+    if not reconciliation:
+        return ""
+    countries = score_state.get("countries") or {}
+    spec = (countries.get(country_code) or {}).get(dimension) if countries else score_state.get(dimension)
+    if not isinstance(spec, Mapping) or spec.get("level") is None:
+        return ""
+    try:
+        baseline = float(score_state.get("baseline_score", 50.0))
+        coverage_f = float(spec["coverage"])
+        level_f = float(spec["level"])
+    except (TypeError, ValueError):
+        return ""
+    if coverage_f <= 0:
+        return ""
+    ranked: list[tuple[float, str, Mapping[str, Any], float]] = []
+    for name, state in (spec.get("component_state") or {}).items():
+        if not isinstance(state, Mapping):
+            continue
+        points = _component_contribution_points(state, baseline, coverage_f)
+        if points is None:
+            continue
+        ranked.append((abs(points), name, state, points))
+    if not ranked:
+        return ""
+    ranked.sort(key=lambda row: (-row[0], row[1]))
+    top = ranked[:2]
+    if len(top) == 1:
+        driver = f"Level {level_f:.1f} is driven by {_describe_scored_component(top[0][1], top[0][3], top[0][2])}"
+    else:
+        a = _describe_scored_component(top[0][1], top[0][3], top[0][2])
+        b = _describe_scored_component(top[1][1], top[1][3], top[1][2])
+        driver = f"Level {level_f:.1f} is driven mainly by {a} and {b}"
+    impulse = spec.get("impulse")
+    if impulse is None:
+        return f"{driver}."
+    try:
+        imp_f = float(impulse)
+    except (TypeError, ValueError):
+        return f"{driver}."
+    dim_dir = str(spec.get("direction") or "").lower()
+    if dim_dir not in _DIRECTION_LABELS:
+        dim_dir = _impulse_direction_word(imp_f)
+    return f"{driver}; dimension impulse is {dim_dir} ({imp_f:+.2f} vs prior print)."
+
+
 def _score_header(score_state: Mapping[str, Any]) -> str:
     if not isinstance(score_state, Mapping):
         line = "Score dates not published in this view"
@@ -1058,6 +1146,9 @@ def _render_score_drilldown(
             prima_html = _render_prima_pressure(prima_pressure)
             prima_glance = prima_glance_markup(prima_pressure, _esc)
 
+        move = _dimension_movement_sentence(country_code, dimension, score_state)
+        move_html = f'<p class="si-move">{_esc(move)}</p>' if move else ""
+
         parts.append(
             f'<details class="{SCORE_DETAIL_CLASS_ATTRIBUTE}" id="{_esc(detail_id)}">'
             f'<summary class="score-summary">'
@@ -1071,6 +1162,7 @@ def _render_score_drilldown(
             f"{vintage_html}"
             f"</summary>"
             f'<div class="score-evidence">'
+            f"{move_html}"
             f'<div class="evidence-block">'
             f'<div class="evidence-title">{_esc(HARD_SCORE_INPUTS_TITLE)}</div>'
             f"{sum_html}"
