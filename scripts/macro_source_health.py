@@ -37,9 +37,18 @@ def effective_release_due(row: dict[str, Any]) -> bool:
     return bool(row.get("release_due"))
 
 
+def _has_research_prior(row: dict[str, Any]) -> bool:
+    prior = row.get("prior_verified")
+    if not isinstance(prior, dict) or not prior.get("observation_period"):
+        return False
+    return _finite(prior.get("value")) is not None
+
+
 def research_status_for_row(row: dict[str, Any]) -> str:
     status = str(row.get("status") or "")
-    if status in BLOCKING_SERIES_STATUSES and not carried_forward(row):
+    if status in BLOCKING_SERIES_STATUSES:
+        if carried_forward(row) or _has_research_prior(row):
+            return RESEARCH_STATUS_PREVIOUS
         return RESEARCH_STATUS_UNAVAILABLE
     if carried_forward(row) or (
         status in VERIFIED_OBSERVATION_STATUSES and row.get("cadence_backstop_due")
@@ -132,9 +141,14 @@ def prior_verified_observation(
         for obs in comp.get("observations") or []:
             if not isinstance(obs, dict):
                 continue
+            if source_series_id and obs.get("series_id") and str(obs.get("series_id")) != source_series_id:
+                continue
             period = obs.get("reference_period") or obs.get("period")
             value = _finite(obs.get("value"))
             if period is None or value is None:
+                continue
+            obs_transform = str(obs.get("transformation") or "")
+            if obs_transform and obs_transform != preferred:
                 continue
             if not obs.get("retrieved_at") and not obs.get("vintage"):
                 continue
@@ -171,7 +185,7 @@ def annotate_row(
 ) -> dict[str, Any]:
     """Attach carry-forward metadata. Does not invent a vintage the history lacks."""
     out = dict(row)
-    if effective_release_due(out) or not is_transient_fetch_failure(out):
+    if not is_transient_fetch_failure(out):
         return _attach_research_status(out)
     prior = prior_verified_observation(
         out,
@@ -187,11 +201,12 @@ def annotate_row(
     out["prior_verified"] = prior
     if not out.get("observation_period"):
         out["observation_period"] = prior["observation_period"]
+    release_due = effective_release_due(out)
     out["source_health"] = {
         "state": "carried_forward",
         "classification": classification,
         "carried_forward": True,
-        "blocks_new_risk": False,
+        "blocks_new_risk": release_due,
         "fetch_status": out.get("status"),
         "fetch_error": out.get("error"),
         "observation_period": prior["observation_period"],
