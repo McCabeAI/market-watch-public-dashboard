@@ -14,6 +14,7 @@ from urllib.parse import urljoin
 import openpyxl
 
 from scripts.macro_ingestion.au_leading.asof import filter_observations_by_asof
+from scripts.macro_ingestion.au_leading.discovery import bounded_get
 
 PUBLISHER = "Jobs and Skills Australia"
 
@@ -248,7 +249,7 @@ def fetch_reos(
     gap_rows: list[dict[str, str]] = []
     points: list[dict[str, Any]] = []
 
-    landing = opener(REOS_LANDING_URL)
+    landing = bounded_get(opener, REOS_LANDING_URL)
     body = landing.get("body") or b""
     landing_sha = _sha256(body) if body else None
     attempts.append(
@@ -305,7 +306,7 @@ def fetch_reos(
             "attempts": attempts,
         }
 
-    xlsx = opener(xlsx_url)
+    xlsx = bounded_get(opener, xlsx_url)
     xlsx_body = xlsx.get("body") or b""
     xlsx_sha = _sha256(xlsx_body) if xlsx_body else None
     attempts.append(

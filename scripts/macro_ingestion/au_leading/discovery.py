@@ -12,6 +12,13 @@ MAX_PAGES = 3
 MAX_ATTEMPTS = 2
 _RETRY_STATUS = frozenset({429, 500, 502, 503, 504})
 
+_response_cache: dict[str, dict[str, Any]] = {}
+
+
+def clear_response_cache() -> None:
+    """Drop cached publisher GET responses (for test isolation)."""
+    _response_cache.clear()
+
 
 def call_opener(
     opener: Callable[..., dict[str, Any]],
@@ -32,6 +39,10 @@ def bounded_get(
     timeout: float = 8.0,
 ) -> dict[str, Any]:
     """Fetch one URL with a short retry only for timeout, 429, and 5xx."""
+    cached = _response_cache.get(url)
+    if cached is not None:
+        return dict(cached)
+
     last: dict[str, Any] = {
         "ok": False,
         "url": url,
@@ -66,7 +77,9 @@ def bounded_get(
         error = str(resp.get("error") or "").lower()
         retryable = status in _RETRY_STATUS or "timeout" in error
         if resp.get("ok") or not retryable:
+            _response_cache[url] = dict(resp)
             return resp
+    _response_cache[url] = dict(last)
     return last
 
 

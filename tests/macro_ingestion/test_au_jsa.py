@@ -14,6 +14,7 @@ if str(ROOT) not in sys.path:
 
 from scripts.macro_ingestion.au_leading.asof import filter_observations_by_asof
 from scripts.macro_ingestion.au_leading import jsa_ivi, jsa_reos
+from scripts.macro_ingestion.au_leading.discovery import clear_response_cache
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "au" / "jsa"
 LIVE_SMOKE_PATH = FIXTURES / "live_smoke.json"
@@ -53,6 +54,9 @@ def _fixture_opener(url: str) -> dict:
 
 
 class TestAuJsa(unittest.TestCase):
+    def setUp(self) -> None:
+        clear_response_cache()
+
     def test_live_smoke_records_not_retrieved_when_publisher_unreachable(self) -> None:
         self.assertTrue(LIVE_SMOKE_PATH.is_file())
         doc = json.loads(LIVE_SMOKE_PATH.read_text(encoding="utf-8"))
@@ -89,6 +93,20 @@ class TestAuJsa(unittest.TestCase):
         periods = {p["period"] for p in payload["points"] if p["transformation"] == "sa_level"}
         self.assertIn("2026-08", periods)
         self.assertNotIn("2026-09", periods)
+
+    def test_fetch_ivi_reuses_warm_response_cache(self) -> None:
+        calls: list[str] = []
+
+        def counting_opener(url: str) -> dict:
+            calls.append(url)
+            return _fixture_opener(url)
+
+        as_of = datetime(2026, 10, 15, 0, 0, tzinfo=timezone.utc)
+        first = jsa_ivi.fetch_ivi(as_of=as_of, opener=counting_opener)
+        second = jsa_ivi.fetch_ivi(as_of=as_of, opener=counting_opener)
+        self.assertEqual(first["status"], "ok")
+        self.assertEqual(second["status"], "ok")
+        self.assertEqual(len(calls), 2)
 
     def test_asof_drops_september_when_release_after_cutoff(self) -> None:
         doc = json.loads(

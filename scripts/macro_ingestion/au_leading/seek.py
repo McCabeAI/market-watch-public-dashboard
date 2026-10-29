@@ -114,6 +114,18 @@ def _article_links(html: str) -> list[str]:
             found.append(url)
         if len(found) >= MAX_PAGES:
             break
+    if len(found) < MAX_PAGES:
+        for slug_match in re.finditer(
+            r"seek-employment-report-([a-z]+)(\d{2})",
+            html,
+            flags=re.IGNORECASE,
+        ):
+            slug = slug_match.group(0).lower()
+            url = f"https://au.seek.com/about/news/{slug}/"
+            if url not in found:
+                found.append(url)
+            if len(found) >= MAX_PAGES:
+                break
     return found
 
 
@@ -128,13 +140,18 @@ def _period_from_slug(url: str) -> str | None:
 
 
 def _parse_publish_date(html: str) -> date | None:
-    match = re.search(
+    patterns = (
+        r'name="article-publish-date"\s+content="(\d{4}-\d{2}-\d{2})"',
+        r'property="article:published_time"\s+content="(\d{4}-\d{2}-\d{2})"',
         r'article-publish-date"\s+content="(\d{4}-\d{2}-\d{2})"',
-        html,
-        flags=re.IGNORECASE,
+        r'"publishedDate"\s*:\s*"(\d{4}-\d{2}-\d{2})"',
+        r'"publishDate"\s*:\s*"(\d{4}-\d{2}-\d{2})"',
     )
-    if not match:
-        match = re.search(r'content="(\d{4}-\d{2}-\d{2})"', html)
+    for pattern in patterns:
+        match = re.search(pattern, html, flags=re.IGNORECASE)
+        if match:
+            return date.fromisoformat(match.group(1))
+    match = re.search(r'content="(\d{4}-\d{2}-\d{2})"', html)
     if not match:
         return None
     return date.fromisoformat(match.group(1))

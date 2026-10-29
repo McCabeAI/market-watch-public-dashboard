@@ -79,6 +79,12 @@ AU_LFS_MODERNISATION_METHODOLOGY_NOTE = (
 
 _LABOUR_TABLE1_WORKBOOK_MARKER = "62020001.xlsx"
 
+# National accounts time-series workbooks (temperature_history/au.json source_urls).
+_ABS_NA_WORKBOOK_BY_SERIES: dict[str, str] = {
+    "A2304370T": "5206001_Key_Aggregates.xlsx",
+    "A2304183K": "5206002_Expenditure_Volume_Measures.xlsx",
+}
+
 _workbook_bytes_cache: dict[str, dict[str, Any]] = {}
 
 
@@ -338,6 +344,19 @@ def _resolve_series_id(spec: dict[str, Any]) -> str | None:
     return text
 
 
+def _national_accounts_workbook_url(url: str, series_id: str) -> str:
+    """Route GDP vs domestic-final-demand ABS series to the workbook that contains them."""
+    target = _ABS_NA_WORKBOOK_BY_SERIES.get(series_id)
+    if not target or not url:
+        return url
+    for filename in _ABS_NA_WORKBOOK_BY_SERIES.values():
+        if filename in url:
+            return url.replace(filename, target)
+    if url.endswith("/"):
+        return url + target
+    return url
+
+
 def _month_slug_for_period(period: str) -> str | None:
     match = _MONTHLY_PERIOD_RE.fullmatch(period.strip())
     if not match:
@@ -488,6 +507,8 @@ def _fetch_abs_workbook_series(
             status="source_failed",
             error="missing_series_or_endpoint",
         )
+
+    url = _national_accounts_workbook_url(url, series_id)
 
     fetched = _fetch_workbook_bytes(url, opener=opener, timeout=timeout)
     if not fetched.get("ok"):
