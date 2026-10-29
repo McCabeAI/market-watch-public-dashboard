@@ -282,7 +282,7 @@ class CountryDetailRenderTest(unittest.TestCase):
             synthetic_score_state(),
         )
         evidence = re.search(
-            rf'<article class="evidence-item" data-observation-id="{oid}".*?</article>',
+            rf'<article class="evidence-item" id="ev-{oid}" data-observation-id="{oid}".*?</article>',
             html,
         )
         self.assertIsNotNone(evidence)
@@ -381,11 +381,12 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertNotIn("insufficient_history", visible)
         self.assertIn("Employment · monthly change", visible)
         self.assertIn("-15.80k", visible)
-        self.assertIn("JUL 2026", visible)
+        self.assertIn("Jul 2026", visible)
         self.assertIn("Labor", visible)
-        self.assertIn("How many jobs were added or lost", visible)
-        self.assertIn("turned down to -15.80k", visible)
-        self.assertIn("from +80.20k", visible)
+        self.assertIn("How many jobs were added or lost", html)
+        self.assertIn("Employment fell 15.80k in Jul 2026, after +80.20k.", visible)
+        self.assertIn("Reversal: a decline after 2 straight months of increases.", visible)
+        self.assertIn("no recorded release date", visible)
         self.assertNotIn("Comparable history is too short", visible)
         self.assertNotIn("The latest move sped up", visible)
         self.assertIn("mom_change_thousands_sa", html)
@@ -419,13 +420,14 @@ class CountryDetailRenderTest(unittest.TestCase):
             {"finding_count": 0, "findings": [], "members": []},
             synthetic_score_state(),
         )
-        meta = re.search(r'class="evidence-item-meta">([^<]+)', html)
+        meta = re.search(r'class="evidence-item-meta">(.*?)</div>', html)
         header = re.search(r'class="evidence-item-header">([^<]+)', html)
         self.assertIsNotNone(meta)
         self.assertIsNotNone(header)
         self.assertEqual(header.group(1), "Level of employed persons, seasonally adjusted · level")
-        self.assertIn("14,600.81 thousand", meta.group(1))
-        self.assertNotIn("thousands_sa", meta.group(1))
+        meta_text = re.sub(r"<[^>]+>", "", meta.group(1))
+        self.assertIn("14,600.81 thousand", meta_text)
+        self.assertNotIn("thousands_sa", meta_text)
         self.assertIn("The number of people employed.", html)
 
     def test_scored_input_shows_point_contribution_not_raw_weight(self) -> None:
@@ -460,6 +462,7 @@ class CountryDetailRenderTest(unittest.TestCase):
                     },
                     "Labor": {
                         **score_state["Labor"],
+                        "level": 51.4,
                         "coverage": 1.0,
                         "component_state": {
                             "unemployment": {
@@ -480,8 +483,9 @@ class CountryDetailRenderTest(unittest.TestCase):
             score_state,
         )
         row = re.search(
-            rf'<div class="evidence-grid-row" id="ev-{oid}".*?</div>',
+            rf'<div class="evidence-grid-row score-input" id="score-{oid}".*?</details></div>',
             html,
+            flags=re.S,
         )
         self.assertIsNotNone(row)
         face = re.sub(r"<details\b[^>]*>.*?</details>", "", row.group(0), flags=re.S)
@@ -489,6 +493,104 @@ class CountryDetailRenderTest(unittest.TestCase):
         self.assertIn("+1.40 points in Labor", face)
         self.assertNotIn("weight", face)
         self.assertNotIn("4.100000", html)
+        self.assertIn("51.40 = 50 +1.40 unemployment", html)
+
+        score_state["countries"]["US"]["Labor"]["level"] = 55.0
+        mismatched = render_country_detail("US", projection, synthetic_attention_quiet(), score_state)
+        self.assertNotIn("How the level adds up", mismatched)
+
+    def test_unscored_component_explains_left_out_weight(self) -> None:
+        score_state = synthetic_score_state()
+        score_state = {
+            "baseline_score": 50,
+            "countries": {
+                "US": {
+                    **{dimension: score_state[dimension] for dimension in policy.SCORE_DIMENSIONS},
+                    "Labor": {
+                        **score_state["Labor"],
+                        "level": 51.0,
+                        "coverage": 0.5,
+                        "component_state": {
+                            "unemployment": {"observed": True, "level": 51.0, "weight": 0.5},
+                            "wages": {"observed": False, "level": None, "weight": 0.5},
+                        },
+                    },
+                }
+            },
+        }
+        windows = {"Labor.wages": {"observed": False, "note": "No committed wage series yet."}}
+        html = render_country_detail(
+            "US", {"observations": []}, synthetic_attention_quiet(), score_state, score_windows=windows
+        )
+        self.assertIn("51.00 = 50 +1.00 unemployment (coverage 50%)", html)
+        self.assertIn("Wages is not scored and its 50% weight is left out. No committed wage series yet.", html)
+
+    def test_dimension_movement_sentence_names_top_contributors(self) -> None:
+        base = synthetic_score_state()
+        score_state = {
+            "baseline_score": 50,
+            "countries": {
+                "US": {
+                    **{dimension: base[dimension] for dimension in policy.SCORE_DIMENSIONS},
+                    "Labor": {
+                        "level": 51.5,
+                        "impulse": -1.54,
+                        "direction": "cooling",
+                        "coverage": 1.0,
+                        "temperature_class": "neutral",
+                        "component_state": {
+                            "unemployment": {
+                                "observed": True,
+                                "level": 51.0,
+                                "weight": 0.7,
+                                "impulse": -2.0,
+                            },
+                            "wages": {"observed": True, "level": 52.0, "weight": 0.2, "impulse": 0.1},
+                            "payrolls": {"observed": True, "level": 54.0, "weight": 0.1, "impulse": 1.0},
+                        },
+                    },
+                }
+            },
+        }
+        html = render_country_detail("US", {"observations": []}, synthetic_attention_quiet(), score_state)
+        move = re.search(r'<p class="si-move">([^<]+)</p>', html)
+        self.assertIsNotNone(move)
+        text = move.group(1)
+        self.assertIn("Unemployment (+0.70 points, cooling impulse -2.00)", text)
+        self.assertIn("dimension impulse is cooling (-1.54 vs prior print)", text)
+        self.assertIn("51.50 = 50 +0.70 unemployment", html)
+
+    def test_card_shows_ingestion_separate_from_release(self) -> None:
+        oid = "5555555555555555555555555555555555555555555555555555555555555555"
+        projection = {
+            "observations": [
+                {
+                    "observation_id": oid,
+                    "label": "Synthetic CPI",
+                    "topic": "inflation",
+                    "series_id": "SYN_CPI",
+                    "reference_period": "2026-08",
+                    "value": 2.5,
+                    "units": "percent",
+                    "transformation": "mom_pct",
+                    "release_date": "2026-09-15",
+                    "retrieved_at": "2026-10-28T12:00:00Z",
+                    "history": [
+                        {"reference_period": "2026-07", "value": 2.0},
+                        {"reference_period": "2026-08", "value": 2.5, "release_date": "2026-09-15"},
+                    ],
+                }
+            ]
+        }
+        html = render_country_detail(
+            "US",
+            projection,
+            synthetic_attention_quiet(),
+            synthetic_score_state(),
+        )
+        self.assertIn("Released 15 Sep 2026", html)
+        self.assertIn("Ingested 28 Oct 2026", html)
+        self.assertIn("<th>Ingestion</th>", html)
 
     def test_percent_values_use_two_decimals(self) -> None:
         oid = "4444444444444444444444444444444444444444444444444444444444444444"

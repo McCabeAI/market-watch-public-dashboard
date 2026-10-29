@@ -364,17 +364,54 @@ def _history_for_transform(
     observations: list[Mapping[str, Any]],
     transformation: str,
 ) -> list[dict[str, Any]]:
-    by_period: dict[str, float] = {}
+    """One point per period, last row wins. Attention reads only period and value.
+
+    The other keys are display facts of that winning row: its own release date,
+    source series, and the value of an earlier row it replaced.
+    """
+    by_period: dict[str, dict[str, Any]] = {}
     for row in observations:
         if str(row.get("transformation") or "") != transformation:
             continue
         if row.get("value") is None:
             continue
-        by_period[str(row["reference_period"])] = float(row["value"])
-    return [
-        {"reference_period": period, "value": value}
-        for period, value in sorted(by_period.items())
-    ]
+        period = str(row["reference_period"])
+        value = float(row["value"])
+        point: dict[str, Any] = {"reference_period": period, "value": value}
+        if row.get("series_id"):
+            point["series_id"] = str(row["series_id"])
+        if row.get("release_date"):
+            point["release_date"] = str(row["release_date"])
+        earlier = by_period.get(period)
+        if earlier is not None and earlier.get("series_id") == point.get("series_id"):
+            replaced = earlier.get("revised_from", earlier["value"])
+            if replaced != value:
+                point["revised_from"] = replaced
+        by_period[period] = point
+    return [by_period[period] for period in sorted(by_period)]
+
+
+def _primary_series_rows(
+    component: Mapping[str, Any],
+    observations: list[Mapping[str, Any]],
+    transformation: str,
+) -> tuple[list[Mapping[str, Any]], list[str]]:
+    """Rows of one transform, restricted to the component's own series when several are stored.
+
+    Without this, last-row-wins per period shows whichever series was written
+    last under the component's name (NZ GDP showed the expenditure measure
+    labelled as the production measure). Returns the rows and the other
+    source series that the card does not show.
+    """
+    rows = [row for row in observations if str(row.get("transformation") or "") == transformation]
+    series = sorted({str(row["series_id"]) for row in rows if row.get("series_id")})
+    if len(series) < 2:
+        return rows, []
+    primary = {part for part in str(component.get("series_id") or "").split(";") if part}
+    if not primary & set(series):
+        return rows, series
+    kept = [row for row in rows if not row.get("series_id") or str(row["series_id"]) in primary]
+    return kept, sorted(set(series) - primary)
 
 
 def _latest_row(
@@ -432,6 +469,7 @@ def _build_identity_observation(
     publisher_override: str | None = None,
     vintage_override: str | None = None,
     series_id_override: str | None = None,
+    companion_series: list[str] | None = None,
 ) -> dict[str, Any]:
     if not history:
         raise ValueError("history must include the latest point")
@@ -536,6 +574,9 @@ def _build_identity_observation(
             calibration_sources=calibration_sources,
         ),
     }
+    others = [sid for sid in companion_series or [] if sid != series_id]
+    if others:
+        record["companion_series"] = others
     return record
 
 
@@ -569,13 +610,16 @@ def _observations_from_component(
     transforms = sorted({str(row.get("transformation") or "") for row in observations if row.get("transformation")})
     out: list[dict[str, Any]] = []
     for transformation in transforms:
-        history = _history_for_transform(observations, transformation)
+        rows, companions = _primary_series_rows(component, observations, transformation)
+        history = _history_for_transform(rows, transformation)
         if not history:
             continue
-        latest = _latest_row(observations, transformation)
+        latest = _latest_row(rows, transformation)
         if latest is None:
             continue
         kwargs: dict[str, Any] = {}
+        if companions:
+            kwargs["companion_series"] = companions
         if catalog_id == str(AU_HOUSEHOLD_SPENDING_MONTHLY["catalog_id"]):
             kwargs["score_role_override"] = (
                 str(AU_HOUSEHOLD_SPENDING_MONTHLY["score_role"]),

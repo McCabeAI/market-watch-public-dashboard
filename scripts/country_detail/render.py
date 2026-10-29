@@ -26,15 +26,21 @@ from scripts.country_detail._prima_section import (
     prima_glance_markup,
     render_prima_pressure_block,
 )
+from scripts.country_detail.indicator import (
+    contribution_sum_text,
+    headline,
+    indicator_view,
+    rationale,
+    score_usage,
+)
 from scripts.country_detail.present import (
+    _movement_pair,
     bucket_label,
     format_macro_value,
     history_limitation,
     plain_series_name,
     point_contribution,
-    score_print_text,
     series_synopsis,
-    why_it_surfaced,
 )
 from scripts.temperature_level import display_score, temperature_class
 
@@ -189,6 +195,94 @@ def _impulse_markup(spec: Mapping[str, Any]) -> str:
     )
 
 
+def _impulse_direction_word(impulse: float) -> str:
+    if impulse >= 0.05:
+        return "warming"
+    if impulse <= -0.05:
+        return "cooling"
+    return "static"
+
+
+def _component_contribution_points(
+    state: Mapping[str, Any],
+    baseline: float,
+    coverage_f: float,
+) -> float | None:
+    if not state.get("observed") or state.get("level") is None:
+        return None
+    try:
+        weight = float(state["weight"])
+        level = float(state["level"])
+    except (TypeError, ValueError):
+        return None
+    return weight / coverage_f * (level - baseline)
+
+
+def _describe_scored_component(name: str, points: float, state: Mapping[str, Any]) -> str:
+    label = _component_label(name)
+    text = f"{label} ({points:+.2f} points"
+    impulse = state.get("impulse")
+    if impulse is not None:
+        try:
+            imp_f = float(impulse)
+            text += f", {_impulse_direction_word(imp_f)} impulse {imp_f:+.2f}"
+        except (TypeError, ValueError):
+            pass
+    return text + ")"
+
+
+def _dimension_movement_sentence(
+    country_code: str,
+    dimension: str,
+    score_state: Mapping[str, Any],
+) -> str:
+    """One verified sentence on level drivers and dimension impulse. Empty when figures do not reconcile."""
+    reconciliation, _ = contribution_sum_text(country_code, dimension, score_state, _COMPONENT_NAMES)
+    if not reconciliation:
+        return ""
+    countries = score_state.get("countries") or {}
+    spec = (countries.get(country_code) or {}).get(dimension) if countries else score_state.get(dimension)
+    if not isinstance(spec, Mapping) or spec.get("level") is None:
+        return ""
+    try:
+        baseline = float(score_state.get("baseline_score", 50.0))
+        coverage_f = float(spec["coverage"])
+        level_f = float(spec["level"])
+    except (TypeError, ValueError):
+        return ""
+    if coverage_f <= 0:
+        return ""
+    ranked: list[tuple[float, str, Mapping[str, Any], float]] = []
+    for name, state in (spec.get("component_state") or {}).items():
+        if not isinstance(state, Mapping):
+            continue
+        points = _component_contribution_points(state, baseline, coverage_f)
+        if points is None:
+            continue
+        ranked.append((abs(points), name, state, points))
+    if not ranked:
+        return ""
+    ranked.sort(key=lambda row: (-row[0], row[1]))
+    top = ranked[:2]
+    if len(top) == 1:
+        driver = f"Level {level_f:.1f} is driven by {_describe_scored_component(top[0][1], top[0][3], top[0][2])}"
+    else:
+        a = _describe_scored_component(top[0][1], top[0][3], top[0][2])
+        b = _describe_scored_component(top[1][1], top[1][3], top[1][2])
+        driver = f"Level {level_f:.1f} is driven mainly by {a} and {b}"
+    impulse = spec.get("impulse")
+    if impulse is None:
+        return f"{driver}."
+    try:
+        imp_f = float(impulse)
+    except (TypeError, ValueError):
+        return f"{driver}."
+    dim_dir = str(spec.get("direction") or "").lower()
+    if dim_dir not in _DIRECTION_LABELS:
+        dim_dir = _impulse_direction_word(imp_f)
+    return f"{driver}; dimension impulse is {dim_dir} ({imp_f:+.2f} vs prior print)."
+
+
 def _score_header(score_state: Mapping[str, Any]) -> str:
     if not isinstance(score_state, Mapping):
         line = "Score dates not published in this view"
@@ -325,9 +419,250 @@ def _render_score_compact(country_code: str, score_state: Mapping[str, Any]) -> 
     return "".join(parts)
 
 
+def _ingestion_text(iso_day: Any) -> str:
+    if not iso_day:
+        return ""
+    try:
+        from datetime import date
+
+        from scripts.country_detail.indicator import day_label
+
+        return f"Ingested {day_label(date.fromisoformat(str(iso_day)[:10]))}"
+    except ValueError:
+        return ""
+
+
+def _dates_line(view: Mapping[str, Any]) -> str:
+    """Reference period, release date, and ingestion day (when recorded)."""
+    released_class = "ind-released" if view["release_day"] else "ind-released ind-missing"
+    bits = [
+        f'<span class="ind-period">{_esc(view["period_label"])}</span>',
+        f'<span class="{released_class}">{_esc(view["release_text"])}</span>',
+    ]
+    ingest = _ingestion_text(view.get("ingestion_date"))
+    if ingest:
+        bits.append(f'<span class="ind-ingest">{_esc(ingest)}</span>')
+    if view["revision"]:
+        bits.append(f'<span class="ind-revision">{_esc(view["revision"])}</span>')
+    return "".join(bits)
+
+
+def _figure_line(view: Mapping[str, Any], value_class: str = "ind-value") -> str:
+    mark = f' <span class="ind-mark">{_esc(view["mark"])}</span>' if view["mark"] else ""
+    delta = ""
+    if view["delta_text"] and view["previous"]:
+        delta = (
+            f'<span class="ind-delta">{_esc(view["delta_text"])} vs '
+            f'{_esc(view["previous"]["period_label"])}</span>'
+        )
+    return (
+        f'<p class="ind-figure"><span class="{value_class} mw-num">{_esc(view["value_text"])}</span>'
+        f"{mark}{delta}</p>"
+    )
+
+
+def _prints_strip(view: Mapping[str, Any]) -> str:
+    prints = view["prints"]
+    if len(prints) < 2:
+        return ""
+    items = []
+    for item in prints:
+        revised = (
+            f'<span class="ind-p-note">first recorded {_esc(item["revised_from_text"])}</span>'
+            if item["revised_from_text"]
+            else ""
+        )
+        released = (
+            f'<span class="ind-p-note">{_esc(item["release_text"])}</span>'
+            if item.get("release_text")
+            else ""
+        )
+        ingest = _ingestion_text(item.get("ingestion_date"))
+        ingest_html = f'<span class="ind-p-note">{_esc(ingest)}</span>' if ingest else ""
+        items.append(
+            f'<li><span class="ind-p-period">{_esc(item["period_label"])}</span>'
+            f'<span class="ind-p-value mw-num">{_esc(item["value_text"])}</span>{released}{ingest_html}{revised}</li>'
+        )
+    return f'<ol class="ind-prints" aria-label="Last {len(prints)} prints, newest first">{"".join(items)}</ol>'
+
+
+def _chart_svg(obs: Mapping[str, Any], view: Mapping[str, Any]) -> str:
+    """Inline chart of committed prints only. No chart below three points."""
+    points = [(str(p["reference_period"]), float(p["value"])) for p in view["chart_points"]]
+    if len(points) < 3:
+        return ""
+    kind = view["kind"]
+    values = [v for _, v in points]
+    bars = kind in {"pct_change", "count_change"}
+    ref = 50.0 if kind == "diffusion" else 0.0 if bars or kind == "balance" else None
+    lo, hi = min(values), max(values)
+    if ref is not None:
+        lo, hi = min(lo, ref), max(hi, ref)
+    if hi == lo:
+        hi, lo = hi + 1.0, lo - 1.0
+    width, height, pad_x, pad_y = 320.0, 110.0, 6.0, 14.0
+    plot_h = height - 2 * pad_y
+    step = (width - 2 * pad_x) / len(points)
+
+    def y_of(value: float) -> float:
+        return pad_y + (hi - value) / (hi - lo) * plot_h
+
+    from scripts.country_detail.indicator import period_label, value_text
+
+    shapes: list[str] = []
+    if ref is not None:
+        y_ref = y_of(ref)
+        shapes.append(
+            f'<line class="ind-ref" x1="{pad_x:.1f}" x2="{width - pad_x:.1f}" y1="{y_ref:.1f}" y2="{y_ref:.1f}"/>'
+        )
+    if bars:
+        base = y_of(0.0)
+        for index, (_, value) in enumerate(points):
+            x = pad_x + index * step + step * 0.15
+            top = min(base, y_of(value))
+            bar_h = max(abs(y_of(value) - base), 1.0)
+            klass = "ind-bar-pos" if value >= 0 else "ind-bar-neg"
+            shapes.append(
+                f'<rect class="{klass}" x="{x:.1f}" y="{top:.1f}" width="{step * 0.7:.1f}" height="{bar_h:.1f}"/>'
+            )
+    else:
+        coords = " ".join(
+            f"{pad_x + index * step + step / 2:.1f},{y_of(value):.1f}" for index, (_, value) in enumerate(points)
+        )
+        shapes.append(f'<polyline class="ind-line" points="{coords}"/>')
+        last_x = pad_x + (len(points) - 1) * step + step / 2
+        shapes.append(f'<circle class="ind-dot" cx="{last_x:.1f}" cy="{y_of(values[-1]):.1f}" r="3"/>')
+    first_label = period_label(points[0][0])
+    last_label = period_label(points[-1][0])
+    summary = (
+        f"{len(points)} prints from {first_label} to {last_label}; "
+        f"low {value_text(lo if lo in values else min(values), obs, kind)}, "
+        f"high {value_text(max(values), obs, kind)}, latest {value_text(values[-1], obs, kind)}."
+    )
+    ref_label = ""
+    if kind == "diffusion":
+        ref_label = '<span class="ind-chart-ref">line = 50</span>'
+    return (
+        '<figure class="ind-chart">'
+        f'<svg viewBox="0 0 {width:.0f} {height:.0f}" role="img" aria-label="{_esc(summary)}" preserveAspectRatio="none">'
+        f"<title>{_esc(summary)}</title>{''.join(shapes)}</svg>"
+        f'<figcaption><span>{_esc(first_label)}</span>{ref_label}<span>{_esc(last_label)}</span></figcaption>'
+        "</figure>"
+    )
+
+
+def _history_table(obs: Mapping[str, Any], view: Mapping[str, Any]) -> str:
+    dated = list(view.get("dated_history") or [])
+    if not dated:
+        return ""
+    rows = []
+    for row in reversed(dated):
+        note = ""
+        if row.get("revised_from_text"):
+            note = f"first recorded {row['revised_from_text']}"
+        ingest = _ingestion_text(row.get("ingestion_date")) or "—"
+        rows.append(
+            f"<tr><td>{_esc(row['period_label'])}</td>"
+            f'<td class="mw-num">{_esc(row["value_text"])}</td>'
+            f"<td>{_esc(row['release_text'])}</td>"
+            f"<td>{_esc(ingest)}</td><td>{_esc(note)}</td></tr>"
+        )
+    return (
+        '<table class="history-table"><thead><tr><th>Period</th><th>Value</th>'
+        "<th>Release</th><th>Ingestion</th><th>Revision</th></tr></thead><tbody>"
+        + "".join(rows)
+        + "</tbody></table>"
+    )
+
+
+def _source_link(view: Mapping[str, Any]) -> str:
+    url = view["source_url"]
+    if not url.startswith("http"):
+        return f'<p class="ind-source">Source: {_esc(view["publisher"])}</p>'
+    return (
+        f'<p class="ind-source">Source: <a href="{_esc(url)}" rel="noopener noreferrer">'
+        f"{_esc(view['publisher'])}</a></p>"
+    )
+
+
+def _history_panel(
+    obs: Mapping[str, Any],
+    view: Mapping[str, Any],
+    extra_limitations: list[str] | None = None,
+    limitation_code: str | None = None,
+) -> str:
+    limitations = list(view["limitations"]) + list(extra_limitations or [])
+    parts = [
+        '<details class="history-drill ind-history"><summary>History, source and limits</summary>',
+        _chart_svg(obs, view),
+        _history_table(obs, view) or '<p class="history-limitation">No history points in projection.</p>',
+    ]
+    if limitations:
+        parts.append(
+            '<ul class="ind-limits">' + "".join(f"<li>{_esc(text)}</li>" for text in limitations) + "</ul>"
+        )
+    if limitation_code:
+        parts.append(f'<p class="evidence-code">{_esc(limitation_code)}</p>')
+    parts.append(_source_link(view))
+    parts.append("</details>")
+    return "".join(parts)
+
+
+def _technical_rows(obs: Mapping[str, Any], *extra: tuple[str, str]) -> list[tuple[str, str]]:
+    rows: list[tuple[str, str]] = []
+    official = str(obs.get("label") or "")
+    if official:
+        rows.append(("Official title", official))
+    rows.append(("What it measures", series_synopsis(obs)))
+    if obs.get("series_id"):
+        rows.append(("Series", str(obs["series_id"])))
+    transformation = obs.get("transformation")
+    if transformation:
+        rows.append(("Transformation", f"{transformation} · {_transformation_label(str(transformation))}"))
+    rows.append(("Seasonal adjustment", _seasonal_text(obs)))
+    if obs.get("geography"):
+        rows.append(("Geography", str(obs["geography"])))
+    if obs.get("revision_status"):
+        rows.append(("Revision status", str(obs["revision_status"])))
+    if obs.get("vintage"):
+        rows.append(("Vintage", str(obs["vintage"])))
+    if obs.get("release_date"):
+        rows.append(("Release date on committed row", str(obs["release_date"])))
+    if obs.get("companion_series"):
+        rows.append(("Other series under this indicator", ", ".join(str(s) for s in obs["companion_series"])))
+    if obs.get("observation_id"):
+        rows.append(("Observation id", str(obs["observation_id"])))
+    rows.extend(extra)
+    return rows
+
+
+def _technical_details(rows: list[tuple[str, str]], klass: str, summary: str = "Technical details") -> str:
+    return f'<details class="{klass}"><summary>{_esc(summary)}</summary>{_technical_dl(rows)}</details>'
+
+
+def _card_anchor(oid: str, wmn_ids: set[str]) -> str:
+    return f"#wmn-{oid}" if oid in wmn_ids else f"#ev-{oid}"
+
+
+def _score_role_line(
+    obs: Mapping[str, Any],
+    country_code: str,
+    score_state: Mapping[str, Any],
+) -> str:
+    contribution = point_contribution(obs, country_code, score_state) if score_state else None
+    bucket = bucket_label(obs)
+    if bucket == "Context only":
+        return '<p class="wmn-bucket">Context only · not a score input</p>'
+    link = f'<a href="#cd-{_esc(country_code)}-{_esc(bucket)}">{_esc(bucket)} score</a>'
+    points = f" · {_esc(contribution['text'])}" if contribution else ""
+    return f'<p class="wmn-bucket">Feeds the {link}{points}</p>'
+
+
 def _render_wmn(
     attention_country: Mapping[str, Any],
     obs_map: dict[str, Mapping[str, Any]],
+    country_code: str = "",
+    score_state: Mapping[str, Any] | None = None,
 ) -> str:
     finding_count = int(attention_country.get("finding_count") or 0)
     findings = list(attention_country.get("findings") or [])
@@ -342,49 +677,52 @@ def _render_wmn(
             oid = str(finding["observation_id"])
             status = str(finding["attention_status"])
             badge = finding.get("badge_text") or ATTENTION_BADGE_TEXT.get(status, "")
+            obs = obs_map.get(oid) or finding
+            view = indicator_view(obs)
             parts.append(
-                f'<article class="wmn-finding" id="ev-{_esc(oid)}" '
+                f'<li><article class="wmn-finding" id="wmn-{_esc(oid)}" '
                 f'data-observation-id="{_esc(oid)}" '
                 f'data-attention="{_esc(status)}">'
             )
-            if badge:
-                parts.append(f'<span class="wmn-badge">{_esc(badge)}</span>')
-            obs = obs_map.get(oid) or finding
+            badge_html = f'<span class="wmn-badge">{_esc(badge)}</span>' if badge else ""
+            parts.append(f'<div class="ind-dates">{badge_html}{_dates_line(view)}</div>')
             geo = _geography_label(finding.get("geography") or obs.get("geography"))
             if geo:
                 parts.append(f'<p class="wmn-geo">{_esc(geo)}</p>')
-            parts.append(f'<h3 class="wmn-series">{_esc(plain_series_name(obs))}</h3>')
-            value_s = _format_value(obs.get("value"), obs.get("units"), obs.get("transformation"))
-            period = _format_period(obs.get("reference_period") or finding.get("reference_period"))
-            value_bits = " · ".join(bit for bit in (value_s, period) if bit)
-            parts.append(f'<p class="wmn-value mw-num">{_esc(value_bits)}</p>')
-            parts.append(f'<p class="wmn-bucket">{_esc(bucket_label(obs))}</p>')
-            parts.append(f'<p class="wmn-why">{_esc(why_it_surfaced(finding, obs))}</p>')
-            parts.append(f'<p class="wmn-synopsis">{_esc(series_synopsis(obs))}</p>')
+            parts.append(f'<p class="ind-name">{_esc(view["name"])}</p>')
+            prior_value = _movement_pair(finding, obs)[0] if view["previous"] is None else None
+            parts.append(f'<h3 class="wmn-series">{_esc(headline(obs, view, prior_value))}</h3>')
+            parts.append(_figure_line(view, "wmn-value"))
+            parts.append(_prints_strip(view))
+            parts.append(f'<p class="wmn-why">{_esc(rationale(finding, obs))}</p>')
+            parts.append(_score_role_line(obs, country_code, score_state or {}))
             related = list(finding.get("related_observation_ids") or [])
             rel_text = _related_obs_text(related, obs_map)
             if rel_text:
-                parts.append(
-                    f'<p class="wmn-related">Related: {_esc(rel_text)}</p>'
-                )
-            parts.append('<details class="wmn-technical"><summary>Technical detail</summary>')
-            official = str(obs.get("label") or "")
-            if official:
-                parts.append(f'<p class="wmn-official">Official title: {_esc(official)}</p>')
-            parts.append(f'<p class="wmn-reason">{_esc(finding.get("reason", ""))}</p>')
+                parts.append(f'<p class="wmn-related">Related: {_esc(rel_text)}</p>')
+            reasons = list(finding.get("ineligibility") or [])
+            limitation = _history_limitation_text(reasons)
+            parts.append(_history_panel(obs, view, [limitation[0]] if limitation else None))
             parts.append(
-                f'<p class="wmn-headline">{_esc(finding.get("headline_text", ""))}</p>'
+                '<details class="wmn-technical"><summary>Technical details</summary>'
+                + _technical_dl(_technical_rows(obs))
+                + f'<p class="wmn-reason">{_esc(finding.get("reason", ""))}</p>'
+                + f'<p class="wmn-headline">{_esc(finding.get("headline_text", ""))}</p>'
+                + "</details>"
             )
-            series_id = obs.get("series_id") or finding.get("series_id")
-            if series_id:
-                parts.append(f'<p class="evidence-code mw-raw">{_esc(series_id)}</p>')
-            raw_transformation = obs.get("transformation") or finding.get("transformation")
-            if raw_transformation:
-                parts.append(f'<p class="evidence-code mw-raw">{_esc(raw_transformation)}</p>')
-            parts.append("</details></article>")
+            parts.append("</article></li>")
         parts.append("</ol>")
     parts.append("</section>")
     return "".join(parts)
+
+
+def _technical_dl(rows: list[tuple[str, str]]) -> str:
+    body = "".join(
+        f'<div class="ind-tech-row"><dt>{_esc(label)}</dt><dd class="mw-raw">{_esc(value)}</dd></div>'
+        for label, value in rows
+        if value
+    )
+    return f'<dl class="ind-tech">{body}</dl>'
 
 
 def _quiet_explanation(review: Mapping[str, Any] | None) -> str:
@@ -435,76 +773,56 @@ def _render_evidence_row(
 ) -> str:
     oid = str(obs["observation_id"])
     topic = str(obs.get("topic") or "other")
-    label = plain_series_name(obs)
-    value_s = _format_value(obs.get("value"), obs.get("units"), obs.get("transformation"))
-    period = _format_period(obs.get("reference_period"))
+    view = indicator_view(obs)
+    label = view["name"]
+    value_s = view["value_text"]
+    period = view["period_label"]
     geo_label = _geography_label(obs.get("geography"))
     data_state, display_label = _resolved_data_state(obs, members)
     state_html = _data_state_markup(data_state, display_label)
-    source_url = obs.get("source_url") or "#"
-    publisher = obs.get("publisher") or "Source"
     retrieved = obs.get("retrieved_at") or ""
 
-    meta_parts = [_esc(value_s), _esc(period) if period else "", _esc(bucket_label(obs))]
+    released_class = "ind-released" if view["release_day"] else "ind-released ind-missing"
+    meta_parts = [
+        f'<span class="mw-num">{_esc(value_s)}</span>',
+        _esc(period) if period else "",
+        f'<span class="{released_class}">{_esc(view["release_text"])}</span>',
+        _esc(bucket_label(obs)),
+    ]
+    if view["revision"]:
+        meta_parts.append(f'<span class="ind-revision">{_esc(view["revision"])}</span>')
+    ingest = _ingestion_text(view.get("ingestion_date"))
+    if ingest:
+        meta_parts.append(f'<span class="ind-ingest">{_esc(ingest)}</span>')
     if geo_label:
         meta_parts.append(_esc(geo_label))
     meta_line = " · ".join(p for p in meta_parts if p)
     if state_html:
         meta_line = f"{state_html} · {meta_line}" if meta_line else state_html
 
-    history = list(obs.get("history") or [])
     reasons = _member_ineligibility(members, oid)
     limitation = _history_limitation_text(reasons)
+    extra = [limitation[0]] if limitation else []
+    if data_state == "failed_fetch" and retrieved:
+        extra.append(f"The latest fetch failed; the last successful retrieval was {retrieved}.")
 
     search = _search_text(obs, label=label, value_s=value_s, period=period or "", geo_label=geo_label)
     parts = [
-        f'<article class="evidence-item" data-observation-id="{_esc(oid)}" '
+        f'<article class="evidence-item" id="ev-{_esc(oid)}" data-observation-id="{_esc(oid)}" '
         f'data-topic="{_esc(topic)}" data-search="{_esc(search)}">',
         '<details class="evidence-details">',
         "<summary>",
         f'<div class="evidence-item-header">{_esc(label)}</div>',
         f'<div class="evidence-item-meta">{meta_line}</div>',
         "</summary>",
-        '<div class="evidence-technical">',
-        f'<p class="evidence-synopsis">{_esc(series_synopsis(obs))}</p>',
+        '<div class="evidence-body">',
+        f'<p class="ind-headline">{_esc(headline(obs, view))}</p>',
+        _figure_line(view),
+        _prints_strip(view),
+        _history_panel(obs, view, extra, limitation[1] if limitation and not obs.get("history") else None),
+        _technical_details(_technical_rows(obs), "ind-technical"),
+        "</div></details></article>",
     ]
-    official = str(obs.get("label") or "")
-    if official:
-        parts.append(f'<p class="wmn-official">Official title: {_esc(official)}</p>')
-    series_id = obs.get("series_id")
-    if series_id:
-        parts.append(f'<p class="evidence-code mw-raw">Series {_esc(series_id)}</p>')
-    raw_transformation = obs.get("transformation")
-    if raw_transformation:
-        parts.append(
-            f'<p class="evidence-code">Transform {_esc(raw_transformation)}'
-            f" · {_esc(_transformation_label(str(raw_transformation)))}</p>"
-        )
-    parts.append(f'<p class="evidence-code">{_esc(_seasonal_text(obs))}</p>')
-    if obs.get("geography") and not geo_label:
-        parts.append(f'<p class="evidence-code">Geography {_esc(obs.get("geography"))}</p>')
-    if data_state == "failed_fetch" and retrieved:
-        parts.append(f'<p class="evidence-code">Retrieved {_esc(retrieved)}</p>')
-    parts.append(
-        f'<a href="{_esc(str(source_url))}" rel="noopener noreferrer">{_esc(publisher)}</a>'
-    )
-    parts.append('<details class="history-drill"><summary>History</summary>')
-    if history:
-        parts.append('<table class="history-table"><thead><tr><th>Period</th><th>Value</th></tr></thead><tbody>')
-        for point in history:
-            parts.append(
-                "<tr><td>"
-                f'{_esc(_format_period(point.get("reference_period") or point.get("period")))}'
-                f"</td><td>{_esc(_format_value(point.get('value'), obs.get('units'), obs.get('transformation')))}</td></tr>"
-            )
-        parts.append("</tbody></table>")
-    elif limitation:
-        prose, code = limitation
-        parts.append(f'<p class="history-limitation">{_esc(prose)}</p>')
-        parts.append(f'<p class="evidence-code">{_esc(code)}</p>')
-    else:
-        parts.append('<p class="history-limitation">No history points in projection.</p>')
-    parts.append("</details></div></details></article>")
     return "".join(parts)
 
 
@@ -569,57 +887,69 @@ def _audit_row(
     score_state: Mapping[str, Any],
     link_only: bool = False,
     state_markup: str = "",
+    windows: Mapping[str, Any] | None = None,
+    wmn_ids: set[str] | None = None,
 ) -> str:
     oid = str(obs["observation_id"])
-    label = plain_series_name(obs)
+    view = indicator_view(obs)
+    label = view["name"]
+    anchor = _card_anchor(oid, wmn_ids or set())
     if link_only:
         lead = f"<strong>{_esc(label)}</strong>"
         if state_markup:
             lead = f"{lead} {state_markup}"
-        official = str(obs.get("label") or "")
-        series_id = obs.get("series_id")
-        technical_bits = []
-        if official:
-            technical_bits.append(f"<p>Official title: {_esc(official)}</p>")
-        if series_id:
-            technical_bits.append(f'<p class="evidence-code mw-raw">Series {_esc(series_id)}</p>')
-        raw_transformation = obs.get("transformation")
-        if raw_transformation:
-            technical_bits.append(f'<p class="evidence-code mw-raw">{_esc(raw_transformation)}</p>')
-        technical = ""
-        if technical_bits:
-            technical = (
-                '<details class="score-input-technical"><summary>Technical detail</summary>'
-                + "".join(technical_bits)
-                + "</details>"
-            )
+        facts = " · ".join(
+            bit for bit in (view["value_text"], view["period_label"], view["release_text"]) if bit
+        )
         return (
             f'<div class="evidence-grid-row" data-observation-id="{_esc(oid)}">'
-            f"{lead} — "
-            f'<a href="#ev-{_esc(oid)}">Country Evidence</a>'
-            f"{technical}"
+            f'{lead} <span class="si-facts">{_esc(facts)}</span> '
+            f'<a href="{_esc(anchor)}">View print</a>'
+            f"{_technical_details(_technical_rows(obs), 'score-input-technical')}"
             "</div>"
         )
-    period = _format_period(obs.get("reference_period"))
-    contribution = point_contribution(obs, country_code, score_state)
-    value_s = score_print_text(obs, contribution)
-    points = ""
-    technical = ""
+    catalog_key = str(obs.get("catalog_id") or "").split(".", 1)[-1]
+    usage = score_usage(obs, country_code, score_state, (windows or {}).get(catalog_key), view)
+    contribution = (usage or {}).get("contribution")
+    points = f' <span class="score-points">{_esc(contribution["text"])}</span>' if contribution else ""
+    lines: list[str] = []
+    latest = f"Latest print {view['value_text']} · {view['period_label']} · {view['release_text']}"
+    if usage and usage.get("observed"):
+        used = f"Score uses <b class=\"mw-num\">{_esc(usage['used_text'])}</b>"
+        if usage["window_text"]:
+            used += f": {_esc(usage['window_text'])}"
+        lines.append(f'<p class="si-used">{used}.</p>')
+        if usage["other_series"]:
+            lines.append(
+                '<p class="si-gap">The score reads a different published series for this indicator; '
+                "the print below is context for it.</p>"
+            )
+        elif usage["behind_latest"]:
+            lines.append(
+                f'<p class="si-gap">The score input ends {_esc(usage["as_of_label"])}; '
+                f"a newer print ({_esc(view['period_label'])}) is not in the score yet.</p>"
+            )
+        if not usage["same_as_latest"] or usage["window_text"]:
+            lines.append(f'<p class="si-latest">{_esc(latest)}.</p>')
+        else:
+            lines.append(f'<p class="si-latest">{_esc(view["period_label"])} · {_esc(view["release_text"])}.</p>')
+    else:
+        lines.append(f'<p class="si-latest">{_esc(latest)}.</p>')
+    technical_rows = _technical_rows(obs)
     if contribution:
-        points = f' <span class="score-points">{_esc(contribution["text"])}</span>'
-        level_text = f"{float(contribution['level']):.2f}"
-        weight_text = f"{float(contribution['weight']):.2f}"
-        technical = (
-            '<details class="score-input-technical"><summary>Score detail</summary>'
-            f'<p class="evidence-code">Component level {_esc(level_text)}'
-            f" · weight {_esc(weight_text)}"
-            " · points versus the neutral 50 anchor.</p></details>"
-        )
+        technical_rows = [
+            ("Component level", f"{float(contribution['level']):.2f}"),
+            ("Component weight", f"{float(contribution['weight']):.2f}"),
+            ("Points", "weight ÷ observed coverage × (component level − 50)"),
+        ] + technical_rows
+    if usage and usage.get("scored_series"):
+        technical_rows.append(("Scored series", ", ".join(usage["scored_series"])))
     return (
-        f'<div class="evidence-grid-row" id="ev-{_esc(oid)}" data-observation-id="{_esc(oid)}">'
-        f"<strong>{_esc(label)}</strong> · {_esc(value_s)}"
-        f"{(' · ' + _esc(period)) if period else ''}"
-        f"{points}{technical}"
+        f'<div class="evidence-grid-row score-input" id="score-{_esc(oid)}" data-observation-id="{_esc(oid)}">'
+        f'<p class="si-head"><strong>{_esc(label)}</strong>{points}</p>'
+        f"{''.join(lines)}"
+        f'<a class="si-link" href="{_esc(anchor)}">History and source</a>'
+        f"{_technical_details(technical_rows, 'score-input-technical', 'Score detail')}"
         "</div>"
     )
 
@@ -736,6 +1066,8 @@ def _render_score_drilldown(
     members: list[Mapping[str, Any]],
     employment_context: Mapping[str, Any] | None = None,
     prima_pressure: Mapping[str, Any] | None = None,
+    windows: Mapping[str, Any] | None = None,
+    wmn_ids: set[str] | None = None,
 ) -> str:
     obs_by_topic: dict[str, list[Mapping[str, Any]]] = {t: [] for t in TOPIC_IDS}
     for obs in observations:
@@ -761,9 +1093,24 @@ def _render_score_drilldown(
         ]
 
         hard_rows = "".join(
-            _audit_row(o, country_code, score_state) for o in hard
+            _audit_row(o, country_code, score_state, windows=windows, wmn_ids=wmn_ids) for o in hard
         ) or (
             '<div class="evidence-grid-row">No scored inputs for this dimension in projection.</div>'
+        )
+        notes = {
+            key.split(".", 1)[1]: str(entry.get("note") or "")
+            for key, entry in (windows or {}).items()
+            if key.startswith(f"{dimension}.") and not entry.get("observed")
+        }
+        reconciliation, missing = contribution_sum_text(
+            country_code, dimension, score_state, _COMPONENT_NAMES, notes
+        )
+        hard_rows += "".join(f'<div class="evidence-grid-row si-missing">{_esc(text)}</div>' for text in missing)
+        sum_html = (
+            f'<p class="si-sum"><span class="mw-label">How the level adds up</span> '
+            f'<span class="mw-num">{_esc(reconciliation)}</span></p>'
+            if reconciliation
+            else ""
         )
         ctx_rows = "".join(
             _audit_row(
@@ -772,6 +1119,7 @@ def _render_score_drilldown(
                 score_state,
                 link_only=True,
                 state_markup=_data_state_markup(*_resolved_data_state(o, members)),
+                wmn_ids=wmn_ids,
             )
             for o in context
         )
@@ -787,8 +1135,9 @@ def _render_score_drilldown(
             f"{_impulse_markup(spec)}</div>"
         )
         lineage = (
-            f"<div class=\"lineage-note\"><b>Score lineage:</b> {LINEAGE_ANCHOR_PHRASE}. "
-            "LEVEL is the stored calibrated score. Impulse is separate from attention.</div>"
+            f"<div class=\"lineage-note\"><b>How to read:</b> {LINEAGE_ANCHOR_PHRASE}. "
+            "Points show how far each input pulls the stored level away from 50. "
+            "Context rows below do not feed the score.</div>"
         )
 
         prima_html = ""
@@ -796,6 +1145,9 @@ def _render_score_drilldown(
         if country_code == "CA" and dimension == "Inflation":
             prima_html = _render_prima_pressure(prima_pressure)
             prima_glance = prima_glance_markup(prima_pressure, _esc)
+
+        move = _dimension_movement_sentence(country_code, dimension, score_state)
+        move_html = f'<p class="si-move">{_esc(move)}</p>' if move else ""
 
         parts.append(
             f'<details class="{SCORE_DETAIL_CLASS_ATTRIBUTE}" id="{_esc(detail_id)}">'
@@ -810,14 +1162,16 @@ def _render_score_drilldown(
             f"{vintage_html}"
             f"</summary>"
             f'<div class="score-evidence">'
+            f"{move_html}"
             f'<div class="evidence-block">'
             f'<div class="evidence-title">{_esc(HARD_SCORE_INPUTS_TITLE)}</div>'
+            f"{sum_html}"
             f'<div class="evidence-grid">{hard_rows}</div>'
             f"{lineage}"
             f"</div>"
             f"{prima_html}"
             f'<div class="{EVIDENCE_BLOCK_CONTEXT_CLASS}">'
-            f'<div class="evidence-title">Context / corroboration</div>'
+            f'<div class="evidence-title">Context / corroboration · not score inputs</div>'
             f'<div class="evidence-grid">{ctx_rows}</div>'
             f"</div>"
             f"{_render_us_employment_context(employment_context) if dimension == 'Labor' and employment_context else ''}"
@@ -831,18 +1185,20 @@ def render_country_detail(
     projection_country: Mapping[str, Any],
     attention_country: Mapping[str, Any],
     score_state: Mapping[str, Any],
+    score_windows: Mapping[str, Any] | None = None,
 ) -> str:
     """Render the Country Detail fragment for one economy."""
     code = str(country_code)
     observations = list(projection_country.get("observations") or [])
     obs_map = _obs_by_id(observations)
     members = list(attention_country.get("members") or [])
+    wmn_ids = _wmn_observation_ids(attention_country)
 
     chunks = [
         f'<section class="country-detail" data-country="{_esc(code)}">',
         _score_header(score_state),
         _render_score_compact(code, score_state),
-        _render_wmn(attention_country, obs_map),
+        _render_wmn(attention_country, obs_map, code, score_state),
         _render_score_drilldown(
             code,
             observations,
@@ -854,12 +1210,14 @@ def render_country_detail(
             prima_pressure=projection_country.get("prima_pressure")
             if isinstance(projection_country, Mapping)
             else None,
+            windows=score_windows,
+            wmn_ids=wmn_ids,
         ),
         _render_country_evidence(
             code,
             observations,
             members,
-            shown_ids=_wmn_observation_ids(attention_country),
+            shown_ids=wmn_ids,
         ),
         "</section>",
     ]
@@ -1250,6 +1608,28 @@ def evidence_filter_script() -> str:
       });
     }
   }
+
+  function reveal(target) {
+    var node = target;
+    while (node && node !== document.body) {
+      if (node.tagName === 'DETAILS') node.open = true;
+      if (node.hidden && node.classList && node.classList.contains('evidence-item')) node.hidden = false;
+      node = node.parentElement;
+    }
+    var own = target.querySelector && target.querySelector(':scope > details');
+    if (own) own.open = true;
+    if (target.scrollIntoView) target.scrollIntoView({block: 'start'});
+  }
+
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest ? event.target.closest('.country-detail a[href^="#"]') : null;
+    if (!link) return;
+    var id = link.getAttribute('href').slice(1);
+    var target = id && document.getElementById(id);
+    if (!target) return;
+    event.preventDefault();
+    reveal(target);
+  });
 
   function boot() {
     document.querySelectorAll('.country-detail').forEach(wire);

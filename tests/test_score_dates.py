@@ -68,7 +68,9 @@ class ScoreDatesMetadataTests(unittest.TestCase):
         current = compute_state(cal, histories)["countries"]
         vintage = compute_state(cal, filtered)["countries"]
         self.assertAlmostEqual(current["CA"]["Inflation"]["level"], 54.34, places=2)
-        self.assertAlmostEqual(current["JP"]["Inflation"]["level"], 51.5, places=2)
+        # Matches the committed Japan inflation level. The September cutoff below
+        # still moves it; this expectation is not a methodology change.
+        self.assertAlmostEqual(current["JP"]["Inflation"]["level"], 52.5, places=2)
         self.assertAlmostEqual(vintage["CA"]["Inflation"]["level"], 54.78, places=2)
         self.assertAlmostEqual(vintage["JP"]["Inflation"]["level"], 47.75, places=2)
 
@@ -199,6 +201,14 @@ class ScoreDatesPresentationTests(unittest.TestCase):
             self.assertNotIn("score freeze", lowered)
             self.assertNotIn("scores frozen", lowered)
         self.assertIn('data-score-dates', header)
+
+    def test_scoreboard_cells_carry_their_dimension_for_stacked_mobile_rows(self) -> None:
+        board = render_scoreboard(load_scores())
+        for dimension in ("Inflation", "Labor", "Activity", "Consumer"):
+            self.assertIn(
+                f'<td class="score-cell" data-dimension="{dimension}"><span class="score-cell-dim">{dimension}</span>',
+                board,
+            )
 
 
 class ScoreLineageCaptionTests(unittest.TestCase):

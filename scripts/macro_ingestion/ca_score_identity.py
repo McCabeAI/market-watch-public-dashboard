@@ -76,11 +76,17 @@ def prepare_ca_score_point(
     checked_at: str,
     histories: Mapping[str, Any] | None = None,
     calibration: Mapping[str, Any] | None = None,
+    scored_gate: tuple[str | None, float | None] | None = None,
+    use_supplied_gate: bool = False,
 ) -> str | None:
     """Normalize CA ingestion identities in place; return a merge skip reason or None.
 
     Which concepts actually rewrite is the ``rewrite`` flag on the shared
     projection. Other CA rows pass through unchanged.
+
+    ``use_supplied_gate`` keeps the forward-only comparison on the history as
+    the merge started. A later month appended earlier in the same pass must
+    not turn the previous new month into a revision of an already-scored print.
     """
     country = point.get("country")
     if country is not None and str(country) != "CA":
@@ -90,7 +96,8 @@ def prepare_ca_score_point(
     if not catalog_id.startswith("CA."):
         return None
 
-    scored_gate = _latest_scored_gate(histories, calibration, catalog_id)
+    if not use_supplied_gate:
+        scored_gate = _latest_scored_gate(histories, calibration, catalog_id)
     return normalize_score_point(point, checked_at=checked_at, scored_gate=scored_gate)
 
 

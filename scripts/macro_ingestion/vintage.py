@@ -126,6 +126,7 @@ def append_observation(
     prior: float | None = None,
     units: str | None = None,
     derivation: dict[str, Any] | None = None,
+    latest_release_vintage: str | None = None,
 ) -> AppendResult:
     key = ObservationKey(series_id, period, transformation, raw_sha256)
     if find_observation(store, key):
@@ -139,15 +140,16 @@ def append_observation(
         _record_sha_alias(prior_row, raw_sha256)
         return AppendResult(appended=False, duplicate=True, observation=prior_row)
 
+    explicit_latest = latest_release_vintage.strip()[:10] if isinstance(latest_release_vintage, str) and latest_release_vintage.strip() else None
     earliest_release = release_date
-    latest_release = release_date
+    latest_release = explicit_latest or release_date
     if prior_row is not None:
         earliest_release = (
             prior_row.get("earliest_release_vintage")
             or prior_row.get("release_date")
             or release_date
         )
-        latest_release = release_date
+        latest_release = explicit_latest or release_date
 
     row = {
         "series_id": series_id,

@@ -107,6 +107,7 @@ button.jump{width:100%;font:inherit;color:inherit;min-height:44px;font-size:14px
 .score-peak{display:block;margin-top:3px;font-size:11px;font-weight:750;letter-spacing:.03em;text-transform:uppercase;color:var(--mw-warn)}
 .score-legend{margin:0 0 8px;font-size:12.5px;line-height:1.35;color:var(--mw-muted)}
 .scoreboard button.jump{width:auto;min-height:40px;padding:6px 10px}
+.score-cell-dim{display:none}
 .mw-archived{margin:12px 0;padding:8px 12px;background:var(--mw-panel);border:1px solid var(--mw-warn);border-radius:8px;max-width:100%;overflow-x:auto}
 .mw-archived > summary{color:var(--mw-warn);font-weight:750;min-height:40px;cursor:pointer}
 .mw-archived .kpi,.mw-archived .ladvals span,.mw-archived .thermo,.mw-archived details{background:var(--mw-panel-2);color:var(--mw-ink)}
@@ -135,6 +136,7 @@ button:focus-visible,.jump:focus-visible,summary:focus-visible,.brief-tab:focus-
  .score-matrix tbody tr:nth-child(odd),.score-matrix tbody tr:nth-child(even),.score-matrix tbody tr:hover{background:var(--mw-panel-2)}
  .country-detail .score-compact{grid-template-columns:1fr 1fr}
  .score-matrix th[scope="row"],.score-matrix .score-mean-cell,.score-matrix .score-open{grid-column:1 / -1}
+ .score-cell-dim{display:block;font-size:11px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--mw-muted)}
  .news-alert{grid-template-columns:1fr}
  .news-alert label{white-space:normal}
 }

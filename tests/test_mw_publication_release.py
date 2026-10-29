@@ -265,6 +265,17 @@ class StampTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             pr.stamp_html(html, research())
 
+    def test_research_banner_is_one_line_with_detail_collapsed(self):
+        banner = pr.render_edition_banner(research())
+        strip, rest = banner.split('<details class="mw-edition-more">', 1)
+        self.assertIn("Research edition · Tue 27 Oct 2026 · provisional", strip)
+        self.assertIn("has not been accepted yet", strip)
+        self.assertNotIn("mw-raw", strip)
+        self.assertNotIn("<li>", strip)
+        self.assertIn("<summary>What is provisional</summary>", rest)
+        self.assertIn("<b>pending</b>", rest)
+        self.assertNotIn("<details class=\"mw-edition-more\" open", banner)
+
     def test_current_session_news_still_shows_headlines_and_previous_analysis_note(self):
         html = pr.stamp_html(
             SITE_HTML,
@@ -289,6 +300,9 @@ class StampTests(unittest.TestCase):
         self.assertNotIn("pending", html)
         self.assertNotIn("Current verified headlines", html)
         self.assertNotIn("mw-headlines", html)
+        strip = pr.render_edition_banner(final()).split("<details", 1)[0]
+        self.assertIn("Accepted trader and PM cycle, finalized", strip)
+        self.assertNotIn("mw-raw", strip)
 
     def test_banner_escapes_identity_text(self):
         html = pr.render_edition_banner(research(review_id='"><script>x</script>'))

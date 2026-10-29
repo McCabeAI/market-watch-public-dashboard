@@ -420,8 +420,8 @@ class SiteTests(FixtureCase):
             (
                 "previous_label_misapplied",
                 html_edit(
-                    "Headline, source, time and link only:",
-                    "Previous accepted analysis (as of 26 Oct 2026 07:37 ET). Headline, source, time and link only:",
+                    "Headline, source and link only;",
+                    "Previous accepted analysis (as of 26 Oct 2026 07:37 ET). Headline, source and link only;",
                 ),
             ),
         ]
