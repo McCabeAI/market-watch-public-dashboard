@@ -7,6 +7,7 @@ import unittest
 from scripts.cross_asset_data import compact_cross_assets
 from scripts.macro_source_health import (
     RESEARCH_STATUS_PREVIOUS,
+    RESEARCH_STATUS_UNAVAILABLE,
     annotate_row,
     effective_release_due,
     research_status_for_row,
@@ -170,6 +171,96 @@ class SourceHealthGateTests(unittest.TestCase):
         result = evaluate_gate(rows=[row, ca], families=_families())
         self.assertFalse(result["countries"]["US"]["eligible"])
         self.assertTrue(result["countries"]["CA"]["eligible"])
+
+    def test_backstop_fetch_failure_keeps_dated_prior_visible_not_eligible(self) -> None:
+        history = {
+            "components": {
+                "Inflation.core_pce": {
+                    "preferred_scoring_transformation": "yoy_pct",
+                    "observations": [
+                        {
+                            "reference_period": "2026-06",
+                            "value": 2.8,
+                            "transformation": "yoy_pct",
+                            "series_id": "core_pce",
+                            "retrieved_at": "2026-08-01T00:00:00Z",
+                        },
+                        {
+                            "reference_period": "2026-05",
+                            "value": 9.9,
+                            "transformation": "level",
+                            "series_id": "core_pce",
+                            "retrieved_at": "2026-07-01T00:00:00Z",
+                        },
+                    ],
+                }
+            }
+        }
+        row = annotate_row(
+            {
+                "series_id": "US.Inflation.core_pce",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "source_failed",
+                "release_due": False,
+                "cadence_backstop_due": True,
+                "error": "The read operation timed out",
+            },
+            history=history,
+            transformation="yoy_pct",
+            source_series_id="core_pce",
+        )
+        self.assertEqual(row["research_status"], RESEARCH_STATUS_PREVIOUS)
+        self.assertEqual(row["observation_period"], "2026-06")
+        self.assertEqual(row["prior_verified"]["observation_period"], "2026-06")
+        self.assertAlmostEqual(float(row["prior_verified"]["value"]), 2.8)
+        ca = {
+            "series_id": "CA.Inflation.cpi",
+            "country": "CA",
+            "role": "scored",
+            "weight": 1.0,
+            "status": "checked_unchanged",
+            "release_due": False,
+            "observation_period": "2026-08",
+        }
+        result = evaluate_gate(rows=[row, ca], families=_families())
+        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
+        self.assertTrue(result["source_health"][0]["blocks_new_risk"])
+
+        wrong_transform = annotate_row(
+            {
+                "series_id": "US.Inflation.core_pce",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "source_failed",
+                "cadence_backstop_due": True,
+                "error": "The read operation timed out",
+            },
+            history=history,
+            transformation="mom_pct",
+            source_series_id="core_pce",
+        )
+        self.assertNotIn("prior_verified", wrong_transform)
+        self.assertEqual(research_status_for_row(wrong_transform), RESEARCH_STATUS_UNAVAILABLE)
+
+        wrong_series = annotate_row(
+            {
+                "series_id": "US.Inflation.headline_cpi",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "source_failed",
+                "cadence_backstop_due": True,
+                "error": "The read operation timed out",
+            },
+            history=history,
+            transformation="yoy_pct",
+            source_series_id="core_pce",
+        )
+        self.assertNotIn("prior_verified", wrong_series)
 
 
 class FrozenOilMarkTests(unittest.TestCase):
