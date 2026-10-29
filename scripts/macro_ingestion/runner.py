@@ -5,17 +5,25 @@ from __future__ import annotations
 import hashlib
 import json
 import math
+import threading
 from collections import defaultdict
 from collections.abc import Callable
+from concurrent.futures import FIRST_COMPLETED, Future, ThreadPoolExecutor, wait
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
+from urllib.parse import urlparse
 from urllib.request import Request, urlopen
 
 from scripts.macro_freshness import values_close
 from scripts.macro_ingestion.adapters import load_country_adapter
-from scripts.macro_ingestion.calendar import latest_due_release, schedule_parseable
+from scripts.macro_ingestion.calendar import (
+    cadence_backstop_due,
+    latest_due_release,
+    release_due,
+    schedule_parseable,
+)
 from scripts.macro_ingestion.contract import calibration_as_of, load_catalog
 from scripts.macro_ingestion.ledger import ledger_row, write_ledger
 from scripts.macro_ingestion.retries import retry_call
@@ -26,8 +34,10 @@ from scripts.macro_ingestion.ea_country_hicp import COUNTRY_HICP_IDS, append_ran
 from scripts.macro_ingestion.vintage import (
     append_observation,
     latest_for_period,
+    latest_period_in_store,
     load_store,
     save_store,
+    seed_stores,
 )
 from scripts.macro_ingestion.source_health_summary import build_source_health_summary
 from scripts.macro_ingestion.windows import POST_FREEZE_DIR, cutoff_class, write_post_freeze_delta
@@ -268,6 +278,18 @@ def _classify_points(
         if _is_http_404(payload):
             due = latest_due_release(spec, when)
             if due is None:
+                transform = str(spec.get("transform", ""))
+                series_id = str(spec.get("series_id") or spec["id"])
+                latest_period = latest_period_in_store(store, series_id, transform)
+                backstop = cadence_backstop_due(
+                    spec, latest_period=latest_period, when=when
+                )
+                if latest_period and backstop:
+                    payload["ledger_extra"] = {
+                        "publication_state": "due_missing",
+                        "cadence_backstop_due": True,
+                    }
+                    return "due_missing", [], "HTTP 404", False
                 payload["ledger_extra"] = {"publication_state": "not_yet_due"}
                 return "checked_unchanged", [], None, False
             payload["ledger_extra"] = {"publication_state": "due_missing"}
@@ -408,7 +430,32 @@ def _classify_points(
     if had_new:
         return "new_observation", changed, None, persist_provenance
 
-    if not schedule_parseable(spec.get("release_rule")):
+    calendar_unparsed = not schedule_parseable(spec.get("release_rule"))
+    backstop = cadence_backstop_due(
+        spec,
+        latest_period=latest_period_in_store(store, series_id, transform),
+        when=when,
+    )
+    ledger_calendar_extra: dict[str, Any] | None = None
+    if calendar_unparsed:
+        ledger_calendar_extra = {
+            "calendar": "unparsed",
+            "cadence_backstop_due": backstop,
+        }
+
+    if points and not had_new and not had_revision and not had_pending:
+        stale = stale_pinned_artifact_error(payload)
+        if stale:
+            return "due_missing", [], stale, persist_provenance
+        if calendar_unparsed:
+            if ledger_calendar_extra:
+                payload["ledger_extra"] = {
+                    **(payload.get("ledger_extra") or {}),
+                    **ledger_calendar_extra,
+                }
+            return "checked_unchanged", [], None, persist_provenance
+
+    if calendar_unparsed:
         stale = stale_pinned_artifact_error(payload)
         if stale:
             return "due_missing", [], stale, persist_provenance
@@ -478,12 +525,116 @@ def _protected_due_labor(spec: dict[str, Any], when: datetime) -> bool:
     return latest_due_release(spec, when) is not None
 
 
+def _prior_budget_deferred_ids(prior_rows: list[dict[str, Any]] | None) -> frozenset[str]:
+    if not prior_rows:
+        return frozenset()
+    return frozenset(
+        str(row["series_id"])
+        for row in prior_rows
+        if row.get("error") == "budget_deferred"
+    )
+
+
+def _series_tier(spec: dict[str, Any], when: datetime, prior_deferred: frozenset[str]) -> int:
+    if _protected_due_labor(spec, when):
+        return 0
+    if str(spec.get("id") or "") in prior_deferred:
+        return 1
+    if release_due(spec, when):
+        return 2
+    if str(spec.get("role") or "") == "scored":
+        return 3
+    return 4
+
+
 def _series_lane(spec: dict[str, Any], when: datetime) -> int:
+    """Legacy lane helper for admission/retry reason strings."""
     if _protected_due_labor(spec, when):
         return 0
     if str(spec.get("role") or "") == "scored":
         return 1
     return 2
+
+
+def _spec_host(spec: dict[str, Any]) -> str:
+    for key in ("endpoint", "fallback_endpoint"):
+        url = spec.get(key)
+        if url:
+            parsed = urlparse(str(url))
+            if parsed.netloc:
+                return parsed.netloc.lower()
+    publisher = spec.get("publisher")
+    if publisher:
+        return str(publisher).lower()
+    return "unknown"
+
+
+def _is_transport_failure(*, error: str | None = None, exc: BaseException | None = None) -> bool:
+    if exc is not None:
+        if isinstance(exc, (TimeoutError, URLError, ConnectionError, OSError)):
+            return True
+        text = str(exc)
+        if "timed out" in text.lower():
+            return True
+    if error:
+        lowered = error.lower()
+        if "timed out" in lowered:
+            return True
+        if "urlerror" in lowered or "connection" in lowered:
+            return True
+    return False
+
+
+def _round_robin_host_order(
+    pending: list[dict[str, Any]],
+    *,
+    when: datetime,
+    prior_deferred: frozenset[str],
+) -> list[dict[str, Any]]:
+    by_host: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for spec in pending:
+        by_host[_spec_host(spec)].append(spec)
+    for host in by_host:
+        by_host[host].sort(
+            key=lambda item: (_series_tier(item, when, prior_deferred), str(item.get("id") or ""))
+        )
+    hosts = sorted(by_host.keys())
+    queues = {host: list(by_host[host]) for host in hosts}
+    ordered: list[dict[str, Any]] = []
+    while any(queues[host] for host in hosts):
+        for host in hosts:
+            if queues[host]:
+                ordered.append(queues[host].pop(0))
+    return ordered
+
+
+def _host_deferred_row(
+    spec: dict[str, Any],
+    *,
+    checked_at: str,
+    calibration_as_of: str,
+    cutoff_class: str,
+) -> dict[str, Any]:
+    row = ledger_row(
+        series_id=spec["id"],
+        status="source_failed",
+        checked_at=checked_at,
+        observation_vintage=None,
+        calibration_as_of=calibration_as_of,
+        cutoff_class=cutoff_class,
+        error="host_deferred",
+    )
+    _append_scheduler_event(row, kind="skipped_admission", reason="host_deferred")
+    return row
+
+
+def _retryable_row(row: dict[str, Any]) -> bool:
+    if row.get("status") != "source_failed":
+        return False
+    error = str(row.get("error") or "")
+    if error in {"budget_deferred", "host_deferred"}:
+        return False
+    return True
 
 
 def _append_scheduler_event(row: dict[str, Any], *, kind: str, reason: str) -> None:
@@ -545,19 +696,21 @@ def _fetch_once(
     now: datetime,
     timeout_seconds: float,
     rows: list[dict[str, Any]],
+    rows_lock: threading.Lock,
     checked_at: str,
     cal_as_of: str,
     cutoff: str,
     mode: str,
     raw_dir: Path | None,
     country: str,
+    store: dict[str, Any],
+    store_lock: threading.Lock,
     obs_dir: Path,
     post_freeze_changes: list[dict[str, Any]],
     replace_index: int | None = None,
     extra_attempts: int = 0,
 ) -> int:
     """Fetch one series. Retries stay inside this series and cannot skip siblings."""
-    store = load_store(country, obs_dir)
 
     def _fetch() -> dict[str, Any]:
         return fetch_fn(spec, opener=opener, now=now, timeout=timeout_seconds)
@@ -577,11 +730,12 @@ def _fetch_once(
             cutoff_class=cutoff,
             error=str(exc),
         )
-        if replace_index is None:
-            rows.append(row)
-            return len(rows) - 1
-        rows[replace_index] = _row_with_attempt_history(row, rows[replace_index])
-        return replace_index
+        with rows_lock:
+            if replace_index is None:
+                rows.append(row)
+                return len(rows) - 1
+            rows[replace_index] = _row_with_attempt_history(row, rows[replace_index])
+            return replace_index
 
     if mode == "live" and payload.get("ok") and raw_dir is not None:
         body = payload.get("body") or b""
@@ -593,28 +747,30 @@ def _fetch_once(
             out.parent.mkdir(parents=True, exist_ok=True)
             out.write_bytes(body)
 
-    status, changed, error, persist_provenance = _classify_points(spec, payload, store, now)
-    vintage = payload.get("vintage")
-    ledger_extra = payload.get("ledger_extra")
-    row = ledger_row(
-        series_id=spec["id"],
-        status=status,
-        checked_at=checked_at,
-        observation_vintage=str(vintage) if vintage is not None else None,
-        calibration_as_of=cal_as_of,
-        cutoff_class=cutoff,
-        error=error,
-        extra=ledger_extra if isinstance(ledger_extra, dict) else None,
-    )
-    if changed or persist_provenance:
-        save_store(store, obs_dir)
-    if changed:
-        post_freeze_changes.extend(changed)
-    if replace_index is None:
-        rows.append(row)
-        return len(rows) - 1
-    rows[replace_index] = _row_with_attempt_history(row, rows[replace_index])
-    return replace_index
+    with store_lock:
+        status, changed, error, persist_provenance = _classify_points(spec, payload, store, now)
+        vintage = payload.get("vintage")
+        ledger_extra = payload.get("ledger_extra")
+        row = ledger_row(
+            series_id=spec["id"],
+            status=status,
+            checked_at=checked_at,
+            observation_vintage=str(vintage) if vintage is not None else None,
+            calibration_as_of=cal_as_of,
+            cutoff_class=cutoff,
+            error=error,
+            extra=ledger_extra if isinstance(ledger_extra, dict) else None,
+        )
+        if changed or persist_provenance:
+            save_store(store, obs_dir)
+        if changed:
+            post_freeze_changes.extend(changed)
+        with rows_lock:
+            if replace_index is None:
+                rows.append(row)
+                return len(rows) - 1
+            rows[replace_index] = _row_with_attempt_history(row, rows[replace_index])
+            return replace_index
 
 
 def _ingest_country_pending(
@@ -639,99 +795,203 @@ def _ingest_country_pending(
     run_budget_seconds: float,
     country_budget_seconds: float,
     attempts: int,
+    prior_rows: list[dict[str, Any]] | None = None,
+    group_parallelism: int = 4,
+    per_host_limit: int = 1,
+    host_failure_limit: int = 2,
 ) -> set[str]:
     """Fetch pending series for one country; return ids that received a ledger row."""
     admitted: set[str] = set()
-    pending = sorted(
-        pending,
-        key=lambda spec: (_series_lane(spec, when), str(spec.get("id") or "")),
-    )
-    protected_due_total = sum(1 for spec in pending if _protected_due_labor(spec, when))
+    prior_deferred = _prior_budget_deferred_ids(prior_rows)
+    ordered = _round_robin_host_order(pending, when=when, prior_deferred=prior_deferred)
+    multiple_hosts = len({_spec_host(spec) for spec in ordered}) > 1
+    protected_due_total = sum(1 for spec in ordered if _protected_due_labor(spec, when))
     protected_admitted = 0
-    failed_for_retry: list[tuple[dict[str, Any], int]] = []
-    for spec in pending:
-        if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
-            rows.append(
-                _deferred_row(
-                    spec,
-                    checked_at=checked_at,
-                    calibration_as_of=cal_as_of,
-                    cutoff_class=cutoff,
-                    scheduler_kind="skipped_admission",
-                    scheduler_reason=_deferred_admission_reason(
-                        spec,
-                        when=when,
-                        protected_due_total=protected_due_total,
-                        protected_admitted=protected_admitted,
-                    ),
-                )
-            )
-            continue
 
-        row_index = _fetch_once(
-            spec,
-            fetch_fn=fetch_fn,
-            opener=opener,
-            now=when,
-            timeout_seconds=timeout_seconds,
-            rows=rows,
-            checked_at=checked_at,
-            cal_as_of=cal_as_of,
-            cutoff=cutoff,
-            mode=mode,
-            raw_dir=raw_dir,
-            country=country,
-            obs_dir=obs_dir,
-            post_freeze_changes=post_freeze_changes,
-        )
-        admitted.add(str(spec["id"]))
-        if _protected_due_labor(spec, when):
-            protected_admitted += 1
-        row = rows[row_index]
-        if (
-            attempts > 1
-            and row.get("status") == "source_failed"
-            and row.get("error") != "budget_deferred"
+    store = load_store(country, obs_dir)
+    store_lock = threading.Lock()
+    rows_lock = threading.Lock()
+    budget_lock = threading.Lock()
+    host_failures: dict[str, int] = defaultdict(int)
+    host_deferred: set[str] = set()
+    host_semaphores: dict[str, threading.Semaphore] = {}
+    host_sem_lock = threading.Lock()
+    failed_for_retry: list[tuple[dict[str, Any], int]] = []
+
+    def _host_sem(host: str) -> threading.Semaphore:
+        with host_sem_lock:
+            if host not in host_semaphores:
+                host_semaphores[host] = threading.Semaphore(max(1, per_host_limit))
+            return host_semaphores[host]
+
+    def _record_transport_failure(host: str) -> None:
+        host_failures[host] += 1
+        if host_failures[host] >= host_failure_limit:
+            host_deferred.add(host)
+
+    def _fetch_and_classify(
+        spec: dict[str, Any],
+        *,
+        replace_index: int | None = None,
+        extra_attempts: int = 0,
+    ) -> int:
+        host = _spec_host(spec)
+        sem = _host_sem(host)
+        sem.acquire()
+        try:
+            row_index = _fetch_once(
+                spec,
+                fetch_fn=fetch_fn,
+                opener=opener,
+                now=when,
+                timeout_seconds=timeout_seconds,
+                rows=rows,
+                rows_lock=rows_lock,
+                checked_at=checked_at,
+                cal_as_of=cal_as_of,
+                cutoff=cutoff,
+                mode=mode,
+                raw_dir=raw_dir,
+                country=country,
+                store=store,
+                store_lock=store_lock,
+                obs_dir=obs_dir,
+                post_freeze_changes=post_freeze_changes,
+                replace_index=replace_index,
+                extra_attempts=extra_attempts,
+            )
+        finally:
+            sem.release()
+        with rows_lock:
+            row = rows[row_index]
+        if row.get("status") == "source_failed" and _is_transport_failure(
+            error=str(row.get("error") or "")
         ):
-            failed_for_retry.append((spec, row_index))
+            with budget_lock:
+                _record_transport_failure(host)
+        return row_index
+
+    def _run_pass(work: list[tuple[dict[str, Any], int | None, int]]) -> None:
+        nonlocal protected_admitted
+        if not work:
+            return
+        max_workers = max(1, min(group_parallelism, len(work)))
+        with ThreadPoolExecutor(max_workers=max_workers) as pool:
+            queue = list(work)
+            in_flight: dict[Future[int], tuple[dict[str, Any], int | None, bool]] = {}
+
+            def _drain_done(done: set[Future[int]]) -> None:
+                nonlocal protected_admitted
+                for fut in done:
+                    spec, replace_index, is_initial = in_flight.pop(fut)
+                    row_index = fut.result()
+                    admitted.add(str(spec["id"]))
+                    with rows_lock:
+                        row = rows[row_index]
+                    if is_initial and _protected_due_labor(spec, when):
+                        protected_admitted += 1
+                    if is_initial and attempts > 1 and _retryable_row(row):
+                        failed_for_retry.append((spec, row_index))
+
+            while queue or in_flight:
+                while queue and len(in_flight) < max_workers:
+                    spec, replace_index, extra = queue[0]
+                    host = _spec_host(spec)
+                    if host in host_deferred and multiple_hosts:
+                        queue.pop(0)
+                        if replace_index is None:
+                            with rows_lock:
+                                rows.append(
+                                    _host_deferred_row(
+                                        spec,
+                                        checked_at=checked_at,
+                                        calibration_as_of=cal_as_of,
+                                        cutoff_class=cutoff,
+                                    )
+                                )
+                        continue
+                    if replace_index is None:
+                        with budget_lock:
+                            if _budget_exhausted(
+                                clock,
+                                run_start,
+                                country_start,
+                                run_budget_seconds,
+                                country_budget_seconds,
+                            ):
+                                queue.pop(0)
+                                with rows_lock:
+                                    rows.append(
+                                        _deferred_row(
+                                            spec,
+                                            checked_at=checked_at,
+                                            calibration_as_of=cal_as_of,
+                                            cutoff_class=cutoff,
+                                            scheduler_kind="skipped_admission",
+                                            scheduler_reason=_deferred_admission_reason(
+                                                spec,
+                                                when=when,
+                                                protected_due_total=protected_due_total,
+                                                protected_admitted=protected_admitted,
+                                            ),
+                                        )
+                                    )
+                                continue
+                    queue.pop(0)
+                    is_initial = replace_index is None
+                    fut = pool.submit(
+                        _fetch_and_classify,
+                        spec,
+                        replace_index=replace_index,
+                        extra_attempts=extra,
+                    )
+                    in_flight[fut] = (spec, replace_index, is_initial)
+                    if len(in_flight) >= max_workers:
+                        break
+
+                if not in_flight:
+                    break
+                done, _ = wait(set(in_flight.keys()), return_when=FIRST_COMPLETED)
+                _drain_done(done)
+
+    failed_for_retry.clear()
+    _run_pass([(spec, None, 1) for spec in ordered])
 
     protected_failures = sum(1 for spec, _ in failed_for_retry if _protected_due_labor(spec, when))
     protected_retries_admitted = 0
-    failed_for_retry.sort(key=lambda item: (_series_lane(item[0], when), str(item[0].get("id") or "")))
+    failed_for_retry.sort(
+        key=lambda item: (_series_tier(item[0], when, prior_deferred), str(item[0].get("id") or ""))
+    )
 
+    retry_work: list[tuple[dict[str, Any], int | None, int]] = []
     for spec, row_index in failed_for_retry:
-        if _budget_exhausted(clock, run_start, country_start, run_budget_seconds, country_budget_seconds):
-            _append_scheduler_event(
-                rows[row_index],
-                kind="skipped_retry",
-                reason=_skipped_retry_reason(
-                    spec,
-                    when=when,
-                    protected_failures=protected_failures,
-                    protected_retries_admitted=protected_retries_admitted,
-                ),
-            )
-            continue
-        _fetch_once(
-            spec,
-            fetch_fn=fetch_fn,
-            opener=opener,
-            now=when,
-            timeout_seconds=timeout_seconds,
-            rows=rows,
-            checked_at=checked_at,
-            cal_as_of=cal_as_of,
-            cutoff=cutoff,
-            mode=mode,
-            raw_dir=raw_dir,
-            country=country,
-            obs_dir=obs_dir,
-            post_freeze_changes=post_freeze_changes,
-            replace_index=row_index,
-            extra_attempts=attempts - 1,
-        )
+        with budget_lock:
+            if _budget_exhausted(
+                clock,
+                run_start,
+                country_start,
+                run_budget_seconds,
+                country_budget_seconds,
+            ):
+                with rows_lock:
+                    _append_scheduler_event(
+                        rows[row_index],
+                        kind="skipped_retry",
+                        reason=_skipped_retry_reason(
+                            spec,
+                            when=when,
+                            protected_failures=protected_failures,
+                            protected_retries_admitted=protected_retries_admitted,
+                        ),
+                    )
+                continue
+        retry_work.append((spec, row_index, attempts - 1))
         if _protected_due_labor(spec, when):
             protected_retries_admitted += 1
+
+    if retry_work:
+        failed_for_retry.clear()
+        _run_pass(retry_work)
 
     return admitted
 
@@ -754,6 +1014,12 @@ def run_ingestion(
     persist_canonical: bool = False,
     only_series_ids: set[str] | None = None,
     attempts: int = DEFAULT_ATTEMPTS,
+    write_health: bool = True,
+    seed_observations_from: Path | None = None,
+    prior_rows: list[dict[str, Any]] | None = None,
+    group_parallelism: int = 4,
+    per_host_limit: int = 1,
+    host_failure_limit: int = 2,
 ) -> dict[str, Any]:
     catalog = catalog or load_catalog()
     when = now or datetime.now(timezone.utc)
@@ -765,6 +1031,8 @@ def run_ingestion(
         opener = offline_opener if mode == "offline" else live_opener
 
     obs_dir = observations_dir or (ROOT / "data/macro_ingestion/observations")
+    if seed_observations_from is not None:
+        seed_stores(obs_dir, seed_observations_from)
     grouped = _series_by_country(catalog)
     target_countries = [c.upper() for c in (countries or list(grouped.keys()))]
 
@@ -811,7 +1079,18 @@ def run_ingestion(
                     run_budget_seconds=run_budget_seconds,
                     country_budget_seconds=country_budget_seconds,
                     attempts=attempts,
+                    prior_rows=prior_rows,
+                    group_parallelism=group_parallelism,
+                    per_host_limit=per_host_limit,
+                    host_failure_limit=host_failure_limit,
                 )
+
+    ingest_kwargs = {
+        "prior_rows": prior_rows,
+        "group_parallelism": group_parallelism,
+        "per_host_limit": per_host_limit,
+        "host_failure_limit": host_failure_limit,
+    }
 
     for country in target_countries:
         country_start = clock()
@@ -869,9 +1148,11 @@ def run_ingestion(
             run_budget_seconds=run_budget_seconds,
             country_budget_seconds=country_budget_seconds,
             attempts=attempts,
+            **ingest_kwargs,
         )
 
-    write_ledger(rows, health_dir=health_dir or (ROOT / "data/macro_ingestion/health"), run_id=run_id)
+    if write_health:
+        write_ledger(rows, health_dir=health_dir or (ROOT / "data/macro_ingestion/health"), run_id=run_id)
 
     if persist_canonical:
         recompute_scores_after_observation(

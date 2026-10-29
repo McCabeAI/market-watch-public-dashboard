@@ -46,6 +46,31 @@ def save_store(store: dict[str, Any], base_dir: Path = OBSERVATIONS_DIR) -> Path
     return path
 
 
+def seed_stores(dest_dir: Path, source_dir: Path) -> list[str]:
+    """Copy missing country observation JSON files from ``source_dir`` into ``dest_dir``.
+
+    Never overwrites a file that already exists under ``dest_dir``. Never writes into
+    ``source_dir``.
+    """
+    dest_dir = dest_dir.resolve()
+    source_dir = source_dir.resolve()
+    if dest_dir == source_dir:
+        return []
+    copied: list[str] = []
+    if not source_dir.is_dir():
+        return copied
+    for path in sorted(source_dir.glob("*.json")):
+        dest_path = dest_dir / path.name
+        if dest_path.exists():
+            continue
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        dest_path.write_bytes(path.read_bytes())
+        country = path.stem.upper()
+        if len(country) == 2:
+            copied.append(country)
+    return copied
+
+
 def _key_tuple(row: dict[str, Any]) -> tuple[str, str, str, str]:
     return (
         str(row["series_id"]),

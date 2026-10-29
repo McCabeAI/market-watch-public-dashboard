@@ -559,6 +559,125 @@ class TestIngestionIntegrity(unittest.TestCase):
         self.assertEqual(result["rows"][0]["status"], "source_failed")
         self.assertEqual(result["rows"][0]["error"], "malformed_point")
 
+    def test_slow_host_does_not_block_different_host(self) -> None:
+        clock = {"t": 0.0}
+        hosts_seen: set[str] = set()
+
+        def monotonic() -> float:
+            return clock["t"]
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            url = str(spec.get("endpoint") or "")
+            if "slow.example" in url:
+                clock["t"] += 50.0
+                return {"ok": False, "error": "timed out waiting for slow.example"}
+            if "fast.example" in url:
+                hosts_seen.add("fast.example")
+                return {
+                    "ok": True,
+                    "raw_sha256": spec["id"],
+                    "points": [{"period": "2026-08", "value": 1.0, "revision_status": "final"}],
+                }
+            return {"ok": False, "error": "unexpected endpoint"}
+
+        slow = self._us_unemployment_spec()
+        slow["id"] = "US.Host.slow"
+        slow["series_id"] = "US_SLOW"
+        slow["endpoint"] = "https://slow.example/series"
+        fast = copy.deepcopy(slow)
+        fast["id"] = "US.Host.fast"
+        fast["series_id"] = "US_FAST"
+        fast["endpoint"] = "https://fast.example/series"
+        cat = self._mini_catalog([slow, fast])
+        register_adapter_override("US", fetch_series)
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc),
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            country_budget_seconds=200,
+            run_budget_seconds=200,
+            monotonic=monotonic,
+            host_failure_limit=2,
+        )
+        self.assertIn("fast.example", hosts_seen)
+
+    def test_seed_store_classifies_checked_unchanged(self) -> None:
+        prior_obs = Path(self.tmp.name) / "prior_obs"
+        prior_obs.mkdir()
+        seed_store = {
+            "country": "US",
+            "observations": [
+                {
+                    "series_id": "UNRATE",
+                    "period": "2026-08",
+                    "transformation": "percent",
+                    "value": 4.1,
+                    "raw_sha256": "seed-hash",
+                    "retrieved_at": "2026-09-20T12:00:00Z",
+                }
+            ],
+        }
+        (prior_obs / "us.json").write_text(json.dumps(seed_store), encoding="utf-8")
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": "seed-hash",
+                "points": [
+                    {
+                        "period": "2026-08",
+                        "value": 4.1,
+                        "transformation": spec.get("transform"),
+                        "revision_status": "final",
+                    }
+                ],
+            }
+
+        register_adapter_override("US", fetch_series)
+        cat = self._mini_catalog([self._us_unemployment_spec()])
+        now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            seed_observations_from=prior_obs,
+        )
+        self.assertEqual(result["rows"][0]["status"], "checked_unchanged")
+
+    def test_write_health_false_preserves_latest_json(self) -> None:
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {"ok": False, "error": "offline_mode"}
+
+        register_adapter_override("US", fetch_series)
+        cat = self._mini_catalog([self._us_unemployment_spec()])
+        now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+        )
+        before = (self.health_dir / "latest.json").read_text(encoding="utf-8")
+        run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            write_health=False,
+        )
+        after = (self.health_dir / "latest.json").read_text(encoding="utf-8")
+        self.assertEqual(before, after)
+
 
 if __name__ == "__main__":
     unittest.main()
