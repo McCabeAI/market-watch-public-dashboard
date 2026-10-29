@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-10-29T04:24:31.160680-04:00",
+  "as_of": "2026-10-29T06:29:21.792125-04:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,8 +30,8 @@
     "wins": 0
   },
   "capital_owner": {
-    "allocator_pressure": 13,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 14,
+    "credible_opportunities": "present",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -46,8 +46,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 216309.43,
-    "best_trader_outearn_streak": 0,
+    "best_trader_net_pnl_usd": 226254.57,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
     "competition_cohort_size": 3,
@@ -55,7 +55,7 @@
     "competition_rank": 3,
     "competitive_rank": 3,
     "drawdown_usd": 0.0,
-    "gap_to_best_trader_usd": -216309.43,
+    "gap_to_best_trader_usd": -226254.57,
     "high_water_nav_usd": 1000000000.0,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 0.0,
@@ -77,7 +77,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "da472635f55cab6dcbdf607637315eb7b69193aa61e920e988286580506d929a",
+  "memory_context_sha256": "7aed84ac97207993f415074490708a195c36dcd0eba545d4f2d41072a32946f0",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -160,17 +160,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261026"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261027"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261028"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261029"
       }
     ],
     "required_checks": {
@@ -180,9 +180,9 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "9566a3479bb4177beae70433dd34d08d30cb56af9c4b655431238879540f55cd",
+    "state_sha256": "00eb4d5697cb638e1ae91a385fda69f770a5b53c8a6fc7d3361cec2816479037",
     "streaks": {
-      "flat_cycles": 20,
+      "flat_cycles": 21,
       "session_loss": 0,
       "session_win": 0
     }

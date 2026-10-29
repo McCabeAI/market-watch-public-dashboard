@@ -131,7 +131,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -9945.14,
     "status": "ok"
   },
   "learning": {
@@ -142,7 +142,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "eb79a7e872574dd7f2c26fac5fbc99bbe7f6cebb419034be3ea0079b5c022631",
+  "memory_context_sha256": "e7e85c60b3fd7527d6f078f94483716cb5e8387958018fc07b7a336592cbe879",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -159,7 +159,7 @@
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 2500.0,
+        "giveback_usd": 10000.0,
         "holding_seconds": 676943,
         "horizon_elapsed_fraction": 0.2612,
         "horizon_status": "within",
@@ -167,15 +167,15 @@
         "intended_horizon_days": 30,
         "mae_usd": -10000.0,
         "mechanical_order": false,
-        "mfe_usd": 7500.0,
+        "mfe_usd": 15000.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-df316f59e974",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The crowded CORRA Mar27 receive is reduced or fails to compress toward cash if oil-driven Canada inflation pressure keeps the hike path alive.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 7500.0,
-        "retained_mfe_fraction": 0.6667,
+        "recorded_mfe_usd": 15000.0,
+        "retained_mfe_fraction": 0.3333,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 500000.0,
@@ -212,12 +212,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "defensiveness": {
         "band": "calm",
@@ -227,12 +227,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.21
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -267,7 +267,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "810829eebd068779dccff123557712cd7c764f7705ac66a29712d830d4ab9438",
+    "state_sha256": "295c5f53fbde376d038b8bd4682d1bc1a87f19b342db94eb745483938cc36ed7",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

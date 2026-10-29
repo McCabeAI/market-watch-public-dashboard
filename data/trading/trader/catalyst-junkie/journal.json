@@ -1426,6 +1426,60 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "The residual short 5 million March SOFR from 4.52, already reduced, only pays if implieds reprice higher from 4.48. Surveys lock a hold this week, October has no dots, and 55bp of path is already in the contract versus cash 3.93, so the modal print does not lift the mark. Warsh or later hike talk is a personnel tail, not this meeting\u2019s base-case function. Close the leftover; it is event noise, not a catalyst expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat book, no unspent directional catalyst with a packet-supported mispricing. Not a NZ-driven hold: US STIR, 10Y, CORRA, AONIA, EURUSD, and USDJPY were all scanned; each is either catalyst-consumed, undated, banned, or missing the lean needed to trade the one remaining date (BoJ Friday).",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 6,
+      "decision_fingerprint": "4dd883aaeb3511995f4e5d56c67f34f420c981ee0a99b0e18c534015449d7527",
+      "event_id": "jde-fde04c03d2994670",
+      "funding_view": null,
+      "invalidation": "Stand-down breaks if a later freeze supplies a directional BoJ lean or JGB mark into Friday, a dated US inflation or Dec FOMC timestamp that can reprice Sep SOFR 4.68 or 10Y 5.05, or an actual BoC headline for CORRA. It also breaks if Mar SOFR implieds reclaim 4.52 with oil still bid \u2014 that would be new information, not a reopening of the closed pay.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "209c357aac02b3162dc992466eabf8e38ebe3f84b86509b209a1136f6cc4336b",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6c0ff6c24a389a44a7dee717cbf016161f02ffaaf08fcf388aca983696121c1d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Oct FOMC path is spent: the hold already reset Mar SOFR to 4.445, while hawkish Warsh/Bessent color and WTI 102.78 cleared in US10Y at 5.05 rather than in skip-tenor STIR. Reopening a Mar SOFR pay repeats the closed expression; paying 10Y now chases a consumed presser and a printed +6bp with AI-credit receive risk in the same packet. BoJ Friday is the only unspent dated event, but this freeze has no BoJ lean, JGB mark, or implied path, so a USDJPY direction would invent the decision. NZ new risk is banned, and there is no BoC headline that can reprice CORRA Mar 3.025 versus cash 2.24.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The Oct FOMC path is spent: the hold already reset Mar SOFR to 4.445, while hawkish Warsh/Bessent color and WTI 102.78 cleared in US10Y at 5.05 rather than in skip-tenor STIR. Reopening a Mar SOFR pay repeats the closed expression; paying 10Y now chases a consumed presser and a printed +6bp with AI-credit receive risk in the same packet. BoJ Friday is the only unspent dated event, but this freeze has no BoJ lean, JGB mark, or implied path, so a USDJPY direction would invent the decision. NZ new risk is banned, and there is no BoC headline that can reprice CORRA Mar 3.025 versus cash 2.24."
     }
   ],
   "schema_version": 1,

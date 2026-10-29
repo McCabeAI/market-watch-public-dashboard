@@ -1544,6 +1544,77 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "March CORRA at 3.005 still pays about 76bp over cash 2.24 and about 50bp over a 2.50 Bank of Canada poll, so the existing receive is being paid to sit through 28 October. The 1bp backup from 2.995 is headline beta around WTI at 99.90, not a cash-policy change. Hold the 25 million Canadian sleeve as the carry expression and keep the thinner 26bp March AONIA receive; dual meetings are a reason not to add, not a reason to flatten positive carry that has not been invalidated."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Cash still 2.24 versus 3.025 implied; no Bank of Canada decision; three-basis-point cheapening from 2.995 is not a path rewrite. The 78 basis-point gap continues to fund a patient receive.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Cash still 4.60 versus 4.94 implied; June 2027 at 4.96 did not extend the path. Eleven basis points of cheapening from 4.83 after the hawkish Fed hold is headline spillover, not an RBA cash change. Carry still covers a modest backup.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 72,
+      "decision_fingerprint": "45e668dfd20dc98b96bd66a472290adcec1e6c992098a0658a50da29f3ab5f03",
+      "event_id": "jde-e2109f852cec4d07",
+      "funding_view": null,
+      "invalidation": "A Bank of Canada cash-rate increase away from 2.24, or a persistent March 2027 CORRA implied-rate reprice that erases most of the 78 basis-point gap to cash; for Australia, an RBA cash-rate increase away from 4.60 or March 2027 AONIA holding above 4.94 on a multi-session basis with June 2027 extending the path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "77eb079f025e316fb2ad505950f47d2634e2e78a367ce9c36b40ac06543549f4",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "37833820194b97d173571067a81c86c62085bc01d426474c52169556737abb3d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The March 2027 Canada receive still pays for patience: cash is 2.24 against 3.025 implied, there is no Bank of Canada decision in this freeze, and a three-basis-point backup is headline beta rather than a cash-policy change or a large persistent path reprice. Australia cash is still 4.60 versus 4.94 in March 2027; eleven basis points of cheapening after a hawkish Federal Reserve hold and oil above 100 is uncomfortable, but June 2027 at 4.96 shows the hike path did not extend. I will not pay SOFR into a held-but-hawkish FOMC, will not add yen risk in front of Friday\u2019s Bank of Japan meeting, and will not open New Zealand. Spot US dollar-Canada collects the cash differential but is a noisier copy of the Canada rates line already on.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The March 2027 Canada receive still pays for patience: cash is 2.24 against 3.025 implied, there is no Bank of Canada decision in this freeze, and a three-basis-point backup is headline beta rather than a cash-policy change or a large persistent path reprice. Australia cash is still 4.60 versus 4.94 in March 2027; eleven basis points of cheapening after a hawkish Federal Reserve hold and oil above 100 is uncomfortable, but June 2027 at 4.96 shows the hike path did not extend. I will not pay SOFR into a held-but-hawkish FOMC, will not add yen risk in front of Friday\u2019s Bank of Japan meeting, and will not open New Zealand. Spot US dollar-Canada collects the cash differential but is a noisier copy of the Canada rates line already on."
     }
   ],
   "schema_version": 1,

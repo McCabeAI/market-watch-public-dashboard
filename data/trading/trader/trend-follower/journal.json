@@ -1474,6 +1474,60 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "The book is flat and there is no confirmed trend to initiate. US 10-year at 4.99 has made lower yields over five days and a month, so the higher-yield short is invalid rather than paused. September SOFR only 3.5bp firmer than an old 4.65 book mark is not confirmation of a live backup while cash 10-year yields are falling. A new duration-long trend is also unconfirmed on Fed day. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No confirmed rates or spot continuation from a flat book: the 10-year bounce to 5.05 is not a new yield high, the 2-year fell 3bp, and dollar-yen is not the cleaner expression into the Bank of Japan.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 58,
+      "decision_fingerprint": "d4bc1ad2fe30bfd2c20252848c6bc49cf354cdf56286bb9b9a1b895110359f9d",
+      "event_id": "jde-03919acd676842f1",
+      "funding_view": null,
+      "invalidation": "A confirmed continuation from flat needs a US 10-year print through 5.24, or at least through 5.15, with SOFR implieds moving higher in the same direction. A confirmed opposite trend needs a fresh yield low below 4.96 with the 2-year and SOFR implieds also moving lower. A 6bp stall bounce, a hawkish hold already in the tape, or oil remaining near 103 does not reopen a pay. Dollar-yen is not a substitute trigger, especially into the Bank of Japan. Break levels not in the tape stay null.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b7f6d285fff31745cf3d1ab731fafeb7ca8299e57de38c426c2dbeb87adaf62e",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ea20674994dab1d691034ee3c909f5c8b0168c7da801db188d2df866ce4eddcf"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat. US 10-year is 5.05, up 6bp after a hawkish Federal Reserve hold, and still 103bp higher over one year, but that is not a confirmed continuation. The same tenor is still 8bp lower over five days and 19bp lower over one month, and 5.05 sits below 5.24 on 9 Oct and 5.15 on 19 Oct. Cash SOFR is 3.95 with December 4.19, March 4.445, June 4.615 and September 4.68, a hiking path, yet the 2-year yield fell 3bp to 4.67 on the same session, so the front-end cash market did not confirm the backup. Receiving the 10-year on a 6bp bounce would fade a one-year yield uptrend and a hawkish hold; paying 5.05 would treat an unconfirmed bounce as a breakout. March CORRA at 3.025 versus cash 2.24 prices a large Canadian hike path, but there is no Bank of Canada headline and Canada 10-year is still lower over five days. Dollar-yen at 157.96 is a mid-range one-year cross with a Bank of Japan meeting on Friday, not a cleaner trend than rates. New Zealand rates are unusable. Stay flat.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The book is flat. US 10-year is 5.05, up 6bp after a hawkish Federal Reserve hold, and still 103bp higher over one year, but that is not a confirmed continuation. The same tenor is still 8bp lower over five days and 19bp lower over one month, and 5.05 sits below 5.24 on 9 Oct and 5.15 on 19 Oct. Cash SOFR is 3.95 with December 4.19, March 4.445, June 4.615 and September 4.68, a hiking path, yet the 2-year yield fell 3bp to 4.67 on the same session, so the front-end cash market did not confirm the backup. Receiving the 10-year on a 6bp bounce would fade a one-year yield uptrend and a hawkish hold; paying 5.05 would treat an unconfirmed bounce as a breakout. March CORRA at 3.025 versus cash 2.24 prices a large Canadian hike path, but there is no Bank of Canada headline and Canada 10-year is still lower over five days. Dollar-yen at 157.96 is a mid-range one-year cross with a Bank of Japan meeting on Friday, not a cleaner trend than rates. New Zealand rates are unusable. Stay flat."
     }
   ],
   "schema_version": 1,

@@ -1448,6 +1448,62 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "Cash CORRA is 2.24 and the Bank of Canada is polled at 2.50, but the live 2027 H\u2013Z strip still marks 3.265 against a 3.40 entry. That remains more than a full extra tightening cycle after cash, too much if restriction is already biting. Stay received in the existing 2027 H\u2013Z; fade the forward hike path, and do not open a new unmarkable strip ticket."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the existing long CORRA 2027 H-Z strip. Live March 3.025 through December 3.49 still prices a re-hike that cash 2.24 has not printed. USDCAD at 1.4047 is inferior because WTI at 102.78 and the hawkish Fed hold pull that pair in opposite directions.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 60,
+      "decision_fingerprint": "e0f92df79860c811ec8050f193a3056ab8c70948c5958fde447d071a7a033923",
+      "event_id": "jde-8b1fa3c98a524cc9",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if a Bank of Canada hike or hawkish path lifts the 2027 strip so March 3.025 and December 3.49 reverse higher through the 3.40 entry, or if cash CORRA itself leaves 2.24 and starts delivering that 2027 path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4ec208dc3210deaa6d3c0adb99589095d05e1b93a8f56f2fe9f7607caa14a2ca",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "559040cc683aa5237e87fb9e7e6fcfaf3e83c4a61b93c9902c73d040ea50c9e5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA is still 2.24 and there is no Bank of Canada headline. The locked 2027 H-Z receive still faces March 3.025, June 3.225, September 3.39 and December 3.49, more than 100bp of unstarted re-tightening after cash and versus a 2.75 neutral midpoint. A hawkish Federal Reserve hold, SOFR at 3.95 with March 4.445 and September 4.68, the US 10-year at 5.05, and WTI at 102.78 keep those implieds bid, but they have not lifted Canadian cash. Stay long the existing 42.5 million strip. Do not add into that energy-and-Fed backup. USDCAD at 1.4047 mixes three-digit oil support for the Canadian dollar with a hawkish dollar and is the worse expression of the same easing view.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "Cash CORRA is still 2.24 and there is no Bank of Canada headline. The locked 2027 H-Z receive still faces March 3.025, June 3.225, September 3.39 and December 3.49, more than 100bp of unstarted re-tightening after cash and versus a 2.75 neutral midpoint. A hawkish Federal Reserve hold, SOFR at 3.95 with March 4.445 and September 4.68, the US 10-year at 5.05, and WTI at 102.78 keep those implieds bid, but they have not lifted Canadian cash. Stay long the existing 42.5 million strip. Do not add into that energy-and-Fed backup. USDCAD at 1.4047 mixes three-digit oil support for the Canadian dollar with a hawkish dollar and is the worse expression of the same easing view."
     }
   ],
   "schema_version": 1,

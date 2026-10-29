@@ -1472,6 +1472,62 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "The book remains short 50 million March CORRA from 2.995 against a 3.005 live mark, fading a still-crowded receive that carry and dove still own. March at 3.005 versus cash 2.24 and a 2.50 poll looks cheap to that receive, which is exactly the false entry the lesson forbids. Do not stack the same Canadian-bull view in USDCAD, and do not flip the pay into the crowded receive into the print."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Keep the existing March CORRA short. Carry and dove still own the Canada 2027 receive; cheapness versus cash 2.24 is their entry, not ours. Do not add, do not flip to receive, and do not overlay USDCAD.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "708ecba9c384c4078dff1b6060a96e4453cab255a68a43280baf2da01ef22e9d",
+      "event_id": "jde-f17ace73c8b44972",
+      "funding_view": null,
+      "invalidation": "Stand down if carry and dove cut or flip the Canada 2027 receive so the crowded expression is no longer the receive, or if this book is no longer short March CORRA. The fade is also wrong if CRAH27 compresses toward cash 2.24 while those receives stay on. A backup toward Canada 2Y 3.36 is realization, not invalidation. Oil reversing with no remaining hike-path pressure would kill the higher-mark case.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eb79a7e872574dd7f2c26fac5fbc99bbe7f6cebb419034be3ea0079b5c022631",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "810829eebd068779dccff123557712cd7c764f7705ac66a29712d830d4ab9438"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays short 50 million March CORRA, freeze mark 3.025 versus cash CORRA 2.24. That 78.5bp cash-to-March gap is still the crowded receive: carry remains long 25 million March CORRA and dove remains received in the 2027 H\u2013Z strip. Verified: Fed hold was hawkish, there is no Bank of Canada headline, WTI is 102.78 and Brent 115.32, Canada 2Y is 3.36 so CRAH27 is still 33.5bp through cash 2Y, and USDCAD is 1.4047. cheap-versus-cash is a bad entry, not an unowned one, so the pay keeps the ownership asymmetry. CME STIR positioning is unavailable this freeze and is not invented. Do not flip into the receive, do not add into a pay that hawk already shares, and do not stack the same Canada-bull in USDCAD.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The book stays short 50 million March CORRA, freeze mark 3.025 versus cash CORRA 2.24. That 78.5bp cash-to-March gap is still the crowded receive: carry remains long 25 million March CORRA and dove remains received in the 2027 H\u2013Z strip. Verified: Fed hold was hawkish, there is no Bank of Canada headline, WTI is 102.78 and Brent 115.32, Canada 2Y is 3.36 so CRAH27 is still 33.5bp through cash 2Y, and USDCAD is 1.4047. cheap-versus-cash is a bad entry, not an unowned one, so the pay keeps the ownership asymmetry. CME STIR positioning is unavailable this freeze and is not invented. Do not flip into the receive, do not add into a pay that hawk already shares, and do not stack the same Canada-bull in USDCAD."
     }
   ],
   "schema_version": 1,

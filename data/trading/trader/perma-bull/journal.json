@@ -1675,6 +1675,92 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "Firm risk appetite and a Hormuz-driven oil spike argue that 2027 policy paths should reprice higher, not easier, into a widely expected Fed hold. Canadian March implieds have already slipped to 3.005 ahead of a Bank of Canada decision polled at 2.50, which looks like over-discounted easing against WTI at 99.90, Brent at 113.88, the S&P near 7723 and VIX at 18.39. Existing shorts in March 2027 CORRA, SOFR and AONIA remain the cleanest stay-higher expression of that impulse; do not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Keep the March CORRA pay; 3.025 versus cash 2.24 is still an incomplete catch-up while Brent is 115.32 and there is no Bank of Canada headline.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Keep the March AONIA pay; 4.94 versus cash 4.60 still prices a partial hike path in a commodity upswing.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Keep the March SOFR pay; cash 3.95 versus 4.445 still looks light next to a hold that cited inflation, WTI 102.78 and the 10-year at 5.05.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "da6c94d1e29c274b6379fa3ac2cb90cf004b2865a2696671884257581dbf42f8",
+      "event_id": "jde-1ddef9e1b9b04503",
+      "funding_view": null,
+      "invalidation": "The book is wrong if oil and equities break together and March 2027 implieds retrace toward cash \u2014 CORRA toward 2.24, SOFR toward 3.95, AONIA toward 4.60 \u2014 because growth and inflation are no longer supporting a higher 2027 path. A Bank of Canada or Fed turn that treats this hold as the start of easing, with VIX spiking and crude reversing, would also kill the stay-higher case. The US 10-year backing off 5.05 without a matching rise in the March strips would be a warning, not by itself the stop.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4c1cebbbe186fef7f586a5861485d2776a5e7faa34da39deac16cb3b91150c24",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "872f36c158d53f88e7306a9b21915ba6955e5d3825a9e799fbde4df86ae392e0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Fed held rates steady despite inflation concerns, WTI is 102.78, Brent is 115.32, the S&P is 7743.98 and VIX is 17.52. That is a risk-on, oil-led tape, not an easing regime. Cash CORRA is 2.24 against March 2027 implied 3.025, June 3.225 and September 3.39, with no Bank of Canada headline to close a gap that still sits far below three-digit crude. Cash SOFR is 3.95 against March 4.445, June 4.615 and September 4.68; cash AONIA is 4.60 against March 4.94. The existing March 2027 CORRA, AONIA and SOFR pays remain the cleanest stay-higher expression of that impulse. USDCAD at 1.405 mixes a hawkish dollar with the Canada oil bid and does not isolate the 78 basis-point CORRA catch-up. Keep all three shorts; do not add. Bank of Japan on Friday is yen event risk, not a reason to enlarge this strip.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The Fed held rates steady despite inflation concerns, WTI is 102.78, Brent is 115.32, the S&P is 7743.98 and VIX is 17.52. That is a risk-on, oil-led tape, not an easing regime. Cash CORRA is 2.24 against March 2027 implied 3.025, June 3.225 and September 3.39, with no Bank of Canada headline to close a gap that still sits far below three-digit crude. Cash SOFR is 3.95 against March 4.445, June 4.615 and September 4.68; cash AONIA is 4.60 against March 4.94. The existing March 2027 CORRA, AONIA and SOFR pays remain the cleanest stay-higher expression of that impulse. USDCAD at 1.405 mixes a hawkish dollar with the Canada oil bid and does not isolate the 78 basis-point CORRA catch-up. Keep all three shorts; do not add. Bank of Japan on Friday is yen event risk, not a reason to enlarge this strip."
     }
   ],
   "schema_version": 1,

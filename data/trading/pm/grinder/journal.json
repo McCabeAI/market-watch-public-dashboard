@@ -1449,6 +1449,62 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "The PM book is flat. The accepted 14-seat handoff has no open or add tickets; receive-versus-pay holds on March CORRA and conflicting March SOFR inventory are disagreement, not a sized edge. Cash-to-contract premia and the US 10-year at 4.99 with WTI at 99.90 do not produce a one-sided expected path that covers official SOFR 3.93 percent ACT/360 charged on shocked-risk capital into the dual sitting. Preservation-first sizing is to stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Every markable handoff candidate fails the official SOFR 3.95 percent ACT/360 hurdle on shocked risk capital: SOFR/CORRA are two-way, long US10Y is adverse to the hawkish hold and energy complex, and short AUDCAD pays a ~236bp cash-rate gap with no catalyst.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-29T06:29:21.248224-04:00",
+      "conviction": 6,
+      "decision_fingerprint": "c19ac10f1517d2e3e64155bd414cc45e8cdb93e182051c0d6455dc8bf53b8a58",
+      "event_id": "jde-06d85d06a0f34be5",
+      "funding_view": null,
+      "invalidation": "A signed, markable dislocation in SOFR, CORRA, US10Y, or AUDCAD where expected P&L after carry still exceeds the SOFR charge on a documented standard shock, or a central-bank catalyst that collapses the two-way front-end debate.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "da472635f55cab6dcbdf607637315eb7b69193aa61e920e988286580506d929a",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9566a3479bb4177beae70433dd34d08d30cb56af9c4b655431238879540f55cd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "22bd5d0185d039b3a42b006efe55fa6b4c5784e6d2a4cc7b50620ca6e8ece5b3",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261029-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and the freeze does not show a one-way markable expression whose expected edge covers official SOFR 3.95 percent ACT/360 on shocked risk capital. SOFR and CORRA are two-sided between carry/dove receive and hawk/cynic pay, with Mar/Sep SOFR already embedding a hawkish hold. Long US10Y fights that hold plus elevated oil, and short AUDCAD pays the AONIA-CORRA gap without a catalyst. Preservation is to stay flat.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The book is flat and the freeze does not show a one-way markable expression whose expected edge covers official SOFR 3.95 percent ACT/360 on shocked risk capital. SOFR and CORRA are two-sided between carry/dove receive and hawk/cynic pay, with Mar/Sep SOFR already embedding a hawkish hold. Long US10Y fights that hold plus elevated oil, and short AUDCAD pays the AONIA-CORRA gap without a catalyst. Preservation is to stay flat."
     }
   ],
   "schema_version": 1,

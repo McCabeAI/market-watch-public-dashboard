@@ -736,6 +736,55 @@
       "subject": {
         "flat_cycles": 3
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 4,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          750000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "event_id": "pse-000031",
+      "flat_cycles": 4,
+      "kind": "decay_tick",
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261029",
+      "seq": 31,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0459,
+        "external_pressure": 0.0167,
+        "frustration": 0.0175
+      },
+      "event_id": "pse-000032",
+      "kind": "flat_with_market",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "trend-follower",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261029",
+      "scale": 1.0,
+      "seq": 32,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "flat_cycles": 4
+      }
     }
   ],
   "owner_id": "trend-follower",

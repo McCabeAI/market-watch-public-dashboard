@@ -1452,6 +1452,62 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "SOFR cash still sits at 3.93 while March SR3 is 4.48 and September is 4.685, so the midweek safety bid is unfinished even with the 10-year already in to 4.99 from a 5.24 entry. AI and credit unease plus gold near 4075 keep growth-fragility underpriced while the S&P near 7723 and a VIX at 18.39 look complacent. Hold the existing long 10-year and want the mark lower; do not add into the Fed with WTI at 99.90 and Brent at 113.88."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 12500000,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Keep the existing US 10-year long. Receiving March or September SOFR against cash 3.95 is a fade of tightening, not a slowdown hold. Short AUDUSD is the leftover risk-off FX, but it is inferior to duration already marked at 5.05, and three-digit oil argues against adding.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 54,
+      "decision_fingerprint": "aa5a3c3b47bb63e2f8f05f63bad45d6017718bd18f298a227ffbe4ba3ca81bb2",
+      "event_id": "jde-bc13c33fccc5470e",
+      "funding_view": null,
+      "invalidation": "The hold is wrong if the 10-year backs up through the 5.24 entry and stays there while crude remains three-digit and equities stay firm, confirming Warsh hawkishness as a higher-for-longer inflation regime rather than a policy mistake that breaks growth. It is also wrong if the AI and credit wobble fades, gold gives back, and the September SOFR premium over cash 3.95 disappears because policy has already turned easy.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "85da48c6ec3634dc28cece488c61537c303a9bff8692d737488d997f2c79edc1",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b714bb49102b9bb9577fe0f3fb9e1e942d114b4d2dc2bf8f803f1cf896cc02ce"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR is 3.95 while March is 4.445 and September is 4.68, so the path still prices a hike campaign after a hold and hawkish Warsh commentary. The live long 10-year at 5.05, six basis points cheaper than the prior mark and still through the 5.24 entry, is the slowdown expression: AI and credit wobble plus gold at 4051 keep growth fragility live while the S&P at 7743 and VIX at 17.52 look complacent. Receiving that hike-rich strip would fade tightening, not hold a defensive duration view, and WTI at 102.78 with Brent at 115.32 argues against adding. Keep the 12.5 million 10-year long and want the yield mark lower.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "Cash SOFR is 3.95 while March is 4.445 and September is 4.68, so the path still prices a hike campaign after a hold and hawkish Warsh commentary. The live long 10-year at 5.05, six basis points cheaper than the prior mark and still through the 5.24 entry, is the slowdown expression: AI and credit wobble plus gold at 4051 keep growth fragility live while the S&P at 7743 and VIX at 17.52 look complacent. Receiving that hike-rich strip would fade tightening, not hold a defensive duration view, and WTI at 102.78 with Brent at 115.32 argues against adding. Keep the 12.5 million 10-year long and want the yield mark lower."
     }
   ],
   "schema_version": 1,

@@ -97,8 +97,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "37b86b5de1e87aa74f7f5ae5cb05345ae493a75b6a738def17ad4066934e59bf",
-  "open_positions": [],
+  "memory_context_sha256": "9cd12a12f3980b9b2626e81b972ce126636eacad778b26f378a23e0b743d4711",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 58,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 0.99,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": "2026-12-13",
+        "catalyst_logic": "The Fed hold is through, WTI is 102.78, and AUDCAD remains a five-year extreme versus a live Canadian oil impulse, so the residual peer gap can start to close now.",
+        "current_mark": 0.9878711307643715,
+        "current_notional_usd": 25000000.0,
+        "entry_mark": 0.99,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "AUDCAD",
+        "intended_horizon_days": 45,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-63923b5f6571",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "AUDCAD mean-reverts as the Canadian oil terms-of-trade premium is paid in the cross after the Fed hold, not through further cheapening of the already-repriced Canada front end.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 250000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-value-guy-pos-63923b5f6571",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "AUDCAD",
+      "opened_at": "2026-10-29T04:24:31.160680-04:00",
+      "position_id": "pos-63923b5f6571",
+      "risk_capital_usd": 250000.0,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-63923b5f6571"
+    }
+  ],
   "owner_id": "value-guy",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -116,8 +166,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.21
+        "trend": "down",
+        "value": 0.19
       },
       "complacency": {
         "band": "calm",
@@ -131,13 +181,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.22
+        "trend": "down",
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.16
+        "trend": "down",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -167,11 +217,6 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261026"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261027"
       },
       {
@@ -182,9 +227,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "f2810bb00a71dc4e869435a0bd2dabdcc126e889e192e5eacd0651539dfc2992",
+    "state_sha256": "506d03cda19db27e08f3be29c742d0fa3301e5116434429bb4ef14d1a933ce07",
     "streaks": {
-      "flat_cycles": 6,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

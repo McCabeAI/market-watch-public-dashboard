@@ -1450,6 +1450,62 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "The existing long March SOFR from 4.58 still owns stretch versus cash 3.93 and versus the live 4.48 mark. A hold-survey day is still ahead of the cutoff, so hawkish guidance is the named risk that can reprice implieds higher against the long. Do not cut: the cash-to-contract gap is still open and the catalyst has not printed. Do not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the existing 10 million March SOFR receive: 4.445 versus cash 3.95 is still a 49.5bp premium, and the hold did not send implieds through the 4.58 entry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "e6df93b8504c8dac92452ef14b8942f237d05c5d2ff9a9dec6a103c7331ce279",
+      "event_id": "jde-db97a6e102074dd6",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if tough guidance and three-digit oil reprice March SOFR implieds back through the 4.58 entry and keep them there. It is also wrong if cash SOFR itself jumps toward the contract so the 49.5bp premium closes from the overnight side rather than from implieds falling.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "afa4ca80bd72f313e22b31f6cbe8a97a75f3903aa9c283b6d8976780bc323d94",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a0107f5f7db4e97ecc91e8ce61cc53270017d22c3fe468bc61c4e3aa4614c671"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.95 and March 2027 implieds mark 4.445, a 49.5bp premium to cash after a Federal Reserve hold with tough inflation language. That cash-to-contract gap is still the stretch this book is received in, and the hold did not lift the contract back through the 4.58 entry. WTI at 102.78, Brent at 115.32, and the 10-year at 5.05, up 6bp, can keep that premium alive, so this is not a size-up. Hold the existing 10 million March SOFR long; do not add, and do not replace it with a 10-year receive, a Canada receive, or dollar-Canada.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.95 and March 2027 implieds mark 4.445, a 49.5bp premium to cash after a Federal Reserve hold with tough inflation language. That cash-to-contract gap is still the stretch this book is received in, and the hold did not lift the contract back through the 4.58 entry. WTI at 102.78, Brent at 115.32, and the 10-year at 5.05, up 6bp, can keep that premium alive, so this is not a size-up. Hold the existing 10 million March SOFR long; do not add, and do not replace it with a 10-year receive, a Canada receive, or dollar-Canada."
     }
   ],
   "schema_version": 1,

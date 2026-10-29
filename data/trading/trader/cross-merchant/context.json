@@ -163,7 +163,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "8b03956219396c22413fd6640500c5f3044824900a96b2e4c965cbb1dbbeae71",
+  "memory_context_sha256": "692ff2d71d0351dc9d0c73907557c6b31751b0def60c4bc89284af5466deb46e",
   "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
@@ -182,8 +182,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -197,13 +197,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.14
+        "trend": "up",
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -231,21 +231,21 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.09822608000000001,
-        "run_id": "overnight-20261023"
-      },
-      {
         "kind": "trade_win_close",
         "magnitude": 0.30887476,
         "run_id": "overnight-20261026"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261029"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ab88f4439182d047d9eff68999081325f9a4b0aa26e26d44335be8fb84282a2e",
+    "state_sha256": "edc44f95caaf199a99c3b4dd4328fafbb3d7efa807782642f27e7975b92fd43d",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 3,
       "session_loss": 1,
       "session_win": 0
     }

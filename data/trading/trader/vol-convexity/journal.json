@@ -1392,6 +1392,60 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "The Fed and Bank of Canada sitting is a real event-vol window whose jump timing is uncertain, so unbounded spot is the wrong instrument. Convexity would dominate if a markable listed option, spread, or risk-reversal existed. No independently markable options contract is in the freeze, and a ticker cannot be invented. The book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Fact: the book is flat. Packet marks are VIX 17.52, SPX 7743.98, WTI 102.78, Brent 115.32, US10Y 5.05. The Fed held and the statement/path was hawkish. BoJ is Friday. NZ expressions are banned. There is no BoC headline. This packet contains no listed options premium, implied-vol, or strike mids. Inference: a hawkish Fed hold plus a dated BoJ meeting is exactly the setup where bounded-risk event optionality dominates spot, because the risk is path and timing rather than a clean drift. Linear US10Y duration at 5.05 only pays if yields grind; it does not harvest a discrete Friday jump. VIX 17.52 is a vol-index observation, not a paper-markable option mid, so it cannot authorize an options OPEN. Spot USDJPY (the natural BoJ vehicle) would require being right on both sign and timing; that is the inferior expression. Unknown: option premiums, IVs, strikes, skew, implied-versus-realized, and any G10 spot mids. Actionable trade: HOLD the flat book. Do not buy spot into BoJ. Do not pay or receive US10Y as a convexity substitute. Do not select options while the option leg is unmarkable.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 56,
+      "decision_fingerprint": "6402b997263aa70d6336c442a460e8976d0ad07bed241c8b9dd03671ac3d9fa0",
+      "event_id": "jde-c04386fa4a454b51",
+      "funding_view": null,
+      "invalidation": "A later frozen packet supplies paper-markable listed-option premium, IV, and strike mids for a BoJ-week or post-Fed event structure that can be compared with US10Y 5.05 and with spot without inventing prices. Until those mids exist, options stay unselected and the book stays flat. A HOLD is not a license to replace missing optionality with directional spot.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4e2bd618de939b25309cf042cf8a80176859105caf92c561d28221bddcbaea7c",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "fa95b0ce0dc5e1cd01e9b0ac905d96f68357df09fa89f26c7209da672e36f4e0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "the book is flat. Packet marks are VIX 17.52, SPX 7743.98, WTI 102.78, Brent 115.32, US10Y 5.05. The Fed held and the statement/path was hawkish. BoJ is Friday. NZ expressions are banned. There is no BoC headline. This packet contains no listed options premium, implied-vol, or strike mids. a hawkish Fed hold plus a dated BoJ meeting is exactly the setup where bounded-risk event optionality dominates spot, because the risk is path and timing rather than a clean drift. Linear US10Y duration at 5.05 only pays if yields grind; it does not harvest a discrete Friday jump. VIX 17.52 is a vol-index observation, not a paper-markable option mid, so it cannot authorize an options OPEN. Spot USDJPY (the natural BoJ vehicle) would require being right on both sign and timing; that is the inferior expression. option premiums, IVs, strikes, skew, implied-versus-realized, and any G10 spot mids. HOLD the flat book. Do not buy spot into BoJ. Do not pay or receive US10Y as a convexity substitute. Do not select options while the option leg is unmarkable.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "the book is flat. Packet marks are VIX 17.52, SPX 7743.98, WTI 102.78, Brent 115.32, US10Y 5.05. The Fed held and the statement/path was hawkish. BoJ is Friday. NZ expressions are banned. There is no BoC headline. This packet contains no listed options premium, implied-vol, or strike mids. a hawkish Fed hold plus a dated BoJ meeting is exactly the setup where bounded-risk event optionality dominates spot, because the risk is path and timing rather than a clean drift. Linear US10Y duration at 5.05 only pays if yields grind; it does not harvest a discrete Friday jump. VIX 17.52 is a vol-index observation, not a paper-markable option mid, so it cannot authorize an options OPEN. Spot USDJPY (the natural BoJ vehicle) would require being right on both sign and timing; that is the inferior expression. option premiums, IVs, strikes, skew, implied-versus-realized, and any G10 spot mids. HOLD the flat book. Do not buy spot into BoJ. Do not pay or receive US10Y as a convexity substitute. Do not select options while the option leg is unmarkable."
     }
   ],
   "schema_version": 1,

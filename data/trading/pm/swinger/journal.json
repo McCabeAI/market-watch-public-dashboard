@@ -1478,6 +1478,60 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "March CORRA at 3.005 is one basis point from the 3.00 receive that was already harvested; cash at 2.24 and a 2.50 Bank of Canada poll do not create a new 10bp dislocation. Trader Room pay-versus-receive on that contract is inventory disagreement, not a concentrated swing, and SOFR, AONIA and the US 10-year are the same oil-and-meeting tape. The book stays flat; flipping to pay a basis point after the harvest would be whipsaw, not a thesis."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "the standing harvest lesson APPLIES: do not reopen March CORRA receive within a few basis points of the booked exit absent a new cash or BoC-path dislocation. Remaining names are two-way, already-priced, or late, so no concentrated OPEN.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-29T06:29:20.858977-04:00",
+      "conviction": 4,
+      "decision_fingerprint": "58d511bfac59dd6603b1e7bf687fc98c344f96bc61e4d5f382d67c547247f6e5",
+      "event_id": "jde-0dc29c11de594092",
+      "funding_view": null,
+      "invalidation": "Re-enter only if a new CORRA dislocation prints versus cash or versus an announced Bank of Canada path; if SOFR forwards cheapen or richen sharply versus the hawkish 28 Oct hold in a one-way way; or if AUDCAD breaks with a fresh oil shock rather than the already-printed 115 Brent.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "75012bf2c621e0c89176e4d3ba3d1bfa0de863477d3582df58dac34b8dc53115",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a6ad2c8f3054def0b42961275eb412b95428e6318acfbff922f4f2e2ded09600"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "ab9fc5f855393386658194ddc835d57702b13e9abac05cacf2e7f45c5b5d6b84",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261029-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat after harvesting March CORRA receive near 3.00. Frozen March CORRA at 3.025 is only a couple of basis points from that exit, cash is still 2.24, and there is no Bank of Canada headline, so the standing harvest lesson APPLIES and the same receive is not reopened. Two-way trader inventory on CORRA and SOFR is a challenge set rather than a one-way dislocation, and the only new ticket\u2014short AUDCAD at 0.9879 with Brent already 115\u2014does not clear a concentrated-swing hurdle with force_deployment off.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "The book stays flat after harvesting March CORRA receive near 3.00. Frozen March CORRA at 3.025 is only a couple of basis points from that exit, cash is still 2.24, and there is no Bank of Canada headline, so the standing harvest lesson APPLIES and the same receive is not reopened. Two-way trader inventory on CORRA and SOFR is a challenge set rather than a one-way dislocation, and the only new ticket\u2014short AUDCAD at 0.9879 with Brent already 115\u2014does not clear a concentrated-swing hurdle with force_deployment off."
     }
   ],
   "schema_version": 1,

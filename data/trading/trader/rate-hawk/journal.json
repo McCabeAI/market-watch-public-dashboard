@@ -1997,6 +1997,92 @@
       "run_id": "overnight-20261028",
       "schema_version": 1,
       "thesis": "Three-digit oil keeps inflation inside the Fed and Bank of Canada reaction functions through 2027, so terminal and path risk is still underpriced to the upside versus live marks. September SOFR at 4.685 versus a 4.755 entry, March CORRA at 3.005 versus 3.06, and June AONIA at 4.88 versus 4.91 are mark noise around an intact higher-for-longer book, not a regime change. Hold the three existing 2027 pays; do not add into the dual sitting."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Keep the existing September SOFR short; 4.68 versus cash 3.95 still does not compensate for hold-then-re-hike after a hawkish Fed hold.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 12500000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Keep the existing March CORRA short; cash 2.24 with no Bank of Canada headline still leaves 3.025 as underpriced tightening, not a cover.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 25000000,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Keep the existing June AONIA short as the global-energy residual; 4.96 versus cash 4.60 already did the post-event work, so do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-29T04:24:31.160680-04:00",
+      "conviction": 68,
+      "decision_fingerprint": "99e44cc0a0757302d9acb006bb518cc4299055bf421f5eaa3a5d551d76e9a50e",
+      "event_id": "jde-2511326bea5e4ead",
+      "funding_view": null,
+      "invalidation": "The higher-terminal book is wrong if oil-led inflation drops out of the Fed or Bank of Canada reaction function, if September SOFR loses the hike path and fails to hold the 4.68 freeze toward the 4.755 entry, or if March CORRA retraces toward cash 2.24. Cut June AONIA first if it breaks lower on a domestic easing impulse independent of global energy.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "68227163b9e7a8df530074e9f7523d1b87c6db8e5aba55004c53e0d200b153e3",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c6043bd8d9297da4c07ba7c484c940724a043154bf4be694e13d301c1350f19c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+        "evidence_hash": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+        "overnight_run_id": "overnight-20261029",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Verified: official SOFR 3.95 versus CME SR3 September 2027 implied 4.68; cash CORRA 2.24 versus MX March 2027 3.025; cash AONIA 4.60 versus ASX June 2027 4.96; US 2-year 4.67; US 10-year 5.05; WTI 102.78; Brent 115.32; Fed hold with a hawkish Warsh conference; Bessent said another hike is not necessarily a mistake; no Bank of Canada headline; NZ rates unavailable. 73bp of SOFR tightening through September 2027 still underprices a hold-then-re-hike regime if three-digit oil keeps inflation inside the reaction function, so the existing 2027 pays remain the rates expression versus USD spot or the 10-year. March CORRA still prices 78.5bp of tightening over cash, which is the right direction, not a cover. June AONIA already marked 8bp higher from 4.88 to 4.96, so keep that sleeve and do not add into the print. Bank of Canada decision content, Warsh and Bessent article bodies, and Friday Bank of Japan outcome. Hold all three 2027 pays; do not add.",
+      "run_id": "overnight-20261029",
+      "schema_version": 1,
+      "thesis": "Verified: official SOFR 3.95 versus CME SR3 September 2027 implied 4.68; cash CORRA 2.24 versus MX March 2027 3.025; cash AONIA 4.60 versus ASX June 2027 4.96; US 2-year 4.67; US 10-year 5.05; WTI 102.78; Brent 115.32; Fed hold with a hawkish Warsh conference; Bessent said another hike is not necessarily a mistake; no Bank of Canada headline; NZ rates unavailable. 73bp of SOFR tightening through September 2027 still underprices a hold-then-re-hike regime if three-digit oil keeps inflation inside the reaction function, so the existing 2027 pays remain the rates expression versus USD spot or the 10-year. March CORRA still prices 78.5bp of tightening over cash, which is the right direction, not a cover. June AONIA already marked 8bp higher from 4.88 to 4.96, so keep that sleeve and do not add into the print. Bank of Canada decision content, Warsh and Bessent article bodies, and Friday Bank of Japan outcome. Hold all three 2027 pays; do not add."
     }
   ],
   "schema_version": 1,

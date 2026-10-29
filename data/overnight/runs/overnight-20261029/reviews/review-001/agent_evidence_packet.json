@@ -1,0 +1,743 @@
+{
+  "base_evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+  "base_packet_sha256": "5760fb04e6e857e185f309502b8f863cf94ea46a8533381cae1ce7766ba7f201",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-10-27",
+    "funding_rate_annual": 0.0395,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-10-29T04:24:31.160680-04:00",
+  "learning_obligations": {
+    "manifest_sha256": "70e3acb532cccf5c5f2eb23a1dd9f77eef813cabd3a324ec4cd9af30dd6159ae",
+    "obligation_count": 1
+  },
+  "overnight_run_id": "overnight-20261029",
+  "packet_sha256": "016504a71f35646fa5d3733a1b548c0b1b01edca48126f17b4255aa37f5c79df",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "published_at": null,
+        "source_name": null,
+        "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal."
+      },
+      {
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "published_at": null,
+        "source_name": null,
+        "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero."
+      },
+      {
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "published_at": null,
+        "source_name": null,
+        "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September."
+      }
+    ],
+    "news": [
+      {
+        "country_codes": [
+          "JP"
+        ],
+        "headline": "Japan 2-Year Bond Sale Sees Firm Demand Before BOJ Decision",
+        "id": "news:e6bce6b93bd1b9be",
+        "primary_category": "macro",
+        "published_at": "2026-10-28T16:39:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Japan\u2019s two-year government bond auction drew firm demand, as elevated yields attracted investors ahead of a Bank of Japan policy decision on Friday, where rates are widely expected to remain ...",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-29/japan-s-two-year-bond-sale-demand-stronger-than-12-month-average"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Bessent Plays Down Concerns Over AI Financing, Fed Rate Policy",
+        "id": "news:74731cb1ff58ef19",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T10:26:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Treasury Secretary Scott Bessent said he and his team are keeping tabs on the state of financing for the artificial intelligence build-out, and played down recent signs of concern.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-28/bessent-plays-down-concerns-over-ai-financing-fed-rate-policy"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "10-year Treasury yield creeps higher even as Fed keeps rates the same",
+        "id": "news:ea21a88ce7de1a15",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T16:17:19-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/us-treasurys-bonds-yields-federal-reserve.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fed holds rates steady despite concerns over inflation",
+        "id": "news:c8dc713f2b64c42b",
+        "primary_category": "inflation",
+        "published_at": "2026-10-28T15:43:48-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/fed-interest-rate-decision-october-2026.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fed chairman talks tough on inflation \u2014 plus, what's behind Micron's big rally",
+        "id": "news:39529b1056e20160",
+        "primary_category": "inflation",
+        "published_at": "2026-10-28T15:17:35-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/investingclub/2026/10/28/fed-chairman-talks-tough-on-inflation-plus-whats-behind-microns-big-rally.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Bullish Treasury Bets Face Reversal Risk From Hawkish Fed",
+        "id": "news:cb68cc1382e30ed0",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-27T09:30:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Bullish bets in US Treasuries are vulnerable to a sharp reversal if the Federal Reserve takes a more aggressive stance at its upcoming monetary policy meeting.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-27/bullish-treasury-bets-face-reversal-risk-from-hawkish-fed"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+        "id": "news:f6dd7213c1fb52e9",
+        "primary_category": "rates",
+        "published_at": "2026-10-25T20:15:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "U.S. Treasury yields tick higher as Federal Reserve's monetary policy meeting gets underway",
+        "id": "news:d649fb2e9ffdcd5a",
+        "primary_category": "rates",
+        "published_at": "2026-10-27T16:03:59-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/27/treasury-yields-federal-reserve-monetary-policy-meeting.html"
+      },
+      {
+        "country_codes": [
+          "NZ"
+        ],
+        "headline": "Morning Bid: RBNZ throws markets a curveball",
+        "id": "news:d51bd6120c221125",
+        "primary_category": "macro",
+        "published_at": "2026-10-27T13:00:00-04:00",
+        "source_name": "Reuters",
+        "summary": "Rising bond yields at \u200bAI cloud \u2060providers such as CoreWeave (CRWV.O) and record costs to insure Meta Platforms' (META.O) debt have amplified concerns about how the massive AI infrastructure buildout ...",
+        "url": "https://www.reuters.com/world/china/global-markets-view-europe-2026-10-28/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+        "id": "news:13bcd45a2d7d6e87",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-26T06:11:19-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "id": "news:e3b0c44298fc1c14",
+        "primary_category": "macro",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "source_name": null,
+        "summary": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+        "url": null
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "id": "news:e3b0c44298fc1c14",
+        "primary_category": "macro",
+        "published_at": "",
+        "source_name": null,
+        "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+        "url": null
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "id": "news:e3b0c44298fc1c14",
+        "primary_category": "macro",
+        "published_at": "",
+        "source_name": null,
+        "summary": "LNG shipments through Hormuz extended a rebound that began in September.",
+        "url": null
+      },
+      {
+        "country_codes": [],
+        "headline": "CoreWeave and other neocloud stocks drop after Microsoft capex comes in below expectations",
+        "id": "news:8a37811e76637596",
+        "primary_category": "macro",
+        "published_at": "2026-10-28T20:16:39-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/neocloud-stocks-drop-after-microsoft-revises-capex-down.html"
+      },
+      {
+        "country_codes": [],
+        "headline": "Banks Shelve Bond Sale for Anthropic-Tied Texas Data Center",
+        "id": "news:c2a542e2cd0cb42f",
+        "primary_category": "macro",
+        "published_at": "2026-10-28T10:49:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "Banks are delaying plans to offload part of a $15 billion loan to fund a data center tied to Anthropic PBC in Texas, after the state put a hold on new projects while assessing risks to its power grid.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-28/banks-shelve-bond-sale-for-anthropic-tied-texas-data-center"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "BlackRock\u2019s Rieder Spent Weekend Doing Deals in AI Debt Rush",
+        "id": "news:8e25112a3bbfefef",
+        "primary_category": "macro",
+        "published_at": "2026-10-26T15:00:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "The AI-driven debt boom is creating some of the most attractive fixed-income opportunities in years, eclipsing the appeal of long-dated US Treasuries, according to BlackRock\u2019s Rick Rieder.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-27/blackrock-s-rieder-spent-all-weekend-doing-deals-in-ai-debt-rush"
+      },
+      {
+        "country_codes": [],
+        "headline": "Private credit\u2019s huge AI footprint obscures growing risks",
+        "id": "news:840f745df22aac0e",
+        "primary_category": "macro",
+        "published_at": "2026-10-28T20:00:00-04:00",
+        "source_name": "Reuters",
+        "summary": "Much of today\u2019s massive AI build-out is being financed with instruments that do not trade. So, the question for investors now is not only whether AI will pay off, but also how they will know if it is ...",
+        "url": "https://www.reuters.com/commentary/reuters-open-interest/private-credits-huge-ai-footprint-obscures-growing-risks-altaf-kassam-2026-10-29/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Wall Street looks past Fed pause to tech earnings and AI rebound",
+        "id": "news:2bfb1d54fc703e36",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T17:55:47-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/wall-street-shifts-to-earnings-after-fed-holds-rates-steady-.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Here are five key takeaways from the Fed rate decision and Warsh news conference",
+        "id": "news:6b773588cc7f7bd9",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T17:31:46-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/fed-rate-decision-warsh-takeaways.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Bessent says 'not necessarily' a mistake if the Fed hikes again",
+        "id": "news:fbfec549ec09d568",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T17:06:37-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/scott-bessent-interview.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fed meeting recap: Warsh says central bank will host fewer rate-setting meetings in future years",
+        "id": "news:d7528f732a646c3a",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T17:02:56-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/fed-meeting-today-live-updates.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Fed leaves rates unchanged: What it means for credit cards, mortgages, auto loans and savings accounts",
+        "id": "news:d6db15944be4c595",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T16:59:23-04:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/10/28/fed-rate-decision-consumer-borrowing-costs.html"
+      },
+      {
+        "country_codes": [
+          "EA"
+        ],
+        "headline": "ECB Set to Hold Rates to Assess France and Energy Risks",
+        "id": "news:d20794f1bb1401f3",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-10-28T13:00:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "The European Central Bank is set to keep borrowing costs steady as it weighs bond-market turmoil in France and a renewed advance in energy costs.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-29/ecb-set-to-hold-rates-to-assess-france-and-energy-risks"
+      },
+      {
+        "country_codes": [],
+        "headline": "Star Trader\u2019s Woes Turn Up the Heat on Riskiest Debt in Europe",
+        "id": "news:9d6553cb35eb309a",
+        "primary_category": "rates",
+        "published_at": "2026-10-28T06:38:00-04:00",
+        "source_name": "Bloomberg",
+        "summary": "For as long as Hamza Lemssouguer has traded high-yield debt, he\u2019s been on the offensive, placing bets at a scale few in the cutthroat market dare to match.",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-28/star-hedge-fund-trader-lemssouguer-s-woes-at-arini-roil-european-junk-bonds"
+      }
+    ],
+    "sources": [
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "Japan 2-Year Bond Sale Sees Firm Demand Before BOJ Decision",
+        "published_at": "2026-10-28T16:39:00-04:00",
+        "snippet": "Japan\u2019s two-year government bond auction drew firm demand, as elevated yields attracted investors ahead of a Bank of Japan policy decision on Friday, where rates are widely expected to remain ...",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-29/japan-s-two-year-bond-sale-demand-stronger-than-12-month-average"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28CoreWeave%20OR%20neocloud%20OR%20%22data%20center%22%20OR%20hyperscaler%29%20%28bond%20OR%20debt%20OR%20financing%20OR%20%22credit%20facility%22%20OR%20IPO%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "Bessent Plays Down Concerns Over AI Financing, Fed Rate Policy",
+        "published_at": "2026-10-28T10:26:00-04:00",
+        "snippet": "Treasury Secretary Scott Bessent said he and his team are keeping tabs on the state of financing for the artificial intelligence build-out, and played down recent signs of concern.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-28/bessent-plays-down-concerns-over-ai-financing-fed-rate-policy"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "10-year Treasury yield creeps higher even as Fed keeps rates the same",
+        "published_at": "2026-10-28T16:17:19-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/us-treasurys-bonds-yields-federal-reserve.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Fed holds rates steady despite concerns over inflation",
+        "published_at": "2026-10-28T15:43:48-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/fed-interest-rate-decision-october-2026.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Fed chairman talks tough on inflation \u2014 plus, what's behind Micron's big rally",
+        "published_at": "2026-10-28T15:17:35-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/investingclub/2026/10/28/fed-chairman-talks-tough-on-inflation-plus-whats-behind-microns-big-rally.html"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Bullish Treasury Bets Face Reversal Risk From Hawkish Fed",
+        "published_at": "2026-10-27T09:30:00-04:00",
+        "snippet": "Bullish bets in US Treasuries are vulnerable to a sharp reversal if the Federal Reserve takes a more aggressive stance at its upcoming monetary policy meeting.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-27/bullish-treasury-bets-face-reversal-risk-from-hawkish-fed"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+        "published_at": "2026-10-25T20:15:00-04:00",
+        "snippet": "The UK is poised to make greater use of short-term debt, according to government bond dealers, a shift that could bring down gilt yields and ease pressure on the country\u2019s strained public finances.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-26/uk-dealers-see-more-treasury-bills-coming-to-cut-debt-costs"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "U.S. Treasury yields tick higher as Federal Reserve's monetary policy meeting gets underway",
+        "published_at": "2026-10-27T16:03:59-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/27/treasury-yields-federal-reserve-monetary-policy-meeting.html"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Morning Bid: RBNZ throws markets a curveball",
+        "published_at": "2026-10-27T13:00:00-04:00",
+        "snippet": "Rising bond yields at \u200bAI cloud \u2060providers such as CoreWeave (CRWV.O) and record costs to insure Meta Platforms' (META.O) debt have amplified concerns about how the massive AI infrastructure buildout ...",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/world/china/global-markets-view-europe-2026-10-28/"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+        "published_at": "2026-10-26T06:11:19-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/26/us-treasury-yields-investors-feds-interest-rate-decision-.html"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "published_at": "2026-10-20T01:31:00-04:00",
+        "snippet": "Iranian attacks in the Persian Gulf are striking more ships and causing more severe damage than earlier in the conflict, bringing fresh risks to energy flows from the region.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "published_at": null,
+        "snippet": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "published_at": null,
+        "snippet": "LNG shipments through Hormuz extended a rebound that began in September.",
+        "source_name": null,
+        "url": null
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "CoreWeave and other neocloud stocks drop after Microsoft capex comes in below expectations",
+        "published_at": "2026-10-28T20:16:39-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/neocloud-stocks-drop-after-microsoft-revises-capex-down.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28CoreWeave%20OR%20neocloud%20OR%20%22data%20center%22%20OR%20hyperscaler%29%20%28bond%20OR%20debt%20OR%20financing%20OR%20%22credit%20facility%22%20OR%20IPO%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "Banks Shelve Bond Sale for Anthropic-Tied Texas Data Center",
+        "published_at": "2026-10-28T10:49:00-04:00",
+        "snippet": "Banks are delaying plans to offload part of a $15 billion loan to fund a data center tied to Anthropic PBC in Texas, after the state put a hold on new projects while assessing risks to its power grid.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-28/banks-shelve-bond-sale-for-anthropic-tied-texas-data-center"
+      },
+      {
+        "discovery_surface": null,
+        "distribution_weight": "standard",
+        "headline": "BlackRock\u2019s Rieder Spent Weekend Doing Deals in AI Debt Rush",
+        "published_at": "2026-10-26T15:00:00-04:00",
+        "snippet": "The AI-driven debt boom is creating some of the most attractive fixed-income opportunities in years, eclipsing the appeal of long-dated US Treasuries, according to BlackRock\u2019s Rick Rieder.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-27/blackrock-s-rieder-spent-all-weekend-doing-deals-in-ai-debt-rush"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Areuters.com%20%28%22private%20credit%22%20OR%20%22high-yield%22%20OR%20%22credit%20spread%22%20OR%20CLO%20OR%20%22funding%20stress%22%20OR%20CoreWeave%20OR%20CDS%20OR%20%22credit%20default%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "standard",
+        "headline": "Private credit\u2019s huge AI footprint obscures growing risks",
+        "published_at": "2026-10-28T20:00:00-04:00",
+        "snippet": "Much of today\u2019s massive AI build-out is being financed with instruments that do not trade. So, the question for investors now is not only whether AI will pay off, but also how they will know if it is ...",
+        "source_name": "Reuters",
+        "url": "https://www.reuters.com/commentary/reuters-open-interest/private-credits-huge-ai-footprint-obscures-growing-risks-altaf-kassam-2026-10-29/"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Wall Street looks past Fed pause to tech earnings and AI rebound",
+        "published_at": "2026-10-28T17:55:47-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/wall-street-shifts-to-earnings-after-fed-holds-rates-steady-.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Here are five key takeaways from the Fed rate decision and Warsh news conference",
+        "published_at": "2026-10-28T17:31:46-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/fed-rate-decision-warsh-takeaways.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Bessent says 'not necessarily' a mistake if the Fed hikes again",
+        "published_at": "2026-10-28T17:06:37-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/scott-bessent-interview.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Fed meeting recap: Warsh says central bank will host fewer rate-setting meetings in future years",
+        "published_at": "2026-10-28T17:02:56-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/fed-meeting-today-live-updates.html"
+      },
+      {
+        "discovery_surface": "https://www.cnbc.com/sitemap_news.xml",
+        "distribution_weight": "standard",
+        "headline": "Fed leaves rates unchanged: What it means for credit cards, mortgages, auto loans and savings accounts",
+        "published_at": "2026-10-28T16:59:23-04:00",
+        "snippet": "Headline-only public metadata; article body was not retrieved.",
+        "source_name": "CNBC",
+        "url": "https://www.cnbc.com/2026/10/28/fed-rate-decision-consumer-borrowing-costs.html"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28Federal%20Reserve%20OR%20FOMC%20OR%20inflation%20OR%20CPI%20OR%20payrolls%20OR%20Treasury%20OR%20yields%20OR%20oil%20OR%20Brent%20OR%20crude%20OR%20Hormuz%20OR%20OPEC%20OR%20FX%20OR%20dollar%20OR%20tariff%20OR%20sanctions%20OR%20%22central%20bank%22%20OR%20RBA%20OR%20%22Bank%20of%20Canada%22%20OR%20RBNZ%20OR%20ECB%20OR%20%22Bank%20of%20Japan%22%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "ECB Set to Hold Rates to Assess France and Energy Risks",
+        "published_at": "2026-10-28T13:00:00-04:00",
+        "snippet": "The European Central Bank is set to keep borrowing costs steady as it weighs bond-market turmoil in France and a renewed advance in energy costs.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-29/ecb-set-to-hold-rates-to-assess-france-and-energy-risks"
+      },
+      {
+        "discovery_surface": "https://www.bing.com/news/search?q=site%3Abloomberg.com%20%28%22S%26P%20500%22%20OR%20Nasdaq%20OR%20%22bank%20stocks%22%20OR%20selloff%29%20%28Fed%20OR%20yields%20OR%20dollar%20OR%20Treasury%29&format=rss&qft=interval%3d%227%22",
+        "distribution_weight": "high",
+        "headline": "Star Trader\u2019s Woes Turn Up the Heat on Riskiest Debt in Europe",
+        "published_at": "2026-10-28T06:38:00-04:00",
+        "snippet": "For as long as Hamza Lemssouguer has traded high-yield debt, he\u2019s been on the offensive, placing bets at a scale few in the cutthroat market dare to match.",
+        "source_name": "Bloomberg",
+        "url": "https://www.bloomberg.com/news/articles/2026-10-28/star-hedge-fund-trader-lemssouguer-s-woes-at-arini-roil-european-junk-bonds"
+      }
+    ],
+    "summary": "The Federal Reserve held policy rates and still left a hawkish aftertaste. The U.S. 10-year finished at 5.05 percent, up 6 basis points, while the S&P 500 held near 7744 and the VIX sat at 17.52. Oil stayed firm, with WTI at 102.78 and Brent at 115.32, and gold near 4052. The chair talked tough on inflation at the Warsh news conference, and Treasury Secretary Bessent said another hike would not necessarily be a mistake even as he played down AI-financing worries. Those worries did not disappear: neocloud names sold off after Microsoft cut capex plans, banks shelved an Anthropic-linked data-center bond sale, and private-credit AI exposure drew fresh scrutiny. Japan's two-year auction saw firm demand ahead of Friday's widely expected Bank of Japan decision, with the 10-year at 2.867 percent. New Zealand inflation could not be verified, so NZ-specific new risk stays off. Next: the Bank of Japan, an expected ECB hold against French fiscal and energy risks, and whether the long end keeps backing up after the pause."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "block_why": null,
+    "blocked_expressions": [
+      "macro:NZ"
+    ],
+    "blocked_sources": [
+      "NZ.Inflation.headline",
+      "NZ.Inflation.underlying"
+    ],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence"
+        ],
+        "scored_status": "ok"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.business_surveys"
+        ],
+        "scored_status": "partial"
+      },
+      "NZ": {
+        "eligible": false,
+        "gaps": [
+          "NZ.Activity.gdp_domestic_demand",
+          "NZ.Consumer.income",
+          "NZ.Consumer.retail",
+          "NZ.Consumer.spending",
+          "NZ.Inflation.headline",
+          "NZ.Inflation.underlying",
+          "NZ.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "hold_decisions_emitted": 0,
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "quarantine_mode": "isolate",
+    "quarantine_reason": "unsupported_mark_source",
+    "quarantined_positions": [
+      {
+        "asset_class": "rates_rv",
+        "dependency": "NZ_rates",
+        "dependency_status": "unavailable",
+        "instrument": "NZ-US_10Y",
+        "live_marked": false,
+        "observation_date": null,
+        "pnl_available": false,
+        "position_id": "pm-pragmatist-3afafe53c6d7",
+        "quarantined": true,
+        "reason": "position 'NZ-US_10Y' is research-only and unmarkable on NZ_rates (unavailable); valuation unavailable, new risk blocked for this seat",
+        "reason_code": "unsupported_mark_source",
+        "scoring": false,
+        "seat": "pragmatist"
+      }
+    ],
+    "restricted_seats": [
+      "pragmatist"
+    ],
+    "seat_risk": {
+      "pragmatist": "unavailable_new_risk"
+    },
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.manufacturing_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "HTTP 404",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T16:30:00Z",
+        "series_id": "US.Activity.services_surveys"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      }
+    ],
+    "synthetic_holds": false,
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "AU",
+      "EA",
+      "JP"
+    ]
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}
