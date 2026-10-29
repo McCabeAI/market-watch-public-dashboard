@@ -6,7 +6,9 @@ import unittest
 from pathlib import Path
 
 from scripts.country_detail import policy
+from scripts.country_detail.indicator import headline, indicator_view
 from scripts.country_detail.present import (
+    bucket_label,
     history_limitation,
     is_raw_price_index_level,
     plain_series_name,
@@ -201,6 +203,57 @@ class CountryDetailPresentWmnCopyTest(unittest.TestCase):
                 expected = sentence
             else:
                 self.assertEqual(sentence, expected, msg=code)
+
+
+def _canada_pmi(series_id: str, value: float, **extra) -> dict:
+    """Display-name fixture. Values are not a scored vintage."""
+    return {
+        "series_id": series_id,
+        "label": "S&P Global Canada Composite PMI Output Index (Ivey PMI conflict-only)",
+        "units": "diffusion_index",
+        "transformation": "ivey_sa_diffusion" if series_id == "Ivey_PMI_conflict" else "diffusion_index",
+        "reference_period": "2026-08",
+        "value": value,
+        "cadence": "monthly",
+        "topic": "activity",
+        "history": [
+            {"reference_period": "2026-07", "value": value - 1.0, "series_id": series_id},
+            {"reference_period": "2026-08", "value": value, "series_id": series_id},
+        ],
+        **extra,
+    }
+
+
+class CanadaPmiDisplayNameTest(unittest.TestCase):
+    def test_ivey_and_sp_global_names_stay_distinct_on_card_surfaces(self) -> None:
+        ivey = _canada_pmi("Ivey_PMI_conflict", 64.3, score_input=False, score_role="context")
+        sp = _canada_pmi("SP_GLOBAL_CA_COMPOSITE", 47.8, score_input=True, score_role="scored")
+
+        self.assertEqual(plain_series_name(ivey), "Ivey PMI")
+        self.assertEqual(plain_series_name(sp), "S&P Global Canada Composite PMI")
+        self.assertNotEqual(plain_series_name(ivey), plain_series_name(sp))
+        self.assertEqual(indicator_view(ivey)["name"], "Ivey PMI")
+        self.assertEqual(indicator_view(sp)["name"], "S&P Global Canada Composite PMI")
+        self.assertIn("Ivey PMI was 64.3", headline(ivey))
+        self.assertIn("S&P Global Canada Composite PMI was 47.8", headline(sp))
+        self.assertNotIn("Composite PMI output", headline(ivey))
+        self.assertNotIn("Composite PMI output", headline(sp))
+        self.assertEqual(bucket_label(ivey), "Context only")
+        self.assertEqual(bucket_label(sp), "Activity")
+        self.assertEqual(ivey["series_id"], "Ivey_PMI_conflict")
+        self.assertEqual(sp["series_id"], "SP_GLOBAL_CA_COMPOSITE")
+        self.assertEqual(series_synopsis(ivey), PMI_SYNOPSIS)
+        self.assertEqual(series_synopsis(sp), PMI_SYNOPSIS)
+
+    def test_other_composite_pmi_names_stay_shared(self) -> None:
+        for series_id in (
+            "SP_GLOBAL_AU_COMPOSITE_PMI",
+            "SP_GLOBAL_EA_COMPOSITE_PMI",
+            "SP_GLOBAL_JP_COMPOSITE_PMI",
+            "BUSINESSNZ_PCI_GDP_WEIGHTED",
+        ):
+            name = plain_series_name({"series_id": series_id, "label": "unused"})
+            self.assertEqual(name, "Composite PMI output", series_id)
 
 
 if __name__ == "__main__":

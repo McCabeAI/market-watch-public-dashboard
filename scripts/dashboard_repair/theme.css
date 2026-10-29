@@ -140,6 +140,40 @@ input[name=page]:checked~.app .nav label[for^=p-]{color:var(--mw-muted);border-b
 #p-sources:checked~.app .nav label[for=p-sources],
 #p-marketdata:checked~.app .nav label[for=p-marketdata],
 #p-traderbook:checked~.app .nav label[for=p-traderbook]{color:var(--mw-ink);border-bottom-color:var(--mw-accent);font-weight:800}
+/* Selected country. The base rule paints this with --navy, which this theme
+   sets to the page background, so the checked pill disappears. The fill below
+   stays distinct from both the dark panel and a light page; the border and
+   weight are the non-colour cues. Keyboard focus is on the off-screen radio,
+   so the ring is drawn on its label. */
+#c-us:checked~.app .country-switch label[for=c-us],
+#c-ca:checked~.app .country-switch label[for=c-ca],
+#c-au:checked~.app .country-switch label[for=c-au],
+#c-nz:checked~.app .country-switch label[for=c-nz],
+#c-ea:checked~.app .country-switch label[for=c-ea],
+#c-jp:checked~.app .country-switch label[for=c-jp]{
+  background:#217bb5;
+  color:#fff;
+  border-color:#0b3d66;
+  font-weight:800;
+}
+#c-us:focus~.app .country-switch label[for=c-us],
+#c-us:focus-visible~.app .country-switch label[for=c-us],
+#c-ca:focus~.app .country-switch label[for=c-ca],
+#c-ca:focus-visible~.app .country-switch label[for=c-ca],
+#c-au:focus~.app .country-switch label[for=c-au],
+#c-au:focus-visible~.app .country-switch label[for=c-au],
+#c-nz:focus~.app .country-switch label[for=c-nz],
+#c-nz:focus-visible~.app .country-switch label[for=c-nz],
+#c-ea:focus~.app .country-switch label[for=c-ea],
+#c-ea:focus-visible~.app .country-switch label[for=c-ea],
+#c-jp:focus~.app .country-switch label[for=c-jp],
+#c-jp:focus-visible~.app .country-switch label[for=c-jp],
+.country-switch label:focus,
+.country-switch label:focus-visible{
+  outline:3px solid #f7fbff;
+  outline-offset:2px;
+  box-shadow:0 0 0 3px #0b3d66;
+}
 .stitle{font-size:var(--mw-fs-micro);letter-spacing:.1em;text-transform:uppercase;color:var(--mw-muted);font-weight:800;margin:0 0 10px}
 .note{font-size:var(--mw-fs-meta);color:var(--mw-muted);line-height:1.55;margin:8px 0}
 .panel,.card,.tape-card{
@@ -696,4 +730,15 @@ label:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,i
   .panel,.card,.tape-card,.release-card,.source-summary,details{background:#fff!important;border-color:#ccc!important;box-shadow:none!important}
   a{color:#0645ad}
   .mw-chip{border-color:#999;background:#f4f4f4;color:#222}
+  #c-us:checked~.app .country-switch label[for=c-us],
+  #c-ca:checked~.app .country-switch label[for=c-ca],
+  #c-au:checked~.app .country-switch label[for=c-au],
+  #c-nz:checked~.app .country-switch label[for=c-nz],
+  #c-ea:checked~.app .country-switch label[for=c-ea],
+  #c-jp:checked~.app .country-switch label[for=c-jp]{
+    background:#d7e8f6!important;
+    color:#07131f!important;
+    border:2px solid #0b3d66!important;
+    font-weight:800;
+  }
 }
