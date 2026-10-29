@@ -948,6 +948,164 @@ def _observations_from_macro_ingestion_store(
     return out
 
 
+def _catalog_row_for_store_key(
+    catalog_by_id: Mapping[str, dict[str, Any]],
+    *,
+    country: str,
+    series_id: str,
+    transformation: str,
+) -> dict[str, Any] | None:
+    matches: list[dict[str, Any]] = []
+    for catalog_row in catalog_by_id.values():
+        if str(catalog_row.get("country") or "").upper() != country.upper():
+            continue
+        if str(catalog_row.get("series_id") or "") != series_id:
+            continue
+        if str(catalog_row.get("transform") or "") != transformation:
+            continue
+        matches.append(catalog_row)
+    if not matches:
+        return None
+    if len(matches) == 1:
+        return matches[0]
+    matches.sort(key=lambda row: str(row.get("id") or ""))
+    return matches[0]
+
+
+def _store_row_units_match_catalog(row: Mapping[str, Any], catalog_row: Mapping[str, Any]) -> bool:
+    store_units = row.get("units")
+    catalog_units = catalog_row.get("units")
+    if store_units is None or catalog_units is None:
+        return True
+    return str(store_units) == str(catalog_units)
+
+
+def _overlay_observations_from_dir(
+    *,
+    country: str,
+    root: Path,
+    observations_dir: Path,
+    catalog_by_id: Mapping[str, dict[str, Any]],
+    calibration_sources: Mapping[str, str],
+    observations: list[dict[str, Any]],
+) -> None:
+    """Replace or insert projection rows from a macro-ingestion observation store."""
+    store_path = observations_dir / f"{country.lower()}.json"
+    if not store_path.is_file():
+        return
+
+    store = _read_json(store_path)
+    rows = list(store.get("observations") or [])
+    if not rows:
+        return
+
+    history_path = root / "data/temperature_history" / _HISTORY_FILES[country]
+    history_payload = _read_json(history_path) if history_path.is_file() else {}
+    components = history_payload.get("components") or {}
+
+    by_catalog: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        series_id = str(row.get("series_id") or "")
+        transformation = str(row.get("transformation") or "")
+        if not series_id:
+            continue
+        catalog_row = _catalog_row_for_store_key(
+            catalog_by_id,
+            country=country,
+            series_id=series_id,
+            transformation=transformation,
+        )
+        if catalog_row is None or not _store_row_units_match_catalog(row, catalog_row):
+            continue
+        catalog_id = str(catalog_row["id"])
+        publisher = catalog_row.get("publisher")
+        deriv = row.get("derivation") or {}
+        if isinstance(deriv, dict) and deriv.get("publisher"):
+            publisher = deriv.get("publisher")
+        by_catalog.setdefault(catalog_id, []).append(
+            {
+                "reference_period": str(row["period"]),
+                "period": str(row["period"]),
+                "value": row.get("value"),
+                "transformation": transformation,
+                "source_url": row.get("source_url"),
+                "retrieved_at": row.get("retrieved_at"),
+                "revision_status": row.get("revision_status"),
+                "vintage": row.get("vintage"),
+                "release_date": row.get("release_date"),
+                "series_id": series_id,
+                "units": row.get("units") or catalog_row.get("units"),
+                "publisher": publisher,
+            }
+        )
+
+    index_by_key = {
+        (str(obs["catalog_id"]), str(obs.get("transformation") or "")): idx
+        for idx, obs in enumerate(observations)
+    }
+
+    for catalog_id, store_observations in sorted(by_catalog.items()):
+        catalog_row = catalog_by_id.get(catalog_id)
+        if catalog_row is None:
+            continue
+        if catalog_id in COUNTRY_HICP_IDS:
+            store_observations = select_current_rows(store_observations)
+        transforms = sorted(
+            {str(row.get("transformation") or "") for row in store_observations if row.get("transformation")}
+        )
+        component_key = catalog_id.split(".", 1)[1] if "." in catalog_id else catalog_id
+        component = components.get(component_key) or {
+            "publisher": catalog_row.get("publisher"),
+            "cadence": catalog_row.get("cadence"),
+            "sa": catalog_row.get("seasonal_adjustment"),
+            "methodology_breaks": [],
+        }
+        for transformation in transforms:
+            key = (catalog_id, transformation)
+            prior = observations[index_by_key[key]] if key in index_by_key else None
+            history_map: dict[str, dict[str, Any]] = {}
+            if prior is not None:
+                for point in prior.get("history") or []:
+                    history_map[str(point["reference_period"])] = dict(point)
+            for row in store_observations:
+                if str(row.get("transformation") or "") != transformation:
+                    continue
+                if row.get("value") is None:
+                    continue
+                history_map[str(row["reference_period"])] = {
+                    "reference_period": str(row["reference_period"]),
+                    "value": float(row["value"]),
+                }
+            history = sorted(history_map.values(), key=lambda item: item["reference_period"])
+            if not history:
+                continue
+            latest = _latest_row(store_observations, transformation)
+            if latest is None:
+                candidates = [
+                    row
+                    for row in store_observations
+                    if str(row.get("transformation") or "") == transformation and row.get("value") is not None
+                ]
+                if not candidates:
+                    continue
+                latest = max(candidates, key=lambda row: str(row.get("reference_period") or ""))
+            rebuilt = _build_identity_observation(
+                country=country,
+                catalog_row=catalog_row,
+                component=component,
+                transformation=transformation,
+                history=history,
+                latest=latest,
+                catalog_id=catalog_id,
+                calibration_sources=calibration_sources,
+            )
+            if key in index_by_key:
+                observations[index_by_key[key]] = rebuilt
+            else:
+                observations.append(rebuilt)
+                index_by_key[key] = len(observations) - 1
+
+
 def _observations_from_ca_energy_fixture(
     *,
     root: Path,
@@ -1034,7 +1192,12 @@ def _max_timestamp(values: list[str | None]) -> str | None:
     return max(parsed) if parsed else None
 
 
-def build_projection(root: Path | None = None, *, as_of: str | None = None) -> dict[str, Any]:
+def build_projection(
+    root: Path | None = None,
+    *,
+    as_of: str | None = None,
+    observations_dir: Path | None = None,
+) -> dict[str, Any]:
     """Build the Country Detail projection from on-disk history and catalog metadata."""
     root = root or _default_root()
     catalog_by_id = _load_catalog(root)
@@ -1082,7 +1245,7 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
                     observations.append(obs)
                     existing_ids.add(key)
 
-        if country in {"EA", "US"}:
+        if country in {"EA", "US"} and observations_dir is None:
             for obs in _observations_from_macro_ingestion_store(
                 country=country,
                 root=root,
@@ -1094,6 +1257,16 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
                 if key not in existing_ids:
                     observations.append(obs)
                     existing_ids.add(key)
+
+        if observations_dir is not None:
+            _overlay_observations_from_dir(
+                country=country,
+                root=root,
+                observations_dir=observations_dir,
+                catalog_by_id=catalog_by_id,
+                calibration_sources=calibration_sources,
+                observations=observations,
+            )
 
         if country == "AU" and spending_catalog is not None:
             observations.append(
@@ -1113,9 +1286,12 @@ def build_projection(root: Path | None = None, *, as_of: str | None = None) -> d
         if country == "US":
             from scripts.macro_ingestion.us_employment.context_block import build_us_employment_context
 
+            us_obs_dir = observations_dir
+            if us_obs_dir is None:
+                us_obs_dir = root / "data" / "macro_ingestion" / "observations"
             country_payload["employment_context"] = build_us_employment_context(
                 catalog={"series": list(catalog_by_id.values()), "status_vocabulary": []},
-                observations_dir=root / "data" / "macro_ingestion" / "observations",
+                observations_dir=us_obs_dir,
             )
         if country == "CA":
             from scripts.prima_pressure.presentation import build_presentation

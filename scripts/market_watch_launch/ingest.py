@@ -12,6 +12,7 @@ from typing import Any
 from scripts.macro_ingestion.calendar import latest_due_release, release_due as calendar_release_due
 from scripts.macro_ingestion.contract import calibration_as_of, index_series_rows, load_catalog
 from scripts.macro_ingestion.retries import DEFAULT_ATTEMPTS
+from scripts.macro_ingestion.ledger import load_latest, write_ledger
 from scripts.macro_ingestion.runner import run_ingestion
 from scripts.macro_ingestion.series_preflight import (
     ledger_rows_for_preflight_mismatches,
@@ -136,6 +137,16 @@ def _enrich_row(
     mismatch = raw.get("contract_mismatch")
     if isinstance(mismatch, dict):
         row["contract_mismatch"] = mismatch
+    for key in (
+        "cadence_backstop_due",
+        "calendar",
+        "publication_state",
+        "raw_sha256",
+        "attempt_history",
+        "scheduler_events",
+    ):
+        if key in raw:
+            row[key] = raw[key]
     return row
 
 
@@ -203,7 +214,7 @@ def _should_retry_live_row(row: dict[str, Any]) -> bool:
         return False
     if "HTTP 404" in error:
         return False
-    if error == "budget_deferred":
+    if error in {"budget_deferred", "host_deferred"}:
         return True
     if "timed out" in error.lower():
         return True
@@ -247,14 +258,14 @@ def _merge_ingestion_rows(
         merged["attempt_history"] = history
         sec_error = str(secondary_row.get("error") or "")
 
-        if sec_error == "budget_deferred" and _primary_has_started_attempt(merged):
+        if sec_error in {"budget_deferred", "host_deferred"} and _primary_has_started_attempt(merged):
             skip_kind = "skipped_retry" if history else "skipped_admission"
             _append_scheduler_event(merged, sid, kind=skip_kind)
             merged["attempts"] = counter
             by_id[sid] = merged
             continue
 
-        if sec_error != "budget_deferred":
+        if sec_error not in {"budget_deferred", "host_deferred"}:
             retry_entry = dict(secondary_row)
             retry_entry["kind"] = "retry"
             history.append(retry_entry)
@@ -521,6 +532,28 @@ def _fixture_ingestion(
     return details, status, reason
 
 
+def _persistent_observations_dir(root: Path) -> Path:
+    return root / "data" / "macro_ingestion" / "observations"
+
+
+def _load_prior_health_rows(root: Path, health_dir: Path) -> list[dict[str, Any]] | None:
+    for candidate in (health_dir / "latest.json", root / "data/macro_ingestion/health/latest.json"):
+        if not candidate.is_file():
+            continue
+        payload = load_latest(candidate.parent)
+        rows = payload.get("rows")
+        if isinstance(rows, list) and rows:
+            return list(rows)
+    return None
+
+
+def _needs_observation_seed(observations_dir: Path, countries: tuple[str, ...]) -> bool:
+    for code in countries:
+        if not (observations_dir / f"{code.lower()}.json").is_file():
+            return True
+    return False
+
+
 def _live_ingestion(
     *,
     launch_dir: Path,
@@ -546,29 +579,30 @@ def _live_ingestion(
         calibration_as_of_value=cal_as_of,
         cutoff_class_value=cutoff,
     )
-    blocked = frozenset(preflight.get("blocked_countries") or [])
-    allowed_countries = [code for code in _LAUNCH_COUNTRIES if code not in blocked]
+    prior_rows = _load_prior_health_rows(root, health_dir)
+    persistent_obs = _persistent_observations_dir(root)
+    seed_from = persistent_obs if _needs_observation_seed(observations_dir, _LAUNCH_COUNTRIES) else None
 
-    if allowed_countries:
-        result = run_ingestion(
-            mode="live",
-            countries=allowed_countries,
-            now=when,
-            run_id=launch_id,
-            persist_canonical=False,
-            observations_dir=observations_dir,
-            health_dir=health_dir,
-            raw_dir=raw_dir,
-            catalog=catalog,
-            # Breadth first: try every scored series once before spending the
-            # remaining budget retrying flaky sources.
-            timeout_seconds=10,
-            country_budget_seconds=180,
-            run_budget_seconds=15 * 60,
-            attempts=1,
-        )
-    else:
-        result = {"rows": [], "checked_at": checked_at, "cutoff_class": cutoff}
+    result = run_ingestion(
+        mode="live",
+        countries=list(_LAUNCH_COUNTRIES),
+        now=when,
+        run_id=launch_id,
+        persist_canonical=False,
+        observations_dir=observations_dir,
+        health_dir=health_dir,
+        raw_dir=raw_dir,
+        catalog=catalog,
+        seed_observations_from=seed_from,
+        prior_rows=prior_rows,
+        write_health=True,
+        # Breadth first: try every scored series once before spending the
+        # remaining budget retrying flaky sources.
+        timeout_seconds=10,
+        country_budget_seconds=180,
+        run_budget_seconds=15 * 60,
+        attempts=1,
+    )
 
     merged_fetch_rows = list(result.get("rows") or []) + contract_rows
     if not merged_fetch_rows:
@@ -584,10 +618,10 @@ def _live_ingestion(
         for row in merged_fetch_rows
         if _should_retry_live_row(row)
     }
-    if retry_ids and allowed_countries:
+    if retry_ids:
         retry_result = run_ingestion(
             mode="live",
-            countries=allowed_countries,
+            countries=list(_LAUNCH_COUNTRIES),
             now=when,
             run_id=launch_id,
             persist_canonical=False,
@@ -600,6 +634,7 @@ def _live_ingestion(
             run_budget_seconds=8 * 60,
             only_series_ids=retry_ids,
             attempts=2,
+            write_health=False,
         )
         for row in retry_result.get("rows") or []:
             sid = str(row["series_id"])
@@ -607,6 +642,8 @@ def _live_ingestion(
         merged_raw = _merge_ingestion_rows(merged_fetch_rows, retry_result["rows"], attempts=attempts)
     else:
         merged_raw = _merge_ingestion_rows(merged_fetch_rows, [], attempts=attempts)
+
+    write_ledger(merged_raw, health_dir=health_dir, run_id=launch_id)
 
     by_id = index_series_rows(catalog["series"])
     rows = [
@@ -636,6 +673,10 @@ def _live_ingestion(
         observations_dir=observations_dir,
         mode="live",
     )
+
+    from scripts.macro_ingestion.vintage import promote_stores
+
+    promote_stores(observations_dir, persistent_obs)
 
     evidence_packet, source_matrix_sha256 = _write_au_labor_handoff(
         launch_dir=launch_dir,

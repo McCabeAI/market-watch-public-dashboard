@@ -51,10 +51,14 @@ def _scores_path(root: Path) -> Path:
     return SCORES_PATH
 
 
-def load_country_detail_context(root: Path | None = None) -> dict:
+def load_country_detail_context(
+    root: Path | None = None,
+    *,
+    observations_dir: Path | None = None,
+) -> dict:
     """Read-only projection, attention, and stored score state."""
     root = root or ROOT
-    projection = build_projection(root)
+    projection = build_projection(root, observations_dir=observations_dir)
     registry = _registry(root)
     attention = evaluate_projection(
         projection,
@@ -77,8 +81,13 @@ def _score_windows(root: Path, scores: dict) -> dict:
     return score_windows(load_calibration(calibration_path), load_history(history_dir), scores)
 
 
-def render_dashboard_sections(root: Path | None = None, context: dict | None = None) -> dict[str, str]:
-    ctx = context or load_country_detail_context(root)
+def render_dashboard_sections(
+    root: Path | None = None,
+    context: dict | None = None,
+    *,
+    observations_dir: Path | None = None,
+) -> dict[str, str]:
+    ctx = context or load_country_detail_context(root, observations_dir=observations_dir)
     projection = ctx["projection"]
     attention = ctx["attention"]
     scores = ctx["scores"]

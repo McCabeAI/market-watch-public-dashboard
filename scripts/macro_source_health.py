@@ -12,11 +12,66 @@ import math
 import re
 from typing import Any
 
+from scripts.market_watch_launch.contract import BLOCKING_SERIES_STATUSES, VERIFIED_OBSERVATION_STATUSES
+
 _TRANSIENT_RE = re.compile(
     r"timed out|timeout|time-out|http\s*\d{3}|connection|source outage|"
     r"temporarily unavailable|network|unreachable",
     re.IGNORECASE,
 )
+
+
+def is_host_deferred(row: dict[str, Any]) -> bool:
+    return str(row.get("error") or "") == "host_deferred"
+
+
+RESEARCH_STATUS_CURRENT = "current release"
+RESEARCH_STATUS_PREVIOUS = "previous release retained"
+RESEARCH_STATUS_UNAVAILABLE = "unavailable"
+
+
+def effective_release_due(row: dict[str, Any]) -> bool:
+    """Calendar backstop marks an older held print as no longer the current release."""
+    if row.get("cadence_backstop_due"):
+        return True
+    return bool(row.get("release_due"))
+
+
+def _has_research_prior(row: dict[str, Any]) -> bool:
+    prior = row.get("prior_verified")
+    if not isinstance(prior, dict) or not prior.get("observation_period"):
+        return False
+    return _finite(prior.get("value")) is not None
+
+
+def research_status_for_row(row: dict[str, Any]) -> str:
+    status = str(row.get("status") or "")
+    if status in BLOCKING_SERIES_STATUSES:
+        if carried_forward(row) or _has_research_prior(row):
+            return RESEARCH_STATUS_PREVIOUS
+        return RESEARCH_STATUS_UNAVAILABLE
+    if carried_forward(row) or (
+        status in VERIFIED_OBSERVATION_STATUSES and row.get("cadence_backstop_due")
+    ):
+        return RESEARCH_STATUS_PREVIOUS
+    if status in VERIFIED_OBSERVATION_STATUSES:
+        return RESEARCH_STATUS_CURRENT
+    if status in {"license_gap", "not_applicable", "calendar_unparsed"}:
+        if row.get("observation_period") and status == "calendar_unparsed":
+            return RESEARCH_STATUS_PREVIOUS
+        return RESEARCH_STATUS_UNAVAILABLE
+    return RESEARCH_STATUS_UNAVAILABLE
+
+
+def _attach_research_status(row: dict[str, Any]) -> dict[str, Any]:
+    status_label = research_status_for_row(row)
+    row["research_status"] = status_label
+    health = row.get("source_health")
+    if isinstance(health, dict):
+        merged = dict(health)
+        merged["research_status"] = status_label
+        row["source_health"] = merged
+    return row
 
 
 def is_budget_deferred(row: dict[str, Any]) -> bool:
@@ -25,9 +80,11 @@ def is_budget_deferred(row: dict[str, Any]) -> bool:
 
 def is_transient_fetch_failure(row: dict[str, Any]) -> bool:
     """Timeouts, HTTP failures, and source outages. Not structural catalog gaps."""
+    if str(row.get("status") or "") == "calendar_unparsed" and row.get("observation_period"):
+        return False
     if str(row.get("status") or "") != "source_failed":
         return False
-    if is_budget_deferred(row):
+    if is_budget_deferred(row) or is_host_deferred(row):
         return True
     return bool(_TRANSIENT_RE.search(str(row.get("error") or "")))
 
@@ -84,9 +141,14 @@ def prior_verified_observation(
         for obs in comp.get("observations") or []:
             if not isinstance(obs, dict):
                 continue
+            if source_series_id and obs.get("series_id") and str(obs.get("series_id")) != source_series_id:
+                continue
             period = obs.get("reference_period") or obs.get("period")
             value = _finite(obs.get("value"))
             if period is None or value is None:
+                continue
+            obs_transform = str(obs.get("transformation") or "")
+            if obs_transform and obs_transform != preferred:
                 continue
             if not obs.get("retrieved_at") and not obs.get("vintage"):
                 continue
@@ -108,7 +170,7 @@ def carried_forward(row: dict[str, Any]) -> bool:
     health = row.get("source_health")
     if not isinstance(health, dict) or not health.get("carried_forward"):
         return False
-    if bool(row.get("release_due")):
+    if effective_release_due(row):
         return False
     prior = row.get("prior_verified")
     return isinstance(prior, dict) and bool(prior.get("observation_period"))
@@ -123,8 +185,8 @@ def annotate_row(
 ) -> dict[str, Any]:
     """Attach carry-forward metadata. Does not invent a vintage the history lacks."""
     out = dict(row)
-    if bool(out.get("release_due")) or not is_transient_fetch_failure(out):
-        return out
+    if not is_transient_fetch_failure(out):
+        return _attach_research_status(out)
     prior = prior_verified_observation(
         out,
         history,
@@ -132,16 +194,19 @@ def annotate_row(
         source_series_id=source_series_id,
     )
     if prior is None:
-        return out
+        return _attach_research_status(out)
     classification = "budget_deferred" if is_budget_deferred(out) else "transient_fetch"
+    if is_host_deferred(out):
+        classification = "host_deferred"
     out["prior_verified"] = prior
     if not out.get("observation_period"):
         out["observation_period"] = prior["observation_period"]
+    release_due = effective_release_due(out)
     out["source_health"] = {
         "state": "carried_forward",
         "classification": classification,
         "carried_forward": True,
-        "blocks_new_risk": False,
+        "blocks_new_risk": release_due,
         "fetch_status": out.get("status"),
         "fetch_error": out.get("error"),
         "observation_period": prior["observation_period"],
@@ -149,7 +214,7 @@ def annotate_row(
         "retrieved_at": prior.get("retrieved_at"),
         "vintage": prior.get("vintage"),
     }
-    return out
+    return _attach_research_status(out)
 
 
 def annotate_rows(
@@ -186,11 +251,14 @@ def source_health_entries(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "series_id": row.get("series_id"),
                 "country": row.get("country"),
                 "classification": health.get("classification"),
-                "carried_forward": bool(health.get("carried_forward")) and not bool(row.get("release_due")),
-                "blocks_new_risk": bool(row.get("release_due")) or not bool(health.get("carried_forward")),
+                "carried_forward": bool(health.get("carried_forward"))
+                and not effective_release_due(row),
+                "blocks_new_risk": effective_release_due(row)
+                or not bool(health.get("carried_forward")),
                 "observation_period": health.get("observation_period") or row.get("observation_period"),
                 "retrieved_at": health.get("retrieved_at"),
                 "fetch_error": health.get("fetch_error") or row.get("error"),
+                "research_status": row.get("research_status") or health.get("research_status"),
             }
         )
     return entries

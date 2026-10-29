@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -14,7 +14,11 @@ import sys
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from scripts.macro_ingestion.calendar import release_due, schedule_parseable
+from scripts.macro_ingestion.calendar import (
+    cadence_backstop_due,
+    release_due,
+    schedule_parseable,
+)
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.windows import cutoff_class
 
@@ -83,6 +87,46 @@ class TestMacroIngestionCalendar(unittest.TestCase):
         self.assertFalse(release_due(spec, friday))
         self.assertFalse(release_due(spec, datetime(2026, 7, 5, 12, 0, tzinfo=NY)))
         self.assertTrue(release_due(spec, monday))
+
+
+class TestCadenceBackstopDue(unittest.TestCase):
+    def test_requires_unparsed_calendar(self) -> None:
+        spec = {
+            "cadence": "monthly",
+            "release_rule": {
+                "kind": "explicit_timestamp",
+                "timezone": "America/New_York",
+                "dates": ["2026-09-01T08:30:00-04:00"],
+            },
+        }
+        when = datetime(2026, 12, 1, tzinfo=NY)
+        self.assertFalse(
+            cadence_backstop_due(spec, latest_period="2026-06", when=when)
+        )
+
+    def test_monthly_grace_from_period_end(self) -> None:
+        spec = {
+            "cadence": "monthly",
+            "release_rule": {"kind": "country_local_schedule_required", "dates": []},
+        }
+        when = datetime(2026, 8, 1, tzinfo=timezone.utc)
+        self.assertFalse(
+            cadence_backstop_due(spec, latest_period="2026-06", when=when)
+        )
+        when_late = datetime(2026, 9, 16, tzinfo=timezone.utc)
+        self.assertTrue(
+            cadence_backstop_due(spec, latest_period="2026-06", when=when_late)
+        )
+
+    def test_unknown_cadence_is_false(self) -> None:
+        spec = {
+            "cadence": "monthly-between-Core-PCE-releases",
+            "release_rule": {"kind": "country_local_schedule_required", "dates": []},
+        }
+        when = datetime(2027, 1, 1, tzinfo=timezone.utc)
+        self.assertFalse(
+            cadence_backstop_due(spec, latest_period="2026-06", when=when)
+        )
 
 
 if __name__ == "__main__":

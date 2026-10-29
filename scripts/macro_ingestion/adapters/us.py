@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import hashlib
-import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
@@ -16,6 +15,8 @@ from scripts.macro_ingestion.us_employment.empsit import (
     load_empsit_batch,
     native_series_id,
 )
+from scripts.macro_ingestion.us_employment.fred_alternate import bls_series_for_fred, load_bls_single_series
+from scripts.macro_ingestion.us_employment.ism_prnewswire import fetch_ism_pmi_release
 from scripts.macro_source_refresh import parse_fred_csv
 from scripts.temperature_level import month_before, period_sort_key
 
@@ -209,11 +210,46 @@ def _derive_latest_point(
     return None
 
 
+def _fetch_fred_bls_alternate(
+    spec: dict[str, Any],
+    *,
+    series_id: str,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+    now: datetime | None,
+) -> dict[str, Any] | None:
+    bls_id = bls_series_for_fred(series_id, spec)
+    if not bls_id:
+        return None
+    end_year = (now or datetime.now()).year
+    bundle = load_bls_single_series(opener, bls_id, timeout=timeout, end_year=end_year)
+    if not bundle.get("ok"):
+        return None
+    pairs = bundle.get("level_pairs") or []
+    source_url = str(bundle.get("source_url") or "")
+    point = _derive_points_from_levels(spec, pairs, source_url=source_url)
+    scored = _scored_transform_point(point, str(spec.get("transform") or ""))
+    if scored is None:
+        return None
+    body = bundle.get("body") or b""
+    return {
+        "ok": True,
+        "points": point,
+        "vintage": "latest_available",
+        "raw_sha256": bundle.get("raw_sha256") or _sha256(body),
+        "body": body,
+        "http_status": bundle.get("http_status"),
+        "alternate_source": "bls_public_api_v2_single",
+        "alternate_bls_series_id": bls_id,
+    }
+
+
 def _fetch_fred_series(
     spec: dict[str, Any],
     *,
     opener: Callable[..., dict[str, Any]],
     timeout: float,
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     series_id = spec.get("series_id")
     if not isinstance(series_id, str) or not series_id:
@@ -222,8 +258,45 @@ def _fetch_fred_series(
             "status": "source_failed",
             "error": "missing_fred_series_id",
         }
+    if spec.get("scheduler_skip_fred_primary"):
+        alternate = _fetch_fred_bls_alternate(
+            spec,
+            series_id=series_id,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
+        if alternate is not None:
+            return alternate
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": "bls_alternate_failed",
+            "http_status": None,
+            "body": b"",
+        }
     url = FRED_GRAPH_URL.format(series_id=series_id)
-    response = opener(url, timeout=timeout)
+    try:
+        response = opener(url, timeout=timeout)
+    except BaseException as exc:  # noqa: BLE001
+        alternate = _fetch_fred_bls_alternate(
+            spec,
+            series_id=series_id,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
+        if alternate is not None:
+            return alternate
+        if isinstance(exc, TimeoutError) or "timeout" in str(exc).lower():
+            return {
+                "ok": False,
+                "status": "source_failed",
+                "error": str(exc),
+                "http_status": None,
+                "body": b"",
+            }
+        raise
     http_status = response.get("http_status")
     body: bytes = response.get("body") or b""
     base: dict[str, Any] = {
@@ -231,6 +304,15 @@ def _fetch_fred_series(
         "body": body,
     }
     if not response.get("ok"):
+        alternate = _fetch_fred_bls_alternate(
+            spec,
+            series_id=series_id,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
+        if alternate is not None:
+            return alternate
         return {
             **base,
             "ok": False,
@@ -248,6 +330,15 @@ def _fetch_fred_series(
     text = body.decode("utf-8", errors="replace")
     parsed = parse_fred_csv(text)
     if not parsed:
+        alternate = _fetch_fred_bls_alternate(
+            spec,
+            series_id=series_id,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
+        if alternate is not None:
+            return alternate
         return {
             **base,
             "ok": False,
@@ -457,12 +548,18 @@ def _fetch_scored_empsit_labor(
 
     fred_payload: dict[str, Any] | None = None
     fred_exc: BaseException | None = None
-    try:
-        fred_payload = _fetch_fred_series(spec, opener=opener, timeout=timeout)
-    except BaseException as exc:  # noqa: BLE001
-        fred_exc = exc
+    if bls_point is None:
+        try:
+            fred_payload = _fetch_fred_series(spec, opener=opener, timeout=timeout, now=now)
+        except BaseException as exc:  # noqa: BLE001
+            fred_exc = exc
+    else:
+        fred_payload = None
 
-    fred_status, fred_error = _fred_validation_result(fred_payload, exc=fred_exc)
+    if bls_point is not None:
+        fred_status, fred_error = "skipped", None
+    else:
+        fred_status, fred_error = _fred_validation_result(fred_payload, exc=fred_exc)
     fred_points = (fred_payload or {}).get("points") or []
     fred_point = (
         _scored_transform_point(fred_points, score_transform)
@@ -607,69 +704,36 @@ def _fetch_scored_empsit_labor(
     }
 
 
-def _parse_ism_pmi(body: bytes, *, services: bool) -> dict[str, Any] | None:
-    text = body.decode("utf-8", errors="replace")
-    if services:
-        patterns = (
-            r"Services PMI(?:[^\d]{0,80})(\d{2}\.\d)",
-            r"Non-Manufacturing PMI(?:[^\d]{0,80})(\d{2}\.\d)",
-        )
-    else:
-        patterns = (
-            r"Manufacturing PMI(?:[^\d]{0,80})(\d{2}\.\d)",
-            r"ISM Manufacturing(?:[^\d]{0,80})(\d{2}\.\d)",
-        )
-    for pattern in patterns:
-        match = re.search(pattern, text, flags=re.IGNORECASE | re.DOTALL)
-        if match:
-            value = float(match.group(1))
-            if 0 <= value <= 100:
-                period_match = re.search(
-                    r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})",
-                    text,
-                    flags=re.IGNORECASE,
-                )
-                period = None
-                if period_match:
-                    from calendar import month_name
-
-                    month_num = list(month_name).index(period_match.group(1).capitalize())
-                    period = f"{period_match.group(2)}-{month_num:02d}"
-                return {"value": value, "period": period}
-    return None
-
-
 def _fetch_ism_series(
     spec: dict[str, Any],
     *,
     opener: Callable[..., dict[str, Any]],
     timeout: float,
 ) -> dict[str, Any]:
-    url = str(spec.get("endpoint") or (spec.get("registry_urls") or [""])[0])
     services = "services" in str(spec.get("component") or "")
-    response = opener(url, timeout=timeout)
-    body: bytes = response.get("body") or b""
-    base: dict[str, Any] = {"http_status": response.get("http_status"), "body": body}
-    if response.get("ok") and body and not _is_challenge_page(body):
-        parsed = _parse_ism_pmi(body, services=services)
-        if parsed and parsed.get("period"):
-            digest = _sha256(body)
-            return {
-                **base,
-                "ok": True,
-                "points": [
-                    {
-                        "period": parsed["period"],
-                        "value": parsed["value"],
-                        "transformation": spec.get("transform"),
-                        "revision_status": "final",
-                        "source_url": url,
-                    }
-                ],
-                "vintage": "latest_available",
-                "raw_sha256": digest,
-            }
-    if _is_challenge_page(body):
+    release = fetch_ism_pmi_release(spec, opener=opener, timeout=timeout, services=services)
+    body: bytes = release.get("body") or b""
+    base: dict[str, Any] = {"http_status": release.get("http_status"), "body": body}
+    if release.get("ok") and release.get("parsed"):
+        parsed = release["parsed"]
+        url = str(release.get("resolved_url") or spec.get("endpoint") or "")
+        digest = _sha256(body)
+        return {
+            **base,
+            "ok": True,
+            "points": [
+                {
+                    "period": parsed["period"],
+                    "value": parsed["value"],
+                    "transformation": spec.get("transform"),
+                    "revision_status": "final",
+                    "source_url": url,
+                }
+            ],
+            "vintage": "latest_available",
+            "raw_sha256": digest,
+        }
+    if release.get("challenge_page") or release.get("error") == "ism_challenge_page":
         return {
             **base,
             "ok": False,
@@ -680,8 +744,8 @@ def _fetch_ism_series(
     return {
         **base,
         "ok": False,
-        "status": "source_failed",
-        "error": response.get("error") or "ism_primary_unparsed",
+        "status": release.get("status") or "source_failed",
+        "error": release.get("error") or "ism_primary_unparsed",
     }
 
 
@@ -777,7 +841,7 @@ def fetch_series(
         return employment
 
     if method in {"fredgraph.csv", "existing_us_housing_data"}:
-        return _fetch_fred_series(spec, opener=opener, timeout=timeout)
+        return _fetch_fred_series(spec, opener=opener, timeout=timeout, now=now)
 
     if method == "ism_prnewswire_press_releases":
         return _fetch_ism_series(spec, opener=opener, timeout=timeout)

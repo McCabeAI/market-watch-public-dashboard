@@ -21,6 +21,7 @@ from scripts.macro_ingestion.adapters.au import (
     clear_workbook_cache,
     fetch_series,
     parse_abs_time_series_workbook,
+    _national_accounts_workbook_url,
 )
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import live_opener, run_ingestion
@@ -73,6 +74,22 @@ class TestAustraliaAdapter(unittest.TestCase):
         body = (FIXTURES / "labour_unemployment_fixture.xlsx").read_bytes()
         series = parse_abs_time_series_workbook(body, "A84423050A", cadence="monthly")
         self.assertEqual(series[-1], ("2026-08", 4.1))
+
+    def test_domestic_final_demand_uses_expenditure_workbook(self) -> None:
+        key_url = (
+            "https://www.abs.gov.au/statistics/economy/national-accounts/"
+            "australian-national-accounts-national-income-expenditure-and-product/"
+            "jun-2026/5206001_Key_Aggregates.xlsx"
+        )
+        resolved = _national_accounts_workbook_url(key_url, "A2304183K")
+        self.assertIn("5206002_Expenditure_Volume_Measures.xlsx", resolved)
+        gdp = _national_accounts_workbook_url(key_url, "A2304370T")
+        self.assertIn("5206001_Key_Aggregates.xlsx", gdp)
+
+        dfd = next(
+            r for r in self.catalog["series"] if r["id"] == "AU.Activity.domestic_final_demand"
+        )
+        self.assertIn("5206002_Expenditure_Volume_Measures.xlsx", str(dfd.get("endpoint") or ""))
 
     def test_fixture_ingestion_new_observation(self) -> None:
         spec = copy.deepcopy(

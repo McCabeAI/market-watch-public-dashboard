@@ -7,6 +7,7 @@ from typing import Any
 from zoneinfo import ZoneInfo
 
 from scripts.macro_ingestion.holidays import is_non_business_day
+from scripts.temperature_level import reference_period_end
 
 
 def schedule_parseable(release_rule: dict[str, Any] | None) -> bool:
@@ -147,3 +148,48 @@ def release_due(spec: dict[str, Any], when: datetime) -> bool:
 def next_release_instant(series: dict[str, Any]) -> datetime | None:
     instants = sorted(_release_instants(series))
     return instants[-1] if instants else None
+
+
+_CADENCE_GRACE_DAYS = {
+    "monthly": 45,
+    "quarterly": 120,
+    "weekly": 14,
+}
+
+
+def _period_end_date(period: str) -> date | None:
+    text = str(period).strip()
+    if len(text) >= 10 and text[4] == "-" and text[7] == "-":
+        try:
+            return date.fromisoformat(text[:10])
+        except ValueError:
+            pass
+    try:
+        return reference_period_end(text)
+    except ValueError:
+        return None
+
+
+def cadence_backstop_due(
+    spec: dict[str, Any],
+    *,
+    latest_period: str | None,
+    when: datetime,
+) -> bool:
+    """True when the publisher calendar is missing/unparsed and stored data is stale by cadence."""
+    release_rule = spec.get("release_rule") or {}
+    if schedule_parseable(release_rule):
+        return False
+    if not latest_period:
+        return False
+    cadence = str(spec.get("cadence") or "")
+    grace = _CADENCE_GRACE_DAYS.get(cadence)
+    if grace is None:
+        return False
+    period_end = _period_end_date(latest_period)
+    if period_end is None:
+        return False
+    if when.tzinfo is None:
+        when = when.replace(tzinfo=ZoneInfo("UTC"))
+    when_day = when.astimezone(ZoneInfo("UTC")).date()
+    return (when_day - period_end).days > grace

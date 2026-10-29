@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.macro_ingestion.au_leading import anz, nab, seek
+from scripts.macro_ingestion.au_leading.discovery import clear_response_cache
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures/au/leading"
 OCTOBER_PRESS = anz.PRESS_RELEASE_URL
@@ -41,6 +42,9 @@ def _november_xlsx() -> bytes:
 
 
 class TestAuPublisherDiscovery(unittest.TestCase):
+    def setUp(self) -> None:
+        clear_response_cache()
+
     def test_timeout_does_not_fall_back_to_historical_url(self) -> None:
         seen: list[str] = []
 

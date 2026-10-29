@@ -30,6 +30,34 @@ from scripts.harvest_nz_pci import (
 COUNTRY = "NZ"
 STATS_BASE = "https://www.stats.govt.nz"
 
+_MONTH_NAME_TO_NUM = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
+
+_RELEASE_HREF_RE = re.compile(
+    r'href="(?P<path>/information-releases/(?P<slug>[a-z0-9-]+)-'
+    r"(?P<month>january|february|march|april|may|june|july|august|september|october|november|december)-"
+    r'(?P<year>\d{4})-quarter/?)"',
+    re.IGNORECASE,
+)
+_EXPERIMENTAL_RELEASE_HREF_RE = re.compile(
+    r'href="(?P<path>/experimental/national-accounts-income-saving-assets-and-liabilities-'
+    r"(?P<month>january|february|march|april|may|june|july|august|september|october|november|december)-"
+    r'(?P<year>\d{4})-quarter/?)"',
+    re.IGNORECASE,
+)
+
 _CHALLENGE_MARKERS = (
     b"cf-browser-verification",
     b"challenge-platform",
@@ -133,17 +161,135 @@ def _document_links(page_data: dict[str, Any]) -> list[tuple[str, str]]:
     return links
 
 
-def _pick_document(links: list[tuple[str, str]], *needles: str) -> str | None:
+def _pick_document(
+    links: list[tuple[str, str]],
+    *needles: str,
+    exclude: tuple[str, ...] = (),
+) -> str | None:
     lowered = [n.lower() for n in needles]
+    excluded = [x.lower() for x in exclude]
+
+    def _allowed(blob: str) -> bool:
+        return not any(x in blob for x in excluded)
+
     for url, name in links:
         blob = f"{url} {name}".lower()
+        if not _allowed(blob):
+            continue
         if all(n in blob for n in lowered):
             return url
     for url, name in links:
         blob = f"{url} {name}".lower()
+        if not _allowed(blob):
+            continue
         if any(n in blob for n in lowered):
             return url
     return None
+
+
+def _quarter_from_release_slug(month: str, year: str) -> str:
+    month_num = _MONTH_NAME_TO_NUM[month.lower()]
+    quarter = (month_num - 1) // 3 + 1
+    return f"{int(year)}-Q{quarter}"
+
+
+def _infer_stats_release_family(spec: dict[str, Any]) -> str:
+    component_id = str(spec.get("id") or "")
+    if component_id == "NZ.Consumer.income":
+        return "national-accounts-income-saving-assets-and-liabilities"
+    candidates: list[str] = []
+    for raw in list(spec.get("registry_urls") or []) + [spec.get("endpoint") or ""]:
+        text = str(raw).lower().strip().rstrip("/")
+        if not text:
+            continue
+        match = re.search(r"/topics/([^/?#]+)", text)
+        if match:
+            candidates.append(match.group(1))
+            continue
+        match = re.search(r"/information-releases/([^/?#]+)", text)
+        if match:
+            slug = match.group(1)
+            slug = re.sub(
+                r"-(?:january|february|march|april|may|june|july|august|september|october|november|december)-\d{4}-quarter$",
+                "",
+                slug,
+                flags=re.I,
+            )
+            candidates.append(slug)
+            continue
+        if "national-accounts-income-saving-assets-and-liabilities" in text:
+            candidates.append("national-accounts-income-saving-assets-and-liabilities")
+    return candidates[0] if candidates else ""
+
+
+def discover_stats_nz_release_hrefs(
+    html: str,
+    *,
+    family: str,
+) -> list[tuple[str, str]]:
+    """Return (absolute_url, observation_period) sorted newest period first."""
+    family_key = family.lower().strip()
+    found: dict[str, str] = {}
+    for pattern in (_RELEASE_HREF_RE, _EXPERIMENTAL_RELEASE_HREF_RE):
+        for match in pattern.finditer(html):
+            if pattern is _RELEASE_HREF_RE:
+                slug = match.group("slug").lower()
+            else:
+                slug = "national-accounts-income-saving-assets-and-liabilities"
+            if family_key and not slug.startswith(family_key):
+                continue
+            period = _quarter_from_release_slug(match.group("month"), match.group("year"))
+            url = urljoin(STATS_BASE, match.group("path"))
+            found[url] = period
+    return sorted(found.items(), key=lambda item: item[1], reverse=True)
+
+
+def _looks_like_vintage_stats_release_url(url: str) -> bool:
+    lower = url.lower()
+    return bool(
+        re.search(
+            r"/(?:information-releases|experimental)/[a-z0-9-]+-"
+            r"(?:january|february|march|april|may|june|july|august|september|october|november|december)-"
+            r"\d{4}-quarter/?$",
+            lower,
+        )
+    )
+
+
+def _resolve_stats_release_url(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> tuple[str, str | None]:
+    """Resolve the current Stats NZ release page URL and optional listing period hint."""
+    endpoint = str(spec.get("endpoint") or "").strip()
+    family = _infer_stats_release_family(spec)
+    discovered: list[tuple[str, str]] = []
+
+    listing_urls: list[str] = []
+    for raw in list(spec.get("registry_urls") or []) + ([endpoint] if endpoint else []):
+        url = urljoin(STATS_BASE, raw) if str(raw).startswith("/") else str(raw)
+        if url and url not in listing_urls:
+            listing_urls.append(url)
+
+    for listing_url in listing_urls:
+        if _looks_like_vintage_stats_release_url(listing_url):
+            continue
+        page = _fetch_url(opener, listing_url, timeout=timeout)
+        if not page.get("ok"):
+            continue
+        html = _decode_html(page.get("body") or b"")
+        discovered.extend(discover_stats_nz_release_hrefs(html, family=family))
+
+    if discovered:
+        url, period = discovered[0]
+        return url, period
+
+    if endpoint:
+        absolute = urljoin(STATS_BASE, endpoint) if endpoint.startswith("/") else endpoint
+        return absolute, None
+    return "", None
 
 
 def _stats_period_label(period_cell: str) -> str | None:
@@ -168,6 +314,15 @@ def _quarter_from_yyyy_mm(period: str) -> str | None:
     return f"{year}-Q{quarter}"
 
 
+def _infoshare_field(row: dict[str, Any], *keys: str) -> str:
+    lowered = {str(key).lower(): value for key, value in row.items() if key}
+    for key in keys:
+        value = lowered.get(key.lower())
+        if value is not None and str(value).strip() != "":
+            return str(value).strip()
+    return ""
+
+
 def _parse_infoshare_csv(
     body: bytes,
     *,
@@ -180,13 +335,14 @@ def _parse_infoshare_csv(
     target_ref = _INFOSHARE_SERIES_REF.get((series_id, transform), series_id)
     levels: list[tuple[str, float]] = []
     for row in reader:
-        ref = (row.get("Series_Reference") or "").strip()
+        ref = _infoshare_field(row, "Series_Reference", "Series_reference")
         if ref != target_ref:
             continue
-        period = _quarter_from_yyyy_mm(row.get("Period") or "")
-        if not period:
+        period = _quarter_from_yyyy_mm(_infoshare_field(row, "Period"))
+        value_raw = _infoshare_field(row, "Data_Value", "Data_value")
+        if not period or not value_raw:
             continue
-        levels.append((period, float(row["Data_Value"])))
+        levels.append((period, float(value_raw)))
     if not levels:
         return []
     levels.sort(key=lambda item: item[0])
@@ -200,6 +356,25 @@ def _parse_infoshare_csv(
             value, prior_level=prior_level, latest_level=latest_level
         ):
             return []
+        return [
+            {
+                "period": period,
+                "value": value,
+                "transformation": transform,
+                "revision_status": "final",
+                "source_url": source_url,
+            }
+        ]
+    if transform == "yoy_pct" and series_id.startswith("LCIQ."):
+        if len(levels) < 2:
+            return []
+        period, latest_level = levels[-1]
+        year_s, quarter_s = period.split("-Q")
+        prior_period = f"{int(year_s) - 1}-Q{quarter_s}"
+        prior_level = dict(levels).get(prior_period)
+        if prior_level is None or prior_level == 0:
+            return []
+        value = (latest_level / prior_level - 1.0) * 100.0
         return [
             {
                 "period": period,
@@ -379,6 +554,230 @@ def _parse_hlfs_xlsx(
     ]
 
 
+def _period_from_year_month(year: int, month_label: str) -> str | None:
+    month = month_label.strip()
+    if month.lower().startswith("sept"):
+        month = "Sep"
+    month = month.title()[:3]
+    if month not in {"Mar", "Jun", "Sep", "Dec"}:
+        return None
+    quarter = {"Mar": 1, "Jun": 2, "Sep": 3, "Dec": 4}[month]
+    return f"{year}-Q{quarter}"
+
+
+def _find_series_column(rows: list[tuple[Any, ...]], series_ref: str) -> int | None:
+    target = series_ref.split(".")[-1] if "." in series_ref else series_ref
+    for row in rows:
+        if not row:
+            continue
+        for idx, cell in enumerate(row):
+            if cell in {series_ref, target}:
+                return idx
+    return None
+
+
+def _parse_year_quarter_table_levels(
+    rows: list[tuple[Any, ...]],
+    *,
+    series_ref: str,
+    month_col: int = 2,
+) -> list[tuple[str, float]]:
+    col = _find_series_column(rows, series_ref)
+    if col is None:
+        return []
+    year: int | None = None
+    observations: list[tuple[str, float]] = []
+    for row in rows:
+        if not row or len(row) <= col:
+            continue
+        first = row[0]
+        if isinstance(first, (int, float)) and 1900 <= int(first) <= 2100:
+            year = int(first)
+        elif isinstance(first, str) and first.isdigit() and len(first) == 4:
+            year = int(first)
+        month_cell = row[month_col] if len(row) > month_col else None
+        if year is None or not isinstance(month_cell, str):
+            continue
+        period = _period_from_year_month(year, month_cell)
+        if not period:
+            continue
+        val = row[col]
+        if isinstance(val, (int, float)):
+            observations.append((period, float(val)))
+    observations.sort(key=lambda item: item[0])
+    return observations
+
+
+def _parse_retail_table_11(
+    body: bytes,
+    *,
+    series_id: str,
+    transform: str,
+    source_url: str,
+) -> list[dict[str, Any]]:
+    wb = load_workbook(io.BytesIO(body), read_only=True, data_only=True)
+    sheet = "Table 11" if "Table 11" in wb.sheetnames else wb.sheetnames[-1]
+    rows = list(wb[sheet].iter_rows(values_only=True))
+    levels = _parse_year_quarter_table_levels(rows, series_ref=series_id)
+    if len(levels) < 2:
+        return []
+    period, latest = levels[-1]
+    if transform == "qoq_pct":
+        _, prior = levels[-2]
+        if prior == 0:
+            return []
+        value = (latest / prior - 1.0) * 100.0
+    else:
+        value = latest
+    return [
+        {
+            "period": period,
+            "value": value,
+            "transformation": transform,
+            "revision_status": "final",
+            "source_url": source_url,
+        }
+    ]
+
+
+def _parse_gdp_supplementary_table_4(
+    body: bytes,
+    *,
+    series_ref: str,
+    transform: str,
+    source_url: str,
+) -> list[dict[str, Any]]:
+    wb = load_workbook(io.BytesIO(body), read_only=True, data_only=True)
+    if "Table 4" not in wb.sheetnames:
+        return []
+    rows = list(wb["Table 4"].iter_rows(values_only=True))
+    observations = _parse_year_quarter_table_levels(rows, series_ref=series_ref)
+    if not observations:
+        return []
+    period, value = observations[-1]
+    return [
+        {
+            "period": period,
+            "value": value,
+            "transformation": transform,
+            "revision_status": "final",
+            "source_url": source_url,
+        }
+    ]
+
+
+def _pick_zip_csv_member(names: list[str], *, series_id: str) -> str | None:
+    if series_id.startswith("HLFQ."):
+        for name in names:
+            lower = name.lower()
+            if "hlfs" in lower and lower.endswith(".csv"):
+                return name
+    if series_id.startswith("LCIQ."):
+        for name in names:
+            lower = name.lower()
+            if "lci" in lower and lower.endswith(".csv"):
+                return name
+    return None
+
+
+def _parse_experimental_income_html(html: str, *, source_url: str, transform: str) -> list[dict[str, Any]]:
+    text = html_lib.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", html)))
+    period: str | None = None
+    slug_match = re.search(
+        r"national-accounts-income-saving-assets-and-liabilities-"
+        r"(january|february|march|april|may|june|july|august|september|october|november|december)-(\d{4})-quarter",
+        source_url,
+        re.I,
+    )
+    if slug_match:
+        period = _quarter_from_release_slug(slug_match.group(1), slug_match.group(2))
+    if not period:
+        page_data = _parse_page_view_data(html)
+        if page_data:
+            page_date = str(page_data.get("PageDate") or "")
+            date_match = re.match(r"(\d{4})-(\d{2})-\d{2}", page_date)
+            if date_match:
+                year = int(date_match.group(1))
+                month = int(date_match.group(2))
+                period = f"{year}-Q{(month - 1) // 3 + 1}"
+    value_match = re.search(
+        r"household net disposable income[^0-9\-]{0,120}"
+        r"(-?\d+(?:\.\d+)?)\s*(?:percent|%)",
+        text,
+        re.I,
+    )
+    if not value_match or not period:
+        return []
+    return [
+        {
+            "period": period,
+            "value": float(value_match.group(1)),
+            "transformation": transform,
+            "revision_status": "preliminary",
+            "source_url": source_url,
+        }
+    ]
+
+
+def _parse_stats_document(
+    raw: bytes,
+    *,
+    data_url: str,
+    series_id: str,
+    transform: str,
+    retrieval: str,
+) -> list[dict[str, Any]]:
+    if data_url.lower().endswith(".csv"):
+        return _parse_infoshare_csv(
+            raw, series_id=series_id, transform=transform, source_url=data_url
+        )
+    if data_url.lower().endswith(".xlsx"):
+        if series_id.startswith("HLFQ."):
+            return _parse_hlfs_xlsx(
+                raw, series_id=series_id, transform=transform, source_url=data_url
+            )
+        if series_id == "SF91KS" or retrieval == "information_release_xlsx_table_11":
+            return _parse_retail_table_11(
+                raw, series_id=series_id, transform=transform, source_url=data_url
+            )
+        if series_id == "SG02RSC30P30E" or retrieval == "gdp_supplementary_xlsx_table_4":
+            return _parse_gdp_supplementary_table_4(
+                raw, series_ref=series_id, transform=transform, source_url=data_url
+            )
+        if series_id == "CPIQ.SE9NS1450":
+            return _parse_cpi_xlsx_table(
+                raw,
+                sheet="3.03",
+                series_suffix="SE9NS1450",
+                transform=transform,
+                source_url=data_url,
+            )
+        if retrieval == "information_release_xlsx_tables_3.02_3.03" and transform == "yoy_pct":
+            return _parse_cpi_xlsx_table(
+                raw,
+                sheet="3.03",
+                series_suffix="SE9A",
+                transform=transform,
+                source_url=data_url,
+            )
+        return _parse_cpi_xlsx_table(
+            raw,
+            sheet="3.02" if transform == "qoq_pct" else "3.03",
+            series_suffix=series_id.split(".")[-1] if "." in series_id else series_id,
+            transform=transform,
+            source_url=data_url,
+        )
+    if data_url.lower().endswith(".zip"):
+        with zipfile.ZipFile(io.BytesIO(raw)) as zf:
+            member = _pick_zip_csv_member(zf.namelist(), series_id=series_id)
+            if member:
+                csv_body = zf.read(member)
+                return _parse_infoshare_csv(
+                    csv_body, series_id=series_id, transform=transform, source_url=data_url
+                )
+    return []
+
+
 def _fetch_stats_release(
     spec: dict[str, Any],
     *,
@@ -389,10 +788,10 @@ def _fetch_stats_release(
     zip_needles: tuple[str, ...] | None = None,
     hlfs_xlsx_needles: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
-    endpoint = str(spec.get("endpoint") or "")
-    if not endpoint:
+    release_url, _listing_period = _resolve_stats_release_url(spec, opener=opener, timeout=timeout)
+    if not release_url:
         return _fail("missing_endpoint", status="source_failed")
-    page = _fetch_url(opener, endpoint, timeout=timeout)
+    page = _fetch_url(opener, release_url, timeout=timeout)
     if not page.get("ok"):
         return _fail(page.get("error") or "endpoint_fetch_failed", http_status=page.get("http_status"))
     body = page.get("body") or b""
@@ -408,7 +807,31 @@ def _fetch_stats_release(
 
     data_url: str | None = None
     if csv_needles or retrieval.endswith("infoshare_csv"):
-        data_url = _pick_document(links, "infoshare", "csv") or _pick_document(links, "csv")
+        data_url = _pick_document(
+            links,
+            "infoshare",
+            "csv",
+            exclude=("visualisation", "visualization"),
+        )
+        if not data_url and csv_needles:
+            data_url = _pick_document(
+                links,
+                *csv_needles,
+                exclude=("visualisation", "visualization"),
+            )
+        if not data_url and retrieval.endswith("infoshare_csv"):
+            data_url = _pick_document(
+                links,
+                "gross-domestic-product",
+                "quarter.csv",
+                exclude=("visualisation", "visualization", "supplementary", "current-price"),
+            )
+            if not data_url:
+                data_url = _pick_document(
+                    links,
+                    "csv",
+                    exclude=("visualisation", "visualization", "supplementary"),
+                )
     if not data_url and xlsx_needles:
         data_url = _pick_document(links, *xlsx_needles)
     if not data_url and hlfs_xlsx_needles:
@@ -423,52 +846,18 @@ def _fetch_stats_release(
     if not data_resp.get("ok"):
         return _fail(data_resp.get("error") or "data_fetch_failed", http_status=data_resp.get("http_status"))
     raw = data_resp.get("body") or b""
-    points: list[dict[str, Any]] = []
-
-    if data_url.lower().endswith(".csv"):
-        points = _parse_infoshare_csv(
-            raw, series_id=series_id, transform=transform, source_url=data_url
-        )
-    elif data_url.lower().endswith(".xlsx"):
-        if series_id.startswith("HLFQ."):
-            points = _parse_hlfs_xlsx(
-                raw, series_id=series_id, transform=transform, source_url=data_url
-            )
-        elif series_id == "CPIQ.SE9NS1450":
-            points = _parse_cpi_xlsx_table(
-                raw,
-                sheet="3.03",
-                series_suffix="SE9NS1450",
-                transform=transform,
-                source_url=data_url,
-            )
-        elif retrieval == "information_release_xlsx_tables_3.02_3.03" and transform == "yoy_pct":
-            points = _parse_cpi_xlsx_table(
-                raw,
-                sheet="3.03",
-                series_suffix="SE9A",
-                transform=transform,
-                source_url=data_url,
-            )
-        else:
-            points = _parse_cpi_xlsx_table(
-                raw,
-                sheet="3.02" if transform == "qoq_pct" else "3.03",
-                series_suffix=series_id.split(".")[-1] if "." in series_id else series_id,
-                transform=transform,
-                source_url=data_url,
-            )
-    elif data_url.lower().endswith(".zip"):
-        with zipfile.ZipFile(io.BytesIO(raw)) as zf:
-            member = next((n for n in zf.namelist() if n.lower().endswith("hlfs-jun26qtr-csv.csv")), None)
-            if member and series_id.startswith("HLFQ."):
-                csv_body = zf.read(member)
-                points = _parse_infoshare_csv(
-                    csv_body, series_id=series_id, transform=transform, source_url=data_url
-                )
+    points = _parse_stats_document(
+        raw,
+        data_url=data_url,
+        series_id=series_id,
+        transform=transform,
+        retrieval=retrieval,
+    )
     if not points:
         return _fail("empty_parse", http_status=data_resp.get("http_status"))
-    return _ok(raw, points, http_status=data_resp.get("http_status"), source_url=data_url)
+    payload = _ok(raw, points, http_status=data_resp.get("http_status"), source_url=data_url)
+    payload["release_page_url"] = release_url
+    return payload
 
 
 def _fetch_pci(
@@ -591,14 +980,42 @@ def _fetch_anz_confidence(
     return _ok(body, points, http_status=resp.get("http_status"), source_url=endpoint)
 
 
+def _fetch_experimental_income(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> dict[str, Any]:
+    release_url, _ = _resolve_stats_release_url(spec, opener=opener, timeout=timeout)
+    if not release_url:
+        return _fail("missing_endpoint", status="source_failed")
+    resp = _fetch_url(opener, release_url, timeout=timeout)
+    if not resp.get("ok"):
+        return _fail(resp.get("error") or "income_release_fetch_failed", http_status=resp.get("http_status"))
+    body = resp.get("body") or b""
+    if is_challenge_page(body):
+        return _fail("challenge_page", status="license_gap", challenge_page=True)
+    html = _decode_html(body)
+    points = _parse_experimental_income_html(
+        html,
+        source_url=release_url,
+        transform=str(spec.get("transform") or "qoq_pct"),
+    )
+    if not points:
+        return _fail("experimental_income_unparsed", status="source_failed", http_status=resp.get("http_status"))
+    return _ok(body, points, http_status=resp.get("http_status"), source_url=release_url)
+
+
 def _fetch_context_unpinned(
     spec: dict[str, Any],
     *,
     opener: Callable[..., dict[str, Any]],
     timeout: float,
 ) -> dict[str, Any]:
-    endpoint = str(spec.get("endpoint") or "")
-    resp = _fetch_url(opener, endpoint, timeout=timeout)
+    release_url, _ = _resolve_stats_release_url(spec, opener=opener, timeout=timeout)
+    if not release_url:
+        release_url = str(spec.get("endpoint") or "")
+    resp = _fetch_url(opener, release_url, timeout=timeout)
     if not resp.get("ok"):
         return _fail(
             resp.get("error") or "context_endpoint_failed",
@@ -684,7 +1101,7 @@ def fetch_series(
             spec,
             opener=opener,
             timeout=timeout,
-            xlsx_needles=("labour-cost-index", "xlsx"),
+            zip_needles=("labour-market-statistics", "zip"),
         )
 
     if series_id and str(series_id).startswith("SNEQ."):
@@ -692,7 +1109,7 @@ def fetch_series(
             spec,
             opener=opener,
             timeout=timeout,
-            csv_needles=("gross-domestic-product", "csv"),
+            csv_needles=("infoshare", "csv"),
         )
 
     if series_id == "SF91KS":
@@ -704,19 +1121,14 @@ def fetch_series(
         )
 
     if series_id == "household_net_disposable_income_sa":
-        return _fetch_stats_release(
-            spec,
-            opener=opener,
-            timeout=timeout,
-            xlsx_needles=("national-accounts", "xlsx"),
-        )
+        return _fetch_experimental_income(spec, opener=opener, timeout=timeout)
 
     if series_id == "SG02RSC30P30E":
         return _fetch_stats_release(
             spec,
             opener=opener,
             timeout=timeout,
-            xlsx_needles=("gross-domestic-product", "xlsx"),
+            xlsx_needles=("supplementary", "xlsx"),
         )
 
     if series_id == "BUSINESSNZ_PMI":

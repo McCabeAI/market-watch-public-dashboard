@@ -13,6 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.macro_ingestion.au_leading import anz, nab, seek
+from scripts.macro_ingestion.au_leading.discovery import clear_response_cache
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures/au/leading"
 LIVE_SMOKE_PATH = FIXTURES / "live_smoke.json"
@@ -87,6 +88,9 @@ def build_au_leading_publisher_rows(as_of: date, opener) -> dict:
 
 
 class TestAuLeadingPublishers(unittest.TestCase):
+    def setUp(self) -> None:
+        clear_response_cache()
+
     def test_anz_parses_sa_level_september(self) -> None:
         payload = anz.collect_anz(as_of=date(2026, 10, 14), opener=_fixture_opener)
         self.assertEqual(len(payload["points"]), 1)
@@ -122,6 +126,7 @@ class TestAuLeadingPublishers(unittest.TestCase):
         self.assertAlmostEqual(pt["value"], 0.5)
         self.assertEqual(pt["transformation"], "trend_mom_pct")
         self.assertEqual(pt["series_label"], "trend")
+        self.assertEqual(pt["release_date"], "2026-09-17")
 
     def test_seek_does_not_emit_september_at_as_of_oct14(self) -> None:
         payload = build_au_leading_publisher_rows(date(2026, 10, 14), _fixture_opener)

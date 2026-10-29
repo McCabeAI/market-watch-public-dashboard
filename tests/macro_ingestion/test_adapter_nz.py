@@ -31,6 +31,9 @@ def _fixture_opener_factory() -> dict[str, bytes]:
         "https://www.stats.govt.nz/information-releases/consumers-price-index-june-2026-quarter/": (
             FIXTURES / "cpi_release_page.html"
         ).read_bytes(),
+        "https://www.stats.govt.nz/information-releases/consumers-price-index-september-2026-quarter/": (
+            FIXTURES / "cpi_release_page.html"
+        ).read_bytes(),
         "https://www.stats.govt.nz/assets/Uploads/test/consumers-price-index-june-2026-quarter-infoshare-data.csv": (
             FIXTURES / "cpi_infoshare_tiny.csv"
         ).read_bytes(),
@@ -49,6 +52,48 @@ def _fixture_opener_factory() -> dict[str, bytes]:
         ).read_bytes(),
         "https://www.anz.co.nz/about-us/economic-markets-research/consumer-confidence/": (
             FIXTURES / "anz_consumer_confidence_no_index.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/topics/consumers-price-index": (
+            FIXTURES / "stats_nz_releases_listing.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/topics/gross-domestic-product": (
+            FIXTURES / "stats_nz_releases_listing.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/topics/retail-trade": (
+            FIXTURES / "stats_nz_releases_listing.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/topics/labour-market": (
+            FIXTURES / "stats_nz_releases_listing.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/topics/households": (
+            FIXTURES / "stats_nz_experimental_income_listing.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/topics/business-price-indexes": (
+            FIXTURES / "stats_nz_releases_listing.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/information-releases/gross-domestic-product-june-2026-quarter/": (
+            FIXTURES / "gdp_release_page.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/information-releases/retail-trade-survey-june-2026-quarter/": (
+            FIXTURES / "retail_release_page.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/information-releases/labour-market-statistics-june-2026-quarter/": (
+            FIXTURES / "labour_release_page.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/experimental/national-accounts-income-saving-assets-and-liabilities-march-2026-quarter/": (
+            FIXTURES / "experimental_income_march_2026.html"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/assets/test/gdp-infoshare.csv": (
+            FIXTURES / "gdp_infoshare_tiny.csv"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/assets/test/gdp-supplementary.xlsx": (
+            FIXTURES / "gdp_supplementary_table4_tiny.xlsx"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/assets/test/retail.xlsx": (
+            FIXTURES / "retail_table11_tiny.xlsx"
+        ).read_bytes(),
+        "https://www.stats.govt.nz/assets/test/labour.zip": (
+            FIXTURES / "lci_june_2026_tiny.zip"
         ).read_bytes(),
     }
     return mapping
@@ -76,7 +121,8 @@ class TestAdapterNz(unittest.TestCase):
             "id": "NZ.Inflation.headline",
             "series_id": "CPIQ.SE9A",
             "transform": "yoy_pct",
-            "endpoint": "https://www.stats.govt.nz/information-releases/consumers-price-index-june-2026-quarter/",
+            "endpoint": "https://www.stats.govt.nz/topics/consumers-price-index",
+            "registry_urls": ["https://www.stats.govt.nz/topics/consumers-price-index"],
             "retrieval_method": "information_release_xlsx_tables_3.02_3.03",
         }
         payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
@@ -84,6 +130,105 @@ class TestAdapterNz(unittest.TestCase):
         self.assertEqual(len(payload["points"]), 1)
         self.assertEqual(payload["points"][0]["period"], "2026-Q2")
         self.assertEqual(payload["points"][0]["value"], 4.1)
+
+    def test_discover_stats_nz_release_hrefs(self) -> None:
+        html = (FIXTURES / "stats_nz_topic_cpi_listing.html").read_text(encoding="utf-8")
+        rows = nz_adapter.discover_stats_nz_release_hrefs(
+            html, family="consumers-price-index"
+        )
+        self.assertEqual(rows[0][1], "2026-Q3")
+        self.assertIn("september-2026-quarter", rows[0][0])
+
+    def test_gdp_production_parses_infoshare_fixture(self) -> None:
+        spec = {
+            "id": "NZ.Activity.gdp_domestic_demand",
+            "series_id": "SNEQ.SG01RSC01B01PC",
+            "transform": "qoq_pct",
+            "endpoint": "https://www.stats.govt.nz/topics/gross-domestic-product",
+            "registry_urls": ["https://www.stats.govt.nz/topics/gross-domestic-product"],
+            "retrieval_method": "information_release_infoshare_csv",
+        }
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["points"][0]["period"], "2026-Q2")
+        self.assertEqual(payload["points"][0]["value"], 0.2)
+
+    def test_retail_volume_qoq_fixture(self) -> None:
+        spec = {
+            "id": "NZ.Consumer.retail",
+            "series_id": "SF91KS",
+            "transform": "qoq_pct",
+            "endpoint": "https://www.stats.govt.nz/topics/retail-trade",
+            "registry_urls": ["https://www.stats.govt.nz/topics/retail-trade"],
+            "retrieval_method": "information_release_xlsx_table_11",
+        }
+        self.mapping["https://www.stats.govt.nz/information-releases/retail-trade-survey-june-2026-quarter/"] = (
+            FIXTURES / "retail_release_page.html"
+        ).read_bytes()
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["points"][0]["period"], "2026-Q2")
+        self.assertAlmostEqual(payload["points"][0]["value"], -0.5, places=1)
+
+    def test_household_spending_table4_fixture(self) -> None:
+        spec = {
+            "id": "NZ.Consumer.spending",
+            "series_id": "SG02RSC30P30E",
+            "transform": "qoq_pct",
+            "endpoint": "https://www.stats.govt.nz/topics/gross-domestic-product",
+            "registry_urls": ["https://www.stats.govt.nz/topics/gross-domestic-product"],
+            "retrieval_method": "gdp_supplementary_xlsx_table_4",
+        }
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["points"][0]["period"], "2026-Q2")
+        self.assertEqual(payload["points"][0]["value"], 0.1)
+
+    def test_lci_wages_yoy_from_zip_fixture(self) -> None:
+        spec = {
+            "id": "NZ.Labor.wages",
+            "series_id": "LCIQ.SD53Z9",
+            "transform": "yoy_pct",
+            "endpoint": "https://www.stats.govt.nz/topics/labour-market",
+            "registry_urls": ["https://www.stats.govt.nz/topics/labour-market"],
+            "retrieval_method": "information_release_zip_lci_csv",
+        }
+        self.mapping["https://www.stats.govt.nz/information-releases/labour-market-statistics-june-2026-quarter/"] = (
+            FIXTURES / "labour_release_page.html"
+        ).read_bytes()
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["points"][0]["period"], "2026-Q2")
+        self.assertAlmostEqual(payload["points"][0]["value"], 2.0, places=1)
+
+    def test_experimental_income_key_facts_fixture(self) -> None:
+        spec = {
+            "id": "NZ.Consumer.income",
+            "series_id": "household_net_disposable_income_sa",
+            "transform": "qoq_pct",
+            "endpoint": "https://www.stats.govt.nz/topics/households",
+            "registry_urls": ["https://www.stats.govt.nz/topics/households"],
+            "retrieval_method": "experimental_release_key_facts",
+        }
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertTrue(payload["ok"])
+        self.assertEqual(payload["points"][0]["period"], "2026-Q1")
+        self.assertEqual(payload["points"][0]["value"], 2.1)
+
+    def test_context_ppi_listing_resolves_without_404(self) -> None:
+        spec = {
+            "id": "NZ.Inflation.ppi",
+            "role": "context",
+            "series_id": None,
+            "endpoint": "https://www.stats.govt.nz/topics/business-price-indexes",
+            "registry_urls": ["https://www.stats.govt.nz/topics/business-price-indexes"],
+        }
+        self.mapping["https://www.stats.govt.nz/information-releases/gross-domestic-product-june-2026-quarter/"] = (
+            FIXTURES / "ppi_release_page.html"
+        ).read_bytes()
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertEqual(payload.get("status"), "not_applicable")
+        self.assertNotEqual(payload.get("http_status"), 404)
 
     def test_run_ingestion_new_observation_cpi(self) -> None:
         catalog = load_catalog()
