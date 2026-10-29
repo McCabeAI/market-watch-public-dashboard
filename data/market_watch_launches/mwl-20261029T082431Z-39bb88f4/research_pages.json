@@ -1,0 +1,317 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-10-29T08:45:43+00:00",
+      "release_sha256": "73c1ee5975544a37d475f470f234e5338ca06869c167f53c68d3848fdb6aa7cf",
+      "run_attempt": "1",
+      "run_id": "40841840591",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/40841840591",
+      "site_sha256": "68046593cd81e51d52f28019e949b7011c1dc14b118a6650ab364c6edd179398"
+    }
+  ],
+  "launch_id": "mwl-20261029T082431Z-39bb88f4",
+  "launch_terminal": false,
+  "packet_sha256": "5760fb04e6e857e185f309502b8f863cf94ea46a8533381cae1ce7766ba7f201",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-10-28T06:55:34.247128-04:00",
+      "as_of": "2026-10-28T05:26:41.395329-04:00",
+      "books_run_id": "overnight-20261028",
+      "overnight_run_id": "overnight-20261028",
+      "packet_sha256": "6a902a94ff862bf4fa703d6b7d754f2656bd69617285d9560ec7e50fe540123b"
+    },
+    "channel": "production",
+    "frozen_at": "2026-10-29T04:24:31.160680-04:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 14,
+        "partial": true
+      },
+      "as_of": "2026-10-29T04:24:31.160680-04:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "already_accepted": 1,
+          "over_cap": 6,
+          "unattributed": 3,
+          "unverified_source": 6
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "cnbc",
+          "headline": "CoreWeave and other neocloud stocks drop after Microsoft capex comes in below expectations",
+          "id": "news:8a37811e76637596",
+          "published_at": "2026-10-28T20:16:39-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/neocloud-stocks-drop-after-microsoft-revises-capex-down.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "reuters_credit",
+          "headline": "Private credit\u2019s huge AI footprint obscures growing risks",
+          "id": "news:840f745df22aac0e",
+          "published_at": "2026-10-28T20:00:00-04:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/commentary/reuters-open-interest/private-credits-huge-ai-footprint-obscures-growing-risks-altaf-kassam-2026-10-29/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Wall Street looks past Fed pause to tech earnings and AI rebound",
+          "id": "news:2bfb1d54fc703e36",
+          "published_at": "2026-10-28T17:55:47-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/wall-street-shifts-to-earnings-after-fed-holds-rates-steady-.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Here are five key takeaways from the Fed rate decision and Warsh news conference",
+          "id": "news:6b773588cc7f7bd9",
+          "published_at": "2026-10-28T17:31:46-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/fed-rate-decision-warsh-takeaways.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Bessent says 'not necessarily' a mistake if the Fed hikes again",
+          "id": "news:fbfec549ec09d568",
+          "published_at": "2026-10-28T17:06:37-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/scott-bessent-interview.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Fed meeting recap: Warsh says central bank will host fewer rate-setting meetings in future years",
+          "id": "news:d7528f732a646c3a",
+          "published_at": "2026-10-28T17:02:56-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/fed-meeting-today-live-updates.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "Fed leaves rates unchanged: What it means for credit cards, mortgages, auto loans and savings accounts",
+          "id": "news:d6db15944be4c595",
+          "published_at": "2026-10-28T16:59:23-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/28/fed-rate-decision-consumer-borrowing-costs.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "JPY"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Japan 2-Year Bond Sale Sees Firm Demand Before BOJ Decision",
+          "id": "news:e6bce6b93bd1b9be",
+          "published_at": "2026-10-28T16:39:00-04:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-29/japan-s-two-year-bond-sale-demand-stronger-than-12-month-average",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-10-29T04:24:31.160680-04:00",
+      "news_family_digest": "1ba72b3e8f488e371b0ea46a9f905efa408fe4fd0bb9f9d66f9c6007565085a8",
+      "packet_sha256": "5760fb04e6e857e185f309502b8f863cf94ea46a8533381cae1ce7766ba7f201",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-10-29T04:24:31.160680-04:00",
+        "start": "2026-10-28T05:26:41.395329-04:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/freeze_binding.json",
+        "sha256": "5954288c959614c5f66a3d9d632ea0a7bce8342b96170baa4385ef2b7b3bf4c6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/remote_freeze.json",
+        "sha256": "0413a5936c7785a29118406a03e2ef33dfe63fd5f0dd7408fab05721f92659d7"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/artifacts/00_authenticate.json",
+        "sha256": "df903d677bfd17012fe8a7bda30a7918b422aad0f47e6934baba806895858ddf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/artifacts/01_ingest.json",
+        "sha256": "5e23f1b4cbaa23afd474b0bde56ba778f74f8148fa0f6b561d1a8db353fa137a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/artifacts/02_acquire.json",
+        "sha256": "8ffb2ecd040539f729da22a5321cf4b9587a08a70e5080fdce66618778ecc6d6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/artifacts/03_quality_gate.json",
+        "sha256": "2860b56a62aa05bb0b9488f03eeed6ebc5db19e548378d2bda43b5e7a8f56dfd"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/artifacts/04_freeze.json",
+        "sha256": "15a590baf3f03541227b7aee400c26325aed066f5f59783ffccf2e0a590f6f41"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/temperature_scores.json",
+        "sha256": "906500cd8aa20950320eab7f1dae9b42931b040a5305c9593c9b0f5e40f0d462"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/history/ca.json",
+        "sha256": "afd78f15bb56c2bb5816c6929bc2a4746d4a566e7979aef61df21ba937869baa"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/history/ea.json",
+        "sha256": "a730d90746544982c7fa5ecdff303c06539a012ade7ba5888d1abb3e78fd7a8c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/history/jp.json",
+        "sha256": "04b796e1092892f8d07f7768a9bd97269bdfe26e26f084dbe5cc2cb40a81c490"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/history/nz.json",
+        "sha256": "21bea1e5ec9c56c9bec1038363f6ec43e718126cd6d2fd854889e0fe2d088932"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261029T082431Z-39bb88f4/lineage/history/us.json",
+        "sha256": "d310dd98d37a99f804895c4f5eedf930cf61d6da5b971dfecbbcdaee2a3d5c92"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261029/reviews/review-001/evidence_snapshot.json",
+        "sha256": "ebba990101c9584141a7ad9725b614eb5da83f45c7680d57c91223b33cfde8e4"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "0683d8ba8a19b1ef9af60a1fa3cb8980e460000ce5057885bc1dd8e1914220ff"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261028/assembled_dataset.json",
+        "sha256": "44e4fbe412235be5477b727214cc0b56ddb585195000ae19c17e43c64c1048b6"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "239429d40765954afdfe4c785e59d01de6e23678385ad689140a87eab702f3a4"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "0f5bcbebe90e59f8bdc4fc0e666cabd46693930d79ec71590d5f552e1c7788b7"
+      }
+    ],
+    "launch_id": "mwl-20261029T082431Z-39bb88f4",
+    "market_state": {
+      "as_of": "2026-10-29T08:44:42Z",
+      "digest": "baab80f094e6c981ed1523326f5545e2d2b5df43a1372403a71a41976b294f5c",
+      "generated_at": "2026-10-29T08:44:42Z"
+    },
+    "news": {
+      "age_label": "22 h before this freeze",
+      "as_of": "2026-10-28T05:26:41.395329-04:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261028",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261029",
+    "packet_sha256": "5760fb04e6e857e185f309502b8f863cf94ea46a8533381cae1ce7766ba7f201",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [
+        "macro:NZ"
+      ],
+      "blocked_sources": [
+        "NZ.Inflation.headline",
+        "NZ.Inflation.underlying"
+      ],
+      "coverage": "PARTIAL",
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Activity.gdp_domestic_demand",
+        "NZ.Consumer.income",
+        "NZ.Consumer.retail",
+        "NZ.Consumer.spending",
+        "NZ.Labor.wages"
+      ],
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "EA",
+        "JP"
+      ]
+    },
+    "remote_freeze_commit": "ea2b8167f819cde2813cf706f77027451845e8ee",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 6,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-10-29T08:24:31Z",
+      "inputs_last_ingested_at": "2026-10-29T08:24:31Z",
+      "score_state_sha256": "906500cd8aa20950320eab7f1dae9b42931b040a5305c9593c9b0f5e40f0d462"
+    },
+    "session_date": "2026-10-29",
+    "site_sha256": "68046593cd81e51d52f28019e949b7011c1dc14b118a6650ab364c6edd179398",
+    "source_commit": "c7f47efda56ab2c5f927974d7c41ef69ab9ed223",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261029",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "73c1ee5975544a37d475f470f234e5338ca06869c167f53c68d3848fdb6aa7cf",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-10-29",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
