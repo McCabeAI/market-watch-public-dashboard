@@ -9,7 +9,15 @@ import sys
 from pathlib import Path
 
 from scripts.country_registry import history_files
+from scripts.market_watch_launch.contract import COUNTRIES
 from scripts.overnight.constants import ROOT
+
+# Live ingest promotes one JSON store per launch country before the freeze
+# commit. Admit those files only. The rest of data/macro_ingestion — raw,
+# health, alerts, post_freeze, and any other file — stays outside this boundary.
+CANONICAL_OBSERVATION_STORE_PATHS: tuple[str, ...] = tuple(
+    f"data/macro_ingestion/observations/{code.lower()}.json" for code in COUNTRIES
+)
 
 ACP_ALLOWLIST: tuple[str, ...] = (
     "data/market_watch_launches",
@@ -18,6 +26,7 @@ ACP_ALLOWLIST: tuple[str, ...] = (
     "data/overnight/latest.json",
     "data/pm",
     "data/trading",
+    *CANONICAL_OBSERVATION_STORE_PATHS,
 )
 
 STUB_ALLOWLIST: tuple[str, ...] = ("data/market_watch_launches",)

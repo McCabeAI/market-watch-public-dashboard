@@ -2,16 +2,28 @@
 
 from __future__ import annotations
 
+import copy
+import io
 import json
 import os
 import subprocess
 import tempfile
 import unittest
+from contextlib import redirect_stderr
+from unittest import mock
+from datetime import datetime, timezone
 from pathlib import Path
 
 from scripts.country_registry import history_files
+from scripts.macro_ingestion.adapters import clear_adapter_overrides, register_adapter_override
+from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.runner import run_ingestion
+from scripts.macro_ingestion.vintage import append_observation, save_store
+from scripts.market_watch_launch import ingest as ingest_mod
+from scripts.market_watch_launch.contract import COUNTRIES
 from scripts.market_watch_launch.persist_boundary import (
     ACP_ALLOWLIST,
+    CANONICAL_OBSERVATION_STORE_PATHS,
     finalization_persist_allowlist,
     freeze_persist_allowlist,
     path_allowed,
@@ -145,6 +157,28 @@ class PersistBoundaryTests(unittest.TestCase):
         self.assertFalse(path_allowed("data/temperature_scores.json", ACP_ALLOWLIST))
         self.assertFalse(path_allowed("data", ACP_ALLOWLIST))
         self.assertFalse(path_allowed("data/overnight/fixtures/market_state.json", ACP_ALLOWLIST))
+        macro_entries = tuple(entry for entry in ACP_ALLOWLIST if "macro_ingestion" in entry)
+        self.assertEqual(macro_entries, CANONICAL_OBSERVATION_STORE_PATHS)
+        self.assertEqual(
+            CANONICAL_OBSERVATION_STORE_PATHS,
+            tuple(f"data/macro_ingestion/observations/{code.lower()}.json" for code in COUNTRIES),
+        )
+        for rel in CANONICAL_OBSERVATION_STORE_PATHS:
+            self.assertTrue(path_allowed(rel, ACP_ALLOWLIST))
+            self.assertFalse(path_allowed(rel, freeze_persist_allowlist("stub")))
+            self.assertFalse(path_allowed(rel, finalization_persist_allowlist()))
+        for blocked in (
+            "data/macro_ingestion",
+            "data/macro_ingestion/observations",
+            "data/macro_ingestion/observations/notes.txt",
+            "data/macro_ingestion/observations/gb.json",
+            "data/macro_ingestion/observations/us.json.bak",
+            "data/macro_ingestion/raw/us/blob",
+            "data/macro_ingestion/health/latest.json",
+            "data/macro_ingestion/alerts/latest.json",
+            "data/macro_ingestion/post_freeze/delta.json",
+        ):
+            self.assertFalse(path_allowed(blocked, ACP_ALLOWLIST), blocked)
 
     def test_old_staging_fails_rebase_with_dirty_trading(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -192,6 +226,279 @@ class PersistBoundaryTests(unittest.TestCase):
             self.assertIn("data/temperature_scores.json", paths)
             diff = _git(work, "diff", "--cached", "--name-only", check=False)
             self.assertNotIn("temperature_scores.json", diff.stdout or "")
+
+    def test_live_promoted_observations_survive_freeze_and_reload_unchanged(self) -> None:
+        """Live promotion, freeze stage/commit, and the next checkout stay one path.
+
+        The ingest write is the real ``_live_ingestion`` promotion into
+        ``data/macro_ingestion/observations``. Fetch and score lineage are
+        fixture stand-ins so the test does not call a provider or rewrite
+        canonical scores.
+        """
+        catalog = load_catalog()
+        catalog_ids = {
+            "US": "US.Labor.unemployment",
+            "CA": "CA.Labor.unemployment",
+            "AU": "AU.Labor.unemployment",
+            "NZ": "NZ.Labor.unemployment",
+            "EA": "EA.Inflation.headline",
+            "JP": "JP.Inflation.headline",
+        }
+        specs = {
+            code: next(row for row in catalog["series"] if row["id"] == series_id)
+            for code, series_id in catalog_ids.items()
+        }
+        period = "2026-08"
+        retrieved_at = "2026-10-15T08:00:00Z"
+        values = {"US": 4.1, "CA": 6.2, "AU": 4.3, "NZ": 5.1, "EA": 2.2, "JP": 2.8}
+        when = datetime(2026, 10, 15, 8, 0, tzinfo=timezone.utc)
+        reload_countries = ("US", "CA", "AU", "NZ")
+
+        def _store_for(code: str) -> dict:
+            spec = specs[code]
+            store: dict = {"country": code, "observations": []}
+            append_observation(
+                store,
+                series_id=str(spec.get("series_id") or spec["id"]),
+                period=period,
+                transformation=str(spec.get("transform") or ""),
+                value=values[code],
+                raw_sha256=f"sha-{code.lower()}",
+                retrieved_at=retrieved_at,
+                revision_status="final",
+                units=spec.get("units") if isinstance(spec.get("units"), str) else None,
+            )
+            return store
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            bare, work = _init_remote_repo(tmp)
+            launch_id = _seed_repo(work)
+            evidence = (
+                work
+                / "data"
+                / "overnight"
+                / "runs"
+                / "overnight-20260924"
+                / "reviews"
+                / "review-001"
+                / "evidence_snapshot.json"
+            )
+            evidence.parent.mkdir(parents=True, exist_ok=True)
+            evidence_bytes = b'{"packet_sha256":"frozen-packet"}\n'
+            evidence.write_bytes(evidence_bytes)
+            scores = work / "data" / "temperature_scores.json"
+            scores_bytes = b'{"version":3,"frozen":true}\n'
+            scores.write_bytes(scores_bytes)
+            prior_ea = _store_for("EA")
+            prior_ea["observations"][0]["period"] = "2026-07"
+            prior_ea["observations"][0]["value"] = 1.0
+            prior_ea_path = work / "data" / "macro_ingestion" / "observations" / "ea.json"
+            save_store(prior_ea, prior_ea_path.parent)
+            trader_context = work / "data" / "trading" / "trader" / STANDING_SEATS[0] / "context.json"
+            trader_bytes = trader_context.read_bytes()
+            _git(work, "add", "data")
+            _git(work, "commit", "-m", "seed frozen evidence and prior ea store")
+            _git(work, "push", "-u", "origin", "main")
+
+            calls: list[dict] = []
+
+            def fake_run_ingestion(**kwargs):
+                calls.append(dict(kwargs))
+                if kwargs.get("only_series_ids"):
+                    raise AssertionError("live retry must not run for this fixture")
+                obs_dir = Path(kwargs["observations_dir"])
+                for code in COUNTRIES:
+                    save_store(_store_for(code), obs_dir)
+                return {
+                    "rows": [
+                        {"series_id": specs[code]["id"], "status": "new_observation", "error": None}
+                        for code in COUNTRIES
+                    ],
+                    "checked_at": retrieved_at,
+                    "cutoff_class": "post_freeze",
+                }
+
+            launch_dir = work / "data" / "market_watch_launches" / launch_id
+            with (
+                mock.patch.object(ingest_mod, "run_ingestion", side_effect=fake_run_ingestion),
+                mock.patch.object(ingest_mod, "stage_verified_lineage", return_value={"ok": True}),
+                mock.patch.object(ingest_mod, "_write_au_labor_handoff", return_value=({}, "abc")),
+            ):
+                _details, status, reason = ingest_mod._live_ingestion(
+                    launch_dir=launch_dir,
+                    when=when,
+                    launch_id=launch_id,
+                    root=work,
+                )
+            self.assertEqual(status, "succeeded", reason)
+            self.assertEqual(len(calls), 1)
+            self.assertEqual(calls[0].get("mode"), "live")
+            self.assertFalse(calls[0].get("persist_canonical"))
+            self.assertEqual(calls[0].get("seed_observations_from"), prior_ea_path.parent)
+
+            persistent = work / "data" / "macro_ingestion" / "observations"
+            for code in COUNTRIES:
+                written = json.loads((persistent / f"{code.lower()}.json").read_text(encoding="utf-8"))
+                self.assertEqual(written["observations"][0]["period"], period)
+                self.assertEqual(written["observations"][0]["value"], values[code])
+            self.assertEqual(evidence.read_bytes(), evidence_bytes)
+            self.assertEqual(scores.read_bytes(), scores_bytes)
+            self.assertEqual(trader_context.read_bytes(), trader_bytes)
+
+            binding = {
+                "launch_id": launch_id,
+                "packet_sha256": "deadbeef" * 8,
+                "starting_trader_books_sha256": "aa",
+                "starting_pm_books_sha256": "bb",
+                "score_state_sha256": "cc",
+            }
+            binding_path = launch_dir / "freeze_binding.json"
+            binding_path.write_text(json.dumps(binding), encoding="utf-8")
+            binding_bytes = binding_path.read_bytes()
+            forbidden = {
+                persistent / "notes.txt": "stray\n",
+                persistent / "gb.json": "{}\n",
+                work / "data" / "macro_ingestion" / "raw" / "us" / "blob": "raw\n",
+                work / "data" / "macro_ingestion" / "health" / "latest.json": "{}\n",
+                work / "data" / "macro_ingestion" / "alerts" / "latest.json": "{}\n",
+                work / "data" / "macro_ingestion" / "post_freeze" / "delta.json": "{}\n",
+            }
+            for path, text in forbidden.items():
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+
+            captured = io.StringIO()
+            with redirect_stderr(captured):
+                blocked = stage_freeze_artifacts("acp", repo_root=work)
+            self.assertEqual(blocked, 1)
+            blocked_text = captured.getvalue()
+            for rel in (
+                "data/macro_ingestion/observations/notes.txt",
+                "data/macro_ingestion/observations/gb.json",
+                "data/macro_ingestion/raw/us/blob",
+                "data/macro_ingestion/health/latest.json",
+                "data/macro_ingestion/alerts/latest.json",
+                "data/macro_ingestion/post_freeze/delta.json",
+            ):
+                self.assertIn(rel, blocked_text)
+            cached = _git(work, "diff", "--cached", "--name-only", check=False)
+            self.assertEqual((cached.stdout or "").strip(), "")
+
+            for path in forbidden:
+                path.unlink()
+
+            staged = stage_freeze_artifacts("acp", repo_root=work)
+            self.assertEqual(staged, 0, _git(work, "status", "--porcelain", check=False).stdout)
+            names = _git(work, "diff", "--cached", "--name-only").stdout.splitlines()
+            for code in COUNTRIES:
+                self.assertIn(f"data/macro_ingestion/observations/{code.lower()}.json", names)
+            self.assertIn(f"data/market_watch_launches/{launch_id}/freeze_binding.json", names)
+            self.assertIn(
+                f"data/market_watch_launches/{launch_id}/ingestion/health/latest.json",
+                names,
+            )
+            joined = "\n".join(names)
+            self.assertNotIn("temperature_scores.json", joined)
+            self.assertNotIn("evidence_snapshot.json", joined)
+            self.assertNotIn("notes.txt", joined)
+            self.assertNotIn("gb.json", joined)
+            self.assertNotIn("data/macro_ingestion/raw/", joined)
+            self.assertNotIn("data/macro_ingestion/health/", joined)
+            self.assertNotIn("data/macro_ingestion/alerts/", joined)
+            self.assertNotIn("data/macro_ingestion/post_freeze/", joined)
+            self.assertNotIn("data/trading/", joined)
+
+            _git(work, "commit", "-m", "freeze with observation stores")
+            self.assertEqual(_git(work, "status", "--porcelain").stdout.strip(), "")
+            self.assertEqual(evidence.read_bytes(), evidence_bytes)
+            self.assertEqual(scores.read_bytes(), scores_bytes)
+            self.assertEqual(trader_context.read_bytes(), trader_bytes)
+            committed_binding = _git(
+                work, "show", f"HEAD:data/market_watch_launches/{launch_id}/freeze_binding.json"
+            )
+            self.assertEqual(committed_binding.stdout.encode(), binding_bytes)
+            for code in COUNTRIES:
+                shown = _git(work, "show", f"HEAD:data/macro_ingestion/observations/{code.lower()}.json")
+                payload = json.loads(shown.stdout)
+                self.assertEqual(payload["observations"][0]["period"], period)
+                self.assertEqual(payload["observations"][0]["value"], values[code])
+
+            _git(work, "push", "origin", "HEAD:main")
+            checkout = tmp / "next"
+            _git(tmp, "clone", "-b", "main", str(bare), str(checkout))
+            self.assertEqual(
+                _git(checkout, "rev-parse", "HEAD").stdout.strip(),
+                _git(work, "rev-parse", "HEAD").stdout.strip(),
+            )
+            persistent_checkout = checkout / "data" / "macro_ingestion" / "observations"
+            for code in reload_countries:
+                self.assertTrue((persistent_checkout / f"{code.lower()}.json").is_file())
+
+            mini_series = []
+            for code in reload_countries:
+                spec = copy.deepcopy(specs[code])
+                spec["release_rule"] = {
+                    "kind": "explicit_timestamp",
+                    "timezone": "America/New_York",
+                    "dates": ["2026-12-01T08:30:00-05:00"],
+                }
+                mini_series.append(spec)
+            mini = copy.deepcopy(catalog)
+            mini["series"] = mini_series
+
+            def fetch_series(spec, *, opener, now, timeout=20):
+                code = str(spec["country"])
+                return {
+                    "ok": True,
+                    "raw_sha256": f"sha-{code.lower()}",
+                    "points": [
+                        {
+                            "period": period,
+                            "value": values[code],
+                            "transformation": spec.get("transform"),
+                            "revision_status": "final",
+                        }
+                    ],
+                }
+
+            clear_adapter_overrides()
+            try:
+                for code in reload_countries:
+                    register_adapter_override(code, fetch_series)
+                seeded = run_ingestion(
+                    mode="offline",
+                    countries=list(reload_countries),
+                    catalog=mini,
+                    now=when,
+                    observations_dir=tmp / "seeded_launch_obs",
+                    health_dir=tmp / "seeded_health",
+                    seed_observations_from=persistent_checkout,
+                )
+                fresh = run_ingestion(
+                    mode="offline",
+                    countries=list(reload_countries),
+                    catalog=mini,
+                    now=when,
+                    observations_dir=tmp / "fresh_launch_obs",
+                    health_dir=tmp / "fresh_health",
+                )
+            finally:
+                clear_adapter_overrides()
+
+            seeded_by_id = {row["series_id"]: row for row in seeded["rows"]}
+            fresh_by_id = {row["series_id"]: row for row in fresh["rows"]}
+            self.assertEqual(set(seeded_by_id), {specs[code]["id"] for code in reload_countries})
+            for code in reload_countries:
+                series_id = specs[code]["id"]
+                self.assertEqual(seeded_by_id[series_id]["status"], "checked_unchanged")
+                self.assertEqual(fresh_by_id[series_id]["status"], "new_observation")
+                store = json.loads(
+                    (tmp / "seeded_launch_obs" / f"{code.lower()}.json").read_text(encoding="utf-8")
+                )
+                self.assertEqual(len(store["observations"]), 1)
+                self.assertEqual(store["observations"][0]["value"], values[code])
+                self.assertEqual(store["observations"][0]["period"], period)
 
     def test_trading_side_effects_only_touch_allowlisted_paths(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
