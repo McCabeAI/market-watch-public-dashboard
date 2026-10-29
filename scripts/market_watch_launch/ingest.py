@@ -674,6 +674,10 @@ def _live_ingestion(
         mode="live",
     )
 
+    from scripts.macro_ingestion.vintage import promote_stores
+
+    promote_stores(observations_dir, persistent_obs)
+
     evidence_packet, source_matrix_sha256 = _write_au_labor_handoff(
         launch_dir=launch_dir,
         when=when,

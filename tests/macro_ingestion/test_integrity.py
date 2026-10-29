@@ -20,7 +20,7 @@ if str(ROOT) not in sys.path:
 from scripts.macro_ingestion.adapters import clear_adapter_overrides, register_adapter_override
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import POST_FREEZE_DIR, run_ingestion
-from scripts.macro_ingestion.vintage import append_observation
+from scripts.macro_ingestion.vintage import append_observation, promote_stores, seed_stores
 from scripts.macro_ingestion.windows import TRUSTED_PACKET_STATEMENT, write_post_freeze_delta
 
 NY = ZoneInfo("America/New_York")
@@ -649,6 +649,116 @@ class TestIngestionIntegrity(unittest.TestCase):
             seed_observations_from=prior_obs,
         )
         self.assertEqual(result["rows"][0]["status"], "checked_unchanged")
+
+    def test_promote_stores_writes_launch_observations_to_persistent(self) -> None:
+        persistent = Path(self.tmp.name) / "persistent" / "observations"
+        persistent.mkdir(parents=True)
+        launch_obs = Path(self.tmp.name) / "launch" / "observations"
+        launch_obs.mkdir(parents=True)
+        store = {
+            "country": "US",
+            "observations": [
+                {
+                    "series_id": "UNRATE",
+                    "period": "2026-08",
+                    "transformation": "percent",
+                    "value": 4.1,
+                    "raw_sha256": "launch-hash",
+                    "retrieved_at": "2026-09-21T12:00:00Z",
+                }
+            ],
+        }
+        (launch_obs / "us.json").write_text(json.dumps(store) + "\n", encoding="utf-8")
+        promoted = promote_stores(launch_obs, persistent)
+        self.assertEqual(promoted, ["US"])
+        written = json.loads((persistent / "us.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(written["observations"]), 1)
+
+    def test_promote_stores_does_not_overwrite_with_empty(self) -> None:
+        persistent = Path(self.tmp.name) / "persistent" / "observations"
+        persistent.mkdir(parents=True)
+        launch_obs = Path(self.tmp.name) / "launch" / "observations"
+        launch_obs.mkdir(parents=True)
+        prior = {
+            "country": "US",
+            "observations": [
+                {
+                    "series_id": "UNRATE",
+                    "period": "2026-08",
+                    "transformation": "percent",
+                    "value": 4.1,
+                    "raw_sha256": "keep",
+                    "retrieved_at": "2026-09-21T12:00:00Z",
+                }
+            ],
+        }
+        (persistent / "us.json").write_text(json.dumps(prior) + "\n", encoding="utf-8")
+        (launch_obs / "us.json").write_text(json.dumps({"country": "US", "observations": []}) + "\n", encoding="utf-8")
+        promoted = promote_stores(launch_obs, persistent)
+        self.assertEqual(promoted, [])
+        kept = json.loads((persistent / "us.json").read_text(encoding="utf-8"))
+        self.assertEqual(kept["observations"][0]["raw_sha256"], "keep")
+
+    def test_launch_seed_then_repeat_fetch_is_checked_unchanged(self) -> None:
+        persistent = Path(self.tmp.name) / "repo_obs"
+        persistent.mkdir()
+        seed_store = {
+            "country": "US",
+            "observations": [
+                {
+                    "series_id": "UNRATE",
+                    "period": "2026-08",
+                    "transformation": "percent",
+                    "value": 4.1,
+                    "raw_sha256": "seed-hash",
+                    "retrieved_at": "2026-09-20T12:00:00Z",
+                }
+            ],
+        }
+        (persistent / "us.json").write_text(json.dumps(seed_store) + "\n", encoding="utf-8")
+
+        launch_obs = Path(self.tmp.name) / "launch_obs"
+        launch_obs.mkdir()
+        seeded = seed_stores(launch_obs, persistent)
+        self.assertIn("US", seeded)
+
+        def fetch_series(spec, *, opener, now, timeout=20):
+            return {
+                "ok": True,
+                "raw_sha256": "seed-hash",
+                "points": [
+                    {
+                        "period": "2026-08",
+                        "value": 4.1,
+                        "transformation": spec.get("transform"),
+                        "revision_status": "final",
+                    }
+                ],
+            }
+
+        register_adapter_override("US", fetch_series)
+        cat = self._mini_catalog([self._us_unemployment_spec()])
+        now = datetime(2026, 9, 21, 12, 0, tzinfo=timezone.utc)
+        health = Path(self.tmp.name) / "health"
+        health.mkdir()
+        first = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=launch_obs,
+            health_dir=health,
+        )
+        self.assertEqual(first["rows"][0]["status"], "checked_unchanged")
+        second = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=cat,
+            now=now,
+            observations_dir=launch_obs,
+            health_dir=health,
+        )
+        self.assertEqual(second["rows"][0]["status"], "checked_unchanged")
 
     def test_write_health_false_preserves_latest_json(self) -> None:
         def fetch_series(spec, *, opener, now, timeout=20):
