@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
@@ -40,6 +41,8 @@ from scripts.macro_ingestion.vintage import (
     seed_stores,
 )
 from scripts.macro_ingestion.source_health_summary import build_source_health_summary
+from scripts.macro_ingestion.us_employment.contract import BLS_API_URL
+from scripts.macro_ingestion.us_employment.fred_alternate import bls_series_for_fred
 from scripts.macro_ingestion.windows import POST_FREEZE_DIR, cutoff_class, write_post_freeze_delta
 from scripts.run_state.identity import classify_point_transform
 
@@ -47,6 +50,8 @@ DEFAULT_TIMEOUT_SECONDS = 20
 DEFAULT_COUNTRY_BUDGET_SECONDS = 8 * 60
 DEFAULT_RUN_BUDGET_SECONDS = 25 * 60
 DEFAULT_ATTEMPTS = 3
+
+_BLS_FETCH_HOST = urlparse(BLS_API_URL).netloc.lower()
 
 ROOT = Path(__file__).resolve().parents[2]
 RAW_DIR = ROOT / "data/macro_ingestion/raw"
@@ -569,6 +574,12 @@ def _spec_host(spec: dict[str, Any]) -> str:
     return "unknown"
 
 
+def _fetch_host(spec: dict[str, Any]) -> str:
+    if spec.get("scheduler_skip_fred_primary"):
+        return _BLS_FETCH_HOST
+    return _spec_host(spec)
+
+
 def _is_transport_failure(*, error: str | None = None, exc: BaseException | None = None) -> bool:
     if exc is not None:
         if isinstance(exc, (TimeoutError, URLError, ConnectionError, OSError)):
@@ -835,7 +846,7 @@ def _ingest_country_pending(
         replace_index: int | None = None,
         extra_attempts: int = 0,
     ) -> int:
-        host = _spec_host(spec)
+        host = _fetch_host(spec)
         sem = _host_sem(host)
         sem.acquire()
         try:
@@ -871,6 +882,29 @@ def _ingest_country_pending(
                 _record_transport_failure(host)
         return row_index
 
+    def _bls_alternate_spec(spec: dict[str, Any]) -> dict[str, Any] | None:
+        series_id = spec.get("series_id")
+        if not isinstance(series_id, str) or not series_id:
+            return None
+        if not bls_series_for_fred(series_id, spec):
+            return None
+        if _BLS_FETCH_HOST in host_deferred:
+            return None
+        alt = copy.copy(spec)
+        alt["scheduler_skip_fred_primary"] = True
+        return alt
+
+    def _best_pending_tier(
+        queue: list[tuple[dict[str, Any], int | None, int]],
+        in_flight: dict[Future[int], tuple[dict[str, Any], int | None, bool]],
+    ) -> int | None:
+        tiers: list[int] = []
+        for item, _, _ in queue:
+            tiers.append(_series_tier(item, when, prior_deferred))
+        for item, _, _ in in_flight.values():
+            tiers.append(_series_tier(item, when, prior_deferred))
+        return min(tiers) if tiers else None
+
     def _run_pass(work: list[tuple[dict[str, Any], int | None, int]]) -> None:
         nonlocal protected_admitted
         if not work:
@@ -893,23 +927,45 @@ def _ingest_country_pending(
                     if is_initial and attempts > 1 and _retryable_row(row):
                         failed_for_retry.append((spec, row_index))
 
-            while queue or in_flight:
-                while queue and len(in_flight) < max_workers:
-                    spec, replace_index, extra = queue[0]
-                    host = _spec_host(spec)
-                    if host in host_deferred and multiple_hosts:
-                        queue.pop(0)
-                        if replace_index is None:
-                            with rows_lock:
-                                rows.append(
-                                    _host_deferred_row(
-                                        spec,
-                                        checked_at=checked_at,
-                                        calibration_as_of=cal_as_of,
-                                        cutoff_class=cutoff,
-                                    )
-                                )
+            def _admit_one() -> bool:
+                if not queue or len(in_flight) >= max_workers:
+                    return False
+                best_tier = _best_pending_tier(queue, in_flight)
+                if best_tier is None:
+                    return False
+                for idx, (spec, replace_index, extra) in enumerate(queue):
+                    tier = _series_tier(spec, when, prior_deferred)
+                    if tier > best_tier:
                         continue
+                    primary_host = _spec_host(spec)
+                    fetch_spec = spec
+                    if primary_host in host_deferred and multiple_hosts:
+                        alt = _bls_alternate_spec(spec)
+                        if alt is None:
+                            queue.pop(idx)
+                            if replace_index is None:
+                                with rows_lock:
+                                    rows.append(
+                                        _host_deferred_row(
+                                            spec,
+                                            checked_at=checked_at,
+                                            calibration_as_of=cal_as_of,
+                                            cutoff_class=cutoff,
+                                        )
+                                    )
+                            else:
+                                with rows_lock:
+                                    rows[replace_index] = _row_with_attempt_history(
+                                        _host_deferred_row(
+                                            spec,
+                                            checked_at=checked_at,
+                                            calibration_as_of=cal_as_of,
+                                            cutoff_class=cutoff,
+                                        ),
+                                        rows[replace_index],
+                                    )
+                            return True
+                        fetch_spec = alt
                     if replace_index is None:
                         with budget_lock:
                             if _budget_exhausted(
@@ -919,7 +975,7 @@ def _ingest_country_pending(
                                 run_budget_seconds,
                                 country_budget_seconds,
                             ):
-                                queue.pop(0)
+                                queue.pop(idx)
                                 with rows_lock:
                                     rows.append(
                                         _deferred_row(
@@ -936,19 +992,23 @@ def _ingest_country_pending(
                                             ),
                                         )
                                     )
-                                continue
-                    queue.pop(0)
+                                return True
+                    queue.pop(idx)
                     is_initial = replace_index is None
                     fut = pool.submit(
                         _fetch_and_classify,
-                        spec,
+                        fetch_spec,
                         replace_index=replace_index,
                         extra_attempts=extra,
                     )
                     in_flight[fut] = (spec, replace_index, is_initial)
-                    if len(in_flight) >= max_workers:
-                        break
+                    return True
+                return False
 
+            while queue or in_flight:
+                while queue and len(in_flight) < max_workers:
+                    if not _admit_one():
+                        break
                 if not in_flight:
                     break
                 done, _ = wait(set(in_flight.keys()), return_when=FIRST_COMPLETED)
@@ -963,8 +1023,28 @@ def _ingest_country_pending(
         key=lambda item: (_series_tier(item[0], when, prior_deferred), str(item[0].get("id") or ""))
     )
 
+    protected_candidates = [
+        item for item in failed_for_retry if _protected_due_labor(item[0], when)
+    ]
+    other_candidates = [
+        item for item in failed_for_retry if not _protected_due_labor(item[0], when)
+    ]
+
+    def _append_skipped_retry(spec: dict[str, Any], row_index: int) -> None:
+        with rows_lock:
+            _append_scheduler_event(
+                rows[row_index],
+                kind="skipped_retry",
+                reason=_skipped_retry_reason(
+                    spec,
+                    when=when,
+                    protected_failures=protected_failures,
+                    protected_retries_admitted=protected_retries_admitted,
+                ),
+            )
+
     retry_work: list[tuple[dict[str, Any], int | None, int]] = []
-    for spec, row_index in failed_for_retry:
+    for spec, row_index in protected_candidates:
         with budget_lock:
             if _budget_exhausted(
                 clock,
@@ -973,21 +1053,28 @@ def _ingest_country_pending(
                 run_budget_seconds,
                 country_budget_seconds,
             ):
-                with rows_lock:
-                    _append_scheduler_event(
-                        rows[row_index],
-                        kind="skipped_retry",
-                        reason=_skipped_retry_reason(
-                            spec,
-                            when=when,
-                            protected_failures=protected_failures,
-                            protected_retries_admitted=protected_retries_admitted,
-                        ),
-                    )
+                _append_skipped_retry(spec, row_index)
                 continue
         retry_work.append((spec, row_index, attempts - 1))
-        if _protected_due_labor(spec, when):
-            protected_retries_admitted += 1
+        protected_retries_admitted += 1
+
+    if retry_work:
+        failed_for_retry.clear()
+        _run_pass(retry_work)
+
+    retry_work = []
+    for spec, row_index in other_candidates:
+        with budget_lock:
+            if _budget_exhausted(
+                clock,
+                run_start,
+                country_start,
+                run_budget_seconds,
+                country_budget_seconds,
+            ):
+                _append_skipped_retry(spec, row_index)
+                continue
+        retry_work.append((spec, row_index, attempts - 1))
 
     if retry_work:
         failed_for_retry.clear()
