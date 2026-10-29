@@ -19,9 +19,15 @@ if str(ROOT) not in sys.path:
 from scripts.macro_ingestion.adapters.us import fetch_series
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import live_opener, run_ingestion
+from scripts.macro_ingestion.us_employment.cache import clear_employment_caches
+from scripts.macro_ingestion.us_employment.ism_prnewswire import parse_ism_pmi
 
 FIXTURES = Path(__file__).resolve().parent / "fixtures" / "us"
 UNRATE_FIXTURE = FIXTURES / "unrate_offline.csv"
+ISM_LISTING = FIXTURES / "ism_prnewswire_listing_snippet.html"
+ISM_MFG_RELEASE = FIXTURES / "ism_manufacturing_release_snippet.html"
+ISM_SVC_RELEASE = FIXTURES / "ism_services_release_snippet.html"
+BLS_URL = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
 LIVE_SMOKE_PATH = FIXTURES / "live_smoke_report.json"
 
 LIVE_SMOKE_TARGETS = (
@@ -32,7 +38,7 @@ LIVE_SMOKE_TARGETS = (
     ("IQ", "https://fred.stlouisfed.org/graph/fredgraph.csv?id=IQ"),
     (
         "ISM_MANUFACTURING",
-        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/",
+        "https://www.prnewswire.com/news/institute-for-supply-management/",
     ),
 )
 
@@ -171,6 +177,118 @@ class TestUSAdapter(unittest.TestCase):
         for row in report.get("rows", []):
             if row.get("label") == "ISM_MANUFACTURING" and row.get("latest_period") == "2026-09":
                 self.fail("ISM live smoke must not record an unparsed September PMI print")
+
+    def test_ism_fixture_parses_manufacturing_pmi(self) -> None:
+        body = ISM_MFG_RELEASE.read_bytes()
+        parsed = parse_ism_pmi(body, services=False)
+        self.assertIsNotNone(parsed)
+        assert parsed is not None
+        self.assertEqual(parsed["period"], "2026-09")
+        self.assertAlmostEqual(parsed["value"], 54.5)
+
+    def test_ism_services_fixture_rejects_manufacturing_body(self) -> None:
+        body = ISM_MFG_RELEASE.read_bytes()
+        self.assertIsNone(parse_ism_pmi(body, services=True))
+
+    def test_fred_timeout_on_core_pce_does_not_block_bls_participation(self) -> None:
+        clear_employment_caches()
+        bls_body = json.dumps(
+            {
+                "status": "REQUEST_SUCCEEDED",
+                "Results": {
+                    "series": [
+                        {
+                            "seriesID": "LNS11300000",
+                            "data": [
+                                {"year": "2026", "period": "M09", "value": "61.8"},
+                                {"year": "2026", "period": "M08", "value": "61.6"},
+                            ],
+                        }
+                    ]
+                },
+            }
+        ).encode("utf-8")
+        pce_spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "US.Inflation.core_pce"))
+        part_spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "US.Labor.participation"))
+        now = datetime(2026, 10, 5, 16, 0, tzinfo=timezone.utc)
+
+        def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
+            if "fred.stlouisfed.org" in url:
+                raise TimeoutError("fred timed out")
+            if url == BLS_URL and data is not None:
+                return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
+            return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
+
+        pce_payload = fetch_series(pce_spec, opener=opener, now=now)
+        part_payload = fetch_series(part_spec, opener=opener, now=now)
+        self.assertFalse(pce_payload.get("ok"))
+        self.assertTrue(part_payload.get("ok"))
+        points = part_payload.get("points") or []
+        self.assertTrue(points)
+        self.assertEqual(points[-1]["period"], "2026-09")
+
+    def test_ism_manufacturing_offline_discovery(self) -> None:
+        listing = ISM_LISTING.read_bytes()
+        release = ISM_MFG_RELEASE.read_bytes()
+        spec = next(r for r in self.catalog["series"] if r["id"] == "US.Activity.manufacturing_surveys")
+
+        def opener(url: str, *, timeout: float = 20, **kwargs):
+            if "institute-for-supply-management" in url:
+                return {"ok": True, "http_status": 200, "body": listing, "error": None}
+            if "manufacturing-pmi-at-54-5" in url:
+                return {"ok": True, "http_status": 200, "body": release, "error": None}
+            return {"ok": False, "http_status": 404, "body": b"", "error": "missing"}
+
+        payload = fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 1, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload.get("ok"))
+        points = payload.get("points") or []
+        self.assertEqual(points[0]["period"], "2026-09")
+        self.assertAlmostEqual(points[0]["value"], 54.5)
+
+    def test_empsit_bls_primary_skips_fred_on_success(self) -> None:
+        clear_employment_caches()
+        bls_body = json.dumps(
+            {
+                "status": "REQUEST_SUCCEEDED",
+                "Results": {
+                    "series": [
+                        {
+                            "seriesID": "LNS14000000",
+                            "data": [
+                                {"year": "2026", "period": "M09", "value": "4.2"},
+                                {"year": "2026", "period": "M08", "value": "4.1"},
+                            ],
+                        }
+                    ]
+                },
+            }
+        ).encode("utf-8")
+        spec = copy.deepcopy(next(r for r in self.catalog["series"] if r["id"] == "US.Labor.unemployment"))
+        fred_calls = 0
+
+        def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
+            nonlocal fred_calls
+            if "fred.stlouisfed.org" in url:
+                fred_calls += 1
+                raise TimeoutError("fred timed out")
+            if url == BLS_URL and data is not None:
+                return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
+            return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
+
+        payload = fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 5, 16, 0, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload.get("ok"))
+        self.assertEqual(fred_calls, 0)
+        acq = (payload.get("ledger_extra") or {}).get("acquisition") or {}
+        self.assertEqual(acq.get("accepted_source"), "bls_primary")
+        self.assertEqual((acq.get("validation_or_fallback") or {}).get("result"), "skipped")
 
 
 if __name__ == "__main__":

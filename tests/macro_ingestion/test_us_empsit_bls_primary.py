@@ -126,7 +126,7 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
             )
             acq = row.get("acquisition") or {}
             self.assertEqual(acq["primary"]["result"], "success")
-            self.assertEqual(acq["validation_or_fallback"]["result"], "timeout")
+            self.assertEqual(acq["validation_or_fallback"]["result"], "skipped")
 
         store = json.loads((self.obs_dir / "us.json").read_text())
         obs_by_key = {(o["series_id"], o.get("transformation"), o["period"]): o for o in store["observations"]}
@@ -279,22 +279,14 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         gate = self._gate_from_rows(result["rows"], specs)
         self.assertNotIn("macro:US", gate.get("blocked_expressions") or [])
 
-    def test_verification_conflict_fail_closed(self) -> None:
+    def test_bls_primary_ignores_fred_payroll_mismatch(self) -> None:
+        """When BLS succeeds, FRED is not consulted; a conflicting FRED PAYEMS must not fail closed."""
         bls_body = _official_sep_2026_bls_body()
         payems_conflict = _fred_csv("PAYEMS", [("2026-08-01", 159015), ("2026-09-01", 159095)])
-        unrate = _fred_csv("UNRATE", [("2026-08-01", 4.1), ("2026-09-01", 4.2)])
-        wages = _fred_csv(
-            "CES0500000003",
-            [("2025-09-01", 36.70), ("2026-08-01", 37.76), ("2026-09-01", 37.81)],
-        )
 
         def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
             if "PAYEMS" in url:
                 return {"ok": True, "http_status": 200, "body": payems_conflict, "error": None}
-            if "UNRATE" in url:
-                return {"ok": True, "http_status": 200, "body": unrate, "error": None}
-            if "CES0500000003" in url:
-                return {"ok": True, "http_status": 200, "body": wages, "error": None}
             if url == BLS_URL and data is not None:
                 return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
             return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
@@ -309,23 +301,16 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
             health_dir=self.health_dir,
         )
         row = result["rows"][0]
-        self.assertEqual(row["status"], "source_failed")
-        self.assertTrue(str(row.get("error") or "").startswith("verification_conflict"))
+        self.assertIn(
+            row["status"],
+            {"checked_unchanged", "new_observation", "revision_applied", "revision_pending"},
+        )
         store_path = self.obs_dir / "us.json"
         store = json.loads(store_path.read_text()) if store_path.is_file() else {"observations": []}
-        self.assertFalse(any(o.get("period") == "2026-09" for o in store.get("observations", [])))
+        self.assertTrue(any(o.get("period") == "2026-09" for o in store.get("observations", [])))
         acq = row.get("acquisition") or {}
-        self.assertIsNone(acq.get("accepted_source"))
-        self.assertEqual(acq.get("bls_value"), 29.0)
-        self.assertEqual(acq.get("fred_value"), 80.0)
-        self.assertEqual(acq.get("bls_raw_sha256"), hashlib.sha256(bls_body).hexdigest())
-        self.assertEqual(acq.get("fred_raw_sha256"), hashlib.sha256(payems_conflict).hexdigest())
-        blob = json.dumps(row)
-        self.assertNotIn("54.5", blob)
-        spec = self._spec("US.Labor.payrolls")
-        gate = self._gate_from_rows([row], [spec])
-        self.assertIn("US.Labor.payrolls", gate.get("blocked_sources") or [])
-        self.assertIn("macro:US", gate.get("blocked_expressions") or [])
+        self.assertEqual(acq.get("accepted_source"), "bls_primary")
+        self.assertEqual((acq.get("validation_or_fallback") or {}).get("result"), "skipped")
 
     def test_protected_budget_retry_ordering(self) -> None:
         clock = {"t": 0.0}

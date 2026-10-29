@@ -65,7 +65,7 @@
       "verification_state": "held_in_temperature_history",
       "freshness_state": "pending_daily_check",
       "blocked_reason": null,
-      "history_notes": "PCEPILFE_PC1 not available on FRED graph CSV; y/y and m/m stored as transforms from PCEPILFE index.",
+      "history_notes": "PCEPILFE_PC1 not available on FRED graph CSV; y/y and m/m stored as transforms from PCEPILFE index. Residual gap: no verified public BEA machine-readable alternate for PCEPILFE is wired; FRED graph CSV remains primary.",
       "score_weight_policy": "existing_calibration_weight"
     },
     {
@@ -317,7 +317,7 @@
       "verification_state": "held_in_temperature_history",
       "freshness_state": "pending_daily_check",
       "blocked_reason": null,
-      "history_notes": "Series is total real GDP SAAR percent change (BEA/FRED A191RL1Q225SBEA) as domestic-demand proxy per registry.",
+      "history_notes": "Series is total real GDP SAAR percent change (BEA/FRED A191RL1Q225SBEA) as domestic-demand proxy per registry. Residual gap: no verified public BEA file alternate wired; FRED graph CSV remains primary.",
       "score_weight_policy": "existing_calibration_weight"
     },
     {
@@ -332,9 +332,10 @@
       "publisher": "ISM",
       "distributor": null,
       "classification": "licensed_public",
-      "endpoint": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/",
+      "endpoint": "https://www.prnewswire.com/news/institute-for-supply-management/",
       "registry_urls": [
-        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/services/"
+        "https://www.prnewswire.com/news/institute-for-supply-management/",
+        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/"
       ],
       "units": "diffusion_index",
       "seasonal_adjustment": false,
@@ -363,7 +364,7 @@
       "verification_state": "held_in_temperature_history",
       "freshness_state": "pending_daily_check",
       "blocked_reason": null,
-      "history_notes": null,
+      "history_notes": "2026-10-29 verified: legacy ismworld.org .../services/ returns HTTP 404. Primary discovery uses the PR Newswire ISM listing (HTTP 200); release pages identify ISM Services PMI (NMFBAI-equivalent headline) for the survey month.",
       "score_weight_policy": "existing_calibration_weight"
     },
     {
@@ -378,9 +379,10 @@
       "publisher": "ISM",
       "distributor": null,
       "classification": "licensed_public",
-      "endpoint": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/",
+      "endpoint": "https://www.prnewswire.com/news/institute-for-supply-management/",
       "registry_urls": [
-        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/"
+        "https://www.prnewswire.com/news/institute-for-supply-management/",
+        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/"
       ],
       "units": "diffusion_index",
       "seasonal_adjustment": false,
@@ -409,149 +411,11 @@
       "verification_state": "held_in_temperature_history",
       "freshness_state": "pending_daily_check",
       "blocked_reason": null,
-      "history_notes": null,
+      "history_notes": "2026-10-29 verified: legacy ismworld.org .../pmi/ returns HTTP 404. Primary discovery uses the PR Newswire ISM listing (HTTP 200); release pages identify ISM Manufacturing PMI (NAPM-equivalent headline) for the survey month.",
       "score_weight_policy": "existing_calibration_weight"
     },
     {
       "id": "US.Consumer.retail",
-      "country": "US",
-      "dimension": "Consumer",
-      "component": "retail",
-      "role": "scored",
-      "weight": 0.25,
-      "series_id": "RSAFS",
-      "canonical_name": "Advance Retail Sales: Retail Trade and Food Services, Total",
-      "publisher": "U.S. Census Bureau",
-      "distributor": "FRED",
-      "classification": "licensed_public",
-      "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=RSAFS",
-      "registry_urls": [
-        "https://www.census.gov/retail/sales.html"
-      ],
-      "units": "millions USD SA",
-      "seasonal_adjustment": true,
-      "transform": "mom_sa_pct",
-      "cadence": "monthly",
-      "timezone": "America/New_York",
-      "release_rule": {
-        "kind": "country_local_schedule_required",
-        "timezone": "America/New_York",
-        "dates": [],
-        "note": "Country worker must pin the publisher's local release calendar. Do not substitute the PR #108 12-business-day quiet window."
-      },
-      "metadata_availability": {
-        "actual": true,
-        "revision": "vintage_latest_available_only",
-        "prior": "prior_observation_in_ledger"
-      },
-      "raw_provenance": "data/temperature_history/raw/us/",
-      "retrieval_method": "fredgraph.csv",
-      "adapter": "scripts.macro_ingestion.adapters.us",
-      "observation_count": 12,
-      "latest_period": "2026-08",
-      "latest_value_held": 1.240742,
-      "latest_retrieved_at": "2026-09-21T14:41:19Z",
-      "ledger_vintage": "latest_available",
-      "verification_state": "held_in_temperature_history",
-      "freshness_state": "pending_daily_check",
-      "blocked_reason": null,
-      "history_notes": null,
-      "score_weight_policy": "existing_calibration_weight"
-    },
-    {
-      "id": "US.Consumer.income",
-      "country": "US",
-      "dimension": "Consumer",
-      "component": "income",
-      "role": "scored",
-      "weight": 0.25,
-      "series_id": "DSPI",
-      "canonical_name": "Disposable Personal Income",
-      "publisher": "BEA",
-      "distributor": "FRED",
-      "classification": "licensed_public",
-      "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DSPI",
-      "registry_urls": [
-        "https://www.bea.gov/data/income-saving/personal-income"
-      ],
-      "units": "billions USD SA",
-      "seasonal_adjustment": true,
-      "transform": "mom_sa_pct",
-      "cadence": "monthly",
-      "timezone": "America/New_York",
-      "release_rule": {
-        "kind": "country_local_schedule_required",
-        "timezone": "America/New_York",
-        "dates": [],
-        "note": "Country worker must pin the publisher's local release calendar. Do not substitute the PR #108 12-business-day quiet window."
-      },
-      "metadata_availability": {
-        "actual": true,
-        "revision": "vintage_latest_available_only",
-        "prior": "prior_observation_in_ledger"
-      },
-      "raw_provenance": "data/temperature_history/raw/us/",
-      "retrieval_method": "fredgraph.csv",
-      "adapter": "scripts.macro_ingestion.adapters.us",
-      "observation_count": 11,
-      "latest_period": "2026-07",
-      "latest_value_held": 0.530503,
-      "latest_retrieved_at": "2026-09-21T14:41:19Z",
-      "ledger_vintage": "latest_available",
-      "verification_state": "held_in_temperature_history",
-      "freshness_state": "pending_daily_check",
-      "blocked_reason": null,
-      "history_notes": null,
-      "score_weight_policy": "existing_calibration_weight"
-    },
-    {
-      "id": "US.Consumer.spending",
-      "country": "US",
-      "dimension": "Consumer",
-      "component": "spending",
-      "role": "scored",
-      "weight": 0.25,
-      "series_id": "PCEC96",
-      "canonical_name": "Real Personal Consumption Expenditures",
-      "publisher": "BEA",
-      "distributor": "FRED",
-      "classification": "licensed_public",
-      "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEC96",
-      "registry_urls": [
-        "https://www.bea.gov/data/consumer-spending/main"
-      ],
-      "units": "billions chained 2017 USD SA",
-      "seasonal_adjustment": true,
-      "transform": "mom_sa_pct",
-      "cadence": "monthly",
-      "timezone": "America/New_York",
-      "release_rule": {
-        "kind": "country_local_schedule_required",
-        "timezone": "America/New_York",
-        "dates": [],
-        "note": "Country worker must pin the publisher's local release calendar. Do not substitute the PR #108 12-business-day quiet window."
-      },
-      "metadata_availability": {
-        "actual": true,
-        "revision": "vintage_latest_available_only",
-        "prior": "prior_observation_in_ledger"
-      },
-      "raw_provenance": "data/temperature_history/raw/us/",
-      "retrieval_method": "fredgraph.csv",
-      "adapter": "scripts.macro_ingestion.adapters.us",
-      "observation_count": 11,
-      "latest_period": "2026-07",
-      "latest_value_held": 0.007692,
-      "latest_retrieved_at": "2026-09-21T14:41:19Z",
-      "ledger_vintage": "latest_available",
-      "verification_state": "held_in_temperature_history",
-      "freshness_state": "pending_daily_check",
-      "blocked_reason": null,
-      "history_notes": null,
-      "score_weight_policy": "existing_calibration_weight"
-    },
-    {
-      "id": "US.Consumer.confidence",
       "country": "US",
       "dimension": "Consumer",
       "component": "confidence",
@@ -594,7 +458,7 @@
       "verification_state": "held_in_temperature_history",
       "freshness_state": "pending_daily_check",
       "blocked_reason": null,
-      "history_notes": "UMCSENT via FRED; CONCCONF graph CSV unavailable (404); OECD CSCICP03USM665S last observation 2024-01. Do not average series. Live ledger cites Conference Board and Michigan Sep-2026 preliminary not present in this FRED vintage.",
+      "history_notes": "UMCSENT via FRED; CONCCONF graph CSV unavailable (404); OECD CSCICP03USM665S last observation 2024-01. Do not average series. Residual gap: no verified alternate distributor for UMCSENT beyond FRED in this adapter.",
       "score_weight_policy": "existing_calibration_weight"
     },
     {
@@ -1685,7 +1549,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/consumers-price-index-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/consumers-price-index",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/consumers-price-index"
       ],
@@ -1732,7 +1596,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/consumers-price-index-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/consumers-price-index",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/consumers-price-index"
       ],
@@ -1779,7 +1643,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/labour-market-statistics-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/labour-market",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/labour-market"
       ],
@@ -1826,7 +1690,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/labour-market-statistics-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/labour-market",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/labour-market"
       ],
@@ -1873,7 +1737,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/labour-market-statistics-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/labour-market",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/labour-market"
       ],
@@ -1920,7 +1784,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/gross-domestic-product-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/gross-domestic-product",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/gross-domestic-product"
       ],
@@ -2014,7 +1878,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/retail-trade-survey-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/retail-trade",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/retail-trade"
       ],
@@ -2061,7 +1925,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/experimental/national-accounts-income-saving-assets-and-liabilities-march-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/households",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/households"
       ],
@@ -2107,7 +1971,7 @@
       "publisher": "Stats NZ",
       "distributor": "Stats NZ",
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/gross-domestic-product-june-2026-quarter/",
+      "endpoint": "https://www.stats.govt.nz/topics/gross-domestic-product",
       "registry_urls": [
         "https://www.stats.govt.nz/topics/gross-domestic-product"
       ],
@@ -3214,6 +3078,8 @@
       "distributor": "FRED",
       "classification": "licensed_public",
       "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL",
+      "alternate_series_id": "CUSR0000SA0",
+      "alternate_retrieval_method": "bls_public_api_v2_single",
       "registry_urls": [
         "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPIAUCSL"
       ],
@@ -3244,7 +3110,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Context only. Headline CPI has no standalone temperature weight. Primary publisher BLS; FRED is the licensed public distributor already used for scored US series.",
+      "history_notes": "Context only. FRED CPIAUCSL primary; verified alternate BLS CUSR0000SA0 (same SA all-items CPI-U index) via public API when FRED is unavailable.",
       "score_weight_policy": "weight_must_remain_zero"
     },
     {
@@ -3260,6 +3126,8 @@
       "distributor": "FRED",
       "classification": "licensed_public",
       "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPILFESL",
+      "alternate_series_id": "CUSR0000SA0L1E",
+      "alternate_retrieval_method": "bls_public_api_v2_single",
       "registry_urls": [
         "https://fred.stlouisfed.org/graph/fredgraph.csv?id=CPILFESL"
       ],
@@ -3306,6 +3174,8 @@
       "distributor": "FRED",
       "classification": "licensed_public",
       "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WPSFD49207",
+      "alternate_series_id": "WPSFD49207",
+      "alternate_retrieval_method": "bls_public_api_v2_single",
       "registry_urls": [
         "https://fred.stlouisfed.org/graph/fredgraph.csv?id=WPSFD49207"
       ],
@@ -3352,6 +3222,8 @@
       "distributor": "FRED",
       "classification": "licensed_public",
       "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=IR",
+      "alternate_series_id": "EIUIR",
+      "alternate_retrieval_method": "bls_public_api_v2_single",
       "registry_urls": [
         "https://fred.stlouisfed.org/graph/fredgraph.csv?id=IR"
       ],
@@ -3398,6 +3270,8 @@
       "distributor": "FRED",
       "classification": "licensed_public",
       "endpoint": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=IQ",
+      "alternate_series_id": "EIUIQ",
+      "alternate_retrieval_method": "bls_public_api_v2_single",
       "registry_urls": [
         "https://fred.stlouisfed.org/graph/fredgraph.csv?id=IQ"
       ],
@@ -3808,7 +3682,7 @@
       "component": "ippi",
       "role": "context",
       "weight": 0.0,
-      "series_id": null,
+      "series_id": "v1230995983",
       "canonical_name": "Industrial Product Price Index (PPI analog)",
       "publisher": "Statistics Canada",
       "distributor": null,
@@ -3854,7 +3728,7 @@
       "component": "rmpi",
       "role": "context",
       "weight": 0.0,
-      "series_id": null,
+      "series_id": "v1230998135",
       "canonical_name": "Raw Materials Price Index",
       "publisher": "Statistics Canada",
       "distributor": null,
@@ -5021,7 +4895,7 @@
       "publisher": "Australian Bureau of Statistics",
       "distributor": null,
       "classification": "official",
-      "endpoint": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206001_Key_Aggregates.xlsx",
+      "endpoint": "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product/jun-2026/5206002_Expenditure_Volume_Measures.xlsx",
       "registry_urls": [
         "https://www.abs.gov.au/statistics/economy/national-accounts/australian-national-accounts-national-income-expenditure-and-product"
       ],
@@ -5207,9 +5081,9 @@
       "publisher": "Stats NZ",
       "distributor": null,
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/business-price-indexes",
+      "endpoint": "https://www.stats.govt.nz/topics/business-price-indexes",
       "registry_urls": [
-        "https://www.stats.govt.nz/information-releases/business-price-indexes"
+        "https://www.stats.govt.nz/topics/business-price-indexes"
       ],
       "units": "index",
       "seasonal_adjustment": null,
@@ -5253,9 +5127,9 @@
       "publisher": "Stats NZ",
       "distributor": null,
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices",
+      "endpoint": "https://www.stats.govt.nz/topics/overseas-trade-indexes-prices",
       "registry_urls": [
-        "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices"
+        "https://www.stats.govt.nz/topics/overseas-trade-indexes-prices"
       ],
       "units": "index",
       "seasonal_adjustment": null,
@@ -5299,9 +5173,9 @@
       "publisher": "Stats NZ",
       "distributor": null,
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices",
+      "endpoint": "https://www.stats.govt.nz/topics/overseas-trade-indexes-prices",
       "registry_urls": [
-        "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices"
+        "https://www.stats.govt.nz/topics/overseas-trade-indexes-prices"
       ],
       "units": "index",
       "seasonal_adjustment": null,
@@ -5345,9 +5219,9 @@
       "publisher": "Stats NZ",
       "distributor": null,
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/labour-market-statistics",
+      "endpoint": "https://www.stats.govt.nz/topics/labour-market",
       "registry_urls": [
-        "https://www.stats.govt.nz/information-releases/labour-market-statistics"
+        "https://www.stats.govt.nz/topics/labour-market"
       ],
       "units": "percent",
       "seasonal_adjustment": true,
@@ -5391,9 +5265,9 @@
       "publisher": "Stats NZ",
       "distributor": null,
       "classification": "official",
-      "endpoint": "https://www.stats.govt.nz/information-releases/gross-domestic-product",
+      "endpoint": "https://www.stats.govt.nz/topics/gross-domestic-product",
       "registry_urls": [
-        "https://www.stats.govt.nz/information-releases/gross-domestic-product"
+        "https://www.stats.govt.nz/topics/gross-domestic-product"
       ],
       "units": "percent",
       "seasonal_adjustment": true,
@@ -9833,9 +9707,10 @@
       "publisher": "ISM",
       "distributor": null,
       "classification": "licensed_public",
-      "endpoint": "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/",
+      "endpoint": "https://www.prnewswire.com/news/institute-for-supply-management/",
       "registry_urls": [
-        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/pmi/"
+        "https://www.prnewswire.com/news/institute-for-supply-management/",
+        "https://www.ismworld.org/supply-management-news-and-reports/reports/ism-pmi-reports/"
       ],
       "units": "diffusion_index",
       "seasonal_adjustment": false,
@@ -9864,7 +9739,7 @@
       "verification_state": "catalogued_adapter_pending",
       "freshness_state": "not_yet_checked_by_new_runner",
       "blocked_reason": null,
-      "history_notes": "Parsed from the same public ISM manufacturing press page as the scored PMI when the employment index is present. A miss is source_failed. The scored PMI path is unchanged.",
+      "history_notes": "Parsed from the same PR Newswire ISM manufacturing release as the scored PMI when the employment index is present. Legacy ismworld.org .../pmi/ returns HTTP 404.",
       "score_weight_policy": "weight_must_remain_zero",
       "employment_section": "corroboration"
     },

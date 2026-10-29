@@ -13,7 +13,8 @@ import hashlib
 import re
 from typing import Any, Callable
 
-from scripts.macro_ingestion.us_employment.cache import is_challenge_page, open_url
+from scripts.macro_ingestion.us_employment.cache import is_challenge_page
+from scripts.macro_ingestion.us_employment.ism_prnewswire import fetch_ism_pmi_release
 
 _EMPLOYMENT_PATTERNS = (
     r"Employment Index(?:[^\d]{0,60})(\d{2}\.\d)",
@@ -64,10 +65,9 @@ def fetch_ism_employment(
     opener: Callable[..., Any],
     timeout: float,
 ) -> dict[str, Any]:
-    url = str(spec.get("endpoint") or "")
-    response = open_url(opener, url, timeout=timeout)
-    body: bytes = response.get("body") or b""
-    base = {"http_status": response.get("http_status"), "body": body}
+    release = fetch_ism_pmi_release(spec, opener=opener, timeout=timeout, services=False)
+    body: bytes = release.get("body") or b""
+    base = {"http_status": release.get("http_status"), "body": body}
     if is_challenge_page(body):
         return {
             **base,
@@ -76,9 +76,10 @@ def fetch_ism_employment(
             "challenge_page": True,
             "error": "ism_challenge_page",
         }
-    if response.get("ok") and body:
+    if release.get("ok") and body:
         parsed = parse_ism_employment(body)
         if parsed:
+            url = str(release.get("resolved_url") or spec.get("endpoint") or "")
             return {
                 **base,
                 "ok": True,
@@ -103,6 +104,6 @@ def fetch_ism_employment(
     return {
         **base,
         "ok": False,
-        "status": "source_failed",
-        "error": response.get("error") or "ism_employment_unparsed",
+        "status": release.get("status") or "source_failed",
+        "error": release.get("error") or "ism_employment_unparsed",
     }
