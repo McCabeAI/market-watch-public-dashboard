@@ -258,6 +258,23 @@ def _fetch_fred_series(
             "status": "source_failed",
             "error": "missing_fred_series_id",
         }
+    if spec.get("scheduler_skip_fred_primary"):
+        alternate = _fetch_fred_bls_alternate(
+            spec,
+            series_id=series_id,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
+        if alternate is not None:
+            return alternate
+        return {
+            "ok": False,
+            "status": "source_failed",
+            "error": "bls_alternate_failed",
+            "http_status": None,
+            "body": b"",
+        }
     url = FRED_GRAPH_URL.format(series_id=series_id)
     try:
         response = opener(url, timeout=timeout)

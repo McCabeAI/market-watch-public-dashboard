@@ -312,6 +312,83 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         self.assertEqual(acq.get("accepted_source"), "bls_primary")
         self.assertEqual((acq.get("validation_or_fallback") or {}).get("result"), "skipped")
 
+    def test_host_deferred_still_fetches_bls_mapped_fred_and_labor(self) -> None:
+        """After FRED is transport-deferred, mapped CPI uses BLS only; labor still runs on BLS."""
+        fred_transport_failures = 0
+        cpi_fred_after_defer: list[str] = []
+        bls_body = json.dumps(
+            {
+                "status": "REQUEST_SUCCEEDED",
+                "Results": {
+                    "series": [
+                        _bls_block("CUSR0000SA0", [(2026, 8, 320.0, None), (2026, 9, 336.298, None)]),
+                        _bls_block("CES0000000001", [(2026, 8, 159015, None), (2026, 9, 159044, "P")]),
+                    ]
+                },
+            }
+        ).encode("utf-8")
+
+        def opener(url: str, *, timeout: float = 20, data: bytes | None = None, **kwargs):
+            nonlocal fred_transport_failures
+            if "fred.stlouisfed.org" in url:
+                if "CPIAUCSL" in url and fred_transport_failures >= 2:
+                    cpi_fred_after_defer.append(url)
+                fred_transport_failures += 1
+                raise TimeoutError("The read operation timed out")
+            if url == BLS_URL and data is not None:
+                return {"ok": True, "http_status": 200, "body": bls_body, "error": None}
+            return {"ok": False, "http_status": None, "body": b"", "error": "offline_unmapped_url"}
+
+        catalog_ids = [
+            "US.Inflation.core_pce",
+            "US.Inflation.pce_headline",
+            "US.Consumer.spending",
+            "US.Inflation.cpi_headline",
+            "US.Labor.payrolls",
+        ]
+        result = run_ingestion(
+            mode="offline",
+            countries=["US"],
+            catalog=self._mini_catalog(catalog_ids),
+            now=DUE_AFTER_EMPSIT,
+            opener=opener,
+            observations_dir=self.obs_dir,
+            health_dir=self.health_dir,
+            host_failure_limit=2,
+            attempts=1,
+        )
+        by_id = {row["series_id"]: row for row in result["rows"]}
+        ok_statuses = {
+            "checked_unchanged",
+            "new_observation",
+            "revision_applied",
+            "revision_pending",
+        }
+        cpi_row = by_id["US.Inflation.cpi_headline"]
+        self.assertNotEqual(cpi_row.get("error"), "host_deferred")
+        self.assertIn(cpi_row["status"], ok_statuses)
+        payroll_row = by_id["US.Labor.payrolls"]
+        self.assertIn(payroll_row["status"], ok_statuses)
+        self.assertEqual(cpi_fred_after_defer, [])
+        unmapped = (
+            "US.Inflation.core_pce",
+            "US.Inflation.pce_headline",
+            "US.Consumer.spending",
+        )
+        deferred_unmapped = [sid for sid in unmapped if by_id[sid].get("error") == "host_deferred"]
+        self.assertTrue(deferred_unmapped, msg="expected at least one unmapped FRED row deferred without fetch")
+        for sid in deferred_unmapped:
+            self.assertEqual(by_id[sid].get("error"), "host_deferred")
+        store = json.loads((self.obs_dir / "us.json").read_text())
+        cpi_obs = [
+            o
+            for o in store.get("observations", [])
+            if o.get("series_id") == "CPIAUCSL" and o.get("period") == "2026-09"
+        ]
+        self.assertEqual(len(cpi_obs), 1)
+        self.assertEqual(cpi_obs[0].get("source_url"), "https://data.bls.gov/timeseries/CUSR0000SA0")
+        self.assertAlmostEqual(float(cpi_obs[0]["value"]), 336.298)
+
     def test_protected_budget_retry_ordering(self) -> None:
         clock = {"t": 0.0}
         calls: dict[str, int] = defaultdict(int)
