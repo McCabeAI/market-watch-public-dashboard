@@ -684,6 +684,8 @@ def _download_rbnz_html() -> str:
         "RBNZ official B2 HTML table was blocked or unusable ("
         + "; ".join(errors)
         + "). Refusing to substitute a third-party or vendor feed."
+        " No preselected distributor was verified to republish the same RBNZ B2"
+        " government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable."
     )
 
 
