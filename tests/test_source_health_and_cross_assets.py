@@ -5,7 +5,12 @@ from __future__ import annotations
 import unittest
 
 from scripts.cross_asset_data import compact_cross_assets
-from scripts.macro_source_health import annotate_row
+from scripts.macro_source_health import (
+    RESEARCH_STATUS_PREVIOUS,
+    annotate_row,
+    effective_release_due,
+    research_status_for_row,
+)
 from scripts.market_watch_launch.quality_gate import apply_macro_overlay, evaluate_gate
 from scripts.overnight.public_prose import (
     public_research_summary,
@@ -139,6 +144,32 @@ class SourceHealthGateTests(unittest.TestCase):
         result = evaluate_gate(rows=[row], families=_families())
         self.assertFalse(result["countries"]["US"]["eligible"])
         self.assertEqual(result["outcome"], "BLOCKED")
+
+    def test_cadence_backstop_marks_previous_release_not_current(self) -> None:
+        row = {
+            "series_id": "US.Inflation.core_pce",
+            "country": "US",
+            "role": "scored",
+            "weight": 1.0,
+            "status": "checked_unchanged",
+            "release_due": False,
+            "observation_period": "2026-06",
+            "cadence_backstop_due": True,
+        }
+        self.assertTrue(effective_release_due(row))
+        self.assertEqual(research_status_for_row(row), RESEARCH_STATUS_PREVIOUS)
+        ca = {
+            "series_id": "CA.Inflation.cpi",
+            "country": "CA",
+            "role": "scored",
+            "weight": 1.0,
+            "status": "checked_unchanged",
+            "release_due": False,
+            "observation_period": "2026-08",
+        }
+        result = evaluate_gate(rows=[row, ca], families=_families())
+        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
 
 
 class FrozenOilMarkTests(unittest.TestCase):

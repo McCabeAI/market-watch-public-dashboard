@@ -17,7 +17,7 @@ from scripts.market_watch_launch.contract import (
     VERIFIED_OBSERVATION_STATUSES,
     stage_receipt,
 )
-from scripts.macro_source_health import carried_forward, source_health_entries
+from scripts.macro_source_health import carried_forward, effective_release_due, source_health_entries
 from scripts.market_watch_launch.acquire import read_collect_families
 from scripts.market_watch_launch.ingest import load_ingestion_rows
 from scripts.run_state.policy import evaluate_policy
@@ -40,9 +40,9 @@ def _is_scored_row(row: dict[str, Any]) -> bool:
 
 def _effective_status(row: dict[str, Any]) -> str:
     raw = str(row.get("status") or "")
+    release_due = effective_release_due(row)
     if raw not in VERIFIED_OBSERVATION_STATUSES:
         return raw
-    release_due = bool(row.get("release_due"))
     if not release_due:
         return raw
     observation_period = row.get("observation_period")
@@ -367,7 +367,7 @@ def _country_release_due_blocking(rows: list[dict[str, Any]], country: str) -> l
         if not _is_scored_row(row):
             continue
         effective = _effective_status(row)
-        if effective in BLOCKING_SERIES_STATUSES and bool(row.get("release_due")):
+        if effective in BLOCKING_SERIES_STATUSES and effective_release_due(row):
             blocked.append(row)
     return blocked
 
@@ -438,13 +438,13 @@ def evaluate_gate(
     blocking_scored = [
         row
         for row in scored_rows
-        if _effective_status(row) in BLOCKING_SERIES_STATUSES and bool(row.get("release_due"))
+        if _effective_status(row) in BLOCKING_SERIES_STATUSES and effective_release_due(row)
     ]
     nondue_scored_gaps = [
         row
         for row in scored_rows
         if _effective_status(row) in BLOCKING_SERIES_STATUSES
-        and not bool(row.get("release_due"))
+        and not effective_release_due(row)
         and not carried_forward(row)
     ]
     source_health = source_health_entries(rows)

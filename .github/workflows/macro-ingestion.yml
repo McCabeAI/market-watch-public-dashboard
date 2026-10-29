@@ -29,10 +29,32 @@ on:
           - EA
           - JP
   pull_request:
-    # Inbox scheduled_output.json is accepted by pull_request_target
-    # (overnight-scheduled-output.yml). Any other changed file still runs this suite.
-    paths-ignore:
-      - "data/overnight/inbox/**/scheduled_output.json"
+    # Narrowed from paths-ignore: run only when macro ingestion, temperature,
+    # freshness, overnight pipeline tests, or their scripts/data change.
+    paths:
+      - "scripts/macro_ingestion/**"
+      - "scripts/temperature_level.py"
+      - "scripts/temperature_scores.py"
+      - "scripts/macro_freshness.py"
+      - "scripts/macro_source_health.py"
+      - "scripts/market_watch_launch/ingest.py"
+      - "scripts/market_watch_launch/quality_gate.py"
+      - "scripts/overnight/**"
+      - "data/macro_ingestion/**"
+      - "data/temperature_calibration.json"
+      - "data/temperature_history/**"
+      - "data/temperature_scores.json"
+      - "tests/macro_ingestion/**"
+      - "tests/test_macro_freshness.py"
+      - "tests/test_temperature_level.py"
+      - "tests/test_temperature_scores.py"
+      - "tests/test_overnight_pipeline.py"
+      - "tests/test_overnight_scheduled_output.py"
+      - "tests/test_overnight_review_identity.py"
+      - "tests/test_overnight_acceptance_handoff.py"
+      - "tests/test_source_health_and_cross_assets.py"
+      - "tests/test_mw_launch_quality.py"
+      - ".github/workflows/macro-ingestion.yml"
 
 permissions:
   contents: write
