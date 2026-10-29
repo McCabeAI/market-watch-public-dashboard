@@ -7495,7 +7495,7 @@
   },
   "market_state": {
     "cross_assets": {
-      "generated_at": "2026-10-29T08:44:42Z",
+      "generated_at": "2026-10-29T10:34:19Z",
       "marks": [
         {
           "as_of": "2026-10-28",
@@ -7777,7 +7777,7 @@
       "source_observation": "2026-10-28",
       "status": "ok"
     },
-    "generated_at": "2026-10-29T08:44:42Z",
+    "generated_at": "2026-10-29T10:34:19Z",
     "official_curves": {
       "curves": {
         "AU": {
@@ -10715,71 +10715,9 @@
           "status": "ok"
         },
         "CA": {
-          "contracts_1m": [
-            {
-              "code": "COAV26",
-              "expiry": "2026-10",
-              "implied_rate": 2.2975
-            },
-            {
-              "code": "COAX26",
-              "expiry": "2026-11",
-              "implied_rate": 2.52
-            },
-            {
-              "code": "COAZ26",
-              "expiry": "2026-12",
-              "implied_rate": 2.62
-            },
-            {
-              "code": "COAF27",
-              "expiry": "2027-01",
-              "implied_rate": 2.68
-            }
-          ],
-          "contracts_3m": [
-            {
-              "code": "CRAU26",
-              "expiry": "2026-09",
-              "implied_rate": 2.42
-            },
-            {
-              "code": "CRAZ26",
-              "expiry": "2026-12",
-              "implied_rate": 2.755
-            },
-            {
-              "code": "CRAH27",
-              "expiry": "2027-03",
-              "implied_rate": 3.025
-            },
-            {
-              "code": "CRAM27",
-              "expiry": "2027-06",
-              "implied_rate": 3.225
-            },
-            {
-              "code": "CRAU27",
-              "expiry": "2027-09",
-              "implied_rate": 3.39
-            },
-            {
-              "code": "CRAZ27",
-              "expiry": "2027-12",
-              "implied_rate": 3.49
-            },
-            {
-              "code": "CRAH28",
-              "expiry": "2028-03",
-              "implied_rate": 3.555
-            },
-            {
-              "code": "CRAM28",
-              "expiry": "2028-06",
-              "implied_rate": 3.605
-            }
-          ],
-          "status": "ok"
+          "contracts_1m": [],
+          "contracts_3m": [],
+          "status": "unavailable"
         },
         "EA": {
           "contracts_1m": [],
@@ -10879,48 +10817,48 @@
             {
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.19
+              "implied_rate": 4.185
             },
             {
               "code": "SR3H7",
               "expiry": "2027-03",
-              "implied_rate": 4.445
+              "implied_rate": 4.425
             },
             {
               "code": "SR3M7",
               "expiry": "2027-06",
-              "implied_rate": 4.615
+              "implied_rate": 4.58
             },
             {
               "code": "SR3U7",
               "expiry": "2027-09",
-              "implied_rate": 4.68
+              "implied_rate": 4.64
             },
             {
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.675
+              "implied_rate": 4.625
             },
             {
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.655
+              "implied_rate": 4.605
             },
             {
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.64
+              "implied_rate": 4.585
             },
             {
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.625
+              "implied_rate": 4.57
             }
           ],
           "status": "ok"
         }
       },
-      "status": "ok"
+      "status": "partial"
     },
     "rate_rv": {
       "AU-EA_10Y": {
@@ -12849,140 +12787,9 @@
           "status": "ok"
         },
         "CORRA": {
-          "benchmark": {
-            "as_of": "2026-10-27",
-            "name": "CORRA",
-            "rate": 2.24
-          },
-          "contract_period_months": 3,
-          "contracts": [
-            {
-              "change_from_overnight_bps": 18.0,
-              "code": "CRAU26",
-              "expiry": "2026-09",
-              "implied_rate": 2.42,
-              "open_interest": null,
-              "price": 97.58,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 51.5,
-              "code": "CRAZ26",
-              "expiry": "2026-12",
-              "implied_rate": 2.755,
-              "open_interest": null,
-              "price": 97.245,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 78.5,
-              "code": "CRAH27",
-              "expiry": "2027-03",
-              "implied_rate": 3.025,
-              "open_interest": null,
-              "price": 96.975,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 98.5,
-              "code": "CRAM27",
-              "expiry": "2027-06",
-              "implied_rate": 3.225,
-              "open_interest": null,
-              "price": 96.775,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 115.0,
-              "code": "CRAU27",
-              "expiry": "2027-09",
-              "implied_rate": 3.39,
-              "open_interest": null,
-              "price": 96.61,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 125.0,
-              "code": "CRAZ27",
-              "expiry": "2027-12",
-              "implied_rate": 3.49,
-              "open_interest": null,
-              "price": 96.51,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 131.5,
-              "code": "CRAH28",
-              "expiry": "2028-03",
-              "implied_rate": 3.555,
-              "open_interest": null,
-              "price": 96.445,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 136.5,
-              "code": "CRAM28",
-              "expiry": "2028-06",
-              "implied_rate": 3.605,
-              "open_interest": null,
-              "price": 96.395,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 137.0,
-              "code": "CRAU28",
-              "expiry": "2028-09",
-              "implied_rate": 3.61,
-              "open_interest": null,
-              "price": 96.39,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 135.0,
-              "code": "CRAZ28",
-              "expiry": "2028-12",
-              "implied_rate": 3.59,
-              "open_interest": null,
-              "price": 96.41,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 133.5,
-              "code": "CRAH29",
-              "expiry": "2029-03",
-              "implied_rate": 3.575,
-              "open_interest": null,
-              "price": 96.425,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 132.5,
-              "code": "CRAM29",
-              "expiry": "2029-06",
-              "implied_rate": 3.565,
-              "open_interest": null,
-              "price": 96.435,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            }
-          ],
           "country": "CA",
-          "instrument": "Montr\u00e9al Exchange Three-Month CORRA futures",
-          "mark_convention": "implied_rate = 100 - futures price",
-          "product_code": "CRA",
-          "source_url": "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations",
-          "status": "ok"
+          "error": "CORRA tradable futures strip unavailable",
+          "status": "unavailable"
         },
         "ESTR": {
           "benchmark": {
@@ -13562,505 +13369,505 @@
           "contract_period_months": 3,
           "contracts": [
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 24.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 23.5,
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.19,
-              "observation_date": "2026-10-28",
-              "open_interest": 1637028.0,
-              "price": 95.81,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 629867.0
+              "implied_rate": 4.185,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.815,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 49.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 47.5,
               "code": "SR3H7",
               "expiry": "2027-03",
-              "implied_rate": 4.445,
-              "observation_date": "2026-10-28",
-              "open_interest": 1304793.0,
-              "price": 95.555,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 565879.0
+              "implied_rate": 4.425,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.575,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 66.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 63.0,
               "code": "SR3M7",
               "expiry": "2027-06",
-              "implied_rate": 4.615,
-              "observation_date": "2026-10-28",
-              "open_interest": 1248283.0,
-              "price": 95.385,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 493320.0
+              "implied_rate": 4.58,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.42,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 73.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 69.0,
               "code": "SR3U7",
               "expiry": "2027-09",
-              "implied_rate": 4.68,
-              "observation_date": "2026-10-28",
-              "open_interest": 1067970.0,
-              "price": 95.32,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 424834.0
+              "implied_rate": 4.64,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.36,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 72.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 67.5,
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.675,
-              "observation_date": "2026-10-28",
-              "open_interest": 1611473.0,
-              "price": 95.325,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 513052.0
+              "implied_rate": 4.625,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.375,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 70.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 65.5,
               "code": "SR3H8",
               "expiry": "2028-03",
-              "implied_rate": 4.655,
-              "observation_date": "2026-10-28",
-              "open_interest": 826525.0,
-              "price": 95.345,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 306329.0
+              "implied_rate": 4.605,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.395,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 69.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 63.5,
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.64,
-              "observation_date": "2026-10-28",
-              "open_interest": 635167.0,
-              "price": 95.36,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 267255.0
+              "implied_rate": 4.585,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.415,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 67.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 62.0,
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.625,
-              "observation_date": "2026-10-28",
-              "open_interest": 671748.0,
-              "price": 95.375,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 242055.0
+              "implied_rate": 4.57,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.43,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 65.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 60.0,
               "code": "SR3Z8",
               "expiry": "2028-12",
-              "implied_rate": 4.605,
-              "observation_date": "2026-10-28",
-              "open_interest": 546311.0,
-              "price": 95.395,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 190841.0
+              "implied_rate": 4.55,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.45,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 63.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 58.0,
               "code": "SR3H9",
               "expiry": "2029-03",
-              "implied_rate": 4.585,
-              "observation_date": "2026-10-28",
-              "open_interest": 392725.0,
-              "price": 95.415,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 117745.0
+              "implied_rate": 4.53,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.47,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 62.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 56.5,
               "code": "SR3M9",
               "expiry": "2029-06",
-              "implied_rate": 4.57,
-              "observation_date": "2026-10-28",
-              "open_interest": 390544.0,
-              "price": 95.43,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 93171.0
+              "implied_rate": 4.515,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.485,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 61.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 55.5,
               "code": "SR3U9",
               "expiry": "2029-09",
-              "implied_rate": 4.56,
-              "observation_date": "2026-10-28",
-              "open_interest": 315412.0,
-              "price": 95.44,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 96585.0
+              "implied_rate": 4.505,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.495,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 60.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 55.0,
               "code": "SR3Z9",
               "expiry": "2029-12",
-              "implied_rate": 4.55,
-              "observation_date": "2026-10-28",
-              "open_interest": 251891.0,
-              "price": 95.45,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 61517.0
+              "implied_rate": 4.5,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.5,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 60.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 55.5,
               "code": "SR3H0",
               "expiry": "2030-03",
-              "implied_rate": 4.55,
-              "observation_date": "2026-10-28",
-              "open_interest": 182290.0,
-              "price": 95.45,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 48736.0
+              "implied_rate": 4.505,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.495,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 60.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 56.0,
               "code": "SR3M0",
               "expiry": "2030-06",
-              "implied_rate": 4.555,
-              "observation_date": "2026-10-28",
-              "open_interest": 157147.0,
-              "price": 95.445,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 38495.0
+              "implied_rate": 4.51,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.49,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 61.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 57.0,
               "code": "SR3U0",
               "expiry": "2030-09",
-              "implied_rate": 4.565,
-              "observation_date": "2026-10-28",
-              "open_interest": 149004.0,
-              "price": 95.435,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 36363.0
+              "implied_rate": 4.52,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.48,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 63.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 58.5,
               "code": "SR3Z0",
               "expiry": "2030-12",
-              "implied_rate": 4.58,
-              "observation_date": "2026-10-28",
-              "open_interest": 116569.0,
-              "price": 95.42,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 32065.0
+              "implied_rate": 4.535,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.465,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 65.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 61.0,
               "code": "SR3H1",
               "expiry": "2031-03",
-              "implied_rate": 4.605,
-              "observation_date": "2026-10-28",
-              "open_interest": 86256.0,
-              "price": 95.395,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 27540.0
+              "implied_rate": 4.56,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.44,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 68.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 63.5,
               "code": "SR3M1",
               "expiry": "2031-06",
-              "implied_rate": 4.63,
-              "observation_date": "2026-10-28",
-              "open_interest": 73439.0,
-              "price": 95.37,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 26189.0
+              "implied_rate": 4.585,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.415,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 71.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 67.0,
               "code": "SR3U1",
               "expiry": "2031-09",
-              "implied_rate": 4.66,
-              "observation_date": "2026-10-28",
-              "open_interest": 39145.0,
-              "price": 95.34,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 25842.0
+              "implied_rate": 4.62,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.38,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 74.0,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 70.0,
               "code": "SR3Z1",
               "expiry": "2031-12",
-              "implied_rate": 4.69,
-              "observation_date": "2026-10-28",
-              "open_interest": 7991.0,
-              "price": 95.31,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 329.0
+              "implied_rate": 4.65,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.35,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 77.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 73.5,
               "code": "SR3H2",
               "expiry": "2032-03",
-              "implied_rate": 4.725,
-              "observation_date": "2026-10-28",
-              "open_interest": 4139.0,
-              "price": 95.275,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 266.0
+              "implied_rate": 4.685,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.315,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 80.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 76.0,
               "code": "SR3M2",
               "expiry": "2032-06",
-              "implied_rate": 4.755,
-              "observation_date": "2026-10-28",
-              "open_interest": 997.0,
-              "price": 95.245,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 129.0
+              "implied_rate": 4.71,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.29,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
-              "change_from_overnight_bps": 83.5,
+              "as_of": "2026-10-29",
+              "change_from_overnight_bps": 79.0,
               "code": "SR3U2",
               "expiry": "2032-09",
-              "implied_rate": 4.785,
-              "observation_date": "2026-10-28",
-              "open_interest": 486.0,
-              "price": 95.215,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 89.0
+              "implied_rate": 4.74,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
+              "price": 95.26,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 86.5,
               "code": "SR3Z2",
               "expiry": "2032-12",
               "implied_rate": 4.815,
-              "observation_date": "2026-10-28",
-              "open_interest": 163.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.185,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 2.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 89.5,
               "code": "SR3H3",
               "expiry": "2033-03",
               "implied_rate": 4.845,
-              "observation_date": "2026-10-28",
-              "open_interest": 35.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.155,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 1.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 92.0,
               "code": "SR3M3",
               "expiry": "2033-06",
               "implied_rate": 4.87,
-              "observation_date": "2026-10-28",
-              "open_interest": 3.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.13,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 94.5,
               "code": "SR3U3",
               "expiry": "2033-09",
               "implied_rate": 4.895,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.105,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 97.0,
               "code": "SR3Z3",
               "expiry": "2033-12",
               "implied_rate": 4.92,
-              "observation_date": "2026-10-28",
-              "open_interest": 11.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.08,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 98.5,
               "code": "SR3H4",
               "expiry": "2034-03",
               "implied_rate": 4.935,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.065,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 101.5,
               "code": "SR3M4",
               "expiry": "2034-06",
               "implied_rate": 4.965,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.035,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 102.5,
               "code": "SR3U4",
               "expiry": "2034-09",
               "implied_rate": 4.975,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 95.025,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 107.0,
               "code": "SR3Z4",
               "expiry": "2034-12",
               "implied_rate": 5.02,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 94.98,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 108.0,
               "code": "SR3H5",
               "expiry": "2035-03",
               "implied_rate": 5.03,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 94.97,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 110.5,
               "code": "SR3M5",
               "expiry": "2035-06",
               "implied_rate": 5.055,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 94.945,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 113.0,
               "code": "SR3U5",
               "expiry": "2035-09",
               "implied_rate": 5.08,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 94.92,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 117.5,
               "code": "SR3Z5",
               "expiry": "2035-12",
               "implied_rate": 5.125,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 94.875,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-10-28",
+              "as_of": "2026-10-29",
               "change_from_overnight_bps": 118.5,
               "code": "SR3H6",
               "expiry": "2036-03",
               "implied_rate": 5.135,
-              "observation_date": "2026-10-28",
-              "open_interest": 0.0,
+              "observation_date": "2026-10-29",
+              "open_interest": null,
               "price": 94.865,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             }
           ],
           "country": "US",
           "instrument": "CME Three-Month SOFR futures",
           "mark_convention": "implied_rate = 100 - futures price",
           "product_code": "SR3",
-          "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=10/28/2026&strategy=DEFAULT&pageSize=500",
+          "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
           "status": "ok"
         },
         "TONA": {
@@ -14287,7 +14094,7 @@
         }
       },
       "generated_at": null,
-      "status": "ok",
+      "status": "partial",
       "warning": null
     },
     "warnings": []
@@ -16790,7 +16597,7 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-grinder-overnight-20261029-review-001",
-  "review_packet_sha256": "a47b8344bb17bf79cc5bd2c6e6f8237ca7f0755f030482650524b3c34ffa68d8",
+  "review_packet_sha256": "1036cef493b6abe267ef67ba3b865bc722476638d796a148074592a1e8550e67",
   "risk_capital_limit_usd": 100000000,
   "risk_capital_remaining_usd": 100000000.0,
   "risk_capital_usd": 0.0,
