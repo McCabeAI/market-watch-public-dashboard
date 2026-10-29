@@ -44,7 +44,7 @@ CSS = """
 .score-bar i{display:block;height:100%}
 .score-bar i.cold{background:var(--cold)}.score-bar i.cool{background:var(--cool)}.score-bar i.neutral{background:var(--neutral)}.score-bar i.warm{background:var(--warm)}.score-bar i.hot{background:var(--hot)}
 button.jump{width:100%;font:inherit;color:inherit;min-height:44px;font-size:14px}
-.jump:focus,.nav label:focus,.country-switch label:focus{outline:2px solid var(--navy);outline-offset:2px}
+.jump:focus,.nav label:focus,.country-switch label:focus{outline:3px solid var(--mw-focus,#f7fbff);outline-offset:2px}
 #country-detail{scroll-margin-top:64px}
 .release-card,.source-summary{background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px;margin:0 0 8px}
 .release-card header{font-size:15px}
