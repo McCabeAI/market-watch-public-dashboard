@@ -71,6 +71,38 @@ def seed_stores(dest_dir: Path, source_dir: Path) -> list[str]:
     return copied
 
 
+def promote_stores(source_dir: Path, dest_dir: Path) -> list[str]:
+    """Copy launch observation JSON files back into persistent storage.
+
+    Only files present under ``source_dir`` are considered. Skips launch stores
+    with no observations so a non-empty persistent file is never replaced by an
+    empty store. Never deletes persistent files the launch did not write.
+    """
+    source_dir = source_dir.resolve()
+    dest_dir = dest_dir.resolve()
+    if source_dir == dest_dir:
+        return []
+    promoted: list[str] = []
+    if not source_dir.is_dir():
+        return promoted
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    for path in sorted(source_dir.glob("*.json")):
+        country = path.stem.upper()
+        if len(country) != 2:
+            continue
+        launch_store = json.loads(path.read_text(encoding="utf-8"))
+        if not launch_store.get("observations"):
+            continue
+        dest_path = dest_dir / path.name
+        if dest_path.is_file():
+            existing = json.loads(dest_path.read_text(encoding="utf-8"))
+            if existing.get("observations") and not launch_store.get("observations"):
+                continue
+        dest_path.write_bytes(path.read_bytes())
+        promoted.append(country)
+    return promoted
+
+
 def _key_tuple(row: dict[str, Any]) -> tuple[str, str, str, str]:
     return (
         str(row["series_id"]),

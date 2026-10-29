@@ -74,7 +74,7 @@ def run_data_only_catch_up(
         write_health=True,
     )
 
-    sections = render_dashboard_sections(root)
+    sections = render_dashboard_sections(root, observations_dir=obs_dir)
     builders_dir = output_dir / "research_builders"
     builders_dir.mkdir(parents=True, exist_ok=True)
     (builders_dir / "country_detail_sections.json").write_text(
