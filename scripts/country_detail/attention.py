@@ -9,10 +9,18 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import timedelta
 from pathlib import Path
 from typing import Any, Mapping
 
 from scripts.country_detail import policy
+from scripts.country_detail.indicator import (
+    MAX_FIRST_RELEASE_LAG_DAYS,
+    _series_points,
+    credible_release_dates,
+    parse_day,
+    period_end,
+)
 from scripts.country_detail.persistence import load_snapshot, save_snapshot
 from scripts.country_detail.present import is_raw_price_index_level
 from scripts.country_detail.release_status import assess_release
@@ -74,6 +82,8 @@ def _coerce_prior(prior: Any) -> dict[str, dict]:
                 "transformation": item.get("transformation"),
                 "revision_status": item.get("revision_status"),
                 "vintage": item.get("vintage"),
+                "publication_day": item.get("publication_day"),
+                "first_seen_day": item.get("first_seen_day"),
             }
             for item in prior
         }
@@ -370,6 +380,53 @@ def _is_superseded(
     return policy.period_sort_key(period) < policy.period_sort_key(latest)
 
 
+def _plausible_first_release(reference_period: str, day_iso: str) -> bool:
+    """True when ``day_iso`` can be this period's original publication day.
+
+    A stamp on or before the period end is an inherited vintage, not a first
+    release. A later restatement must not be required to match this day.
+    """
+    day = parse_day(day_iso)
+    end = period_end(reference_period)
+    if day is None or end is None:
+        return False
+    return end < day <= end + timedelta(days=MAX_FIRST_RELEASE_LAG_DAYS)
+
+
+def resolve_publication_day(
+    observation: Mapping[str, Any],
+    prior_row: Mapping[str, Any] | None,
+) -> str | None:
+    """ISO publication day for this observation, without fabricating freshness.
+
+    A previously stored plausible publication day for this same reference
+    period is kept. A later release stamp, re-ingest, or retrieved_at does
+    not restart that clock. An inherited stamp that falls on or before the
+    period end is not kept, so a later credible publisher date can replace it.
+    """
+    reference_period = observation.get("reference_period")
+    if not isinstance(reference_period, str) or not reference_period:
+        return None
+    points = _series_points(observation)
+
+    if prior_row is not None and prior_row.get("reference_period") == reference_period:
+        stored = prior_row.get("publication_day")
+        if isinstance(stored, str) and stored and _plausible_first_release(reference_period, stored):
+            return stored
+
+    credible = credible_release_dates(points)
+    release_day = credible.get(reference_period)
+    if release_day is not None:
+        return release_day.isoformat()
+
+    if prior_row is not None and prior_row.get("reference_period") == reference_period:
+        first_seen = prior_row.get("first_seen_day")
+        if isinstance(first_seen, str) and first_seen:
+            return first_seen
+
+    return None
+
+
 def _qualify_observation(
     observation: Mapping[str, Any],
     *,
@@ -495,7 +552,10 @@ def _qualify_observation(
         "release_state": policy.release_state_for_data_state(data_state),
         "retrieval_age_days": _retrieval_age_days(observation.get("retrieved_at"), as_of),
         "alert_freshness": _alert_freshness(observation, prior_row),
+        "publication_day": resolve_publication_day(observation, prior_row),
     }
+    if prior_row is not None and prior_row.get("first_seen_day"):
+        member["first_seen_day"] = prior_row.get("first_seen_day")
     if release_calendar is not None:
         member["release_calendar"] = release_calendar
     if observation.get("label") is not None:
@@ -523,6 +583,8 @@ def evaluate_observations(
     prior_attention_snapshot: Any = None,
     frozen_packet: Mapping[str, Any] | None = None,
     release_aware: bool = False,
+    enforce_publication_age: bool = False,
+    publication_as_of: str | None = None,
 ) -> dict:
     """Qualify observations and select What Matters Now.
 
@@ -593,7 +655,13 @@ def evaluate_observations(
                 release_calendar=release_calendar,
             )
         )
-    selected = policy.select_what_matters_now(members, limit=limit)
+    wmn_as_of = publication_as_of if publication_as_of is not None else as_of
+    selected = policy.select_what_matters_now(
+        members,
+        limit=limit,
+        as_of=wmn_as_of,
+        enforce_publication_age=enforce_publication_age,
+    )
     selected["review"] = _review_summary(members, country)
     overlap = _SCORE_REWRITE_KEYS.intersection(selected)
     if overlap:
@@ -627,6 +695,7 @@ def evaluate_projection(
     stale_after_days: dict[str, int],
     prior: dict | None = None,
     limit: int = 3,
+    publication_as_of: str | None = None,
 ) -> dict:
     """Evaluate each country in a projection independently.
 
@@ -666,6 +735,8 @@ def evaluate_projection(
             limit=limit,
             country=str(code),
             release_aware=True,
+            enforce_publication_age=True,
+            publication_as_of=publication_as_of,
         )
     return {"countries": countries}
 
