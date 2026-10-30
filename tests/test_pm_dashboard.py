@@ -284,6 +284,145 @@ class PMDashboardTests(unittest.TestCase):
         self.assertEqual(out["traderTotal"], 7500)
         self.assertEqual(out["pmTotal"], 2050)
 
+    def test_public_book_projection_passes_mark_and_funding_fields(self) -> None:
+        from scripts.overnight.books import empty_books as empty_trader_books
+        from scripts.overnight.books import public_books_view, validate_books as validate_trader_books
+        from scripts.pm.books import empty_books as empty_pm_books
+        from scripts.pm.books import public_pm_view, validate_books as validate_pm_books
+
+        funding_alert = (
+            "funding_accrual_failed_closed: official NY Fed SOFR history is missing; "
+            "funding accrual failed closed"
+        )
+        mark_unavailable_reason = "synthetic test mark missing"
+
+        trader_books = empty_trader_books(overnight_run_id="tr-projection-test")
+        value_guy = trader_books["seats"]["value-guy"]
+        value_guy["funding_accrual_status"] = "applied"
+        value_guy["unresolved_funding_positions"] = ["pos-trader-spot-bad"]
+        value_guy["alerts"] = [funding_alert]
+        value_guy["positions"] = [
+            {
+                "position_id": "pos-trader-spot-ok",
+                "instrument": "USDCAD",
+                "asset_class": "spot_fx",
+                "side": "long",
+                "notional_usd": 1_000_000.0,
+                "entry_price": 1.40,
+                "mark_price": 1.41,
+                "mark_status": "ok",
+            },
+            {
+                "position_id": "pos-trader-spot-bad",
+                "instrument": "SYNTH_TEST_FX",
+                "asset_class": "spot_fx",
+                "side": "long",
+                "notional_usd": 500_000.0,
+                "entry_price": 1.0,
+                "mark_price": None,
+                "mark_status": "unavailable",
+                "mark_unavailable_reason": mark_unavailable_reason,
+            },
+            {
+                "position_id": "pos-trader-legs",
+                "instrument": "SOFR-CORRA_2Y_2027H1",
+                "asset_class": "rates_rv",
+                "side": "long",
+                "notional_usd": 10_000_000.0,
+                "mark_status": "ok",
+                "mark_price": 140.0,
+                "legs": [
+                    {"instrument": "SOFR_2027-03", "mark_status": "ok", "mark_rate": 4.4},
+                    {"instrument": "CORRA_2027-03", "mark_status": "unavailable", "mark_rate": None},
+                ],
+            },
+        ]
+
+        carry = trader_books["seats"]["carry-is-king"]
+        carry["funding_accrual_status"] = "failed_closed"
+        carry["unresolved_funding_positions"] = []
+
+        traders = public_books_view(validate_trader_books(trader_books))
+        value_public = next(row for row in traders["seats"] if row["seat"] == "value-guy")
+        carry_public = next(row for row in traders["seats"] if row["seat"] == "carry-is-king")
+
+        self.assertEqual(value_public["funding_accrual_status"], "applied")
+        self.assertEqual(value_public["unresolved_funding_positions"], ["pos-trader-spot-bad"])
+        self.assertIn(funding_alert, value_public["alerts"])
+        self.assertEqual(carry_public["funding_accrual_status"], "failed_closed")
+        self.assertEqual(carry_public["unresolved_funding_positions"], [])
+
+        spot_ok = next(row for row in value_public["positions"] if row["position_id"] == "pos-trader-spot-ok")
+        self.assertEqual(spot_ok["mark_status"], "ok")
+        self.assertEqual(spot_ok["mark_price"], 1.41)
+
+        spot_bad = next(row for row in value_public["positions"] if row["position_id"] == "pos-trader-spot-bad")
+        self.assertEqual(spot_bad["mark_status"], "unavailable")
+        self.assertIsNone(spot_bad["mark_price"])
+        self.assertEqual(spot_bad["mark_unavailable_reason"], mark_unavailable_reason)
+
+        legs_pos = next(row for row in value_public["positions"] if row["position_id"] == "pos-trader-legs")
+        self.assertEqual(legs_pos["legs"][0]["mark_status"], "ok")
+        self.assertEqual(legs_pos["legs"][0]["mark_rate"], 4.4)
+        self.assertEqual(legs_pos["legs"][1]["mark_status"], "unavailable")
+        self.assertIsNone(legs_pos["legs"][1]["mark_rate"])
+
+        pm_books = empty_pm_books(trader_room_run_id="tr-projection-test")
+        chatgpt = pm_books["pms"]["chatgpt"]
+        chatgpt["funding_accrual_status"] = "applied"
+        chatgpt["unresolved_funding_positions"] = []
+        chatgpt["alerts"] = [funding_alert]
+        chatgpt["positions"] = [
+            {
+                "position_id": "pos-pm-spot-ok",
+                "instrument": "USDCAD",
+                "asset_class": "spot_fx",
+                "side": "long",
+                "notional_usd": 2_000_000.0,
+                "entry_price": 1.39,
+                "mark_price": 1.40,
+                "mark_status": "ok",
+            }
+        ]
+
+        swinger = pm_books["pms"]["swinger"]
+        swinger["funding_accrual_status"] = "failed_closed"
+        swinger["unresolved_funding_positions"] = []
+        swinger["alerts"] = [funding_alert]
+        swinger["positions"] = [
+            {
+                "position_id": "pos-pm-spot-bad",
+                "instrument": "SYNTH_PM_OPTION",
+                "asset_class": "options",
+                "side": "long",
+                "notional_usd": 100_000.0,
+                "entry_price": 1.0,
+                "mark_price": None,
+                "mark_status": "unavailable",
+                "mark_unavailable_reason": mark_unavailable_reason,
+            }
+        ]
+
+        pms = public_pm_view(validate_pm_books(pm_books))
+        chatgpt_public = next(row for row in pms["pms"] if row["pm_id"] == "chatgpt")
+        swinger_public = next(row for row in pms["pms"] if row["pm_id"] == "swinger")
+
+        self.assertEqual(chatgpt_public["funding_accrual_status"], "applied")
+        self.assertEqual(chatgpt_public["unresolved_funding_positions"], [])
+        self.assertIn(funding_alert, chatgpt_public["alerts"])
+        self.assertEqual(swinger_public["funding_accrual_status"], "failed_closed")
+        self.assertEqual(swinger_public["unresolved_funding_positions"], ["pos-pm-spot-bad"])
+        self.assertIn(funding_alert, swinger_public["alerts"])
+
+        pm_spot_ok = chatgpt_public["positions"][0]
+        self.assertEqual(pm_spot_ok["mark_status"], "ok")
+        self.assertEqual(pm_spot_ok["mark_price"], 1.40)
+
+        pm_spot_bad = swinger_public["positions"][0]
+        self.assertEqual(pm_spot_bad["mark_status"], "unavailable")
+        self.assertIsNone(pm_spot_bad["mark_price"])
+        self.assertEqual(pm_spot_bad["mark_unavailable_reason"], mark_unavailable_reason)
+
 
 if __name__ == "__main__":
     unittest.main()
