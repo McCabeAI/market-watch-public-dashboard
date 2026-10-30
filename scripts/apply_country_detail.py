@@ -10,9 +10,11 @@ import argparse
 import html
 from pathlib import Path
 
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 
 from scripts.country_detail.attention import evaluate_projection
+from scripts.country_detail.persistence import load_snapshot, save_snapshot
 from scripts.country_detail.indicator import score_windows
 from scripts.country_detail.policy import COUNTRY_CODES
 from scripts.country_detail.policy_rate import rewrite_policy_transmission
@@ -51,19 +53,43 @@ def _scores_path(root: Path) -> Path:
     return SCORES_PATH
 
 
+def _ny_today() -> str:
+    """Calendar day in America/New_York for the dashboard card clock."""
+    return datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+
+
 def load_country_detail_context(
     root: Path | None = None,
     *,
     observations_dir: Path | None = None,
+    snapshot_path: Path | None = None,
+    publication_as_of: str | None = None,
+    persist_snapshot: bool = False,
 ) -> dict:
-    """Read-only projection, attention, and stored score state."""
+    """Read-only projection, attention, and stored score state.
+
+    Card age uses ``publication_as_of`` when given, otherwise today's New York
+    calendar day. It does not use the newest retrieval timestamp. Rendering is
+    read-only; only an explicit data-commit step can persist the snapshot.
+    """
     root = root or ROOT
+    if publication_as_of is None:
+        publication_as_of = _ny_today()
+    snapshot_file = snapshot_path or (root / "data" / "country_detail" / "attention_snapshot.json")
+    prior = load_snapshot(snapshot_file) if snapshot_file.is_file() else None
     projection = build_projection(root, observations_dir=observations_dir)
     registry = _registry(root)
     attention = evaluate_projection(
         projection,
         stale_after_days=stale_after_days(registry),
+        prior=prior,
+        publication_as_of=publication_as_of,
     )
+    if persist_snapshot:
+        members: list[dict] = []
+        for country_payload in attention.get("countries", {}).values():
+            members.extend(country_payload.get("members") or [])
+        save_snapshot(snapshot_file, {"members": members})
     scores = load_state(_scores_path(root))
     return {
         "projection": projection,

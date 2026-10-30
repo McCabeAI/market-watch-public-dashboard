@@ -11,6 +11,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
+from scripts.country_detail.ca_cpi_provenance import repair_ca_cpi_september_2026_provenance
 from scripts.macro_ingestion.ea_country_hicp import COUNTRY_HICP_IDS, select_current_rows
 from scripts.country_detail.policy import (
     AU_HOUSEHOLD_SPENDING_ANNUAL,
@@ -1212,6 +1213,8 @@ def build_projection(
     for country in COUNTRY_CODES:
         history_path = root / "data/temperature_history" / _HISTORY_FILES[country]
         history_payload = _read_json(history_path)
+        if country == "CA":
+            repair_ca_cpi_september_2026_provenance(history_payload)
         observations: list[dict[str, Any]] = []
 
         for component_key, component in (history_payload.get("components") or {}).items():

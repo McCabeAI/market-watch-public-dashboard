@@ -128,13 +128,17 @@ A monthly or quarterly print stays `current` and eligible while it is the latest
 
 Ineligibility reasons, and no others:
 
-`insufficient_history`, `insufficient_history_for_outlier`, `seasonal_history_insufficient`, `structurally_non_comparable`, `missing_value`, `stale`, `due_late`, `superseded`, `failed_fetch`, `unchanged_reprint`, `not_material`, `correlated_companion`, `unknown_cadence`.
+`insufficient_history`, `insufficient_history_for_outlier`, `seasonal_history_insufficient`, `structurally_non_comparable`, `missing_value`, `stale`, `due_late`, `superseded`, `failed_fetch`, `unchanged_reprint`, `not_material`, `correlated_companion`, `unknown_cadence`, `release_aged_out`, `undated_release`.
 
 Classification priority when several could apply: missing, failed fetch, structurally non-comparable, due/late, superseded, explicit stale, unknown cadence, seasonal history, insufficient history, then the bands.
 
 ## 6. What Matters Now
 
 Show 0 to 3 findings initially (`MAX_FINDINGS_INITIAL = 3`). The architecture allows expansion to 5 (`MAX_FINDINGS_EXPANDED = 5`). There is no forced quota. A quiet country shows zero findings and `p.wmn-quiet` with the text `No finding clears the attention rules.` Do not pad.
+
+**Publication-age gate (card eligibility only).** Dashboard generation measures that age on the America/New_York calendar day of the build, unless the caller passes an explicit evaluation date. When the caller enables publication-age enforcement, a What Matters Now card requires a dated original public release and an inclusive age of at most 30 whole calendar days. A previously stored publication day that is still a plausible first release for that reference period is kept; a later stamp does not restart the clock. An inherited stamp on or before the period end is not kept. Both endpoints use America/New_York calendar dates: date-only `YYYY-MM-DD` strings stay on that calendar day; timestamps with `T` convert to New York before taking the date. Age is `(as_of_day − publication_day)` in whole days. Inclusive bounds: age 0 through 30 qualifies; age 31 or more is `release_aged_out` and never becomes a card. Missing or blank `publication_day`, unparseable dates, and future publication days (`age < 0`) are `undated_release` and never become a card. This gate does not change percentile bands, direction-of-travel thresholds, `data_state`, registry `is_stale`, or scores. Re-ingestion and `retrieved_at` are not part of this module.
+
+Rows that fail the publication-age gate stay in Country Evidence with `attention_status` unchanged, `what_matters_now_slot` false, and ineligibility including `release_aged_out` or `undated_release`. There is still no quota and no padding with ineligible rows. Slot dedup runs only on publication-age-eligible members; if nobody in a correlation group is eligible, companions are not marked `correlated_companion` solely because the group existed.
 
 One release or theme occupies at most one slot. The correlation key is `(country, topic, release_family, reference_period)`. `release_family` is a stable id for series published together. Examples, not a closed catalog: `au_mhsi_total`, `au_cpi` (headline and trimmed mean), `aer_st3_oil` (Alberta oil rows from one AER workbook).
 
@@ -144,7 +148,7 @@ One release still occupies one slot when the members share a travel direction. O
 
 Companions stay on the surviving finding as `related_observation_ids`. They do not get a slot, and their ineligibility includes `correlated_companion`. Their own attention status remains available to Country Evidence. A group whose strongest member has status `none` produces no finding.
 
-After dedup, sort findings by freshness (`new`, then `revised`, then `unchanged`), then by status and extremity. Unchanged reprints sort after new and revised findings. Dedup runs before that freshness sort: a fresh companion in the same release does not open a second slot.
+After dedup, sort findings by freshness (`new`, then `revised`, then `unchanged`). When publication-age enforcement is on, sort next by smaller `publication_age_days` (more recent release first), then by status and extremity. Unchanged reprints sort after new and revised findings even when the unchanged row is newer by publication day. Dedup runs before that freshness sort: a fresh companion in the same release does not open a second slot.
 
 The headline is the transformation that qualified. If AU household spending through-the-year percent is the qualifying signal, the card headline is that annual measure. The monthly percent change may appear only as a related observation. Display text may format the source value. The stored number remains the observation's source value.
 

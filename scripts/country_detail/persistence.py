@@ -17,6 +17,8 @@ SNAPSHOT_FIELDS = (
     "transformation",
     "revision_status",
     "vintage",
+    "publication_day",
+    "first_seen_day",
 )
 
 
@@ -76,17 +78,41 @@ def load_snapshot(path: Path) -> dict:
     }
 
 
+def _sticky_merge(existing: dict[str, dict], incoming: dict[str, dict]) -> dict[str, dict]:
+    """Retain first-seen evidence without restoring rejected publication dates.
+
+    resolve_publication_day decides whether prior publication dates are credible.
+    Do not reintroduce a date it intentionally rejected as implausible.
+    """
+    merged = dict(incoming)
+    for observation_id, prior in existing.items():
+        record = merged.get(observation_id)
+        if record is None:
+            merged[observation_id] = dict(prior)
+            continue
+        if not record.get("first_seen_day") and prior.get("first_seen_day"):
+            record["first_seen_day"] = prior["first_seen_day"]
+    return merged
+
+
 def save_snapshot(path: Path, snapshot: dict) -> None:
     """Write ``{"version": 1, "observations": {...}}`` for the latest values.
 
     ``snapshot`` is an ``evaluate_observations`` result, or an already
     normalized snapshot document. Each observation id is stored once.
     """
+    destination = Path(path)
+    observations = snapshot_observations(snapshot)
+    if destination.is_file():
+        try:
+            prior_doc = load_snapshot(destination)
+            observations = _sticky_merge(prior_doc["observations"], observations)
+        except ValueError:
+            pass
     payload = {
         "version": SNAPSHOT_VERSION,
-        "observations": snapshot_observations(snapshot),
+        "observations": observations,
     }
-    destination = Path(path)
     destination.parent.mkdir(parents=True, exist_ok=True)
     text = json.dumps(payload, indent=2, sort_keys=True) + "\n"
     destination.write_text(text, encoding="utf-8")

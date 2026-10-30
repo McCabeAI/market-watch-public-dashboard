@@ -15,8 +15,9 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from datetime import date
+from datetime import date, datetime, timezone
 from decimal import Decimal
+from zoneinfo import ZoneInfo
 from types import MappingProxyType
 from typing import Any, Mapping, Sequence
 
@@ -99,6 +100,9 @@ ALERT_FRESHNESS_RANK = MappingProxyType({"new": 0, "revised": 1, "unchanged": 2}
 MAX_FINDINGS_INITIAL = 3
 MAX_FINDINGS_EXPANDED = 5
 
+WMN_MAX_PUBLICATION_AGE_DAYS = 30
+_AMERICA_NEW_YORK = ZoneInfo("America/New_York")
+
 # --- Ineligibility and data states ---
 INELIGIBILITY_REASONS = frozenset(
     {
@@ -115,6 +119,8 @@ INELIGIBILITY_REASONS = frozenset(
         "not_material",
         "correlated_companion",
         "unknown_cadence",
+        "release_aged_out",
+        "undated_release",
     }
 )
 
@@ -1008,6 +1014,53 @@ def wmn_reason(base_reason: str, alert_freshness: str) -> str:
     raise ValueError(f"unknown alert_freshness: {alert_freshness}")
 
 
+def ny_calendar_day(value: Any) -> date | None:
+    """Calendar date in America/New_York for WMN publication-age gates."""
+    if value is None or value == "":
+        return None
+    if isinstance(value, date) and not isinstance(value, datetime):
+        return value
+    if not isinstance(value, str):
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    if len(text) == 10 and text[4] == "-" and text[7] == "-" and "T" not in text:
+        try:
+            return date.fromisoformat(text)
+        except ValueError:
+            return None
+    if "T" not in text:
+        return None
+    iso = text.replace("Z", "+00:00")
+    try:
+        moment = datetime.fromisoformat(iso)
+    except ValueError:
+        return None
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=timezone.utc)
+    return moment.astimezone(_AMERICA_NEW_YORK).date()
+
+
+def publication_age_days(publication_day: Any, as_of: Any) -> int | None:
+    """Whole calendar days from publication_day to as_of in NY dates."""
+    start = ny_calendar_day(publication_day)
+    end = ny_calendar_day(as_of)
+    if start is None or end is None:
+        return None
+    return (end - start).days
+
+
+def wmn_publication_decision(publication_day: Any, as_of: Any) -> str:
+    """Publication-age eligibility for What Matters Now card slots."""
+    age = publication_age_days(publication_day, as_of)
+    if age is None or age < 0:
+        return "undated_release"
+    if age <= WMN_MAX_PUBLICATION_AGE_DAYS:
+        return "eligible"
+    return "release_aged_out"
+
+
 def age_in_days(retrieved_at: str, as_of: str) -> int:
     """Whole UTC calendar days from ``retrieved_at`` to ``as_of`` (date prefix)."""
     start = date.fromisoformat(retrieved_at[:10])
@@ -1120,6 +1173,7 @@ def finding_list_sort_key(
     observation_id: str,
     travel_pattern: str | None = None,
     run_length: int = 0,
+    publication_age: int | None = None,
 ) -> tuple[Any, ...]:
     """Smaller key sorts earlier. Unchanged reprints sort after new and revised findings."""
     if alert_freshness not in ALERT_FRESHNESS_RANK:
@@ -1131,8 +1185,18 @@ def finding_list_sort_key(
         travel_pattern=travel_pattern,
         run_length=run_length,
     )
+    if publication_age is None:
+        return (
+            ALERT_FRESHNESS_RANK[alert_freshness],
+            status_rank,
+            pattern_rank,
+            run_key,
+            distance_key,
+            obs,
+        )
     return (
         ALERT_FRESHNESS_RANK[alert_freshness],
+        publication_age,
         status_rank,
         pattern_rank,
         run_key,
@@ -1354,6 +1418,8 @@ def select_what_matters_now(
     members: Sequence[Mapping[str, Any]],
     *,
     limit: int = MAX_FINDINGS_INITIAL,
+    as_of: str | None = None,
+    enforce_publication_age: bool = False,
 ) -> dict[str, Any]:
     """Dedup by correlation key, then sort and cap findings.
 
@@ -1365,6 +1431,8 @@ def select_what_matters_now(
     """
     if limit < 0:
         raise ValueError("limit must be >= 0")
+    if enforce_publication_age and as_of is None:
+        raise ValueError("as_of is required when enforce_publication_age is True")
     grouped: dict[tuple[str, str, str, str], list[Mapping[str, Any]]] = {}
     order: list[tuple[str, str, str, str]] = []
     for member in members:
@@ -1380,11 +1448,78 @@ def select_what_matters_now(
             grouped[key] = []
         grouped[key].append(member)
 
-    annotated: list[dict[str, Any]] = []
-    findings: list[dict[str, Any]] = []
+    if not enforce_publication_age:
+        annotated: list[dict[str, Any]] = []
+        findings: list[dict[str, Any]] = []
+        for key in order:
+            group = grouped[key]
+            winners = _slot_winners(group)
+            winner_ids = {id(winner) for winner in winners}
+            group_qualifies = bool(winners)
+            divergence = _divergence_sentence(winners[0], winners[1]) if len(winners) == 2 else None
+            for winner in winners:
+                related = sorted(
+                    str(member["observation_id"])
+                    for member in group
+                    if member is not winner
+                )
+                findings.append(
+                    _finding_from_winner(winner, related=related, divergence=divergence)
+                )
+            for member in group:
+                record = dict(member)
+                reasons = list(member.get("ineligibility") or [])
+                won = id(member) in winner_ids
+                record["what_matters_now_slot"] = bool(group_qualifies and won)
+                if group_qualifies and not won and "correlated_companion" not in reasons:
+                    reasons.append("correlated_companion")
+                if str(member.get("alert_freshness") or "new") == "unchanged" and "unchanged_reprint" not in reasons:
+                    reasons.append("unchanged_reprint")
+                record["ineligibility"] = reasons
+                if group_qualifies and won:
+                    record["related_observation_ids"] = sorted(
+                        str(other["observation_id"])
+                        for other in group
+                        if other is not member
+                    )
+                else:
+                    record["related_observation_ids"] = []
+                annotated.append(record)
+
+        findings.sort(
+            key=lambda finding: finding_list_sort_key(
+                alert_freshness=str(finding["alert_freshness"]),
+                attention_status=str(finding["attention_status"]),
+                percentile=finding.get("percentile"),
+                observation_id=str(finding["observation_id"]),
+                travel_pattern=finding.get("travel_pattern"),
+                run_length=int(finding.get("travel_run_length") or 0),
+            )
+        )
+        shown = findings[:limit]
+        withheld = [str(finding["observation_id"]) for finding in findings[limit:]]
+        return {
+            "findings": shown,
+            "finding_count": len(shown),
+            "withheld_by_cap": withheld,
+            "members": annotated,
+        }
+
+    annotated = []
+    findings = []
     for key in order:
         group = grouped[key]
-        winners = _slot_winners(group)
+        age_by_member: dict[int, int | None] = {}
+        decision_by_member: dict[int, str] = {}
+        eligible_group: list[Mapping[str, Any]] = []
+        for member in group:
+            decision = wmn_publication_decision(member.get("publication_day"), as_of)
+            age = publication_age_days(member.get("publication_day"), as_of)
+            decision_by_member[id(member)] = decision
+            age_by_member[id(member)] = age
+            if decision == "eligible":
+                eligible_group.append(member)
+        winners = _slot_winners(eligible_group)
         winner_ids = {id(winner) for winner in winners}
         group_qualifies = bool(winners)
         divergence = _divergence_sentence(winners[0], winners[1]) if len(winners) == 2 else None
@@ -1394,14 +1529,20 @@ def select_what_matters_now(
                 for member in group
                 if member is not winner
             )
-            findings.append(
-                _finding_from_winner(winner, related=related, divergence=divergence)
-            )
+            finding = _finding_from_winner(winner, related=related, divergence=divergence)
+            pub_day = winner.get("publication_day")
+            finding["publication_day"] = pub_day if pub_day not in (None, "") else None
+            age = age_by_member[id(winner)]
+            finding["publication_age_days"] = age
+            findings.append(finding)
         for member in group:
             record = dict(member)
             reasons = list(member.get("ineligibility") or [])
             won = id(member) in winner_ids
+            decision = decision_by_member[id(member)]
             record["what_matters_now_slot"] = bool(group_qualifies and won)
+            if decision != "eligible" and decision not in reasons:
+                reasons.append(decision)
             if group_qualifies and not won and "correlated_companion" not in reasons:
                 reasons.append("correlated_companion")
             if str(member.get("alert_freshness") or "new") == "unchanged" and "unchanged_reprint" not in reasons:
@@ -1425,6 +1566,7 @@ def select_what_matters_now(
             observation_id=str(finding["observation_id"]),
             travel_pattern=finding.get("travel_pattern"),
             run_length=int(finding.get("travel_run_length") or 0),
+            publication_age=finding.get("publication_age_days"),
         )
     )
     shown = findings[:limit]

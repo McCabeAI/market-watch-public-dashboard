@@ -159,15 +159,18 @@ class ReleaseAwareAttentionTest(unittest.TestCase):
         stale_days = {}
         for index, code in enumerate(policy.COUNTRY_CODES):
             step = 1 + index
-            projection["countries"][code] = {
-                "observations": [
-                    _observation(
-                        [step, step, step, step],
-                        country=code,
-                        series_id=f"{code}_PERSIST",
-                    )
-                ]
-            }
+            obs = _observation(
+                [step, step, step, step],
+                country=code,
+                series_id=f"{code}_PERSIST",
+            )
+            # August 2026 reference period, published 15 Sep 2026. That day is
+            # inside 30 calendar days of the projection as_of (2026-09-30).
+            obs["release_date"] = "2026-09-15"
+            for point in obs["history"]:
+                if point["reference_period"] == obs["reference_period"]:
+                    point["release_date"] = "2026-09-15"
+            projection["countries"][code] = {"observations": [obs]}
             stale_days[code] = 4 if code != "AU" else 12
         attention = evaluate_projection(projection, stale_after_days=stale_days, limit=3)
         self.assertEqual(set(attention["countries"]), set(policy.COUNTRY_CODES))
