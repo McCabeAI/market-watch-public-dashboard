@@ -53,7 +53,7 @@ for (let i = 0; i < 14; i += 1) {
     seat: "seat-" + String(i).padStart(2, "0"),
     net_pnl_usd: i === 0 ? 10000 : i === 1 ? -2500 : 0,
     alerts: [fundingAlert],
-    positions: i === 3 ? [{ instrument: "USDCAD", side: "long" }] : [],
+    positions: i === 3 ? [{ instrument: "USDCAD", side: "long", mark_price: 1.4166 }] : [],
     risk_capital_usd: 0,
     risk_capital_limit_usd: 10000000,
     drawdown_usd: i === 2 ? 800 : 0,
@@ -69,6 +69,14 @@ seats[5].alerts.push(
 seats[5].alerts.push(
   "Paper mark unavailable for SOFR_2027-09: tradable SOFR curve unavailable"
 );
+seats[5].positions = [
+  {
+    instrument: "SOFR_2027-09",
+    mark_status: "unavailable",
+    mark_price: null,
+    mark_unavailable_reason: "tradable SOFR curve unavailable",
+  },
+];
 const flags = api.fleetFlags(seats, [], {});
 check(flags.funding.seatCount === 14, "funding seats " + flags.funding.seatCount);
 check(flags.funding.seatTotal === 14, "funding total");
@@ -81,6 +89,215 @@ check(
   "funding text " + fundingText
 );
 check(fundingText.indexOf("Official NY Fed SOFR history is missing") !== -1, "funding reason");
+
+const recoveredFundingSeat = {
+  seat: "recovered-funding",
+  alerts: [fundingAlert],
+  positions: [],
+  funding_accrual_status: "applied",
+  unresolved_funding_positions: [],
+};
+check(
+  api.fleetFlags([recoveredFundingSeat], [], {}).funding.seatCount === 0,
+  "recovered funding seatCount"
+);
+check(recoveredFundingSeat.alerts.indexOf(fundingAlert) !== -1, "funding alert preserved");
+
+const failedFunding = {
+  seat: "failed-funding",
+  alerts: [],
+  positions: [],
+  funding_accrual_status: "failed_closed",
+};
+check(api.fleetFlags([failedFunding], [], {}).funding.seatCount === 1, "failed_closed counts");
+
+const unknownFunding = {
+  seat: "unknown-funding",
+  alerts: [],
+  positions: [],
+  funding_accrual_status: "unknown",
+};
+check(api.fleetFlags([unknownFunding], [], {}).funding.seatCount === 1, "unknown funding counts");
+
+const blankFunding = {
+  seat: "blank-funding",
+  alerts: [],
+  positions: [],
+  funding_accrual_status: "",
+};
+check(api.fleetFlags([blankFunding], [], {}).funding.seatCount === 1, "blank funding status counts");
+
+const alertOnlyFunding = {
+  seat: "alert-funding",
+  alerts: [fundingAlert],
+  positions: [],
+};
+check(api.fleetFlags([alertOnlyFunding], [], {}).funding.seatCount === 1, "alert-only funding counts");
+
+const unresolvedApplied = {
+  seat: "unresolved-applied",
+  alerts: [fundingAlert],
+  positions: [],
+  funding_accrual_status: "applied",
+  unresolved_funding_positions: ["pos-abc"],
+};
+const unresolvedFlags = api.fleetFlags([unresolvedApplied], [], {});
+check(unresolvedFlags.funding.seatCount === 1, "unresolved with applied counts");
+check(
+  unresolvedFlags.funding.reason.indexOf("unresolved funding positions remain") !== -1,
+  "unresolved reason not SOFR history"
+);
+
+const sofrRecovered = {
+  seat: "sofr-recovered",
+  alerts: ["Paper mark unavailable for SOFR_2027-03: tradable SOFR curve unavailable"],
+  positions: [
+    { instrument: "SOFR_2027-03", mark_status: "ok", mark_price: 4.39 },
+  ],
+};
+const sofrFleet = api.fleetFlags([sofrRecovered], [], {});
+check(sofrFleet.paperMarks.length === 0, "recovered SOFR not in fleet");
+check(api.bookFlagCount(sofrRecovered) === 0, "recovered SOFR bookFlagCount");
+
+const nzReason = "NZ rates are unavailable (latest_observation=None)";
+const nzAlert = "Paper mark unavailable for NZ-US_10Y: " + nzReason;
+const nzBook = {
+  seat: "nz-miss",
+  alerts: [nzAlert, nzAlert, nzAlert],
+  positions: [
+    {
+      instrument: "NZ-US_10Y",
+      mark_status: "unavailable",
+      mark_price: null,
+      mark_unavailable_reason: nzReason,
+    },
+  ],
+};
+const nzFleet = api.fleetFlags([nzBook], [], {});
+check(nzFleet.paperMarks.length === 1, "nz one fleet row");
+check(nzFleet.paperMarks[0].count === 3, "nz duplicate count");
+check(api.bookFlagCount(nzBook) > 0, "nz flagged filter");
+
+const closedPaper = {
+  seat: "closed-paper",
+  alerts: [nzAlert],
+  positions: [],
+};
+check(api.fleetFlags([closedPaper], [], {}).paperMarks.length === 0, "closed paper fleet");
+check(closedPaper.alerts.indexOf(nzAlert) !== -1, "closed paper alert preserved");
+
+const missingStatusAlert = {
+  seat: "missing-status-alert",
+  alerts: ["Paper mark unavailable for SOFR_2027-03: tradable SOFR curve unavailable"],
+  positions: [{ instrument: "SOFR_2027-03", mark_price: 4.39 }],
+};
+check(api.bookFlagCount(missingStatusAlert) === 1, "missing status with alert flagged");
+
+const missingStatusClean = {
+  seat: "missing-status-clean",
+  alerts: [],
+  positions: [{ instrument: "SOFR_2027-03", mark_price: 4.39 }],
+};
+check(api.bookFlagCount(missingStatusClean) === 0, "legacy healthy not flagged");
+
+const missingPrice = {
+  seat: "missing-price",
+  alerts: [],
+  positions: [{ instrument: "SOFR_2027-03", mark_price: null }],
+};
+check(api.bookFlagCount(missingPrice) === 1, "missing price flagged");
+
+const multiLegBad = {
+  seat: "multi-leg-bad",
+  alerts: [],
+  positions: [
+    {
+      instrument: "SOFR-CORRA_2Y_2027H1",
+      mark_status: "ok",
+      mark_price: 140.0,
+      legs: [
+        { instrument: "SOFR_2027-03", mark_status: "ok", mark_rate: 4.4 },
+        { instrument: "CORRA_2027-03", mark_status: "unavailable", mark_rate: null },
+      ],
+    },
+  ],
+};
+check(api.bookFlagCount(multiLegBad) === 1, "multi-leg bad leg flagged");
+
+const multiLegOk = {
+  seat: "multi-leg-ok",
+  alerts: [],
+  positions: [
+    {
+      instrument: "SOFR-CORRA_2Y_2027H1",
+      mark_status: "ok",
+      mark_price: 140.0,
+      legs: [
+        { instrument: "SOFR_2027-03", mark_status: "ok", mark_rate: 4.4 },
+        { instrument: "CORRA_2027-03", mark_status: "ok", mark_rate: 3.0 },
+      ],
+    },
+  ],
+};
+check(api.bookFlagCount(multiLegOk) === 0, "multi-leg all ok not flagged");
+
+function seatRows(raw) {
+  return Object.keys(raw.seats).map(function (key) {
+    const row = raw.seats[key];
+    return Object.assign({ seat: row.seat || key }, row);
+  });
+}
+
+function pmRows(raw) {
+  return Object.keys(raw.pms).map(function (key) {
+    const row = raw.pms[key];
+    return Object.assign({ pm_id: row.pm_id || key }, row);
+  });
+}
+
+const overnightRaw = JSON.parse(fs.readFileSync("data/overnight/books/latest.json", "utf8"));
+const pmRaw = JSON.parse(fs.readFileSync("data/pm/books/latest.json", "utf8"));
+const canonicalSeats = seatRows(overnightRaw);
+const canonicalPms = pmRows(pmRaw);
+const oct30 = api.fleetFlags(canonicalSeats, canonicalPms, {});
+check(oct30.funding.seatCount === 0, "oct30 funding seats " + oct30.funding.seatCount);
+check(oct30.funding.pmCount === 0, "oct30 funding pms " + oct30.funding.pmCount);
+check(oct30.paperMarks.length === 1, "oct30 paper rows " + oct30.paperMarks.length);
+check(oct30.paperMarks[0].id === "pragmatist", "oct30 paper book");
+check(oct30.paperMarks[0].instrument === "NZ-US_10Y", "oct30 paper instrument");
+check(oct30.paperMarks[0].count === 10, "oct30 paper count " + oct30.paperMarks[0].count);
+check(oct30.paperMarks[0].reason.indexOf("NZ rates are unavailable") !== -1, "oct30 paper reason");
+
+canonicalSeats.forEach(function (seat) {
+  check(seat.funding_accrual_status === "applied", seat.seat + " funding applied");
+});
+canonicalPms.forEach(function (pm) {
+  check(pm.funding_accrual_status === "applied", pm.pm_id + " funding applied");
+});
+
+function findSeat(id) {
+  return canonicalSeats.find(function (row) { return row.seat === id; });
+}
+
+["mean-reverter", "perma-bull", "rate-hawk"].forEach(function (id) {
+  const seat = findSeat(id);
+  const sofr = (seat.positions || []).find(function (p) {
+    return p.instrument === "SOFR_2027-03" || p.instrument === "SOFR_2027-09";
+  });
+  check(sofr && sofr.mark_status === "ok", id + " SOFR mark ok");
+});
+
+const traderFlagged = canonicalSeats.filter(function (seat) {
+  return api.bookFlagCount(seat) > 0;
+});
+check(traderFlagged.length === 1 && traderFlagged[0].seat === "value-guy", "oct30 trader flagged");
+check(api.bookFlagCount(traderFlagged[0]) === 1, "value-guy flag count");
+
+const pmFlagged = canonicalPms.filter(function (pm) {
+  return api.bookFlagCount(pm) > 0;
+});
+check(pmFlagged.length === 1 && pmFlagged[0].pm_id === "pragmatist", "oct30 pm flagged");
+check(api.bookFlagCount(pmFlagged[0]) === 2, "pragmatist flag count");
 
 const changes = [
   { at: "2026-09-19T22:36:50.082404-04:00", instrument: "CORRA_2027-03", seat: "a", action: "OPEN" },

@@ -304,21 +304,206 @@
     return { kind: "watch", text: raw };
   }
 
+  function unresolvedFundingList(book) {
+    var list = book && book.unresolved_funding_positions;
+    return Array.isArray(list) ? list : [];
+  }
+
+  function fundingAlertFromBook(book) {
+    var found = null;
+    (book && book.alerts || []).forEach(function (alert) {
+      var item = classifyAlert(alert);
+      if (item.kind === "funding") found = item;
+    });
+    return found;
+  }
+
+  function isFundingActive(book) {
+    if (!book) return false;
+    if (unresolvedFundingList(book).length > 0) return true;
+    var status = book.funding_accrual_status;
+    if (status === undefined || status === null) return !!fundingAlertFromBook(book);
+    return status !== "applied";
+  }
+
+  function fundingActiveReason(book) {
+    var status = book.funding_accrual_status;
+    var unresolved = unresolvedFundingList(book);
+    var alert = fundingAlertFromBook(book);
+    if (status !== undefined && status !== null && status !== "applied") {
+      return alert && alert.reason ? alert.reason : (String(status) || "funding accrual not applied");
+    }
+    if (status === "applied" && unresolved.length > 0) {
+      return "unresolved funding positions remain";
+    }
+    if (alert && alert.reason) return alert.reason;
+    return "";
+  }
+
+  function legExplicitlyHealthy(leg) {
+    if (!leg || typeof leg !== "object") return false;
+    if (leg.mark_status !== "ok") return false;
+    if (!finite(leg.mark_rate) && !finite(leg.mark_price)) return false;
+    if (leg.mark_fx_status !== undefined && leg.mark_fx_status !== null && leg.mark_fx_status !== "" && leg.mark_fx_status !== "ok") {
+      return false;
+    }
+    if (leg.currency && leg.currency !== "USD" && !finite(leg.mark_fx_usd_per_unit)) return false;
+    return true;
+  }
+
+  function positionExplicitlyHealthy(pos) {
+    if (!pos || typeof pos !== "object") return false;
+    if (pos.mark_status !== "ok") return false;
+    if (!finite(pos.mark_price)) return false;
+    if (pos.mark_fx_status !== undefined && pos.mark_fx_status !== null && pos.mark_fx_status !== "" && pos.mark_fx_status !== "ok") {
+      return false;
+    }
+    var legs = pos.legs;
+    if (Array.isArray(legs) && legs.length > 0) {
+      for (var i = 0; i < legs.length; i++) {
+        if (!legExplicitlyHealthy(legs[i])) return false;
+      }
+    }
+    return true;
+  }
+
+  function positionIsLegacyHealthyShape(pos) {
+    if (!pos || typeof pos !== "object") return false;
+    var status = pos.mark_status;
+    var hasStatus = status !== undefined && status !== null && status !== "";
+    if (hasStatus) return false;
+    if (!finite(pos.mark_price)) return false;
+    var legs = pos.legs;
+    if (Array.isArray(legs) && legs.length > 0) return false;
+    var fx = pos.mark_fx_status;
+    return fx === undefined || fx === null || fx === "";
+  }
+
+  function positionIsCurrentPaperProblem(pos) {
+    if (!pos || typeof pos !== "object") return false;
+    if (positionExplicitlyHealthy(pos)) return false;
+    if (positionIsLegacyHealthyShape(pos)) return false;
+    var status = pos.mark_status;
+    var hasStatus = status !== undefined && status !== null && status !== "";
+    if (hasStatus && status !== "ok") return true;
+    if (status === "ok" && !finite(pos.mark_price)) return true;
+    if (Array.isArray(pos.legs) && pos.legs.length > 0) {
+      for (var i = 0; i < pos.legs.length; i++) {
+        if (!legExplicitlyHealthy(pos.legs[i])) return true;
+      }
+    }
+    if (pos.mark_fx_status !== undefined && pos.mark_fx_status !== null && pos.mark_fx_status !== "" && pos.mark_fx_status !== "ok") {
+      return true;
+    }
+    if (!hasStatus && !finite(pos.mark_price)) return true;
+    return false;
+  }
+
+  function bookHasInstrument(book, instrument) {
+    return !!positionMatchingInstrument(book, instrument);
+  }
+
+  function positionMatchingInstrument(book, instrument) {
+    var positions = book && book.positions;
+    if (!Array.isArray(positions)) return null;
+    for (var i = 0; i < positions.length; i++) {
+      var p = positions[i];
+      if (p.instrument === instrument) return p;
+      if (Array.isArray(p.legs)) {
+        for (var j = 0; j < p.legs.length; j++) {
+          if (p.legs[j].instrument === instrument) return p;
+        }
+      }
+    }
+    return null;
+  }
+
+  function isPaperAlertActive(book, item) {
+    if (!Array.isArray(book.positions)) return true;
+    if (!bookHasInstrument(book, item.instrument)) return false;
+    var pos = positionMatchingInstrument(book, item.instrument);
+    return !positionExplicitlyHealthy(pos);
+  }
+
+  function paperProblemReason(pos, fallbackReason) {
+    if (pos && pos.mark_unavailable_reason) return String(pos.mark_unavailable_reason);
+    if (fallbackReason) return fallbackReason;
+    if (pos && pos.mark_status && pos.mark_status !== "ok") return String(pos.mark_status);
+    if (pos && pos.mark_fx_status && pos.mark_fx_status !== "ok") return "FX mark " + String(pos.mark_fx_status);
+    return "paper mark unavailable";
+  }
+
+  function collectActivePaperProblems(book) {
+    var problems = [];
+    var seen = {};
+    var positionsKnown = Array.isArray(book && book.positions);
+
+    function addProblem(instrument, reason, increment) {
+      var key = instrument + "|" + reason;
+      if (seen[key]) {
+        seen[key].count += increment || 1;
+        return;
+      }
+      var row = { instrument: instrument, reason: reason, count: increment || 1 };
+      seen[key] = row;
+      problems.push(row);
+    }
+
+    (book && book.alerts || []).forEach(function (alert) {
+      var item = classifyAlert(alert);
+      if (item.kind !== "paper_mark") return;
+      if (!isPaperAlertActive(book, item)) return;
+      var pos = positionMatchingInstrument(book, item.instrument);
+      var reason = paperProblemReason(pos, item.reason);
+      addProblem(item.instrument, reason, 1);
+    });
+
+    if (positionsKnown) {
+      (book.positions || []).forEach(function (pos) {
+        if (!positionIsCurrentPaperProblem(pos)) return;
+        var instrument = pos.instrument;
+        if (!instrument) return;
+        var reason = paperProblemReason(pos, "");
+        var key = instrument + "|" + reason;
+        if (seen[key]) return;
+        addProblem(instrument, reason, 1);
+      });
+    }
+
+    return problems;
+  }
+
+  function bookPnlUnavailable(row) {
+    if (row && row.pnl_unavailable) return true;
+    if (Array.isArray(row && row.positions)) {
+      for (var i = 0; i < row.positions.length; i++) {
+        if (row.positions[i].pnl_unavailable === true) return true;
+      }
+    }
+    return false;
+  }
+
   function bookFlagCount(row) {
     var count = 0;
     var seen = {};
+    collectActivePaperProblems(row).forEach(function (problem) {
+      var key = "paper_mark|" + problem.instrument + "|" + problem.reason;
+      if (seen[key]) return;
+      seen[key] = true;
+      count += 1;
+    });
     var alerts = (row && row.alerts) || [];
     for (var i = 0; i < alerts.length; i++) {
       var item = classifyAlert(alerts[i]);
-      if (item.kind !== "paper_mark" && item.kind !== "reduced_without_price") continue;
-      var key = item.kind + "|" + (item.instrument || item.positionId || "") + "|" + (item.reason || "");
-      if (seen[key]) continue;
-      seen[key] = true;
+      if (item.kind !== "reduced_without_price") continue;
+      var rkey = item.kind + "|" + (item.positionId || "") + "|" + (item.reason || "");
+      if (seen[rkey]) continue;
+      seen[rkey] = true;
       count += 1;
     }
     if (row && row.risk_stopped) count += 1;
     if (row && row.risk_stop_pending) count += 1;
-    if (row && row.pnl_unavailable) count += 1;
+    if (bookPnlUnavailable(row)) count += 1;
     return count;
   }
 
@@ -336,7 +521,7 @@
       seen[key].count += 1;
       return;
     }
-    row.count = 1;
+    if (!finite(row.count)) row.count = 1;
     seen[key] = row;
     list.push(row);
   }
@@ -357,22 +542,26 @@
     function takeBook(book, kind) {
       var id = kind === "pm" ? book.pm_id : book.seat;
       var label = kind === "pm" ? (book.label || displayName(book.pm_id)) : displayName(book.seat);
+      if (isFundingActive(book)) {
+        if (kind === "pm") fundingPms[id] = true;
+        else fundingSeats[id] = true;
+        var reason = fundingActiveReason(book);
+        if (!fundingReason && reason) fundingReason = reason;
+      }
+      collectActivePaperProblems(book).forEach(function (problem) {
+        pushUnique(paper, paperSeen, kind + "|" + id + "|" + problem.instrument + "|" + problem.reason, {
+          book: kind,
+          id: id,
+          label: label,
+          instrument: problem.instrument,
+          human: humaniseInstrument(problem.instrument),
+          reason: problem.reason,
+          count: problem.count
+        });
+      });
       (book.alerts || []).forEach(function (alert) {
         var item = classifyAlert(alert);
-        if (item.kind === "funding") {
-          if (kind === "pm") fundingPms[id] = true;
-          else fundingSeats[id] = true;
-          if (!fundingReason && item.reason) fundingReason = item.reason;
-        } else if (item.kind === "paper_mark") {
-          pushUnique(paper, paperSeen, kind + "|" + id + "|" + item.instrument + "|" + item.reason, {
-            book: kind,
-            id: id,
-            label: label,
-            instrument: item.instrument,
-            human: humaniseInstrument(item.instrument),
-            reason: item.reason
-          });
-        } else if (item.kind === "reduced_without_price") {
+        if (item.kind === "reduced_without_price") {
           pushUnique(reduced, reducedSeen, kind + "|" + id + "|" + item.positionId, {
             book: kind,
             id: id,
@@ -384,7 +573,7 @@
       });
       if (book.risk_stopped) riskStopped.push({ book: kind, id: id, label: label });
       if (book.risk_stop_pending) riskStopPending.push({ book: kind, id: id, label: label });
-      if (book.pnl_unavailable) pnlUnavailable.push({ book: kind, id: id, label: label });
+      if (bookPnlUnavailable(book)) pnlUnavailable.push({ book: kind, id: id, label: label });
       if (kind === "pm" && book.review_status === "stale") staleReviews.push({ id: id, label: label });
     }
 
@@ -1017,8 +1206,11 @@
   function alertBuckets(row) {
     var flags = [];
     var watches = [];
+    var history = [];
     var seenFlag = {};
     var seenWatch = {};
+    var seenHistory = {};
+    var fundingShown = false;
     ((row && row.alerts) || []).forEach(function (alert) {
       var item = classifyAlert(alert);
       if (item.kind === "watch") {
@@ -1027,23 +1219,79 @@
         watches.push({ text: humaniseWatch(alert), raw: String(alert) });
         return;
       }
-      var key = item.kind + "|" + (item.instrument || item.positionId || "") + "|" + (item.reason || "");
-      if (seenFlag[key]) {
-        seenFlag[key].count += 1;
+      if (item.kind === "funding") {
+        if (isFundingActive(row)) {
+          if (!fundingShown) {
+            fundingShown = true;
+            var freason = fundingActiveReason(row);
+            var fline = "Funding accrual failed closed. " + humaniseDiagnostic(freason || item.reason);
+            flags.push({ line: fline, raw: "", count: 1 });
+          }
+        } else {
+          if (seenHistory[item.text]) return;
+          seenHistory[item.text] = true;
+          history.push({
+            line: "Funding accrual failed closed. " + humaniseDiagnostic(item.reason),
+            raw: item.text,
+            count: 1
+          });
+        }
         return;
       }
-      var line = item.text;
-      if (item.kind === "funding") line = "Funding accrual failed closed. " + humaniseDiagnostic(item.reason);
       if (item.kind === "paper_mark") {
-        line = "Paper mark unavailable for " + humaniseInstrument(item.instrument) + ": " + humaniseDiagnostic(item.reason);
+        if (isPaperAlertActive(row, item)) {
+          var pos = positionMatchingInstrument(row, item.instrument);
+          var reason = paperProblemReason(pos, item.reason);
+          var key = item.kind + "|" + item.instrument + "|" + reason;
+          if (seenFlag[key]) {
+            seenFlag[key].count += 1;
+            return;
+          }
+          var pline = "Paper mark unavailable for " + humaniseInstrument(item.instrument) + ": " + humaniseDiagnostic(reason);
+          seenFlag[key] = { line: pline, raw: item.instrument || "", count: 1 };
+          flags.push(seenFlag[key]);
+        } else {
+          if (seenHistory[item.text]) return;
+          seenHistory[item.text] = true;
+          history.push({
+            line: "Paper mark unavailable for " + humaniseInstrument(item.instrument) + ": " + humaniseDiagnostic(item.reason),
+            raw: item.text,
+            count: 1
+          });
+        }
+        return;
       }
-      seenFlag[key] = { line: line, raw: item.instrument || item.positionId || "", count: 1 };
-      flags.push(seenFlag[key]);
+      if (item.kind === "reduced_without_price") {
+        var rkey = item.kind + "|" + (item.positionId || "") + "|" + (item.reason || "");
+        if (seenFlag[rkey]) {
+          seenFlag[rkey].count += 1;
+          return;
+        }
+        seenFlag[rkey] = { line: item.text, raw: item.positionId || "", count: 1 };
+        flags.push(seenFlag[rkey]);
+      }
     });
+    if (isFundingActive(row) && !fundingShown) {
+      var onlyReason = fundingActiveReason(row);
+      flags.push({
+        line: "Funding accrual failed closed. " + humaniseDiagnostic(onlyReason || "funding accrual not applied"),
+        raw: "",
+        count: 1
+      });
+    }
+    if (Array.isArray(row && row.positions)) {
+      collectActivePaperProblems(row).forEach(function (problem) {
+        var key = "paper_mark|" + problem.instrument + "|" + problem.reason;
+        if (seenFlag[key]) return;
+        var line = "Paper mark unavailable for " + humaniseInstrument(problem.instrument) + ": " + humaniseDiagnostic(problem.reason);
+        seenFlag[key] = { line: line, raw: problem.instrument, count: problem.count };
+        flags.push(seenFlag[key]);
+      });
+    }
     if (row && row.risk_stopped) flags.push({ line: "Risk stopped", raw: "", count: 1 });
     if (row && row.risk_stop_pending) flags.push({ line: "Risk stop pending", raw: "", count: 1 });
-    if (row && row.pnl_unavailable) flags.push({ line: "P&L unavailable", raw: "", count: 1 });
-    return { flags: flags, watches: watches };
+    if (bookPnlUnavailable(row)) flags.push({ line: "P&L unavailable", raw: "", count: 1 });
+    return { flags: flags, watches: watches, history: history };
   }
 
   function listHtml(items, empty) {
@@ -1085,6 +1333,9 @@
       proseBlock("Book invalidation:", seat.invalidation, 500) +
       '<div class="tb-block"><span class="mw-label">Watch items</span>' + listHtml(buckets.watches, "No watch items.") + "</div>" +
       '<div class="tb-block"><span class="mw-label">Risk flags</span>' + listHtml(buckets.flags, "No risk flags on this seat.") + "</div>" +
+      (buckets.history && buckets.history.length
+        ? '<div class="tb-block"><span class="mw-label">Earlier alerts</span>' + listHtml(buckets.history, "") + "</div>"
+        : "") +
       pitchHtml(seat.required_pitch) +
       fundingDetail(seat) +
       "</div></td></tr>";
@@ -1269,6 +1520,9 @@
       review +
       '<div class="tb-block"><span class="mw-label">Watch items</span>' + listHtml(buckets.watches, "No watch items.") + "</div>" +
       '<div class="tb-block"><span class="mw-label">Risk flags</span>' + listHtml(buckets.flags, "No risk flags on this book.") + "</div>" +
+      (buckets.history && buckets.history.length
+        ? '<div class="tb-block"><span class="mw-label">Earlier alerts</span>' + listHtml(buckets.history, "") + "</div>"
+        : "") +
       fundingDetail(pm) +
       "</div></td></tr>";
   }

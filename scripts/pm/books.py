@@ -1174,6 +1174,56 @@ def _public_alerts(alerts: Any) -> list[str]:
 
 def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
     validate_books(books)
+
+    def public_position(p: dict[str, Any]) -> dict[str, Any]:
+        row = {
+            "position_id": p["position_id"],
+            "instrument": p["instrument"],
+            "asset_class": p["asset_class"],
+            "side": p["side"],
+            "notional_usd": p["notional_usd"],
+            "entry_price": p.get("entry_price"),
+            "mark_price": p.get("mark_price"),
+            "entry_price_source": p.get("entry_price_source"),
+            "entry_price_as_of": p.get("entry_price_as_of"),
+            "mark_price_source": p.get("mark_price_source"),
+            "mark_price_as_of": p.get("mark_price_as_of"),
+            "mark_status": p.get("mark_status"),
+            "mark_unavailable_reason": p.get("mark_unavailable_reason"),
+            "pnl_unavailable": p.get("pnl_unavailable"),
+            "mark_fx_status": p.get("mark_fx_status"),
+            "mark_fx_usd_per_unit": p.get("mark_fx_usd_per_unit"),
+            "paper_expression": p.get("paper_expression"),
+            "locked_expression_family": p.get("locked_expression_family"),
+            "opened_at": p.get("opened_at"),
+            "opened_run_id": p.get("opened_run_id"),
+            "thesis": _public_copy(p.get("thesis"), 500),
+            "invalidation": _public_copy(p.get("invalidation"), 400),
+            "funding_basis": p.get("funding_basis"),
+            "funding_basis_status": p.get("funding_basis_status"),
+            "funding_draw_usd": p.get("funding_draw_usd"),
+            "risk_capital_usd": p.get("risk_capital_usd"),
+            "risk_capital_method": p.get("risk_capital_method"),
+            "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
+            "hedge_of": p.get("hedge_of"),
+        }
+        legs = p.get("legs")
+        if isinstance(legs, list):
+            row["legs"] = [
+                {
+                    "instrument": leg.get("instrument"),
+                    "mark_status": leg.get("mark_status"),
+                    "mark_rate": leg.get("mark_rate"),
+                    "mark_price": leg.get("mark_price"),
+                    "currency": leg.get("currency"),
+                    "mark_fx_status": leg.get("mark_fx_status"),
+                    "mark_fx_usd_per_unit": leg.get("mark_fx_usd_per_unit"),
+                }
+                for leg in legs
+                if isinstance(leg, dict)
+            ]
+        return row
+
     rows = []
     for pm_id in PM_IDS:
         item = books["pms"][pm_id]
@@ -1210,6 +1260,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "funding_convention": item.get("funding_convention", FUNDING_CONVENTION),
                 "funding_source": item.get("funding_source", FUNDING_SOURCE),
                 "funding_basis_status": item.get("funding_basis_status"),
+                "funding_accrual_status": item.get("funding_accrual_status"),
                 "unresolved_funding_positions": item.get("unresolved_funding_positions") or [],
                 "realized_pnl_usd": item["realized_pnl_usd"],
                 "unrealized_pnl_usd": item["unrealized_pnl_usd"],
@@ -1219,35 +1270,7 @@ def public_pm_view(books: dict[str, Any]) -> dict[str, Any]:
                 "thesis": _public_copy(item.get("thesis"), 700),
                 "invalidation": _public_copy(item.get("invalidation"), 500),
                 "alerts": _public_alerts(item.get("alerts")),
-                "positions": [
-                    {
-                        "position_id": p["position_id"],
-                        "instrument": p["instrument"],
-                        "asset_class": p["asset_class"],
-                        "side": p["side"],
-                        "notional_usd": p["notional_usd"],
-                        "entry_price": p.get("entry_price"),
-                        "mark_price": p.get("mark_price"),
-                        "entry_price_source": p.get("entry_price_source"),
-                        "entry_price_as_of": p.get("entry_price_as_of"),
-                        "mark_price_source": p.get("mark_price_source"),
-                        "mark_price_as_of": p.get("mark_price_as_of"),
-                        "paper_expression": p.get("paper_expression"),
-                        "locked_expression_family": p.get("locked_expression_family"),
-                        "opened_at": p.get("opened_at"),
-                        "opened_run_id": p.get("opened_run_id"),
-                        "thesis": _public_copy(p.get("thesis"), 500),
-                        "invalidation": _public_copy(p.get("invalidation"), 400),
-                        "funding_basis": p.get("funding_basis"),
-                        "funding_basis_status": p.get("funding_basis_status"),
-                        "funding_draw_usd": p.get("funding_draw_usd"),
-                        "risk_capital_usd": p.get("risk_capital_usd"),
-                        "risk_capital_method": p.get("risk_capital_method"),
-                        "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
-                        "hedge_of": p.get("hedge_of"),
-                    }
-                    for p in item["positions"]
-                ],
+                "positions": [public_position(p) for p in item["positions"]],
             }
         )
     comparison = [

@@ -284,6 +284,43 @@ class PMDashboardTests(unittest.TestCase):
         self.assertEqual(out["traderTotal"], 7500)
         self.assertEqual(out["pmTotal"], 2050)
 
+    def test_public_book_projection_passes_mark_and_funding_fields(self) -> None:
+        from scripts.overnight.books import public_books_view, validate_books as validate_trader_books
+        from scripts.pm.books import public_pm_view, validate_books as validate_pm_books
+
+        overnight = json.loads((REPO / "data/overnight/books/latest.json").read_text(encoding="utf-8"))
+        pm_books = json.loads((REPO / "data/pm/books/latest.json").read_text(encoding="utf-8"))
+        traders = public_books_view(validate_trader_books(overnight))
+        pms = public_pm_view(validate_pm_books(pm_books))
+
+        for seat in traders["seats"]:
+            self.assertEqual(seat.get("funding_accrual_status"), "applied")
+            self.assertIsInstance(seat.get("unresolved_funding_positions"), list)
+
+        for pm in pms["pms"]:
+            self.assertEqual(pm.get("funding_accrual_status"), "applied")
+
+        funding_prefix = "funding_accrual_failed_closed:"
+        self.assertTrue(
+            any(
+                any(str(alert).startswith(funding_prefix) for alert in seat.get("alerts") or [])
+                for seat in traders["seats"]
+            )
+        )
+
+        for seat in traders["seats"]:
+            for pos in seat.get("positions") or []:
+                if pos.get("instrument") in {"SOFR_2027-03", "SOFR_2027-09"}:
+                    self.assertEqual(pos.get("mark_status"), "ok")
+
+        pragmatist = next(row for row in pms["pms"] if row["pm_id"] == "pragmatist")
+        nz = next(row for row in pragmatist["positions"] if row["instrument"] == "NZ-US_10Y")
+        self.assertEqual(nz.get("mark_status"), "unavailable")
+        self.assertIsNone(nz.get("mark_price"))
+        self.assertTrue(
+            any(str(alert).startswith(funding_prefix) for alert in pragmatist.get("alerts") or [])
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

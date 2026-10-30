@@ -1233,6 +1233,55 @@ def validate_books(books: dict[str, Any]) -> dict[str, Any]:
 
 def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
     """Dashboard-safe projection: no secrets, no private research."""
+
+    def public_position(p: dict[str, Any]) -> dict[str, Any]:
+        row = {
+            "position_id": p["position_id"],
+            "instrument": p["instrument"],
+            "asset_class": p["asset_class"],
+            "side": p["side"],
+            "notional_usd": p["notional_usd"],
+            "entry_price": p.get("entry_price"),
+            "mark_price": p.get("mark_price"),
+            "entry_price_source": p.get("entry_price_source"),
+            "entry_price_as_of": p.get("entry_price_as_of"),
+            "mark_price_source": p.get("mark_price_source"),
+            "mark_price_as_of": p.get("mark_price_as_of"),
+            "mark_status": p.get("mark_status"),
+            "mark_unavailable_reason": p.get("mark_unavailable_reason"),
+            "pnl_unavailable": p.get("pnl_unavailable"),
+            "mark_fx_status": p.get("mark_fx_status"),
+            "mark_fx_usd_per_unit": p.get("mark_fx_usd_per_unit"),
+            "paper_expression": sanitize_public_value(p.get("paper_expression"), max_chars=500),
+            "opened_at": p.get("opened_at"),
+            "opened_run_id": p.get("opened_run_id"),
+            "thesis": sanitize_public_prose(p.get("thesis"), max_chars=500, fallback=""),
+            "invalidation": sanitize_public_prose(p.get("invalidation"), max_chars=400, fallback=""),
+            "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
+            "valuation_method": p.get("valuation_method"),
+            "isolated": bool(p.get("isolated")),
+            "structure_label": p.get("structure_label"),
+            "risk_capital_usd": p.get("risk_capital_usd"),
+            "risk_capital_method": p.get("risk_capital_method"),
+            "hedge_of": p.get("hedge_of"),
+        }
+        legs = p.get("legs")
+        if isinstance(legs, list):
+            row["legs"] = [
+                {
+                    "instrument": leg.get("instrument"),
+                    "mark_status": leg.get("mark_status"),
+                    "mark_rate": leg.get("mark_rate"),
+                    "mark_price": leg.get("mark_price"),
+                    "currency": leg.get("currency"),
+                    "mark_fx_status": leg.get("mark_fx_status"),
+                    "mark_fx_usd_per_unit": leg.get("mark_fx_usd_per_unit"),
+                }
+                for leg in legs
+                if isinstance(leg, dict)
+            ]
+        return row
+
     validate_books(books)
     seats = []
     changes = []
@@ -1257,6 +1306,8 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "funding_day_count": item.get("funding_day_count", FUNDING_DAY_COUNT),
                 "funding_convention": item.get("funding_convention", FUNDING_CONVENTION),
                 "funding_source": item.get("funding_source", FUNDING_SOURCE),
+                "funding_accrual_status": item.get("funding_accrual_status"),
+                "unresolved_funding_positions": item.get("unresolved_funding_positions") or [],
                 "net_pnl_usd": item.get("net_pnl_usd"),
                 "pnl_unavailable": item["pnl_unavailable"],
                 "conviction": item["conviction"],
@@ -1278,34 +1329,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "drawdown_usd": item.get("drawdown_usd"),
                 "risk_stopped": item.get("risk_stopped", False),
                 "risk_stop_pending": item.get("risk_stop_pending", False),
-                "positions": [
-                    {
-                        "position_id": p["position_id"],
-                        "instrument": p["instrument"],
-                        "asset_class": p["asset_class"],
-                        "side": p["side"],
-                        "notional_usd": p["notional_usd"],
-                        "entry_price": p.get("entry_price"),
-                        "mark_price": p.get("mark_price"),
-                        "entry_price_source": p.get("entry_price_source"),
-                        "entry_price_as_of": p.get("entry_price_as_of"),
-                        "mark_price_source": p.get("mark_price_source"),
-                        "mark_price_as_of": p.get("mark_price_as_of"),
-                        "paper_expression": sanitize_public_value(p.get("paper_expression"), max_chars=500),
-                        "opened_at": p.get("opened_at"),
-                        "opened_run_id": p.get("opened_run_id"),
-                        "thesis": sanitize_public_prose(p.get("thesis"), max_chars=500, fallback=""),
-                        "invalidation": sanitize_public_prose(p.get("invalidation"), max_chars=400, fallback=""),
-                        "unrealized_pnl_usd": p.get("unrealized_pnl_usd"),
-                        "valuation_method": p.get("valuation_method"),
-                        "isolated": bool(p.get("isolated")),
-                        "structure_label": p.get("structure_label"),
-                        "risk_capital_usd": p.get("risk_capital_usd"),
-                        "risk_capital_method": p.get("risk_capital_method"),
-                        "hedge_of": p.get("hedge_of"),
-                    }
-                    for p in item["positions"]
-                ],
+                "positions": [public_position(p) for p in item["positions"]],
                 "required_pitch": sanitize_public_value(item.get("required_pitch"), max_chars=700),
                 "risk_put_on": sanitize_public_value(item.get("risk_put_on"), max_chars=700),
             }
