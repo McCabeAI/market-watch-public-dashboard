@@ -63,6 +63,38 @@ class CaCpiSeptember2026ProvenanceTest(unittest.TestCase):
         self.assertEqual(u_cov["latest_reference_period"], "2026-09")
         self.assertEqual(u_cov["latest_release_date"], "2026-10-19")
 
+    def test_later_cpi_coverage_does_not_revert_to_september(self) -> None:
+        payload = copy.deepcopy(self.history)
+        for key in ("Inflation.headline", "Inflation.underlying"):
+            comp = payload["components"][key]
+            sept = next(o for o in comp["observations"] if o["reference_period"] == "2026-09")
+            sept["release_date"] = "2026-09-14"
+            comp["observations"].append({
+                "reference_period": "2026-10", "value": 3.0,
+                "release_date": "2026-11-20", "series_id": sept["series_id"],
+            })
+            comp["coverage"].update({
+                "latest_reference_period": "2026-10",
+                "latest_release_date": "2026-11-20",
+                "expected_periods_in_window": 14,
+                "observed_periods_in_window": 28 if key.endswith("underlying") else 14,
+            })
+            current = copy.deepcopy(comp["coverage"])
+            self.assertTrue(repair_ca_cpi_september_2026_provenance(payload))
+            self.assertEqual(comp["coverage"], current)
+            self.assertEqual(sept["release_date"], "2026-10-19")
+            self.assertFalse(repair_ca_cpi_september_2026_provenance(payload))
+
+    def test_missing_september_does_not_fabricate_coverage(self) -> None:
+        payload = copy.deepcopy(self.history)
+        for key in ("Inflation.headline", "Inflation.underlying"):
+            comp = payload["components"][key]
+            comp["observations"] = [o for o in comp["observations"] if o.get("reference_period") != "2026-09"]
+            comp["coverage"]["latest_reference_period"] = "2026-08"
+            previous = copy.deepcopy(comp)
+            repair_ca_cpi_september_2026_provenance(payload)
+            self.assertEqual(comp, previous)
+
     def test_repair_idempotent_and_preserves_values(self) -> None:
         payload = copy.deepcopy(self.history)
         payload["components"]["Inflation.headline"]["observations"][-1][

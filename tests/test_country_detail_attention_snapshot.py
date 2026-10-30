@@ -202,6 +202,27 @@ class CountryDetailAttentionSnapshotTest(unittest.TestCase):
         if nz_findings:
             self.assertEqual(nz_findings[0]["observation_id"], fresh["observation_id"])
 
+    def test_dashboard_context_does_not_write_to_source_checkout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "not-created.json"
+            load_country_detail_context(
+                ROOT, snapshot_path=output, publication_as_of="2026-10-30"
+            )
+            self.assertFalse(output.exists())
+
+    def test_rejected_publication_day_not_restored_by_snapshot_merge(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            output = Path(tmp) / "snapshot.json"
+            save_snapshot(output, {"observations": {"bad": {
+                "publication_day": "2026-10-20", "first_seen_day": None,
+                "value": 1, "reference_period": "2026-09",
+            }}})
+            save_snapshot(output, {"observations": {"bad": {
+                "publication_day": None, "first_seen_day": None,
+                "value": 1, "reference_period": "2026-09",
+            }}})
+            self.assertIsNone(load_snapshot(output)["observations"]["bad"]["publication_day"])
+
     def test_load_country_detail_context_snapshot_round_trip(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             snap = Path(tmp) / "attention_snapshot.json"
@@ -209,11 +230,13 @@ class CountryDetailAttentionSnapshotTest(unittest.TestCase):
                 ROOT,
                 snapshot_path=snap,
                 publication_as_of="2026-10-30",
+                persist_snapshot=True,
             )
             second = load_country_detail_context(
                 ROOT,
                 snapshot_path=snap,
                 publication_as_of="2026-10-30",
+                persist_snapshot=True,
             )
             ca_second = second["attention"]["countries"]["CA"]
             snap_doc = load_snapshot(snap)

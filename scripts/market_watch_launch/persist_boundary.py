@@ -47,6 +47,7 @@ def finalization_persist_allowlist() -> tuple[str, ...]:
         "data/temperature_scores.json",
         *histories,
         "data/temperature_history/score_paths.json",
+        "data/country_detail/attention_snapshot.json",
     )
 
 
@@ -225,6 +226,11 @@ def stage_finalization_artifacts(
     root = Path(repo_root or ROOT)
     if refresh_score_paths:
         refresh_promoted_score_paths(root)
+        # Write the accepted attention baseline only during canonical finalization.
+        # Pages/research rendering remains read-only.
+        from scripts.apply_country_detail import load_country_detail_context
+
+        load_country_detail_context(root, persist_snapshot=True)
     return _stage_boundary(finalization_persist_allowlist(), repo_root=root, label="finalization")
 
 

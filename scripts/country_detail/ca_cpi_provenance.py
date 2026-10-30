@@ -25,15 +25,24 @@ def repair_ca_cpi_september_2026_provenance(history: dict[str, Any]) -> bool:
         if not isinstance(component, dict):
             continue
         observations = component.get("observations")
+        sept_in_hand = False
+        newest_observed_period = ""
         if isinstance(observations, list):
             for row in observations:
                 if not isinstance(row, dict):
                     continue
-                if row.get("reference_period") != _SEPTEMBER_2026:
+                period = str(row.get("reference_period") or "")
+                if len(period) == 7 and period[4] == "-":
+                    newest_observed_period = max(newest_observed_period, period)
+                if period != _SEPTEMBER_2026:
                     continue
+                sept_in_hand = True
                 if row.get("release_date") != _RELEASE_2026_10_19:
                     row["release_date"] = _RELEASE_2026_10_19
                     changed = True
+        if not sept_in_hand:
+            # Historical repair must not assert an absent September observation.
+            continue
         gaps = component.get("gaps")
         if isinstance(gaps, list):
             filtered = [
@@ -53,6 +62,10 @@ def repair_ca_cpi_september_2026_provenance(history: dict[str, Any]) -> bool:
             remaining_gaps = gaps if isinstance(gaps, list) else []
         coverage = component.get("coverage")
         if not isinstance(coverage, dict):
+            continue
+        # Historical September metadata must not overwrite an October+ summary.
+        held_latest = str(coverage.get("latest_reference_period") or "")
+        if max(held_latest, newest_observed_period) > _SEPTEMBER_2026:
             continue
         cov_updates: dict[str, Any] = {
             "latest_reference_period": _SEPTEMBER_2026,

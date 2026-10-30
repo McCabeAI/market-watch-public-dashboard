@@ -79,11 +79,10 @@ def load_snapshot(path: Path) -> dict:
 
 
 def _sticky_merge(existing: dict[str, dict], incoming: dict[str, dict]) -> dict[str, dict]:
-    """Fill a missing publication or first-seen day from the previous file.
+    """Retain first-seen evidence without restoring rejected publication dates.
 
-    A non-null incoming day wins. ``resolve_publication_day`` already keeps a
-    plausible stored day and drops an inherited stamp, so this merge must not
-    put that inherited stamp back over a corrected publisher date.
+    resolve_publication_day decides whether prior publication dates are credible.
+    Do not reintroduce a date it intentionally rejected as implausible.
     """
     merged = dict(incoming)
     for observation_id, prior in existing.items():
@@ -91,8 +90,6 @@ def _sticky_merge(existing: dict[str, dict], incoming: dict[str, dict]) -> dict[
         if record is None:
             merged[observation_id] = dict(prior)
             continue
-        if not record.get("publication_day") and prior.get("publication_day"):
-            record["publication_day"] = prior["publication_day"]
         if not record.get("first_seen_day") and prior.get("first_seen_day"):
             record["first_seen_day"] = prior["first_seen_day"]
     return merged

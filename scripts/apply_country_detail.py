@@ -64,11 +64,13 @@ def load_country_detail_context(
     observations_dir: Path | None = None,
     snapshot_path: Path | None = None,
     publication_as_of: str | None = None,
+    persist_snapshot: bool = False,
 ) -> dict:
     """Read-only projection, attention, and stored score state.
 
     Card age uses ``publication_as_of`` when given, otherwise today's New York
-    calendar day. It does not use the newest retrieval timestamp.
+    calendar day. It does not use the newest retrieval timestamp. Rendering is
+    read-only; only an explicit data-commit step can persist the snapshot.
     """
     root = root or ROOT
     if publication_as_of is None:
@@ -83,10 +85,11 @@ def load_country_detail_context(
         prior=prior,
         publication_as_of=publication_as_of,
     )
-    members: list[dict] = []
-    for country_payload in attention.get("countries", {}).values():
-        members.extend(country_payload.get("members") or [])
-    save_snapshot(snapshot_file, {"members": members})
+    if persist_snapshot:
+        members: list[dict] = []
+        for country_payload in attention.get("countries", {}).values():
+            members.extend(country_payload.get("members") or [])
+        save_snapshot(snapshot_file, {"members": members})
     scores = load_state(_scores_path(root))
     return {
         "projection": projection,
