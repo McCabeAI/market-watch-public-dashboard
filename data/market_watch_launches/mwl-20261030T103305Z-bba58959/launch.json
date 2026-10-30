@@ -4626,7 +4626,9 @@
         "handoff_status": "request_ready",
         "handoff_url": null,
         "live_model_calls": 0,
-        "live_provider_dispatched": false,
+        "live_provider_dispatched": true,
+        "provider_output_accepted": true,
+        "provider_run_url": null,
         "receipt_matches": false,
         "receipt_present": false,
         "remote_freeze_verified": true,
@@ -4643,36 +4645,63 @@
       },
       "finished_at": null,
       "input_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
-      "output_sha256": "f6a4d8fda72c32e860791fc9c6dd949e316abdbf031e1c33a6975adf07017461",
-      "reason": "awaiting_acp_one_shot_authority",
+      "output_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+      "reason": "provider_output_accepted",
       "source_run_url": null,
       "stage": "05_acp_handoff",
       "started_at": null,
-      "status": "blocked"
+      "status": "succeeded"
     },
     "06_acceptance": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "already_applied": true,
+        "applied": true,
+        "launch_id": "mwl-20261030T103305Z-bba58959",
+        "live_model_calls": 0,
+        "packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+        "pm_count": 3,
+        "review_id": "review-001",
+        "trader_seats": 14
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
+      "input_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+      "output_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
       "reason": null,
       "source_run_url": null,
       "stage": "06_acceptance",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     },
     "07_finalize": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "coverage": "PARTIAL",
+        "launch_id": "mwl-20261030T103305Z-bba58959",
+        "packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+        "partial": true,
+        "publication": {
+          "core_status": "ok",
+          "may_publish": true,
+          "reason": "core inputs are structurally valid"
+        },
+        "review_id": "review-001",
+        "score_promotion": {
+          "ok": true,
+          "promoted": true,
+          "score_state_sha256": "76bd5a7777ecdbe39b7aeb9dce958f55b5ab6b20a251fae06d2e9a6ea7f2db3f",
+          "scores_path": "/home/runner/work/market-watch-public-dashboard/market-watch-public-dashboard/data/temperature_scores.json"
+        },
+        "session_date": "2026-10-30"
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
+      "input_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+      "output_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
       "reason": null,
       "source_run_url": null,
       "stage": "07_finalize",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     },
     "08_pages": {
       "artifact": null,
@@ -4689,7 +4718,7 @@
   },
   "starting_pm_books_sha256": "b63c12c4a029fcf8baa2b4fa84cac4cfc3cd98db6b1cc96cf52ece0391aef513",
   "starting_trader_books_sha256": "316bacfcfaa3c7e511b91b33519d794a6265791f7e95a1ccde364e18459c1f23",
-  "status": "blocked",
+  "status": "running",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }
