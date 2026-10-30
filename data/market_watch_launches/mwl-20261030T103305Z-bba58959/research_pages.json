@@ -1,0 +1,322 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-10-30T10:51:13+00:00",
+      "release_sha256": "db6bb700b5a4fc283622903a360ffe94fe940c88ac1ddc86834c3f3af54a4094",
+      "run_attempt": "1",
+      "run_id": "41041507026",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/41041507026",
+      "site_sha256": "a5e543988bdd0e9d2ddd5aad8461aa0728aa86feb620b50ff410da7560c2411e"
+    }
+  ],
+  "launch_id": "mwl-20261030T103305Z-bba58959",
+  "launch_terminal": false,
+  "packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-10-29T06:34:20.123676-04:00",
+      "as_of": "2026-10-29T04:24:31.160680-04:00",
+      "books_run_id": "overnight-20261029",
+      "overnight_run_id": "overnight-20261029",
+      "packet_sha256": "5760fb04e6e857e185f309502b8f863cf94ea46a8533381cae1ce7766ba7f201"
+    },
+    "channel": "production",
+    "frozen_at": "2026-10-30T06:33:05.373685-04:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 14,
+        "partial": true
+      },
+      "as_of": "2026-10-30T06:33:05.373685-04:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 1,
+          "unattributed": 3,
+          "unverified_source": 12
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "cnbc",
+          "headline": "Indian AI infrastructure firm reportedly seeks to raise $3 billion of debt to buy Nvidia's next-generation chips",
+          "id": "news:f4c1bdc5bc1f09bf",
+          "published_at": "2026-10-30T04:19:14-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/30/nvidia-india-ai-chips-computing.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "discovery_source": "cnbc",
+          "headline": "Iran claims four tankers struck mines in Hormuz as strike fears grow after U.S. midterms",
+          "id": "news:f32caa9f83e3013d",
+          "published_at": "2026-10-30T03:12:49-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/30/iran-trump-hormuz-oil-middle-east-.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "JPY"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "cnbc",
+          "headline": "BOJ holds rates as underlying inflation aligns with 2% target for first time since 2013",
+          "id": "news:6187a2baff6b10d5",
+          "published_at": "2026-10-30T00:19:38-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/30/boj-inflation-target-rates.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "bloomberg",
+          "headline": "ECB Warns of Slow SRT Approvals if Banks Don\u2019t Keep Them Simple",
+          "id": "news:ba53f264939d27af",
+          "published_at": "2026-10-29T23:10:00-04:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-30/ecb-warns-of-slow-srt-approvals-if-banks-don-t-keep-them-simple",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "reuters_credit",
+          "headline": "Nvidia in talks to give credit support for Nscale's deal with Anthropic, The Information reports",
+          "id": "news:2908ac9944b30173",
+          "published_at": "2026-10-29T23:05:00-04:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/technology/nvidia-talks-give-credit-support-nscales-deal-with-anthropic-information-reports-2026-10-30/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "bloomberg",
+          "headline": "BOE Agents See Little Sign of Energy Shock Feeding Into Pay",
+          "id": "news:3dc4f9f0082cd09d",
+          "published_at": "2026-10-29T22:53:00-04:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-10-30/boe-agents-see-little-sign-of-energy-shock-feeding-into-pay",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "cnbc",
+          "headline": "Microsoft plans to raise $25 billion in debt as it pursues AI buildout",
+          "id": "news:f3032c67e91543ee",
+          "published_at": "2026-10-29T20:38:13-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/29/microsoft-25-billion-debt-offering.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "cnbc",
+          "headline": "Aon CEO warns AI data center insurance risks could threaten financing",
+          "id": "news:19c7c97454d7370a",
+          "published_at": "2026-10-29T16:12:29-04:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/10/29/aon-ai-data-center-insurance-financing.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-10-30T06:33:05.373685-04:00",
+      "news_family_digest": "624e1de9dff2229d5d3a8a987e2942f75452a09c3e0d82186ce5c3eecbabf63f",
+      "packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-10-30T06:33:05.373685-04:00",
+        "start": "2026-10-29T06:33:05.373685-04:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/freeze_binding.json",
+        "sha256": "7ac6848f6389cb99ae2135c503b71a73b2d39edb648ceb17be38336f17500e44"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/remote_freeze.json",
+        "sha256": "97c5de0a0f5f8f06abbf66d09e22c2e8bfad62479f0ce5ec75dd5434e0bb9c7c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/artifacts/00_authenticate.json",
+        "sha256": "908e9d88e4be75847f0479aac804f1bafd98b95ea5776378d12608427c43cf6d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/artifacts/01_ingest.json",
+        "sha256": "ade8cfeb16121e89363cad764615f5c2b704eafa1c15b07e20751b436d9b12cd"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/artifacts/02_acquire.json",
+        "sha256": "e8fb1cd914509b0eceeb8b66e8da06a42adabff68b46a5b575dee6709aca89ee"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/artifacts/03_quality_gate.json",
+        "sha256": "144941299dcc0d39935a139ba44d2698afb35f1f4c1634363fd847ee929c76f7"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/artifacts/04_freeze.json",
+        "sha256": "d6daf5e18338d928a2167a04a3b144eb486eab8e17e65d9ea16b79ec0958d323"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/temperature_scores.json",
+        "sha256": "76bd5a7777ecdbe39b7aeb9dce958f55b5ab6b20a251fae06d2e9a6ea7f2db3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/history/ca.json",
+        "sha256": "ae41e6b846399836999d31732d01d81c2a7dd30329a7f54088649f7d5003927e"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/history/ea.json",
+        "sha256": "ce9d1384af287c95c67db348dc4fd46e52a2c324673d4c5d8e4723a43259c240"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/history/jp.json",
+        "sha256": "9ee23b32ee992020ac34fdab2a62fbf7b603264e89b9d1cc11ffaf6cfbbc19bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/lineage/history/us.json",
+        "sha256": "d310dd98d37a99f804895c4f5eedf930cf61d6da5b971dfecbbcdaee2a3d5c92"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261030/reviews/review-001/evidence_snapshot.json",
+        "sha256": "224cc7620c8a51b77ec4f8132ca9b42606ec13efc61fa7f5c8ae62273806db9f"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "7c4b620d88def817dbd850304efb94ce4b97a64a98e75e4d0baf07a62190928b"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261029/assembled_dataset.json",
+        "sha256": "7f8110852fafc7f7ff18a5a3d8efd1731133fcdd1f2d01efe9d49417b2c72d11"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "629442d3a854d6b299885d3279b6dec47b0ee40d98e3a8548d2fecdaddb1786c"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "316bacfcfaa3c7e511b91b33519d794a6265791f7e95a1ccde364e18459c1f23"
+      }
+    ],
+    "launch_id": "mwl-20261030T103305Z-bba58959",
+    "market_state": {
+      "as_of": "2026-10-30T10:50:16Z",
+      "digest": "b6f0b5cab800c2636e215ae1abba9bfb7c243122c2ff78a6a5f9656ac8b4f028",
+      "generated_at": "2026-10-30T10:50:16Z"
+    },
+    "news": {
+      "age_label": "26 h before this freeze",
+      "as_of": "2026-10-29T04:24:31.160680-04:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261029",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261030",
+    "packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [
+        "macro:NZ"
+      ],
+      "blocked_sources": [
+        "NZ.Inflation.headline",
+        "NZ.Inflation.underlying"
+      ],
+      "coverage": "PARTIAL",
+      "outcome": "PASS",
+      "partial_series": [
+        "CA.Activity.gdp_domestic_demand",
+        "AU.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "EA",
+        "JP"
+      ]
+    },
+    "remote_freeze_commit": "9206a311127cf6784d739b0cf3c5d73920cc1548",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 10,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-10-30T10:33:05Z",
+      "inputs_last_ingested_at": "2026-10-30T10:33:05Z",
+      "score_state_sha256": "76bd5a7777ecdbe39b7aeb9dce958f55b5ab6b20a251fae06d2e9a6ea7f2db3f"
+    },
+    "session_date": "2026-10-30",
+    "site_sha256": "a5e543988bdd0e9d2ddd5aad8461aa0728aa86feb620b50ff410da7560c2411e",
+    "source_commit": "091e6a361c2d853198f7682fca1f76c81d9825c7",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261030",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "db6bb700b5a4fc283622903a360ffe94fe940c88ac1ddc86834c3f3af54a4094",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-10-30",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
