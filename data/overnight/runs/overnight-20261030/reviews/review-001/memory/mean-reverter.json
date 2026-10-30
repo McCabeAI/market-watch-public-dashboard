@@ -1,0 +1,195 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-30T06:33:05.373685-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 9,
+    "competitive_rank": 9,
+    "drawdown_usd": 20647.17,
+    "giveback_usd": 20647.17,
+    "high_water_nav_usd": 100003871.66,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99983224.49,
+    "net_pnl_usd": -16775.51,
+    "pressure_flags": [],
+    "prior_competition_rank": 9,
+    "rank_change": 0,
+    "raw_pnl_rank": 9,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "4b9d72be3f79591f664fbbb5e6ab9dd44a4c5b453f19bdbd48aff56dc3f4f1c8",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 56,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 4.58,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 4.445,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 4.58,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 37000.0,
+        "holding_seconds": 3484575,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "SOFR_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -36000.0,
+        "mechanical_order": false,
+        "mfe_usd": 21000.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-1477172adb86",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": -29500.0,
+        "recorded_mfe_usd": 21000.0,
+        "retained_mfe_fraction": -0.7619,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 400000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": -16000.0,
+        "trade_id": "trd-trader-mean-reverter-pos-1477172adb86",
+        "unrealized_pnl_usd": 13500.0
+      },
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-1477172adb86",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86"
+    }
+  ],
+  "owner_id": "mean-reverter",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.5
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "85a91638d9113a06da17d2d5c0dd020b7ed279178b76f9055d9f8968123d4f56",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

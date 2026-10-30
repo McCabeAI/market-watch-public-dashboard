@@ -1,0 +1,259 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-10-30T06:33:05.373685-04:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": {
+    "annual_objective_pct_high": 6.0,
+    "annual_objective_pct_low": 2.0,
+    "annual_objective_usd_high": 60000000,
+    "annual_objective_usd_low": 20000000,
+    "force_deployment": false,
+    "mandate": "pragmatist",
+    "notes": [
+      "Mandate band is roughly 2\u20136% on $1000bn paper NAV ($20mm\u2013$60mm annual objective).",
+      "Stress regime unknown: evaluation cannot switch regimes from frozen inputs alone."
+    ],
+    "pressure_flags": [],
+    "spx_context": {
+      "status": "unavailable"
+    },
+    "standing": "good_standing",
+    "stress_regime": "unknown"
+  },
+  "consequence": {
+    "best_trader_net_pnl_usd": 226254.57,
+    "best_trader_outearn_streak": null,
+    "best_trader_seat": "positioning-cynic",
+    "capital_normalized": false,
+    "competition_cohort_size": 3,
+    "competition_eligible": true,
+    "competition_rank": null,
+    "competitive_rank": null,
+    "drawdown_usd": 640109.55,
+    "gap_to_best_trader_usd": null,
+    "high_water_nav_usd": 1001091893.75,
+    "max_drawdown_usd": 50000000.0,
+    "net_after_funding_pnl_usd": null,
+    "pressure_flags": [],
+    "raw_pnl_rank": null,
+    "spread_to_leader_pm_usd": 0.0,
+    "status": "ok",
+    "total_pnl_usd": null
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "3b08797c349ca488974333b12a700f16175264d7598b99529f9c27103a0323eb",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 58,
+      "current_notional_usd": 450000000.0,
+      "entry_mark": 3.13,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 3.025,
+        "current_notional_usd": 450000000.0,
+        "entry_mark": 3.13,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 607500.0,
+        "holding_seconds": 3483620,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -90000.0,
+        "mechanical_order": false,
+        "mfe_usd": 1080000.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pm-pragmatist-4e0cbc4e0b05",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 1080000.0,
+        "retained_mfe_fraction": 0.4375,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 4500000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 472500.0,
+        "trade_id": "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05",
+        "unrealized_pnl_usd": 472500.0
+      },
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:52:44.447221-04:00",
+      "position_id": "pm-pragmatist-4e0cbc4e0b05",
+      "risk_capital_usd": 4500000.0,
+      "side": "long",
+      "trade_id": "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05"
+    },
+    {
+      "asset_class": "rates_rv",
+      "conviction": 64,
+      "current_notional_usd": 80000000.0,
+      "entry_mark": -23.0,
+      "harvest": {
+        "asset_class": "rates_rv",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": -6.00000000000005,
+        "current_notional_usd": 80000000.0,
+        "entry_mark": -22.999999999999954,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 0.0,
+        "holding_seconds": 1380549,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "NZ-US_10Y",
+        "intended_horizon_days": null,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 136000.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pm-pragmatist-3afafe53c6d7",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 136000.0,
+        "retained_mfe_fraction": 1.0,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 800000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 136000.0,
+        "trade_id": "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7",
+        "unrealized_pnl_usd": 136000.0
+      },
+      "instrument": "NZ-US_10Y",
+      "opened_at": "2026-10-14T07:03:55.974585-04:00",
+      "position_id": "pm-pragmatist-3afafe53c6d7",
+      "risk_capital_usd": 800000.0,
+      "side": "short",
+      "trade_id": "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7"
+    }
+  ],
+  "owner_id": "pragmatist",
+  "owner_type": "pm",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.17
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.5
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "5e216809dfad081c3669dd8742da7a724c01d4e8da50718ca5fb56d3dc21f79b",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
