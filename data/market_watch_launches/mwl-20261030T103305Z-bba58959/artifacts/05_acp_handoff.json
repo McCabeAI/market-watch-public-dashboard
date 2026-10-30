@@ -1,0 +1,77 @@
+{
+  "delegation_request": {
+    "base_packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24",
+    "binding_relpath": "data/market_watch_launches/mwl-20261030T103305Z-bba58959/freeze_binding.json",
+    "budget": {
+      "composer_cap": 2,
+      "current_graph": {
+        "composer_calls": 2,
+        "grok_family_calls": 18,
+        "nodes": {
+          "automated_pms": 3,
+          "learning_examiner": 1,
+          "parent": 1,
+          "synthesis": 1,
+          "traders": 14
+        },
+        "total_calls": 20,
+        "version": 1
+      },
+      "frozen_command": ".cursor/commands/overnight-scheduled.md",
+      "grok_cap": 18,
+      "launch_command": ".cursor/commands/manual-market-watch-review.md",
+      "launcher_id": "manual-market-watch-launch-v1",
+      "legacy_schedule_id_inactive": "market-watch-weekday-0205",
+      "parent_model": "grok-4.6",
+      "total_model_cap": 20
+    },
+    "dispatch_when": "freeze-succeeded",
+    "freeze_commit_sha": null,
+    "launch_id": "mwl-20261030T103305Z-bba58959",
+    "origin": {
+      "actor": "kevinnmccabe-PC",
+      "actor_type": "User",
+      "issue_number": 264,
+      "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/264",
+      "repository_permission": "admin",
+      "source": "github_issue"
+    },
+    "overnight_run_id": "overnight-20261030",
+    "public_verification": {
+      "readable_without_secrets": true,
+      "ref": "main",
+      "repo": "McCabeAI/market-watch-public-dashboard"
+    },
+    "review_id": "review-001",
+    "score_state_sha256": "76bd5a7777ecdbe39b7aeb9dce958f55b5ab6b20a251fae06d2e9a6ea7f2db3f",
+    "session_date": "2026-10-30",
+    "single_use": true,
+    "starting_pm_books_sha256": "b63c12c4a029fcf8baa2b4fa84cac4cfc3cd98db6b1cc96cf52ece0391aef513",
+    "starting_trader_books_sha256": "316bacfcfaa3c7e511b91b33519d794a6265791f7e95a1ccde364e18459c1f23",
+    "target_repo": "McCabeAI/market-watch-public-dashboard",
+    "type": "MW_ACP_ONE_SHOT_DELEGATION_REQUEST",
+    "version": 1
+  },
+  "dispatch_implemented": false,
+  "grant_present": false,
+  "grant_verified": false,
+  "handoff_status": "request_ready",
+  "handoff_url": null,
+  "live_model_calls": 0,
+  "live_provider_dispatched": false,
+  "receipt_matches": false,
+  "receipt_present": false,
+  "remote_freeze_verified": true,
+  "research_publication": {
+    "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+    "public_state": "matched",
+    "receipt_path": "research_pages.json",
+    "receipt_sha256": "e407f07e0d878a5075afcea29f173b3d80e9777633d6ad528ae9eca042466809",
+    "recorded_at": "2026-10-30T10:51:13+00:00",
+    "release_sha256": "db6bb700b5a4fc283622903a360ffe94fe940c88ac1ddc86834c3f3af54a4094",
+    "run_id": 41041507026,
+    "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/41041507026"
+  },
+  "stage": "05_acp_handoff",
+  "status": "blocked"
+}
