@@ -1505,6 +1505,65 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The book is flat and the freeze does not show a one-way markable expression whose expected edge covers official SOFR 3.95 percent ACT/360 on shocked risk capital. SOFR and CORRA are two-sided between carry/dove receive and hawk/cynic pay, with Mar/Sep SOFR already embedding a hawkish hold. Long US10Y fights that hold plus elevated oil, and short AUDCAD pays the AONIA-CORRA gap without a catalyst. Preservation is to stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Both required expanding handoff tickets are markable and fail on their own economics versus official SOFR 3.94 percent ACT/360 dated 2026-10-28 charged on shocked risk capital. Receiving US 2s is the wrong side of the catalyst stack, and long dollar-yen at 158.06 does not pay enough expected edge after the yen-gap capital that must be reserved. Missing New Zealand data is unrelated and was not used as a veto.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-30T08:41:29.250762-04:00",
+      "conviction": 8,
+      "decision_fingerprint": "6d5ac209ec31fd65da5cb17c582e1489a98f18d7bf672d094ddec567ba7d7245",
+      "event_id": "jde-46905025480a4154",
+      "funding_view": null,
+      "invalidation": "Deploy only if a later freeze shows a signed, markable leftover in dollar-yen, US 2-year, SOFR or CORRA whose expected P&L after carry still exceeds official SOFR on a documented standard shock, or a central-bank catalyst that collapses the two-way front-end debate.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "bbd45fe413d5c52388179ae473e65b8f17a261e4fba28503186f2dd2ac42baf3",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "decision_if_rank_hidden": "same",
+            "detail": "Near-zero alpha and third-place standing do not manufacture edge. Official SOFR remains the hurdle, and no-trade stays allowed on a flat book."
+          },
+          "state_sha256": "00eb4d5697cb638e1ae91a385fda69f770a5b53c8a6fc7d3361cec2816479037"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "9183f63348ad17f371987538eca3a6e85ed3580d42cdbde486e2113402964c78",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261030-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and neither new desk ticket covers official SOFR charged on shocked risk capital. Receiving the US 2-year at 4.61 fades firm inflation language and an open hike door while September SOFR still sits at 4.58. Long dollar-yen at 158.06 still has a cash gap versus TONA, but the dated Bank of Japan event has printed and the adverse path is a yen gap, not a grind. Two-way Canada and US front-end inventory is a clash of views, not one preservation edge. Stay flat.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The book is flat and neither new desk ticket covers official SOFR charged on shocked risk capital. Receiving the US 2-year at 4.61 fades firm inflation language and an open hike door while September SOFR still sits at 4.58. Long dollar-yen at 158.06 still has a cash gap versus TONA, but the dated Bank of Japan event has printed and the adverse path is a yen gap, not a grind. Two-way Canada and US front-end inventory is a clash of views, not one preservation edge. Stay flat."
     }
   ],
   "schema_version": 1,

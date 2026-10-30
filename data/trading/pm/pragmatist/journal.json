@@ -1684,6 +1684,77 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The live book is a working long CORRA March 2027 receive (450m, 3.13 entry, freeze 3.025, still looking for a lower mark) plus an unmarkable short NZ-US 10Y residual that freezes this seat to hold, reduce, or close only. Cash CORRA at 2.24 with no BoC headline keeps the CAD front-end receive intact even after a hawkish Fed hold; oil at 102/115 is the main back-up risk, not a reason to cut a position already 10.5bp through entry. New expressions from the handoff are markable but cannot be booked while the NZ line has no official 10Y mark, and that same gap blocks REDUCE/CLOSE on NZ-US_10Y. Flat cash at SOFR 3.95 is the zero; this cycle\u2019s job is residual control, not filling capacity."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the working March 2027 Canada receive. Freeze implied 2.99 versus cash 2.24, no Bank of Canada headline, and already through the 3.13 entry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates_rv",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZ-US_10Y",
+          "notional_usd": 80000000,
+          "position_id": "pm-pragmatist-3afafe53c6d7",
+          "rationale": "Official New Zealand 10-year is still unavailable, so the short residual cannot be marked, reduced, or closed. Hold only; do not invent an exit or overlay.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-30T08:41:29.038099-04:00",
+      "conviction": 57,
+      "decision_fingerprint": "179fb1e7916d084aaebc2080e00d717f61434b635a62a597e05d4357b942f514",
+      "event_id": "jde-c2d7d5ac549b48c9",
+      "funding_view": null,
+      "invalidation": "Cut the Canada receive if a Bank of Canada hike or hawkish path lifts March implieds back through the 3.13 entry and holds them there, especially if oil stays three-digit. An official New Zealand 10-year print would lift the new-risk ban and reopen a real close or reduce of NZ-US 10-year; until that print exists, do not invent an exit or overlay.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-3afafe53c6d7",
+        "pm-pragmatist-4e0cbc4e0b05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3b08797c349ca488974333b12a700f16175264d7598b99529f9c27103a0323eb",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5e216809dfad081c3669dd8742da7a724c01d4e8da50718ca5fb56d3dc21f79b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "c3ba9ae1404cf49d03ca721b708e992247252439d8024a1aa09d9e6d89624e57",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261030-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The working book remains a long March 2027 Canada receive plus an unmarkable short NZ-US 10-year residual. Cash CORRA is still 2.24 with no Bank of Canada headline, so 75 basis points of unstarted 2027 tightening is still in the contract and the receive still wants a lower mark. Oil at 102/115 is the backup risk, not a reason to flatten a line already through the 3.13 entry. New tickets from the desk, including dollar-yen and a US 2-year receive, are markable but cannot be booked while the New Zealand line has no official 10-year print.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The working book remains a long March 2027 Canada receive plus an unmarkable short NZ-US 10-year residual. Cash CORRA is still 2.24 with no Bank of Canada headline, so 75 basis points of unstarted 2027 tightening is still in the contract and the receive still wants a lower mark. Oil at 102/115 is the backup risk, not a reason to flatten a line already through the 3.13 entry. New tickets from the desk, including dollar-yen and a US 2-year receive, are markable but cannot be booked while the New Zealand line has no official 10-year print."
     }
   ],
   "schema_version": 1,

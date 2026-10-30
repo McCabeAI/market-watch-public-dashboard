@@ -1506,6 +1506,64 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The book is still flat after the prior USDCAD harvest. Cash SOFR is 3.95 versus CORRA 2.24, and the 28 October Fed hold with hawkish Warsh plus Bessent leaving the door open to another hike keeps the dollar premium intact. That is not a from-zero USDCAD long at 1.4047 while WTI is 102.78 and Brent is 115.32: three-digit oil is still the CAD-supportive offset that ended the last winner. No Bank of Canada headline printed and CORRA is still 2.24; that silence is not a decision. Shorting EURUSD at 1.1133 chases a one-year extreme. Long USDJPY at 157.96 walks into Friday's Bank of Japan meeting, already treated as a likely hold. AUDUSD at 0.7033 fights higher Australian cash and oil. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 20000000,
+          "position_id": null,
+          "rationale": "The Bank of Japan hold is spent, SOFR 3.94 versus TONA 1.227 remains unowned in spot, and this size is a from-zero initiation rather than a USDCAD re-entry against WTI 102.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "f6feb391bb561b8f657b6a3a7cde5235bc5044322b9afc14ca04fe573d6955fc",
+      "event_id": "jde-b0ba579849f242b0",
+      "funding_view": null,
+      "invalidation": "The long is wrong if a later freeze shows the Bank of Japan hiking and TONA catching the March contract from the Japan side, or if official SOFR converges toward TONA so the overnight gap closes from the United States side. A Ministry of Finance intervention print that reverses the post-hold leftover also kills it. Three-digit oil is not this ticket's invalidation; it is why USDCAD stays flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-012b8f0c252c"
+      ],
+      "memory_context_sha256": "b1fe89fcea1ad4a22c8181a630f9b5d4e026ab7a65d7acb899c7eddbc9642a4a",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "488d902802451eacc05cda384011ad1245c6af0eeb9490c4c29a28fa587a1f6f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Bank of Japan held, so the dated yen event that kept dollar-yen unowned is spent, and the leftover still sits in a 271 basis-point SOFR 3.94 versus TONA 1.227 cash gap and a 272 basis-point March SOFR 4.39 versus March TONA 1.67 path gap. Long USDJPY at the 158.06 paper mid is the cleanest from-zero dollar expression: the pair is at a one-year z-score of 0.02, not a chase. Dollar-Canada at 1.3996 is not that ticket while WTI is 102, Brent is 114.88, Canada's oil-pressure proxy is rising, and there is no Bank of Canada headline; short euro-dollar at 1.113 would fade a one-year z-score of -2.60 rather than own the Japan leftover.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The Bank of Japan held, so the dated yen event that kept dollar-yen unowned is spent, and the leftover still sits in a 271 basis-point SOFR 3.94 versus TONA 1.227 cash gap and a 272 basis-point March SOFR 4.39 versus March TONA 1.67 path gap. Long USDJPY at the 158.06 paper mid is the cleanest from-zero dollar expression: the pair is at a one-year z-score of 0.02, not a chase. Dollar-Canada at 1.3996 is not that ticket while WTI is 102, Brent is 114.88, Canada's oil-pressure proxy is rising, and there is no Bank of Canada headline; short euro-dollar at 1.113 would fade a one-year z-score of -2.60 rather than own the Japan leftover."
     }
   ],
   "schema_version": 1,

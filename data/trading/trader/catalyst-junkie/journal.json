@@ -1480,6 +1480,60 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The Oct FOMC path is spent: the hold already reset Mar SOFR to 4.445, while hawkish Warsh/Bessent color and WTI 102.78 cleared in US10Y at 5.05 rather than in skip-tenor STIR. Reopening a Mar SOFR pay repeats the closed expression; paying 10Y now chases a consumed presser and a printed +6bp with AI-credit receive risk in the same packet. BoJ Friday is the only unspent dated event, but this freeze has no BoJ lean, JGB mark, or implied path, so a USDJPY direction would invent the decision. NZ new risk is banned, and there is no BoC headline that can reprice CORRA Mar 3.025 versus cash 2.24."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The October FOMC and Bank of Japan holds have printed. Hormuz claims sit in oil at 102/115. There is no Bank of Canada headline.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 11,
+      "decision_fingerprint": "c6c20a5117e32b07d0069956fa53017e23414b43befa623f8128fdfd58a3a7d2",
+      "event_id": "jde-2f610379e4524adc",
+      "funding_view": null,
+      "invalidation": "Stand-down breaks if a later freeze supplies a dated US inflation or December FOMC timestamp that can reprice March SOFR 4.39 or US 10-year 4.98, an actual Bank of Canada headline that can reprice March CORRA 2.99 versus cash 2.24, or a directional Bank of Japan lean that was not in this hold.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1a8b5b0b0bf50cce2d6c6f90c45b5229b58f493aa5a49b474e95fce9e6bae031",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e234d9c607504eb774021f1c939b81aec953fb445cb0a07ebe75a241422ed8e9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The October FOMC path is spent: the hold already reset March SOFR to 4.39, while firm inflation language and oil at 102/115 cleared in the 10-year at 4.98 rather than in skip-tenor STIR. The Bank of Japan hold has also printed, so dollar-yen is not an unspent dated event. There is no Bank of Canada headline that can reprice March CORRA 2.99 versus cash 2.24. Stay flat.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The October FOMC path is spent: the hold already reset March SOFR to 4.39, while firm inflation language and oil at 102/115 cleared in the 10-year at 4.98 rather than in skip-tenor STIR. The Bank of Japan hold has also printed, so dollar-yen is not an unspent dated event. There is no Bank of Canada headline that can reprice March CORRA 2.99 versus cash 2.24. Stay flat."
     }
   ],
   "schema_version": 1,

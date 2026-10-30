@@ -1532,6 +1532,63 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The book stays flat after harvesting March CORRA receive near 3.00. Frozen March CORRA at 3.025 is only a couple of basis points from that exit, cash is still 2.24, and there is no Bank of Canada headline, so the standing harvest lesson APPLIES and the same receive is not reopened. Two-way trader inventory on CORRA and SOFR is a challenge set rather than a one-way dislocation, and the only new ticket\u2014short AUDCAD at 0.9879 with Brent already 115\u2014does not clear a concentrated-swing hurdle with force_deployment off."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No eligible from-zero expression meets a concentrated-swing hurdle: dollar-yen is leftover after a printed Bank of Japan hold at a mid-range 158.06, the US two-year receive chases an already-rallied coupon trend into three-digit oil, and March Canada implieds have already compressed to the harvested 3.00 area versus cash 2.24 with no Ottawa decision.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-30T08:41:28.835372-04:00",
+      "conviction": 66,
+      "decision_fingerprint": "a7769f29f99519f105b159d82c99b09f956bc8e32d07b177e1b7badf7ee545e5",
+      "event_id": "jde-c67c181c661b426e",
+      "funding_view": null,
+      "invalidation": "Stay-flat breaks if dollar-yen gaps away from 158 on a new Bank of Japan lean, if the US two-year yield reclaims and holds the 4.67 late-October print while March and September SOFR implieds backup with oil still three-digit, or if March Canada implieds dislocate versus cash 2.24 on an actual Bank of Canada path change rather than a two-basis-point drift around 3.00.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "eaf0b8bf8a983aa4fd8f22ee2b2efbb2c00e8fe644a41859f8d51d5e9d6913f0",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "decision_if_rank_hidden": "same",
+            "detail": "Competitive standing does not create a ticket. USDJPY, US_2Y, and March CORRA still fail the concentrated-swing hurdle with deployment unforced."
+          },
+          "state_sha256": "7e4e2c279367734b9f0c933233fd16c838a49db4575dea0ad46d84d85edb9666"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "50a0473900ecd2b18d7dcafd7580915046203e4f8d35f3dccb441dcbd851c564",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261030-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The live from-zero tickets are a dollar-yen leftover after the Bank of Japan hold and a received US two-year after coupons already rallied through a failed 5.05 ten-year backup. Neither clears a concentrated swing: the yen event has printed, 158.06 is mid-range rather than a dislocation, and receiving 4.61 two-years fades three-digit oil and still-firm US inflation language into two-way March and September SOFR inventory. March Canada at 2.99 versus cash 2.24 is still unused-hike cheap, but it sits a couple of basis points from a just-harvested 3.00 area with no Ottawa decision, so that receive is finished. Stay at zero rather than financing leftover carry or a chased coupon trend.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The live from-zero tickets are a dollar-yen leftover after the Bank of Japan hold and a received US two-year after coupons already rallied through a failed 5.05 ten-year backup. Neither clears a concentrated swing: the yen event has printed, 158.06 is mid-range rather than a dislocation, and receiving 4.61 two-years fades three-digit oil and still-firm US inflation language into two-way March and September SOFR inventory. March Canada at 2.99 versus cash 2.24 is still unused-hike cheap, but it sits a couple of basis points from a just-harvested 3.00 area with no Ottawa decision, so that receive is finished. Stay at zero rather than financing leftover carry or a chased coupon trend."
     }
   ],
   "schema_version": 1,

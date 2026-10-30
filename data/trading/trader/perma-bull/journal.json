@@ -1761,6 +1761,92 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The Fed held rates steady despite inflation concerns, WTI is 102.78, Brent is 115.32, the S&P is 7743.98 and VIX is 17.52. That is a risk-on, oil-led tape, not an easing regime. Cash CORRA is 2.24 against March 2027 implied 3.025, June 3.225 and September 3.39, with no Bank of Canada headline to close a gap that still sits far below three-digit crude. Cash SOFR is 3.95 against March 4.445, June 4.615 and September 4.68; cash AONIA is 4.60 against March 4.94. The existing March 2027 CORRA, AONIA and SOFR pays remain the cleanest stay-higher expression of that impulse. USDCAD at 1.405 mixes a hawkish dollar with the Canada oil bid and does not isolate the 78 basis-point CORRA catch-up. Keep all three shorts; do not add. Bank of Japan on Friday is yen event risk, not a reason to enlarge this strip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000.0,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Thirteen basis points against after the post-hold Treasury rally. Cash 3.94 versus March 4.39 still prices hikes; firm inflation language and three-digit oil keep the pay intact.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Fourteen basis points against, but cash 2.24 versus March 2.99 still prices a tightening path, and the oil spike is a Canada-specific growth impulse rather than a reason to cover.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Working: cash 4.60 versus March and June both 4.935. The global energy impulse keeps the Australian hike path from being faded. Do not harvest a working pay on one session of oil.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "b6bc241ca15f09ed1618fc19c2ada1af6b6f49e849bef265bf6fafc2d01992d3",
+      "event_id": "jde-0e3b9e4275f3461a",
+      "funding_view": null,
+      "invalidation": "The thesis is wrong if risk assets sell off as the oil shock becomes demand destruction, if March 2027 US, Canadian and Australian overnight funds reprice lower onto a cut path, or if US inflation language turns toward easing while crude reverses without pass-through.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9b36b046eff38379d0cbee1f279859b01bd02dd29ae85e172834ea5dc7aa32b2",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9b48650c834d3217968eb4cc6e4975d50964c281f535b4dcf8b3f899847d9ab1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Equities are holding up and implied volatility remains contained even with crude sharply higher on Strait of Hormuz mine claims, so the growth break that would force easier policy is not in the tape. The bond rally after the Federal Reserve hold looks like an over-discounted pivot: cash SOFR is still 3.94 against March 4.39, and inflation language stayed firm. Keep the existing Canadian, Australian and US front-end pays; commodity FX splits between oil-positive Canada and mixed Australia, and dollar-yen is already extended.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "Equities are holding up and implied volatility remains contained even with crude sharply higher on Strait of Hormuz mine claims, so the growth break that would force easier policy is not in the tape. The bond rally after the Federal Reserve hold looks like an over-discounted pivot: cash SOFR is still 3.94 against March 4.39, and inflation language stayed firm. Keep the existing Canadian, Australian and US front-end pays; commodity FX splits between oil-positive Canada and mixed Australia, and dollar-yen is already extended."
     }
   ],
   "schema_version": 1,

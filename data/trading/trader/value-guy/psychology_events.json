@@ -808,6 +808,87 @@
       "run_id": "overnight-20261029",
       "seq": 35,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          800000.0,
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "event_id": "pse-000036",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261030",
+      "seq": 36,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0005,
+        "complacency": 0.0126,
+        "defensiveness": -0.0014,
+        "external_pressure": -0.0009,
+        "frustration": -0.0017,
+        "revenge_pressure": -0.0005,
+        "self_trust": 0.0047
+      },
+      "event_id": "pse-000037",
+      "kind": "session_gain",
+      "magnitude": 0.23270928,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261030",
+      "scale": 1.0,
+      "seq": 37,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 116354.64
+      }
+    },
+    {
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0032,
+        "complacency": 0.045,
+        "external_pressure": -0.0159,
+        "frustration": -0.0037,
+        "self_trust": 0.01
+      },
+      "event_id": "pse-000038",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261030",
+      "scale": 1.0,
+      "seq": 38,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -7
+      }
     }
   ],
   "owner_id": "value-guy",

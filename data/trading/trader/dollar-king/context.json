@@ -149,8 +149,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b1fe89fcea1ad4a22c8181a630f9b5d4e026ab7a65d7acb899c7eddbc9642a4a",
-  "open_positions": [],
+  "memory_context_sha256": "7624fb4a16830995f913611938aaa1dcfdeac6bdfbfd3126966f6ea8497cb770",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 62,
+      "current_notional_usd": 20000000.0,
+      "entry_mark": 158.06,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The hold is already printed; the leftover is persistence of the US-Japan policy gap versus an unowned mid-range USDJPY book, exhausted if Japan hikes or the United States cash rate converges.",
+        "current_mark": 158.05929919137466,
+        "current_notional_usd": 20000000.0,
+        "entry_mark": 158.06,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "USDJPY",
+        "intended_horizon_days": 45,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-012b8f0c252c",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Dollar-yen grinds higher as the 271 basis-point SOFR-TONA cash gap and the March 2027 4.39 versus 1.67 path gap keep paying after a hold, not as a one-day devaluation spike.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 200000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "USDJPY",
+      "opened_at": "2026-10-30T06:33:05.373685-04:00",
+      "position_id": "pos-012b8f0c252c",
+      "risk_capital_usd": 200000.0,
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c"
+    }
+  ],
   "owner_id": "dollar-king",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -168,13 +218,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.15
+        "trend": "down",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.23
+        "value": 0.22
       },
       "defensiveness": {
         "band": "calm",
@@ -183,18 +233,18 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.21
+        "trend": "down",
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.16
+        "trend": "down",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.06
+        "value": 0.05
       },
       "self_trust": {
         "band": "steady",
@@ -217,11 +267,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "self_report_admission_pressure_distorting",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261026"
-      },
-      {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261029"
@@ -229,9 +274,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "488d902802451eacc05cda384011ad1245c6af0eeb9490c4c29a28fa587a1f6f",
+    "state_sha256": "816d57beab21389d6d223fdc6921b82687f076f52928f4173e56b9c6132ba617",
     "streaks": {
-      "flat_cycles": 3,
+      "flat_cycles": 0,
       "session_loss": 5,
       "session_win": 0
     }

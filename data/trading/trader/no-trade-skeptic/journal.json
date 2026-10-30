@@ -1936,6 +1936,81 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "Official NY Fed SOFR is 3.95 percent ACT/360 as of 2026-10-27. The frozen SR3 strip already prices Dec-26 4.19, Mar-27 4.445, Jun-27 4.615 and Sep-27 4.68, so a hawkish Fed hold is in the contracts, not leftover versus cash. March CORRA is 3.025 against cash 2.24 with no Bank of Canada headline, and March AONIA is 4.94 against cash 4.60; both gaps are the priced path. US 10-year 5.05, WTI 102.78, Brent 115.32, S&P 7743.98 and VIX 17.52 describe a firm-risk, high-oil tape that is already in those rates. New Zealand is a local block, not a substitute expression. Stay at the zero official-SOFR benchmark; do not pay 3.95 percent on shocked-risk capital."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Book is flat and the hawkish path is already in SR3, US 10-year 4.98 and high oil. Paying 3.94 percent SOFR on shocked-risk capital would fund a priced path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 8,
+      "decision_fingerprint": "85a576259563eeba4ca0f675491cfdfb058588c1ba2977285f6f4c2f7f258abf",
+      "event_id": "jde-851e39c4c59b4115",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-10-28",
+          "percent_rate": 3.94,
+          "rate": 3.94,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Overnight realized funding should print nearer the 3.94 official zero (with possible month-end noise) than the Dec 4.165\u2013Sep 4.58 SR3 path. Remaining at the zero official-SOFR benchmark is the correct cash default. Paying SOFR on shocked-risk capital requires an edge above 3.94 after costs and month-end variance; none is evidenced, so do not leave flat.",
+        "sr3_forward_view": "Curve prices tightening versus the 3.94 official zero: Dec 4.165, Mar 4.39, Jun 4.53, Sep 4.58. Overnight realized SOFR is not those quarterly forwards."
+      },
+      "invalidation": "Act only if a later freeze shows a quantified leftover versus the SR3, CORRA or AONIA strip \u2014 realized funding printing away from that curve, or a named unpriced catalyst with a markable rates instrument. Absent that, remain flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d1d9c508fb5f8df715ad2753b505bbac0a701ea995ec121a2ae3b5116a1c11e9",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-10-28",
+            "percent_rate": 3.94,
+            "rate": 3.94,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Overnight realized funding should print nearer the 3.94 official zero (with possible month-end noise) than the Dec 4.165\u2013Sep 4.58 SR3 path. Remaining at the zero official-SOFR benchmark is the correct cash default. Paying SOFR on shocked-risk capital requires an edge above 3.94 after costs and month-end variance; none is evidenced, so do not leave flat.",
+          "sr3_forward_view": "Curve prices tightening versus the 3.94 official zero: Dec 4.165, Mar 4.39, Jun 4.53, Sep 4.58. Overnight realized SOFR is not those quarterly forwards."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c3029ca924e5d18aa4c99bb2ac7020c89d89baab871bd0b059f922fa29b04d7c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "No initiating expression clears the official-SOFR zero. The freeze supplies a 3.94 NY Fed fixing and an SR3 path already 22.5 to 64 basis points above that fixing; those contracts price a hike campaign, not leftover versus cash. March CORRA at 2.99 and March AONIA at 4.935 are the same story against 2.24 and 4.60 cash. Stay at the zero official-SOFR benchmark; do not pay 3.94 percent on shocked-risk capital into a month-end Friday.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "No initiating expression clears the official-SOFR zero. The freeze supplies a 3.94 NY Fed fixing and an SR3 path already 22.5 to 64 basis points above that fixing; those contracts price a hike campaign, not leftover versus cash. March CORRA at 2.99 and March AONIA at 4.935 are the same story against 2.24 and 4.60 cash. Stay at the zero official-SOFR benchmark; do not pay 3.94 percent on shocked-risk capital into a month-end Friday."
     }
   ],
   "schema_version": 1,

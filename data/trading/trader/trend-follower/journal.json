@@ -1528,6 +1528,60 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The book is flat. US 10-year is 5.05, up 6bp after a hawkish Federal Reserve hold, and still 103bp higher over one year, but that is not a confirmed continuation. The same tenor is still 8bp lower over five days and 19bp lower over one month, and 5.05 sits below 5.24 on 9 Oct and 5.15 on 19 Oct. Cash SOFR is 3.95 with December 4.19, March 4.445, June 4.615 and September 4.68, a hiking path, yet the 2-year yield fell 3bp to 4.67 on the same session, so the front-end cash market did not confirm the backup. Receiving the 10-year on a 6bp bounce would fade a one-year yield uptrend and a hawkish hold; paying 5.05 would treat an unconfirmed bounce as a breakout. March CORRA at 3.025 versus cash 2.24 prices a large Canadian hike path, but there is no Bank of Canada headline and Canada 10-year is still lower over five days. Dollar-yen at 157.96 is a mid-range one-year cross with a Bank of Japan meeting on Friday, not a cleaner trend than rates. New Zealand rates are unusable. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_2Y",
+          "notional_usd": 20000000,
+          "position_id": null,
+          "rationale": "Receive US 2-year at 4.61 to own the confirmed coupon downtrend. Do not pay 10s or March SOFR after the 5.05 high failed.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 62,
+      "decision_fingerprint": "c22cffe879c91e694528f4fabd7e2ab166a992e841b25dcaadd6910c624a2752",
+      "event_id": "jde-844f53aa8b234bd9",
+      "funding_view": null,
+      "invalidation": "US_2Y yield reclaims and holds the 28 Oct 4.67 print, or a new 2Y yield high prints while Mar/Sep SOFR implied rates move up in a confirmed coupon backup.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e2a50a4658020022025a472f5c7c9fe01afb27ed4b00e7f80488fd409515054b",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bc3fb415bce60eae4757a50f7f9414a387fdf5f596b4317689e84af8a6a7d190"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Ride the confirmed US front-end yield downtrend. US_2Y has fallen on 1d, 5d and 1m, so the continuation is receive/long duration, not a fade of a 1m z near -2.1 and not a re-pay of the failed 10Y 5.05 backup. Mar SOFR 4.39 and Sep SOFR 4.58 still sit above cash 3.94; that path is not permission to short coupons after 2s/5s/10s already rallied. Mean-reversion against this 1m impulse is a premature fade.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "Ride the confirmed US front-end yield downtrend. US_2Y has fallen on 1d, 5d and 1m, so the continuation is receive/long duration, not a fade of a 1m z near -2.1 and not a re-pay of the failed 10Y 5.05 backup. Mar SOFR 4.39 and Sep SOFR 4.58 still sit above cash 3.94; that path is not permission to short coupons after 2s/5s/10s already rallied. Mean-reversion against this 1m impulse is a premature fade."
     }
   ],
   "schema_version": 1,

@@ -1528,6 +1528,62 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The book stays short 50 million March CORRA, freeze mark 3.025 versus cash CORRA 2.24. That 78.5bp cash-to-March gap is still the crowded receive: carry remains long 25 million March CORRA and dove remains received in the 2027 H\u2013Z strip. Verified: Fed hold was hawkish, there is no Bank of Canada headline, WTI is 102.78 and Brent 115.32, Canada 2Y is 3.36 so CRAH27 is still 33.5bp through cash 2Y, and USDCAD is 1.4047. cheap-versus-cash is a bad entry, not an unowned one, so the pay keeps the ownership asymmetry. CME STIR positioning is unavailable this freeze and is not invented. Do not flip into the receive, do not add into a pay that hawk already shares, and do not stack the same Canada-bull in USDCAD."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000.0,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Keep the existing March CORRA short. Carry and dove still own the Canada 2027 receive; cheapness versus cash 2.24 is their entry, not ours. Do not add into a pay hawk and bull already share, do not flip to receive, and do not overlay USDCAD.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 55,
+      "decision_fingerprint": "35e6cdd4c4b9dab5bd5285ca36eb573509bdef9903fdc7280f8e821609ffa78a",
+      "event_id": "jde-797192031a2043cc",
+      "funding_view": null,
+      "invalidation": "Stand down if carry and dove cut or flip the Canada 2027 receive so the crowded expression is no longer the receive, or if this book is no longer short March CORRA. The fade is also wrong if March CORRA collapses toward cash 2.24 while the receive crowd stays on.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6034186900806a601c9d2fe1f4e47d0a53ea2a5dd5564cee6e6be193bdac90ec",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "295c5f53fbde376d038b8bd4682d1bc1a87f19b342db94eb745483938cc36ed7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays short 50 million March CORRA at freeze 2.99 versus cash 2.24. That 75 basis-point cash-to-March gap is still the crowded receive: carry remains long 25 million March CORRA and dove remains received in the 2027 strip. Cheapness versus cash is their entry, not a reason to cover this fade. Dollar-Canada would duplicate the same crowded Canada view.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The book stays short 50 million March CORRA at freeze 2.99 versus cash 2.24. That 75 basis-point cash-to-March gap is still the crowded receive: carry remains long 25 million March CORRA and dove remains received in the 2027 strip. Cheapness versus cash is their entry, not a reason to cover this fade. Dollar-Canada would duplicate the same crowded Canada view."
     }
   ],
   "schema_version": 1,

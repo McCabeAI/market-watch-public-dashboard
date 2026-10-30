@@ -1615,6 +1615,77 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "The March 2027 Canada receive still pays for patience: cash is 2.24 against 3.025 implied, there is no Bank of Canada decision in this freeze, and a three-basis-point backup is headline beta rather than a cash-policy change or a large persistent path reprice. Australia cash is still 4.60 versus 4.94 in March 2027; eleven basis points of cheapening after a hawkish Federal Reserve hold and oil above 100 is uncomfortable, but June 2027 at 4.96 shows the hike path did not extend. I will not pay SOFR into a held-but-hawkish FOMC, will not add yen risk in front of Friday\u2019s Bank of Japan meeting, and will not open New Zealand. Spot US dollar-Canada collects the cash differential but is a noisier copy of the Canada rates line already on."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Cash is still 2.24 against 2.99 implied, a 75 basis-point unused-hike gap. There is no Bank of Canada cash change. Implieds tightened from 3.025 to 2.99; Hormuz mines and WTI 102 are headline beta already in CAD, not a cash-policy shift or a large persistent path reprice.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Cash is still 4.60 against 4.935 implied; June is also 4.935 so the hike path did not extend. Hormuz and oil at 102/115 are a known energy overlay, not a Reserve Bank cash-rate change, and 10.5 basis points of cheapening from 4.83 is not a large persistent path rewrite.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "53cb8b75568ec1388e944f3ca74e65f54e1719a5b76f5f659028e16deeb563a7",
+      "event_id": "jde-8085c2320e8b4fb9",
+      "funding_view": null,
+      "invalidation": "A Bank of Canada cash-rate increase away from 2.24, or a persistent March 2027 CORRA implied-rate reprice that erases most of the 75 basis-point gap to cash; for Australia, a Reserve Bank cash-rate increase away from 4.60 or March and June AONIA holding above 4.94 on a multi-session basis with the path extending.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "606348eed9128fac17d508d5cb92097d419dce8cd5d73bbce4ae08703239d783",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1f16fc03acacf9a340ff0a24cfcd3b8faf4b12b2cdb4f5d97331e4367ae0dde8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The March 2027 Canada receive is still the cleaner patient expression: cash CORRA is 2.24, March implieds are 2.99, and that 75 basis-point unused-hike gap is the holding-period return. There is no Bank of Canada cash change, and implieds tightened from 3.025 to 2.99, so Hormuz mines and oil at 102/115 are headline beta rather than a cash-policy rewrite. Australia cash is still 4.60 versus 4.935 in March and June, so the hike path did not extend. Do not add into the live Strait shock, and do not pay or receive SOFR after US coupons already rallied.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "The March 2027 Canada receive is still the cleaner patient expression: cash CORRA is 2.24, March implieds are 2.99, and that 75 basis-point unused-hike gap is the holding-period return. There is no Bank of Canada cash change, and implieds tightened from 3.025 to 2.99, so Hormuz mines and oil at 102/115 are headline beta rather than a cash-policy rewrite. Australia cash is still 4.60 versus 4.935 in March and June, so the hike path did not extend. Do not add into the live Strait shock, and do not pay or receive SOFR after US coupons already rallied."
     }
   ],
   "schema_version": 1,

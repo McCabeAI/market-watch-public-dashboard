@@ -1506,6 +1506,62 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.95 and March 2027 implieds mark 4.445, a 49.5bp premium to cash after a Federal Reserve hold with tough inflation language. That cash-to-contract gap is still the stretch this book is received in, and the hold did not lift the contract back through the 4.58 entry. WTI at 102.78, Brent at 115.32, and the 10-year at 5.05, up 6bp, can keep that premium alive, so this is not a size-up. Hold the existing 10 million March SOFR long; do not add, and do not replace it with a 10-year receive, a Canada receive, or dollar-Canada."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 10000000.0,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the existing 10 million March SOFR receive: 4.39 versus cash 3.94 is still a 45bp premium after a hold, and implieds did not send the contract back through the 4.58 entry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 54,
+      "decision_fingerprint": "13bf9b6d2b985ae56605e57b17025b1add31f93fc0454c8d1d6816c27dd0cd1b",
+      "event_id": "jde-dc6b0c9d3116470a",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if tough guidance and three-digit oil reprice March SOFR implieds back through the 4.58 entry and keep them there. It is also wrong if cash SOFR itself jumps toward the contract so the 45bp premium closes from the overnight side, or if a delivered 25bp into the December 2026 window leaves March holding at or above the 4.53 June implied.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4b9d72be3f79591f664fbbb5e6ab9dd44a4c5b453f19bdbd48aff56dc3f4f1c8",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "85a91638d9113a06da17d2d5c0dd020b7ed279178b76f9055d9f8968123d4f56"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.94 and March 2027 implieds mark 4.39, a 45bp premium to cash after the Federal Reserve held. That cash-to-contract gap is the leftover hike premium this book is received in; the contract has come in from the 4.58 entry and did not reverse through it. WTI at 102.00 and Brent December at 114.88 can keep that premium alive, so this is not a size-up. The 10-year at 4.98, down 7bp on the day and 28bp over one month, is already retracing rather than a fresh high to fade with a new long. Hold the existing 10 million March SOFR long; do not add, and do not replace it with a 10-year receive, a Canada receive, or dollar-Canada.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.94 and March 2027 implieds mark 4.39, a 45bp premium to cash after the Federal Reserve held. That cash-to-contract gap is the leftover hike premium this book is received in; the contract has come in from the 4.58 entry and did not reverse through it. WTI at 102.00 and Brent December at 114.88 can keep that premium alive, so this is not a size-up. The 10-year at 4.98, down 7bp on the day and 28bp over one month, is already retracing rather than a fresh high to fade with a new long. Hold the existing 10 million March SOFR long; do not add, and do not replace it with a 10-year receive, a Canada receive, or dollar-Canada."
     }
   ],
   "schema_version": 1,

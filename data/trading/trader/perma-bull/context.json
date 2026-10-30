@@ -70,14 +70,14 @@
     "nav_usd": 99950833.25,
     "net_pnl_usd": -49166.75,
     "pressure_flags": [],
-    "prior_competition_rank": 11,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": -2,
     "raw_pnl_rank": 11,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1250000.0,
     "risk_capital_utilization": 0.125,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 46386.81,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9b36b046eff38379d0cbee1f279859b01bd02dd29ae85e172834ea5dc7aa32b2",
+  "memory_context_sha256": "617ff654adf53ff59eb7b0f3adb4125562150dd0d1d4b63f7d9fce5f623fe576",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -255,8 +255,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -265,23 +265,23 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
+        "trend": "up",
         "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.14
+        "trend": "up",
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.05
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
@@ -305,16 +305,21 @@
     "recent_events": [
       {
         "kind": "session_loss",
-        "magnitude": 0.16277084,
-        "run_id": "overnight-20261023"
+        "magnitude": 0.09277362,
+        "run_id": "overnight-20261030"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261030"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "9b48650c834d3217968eb4cc6e4975d50964c281f535b4dcf8b3f899847d9ab1",
+    "state_sha256": "e180ce027c880cad236e23fe433b4d3882ad26a7c4580cbc6dcc112638e225ed",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 2,
+      "session_loss": 3,
       "session_win": 0
     }
   },

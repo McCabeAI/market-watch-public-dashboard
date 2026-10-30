@@ -4,7 +4,20 @@
   "learning_default_count": 0,
   "learning_status": "compliant",
   "repeated_error_escalations": [],
-  "retrieved_lessons": [],
+  "retrieved_lessons": [
+    {
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "disposition": "DOES_NOT_APPLY",
+      "instruments": [
+        "US_2Y"
+      ],
+      "lesson_id": "les-1d92cbbe59eb",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "rationale": "Those rules are about not re-paying a stalled 10-year backup or a SOFR contract that stopped confirming it. This ticket receives the confirmed 2-year downtrend instead of re-shorting 10s or SOFR.",
+      "run_id": "overnight-20261030"
+    }
+  ],
   "schema_version": 1,
   "type": "LEARNING_COMPLIANCE"
 }

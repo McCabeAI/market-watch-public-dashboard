@@ -1504,6 +1504,62 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "Cash CORRA is still 2.24 and there is no Bank of Canada headline. The locked 2027 H-Z receive still faces March 3.025, June 3.225, September 3.39 and December 3.49, more than 100bp of unstarted re-tightening after cash and versus a 2.75 neutral midpoint. A hawkish Federal Reserve hold, SOFR at 3.95 with March 4.445 and September 4.68, the US 10-year at 5.05, and WTI at 102.78 keep those implieds bid, but they have not lifted Canadian cash. Stay long the existing 42.5 million strip. Do not add into that energy-and-Fed backup. USDCAD at 1.4047 mixes three-digit oil support for the Canadian dollar with a hawkish dollar and is the worse expression of the same easing view."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000.0,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the existing long CORRA 2027 H-Z strip. USDCAD at 1.3996 is inferior because WTI 102.00 and leftover US hike pricing pull that pair in opposite directions.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 59,
+      "decision_fingerprint": "01af40f409d6d7a64f608adbf2d13bda705d9ee985946dabbe2f023ec63bdecf",
+      "event_id": "jde-acab8981ef7e4013",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if cash CORRA leaves 2.24 and starts delivering the 2027 path, or if the locked strip reverses higher so March 2.99 and December 3.40 re-price through a sustained re-hike that labor and underlying inflation no longer contradict.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2f7ca0788f5455c49e708e263b64610da9dc047da2dc18c71e29de491866afb8",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "75e7cce5ea4a7d93473de606f57a1e174f6c38c29514ffd06d6dfaef0a525c99"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA is still 2.24 with no Bank of Canada headline, while the locked 2027 strip still prices March 2.99 through December 3.40. That unstarted re-hike path is the underpriced easing, so hold the existing receive and do not add. Canadian labor is still cooling and underlying inflation is low; three-digit oil is a reason not to add, not a reason to cover. Dollar-Canada mixes leftover US hike pricing with oil support for the Canadian dollar and is the worse expression.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "Cash CORRA is still 2.24 with no Bank of Canada headline, while the locked 2027 strip still prices March 2.99 through December 3.40. That unstarted re-hike path is the underpriced easing, so hold the existing receive and do not add. Canadian labor is still cooling and underlying inflation is low; three-digit oil is a reason not to add, not a reason to cover. Dollar-Canada mixes leftover US hike pricing with oil support for the Canadian dollar and is the worse expression."
     }
   ],
   "schema_version": 1,

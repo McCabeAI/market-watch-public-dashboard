@@ -1516,6 +1516,60 @@
       "run_id": "overnight-20261029",
       "schema_version": 1,
       "thesis": "AUDNZD at 1.2529, up 1.60 percent as NZDUSD fell 1.57 percent to 0.5613, is the only listed one-day relative-value impulse, but new NZ risk is banned so that shock cannot be booked in AUDNZD or NZDUSD. EURGBP at 0.8379 would isolate an ECB hold from sterling without a dollar leg, yet it is not independently markable and will not be opened. The listed markable crosses EURCAD 1.5638, CADJPY 112.46, and AUDCAD 0.9879 all require a Canadian leg while CORRA cash is 2.24 with no Bank of Canada headline, so none of them can be underwritten from a flat book without inventing Ottawa's decision. Long CADJPY into Friday's Bank of Japan meeting would be the cleanest markable non-dollar expression of WTI 102.78 and Brent 115.32 versus Japan after the hawkish 28 October Fed hold\u2014cleaner than USDJPY\u2014but the missing Ottawa outcome plus leftover dollar-yen beta keep it as a rejected candidate, not an initiation."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Book is already flat. OPEN is refused: CADJPY would not be initiated from zero at 112.94 without a Bank of Canada outcome, and AUDCAD would reverse a closed oil fade.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-10-30T06:33:05.373685-04:00",
+      "conviction": 71,
+      "decision_fingerprint": "b8995e942639d5b5f75f27560d79e170d96536d304087ce2d4010a8b136e984a",
+      "event_id": "jde-7491ef70f2384ea4",
+      "funding_view": null,
+      "invalidation": "Stay-flat is wrong only if a later freeze would initiate CADJPY, or a cleaner eligible Canada, Australia, euro-area or Japan cross, from a zero book at the live mark on a new independent Canada-Japan or Australia-Canada policy pillar rather than leftover oil or yen drift.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "692ff2d71d0351dc9d0c73907557c6b31751b0def60c4bc89284af5466deb46e",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "edc44f95caaf199a99c3b4dd4328fafbb3d7efa807782642f27e7975b92fd43d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
+        "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+        "overnight_run_id": "overnight-20261030",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CADJPY at 112.94 is the only listed non-dollar cross with a one-month impulse, but there is no Bank of Canada headline and leftover oil and yen beta keep it from being initiated from a flat book. AUDCAD at 0.9833 would reverse a closed oil fade, EURCAD at 1.5577 still needs an Ottawa decision, and AUDNZD is off because New Zealand inflation could not be verified. Stay flat.",
+      "run_id": "overnight-20261030",
+      "schema_version": 1,
+      "thesis": "CADJPY at 112.94 is the only listed non-dollar cross with a one-month impulse, but there is no Bank of Canada headline and leftover oil and yen beta keep it from being initiated from a flat book. AUDCAD at 0.9833 would reverse a closed oil fade, EURCAD at 1.5577 still needs an Ottawa decision, and AUDNZD is off because New Zealand inflation could not be verified. Stay flat."
     }
   ],
   "schema_version": 1,
