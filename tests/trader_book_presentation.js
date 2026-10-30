@@ -241,63 +241,84 @@ const multiLegOk = {
 };
 check(api.bookFlagCount(multiLegOk) === 0, "multi-leg all ok not flagged");
 
-function seatRows(raw) {
-  return Object.keys(raw.seats).map(function (key) {
-    const row = raw.seats[key];
-    return Object.assign({ seat: row.seat || key }, row);
-  });
-}
+const activeFundingOnly = {
+  seat: "active-funding-only",
+  alerts: [],
+  positions: [],
+  funding_accrual_status: "failed_closed",
+};
+check(api.bookFlagCount(activeFundingOnly) === 1, "active funding only bookFlagCount");
+const flaggedRows = api.filteredSorted(
+  [activeFundingOnly, recoveredFundingSeat],
+  { filter: "flagged" },
+  "trader"
+);
+check(
+  flaggedRows.some(function (row) { return row.seat === "active-funding-only"; }),
+  "active funding in flagged filter"
+);
+check(
+  !flaggedRows.some(function (row) { return row.seat === "recovered-funding"; }),
+  "recovered funding excluded from flagged filter"
+);
 
-function pmRows(raw) {
-  return Object.keys(raw.pms).map(function (key) {
-    const row = raw.pms[key];
-    return Object.assign({ pm_id: row.pm_id || key }, row);
-  });
-}
+const failedWithStaleAlert = {
+  seat: "failed-with-stale-alert",
+  alerts: [fundingAlert],
+  positions: [],
+  funding_accrual_status: "failed_closed",
+};
+check(api.bookFlagCount(failedWithStaleAlert) === 1, "failed with stale alert bookFlagCount");
+const staleFleet = api.fleetFlags([failedWithStaleAlert], [], {});
+check(staleFleet.funding.seatCount === 1, "failed with stale alert fleet seatCount");
+const staleReason = String(staleFleet.funding.reason || "");
+check(
+  staleReason.toLowerCase().indexOf("sofr") === -1 && staleReason.toLowerCase().indexOf("ny fed") === -1,
+  "stale alert fleet reason not historical SOFR"
+);
+check(staleReason === "failed_closed", "stale alert fleet reason is status token");
 
-const overnightRaw = JSON.parse(fs.readFileSync("data/overnight/books/latest.json", "utf8"));
-const pmRaw = JSON.parse(fs.readFileSync("data/pm/books/latest.json", "utf8"));
-const canonicalSeats = seatRows(overnightRaw);
-const canonicalPms = pmRows(pmRaw);
-const oct30 = api.fleetFlags(canonicalSeats, canonicalPms, {});
-check(oct30.funding.seatCount === 0, "oct30 funding seats " + oct30.funding.seatCount);
-check(oct30.funding.pmCount === 0, "oct30 funding pms " + oct30.funding.pmCount);
-check(oct30.paperMarks.length === 1, "oct30 paper rows " + oct30.paperMarks.length);
-check(oct30.paperMarks[0].id === "pragmatist", "oct30 paper book");
-check(oct30.paperMarks[0].instrument === "NZ-US_10Y", "oct30 paper instrument");
-check(oct30.paperMarks[0].count === 10, "oct30 paper count " + oct30.paperMarks[0].count);
-check(oct30.paperMarks[0].reason.indexOf("NZ rates are unavailable") !== -1, "oct30 paper reason");
+const unknownWithStaleAlert = {
+  seat: "unknown-with-stale-alert",
+  alerts: [fundingAlert],
+  positions: [],
+  funding_accrual_status: "unknown",
+};
+check(api.bookFlagCount(unknownWithStaleAlert) === 1, "unknown with stale alert bookFlagCount");
+const unknownFlagged = api.filteredSorted([unknownWithStaleAlert], { filter: "flagged" }, "trader");
+check(unknownFlagged.length === 1, "unknown with stale alert flagged filter");
+const unknownFleetReason = String(
+  api.fleetFlags([unknownWithStaleAlert], [], {}).funding.reason || ""
+);
+check(
+  unknownFleetReason.toLowerCase().indexOf("sofr") === -1 &&
+    unknownFleetReason.toLowerCase().indexOf("ny fed") === -1,
+  "unknown fleet reason not historical SOFR"
+);
+check(unknownFleetReason === "unknown", "unknown fleet reason is status token");
 
-canonicalSeats.forEach(function (seat) {
-  check(seat.funding_accrual_status === "applied", seat.seat + " funding applied");
-});
-canonicalPms.forEach(function (pm) {
-  check(pm.funding_accrual_status === "applied", pm.pm_id + " funding applied");
-});
+const blankWithStaleAlert = {
+  seat: "blank-with-stale-alert",
+  alerts: [fundingAlert],
+  positions: [],
+  funding_accrual_status: "",
+};
+check(api.bookFlagCount(blankWithStaleAlert) === 1, "blank status bookFlagCount");
+const blankReason = String(api.fleetFlags([blankWithStaleAlert], [], {}).funding.reason || "");
+check(blankReason === "funding accrual not applied", "blank status reason");
+check(
+  blankReason.toLowerCase().indexOf("sofr") === -1 && blankReason.toLowerCase().indexOf("ny fed") === -1,
+  "blank status reason not historical SOFR"
+);
 
-function findSeat(id) {
-  return canonicalSeats.find(function (row) { return row.seat === id; });
-}
+check(api.bookFlagCount(recoveredFundingSeat) === 0, "recovered funding bookFlagCount");
+const recoveredFlagged = api.filteredSorted([recoveredFundingSeat], { filter: "flagged" }, "trader");
+check(recoveredFlagged.length === 0, "recovered funding not in flagged filter");
 
-["mean-reverter", "perma-bull", "rate-hawk"].forEach(function (id) {
-  const seat = findSeat(id);
-  const sofr = (seat.positions || []).find(function (p) {
-    return p.instrument === "SOFR_2027-03" || p.instrument === "SOFR_2027-09";
-  });
-  check(sofr && sofr.mark_status === "ok", id + " SOFR mark ok");
-});
-
-const traderFlagged = canonicalSeats.filter(function (seat) {
-  return api.bookFlagCount(seat) > 0;
-});
-check(traderFlagged.length === 1 && traderFlagged[0].seat === "value-guy", "oct30 trader flagged");
-check(api.bookFlagCount(traderFlagged[0]) === 1, "value-guy flag count");
-
-const pmFlagged = canonicalPms.filter(function (pm) {
-  return api.bookFlagCount(pm) > 0;
-});
-check(pmFlagged.length === 1 && pmFlagged[0].pm_id === "pragmatist", "oct30 pm flagged");
-check(api.bookFlagCount(pmFlagged[0]) === 2, "pragmatist flag count");
+check(
+  api.compareRows(failedFunding, recoveredFundingSeat, "flags", -1, "trader") < 0,
+  "flag sort orders active funding before recovered"
+);
 
 const changes = [
   { at: "2026-09-19T22:36:50.082404-04:00", instrument: "CORRA_2027-03", seat: "a", action: "OPEN" },

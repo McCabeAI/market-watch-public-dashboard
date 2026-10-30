@@ -331,7 +331,9 @@
     var unresolved = unresolvedFundingList(book);
     var alert = fundingAlertFromBook(book);
     if (status !== undefined && status !== null && status !== "applied") {
-      return alert && alert.reason ? alert.reason : (String(status) || "funding accrual not applied");
+      var explicit = String(status).trim();
+      if (explicit === "") return "funding accrual not applied";
+      return explicit;
     }
     if (status === "applied" && unresolved.length > 0) {
       return "unresolved funding positions remain";
@@ -504,6 +506,7 @@
     if (row && row.risk_stopped) count += 1;
     if (row && row.risk_stop_pending) count += 1;
     if (bookPnlUnavailable(row)) count += 1;
+    if (isFundingActive(row)) count += 1;
     return count;
   }
 
