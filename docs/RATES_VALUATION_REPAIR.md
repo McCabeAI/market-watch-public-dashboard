@@ -28,6 +28,18 @@ These are mechanics checks, not sample portfolios.
 - DV01-balanced SR3 calendar, both rates +1bp: package P&L = 0. Near rate +1bp and far unchanged, long calendar (pay near / receive far): P&L = +near DV01.
 - A four-contract strip average is not given a curve-spread label and is not assigned single-contract DV01 when leg quantities were never stored.
 
+## Executable catalog admission (strips, OIS, TU/FV/TY)
+
+Preflight and book admission both call `assess_expression` on the frozen `market_state` with the same instrument, expression, and `notional_usd`. A non-bookable verdict raises `SchemaError` with that reason; booking does not substitute another instrument.
+
+`futures_strip_average` books as explicit whole-lot STIR legs in one package. Package shocked risk and spread DV01 are the **sum** of leg USD DV01, not a curve spread and not one outright contract. Strips with sub-one-lot legs are `unavailable`, not `unsupported`.
+
+USD SOFR OIS spot 2Y (`USD_SOFR_OIS_2Y`) and 1y1y (`USD_SOFR_OIS_1Y1Y`) book only from the `usd_sofr_ois` block. Government `official_curves` are not SOFR OIS quotes. Rows with `quote_type` derived are marked from `derived:usd_sofr_ois…`, not labeled observed.
+
+CME TU/FV/TY need supplied `treasury_futures` price, conversion factor, and CTD DV01 inputs. Without them the catalog stays `missing_input` with no fixed-duration fallback.
+
+The catalog name `SOFR_STRIP_2Y` is an eight consecutive quarterly SR3 strip (two years of futures), not a 2Y USD SOFR OIS swap and not a four-quarter strip. The eight expiries are consecutive calendar quarters from the chosen start (the earliest listed SOFR quarterly unless the user passes a different start). A missing middle quarter is `missing_input` for that expiry; the catalog does not fill the hole with a later contract. A four-contract strip stays selectable as `{curve}_STRIP` and is not named 2Y. The frozen catalog also lists USD SOFR OIS 1y1y separately from spot 2Y, dated TU/FV/TY, and one representative calendar, butterfly, outright cross-country RV, and four-leg curve RV when that example is actually bookable, plus parameterized recipes for other maturities. Recipes are not ranked and are not live trades until `assess_expression` passes for the selected expression and size. An open SOFR OIS keeps the effective and maturity dates stamped at OPEN (or from the instrument row) and re-marks from `usd_sofr_ois.dated` or a same-vintage rolling row; a later constant-maturity roll is not substituted for that fixed maturity.
+
 ## Lot lifecycle
 
 OPEN, ADD, REDUCE, and CLOSE on a stamped outright or structure change integer contracts, not only descriptive notional.

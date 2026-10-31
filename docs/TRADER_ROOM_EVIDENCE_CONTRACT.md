@@ -64,6 +64,8 @@ In addition to the existing protocol fields, the common packet must contain thes
 
 The legacy `macro_state`, `rates_and_policy`, `market_levels`, `positioning_and_flow`, and `cross_asset` fields may remain when useful, but they do not satisfy the mandatory sections above by themselves.
 
+At assembly time the parent also attaches a shared `executable_catalog` object built from the frozen `market_state` via `scripts/rates/executable_catalog.py`. The same object is on the packet before trade selection for every eligible seat. Rows are STIR outrights, USD SOFR OIS spot 2Y and 1y1y separately, dated TU/FV/TY, and the SOFR 2Y futures strip only when it is eight consecutive quarterlies. Representative bookable calendars, butterflies, outright cross-country RV, and four-leg curve RV are included only when `assess_expression` says that example is executable. Parameterized recipes carry the exact schema and one example; they are not a ranking and are not a live trade until the selected expression and size pass `assess_expression`. A four-contract strip is `{curve}_STRIP`, not `SOFR_STRIP_2Y`. The catalog is hashed with the packet but is not a fifth essential evidence family. It does not rank or choose a strategy; `missing_input` rows stay gaps. Absent live USD OIS quotes or TU/FV/TY CTD marks stay `missing_input`.
+
 ## Preflight gate
 
 Before launching any of the 14 advocates, the parent must validate that all four mandatory evidence families were attempted and record one of `available`, `partial`, `stale`, or `unavailable` for each. `unavailable` is allowed when the source genuinely cannot be reached; silent omission is not.
