@@ -28,9 +28,35 @@ from scripts.rates.contract_economics import (
 )
 from scripts.rates.structures import leg_pnl_for_contracts, recompute_leg_dv01
 
+STRIP_TYPE = "futures_strip_average"
+
 SUB_LOT_POLICY = "sub_lot_request_is_not_a_fill"
 REMAINING_POLICY = "floor_remaining_lots"
 PACKAGE_RESIZE_POLICY = "atomic_package_one_contract_residual"
+
+
+def _is_booked_strip(position: Mapping[str, Any]) -> bool:
+    if not position.get("legs"):
+        return False
+    expr = position.get("paper_expression")
+    if isinstance(expr, Mapping) and expr.get("type") == STRIP_TYPE:
+        return True
+    if position.get("structure_label") == STRIP_TYPE:
+        return True
+    if position.get("shock_policy") == "sum_leg_dv01":
+        return True
+    return False
+
+
+def _treasury_position(position: Mapping[str, Any]) -> bool:
+    return position.get("family") == "treasury_future" or position.get("price_unit") == "futures_points"
+
+
+def _ois_position(position: Mapping[str, Any]) -> bool:
+    family = position.get("family") or position.get("structure_label")
+    expr = position.get("paper_expression")
+    expr_type = expr.get("type") if isinstance(expr, Mapping) else None
+    return family == "usd_sofr_ois" or expr_type == "usd_sofr_ois"
 
 
 def _money(value: float) -> Decimal:
@@ -647,7 +673,12 @@ def apply_book_resize(
             realized = 0.0
             closed_map = {}
         dv01s = [abs(float(leg.get("dv01_usd") or 0.0)) for leg in position["legs"] if leg.get("dv01_usd") is not None]
-        position["spread_dv01_usd"] = round(max(dv01s) if dv01s else 0.0, 8)
+        if _is_booked_strip(position):
+            spread = round(sum(dv01s) if dv01s else 0.0, 8)
+            position["spread_dv01_usd"] = spread
+            position["shock_dv01_usd"] = spread
+        else:
+            position["spread_dv01_usd"] = round(max(dv01s) if dv01s else 0.0, 8)
         position["residual_dv01_usd"] = _structure_residual_dv01(position["legs"], plan)
         lots_closed = sum(int(row.get("closed_lots") or 0) for row in plan["per_leg"])
         lots_added = sum(int(row.get("added_lots") or 0) for row in plan["per_leg"])
@@ -661,6 +692,105 @@ def apply_book_resize(
             "per_leg": plan["per_leg"],
             "closed_map": closed_map if reducing else {},
         }
+
+    if _treasury_position(position) and position.get("contracts") is not None:
+        old_lots = int(position["contracts"])
+        face = float(position.get("face_notional_usd") or 0.0)
+        point_value = float(position.get("point_value_usd") or 0.0)
+        if face <= 0 or point_value <= 0:
+            return {"legacy": True}
+        if reducing:
+            remaining, closed, zero = split_lots(old_lots, old_notional, new_notional)
+            if zero:
+                return _zero_lot(remaining_lots=old_lots)
+            if marks_block_fill(position):
+                return _pending()
+            entry = position.get("entry_price")
+            mark = position.get("mark_price")
+            if entry in (None, "") or mark in (None, ""):
+                return _pending()
+            sign = 1.0 if position.get("side") == "long" else -1.0
+            realized = sign * closed * (float(mark) - float(entry)) * point_value
+            position["contracts"] = remaining
+            position["_closed_lots"] = closed
+            position["notional_usd"] = new_notional
+            _stamp_outright_residual(position, _unrounded_remaining(old_lots, old_notional, new_notional))
+            return {
+                "legacy": False,
+                "zero_lot": False,
+                "pending_mark": False,
+                "realized_pnl_usd": round(realized, 2),
+                "lots_closed": closed,
+                "lots_added": 0,
+                "remaining_lots": remaining,
+            }
+        added_notional = new_notional - old_notional
+        added, raw_added, zero = added_lots_from_face(added_notional, face_usd_per_lot=face)
+        if zero:
+            return _zero_lot(remaining_lots=old_lots)
+        if marks_block_fill(position):
+            return _pending()
+        price = add_price if add_price is not None else position.get("mark_price")
+        if price in (None, ""):
+            return _pending()
+        if position.get("entry_price") not in (None, "") and old_lots > 0:
+            position["entry_price"] = (float(position["entry_price"]) * old_lots + float(price) * added) / (old_lots + added)
+            position["entry_price_source"] = "weighted_average_of_actual_lots"
+        position["mark_price"] = price
+        position["contracts"] = old_lots + added
+        position["notional_usd"] = new_notional
+        futures_dv01 = position.get("futures_dv01_per_contract")
+        if futures_dv01 is not None:
+            position["dv01_usd"] = float(futures_dv01) * int(position["contracts"])
+        _stamp_outright_residual(position, old_lots + raw_added)
+        return {
+            "legacy": False,
+            "zero_lot": False,
+            "pending_mark": False,
+            "realized_pnl_usd": 0.0,
+            "lots_closed": 0,
+            "lots_added": added,
+            "remaining_lots": old_lots + added,
+        }
+
+    if _ois_position(position):
+        if reducing:
+            if new_notional <= 1e-9:
+                if marks_block_fill(position):
+                    return _pending()
+                from scripts.rates.ois import ois_pnl_usd
+
+                realized = ois_pnl_usd(position)
+                if realized is None:
+                    return _pending()
+                return {
+                    "legacy": False,
+                    "zero_lot": False,
+                    "pending_mark": False,
+                    "realized_pnl_usd": round(float(realized), 2),
+                    "lots_closed": 0,
+                    "lots_added": 0,
+                }
+            if marks_block_fill(position):
+                return _pending()
+            from scripts.rates.ois import ois_pnl_usd
+
+            total = ois_pnl_usd(position)
+            if total is None:
+                return _pending()
+            closed_fraction = (old_notional - new_notional) / old_notional if old_notional > 0 else 0.0
+            old_dv01 = float(position.get("dv01_usd") or 0.0)
+            position["notional_usd"] = new_notional
+            position["dv01_usd"] = old_dv01 * (new_notional / old_notional) if old_notional > 0 else 0.0
+            return {
+                "legacy": False,
+                "zero_lot": False,
+                "pending_mark": False,
+                "realized_pnl_usd": round(float(total) * closed_fraction, 2),
+                "lots_closed": 0,
+                "lots_added": 0,
+            }
+        return {"legacy": True}
 
     if position.get("valuation_method") == "instrument_dv01" and position.get("contracts") is not None:
         old_lots = int(position["contracts"])

@@ -318,11 +318,14 @@ def _futures_strip_average(state: Mapping[str, Any], expression: Mapping[str, An
     weighted_rate = 0.0
     sources: list[str] = []
     dates: list[str] = []
+    leg_rates: dict[str, float] = {}
     for expiry, raw_weight in zip(expiries, weights):
         weight = _number(raw_weight, "futures_strip_average weight")
         if weight <= 0:
             raise PaperMarkError("futures_strip_average weights must be positive")
         mark = _tradable_curve_contract_mark(state, curve_id, str(expiry))
+        alias = f"{curve_id}_{expiry}"
+        leg_rates[alias] = float(mark["value"])
         weighted_rate += weight * float(mark["value"])
         total_weight += weight
         sources.append(mark["source"])
@@ -335,6 +338,7 @@ def _futures_strip_average(state: Mapping[str, Any], expression: Mapping[str, An
         "as_of": min(dates) if dates else state.get("generated_at"),
         "kind": "derived",
         "expression": deepcopy(dict(expression)),
+        "leg_rates": leg_rates,
     }
 
 
@@ -370,6 +374,77 @@ def _structure_leg_specs(expression: Mapping[str, Any]) -> list[tuple[str, str, 
             ("short_calendar_far", str(short_cal.get("curve_id") or ""), str(short_cal.get("far_expiry") or "")),
         ]
     raise PaperMarkError(f"unsupported structure type {kind!r}")
+
+
+def _usd_sofr_ois_mark(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
+    from scripts.rates.ois import OIS_TYPE, instrument_id
+
+    if str(expression.get("type") or "") != OIS_TYPE:
+        raise PaperMarkError("usd_sofr_ois expression required")
+    try:
+        start_years = float(expression.get("start_years"))
+        tenor_years = float(expression.get("tenor_years"))
+    except (TypeError, ValueError) as exc:
+        raise PaperMarkError("usd_sofr_ois requires numeric start_years and tenor_years") from exc
+    try:
+        inst_id = instrument_id(start_years=start_years, tenor_years=tenor_years)
+    except Exception as exc:
+        raise PaperMarkError(str(exc)) from exc
+    block = state.get("usd_sofr_ois")
+    if not isinstance(block, Mapping):
+        raise PaperMarkError("usd_sofr_ois block absent")
+    instruments = block.get("instruments")
+    if not isinstance(instruments, Mapping):
+        raise PaperMarkError(f"usd_sofr_ois.instruments.{inst_id}")
+    row = instruments.get(inst_id)
+    if not isinstance(row, Mapping):
+        raise PaperMarkError(f"usd_sofr_ois.instruments.{inst_id}")
+    par = row.get("par_rate_percent")
+    if par in (None, ""):
+        raise PaperMarkError(f"usd_sofr_ois.instruments.{inst_id}.par_rate_percent")
+    quote_type = str(row.get("quote_type") or "")
+    source = str(row.get("source") or "")
+    if quote_type == "observed_par":
+        mark_source = source
+        kind = "direct"
+    else:
+        mark_source = source if source.startswith("derived:usd_sofr_ois") else f"derived:usd_sofr_ois:{source}"
+        kind = "derived"
+    return {
+        "value": round(float(par), 8),
+        "quote_unit": "percent",
+        "source": mark_source,
+        "as_of": row.get("as_of") or block.get("as_of"),
+        "kind": kind,
+        "instrument_id": inst_id,
+        "expression": deepcopy(dict(expression)),
+    }
+
+
+def _treasury_futures_mark(state: Mapping[str, Any], instrument: str) -> dict[str, Any]:
+    from scripts.rates.treasury_futures import parse_treasury_id
+
+    parsed = parse_treasury_id(instrument)
+    if parsed is None or parsed.get("status") != "ok":
+        raise PaperMarkError(f"treasury futures instrument unavailable for {instrument!r}")
+    instrument_id = str(parsed["instrument"])
+    block = state.get("treasury_futures")
+    contracts = block.get("contracts") if isinstance(block, Mapping) else None
+    row = contracts.get(instrument_id) if isinstance(contracts, Mapping) else None
+    if not isinstance(row, Mapping):
+        raise PaperMarkError(f"treasury_futures.contracts.{instrument_id}")
+    price = row.get("futures_price")
+    if price in (None, ""):
+        raise PaperMarkError(f"treasury_futures.contracts.{instrument_id}.futures_price")
+    source = row.get("price_source") if isinstance(row.get("price_source"), str) and row.get("price_source") else "treasury_futures"
+    return {
+        "value": round(float(price), 8),
+        "quote_unit": "futures_points",
+        "source": str(source),
+        "as_of": row.get("price_as_of"),
+        "kind": "direct",
+        "expression": {"type": "treasury_future"},
+    }
 
 
 def _structure_mark(state: Mapping[str, Any], expression: Mapping[str, Any]) -> dict[str, Any]:
@@ -570,6 +645,12 @@ def resolve_paper_mid(
                     "futures_strip_average is a strip average, not a curve spread"
                 )
             return _futures_strip_average(market_state, expression)
+        if kind == "usd_sofr_ois":
+            return _usd_sofr_ois_mark(market_state, expression)
+        if kind == "treasury_future":
+            if not instrument:
+                raise PaperMarkError("treasury_future mark requires instrument")
+            return _treasury_futures_mark(market_state, instrument)
         if kind in {"calendar_spread", "butterfly", "outright_rv", "curve_rv"}:
             return _structure_mark(market_state, expression)
         raise PaperMarkError(f"unsupported paper expression type {kind!r}")
@@ -636,6 +717,24 @@ def hydrate_structure_rates(position: dict[str, Any], market_state: Mapping[str,
     position["entry_price_as_of"] = mark.get("as_of")
 
 
+def _is_strip_position(position: Mapping[str, Any]) -> bool:
+    expression = position.get("paper_expression")
+    if isinstance(expression, Mapping) and expression.get("type") == "futures_strip_average":
+        return True
+    return position.get("structure_label") == "futures_strip_average"
+
+
+def _ois_position(position: Mapping[str, Any]) -> bool:
+    family = position.get("family") or position.get("structure_label")
+    expression = position.get("paper_expression")
+    expr_type = expression.get("type") if isinstance(expression, Mapping) else None
+    return family == "usd_sofr_ois" or expr_type == "usd_sofr_ois"
+
+
+def _treasury_position(position: Mapping[str, Any]) -> bool:
+    return position.get("family") == "treasury_future" or position.get("price_unit") == "futures_points"
+
+
 def marks_are_current(position: Mapping[str, Any]) -> bool:
     if position.get("mark_status") == "unavailable":
         return False
@@ -679,22 +778,37 @@ def apply_resolved_mark(position: dict[str, Any], mark: Mapping[str, Any]) -> No
             leg["mark_status"] = "ok"
             leg["mark_as_of"] = mark.get("as_of")
             leg["mark_source"] = mark.get("source")
-        if not apply_mark_fx(position["legs"], mark.get("market_state") if isinstance(mark.get("market_state"), Mapping) else None):
-            # apply_mark_fx needs the live state; callers pass it via refresh_positions.
-            pass
-        kind = None
-        expression = position.get("paper_expression")
-        if isinstance(expression, Mapping):
-            kind = expression.get("type")
-        package = package_mark_bp(str(kind or position.get("structure_label") or ""), position["legs"])
-        position["mark_status"] = "ok"
-        position.pop("mark_unavailable_reason", None)
-        position["mark_price"] = package
-        if package is None or not marks_are_current(position):
-            clear_unresolved_mark(position, reason="structure package or FX mark incomplete")
+        live_state = mark.get("market_state") if isinstance(mark.get("market_state"), Mapping) else None
+        if live_state is not None and not apply_mark_fx(position["legs"], live_state):
+            clear_unresolved_mark(position, reason="current FX fixing missing or stale")
             return
+        if _is_strip_position(position):
+            position["mark_status"] = "ok"
+            position.pop("mark_unavailable_reason", None)
+            position["mark_price"] = mark.get("value")
+            dv01_sum = round(sum(abs(float(leg.get("dv01_usd") or 0.0)) for leg in position["legs"]), 8)
+            position["spread_dv01_usd"] = dv01_sum
+            position["shock_dv01_usd"] = dv01_sum
+        else:
+            kind = None
+            expression = position.get("paper_expression")
+            if isinstance(expression, Mapping):
+                kind = expression.get("type")
+            package = package_mark_bp(str(kind or position.get("structure_label") or ""), position["legs"])
+            if package is None:
+                clear_unresolved_mark(position, reason="structure package or FX mark incomplete")
+                return
+            position["mark_price"] = package
+            position["mark_status"] = "ok"
+            position.pop("mark_unavailable_reason", None)
+            position.pop("pnl_unavailable", None)
+            if not marks_are_current(position):
+                clear_unresolved_mark(position, reason="structure package or FX mark incomplete")
+                return
     else:
         position["mark_price"] = mark["value"]
+        if _ois_position(position):
+            position["mark_rate"] = mark["value"]
     position["mark_price_source"] = mark["source"]
     position["mark_price_as_of"] = mark.get("as_of")
     position["mark_status"] = "ok"
@@ -751,11 +865,13 @@ def refresh_positions(
         if position.get("valuation_method") == "instrument_dv01" and not position.get("legs"):
             from scripts.rates.lifecycle import refresh_outright_fx
 
+            if _treasury_position(position):
+                continue
             if not refresh_outright_fx(position, market_state):
                 if alerts is not None:
                     alerts.append(f"FX mark unavailable for {position.get('instrument')}")
                 continue
-        if position.get("legs"):
+        if position.get("legs") and not _is_strip_position(position):
             from scripts.rates.structures import apply_mark_fx, package_mark_bp
 
             if not apply_mark_fx(position["legs"], market_state):

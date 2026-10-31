@@ -28,6 +28,16 @@ These are mechanics checks, not sample portfolios.
 - DV01-balanced SR3 calendar, both rates +1bp: package P&L = 0. Near rate +1bp and far unchanged, long calendar (pay near / receive far): P&L = +near DV01.
 - A four-contract strip average is not given a curve-spread label and is not assigned single-contract DV01 when leg quantities were never stored.
 
+## Executable catalog admission (strips, OIS, TU/FV/TY)
+
+Preflight and book admission both call `assess_expression` on the frozen `market_state` with the same instrument, expression, and `notional_usd`. A non-bookable verdict raises `SchemaError` with that reason; booking does not substitute another instrument.
+
+`futures_strip_average` books as explicit whole-lot STIR legs in one package. Package shocked risk and spread DV01 are the **sum** of leg USD DV01, not a curve spread and not one outright contract. Strips with sub-one-lot legs are `unavailable`, not `unsupported`.
+
+USD SOFR OIS spot 2Y (`USD_SOFR_OIS_2Y`) and 1y1y (`USD_SOFR_OIS_1Y1Y`) book only from the `usd_sofr_ois` block. Government `official_curves` are not SOFR OIS quotes. Rows with `quote_type` derived are marked from `derived:usd_sofr_ois…`, not labeled observed.
+
+CME TU/FV/TY need supplied `treasury_futures` price, conversion factor, and CTD DV01 inputs. Without them the catalog stays `missing_input` with no fixed-duration fallback.
+
 ## Lot lifecycle
 
 OPEN, ADD, REDUCE, and CLOSE on a stamped outright or structure change integer contracts, not only descriptive notional.
