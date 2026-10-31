@@ -824,6 +824,8 @@ def clear_unresolved_mark(position: dict[str, Any], *, reason: str | None = None
     position["pnl_unavailable"] = True
     if reason:
         position["mark_unavailable_reason"] = reason
+    if not position.get("legs"):
+        position["mark_rate"] = None
     for leg in position.get("legs") or []:
         if not isinstance(leg, dict):
             continue
@@ -839,6 +841,23 @@ def clear_unresolved_mark(position: dict[str, Any], *, reason: str | None = None
         position["mark_fx_status"] = "unavailable"
 
 
+def _apply_ois_open_mark(position: dict[str, Any], resolved: Mapping[str, Any]) -> None:
+    par = float(resolved["par_rate_percent"])
+    position["mark_rate"] = par
+    position["mark_price"] = par
+    position["mark_price_source"] = resolved.get("mark_source") or resolved.get("source")
+    position["mark_price_as_of"] = resolved.get("as_of")
+    position["mark_status"] = "ok"
+    position.pop("mark_unavailable_reason", None)
+    position.pop("pnl_unavailable", None)
+    if resolved.get("annuity") is not None:
+        position["annuity"] = float(resolved["annuity"])
+        notional = float(position.get("notional_usd") or 0.0)
+        position["dv01_usd"] = notional * float(resolved["annuity"]) * 0.0001
+    if resolved.get("fixing_dates") is not None:
+        position["fixing_dates"] = resolved["fixing_dates"]
+
+
 def refresh_positions(
     positions: list[dict[str, Any]],
     market_state: Mapping[str, Any],
@@ -846,7 +865,21 @@ def refresh_positions(
     alerts: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Re-mark a position list. Missing marks isolate to that position; nothing is invented."""
+    from scripts.rates.structures import StructureError
+
     for position in positions:
+        if _ois_position(position) and not position.get("legs"):
+            try:
+                from scripts.rates.ois import resolve_open_ois_mark
+
+                resolved = resolve_open_ois_mark(position, market_state)
+            except StructureError as exc:
+                clear_unresolved_mark(position, reason=str(exc))
+                if alerts is not None:
+                    alerts.append(f"Paper mark unavailable for {position.get('instrument')}: {exc}")
+                continue
+            _apply_ois_open_mark(position, resolved)
+            continue
         try:
             mark = resolve_paper_mid(
                 market_state,
@@ -866,6 +899,9 @@ def refresh_positions(
             from scripts.rates.lifecycle import refresh_outright_fx
 
             if _treasury_position(position):
+                from scripts.rates.treasury_futures import refresh_treasury_risk
+
+                refresh_treasury_risk(position, market_state)
                 continue
             if not refresh_outright_fx(position, market_state):
                 if alerts is not None:

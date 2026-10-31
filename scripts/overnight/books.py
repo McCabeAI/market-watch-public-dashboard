@@ -1025,6 +1025,17 @@ def _install_rates_economics(
         position["mark_price_as_of"] = built.get("as_of")
         position["entry_price_as_of"] = built.get("as_of")
         position["mark_status"] = "ok"
+        for key in (
+            "effective_date",
+            "maturity_date",
+            "fixing_dates",
+            "entry_as_of",
+            "booked_as_of",
+            "start_years",
+            "tenor_years",
+        ):
+            if built.get(key) not in (None, ""):
+                position[key] = built[key]
         stamp_open_valuation(position, market_state)
         return
 
@@ -1162,6 +1173,13 @@ def _instrument_position(position: dict[str, Any]) -> bool:
     return False
 
 
+def _ois_position(position: dict[str, Any]) -> bool:
+    family = position.get("family") or position.get("structure_label")
+    expr = position.get("paper_expression")
+    expr_type = expr.get("type") if isinstance(expr, Mapping) else None
+    return family == "usd_sofr_ois" or expr_type == "usd_sofr_ois"
+
+
 def _resize(
     seat_book: dict[str, Any],
     action: dict[str, Any],
@@ -1282,7 +1300,13 @@ def _resize(
             position["notional_usd"] = new_n
             action["lots_added"] = result.get("lots_added")
             action["fill_status"] = "executed"
-            if add_price not in (None, ""):
+            if _ois_position(position):
+                resolved_rate = position.get("mark_rate")
+                if resolved_rate not in (None, ""):
+                    position["mark_price"] = resolved_rate
+                elif add_price not in (None, ""):
+                    position["mark_price"] = add_price
+            elif add_price not in (None, ""):
                 position["mark_price"] = add_price
                 position["entry_price_source"] = "weighted_average_of_actual_lots"
         elif add_price not in (None, "") and position.get("entry_price") not in (None, ""):

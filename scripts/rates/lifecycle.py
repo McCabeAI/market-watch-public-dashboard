@@ -754,12 +754,29 @@ def apply_book_resize(
         }
 
     if _ois_position(position):
+        from scripts.rates.ois import ois_pnl_usd
+
+        annuity_raw = position.get("annuity")
+        try:
+            annuity = float(annuity_raw) if annuity_raw not in (None, "") else None
+        except (TypeError, ValueError):
+            annuity = None
+
+        def _ois_realized_on_notional(closed_notional: float) -> float | None:
+            if annuity is None or closed_notional <= 0:
+                return None
+            entry = position.get("entry_rate")
+            mark = position.get("mark_rate")
+            if entry in (None, "") or mark in (None, ""):
+                return None
+            closed_dv01 = closed_notional * annuity * 0.0001
+            sign = 1.0 if position.get("side") == "long" else -1.0
+            return -sign * closed_dv01 * (float(mark) - float(entry)) * 100.0
+
         if reducing:
             if new_notional <= 1e-9:
                 if marks_block_fill(position):
                     return _pending()
-                from scripts.rates.ois import ois_pnl_usd
-
                 realized = ois_pnl_usd(position)
                 if realized is None:
                     return _pending()
@@ -773,24 +790,52 @@ def apply_book_resize(
                 }
             if marks_block_fill(position):
                 return _pending()
-            from scripts.rates.ois import ois_pnl_usd
-
-            total = ois_pnl_usd(position)
-            if total is None:
+            closed_notional = old_notional - new_notional
+            realized = _ois_realized_on_notional(closed_notional)
+            if realized is None:
                 return _pending()
-            closed_fraction = (old_notional - new_notional) / old_notional if old_notional > 0 else 0.0
-            old_dv01 = float(position.get("dv01_usd") or 0.0)
             position["notional_usd"] = new_notional
-            position["dv01_usd"] = old_dv01 * (new_notional / old_notional) if old_notional > 0 else 0.0
+            if annuity is not None:
+                position["dv01_usd"] = new_notional * annuity * 0.0001
             return {
                 "legacy": False,
                 "zero_lot": False,
                 "pending_mark": False,
-                "realized_pnl_usd": round(float(total) * closed_fraction, 2),
+                "realized_pnl_usd": round(float(realized), 2),
                 "lots_closed": 0,
                 "lots_added": 0,
             }
-        return {"legacy": True}
+        if marks_block_fill(position):
+            return _pending(lots_added=0)
+        transaction_rate = position.get("mark_rate")
+        if transaction_rate in (None, ""):
+            transaction_rate = add_price
+        if transaction_rate in (None, ""):
+            return _pending(lots_added=0)
+        added_notional = new_notional - old_notional
+        if added_notional <= 0:
+            return _zero_lot()
+        old_entry = position.get("entry_rate")
+        if old_entry in (None, ""):
+            return _pending(lots_added=0)
+        blended = (float(old_entry) * old_notional + float(transaction_rate) * added_notional) / new_notional
+        position["entry_rate"] = blended
+        position["entry_price"] = blended
+        position["last_transaction_rate"] = float(transaction_rate)
+        block_as_of = position.get("mark_price_as_of") or position.get("mark_rate_as_of")
+        if block_as_of not in (None, ""):
+            position["last_transaction_as_of"] = block_as_of
+        position["notional_usd"] = new_notional
+        if annuity is not None:
+            position["dv01_usd"] = new_notional * annuity * 0.0001
+        return {
+            "legacy": False,
+            "zero_lot": False,
+            "pending_mark": False,
+            "realized_pnl_usd": 0.0,
+            "lots_closed": 0,
+            "lots_added": 0,
+        }
 
     if position.get("valuation_method") == "instrument_dv01" and position.get("contracts") is not None:
         old_lots = int(position["contracts"])

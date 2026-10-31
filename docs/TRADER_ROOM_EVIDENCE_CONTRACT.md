@@ -64,6 +64,8 @@ In addition to the existing protocol fields, the common packet must contain thes
 
 The legacy `macro_state`, `rates_and_policy`, `market_levels`, `positioning_and_flow`, and `cross_asset` fields may remain when useful, but they do not satisfy the mandatory sections above by themselves.
 
+At assembly time the parent also attaches a shared `executable_catalog` object built from the frozen `market_state` via `scripts/rates/executable_catalog.py`. It lists STIR outrights and the four distinct 2Y families with the same `assess_expression` rows deterministic booking uses. It is hashed with the packet but is not a fifth essential evidence family. The catalog does not rank or choose a strategy; `missing_input` rows stay gaps.
+
 ## Preflight gate
 
 Before launching any of the 14 advocates, the parent must validate that all four mandatory evidence families were attempted and record one of `available`, `partial`, `stale`, or `unavailable` for each. `unavailable` is allowed when the source genuinely cannot be reached; silent omission is not.

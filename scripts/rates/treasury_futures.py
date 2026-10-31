@@ -318,24 +318,206 @@ def _prefix_missing(instrument_id: str, suffixes: list[str]) -> list[str]:
     return [f"treasury_futures.contracts.{instrument_id}.{s}" for s in suffixes]
 
 
-def assess_treasury(
-    instrument: str,
-    expression: Any,
+def _contract_row_sourced(row: Mapping[str, Any]) -> bool:
+    return _has_text(row.get("price_source")) or _has_text(row.get("source"))
+
+
+def _canonical_product_root(instrument: str) -> tuple[str, str] | None:
+    """Return (canonical product TU/FV/TY, root symbol as passed) for bare roots only."""
+    if not instrument or not isinstance(instrument, str):
+        return None
+    raw = instrument.strip().upper().replace(" ", "")
+    product = _PRODUCT_ALIASES.get(raw)
+    if product is None:
+        return None
+    if parse_treasury_id(raw) is not None:
+        return None
+    return product, raw
+
+
+def _sourced_dated_contracts(
     market_state: Mapping[str, Any] | None,
-    notional_usd: float | None = None,
-) -> dict[str, Any] | None:
-    del notional_usd
-    expr_type = _expression_type(expression)
-    if expr_type is not None and expr_type != "treasury_future":
-        return None
+    product: str,
+) -> list[tuple[str, dict[str, Any]]]:
+    block = _treasury_block(market_state)
+    if block is None:
+        return []
+    contracts = block.get("contracts")
+    if not isinstance(contracts, Mapping):
+        return []
+    out: list[tuple[str, dict[str, Any]]] = []
+    for contract_id, row in contracts.items():
+        if not isinstance(row, Mapping):
+            continue
+        if not _contract_row_sourced(row):
+            continue
+        parsed = parse_treasury_id(str(contract_id))
+        if parsed is None or parsed.get("status") != "ok":
+            continue
+        if str(parsed.get("product")) != product:
+            continue
+        out.append((str(parsed["instrument"]), parsed))
+    return out
 
+
+def resolve_treasury_instrument(
+    instrument: str,
+    market_state: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Resolve a treasury futures id to a dated contract using market_state when needed."""
     parsed = parse_treasury_id(instrument)
-    if parsed is None and expr_type != "treasury_future":
-        return None
-    if parsed is None:
-        return None
+    if parsed is not None:
+        if parsed.get("status") == "ok":
+            return {
+                "status": "ok",
+                "parsed": parsed,
+                "instrument_id": str(parsed["instrument"]),
+                "resolved_from": None,
+            }
+        return {
+            "status": "unsupported",
+            "parsed": parsed,
+            "instrument_id": parsed.get("instrument"),
+            "reason": parsed.get("reason"),
+            "resolved_from": None,
+        }
 
-    instrument_id = parsed.get("instrument") or instrument
+    root_info = _canonical_product_root(instrument)
+    if root_info is None:
+        return {
+            "status": "unsupported",
+            "reason": f"Not a supported treasury futures instrument: {instrument!r}",
+            "missing_inputs": [],
+            "resolved_from": None,
+        }
+
+    product, root_symbol = root_info
+    block = _treasury_block(market_state)
+    missing_inputs: list[str] = [f"treasury_futures.contracts.{product}"]
+
+    def _failure(reason: str, extra_missing: list[str] | None = None) -> dict[str, Any]:
+        mi = list(missing_inputs)
+        if extra_missing:
+            mi.extend(extra_missing)
+        return {
+            "status": "missing_input",
+            "bookable": False,
+            "reason": reason,
+            "missing_inputs": sorted(dict.fromkeys(mi)),
+            "product": product,
+            "resolved_from": root_symbol,
+        }
+
+    if block is None:
+        return _failure(
+            "Preflight requires a sourced dated treasury futures contract with an explicit expiry; "
+            f"no contract rows for {product}."
+        )
+
+    front_map = block.get("front")
+    if isinstance(front_map, Mapping) and product in front_map:
+        front_key = f"treasury_futures.front.{product}"
+        missing_inputs.append(front_key)
+        front_id = str(front_map[product])
+        front_parsed = parse_treasury_id(front_id)
+        front_row = _contract_row(market_state, front_id)
+        if (
+            front_parsed is None
+            or front_parsed.get("status") != "ok"
+            or str(front_parsed.get("product")) != product
+        ):
+            return _failure(
+                f"treasury_futures.front.{product} names {front_id!r}, which is not a valid "
+                f"sourced {product} dated contract.",
+                [front_key, f"treasury_futures.contracts.{front_id}"],
+            )
+        if front_row is None or not _contract_row_sourced(front_row):
+            return _failure(
+                f"treasury_futures.front.{product} names {front_id!r}, which has no price source.",
+                [front_key, f"treasury_futures.contracts.{front_id}"],
+            )
+        resolved_id = str(front_parsed["instrument"])
+        return {
+            "status": "ok",
+            "parsed": front_parsed,
+            "instrument_id": resolved_id,
+            "resolved_from": root_symbol,
+        }
+
+    sourced = _sourced_dated_contracts(market_state, product)
+    front_flagged = [
+        (cid, p)
+        for cid, p in sourced
+        if _row_front_flag(_contract_row(market_state, cid) or {})
+    ]
+
+    if len(front_flagged) == 1:
+        cid, p = front_flagged[0]
+        return {
+            "status": "ok",
+            "parsed": p,
+            "instrument_id": cid,
+            "resolved_from": root_symbol,
+        }
+    if len(front_flagged) > 1:
+        ids = sorted(c for c, _ in front_flagged)
+        return _failure(
+            f"Ambiguous {product} expiry: multiple contracts marked front: {', '.join(ids)}."
+        )
+
+    if len(sourced) == 1:
+        cid, p = sourced[0]
+        return {
+            "status": "ok",
+            "parsed": p,
+            "instrument_id": cid,
+            "resolved_from": root_symbol,
+        }
+    if len(sourced) == 0:
+        return _failure(
+            "Preflight requires a sourced dated treasury futures contract with an explicit expiry; "
+            f"no sourced contract rows for {product}."
+        )
+
+    ids = sorted(cid for cid, _ in sourced)
+    return _failure(
+        f"Ambiguous {product} expiry: multiple sourced contracts "
+        f"({', '.join(ids)}); set treasury_futures.front or pass an explicit dated id."
+    )
+
+
+def _row_front_flag(row: Mapping[str, Any]) -> bool:
+    return row.get("front") is True
+
+
+def _assess_from_resolved(
+    resolution: dict[str, Any],
+    *,
+    expr_type: str | None,
+    market_state: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    if resolution.get("status") == "missing_input":
+        return {
+            "family": "treasury_future",
+            "instrument": resolution.get("resolved_from") or "",
+            "expression_type": expr_type or "treasury_future",
+            "product": resolution.get("product"),
+            "expiry": None,
+            "status": "missing_input",
+            "bookable": False,
+            "reason": resolution.get("reason"),
+            "missing_inputs": resolution.get("missing_inputs") or [],
+            "mark_status": "unavailable",
+            "mark_source": None,
+            "futures_price": None,
+            "futures_dv01_per_contract": None,
+            "dv01_method_limits": _DV01_LIMITS,
+            "resolved_from": resolution.get("resolved_from"),
+        }
+
+    parsed = resolution["parsed"]
+    instrument_id = str(resolution["instrument_id"])
+    resolved_from = resolution.get("resolved_from")
     base: dict[str, Any] = {
         "family": "treasury_future",
         "instrument": instrument_id,
@@ -343,16 +525,20 @@ def assess_treasury(
         "product": parsed.get("product"),
         "expiry": parsed.get("expiry"),
     }
+    if resolved_from:
+        base["resolved_from"] = resolved_from
 
-    if parsed.get("status") == "unsupported":
+    if resolution.get("status") == "unsupported" or parsed.get("status") == "unsupported":
         return {
             **base,
             "status": "unsupported",
             "bookable": False,
-            "reason": parsed.get("reason"),
+            "reason": resolution.get("reason") or parsed.get("reason"),
             "missing_inputs": [],
             "mark_status": "unavailable",
             "mark_source": None,
+            "futures_dv01_per_contract": None,
+            "dv01_method_limits": _DV01_LIMITS,
         }
 
     row = _contract_row(market_state, instrument_id)
@@ -395,8 +581,6 @@ def assess_treasury(
                 f"treasury_futures.contracts.{instrument_id}.ctd_as_of",
             ]
         )
-        if price is None:
-            pass  # futures_price already listed
 
     missing = sorted(dict.fromkeys(missing))
     bookable = price is not None and futures_dv01 is not None and not missing
@@ -404,14 +588,11 @@ def assess_treasury(
     if bookable:
         status = "ok"
         reason = None
-    elif parsed.get("status") == "unsupported":
-        status = "unsupported"
-        reason = parsed.get("reason")
     else:
         status = "missing_input"
         reason = "missing required treasury futures price or CTD risk inputs"
 
-    out: dict[str, Any] = {
+    return {
         **base,
         "status": status,
         "bookable": bool(bookable),
@@ -423,7 +604,28 @@ def assess_treasury(
         "futures_dv01_per_contract": futures_dv01,
         "dv01_method_limits": _DV01_LIMITS,
     }
-    return out
+
+
+def assess_treasury(
+    instrument: str,
+    expression: Any,
+    market_state: Mapping[str, Any] | None,
+    notional_usd: float | None = None,
+) -> dict[str, Any] | None:
+    del notional_usd
+    expr_type = _expression_type(expression)
+    if expr_type is not None and expr_type != "treasury_future":
+        return None
+
+    parsed = parse_treasury_id(instrument)
+    if parsed is None and expr_type != "treasury_future":
+        return None
+
+    resolution = resolve_treasury_instrument(instrument, market_state)
+    if resolution.get("status") == "unsupported" and parsed is None and expr_type is None:
+        return None
+
+    return _assess_from_resolved(resolution, expr_type=expr_type, market_state=market_state)
 
 
 def _whole_contracts(notional_usd: float, face: float) -> int:
@@ -439,12 +641,15 @@ def build_treasury_position(
     notional_usd: float,
     market_state: Mapping[str, Any] | None,
 ) -> dict[str, Any]:
-    parsed = parse_treasury_id(instrument)
-    if parsed is None or parsed.get("status") != "ok":
-        raise ValueError(f"Not a supported treasury futures instrument: {instrument!r}")
+    resolution = resolve_treasury_instrument(instrument, market_state)
+    if resolution.get("status") != "ok":
+        reason = resolution.get("reason") or f"Cannot resolve treasury futures instrument {instrument!r}"
+        raise ValueError(reason)
+
+    parsed = resolution["parsed"]
     product = str(parsed["product"])
     spec = contract_spec(product)
-    instrument_id = str(parsed["instrument"])
+    instrument_id = str(resolution["instrument_id"])
     row = _contract_row(market_state, instrument_id)
     price, _, _ = _price_from_row(row)
     if price is None:
@@ -474,6 +679,7 @@ def build_treasury_position(
     if side_norm not in {"long", "short"}:
         raise ValueError(f"side must be long or short, got {side!r}")
 
+    row = row or {}
     return {
         "instrument": instrument_id,
         "product": product,
@@ -494,8 +700,82 @@ def build_treasury_position(
         "futures_dv01_per_contract": futures_dv01,
         "dv01_usd": contracts * futures_dv01,
         "conversion_factor": cf_val,
+        "conversion_factor_source": row.get("conversion_factor_source"),
+        "conversion_factor_as_of": row.get("conversion_factor_as_of"),
+        "ctd_source": row.get("ctd_source"),
+        "ctd_as_of": row.get("ctd_as_of"),
+        "dv01_source_as_of": row.get("ctd_as_of"),
+        "risk_status": "ok",
         "dv01_method_limits": _DV01_LIMITS,
     }
+
+
+def refresh_treasury_risk(position: dict, market_state: Mapping[str, Any] | None) -> None:
+    """Recompute CTD/conversion-factor DV01 from current market_state; does not touch price P&L fields."""
+    instrument_id = str(position.get("instrument") or "")
+    parsed = parse_treasury_id(instrument_id)
+    root = _canonical_product_root(instrument_id)
+    if parsed is None or parsed.get("status") != "ok" or root is not None:
+        position["futures_dv01_per_contract"] = None
+        position["dv01_usd"] = None
+        position["risk_status"] = "unavailable"
+        position["risk_unavailable_reason"] = (
+            "Treasury futures risk requires a dated contract id with explicit expiry; "
+            f"position instrument {instrument_id!r} is not dated."
+        )
+        return
+
+    product = str(parsed["product"])
+    row = _contract_row(market_state, instrument_id)
+    if row is None:
+        position["futures_dv01_per_contract"] = None
+        position["dv01_usd"] = None
+        position["risk_status"] = "unavailable"
+        position["risk_unavailable_reason"] = (
+            f"Missing treasury_futures.contracts.{instrument_id} for risk refresh."
+        )
+        return
+
+    cf_val, cf_missing = _conversion_factor(row)
+    ctd_per_100, ctd_missing = _ctd_dv01_per_100(row)
+    if cf_missing or ctd_missing or cf_val is None or ctd_per_100 is None:
+        position["futures_dv01_per_contract"] = None
+        position["dv01_usd"] = None
+        position["risk_status"] = "unavailable"
+        missing = cf_missing + ctd_missing
+        position["risk_unavailable_reason"] = (
+            f"Missing CTD/conversion-factor inputs for {instrument_id}: {', '.join(missing)}"
+        )
+        return
+
+    futures_dv01 = futures_dv01_per_contract(
+        product,
+        conversion_factor=cf_val,
+        ctd_dv01_per_100=ctd_per_100,
+    )
+    try:
+        contracts = int(position["contracts"])
+    except (KeyError, TypeError, ValueError):
+        contracts = 0
+
+    position["futures_dv01_per_contract"] = futures_dv01
+    position["dv01_usd"] = contracts * futures_dv01
+    position["conversion_factor"] = cf_val
+    position["conversion_factor_source"] = row.get("conversion_factor_source")
+    position["conversion_factor_as_of"] = row.get("conversion_factor_as_of")
+    position["ctd_source"] = row.get("ctd_source")
+    position["ctd_as_of"] = row.get("ctd_as_of")
+    cf_as_of = row.get("conversion_factor_as_of")
+    ctd_as_of = row.get("ctd_as_of")
+    if _has_text(cf_as_of) and _has_text(ctd_as_of) and cf_as_of != ctd_as_of:
+        position["dv01_source_as_of"] = {
+            "conversion_factor_as_of": cf_as_of,
+            "ctd_as_of": ctd_as_of,
+        }
+    else:
+        position["dv01_source_as_of"] = ctd_as_of if _has_text(ctd_as_of) else cf_as_of
+    position["risk_status"] = "ok"
+    position.pop("risk_unavailable_reason", None)
 
 
 def _side_sign(side: str) -> float:

@@ -416,6 +416,9 @@ def assemble_packet(
     packet["cross_assets"] = compact
     packet["cross_asset"] = list(compact.get("marks") or [])
     packet["source_index"] = source_index_from_packet(packet)
+    from scripts.trader_room.executable_catalog_section import attach_executable_catalog
+
+    attach_executable_catalog(packet)
     return packet
 
 
@@ -429,4 +432,7 @@ def load_synthetic_packet(path: Path, *, topic: str | None = None) -> dict[str, 
     packet.setdefault("known_gaps", [])
     packet.setdefault("funding_context", build_funding_context(packet.get("market_state") or {}, as_of=packet.get("as_of")))
     packet.setdefault("competition", competition_contract(packet.get("funding_context")))
+    from scripts.trader_room.executable_catalog_section import attach_executable_catalog
+
+    attach_executable_catalog(packet, skip_if_present=True)
     return packet

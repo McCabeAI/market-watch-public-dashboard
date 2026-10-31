@@ -630,12 +630,15 @@ def two_year_choices(market_state: Mapping[str, Any] | None) -> list[dict[str, A
     strip_expression: dict[str, Any] = {
         "type": "futures_strip_average",
         "curve_id": "SOFR",
-        "expiries": quarterlies[:4],
+        "expiries": quarterlies[:8],
     }
-    if len(quarterlies) < 4:
+    if len(quarterlies) < 8:
         strip_verdict = _verdict(
             status="missing_input",
-            reason="SOFR 2Y futures strip needs four quarterly contracts on the frozen SOFR curve",
+            reason=(
+                "SOFR_STRIP_2Y requires eight consecutive quarterly SR3 expiries on the frozen SOFR curve; "
+                "four quarterlies are not a 2Y swap or a 2Y futures strip"
+            ),
             family="futures_strip",
             instrument="SOFR_STRIP_2Y",
             expression_type="futures_strip_average",
@@ -649,6 +652,8 @@ def two_year_choices(market_state: Mapping[str, Any] | None) -> list[dict[str, A
             market_state=market_state,
             notional_usd=None,
         )
+        if strip_verdict.get("family") == "futures_strip":
+            strip_verdict["instrument"] = "SOFR_STRIP_2Y"
     choices.append(strip_verdict)
 
     return choices
@@ -688,26 +693,32 @@ def select_two_year(
             notional_usd=notional_usd,
         )
     quarterlies = _quarterly_expiries(market_state, "SOFR")
-    if len(quarterlies) < 4:
+    if len(quarterlies) < 8:
         return _verdict(
             status="missing_input",
-            reason="SOFR 2Y futures strip needs four quarterly contracts on the frozen SOFR curve",
+            reason=(
+                "SOFR_STRIP_2Y requires eight consecutive quarterly SR3 expiries on the frozen SOFR curve; "
+                "four quarterlies are not a 2Y swap or a 2Y futures strip"
+            ),
             family="futures_strip",
             instrument="SOFR_STRIP_2Y",
             expression_type="futures_strip_average",
             missing_inputs=["tradable_rate_curves.SOFR.quarterly_contracts"],
             mark_status="missing",
         )
-    return assess_expression(
+    verdict = assess_expression(
         "SOFR_STRIP_2Y",
         expression={
             "type": "futures_strip_average",
             "curve_id": "SOFR",
-            "expiries": quarterlies[:4],
+            "expiries": quarterlies[:8],
         },
         market_state=market_state,
         notional_usd=notional_usd,
     )
+    if verdict.get("family") == "futures_strip":
+        verdict["instrument"] = "SOFR_STRIP_2Y"
+    return verdict
 
 
 def build_executable_catalog(market_state: Mapping[str, Any] | None) -> dict[str, Any]:

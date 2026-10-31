@@ -38,6 +38,8 @@ USD SOFR OIS spot 2Y (`USD_SOFR_OIS_2Y`) and 1y1y (`USD_SOFR_OIS_1Y1Y`) book onl
 
 CME TU/FV/TY need supplied `treasury_futures` price, conversion factor, and CTD DV01 inputs. Without them the catalog stays `missing_input` with no fixed-duration fallback.
 
+The catalog name `SOFR_STRIP_2Y` is an eight consecutive quarterly SR3 strip (two years of futures), not a 2Y USD SOFR OIS swap and not a four-quarter strip. An open SOFR OIS keeps the effective and maturity dates stamped at OPEN (or from the instrument row) and re-marks from `usd_sofr_ois.dated` or a same-vintage rolling row; a later constant-maturity roll is not substituted for that fixed maturity.
+
 ## Lot lifecycle
 
 OPEN, ADD, REDUCE, and CLOSE on a stamped outright or structure change integer contracts, not only descriptive notional.

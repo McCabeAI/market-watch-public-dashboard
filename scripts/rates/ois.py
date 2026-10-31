@@ -149,7 +149,7 @@ def build_ois(
 
     dv01_usd = float(notional_usd) * annuity * 0.0001
 
-    return {
+    payload: dict[str, Any] = {
         "valuation_method": "instrument_dv01",
         "family": FAMILY,
         "instrument": inst_id,
@@ -162,6 +162,8 @@ def build_ois(
         "quote_type": quote_type,
         "mark_source": mark_source,
         "as_of": as_of,
+        "entry_as_of": as_of,
+        "booked_as_of": as_of,
         "contracts": None,
         "price_unit": "implied_rate_percent",
         "isolated": False,
@@ -171,6 +173,12 @@ def build_ois(
         "tenor_years": tenor_years,
         "day_count": block.get("day_count") or "ACT/360",
     }
+    for key in ("effective_date", "maturity_date", "fixing_dates"):
+        if key in row and row.get(key) not in (None, ""):
+            payload[key] = row[key]
+        elif key in expression and expression.get(key) not in (None, ""):
+            payload[key] = expression[key]
+    return payload
 
 
 def ois_pnl_usd(position: Mapping[str, Any], *, mark_rate: float | None = None) -> float | None:
@@ -328,3 +336,130 @@ def assess_ois(
         "mark_source": built.get("mark_source"),
         "instrument": built.get("instrument"),
     }
+
+
+def _position_booked_as_of(position: Mapping[str, Any]) -> str | None:
+    for key in ("booked_as_of", "entry_as_of", "mark_price_as_of", "entry_price_as_of"):
+        value = position.get(key)
+        if value not in (None, ""):
+            return str(value)
+    return None
+
+
+def _ois_mark_from_row(row: Mapping[str, Any], block: Mapping[str, Any], *, require_annuity: bool) -> dict[str, Any]:
+    inst_status = str(row.get("status") or "ok")
+    if inst_status != "ok":
+        raise StructureError(f"usd_sofr_ois instrument row status must be ok, got {inst_status!r}")
+    row_kind = str(row.get("curve_kind") or block.get("curve_kind") or "").lower()
+    if row_kind != "sofr_ois":
+        raise StructureError("usd_sofr_ois mark row curve_kind must be sofr_ois")
+    par = row.get("par_rate_percent")
+    if par in (None, ""):
+        raise StructureError("usd_sofr_ois mark row missing par_rate_percent")
+    source = str(row.get("source") or block.get("source") or "").strip()
+    as_of = str(row.get("as_of") or block.get("as_of") or "").strip()
+    if not source:
+        raise StructureError("usd_sofr_ois mark row source is required")
+    if not as_of:
+        raise StructureError("usd_sofr_ois mark row as_of is required")
+    quote_type = str(row.get("quote_type") or "")
+    if quote_type not in _QUOTE_TYPES:
+        raise StructureError(f"usd_sofr_ois mark row quote_type {quote_type!r} is not supported")
+    out: dict[str, Any] = {
+        "par_rate_percent": float(par),
+        "source": source,
+        "as_of": as_of,
+        "quote_type": quote_type,
+    }
+    if quote_type == "observed_par":
+        out["mark_source"] = source
+    else:
+        out["mark_source"] = source if source.startswith("derived:usd_sofr_ois") else f"derived:usd_sofr_ois:{source}"
+    annuity = row.get("annuity")
+    if annuity not in (None, ""):
+        out["annuity"] = float(annuity)
+    elif require_annuity:
+        raise StructureError("usd_sofr_ois dated mark row missing annuity; open OIS risk cannot be restated")
+    fixing_dates = row.get("fixing_dates")
+    if fixing_dates not in (None, ""):
+        out["fixing_dates"] = fixing_dates
+    return out
+
+
+def resolve_open_ois_mark(
+    position: Mapping[str, Any],
+    market_state: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """Mark an open SOFR OIS from its fixed maturity, not a later rolling tenor."""
+    expr = position.get("paper_expression") if isinstance(position.get("paper_expression"), Mapping) else {}
+    try:
+        start_years = float(expr.get("start_years", position.get("start_years", 0)))
+        tenor_years = float(expr.get("tenor_years", position.get("tenor_years", 0)))
+    except (TypeError, ValueError) as exc:
+        raise StructureError("open OIS position missing start_years and tenor_years") from exc
+    inst_id = instrument_id(start_years=start_years, tenor_years=tenor_years)
+    block = _require_block(market_state)
+    booked_as_of = _position_booked_as_of(position)
+    effective = position.get("effective_date")
+    maturity = position.get("maturity_date")
+
+    if effective not in (None, "") and maturity not in (None, ""):
+        key = f"{effective}|{maturity}"
+        dated = block.get("dated")
+        row: Mapping[str, Any] | None = None
+        if isinstance(dated, Mapping):
+            candidate = dated.get(key)
+            if isinstance(candidate, Mapping):
+                row = candidate
+        if row is None:
+            instruments = block.get("instruments")
+            rolling: Mapping[str, Any] | None = None
+            if isinstance(instruments, Mapping):
+                candidate = instruments.get(inst_id)
+                if isinstance(candidate, Mapping):
+                    rolling = candidate
+            if rolling is not None:
+                roll_eff = rolling.get("effective_date")
+                roll_mat = rolling.get("maturity_date")
+                if roll_eff == effective and roll_mat == maturity:
+                    # Same fixed effective and maturity is this swap, even on a later as-of.
+                    row = rolling
+                elif roll_eff not in (None, "") or roll_mat not in (None, ""):
+                    raise StructureError(
+                        f"rolling USD SOFR OIS {inst_id} dates ({roll_eff!r}, {roll_mat!r}) "
+                        f"do not match booked fixed maturity {effective} to {maturity}; "
+                        "refusing rolling constant-maturity par as P&L"
+                    )
+        if row is None:
+            instruments = block.get("instruments")
+            rolling = None
+            if isinstance(instruments, Mapping):
+                candidate = instruments.get(inst_id)
+                if isinstance(candidate, Mapping):
+                    rolling = candidate
+            roll_as_of = str((rolling or {}).get("as_of") or block.get("as_of") or "")
+            if booked_as_of and roll_as_of and roll_as_of != booked_as_of:
+                raise StructureError(
+                    f"rolling USD SOFR OIS {inst_id} quote (as_of {roll_as_of}) is not the booked "
+                    f"fixed maturity {effective} to {maturity}; no matching usd_sofr_ois.dated row"
+                )
+            raise StructureError(
+                f"no usd_sofr_ois.dated row for fixed maturity {effective}|{maturity}; "
+                "refusing rolling constant-maturity par as P&L"
+            )
+        return _ois_mark_from_row(row, block, require_annuity=True)
+
+    rolling = _instrument_row(block, inst_id)
+    row_as_of = str(rolling.get("as_of") or block.get("as_of") or "")
+    if booked_as_of and row_as_of != booked_as_of:
+        raise StructureError(
+            f"usd_sofr_ois.instruments.{inst_id} as_of {row_as_of!r} does not match "
+            f"position booked_as_of {booked_as_of!r}; refusing rolling constant-maturity substitution"
+        )
+    roll_eff = rolling.get("effective_date")
+    roll_mat = rolling.get("maturity_date")
+    if (roll_eff or roll_mat) and booked_as_of and row_as_of != booked_as_of:
+        raise StructureError(
+            "rolling instrument row carries fixed dates that do not match an undated open position vintage"
+        )
+    return _ois_mark_from_row(rolling, block, require_annuity=False)

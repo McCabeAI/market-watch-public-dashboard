@@ -139,12 +139,66 @@ class ExecutableCatalogTests(unittest.TestCase):
         if verdict["status"] == "missing_input" and "assessor not installed" in verdict["reason"]:
             self.assertIn("scripts.rates.strips.assess_strip", verdict["missing_inputs"])
 
-    def test_two_year_strip_needs_four_quarterlies(self) -> None:
+    def test_two_year_strip_needs_eight_quarterlies(self) -> None:
         choices = two_year_choices(MARKET)
         self.assertEqual(len(choices), 4)
         strip = next(row for row in choices if row.get("instrument") == "SOFR_STRIP_2Y")
         self.assertEqual(strip["status"], "missing_input")
+        self.assertIn("eight", strip["reason"].lower())
+        self.assertIn("four quarterlies are not a 2Y swap", strip["reason"])
         self.assertIn("tradable_rate_curves.SOFR.quarterly_contracts", strip["missing_inputs"])
+
+    def test_four_quarterlies_not_bookable_two_year_strip(self) -> None:
+        market = copy.deepcopy(MARKET)
+        market["tradable_rate_curves"]["curves"]["SOFR"] = _curve(
+            "SOFR",
+            [("2026-12", 3.70), ("2027-03", 3.55), ("2027-06", 3.40), ("2027-09", 3.35)],
+        )
+        verdict = select_two_year(market, family="futures_strip")
+        self.assertEqual(verdict["status"], "missing_input")
+        self.assertFalse(verdict["bookable"])
+        self.assertIn("eight", verdict["reason"].lower())
+        self.assertIn("four quarterlies are not a 2Y swap", verdict["reason"])
+
+    def test_eight_quarterly_strip_bookable_sum_leg_dv01(self) -> None:
+        market = copy.deepcopy(MARKET)
+        expiries = [
+            "2026-12",
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12",
+            "2028-03",
+            "2028-06",
+            "2028-09",
+        ]
+        market["tradable_rate_curves"]["curves"]["SOFR"] = _curve(
+            "SOFR",
+            [(e, 4.00) for e in expiries],
+        )
+        picked = select_two_year(market, family="futures_strip", notional_usd=8_000_000)
+        self.assertTrue(picked["bookable"])
+        self.assertEqual(picked["instrument"], "SOFR_STRIP_2Y")
+        expr = {
+            "type": "futures_strip_average",
+            "curve_id": "SOFR",
+            "expiries": expiries,
+        }
+        verdict = assess_expression(
+            "SOFR_STRIP_2Y",
+            expression=expr,
+            market_state=market,
+            notional_usd=8_000_000,
+        )
+        self.assertTrue(verdict["bookable"])
+        self.assertEqual(len(expr["expiries"]), 8)
+        from scripts.rates.strips import build_strip
+
+        built = build_strip(expr, side="long", notional_usd=8_000_000, market_state=market)
+        leg_dv01 = sum(abs(float(leg.get("dv01_usd") or 0.0)) for leg in built["legs"])
+        self.assertEqual(len(built["legs"]), 8)
+        self.assertAlmostEqual(built["shock_dv01_usd"], leg_dv01, places=6)
+        self.assertAlmostEqual(leg_dv01, 8 * 25.0, places=6)
 
     def test_catalog_includes_stir_rows(self) -> None:
         catalog = build_executable_catalog(MARKET)
