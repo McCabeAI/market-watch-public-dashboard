@@ -7,22 +7,21 @@ from typing import Any
 from scripts.rates.executable_catalog import build_executable_catalog
 
 _CATALOG_KNOWN_GAP = (
-    "Live SOFR OIS quotes and/or TU/FV/TY CTD and conversion-factor inputs are not in "
-    "this packet; executable_catalog keeps those families at missing_input."
+    "Live USD SOFR OIS quotes (spot 2Y and 1y1y) and/or TU/FV/TY CTD and conversion-factor "
+    "inputs are not in this packet; executable_catalog keeps those families at missing_input."
 )
 
 
-def _bookable_family_rows(catalog: dict[str, Any], family: str) -> bool:
-    for row in catalog.get("rows") or []:
-        if row.get("family") == family and row.get("bookable"):
-            return True
-    return False
+def _family_rows(catalog: dict[str, Any], family: str) -> list[dict[str, Any]]:
+    return [row for row in catalog.get("rows") or [] if row.get("family") == family]
 
 
 def _append_catalog_known_gaps(known_gaps: list[str], catalog: dict[str, Any]) -> None:
-    has_ois = _bookable_family_rows(catalog, "usd_sofr_ois")
-    has_treasury = _bookable_family_rows(catalog, "treasury_future")
-    if has_ois and has_treasury:
+    ois_rows = _family_rows(catalog, "usd_sofr_ois")
+    treasury_rows = _family_rows(catalog, "treasury_future")
+    ois_ready = bool(ois_rows) and all(row.get("bookable") for row in ois_rows)
+    treasury_ready = bool(treasury_rows) and all(row.get("bookable") for row in treasury_rows)
+    if ois_ready and treasury_ready:
         return
     if _CATALOG_KNOWN_GAP in known_gaps:
         return

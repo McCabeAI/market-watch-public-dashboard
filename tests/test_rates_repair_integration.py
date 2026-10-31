@@ -110,10 +110,18 @@ class RatesRepairIntegrationTests(unittest.TestCase):
         self.assertEqual(picked.get("expiry"), "2027-03")
 
         catalog = build_executable_catalog(market)
-        tu_rows = [r for r in catalog["rows"] if r.get("family") == "treasury_future"]
+        tu_rows = [
+            r
+            for r in catalog["rows"]
+            if r.get("family") == "treasury_future" and str(r.get("instrument") or "").startswith("TU")
+        ]
         self.assertEqual(len(tu_rows), 1)
         self.assertEqual(tu_rows[0]["instrument"], "TU_2027-03")
         self.assertEqual(tu_rows[0].get("expiry"), "2027-03")
+        for product in ("FV", "TY"):
+            product_rows = [r for r in catalog["rows"] if r.get("product") == product]
+            self.assertTrue(product_rows, msg=product)
+            self.assertTrue(all(not row.get("bookable") for row in product_rows))
 
         book = empty_seat("trend-follower")
         apply_action(
