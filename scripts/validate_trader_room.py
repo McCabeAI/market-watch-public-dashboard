@@ -89,6 +89,7 @@ def main() -> None:
     assert "## Context gate" in protocol
     assert "context_build" in protocol
     assert "rates_tenor_scan" in protocol
+    assert "executable_catalog" in protocol
     assert "instrument` and `asset_class`" in protocol or "instrument and asset_class" in protocol
     assert "final-aggregator" in protocol  # compatibility/reference only
     assert "trader-room/outbox" not in protocol
@@ -119,6 +120,7 @@ def main() -> None:
     assert "policy-path" in evidence_contract
     assert "SOFR/CORRA/AONIA" in evidence_contract
     assert "historical move analogs" in evidence_contract
+    assert "executable_catalog" in evidence_contract
     assert "Bob Elliott" in evidence_contract and "David Cervantes" in evidence_contract
     assert "available`, `partial`, `stale`, or `unavailable`" in evidence_contract
     assert "Start with a causal question" in method
@@ -145,6 +147,9 @@ def main() -> None:
     assert "deterministic" in command.lower() and "conflict_synopsis" in command
     assert "context_build" in command
     assert "rates_tenor_scan" in command
+    assert "executable_catalog" in command
+    assert "before" in command.lower() and "rates_tenor_scan" in command
+    assert "does not rank" in command.lower() or "does not rank, recommend, or choose" in command
     assert "SOFR/CORRA/AONIA" in command
     assert "Do **not** launch `final-aggregator`" in command
     assert "scripts/trader_room_finalize.py" in command

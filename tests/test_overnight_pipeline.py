@@ -39,6 +39,9 @@ from scripts.overnight.pipeline import dry_run, reconcile_due_stages, run_stage
 from scripts.overnight.publish import publication_gate
 from scripts.overnight.review import dry_run_reviews
 from scripts.overnight.store import OvernightStore
+from scripts.rates.contract_economics import SR3, dv01_per_contract, lots_from_face_usd
+from scripts.rates.executable_catalog import assess_expression
+from scripts.rates.valuation import STANDARD_SHOCK_BP
 from scripts.trader_room_public import select_newest_complete_run
 
 NY = ZoneInfo("America/New_York")
@@ -644,7 +647,89 @@ class BookTransitionTests(unittest.TestCase):
         self.assertEqual(blocked, {"ADD", "HEDGE"})
 
     def test_rates_notional_may_exceed_100m_inside_risk_cap(self):
+        # SR3 face is $1,000,000 and the verified basis-point value is $25.
+        # 2,000 contracts shocked 100bp is $5m, inside the $10m seat cap.
+        # A second admissible expiry at 2,400 contracts would add $6m and is
+        # the cap breach. US 2Y has no verified duration, so it never reaches
+        # that check. An action price is not a frozen SOFR curve.
+        self.assertEqual(SR3.product_code, "SR3")
+        self.assertEqual(SR3.face_notional, 1_000_000.0)
+        self.assertEqual(dv01_per_contract(SR3), 25.0)
+        self.assertEqual(STANDARD_SHOCK_BP, 100.0)
+        booked_lots = lots_from_face_usd(SR3, 2_000_000_000, 1.0)
+        excess_lots = lots_from_face_usd(SR3, 2_400_000_000, 1.0)
+        self.assertIsNotNone(booked_lots)
+        self.assertIsNotNone(excess_lots)
+        assert booked_lots is not None and excess_lots is not None
+        self.assertEqual(booked_lots["contracts"], 2000)
+        self.assertEqual(excess_lots["contracts"], 2400)
+        booked_risk = 2000 * 25.0 * 100.0
+        excess_risk = 2400 * 25.0 * 100.0
+        self.assertEqual(booked_risk, 5_000_000.0)
+        self.assertEqual(excess_risk, 6_000_000.0)
+        self.assertEqual(booked_risk + excess_risk, 11_000_000.0)
+
+        curve_as_of = "2026-09-18"
+        market = {
+            "generated_at": "2026-09-18T16:00:00Z",
+            "tradable_rate_curves": {
+                "status": "ok",
+                "curves": {
+                    "SOFR": {
+                        "status": "ok",
+                        "contracts": [
+                            {"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.70, "as_of": curve_as_of},
+                            {"expiry": "2027-06", "code": "SR3M7", "implied_rate": 3.55, "as_of": curve_as_of},
+                        ],
+                    }
+                },
+            },
+        }
         hawk = empty_seat("rate-hawk")
+        missing = assess_expression(
+            "SOFR_2027-03",
+            asset_class="rates",
+            market_state=None,
+            notional_usd=2_000_000_000,
+        )
+        self.assertFalse(missing["bookable"])
+        self.assertIn("implied rate missing", missing["reason"])
+        self.assertIn(
+            "tradable_rate_curves.SOFR.contracts.2027-03.implied_rate",
+            missing["missing_inputs"],
+        )
+        apply_action(
+            hawk,
+            {
+                "action": "OPEN",
+                "instrument": "SOFR_2027-03",
+                "side": "long",
+                "notional_usd": 2_000_000_000,
+                "price": 3.70,
+                "asset_class": "rates",
+                "expression_memo": _rates_memo("rates"),
+                "thesis": "Price alone is not a frozen curve.",
+            },
+            families=self.families,
+            run_id="rates-missing-curve",
+            when=AS_OF,
+        )
+        self.assertEqual(hawk["positions"], [])
+        self.assertEqual(deployed_notional(hawk), 0)
+        self.assertEqual(hawk["history"][-1]["result"], "blocked_admission")
+        self.assertEqual(hawk["history"][-1]["price"], 3.70)
+        self.assertIn(missing["reason"], hawk["alerts"])
+        self.assertEqual(hawk["blocked_opens"][-1]["reason"], missing["reason"])
+
+        admitted = assess_expression(
+            "SOFR_2027-03",
+            asset_class="rates",
+            market_state=market,
+            notional_usd=2_000_000_000,
+        )
+        self.assertTrue(admitted["bookable"])
+        self.assertEqual(admitted["family"], "stir_outright")
+        self.assertEqual(admitted["instrument"], "SOFR_2027-03")
         apply_action(
             hawk,
             {
@@ -660,10 +745,31 @@ class BookTransitionTests(unittest.TestCase):
             families=self.families,
             run_id="rates-over-notional",
             when=AS_OF,
+            market_state=market,
         )
+        self.assertEqual(hawk["history"][-1]["result"], "applied")
+        self.assertEqual(len(hawk["positions"]), 1)
+        position = hawk["positions"][0]
+        self.assertEqual(position["instrument"], "SOFR_2027-03")
+        self.assertEqual(position["contracts"], 2000)
+        self.assertEqual(position["contract"]["product_code"], "SR3")
+        self.assertEqual(position["contract"]["dv01_per_contract_local"], 25.0)
         self.assertEqual(deployed_notional(hawk), 2_000_000_000)
-        self.assertEqual(hawk["risk_capital_usd"], 5_000_000.0)
+        self.assertEqual(hawk["risk_capital_usd"], booked_risk)
         self.assertLess(hawk["risk_capital_usd"], hawk["risk_capital_limit_usd"])
+        self.assertEqual(hawk["risk_capital_limit_usd"], 10_000_000)
+
+        unsupported = assess_expression(
+            "US 2Y",
+            asset_class="rates",
+            market_state=market,
+            notional_usd=600_000_000,
+        )
+        self.assertFalse(unsupported["bookable"])
+        self.assertEqual(unsupported["family"], "government_yield")
+        self.assertEqual(unsupported["instrument"], "US_2Y")
+        self.assertIn("sovereign.US_2Y.modified_duration", unsupported["missing_inputs"])
+        self.assertIn("no verified modified duration", unsupported["reason"])
         apply_action(
             hawk,
             {
@@ -674,14 +780,60 @@ class BookTransitionTests(unittest.TestCase):
                 "price": 4.00,
                 "asset_class": "rates",
                 "expression_memo": _rates_memo("rates"),
-                "thesis": "Would exceed $10m shocked risk.",
+                "thesis": "Unsupported government yield, not a risk-cap case.",
+            },
+            families=self.families,
+            run_id="rates-unsupported-2y",
+            when=AS_OF,
+            market_state=market,
+        )
+        self.assertEqual(len(hawk["positions"]), 1)
+        self.assertEqual(hawk["positions"][0]["instrument"], "SOFR_2027-03")
+        self.assertEqual(deployed_notional(hawk), 2_000_000_000)
+        self.assertEqual(hawk["risk_capital_usd"], booked_risk)
+        self.assertEqual(hawk["history"][-1]["result"], "blocked_admission")
+        self.assertEqual(hawk["history"][-1]["instrument"], "US 2Y")
+        self.assertNotEqual(hawk["history"][-1]["result"], "blocked_risk_capital")
+        self.assertEqual(hawk["blocked_opens"][-1]["reason"], unsupported["reason"])
+        self.assertIn(unsupported["reason"], hawk["alerts"])
+
+        oversized = assess_expression(
+            "SOFR_2027-06",
+            asset_class="rates",
+            market_state=market,
+            notional_usd=2_400_000_000,
+        )
+        self.assertTrue(oversized["bookable"])
+        self.assertEqual(oversized["family"], "stir_outright")
+        apply_action(
+            hawk,
+            {
+                "action": "OPEN",
+                "instrument": "SOFR_2027-06",
+                "side": "long",
+                "notional_usd": 2_400_000_000,
+                "price": 3.55,
+                "asset_class": "rates",
+                "expression_memo": _rates_memo("rates"),
+                "thesis": "Admissible SR3 size that would exceed the $10m shock cap.",
             },
             families=self.families,
             run_id="rates-over-risk",
             when=AS_OF,
+            market_state=market,
         )
         self.assertEqual(len(hawk["positions"]), 1)
-        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in hawk["history"]))
+        self.assertEqual(hawk["positions"][0]["instrument"], "SOFR_2027-03")
+        self.assertEqual(hawk["positions"][0]["contracts"], 2000)
+        self.assertEqual(deployed_notional(hawk), 2_000_000_000)
+        self.assertEqual(hawk["risk_capital_usd"], booked_risk)
+        self.assertEqual(hawk["history"][-1]["result"], "blocked_risk_capital")
+        self.assertEqual(hawk["history"][-1]["instrument"], "SOFR_2027-06")
+        cap_reason = hawk["blocked_opens"][-1]["reason"]
+        self.assertIn("projected shocked risk capital 11,000,000.00", cap_reason)
+        self.assertIn("10,000,000", cap_reason)
+        self.assertIn(cap_reason, hawk["alerts"])
+        self.assertNotIn("modified duration", cap_reason)
 
     def test_risk_capital_updates_on_add_reduce_close_and_hedge(self):
         apply_action(

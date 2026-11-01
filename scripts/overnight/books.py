@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import datetime
-from typing import Any
+from typing import Any, Mapping
 from uuid import uuid4
 
 from scripts.funding.accounting import (
@@ -733,6 +733,23 @@ def apply_action(
                 result="blocked_mark",
                 reason=str(action["_paper_mark_error"]),
             )
+        if kind in {"OPEN", "HEDGE"}:
+            catalog_reason = _rates_catalog_admission_reason(
+                action,
+                seat_book,
+                memo=memo,
+                market_state=market_state,
+                kind=kind,
+            )
+            if catalog_reason:
+                return _block_expansion(
+                    seat_book,
+                    action,
+                    when=stamp,
+                    run_id=run_id,
+                    result="blocked_admission",
+                    reason=catalog_reason,
+                )
         projected = _projected_risk_capital(seat_book, action, market_state)
         if projected is None:
             return _block_expansion(
@@ -847,6 +864,73 @@ def _require_notional(action: dict[str, Any]) -> float:
     return notional
 
 
+_RATES_CATALOG_EXPRESSION_TYPES = frozenset(
+    {
+        "futures_strip_average",
+        "usd_sofr_ois",
+        "treasury_future",
+        "calendar_spread",
+        "butterfly",
+        "outright_rv",
+        "curve_rv",
+        "forward_swap",
+    }
+)
+
+
+def _needs_rates_catalog_gate(asset_class: str, expression: Mapping[str, Any] | None) -> bool:
+    expr_type = expression.get("type") if isinstance(expression, Mapping) else None
+    if asset_class == "spot_fx":
+        return bool(expr_type and expr_type in _RATES_CATALOG_EXPRESSION_TYPES)
+    if asset_class in {"rates", "curve", "rates_rv"}:
+        return True
+    return bool(expr_type and expr_type in _RATES_CATALOG_EXPRESSION_TYPES)
+
+
+def _rates_catalog_admission_reason(
+    action: dict[str, Any],
+    seat_book: dict[str, Any],
+    *,
+    memo: dict[str, Any],
+    market_state: dict[str, Any] | None,
+    kind: str,
+) -> str | None:
+    """Preflight assess_expression for OPEN/HEDGE before the risk-capital installer probe."""
+    if kind not in {"OPEN", "HEDGE"}:
+        return None
+    from scripts.rates.executable_catalog import assess_expression
+
+    if kind == "OPEN":
+        instrument = str(action.get("instrument") or "")
+        asset = str(action.get("asset_class") or selected_asset_class(memo) or "spot_fx")
+        expression = action.get("paper_expression") if isinstance(action.get("paper_expression"), dict) else None
+        notional = float(_money(action.get("notional_usd"), "notional_usd"))
+    else:
+        target_id = action.get("hedge_of") or action.get("position_id")
+        target = _find_position(seat_book, str(target_id or ""))
+        source = dict(target)
+        source.update({k: v for k, v in action.items() if v not in (None, "")})
+        instrument = str(source.get("instrument") or action.get("instrument") or "")
+        asset = str(source.get("asset_class") or action.get("asset_class") or "spot_fx")
+        expression = source.get("paper_expression") if isinstance(source.get("paper_expression"), dict) else None
+        if expression is None and isinstance(action.get("paper_expression"), dict):
+            expression = action.get("paper_expression")
+        notional = float(_money(action.get("notional_usd"), "notional_usd"))
+
+    if not _needs_rates_catalog_gate(asset, expression):
+        return None
+    verdict = assess_expression(
+        instrument,
+        asset_class=asset,
+        expression=expression,
+        market_state=market_state,
+        notional_usd=notional,
+    )
+    if verdict.get("bookable"):
+        return None
+    return str(verdict.get("reason") or "rates booking not executable")
+
+
 def _install_rates_economics(
     position: dict[str, Any],
     market_state: dict[str, Any] | None,
@@ -855,16 +939,143 @@ def _install_rates_economics(
 ) -> None:
     """Build the same legs, lots, FX vintage, and DV01 the booking path will keep."""
     from scripts.overnight.paper_marks import PaperMarkError, hydrate_structure_rates
+    from scripts.rates.executable_catalog import assess_expression
+    from scripts.rates.ois import OIS_TYPE, build_ois
+    from scripts.rates.strips import STRIP_TYPE, build_strip
     from scripts.rates.structures import STRUCTURE_TYPES, StructureError, build_structure
+    from scripts.rates.treasury_futures import build_treasury_position, parse_treasury_id
     from scripts.rates.valuation import stamp_open_valuation
 
+    asset = str(position.get("asset_class") or "")
     expression = position.get("paper_expression") if isinstance(position.get("paper_expression"), dict) else None
+    side_norm = str(side or position.get("side") or "long")
+    notional = float(position.get("notional_usd") or 0.0)
+    instrument = str(position.get("instrument") or "")
+
+    if _needs_rates_catalog_gate(asset, expression):
+        verdict = assess_expression(
+            instrument,
+            asset_class=asset,
+            expression=expression,
+            market_state=market_state,
+            notional_usd=notional,
+        )
+        if not verdict.get("bookable"):
+            raise SchemaError(str(verdict.get("reason") or "rates booking not executable"))
+
+    expr_type = expression.get("type") if isinstance(expression, Mapping) else None
+
+    if expr_type == STRIP_TYPE and isinstance(expression, Mapping):
+        try:
+            built = build_strip(
+                expression,
+                side=side_norm,
+                notional_usd=notional,
+                market_state=market_state,
+            )
+        except StructureError as exc:
+            raise SchemaError(str(exc)) from exc
+        position["legs"] = built["legs"]
+        position["spread_dv01_usd"] = built["spread_dv01_usd"]
+        position["shock_dv01_usd"] = built["shock_dv01_usd"]
+        position["shock_policy"] = built["shock_policy"]
+        position["structure_label"] = built["structure_label"]
+        position["quote_unit"] = built["quote_unit"]
+        position["package_mark_percent"] = built["package_mark_percent"]
+        position["mark_definition"] = built["mark_definition"]
+        position["entry_price"] = built["package_mark_percent"]
+        position["mark_price"] = built["package_mark_percent"]
+        position["valuation_method"] = built["valuation_method"]
+        position["isolated"] = built["isolated"]
+        position["mark_status"] = "ok"
+        position["residual_dv01_usd"] = round(
+            sum(
+                float(leg.get("residual_contracts") or 0.0)
+                * float(leg.get("dv01_per_contract_local") or 0.0)
+                * float(leg.get("mark_fx_usd_per_unit") or 0.0)
+                for leg in built["legs"]
+            ),
+            6,
+        )
+        stamp_open_valuation(position, market_state)
+        return
+
+    if expr_type == OIS_TYPE and isinstance(expression, Mapping):
+        try:
+            built = build_ois(expression, side=side_norm, notional_usd=notional, market_state=market_state)
+        except StructureError as exc:
+            raise SchemaError(str(exc)) from exc
+        position["instrument"] = built["instrument"]
+        position["family"] = built["family"]
+        position["structure_label"] = built["structure_label"]
+        position["dv01_usd"] = built["dv01_usd"]
+        position["annuity"] = built["annuity"]
+        position["entry_rate"] = built["entry_rate"]
+        position["mark_rate"] = built["mark_rate"]
+        position["quote_type"] = built["quote_type"]
+        position["mark_source"] = built["mark_source"]
+        position["contracts"] = built["contracts"]
+        position["price_unit"] = built["price_unit"]
+        position["valuation_method"] = built["valuation_method"]
+        position["isolated"] = built["isolated"]
+        position["entry_price"] = built["entry_rate"]
+        position["mark_price"] = built["entry_rate"]
+        position["mark_price_source"] = built["mark_source"]
+        position["entry_price_source"] = built["mark_source"]
+        position["mark_price_as_of"] = built.get("as_of")
+        position["entry_price_as_of"] = built.get("as_of")
+        position["mark_status"] = "ok"
+        for key in (
+            "effective_date",
+            "maturity_date",
+            "fixing_dates",
+            "entry_as_of",
+            "booked_as_of",
+            "start_years",
+            "tenor_years",
+        ):
+            if built.get(key) not in (None, ""):
+                position[key] = built[key]
+        stamp_open_valuation(position, market_state)
+        return
+
+    treasury_parsed = parse_treasury_id(instrument)
+    if expr_type == "treasury_future" or (isinstance(treasury_parsed, dict) and treasury_parsed.get("status") == "ok"):
+        try:
+            built = build_treasury_position(
+                instrument,
+                side=side_norm,
+                notional_usd=notional,
+                market_state=market_state,
+            )
+        except ValueError as exc:
+            raise SchemaError(str(exc)) from exc
+        position["instrument"] = built["instrument"]
+        position["contracts"] = built["contracts"]
+        position["face_notional_usd"] = built["face_notional_usd"]
+        position["point_value_usd"] = built["point_value_usd"]
+        position["tick_value_usd"] = built["tick_value_usd"]
+        position["tick_size_points"] = built["tick_size_points"]
+        position["futures_dv01_per_contract"] = built["futures_dv01_per_contract"]
+        position["dv01_usd"] = built["dv01_usd"]
+        position["entry_price"] = built["entry_price"]
+        position["mark_price"] = built["mark_price"]
+        position["price_unit"] = built["price_unit"]
+        position["family"] = "treasury_future"
+        position["structure_label"] = "treasury_future"
+        position["valuation_method"] = built["valuation_method"]
+        position["isolated"] = built["isolated"]
+        position["conversion_factor"] = built.get("conversion_factor")
+        position["mark_status"] = "ok"
+        stamp_open_valuation(position, market_state)
+        return
+
     if expression and expression.get("type") in STRUCTURE_TYPES:
         try:
             built = build_structure(
                 expression,
-                side=str(side or position.get("side") or "long"),
-                notional_usd=float(position.get("notional_usd") or 0.0),
+                side=side_norm,
+                notional_usd=notional,
                 market_state=market_state,
             )
         except (StructureError, SchemaError, PaperMarkError) as exc:
@@ -949,7 +1160,24 @@ def _refresh_live_marks(position: dict[str, Any], market_state: dict[str, Any] |
 
 
 def _instrument_position(position: dict[str, Any]) -> bool:
-    return bool(position.get("legs") or (position.get("valuation_method") == "instrument_dv01" and position.get("contracts") is not None))
+    if position.get("legs"):
+        return True
+    if position.get("valuation_method") != "instrument_dv01":
+        return False
+    if position.get("contracts") is not None:
+        return True
+    if position.get("family") == "usd_sofr_ois" or position.get("structure_label") == "usd_sofr_ois":
+        return True
+    if position.get("family") == "treasury_future" or position.get("price_unit") == "futures_points":
+        return True
+    return False
+
+
+def _ois_position(position: dict[str, Any]) -> bool:
+    family = position.get("family") or position.get("structure_label")
+    expr = position.get("paper_expression")
+    expr_type = expr.get("type") if isinstance(expr, Mapping) else None
+    return family == "usd_sofr_ois" or expr_type == "usd_sofr_ois"
 
 
 def _resize(
@@ -1072,7 +1300,13 @@ def _resize(
             position["notional_usd"] = new_n
             action["lots_added"] = result.get("lots_added")
             action["fill_status"] = "executed"
-            if add_price not in (None, ""):
+            if _ois_position(position):
+                resolved_rate = position.get("mark_rate")
+                if resolved_rate not in (None, ""):
+                    position["mark_price"] = resolved_rate
+                elif add_price not in (None, ""):
+                    position["mark_price"] = add_price
+            elif add_price not in (None, ""):
                 position["mark_price"] = add_price
                 position["entry_price_source"] = "weighted_average_of_actual_lots"
         elif add_price not in (None, "") and position.get("entry_price") not in (None, ""):

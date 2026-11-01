@@ -446,7 +446,7 @@ class NewVersusHistoricalTests(unittest.TestCase):
             market_state=MARKET,
         )
         self.assertEqual(seat["positions"], [])
-        self.assertTrue(any(row.get("result") == "blocked_risk_capital" for row in seat["history"]))
+        self.assertTrue(any(row.get("result") == "blocked_admission" for row in seat["history"]))
 
 
 class IntegrationStructureTests(unittest.TestCase):

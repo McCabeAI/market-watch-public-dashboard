@@ -58,6 +58,126 @@ def is_strip(position: Mapping[str, Any]) -> bool:
     return _expression(position).get("type") == STRIP_TYPE and not position.get("legs")
 
 
+def _is_sum_dv01_strip(position: Mapping[str, Any]) -> bool:
+    kind = _expression(position).get("type") or position.get("structure_label")
+    if kind == STRIP_TYPE:
+        return True
+    if position.get("shock_policy") == "sum_leg_dv01":
+        return True
+    return False
+
+
+def _ois_position(position: Mapping[str, Any]) -> bool:
+    family = position.get("family") or position.get("structure_label")
+    return family == "usd_sofr_ois" or _expression(position).get("type") == "usd_sofr_ois"
+
+
+def _treasury_position(position: Mapping[str, Any]) -> bool:
+    return position.get("family") == "treasury_future" or position.get("price_unit") == "futures_points"
+
+
+def _ois_value(position: Mapping[str, Any], *, closed_notional: float | None) -> dict[str, Any]:
+    from scripts.rates.ois import ois_pnl_usd
+
+    if position.get("mark_status") == "unavailable" or position.get("mark_rate") in (None, ""):
+        return {
+            "unrealized_pnl_usd": None,
+            "pnl_unavailable": True,
+            "pnl_note": "OIS mark is unavailable; stale par is not a current P&L",
+            "valuation_method": UNAVAILABLE,
+            "isolated": True,
+            "mark_status": "unavailable",
+        }
+    total = ois_pnl_usd(position)
+    if total is None:
+        return {
+            "unrealized_pnl_usd": None,
+            "pnl_unavailable": True,
+            "pnl_note": "OIS par or DV01 missing; P&L not invented",
+            "valuation_method": UNAVAILABLE,
+            "isolated": True,
+        }
+    if closed_notional is not None:
+        notional = _number(position.get("notional_usd")) or 0.0
+        if notional <= 0:
+            return {
+                "unrealized_pnl_usd": None,
+                "pnl_unavailable": True,
+                "pnl_note": "OIS notional missing for partial close",
+                "valuation_method": UNAVAILABLE,
+                "isolated": True,
+            }
+        closed_fraction = min(1.0, max(0.0, float(closed_notional) / notional))
+        total = total * closed_fraction
+    return {
+        "unrealized_pnl_usd": round(total, 2),
+        "pnl_unavailable": False,
+        "pnl_note": None,
+        "valuation_method": INSTRUMENT_METHOD,
+        "isolated": False,
+        "currency": "USD",
+        "price_unit": "implied_rate_percent",
+    }
+
+
+def _treasury_value(position: Mapping[str, Any], *, closed_notional: float | None) -> dict[str, Any]:
+    from scripts.rates.lifecycle import outright_lot_pnl_lots
+    from scripts.rates.treasury_futures import treasury_pnl_usd
+
+    if position.get("mark_status") == "unavailable" or position.get("mark_price") in (None, ""):
+        return {
+            "unrealized_pnl_usd": None,
+            "pnl_unavailable": True,
+            "pnl_note": "treasury futures mark is unavailable",
+            "valuation_method": UNAVAILABLE,
+            "isolated": True,
+        }
+    if closed_notional is not None:
+        notional = _number(position.get("notional_usd")) or 0.0
+        priced_lots = outright_lot_pnl_lots(position, closed_notional)
+        contracts = priced_lots
+        if contracts is None:
+            return {
+                "unrealized_pnl_usd": None,
+                "pnl_unavailable": True,
+                "pnl_note": "treasury contract quantity unavailable for partial close",
+                "valuation_method": UNAVAILABLE,
+                "isolated": True,
+            }
+        entry = _number(position.get("entry_price"))
+        mark = _number(position.get("mark_price"))
+        point_value = _number(position.get("point_value_usd"))
+        if entry is None or mark is None or point_value is None:
+            return {
+                "unrealized_pnl_usd": None,
+                "pnl_unavailable": True,
+                "pnl_note": "treasury price economics missing",
+                "valuation_method": UNAVAILABLE,
+                "isolated": True,
+            }
+        sign = _side_sign(position.get("side"))
+        total = sign * int(contracts) * (mark - entry) * point_value
+    else:
+        total = treasury_pnl_usd(position, mark_price=_number(position.get("mark_price")))
+    if total is None:
+        return {
+            "unrealized_pnl_usd": None,
+            "pnl_unavailable": True,
+            "pnl_note": "treasury futures P&L unavailable",
+            "valuation_method": UNAVAILABLE,
+            "isolated": True,
+        }
+    return {
+        "unrealized_pnl_usd": round(total, 2),
+        "pnl_unavailable": False,
+        "pnl_note": None,
+        "valuation_method": INSTRUMENT_METHOD,
+        "isolated": False,
+        "currency": "USD",
+        "price_unit": "futures_points",
+    }
+
+
 def valuation_mode(position: Mapping[str, Any]) -> str:
     if position.get("legs"):
         return INSTRUMENT_METHOD
@@ -296,6 +416,10 @@ def value_position(position: Mapping[str, Any], *, exit_price: float | None = No
             "currency": "USD",
         }
     if mode == INSTRUMENT_METHOD:
+        if _ois_position(position):
+            return _ois_value(position, closed_notional=closed_notional)
+        if _treasury_position(position):
+            return _treasury_value(position, closed_notional=closed_notional)
         return _contract_pnl(position, exit_price=exit_price, closed_notional=closed_notional)
     if mode == UNAVAILABLE:
         return {
@@ -352,12 +476,23 @@ def shock_risk_usd(position: Mapping[str, Any]) -> float | None:
             roles = {leg.get("role"): leg for leg in position.get("legs") or []}
             wing = roles.get("wing1")
             dv01 = abs(float(wing["dv01_usd"])) if wing and wing.get("dv01_usd") is not None else max(dv01s)
+        elif _is_sum_dv01_strip(position):
+            dv01 = sum(dv01s)
         else:
             # Largest current leg captures FX-drift imbalance instead of a stale matched DV01.
             dv01 = max(dv01s)
         return round(abs(dv01) * STANDARD_SHOCK_BP, 2)
     mode = valuation_mode(position)
     if mode == INSTRUMENT_METHOD:
+        if _ois_position(position):
+            dv01 = _number(position.get("dv01_usd"))
+            if dv01 is None:
+                return None
+            return round(abs(dv01) * STANDARD_SHOCK_BP, 2)
+        if _treasury_position(position):
+            from scripts.rates.treasury_futures import treasury_shock_risk_usd
+
+            return treasury_shock_risk_usd(position)
         parsed = parse_contract_id(position.get("instrument") if isinstance(position.get("instrument"), str) else None)
         if parsed is None:
             return None
@@ -422,6 +557,14 @@ def stamp_open_valuation(position: dict[str, Any], market_state: Mapping[str, An
         position["corrected_valuation_status"] = "instrument_dv01"
         position["mark_status"] = "ok"
         return position
+    if (kind == STRIP_TYPE or position.get("structure_label") == STRIP_TYPE) and position.get("legs"):
+        if any(int(leg.get("contracts") or 0) != leg.get("contracts") for leg in position["legs"]):
+            return _reject_new_rates(position, "structure legs must be whole exchange lots")
+        position["valuation_method"] = INSTRUMENT_METHOD
+        position["isolated"] = False
+        position["corrected_valuation_status"] = "instrument_dv01"
+        position["mark_status"] = "ok"
+        return position
     if kind in STRUCTURE_TYPES and not position.get("legs"):
         return _reject_new_rates(position, f"new {kind} is missing verified legs")
     instrument = position.get("instrument") if isinstance(position.get("instrument"), str) else None
@@ -460,6 +603,18 @@ def stamp_open_valuation(position: dict[str, Any], market_state: Mapping[str, An
         position["mark_status"] = "ok"
         position["contract"] = parsed.as_dict()
         position["structure_label"] = "outright_future"
+        return position
+    if _ois_position(position) and position.get("dv01_usd") is not None:
+        position["valuation_method"] = INSTRUMENT_METHOD
+        position["isolated"] = False
+        position["corrected_valuation_status"] = "instrument_dv01"
+        position.setdefault("mark_status", "ok")
+        return position
+    if _treasury_position(position) and position.get("futures_dv01_per_contract") is not None:
+        position["valuation_method"] = INSTRUMENT_METHOD
+        position["isolated"] = False
+        position["corrected_valuation_status"] = "instrument_dv01"
+        position.setdefault("mark_status", "ok")
         return position
     if position.get("asset_class") in {"rates", "curve", "rates_rv"} or is_sovereign_instrument(instrument) or kind:
         return _reject_new_rates(
