@@ -1570,6 +1570,60 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "CADJPY at 112.94 is the only listed non-dollar cross with a one-month impulse, but there is no Bank of Canada headline and leftover oil and yen beta keep it from being initiated from a flat book. AUDCAD at 0.9833 would reverse a closed oil fade, EURCAD at 1.5577 still needs an Ottawa decision, and AUDNZD is off because New Zealand inflation could not be verified. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is already flat. A new Australia-Canada or euro-yen position cannot be initiated on this freeze.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "d0d42a07b5aa58ce2d56c9e4d8c901750bc325902cbd38d9e47129f5b7e3a4ad",
+      "event_id": "jde-d65cfd308f6f4b6e",
+      "funding_view": null,
+      "invalidation": "Stay-flat is wrong only if a later packet would initiate Australia-Canada, or a cleaner eligible non-dollar cross, from a zero book on a new Australia-versus-Canada policy, growth, inflation or oil gap rather than leftover richness.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "25328daa56bbbc0695a481de9fc4c5e5c5da2afae4a1f81436687e01b62088c5",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "92fd343e6abf516c02b2bc303e37f1b1d92452e0ca4c6daef8ea6971e9d3df7f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian dollar versus Canadian dollar at 0.9813 is five-year rich, and Brent at 117.64 supports Canada's oil income against Australia, so that cross isolates the intended gap better than euro-dollar at 1.1172. Euro-yen at 175.68 is the cleaner Europe-Japan expression than a dollar pair, but this freeze does not mark it as similarly extreme, and Australia-New Zealand has no level. Policy, growth, inflation and carry for those countries are unknown here, and a new Australia-Canada or euro-yen position cannot be opened, so the book stays flat.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "Australian dollar versus Canadian dollar at 0.9813 is five-year rich, and Brent at 117.64 supports Canada's oil income against Australia, so that cross isolates the intended gap better than euro-dollar at 1.1172. Euro-yen at 175.68 is the cleaner Europe-Japan expression than a dollar pair, but this freeze does not mark it as similarly extreme, and Australia-New Zealand has no level. Policy, growth, inflation and carry for those countries are unknown here, and a new Australia-Canada or euro-yen position cannot be opened, so the book stays flat."
     }
   ],
   "schema_version": 1,

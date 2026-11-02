@@ -16,6 +16,18 @@
       "owner_type": "trader",
       "rationale": "Those rules are about not re-paying a stalled 10-year backup or a SOFR contract that stopped confirming it. This ticket receives the confirmed 2-year downtrend instead of re-shorting 10s or SOFR.",
       "run_id": "overnight-20261030"
+    },
+    {
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "disposition": "DOES_NOT_APPLY",
+      "instruments": [
+        "SOFR_2027-03"
+      ],
+      "lesson_id": "les-1d92cbbe59eb",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "rationale": "That rule is about not adding to a March SOFR pay when implied drifts lower against a live ten-year backup. This ticket receives March SOFR with the ten-year already down 35bp over one month, so the confirming coupon tape is lower yields, not a pay.",
+      "run_id": "overnight-20261102"
     }
   ],
   "schema_version": 1,

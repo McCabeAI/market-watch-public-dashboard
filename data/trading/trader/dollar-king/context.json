@@ -131,14 +131,14 @@
     "nav_usd": 100155297.98,
     "net_pnl_usd": 155297.98,
     "pressure_flags": [],
-    "prior_competition_rank": 2,
-    "rank_change": 0,
+    "prior_competition_rank": 5,
+    "rank_change": -3,
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 102436.19,
     "status": "ok"
   },
   "learning": {
@@ -149,7 +149,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9cc69fb51b970ff10d7b2ee33f543a322b8d15b142a07fb573a5e3044dfb77c2",
+  "memory_context_sha256": "069631f270e204c45fb00613ab7b9a03215558f63413b5f1cead8026a463ca27",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -172,7 +172,7 @@
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 45,
-        "mae_usd": 0.0,
+        "mae_usd": -102370.52,
         "mechanical_order": false,
         "mfe_usd": 0.0,
         "move_versus_entry_intent": "flat",
@@ -218,33 +218,33 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.14
+        "trend": "up",
+        "value": 0.17
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.22
+        "value": 0.2
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "down",
+        "trend": "up",
         "value": 0.26
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.25
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.19
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.05
+        "trend": "up",
+        "value": 0.07
       },
       "self_trust": {
         "band": "steady",
@@ -270,14 +270,24 @@
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261029"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.20487238,
+        "run_id": "overnight-20261102"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261102"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "816d57beab21389d6d223fdc6921b82687f076f52928f4173e56b9c6132ba617",
+    "state_sha256": "1d0efb59b0a0ea859da27955bb3463a4c355ec1e40bff1fa042ae72f44b9f2bd",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 5,
+      "session_loss": 6,
       "session_win": 0
     }
   },

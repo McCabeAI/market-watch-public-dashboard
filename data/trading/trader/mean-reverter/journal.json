@@ -1562,6 +1562,64 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.94 and March 2027 implieds mark 4.39, a 45bp premium to cash after the Federal Reserve held. That cash-to-contract gap is the leftover hike premium this book is received in; the contract has come in from the 4.58 entry and did not reverse through it. WTI at 102.00 and Brent December at 114.88 can keep that premium alive, so this is not a size-up. The 10-year at 4.98, down 7bp on the day and 28bp over one month, is already retracing rather than a fresh high to fade with a new long. Hold the existing 10 million March SOFR long; do not add, and do not replace it with a 10-year receive, a Canada receive, or dollar-Canada."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 5000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Cut 5 million of the 10 million March SOFR receive: 4.325 versus cash 3.94 still leaves 38.5 basis points of hike premium, but 25.5 basis points from the 4.58 entry is already in, the two-year at 4.56 has not confirmed, and Brent at 117.64 can hold the residual premium. Keep the residual long and still want the mark lower.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 46,
+      "decision_fingerprint": "16cbeabba6f4df39db439cfb9095080b9ba715cec9c8a9d4296915b9f5eedbcc",
+      "event_id": "jde-7d5f93c917ec4606",
+      "funding_view": null,
+      "invalidation": "The remaining receive is wrong if March implieds reverse back through the 4.58 entry and stay there while Brent holds in the high 110s. It is also wrong if cash SOFR itself jumps toward 4.325 so the 38.5 basis-point premium closes from the overnight side, or if the two-year at 4.56 and the 10-year at 4.94 keep rising while March fails to follow.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-1477172adb86"
+      ],
+      "memory_context_sha256": "9e18f165d8a5e305353dbcc628700c968cb95449f20263a52b7ee905b3eec2b8",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "625970be789b3ba47adc4a7127f3b8bf15afbf236ca64773e0a21a529e7b7e04"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.94 as of 29 October and March 2027 implieds mark 4.325, still 38.5 basis points above cash after the receive has already come in 25.5 basis points from 4.58. That leftover hike premium is the remaining cash anchor, but it is no longer the same crowded extreme: the two-year at 4.56 has not confirmed as much easing, September implieds at 4.495 still sit 17 basis points above March, and Brent at 117.64 is a hawkish stretch that can keep the residual premium alive. Cut the existing March receive in half rather than add or exit; keep wanting the mark lower on the residual, and do not replace it with a 10-year receive at 4.94 or with unmarked dollar spot.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.94 as of 29 October and March 2027 implieds mark 4.325, still 38.5 basis points above cash after the receive has already come in 25.5 basis points from 4.58. That leftover hike premium is the remaining cash anchor, but it is no longer the same crowded extreme: the two-year at 4.56 has not confirmed as much easing, September implieds at 4.495 still sit 17 basis points above March, and Brent at 117.64 is a hawkish stretch that can keep the residual premium alive. Cut the existing March receive in half rather than add or exit; keep wanting the mark lower on the residual, and do not replace it with a 10-year receive at 4.94 or with unmarked dollar spot."
     }
   ],
   "schema_version": 1,

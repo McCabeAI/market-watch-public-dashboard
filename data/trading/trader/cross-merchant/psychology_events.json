@@ -809,6 +809,54 @@
       "subject": {
         "flat_cycles": 4
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 5,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "event_id": "pse-000035",
+      "flat_cycles": 5,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261102",
+      "seq": 35,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0485,
+        "external_pressure": 0.0169,
+        "frustration": 0.0175
+      },
+      "event_id": "pse-000036",
+      "kind": "flat_with_market",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261102",
+      "scale": 1.0,
+      "seq": 36,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "flat_cycles": 5
+      }
     }
   ],
   "owner_id": "cross-merchant",

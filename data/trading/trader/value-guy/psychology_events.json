@@ -889,6 +889,87 @@
       "subject": {
         "rank_change": -7
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          800000.0,
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "event_id": "pse-000039",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261102",
+      "seq": 39,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0002,
+        "complacency": 0.0065,
+        "defensiveness": -0.0006,
+        "external_pressure": -0.0004,
+        "frustration": -0.0007,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.002
+      },
+      "event_id": "pse-000040",
+      "kind": "session_gain",
+      "magnitude": 0.10155652,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261102",
+      "scale": 1.0,
+      "seq": 40,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 50778.26
+      }
+    },
+    {
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0029,
+        "complacency": 0.0425,
+        "external_pressure": -0.0139,
+        "frustration": -0.0034,
+        "self_trust": 0.0098
+      },
+      "event_id": "pse-000041",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261102",
+      "scale": 1.0,
+      "seq": 41,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -3
+      }
     }
   ],
   "owner_id": "value-guy",

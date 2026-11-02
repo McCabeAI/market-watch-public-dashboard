@@ -1534,6 +1534,60 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "The October FOMC path is spent: the hold already reset March SOFR to 4.39, while firm inflation language and oil at 102/115 cleared in the 10-year at 4.98 rather than in skip-tenor STIR. The Bank of Japan hold has also printed, so dollar-yen is not an unspent dated event. There is no Bank of Canada headline that can reprice March CORRA 2.99 versus cash 2.24. Stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No dated United States path remains after the printed Fed hold, and Hormuz is already in Brent 117.64. Book is flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 28,
+      "decision_fingerprint": "1408a4658d9ccd6eb226380e2933cfb984848072a84a713e6fe5674058552226",
+      "event_id": "jde-651176aa2f1b4fc5",
+      "funding_view": null,
+      "invalidation": "A dated United States data release or policy meeting that can reprice the SOFR strip or the Treasury curve independently of Brent at 117.64 would reopen the seat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9d400b36abaa424ad565435f13f4ad71b0109893522c0fb5ac42e59ddf1c3522",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "dea831e1f014c37a8f666979f96305495d1699a1cc4de8cc877711057b6004ce"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Crude already prints the live oil shock, and the last United States policy decision is already behind us. The SOFR strip still prices hikes from 3.94 into March 4.325 and September 4.495, but that gap can sit there without a dated United States print or meeting left in this packet to force a reset. With the book flat, there is no remaining United States-only path from the mispricing to a timed repricing, so I stay out.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "Crude already prints the live oil shock, and the last United States policy decision is already behind us. The SOFR strip still prices hikes from 3.94 into March 4.325 and September 4.495, but that gap can sit there without a dated United States print or meeting left in this packet to force a reset. With the book flat, there is no remaining United States-only path from the mispricing to a timed repricing, so I stay out."
     }
   ],
   "schema_version": 1,

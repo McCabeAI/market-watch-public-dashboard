@@ -1500,6 +1500,60 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "The book is flat. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with US 10-year 4.98 or dollar-Canada 1.3996. Three-digit oil plus a same-session Bank of Japan hold is jump and path risk, but without a surface it stays unowned. Stay flat rather than inventing premiums or forcing a last-resort rates substitute."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat and this freeze has no paper-markable listed-option premium, implied volatility, or strike. Do not invent an options surface or substitute a rates or spot ticket the seat is not mandated to force.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "e2d1804edbce987f0ca73eaa3235f1067ce8fdc5e3308aa41ff66448c783abf1",
+      "event_id": "jde-770f29a74a454700",
+      "funding_view": null,
+      "invalidation": "A later freeze supplies paper-markable listed-option premium, implied volatility, and strike mids for an oil or yen event structure that can be compared with US 10-year 4.94 and with dollar-yen 157.25.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "226c78bcfd20630115f3f812c2516eaa24ee5cf2692b71adc766c1916805254b",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ced6380dc7669f2a590aed234c85318dc2a6d15b1254c80d4ddebfc8f5eefda1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with US 10-year 4.94 or dollar-yen 157.25. Brent at 117.64 against the VIX at 17.2 is jump risk that spot and duration do not own cleanly, but without a surface it stays unowned. Stay flat rather than inventing premiums or forcing a rates substitute.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "The book is flat. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with US 10-year 4.94 or dollar-yen 157.25. Brent at 117.64 against the VIX at 17.2 is jump risk that spot and duration do not own cleanly, but without a surface it stays unowned. Stay flat rather than inventing premiums or forcing a rates substitute."
     }
   ],
   "schema_version": 1,

@@ -1582,6 +1582,64 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "Ride the confirmed US front-end yield downtrend. US_2Y has fallen on 1d, 5d and 1m, so the continuation is receive/long duration, not a fade of a 1m z near -2.1 and not a re-pay of the failed 10Y 5.05 backup. Mar SOFR 4.39 and Sep SOFR 4.58 still sit above cash 3.94; that path is not permission to short coupons after 2s/5s/10s already rallied. Mean-reversion against this 1m impulse is a premature fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 25000000,
+          "position_id": null,
+          "rationale": "Receive March SOFR at 4.325 to own the live US front-end of a coupon downtrend already confirmed on one-day, five-day and one-month windows. Do not pay 10s or March after 2s/5s/10s have already rallied.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "c31729c3f2422e1a38f424303a8dec2c0912e127705f8349337d7bec617ff100",
+      "event_id": "jde-3075d9b56fdb4754",
+      "funding_view": null,
+      "invalidation": "Exit if the US two-year reclaims and holds 4.67, or if March SOFR implied prints higher while two-year, five-year and ten-year yields reverse higher together.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-96a63a1df145"
+      ],
+      "memory_context_sha256": "d3fb1c6d1689094ddf665b2288589f01fb6336c64b4b7b087116761a13604b3b",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c46d39042f12fc32113df5410d9fd6281acf034a01f098dec9f65edda7a118e8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "US two-year, five-year and ten-year yields have all fallen on the one-day, five-day and one-month windows, so the coupon downtrend is still live rather than a one-day bounce. Cash SOFR is 3.94 with March at 4.325 and September at 4.495, which still prices tightening, but that path is not permission to fade duration after a 32 basis-point two-year decline. Receive March SOFR so the listed front-end can follow the coupon move lower; dollar-yen at 157.25 is mixed across those same windows and is a weaker expression of the same impulse.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "US two-year, five-year and ten-year yields have all fallen on the one-day, five-day and one-month windows, so the coupon downtrend is still live rather than a one-day bounce. Cash SOFR is 3.94 with March at 4.325 and September at 4.495, which still prices tightening, but that path is not permission to fade duration after a 32 basis-point two-year decline. Receive March SOFR so the listed front-end can follow the coupon move lower; dollar-yen at 157.25 is mixed across those same windows and is a weaker expression of the same impulse."
     }
   ],
   "schema_version": 1,

@@ -2011,6 +2011,81 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "No initiating expression clears the official-SOFR zero. The freeze supplies a 3.94 NY Fed fixing and an SR3 path already 22.5 to 64 basis points above that fixing; those contracts price a hike campaign, not leftover versus cash. March CORRA at 2.99 and March AONIA at 4.935 are the same story against 2.24 and 4.60 cash. Stay at the zero official-SOFR benchmark; do not pay 3.94 percent on shocked-risk capital into a month-end Friday."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat and the hawkish path is already in the December-through-September strip and in Brent at 117.64. Paying 3.94 percent on shocked-risk capital would fund a priced path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 8,
+      "decision_fingerprint": "f197d2102ab8bd378d1382c17fe1c0b181696000a4f585cfab74ab8c8ae63304",
+      "event_id": "jde-fcb7e592c9484a27",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-10-29",
+          "percent_rate": 3.94,
+          "rate": 3.94,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Overnight realized funding should print nearer the 3.94 official zero than the December 4.13 through September 4.495 strip. Remaining at the zero official cash benchmark is the correct default. Paying that same 3.94 percent on shocked-risk capital requires an edge above the already-priced hike path after the hold; none is evidenced, so do not leave flat.",
+        "sr3_forward_view": "Curve prices tightening versus the 3.94 official zero: Dec 4.13, Mar 4.325, Jun 4.45, Sep 4.495. Overnight realized cash is not those quarterly forwards."
+      },
+      "invalidation": "A later freeze must show a quantified leftover versus that December-through-September strip, realized funding printing away from cash 3.94 in a way the curve does not already capture, or a named unpriced catalyst with a markable United States rates instrument. Absent that, remain flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "96ce8a25d0d4bca186dd642e88ec12363a17f80755e92a12b4849351dad164b4",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-10-29",
+            "percent_rate": 3.94,
+            "rate": 3.94,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Overnight realized funding should print nearer the 3.94 official zero than the December 4.13 through September 4.495 strip. Remaining at the zero official cash benchmark is the correct default. Paying that same 3.94 percent on shocked-risk capital requires an edge above the already-priced hike path after the hold; none is evidenced, so do not leave flat.",
+          "sr3_forward_view": "Curve prices tightening versus the 3.94 official zero: Dec 4.13, Mar 4.325, Jun 4.45, Sep 4.495. Overnight realized cash is not those quarterly forwards."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cdbe6a7db4a6637e529649d58ac1b4f4223da6032e4891e7aa93447bfc561bba"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is already flat and no leftover versus the already-priced SOFR hike path is quantified. Official cash is 3.94 and the strip already sits at December 4.13, March 4.325, June 4.45 and September 4.495 after the Federal Reserve held, with Brent at 117.64 inside that same path. Paying 3.94 percent on shocked-risk capital would fund a priced campaign rather than an edge, so the book stays at the zero official cash benchmark.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "The book is already flat and no leftover versus the already-priced SOFR hike path is quantified. Official cash is 3.94 and the strip already sits at December 4.13, March 4.325, June 4.45 and September 4.495 after the Federal Reserve held, with Brent at 117.64 inside that same path. Paying 3.94 percent on shocked-risk capital would fund a priced campaign rather than an edge, so the book stays at the zero official cash benchmark."
     }
   ],
   "schema_version": 1,

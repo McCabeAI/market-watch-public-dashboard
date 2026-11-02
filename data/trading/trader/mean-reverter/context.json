@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -6467.17,
     "status": "ok"
   },
   "learning": {
@@ -60,12 +60,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9e18f165d8a5e305353dbcc628700c968cb95449f20263a52b7ee905b3eec2b8",
+  "memory_context_sha256": "02d49fca55cafeeedacf3cd5fced31ba7f54579c72e090cb08ebdd9e5004c279",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 56,
-      "current_notional_usd": 10000000.0,
+      "current_notional_usd": 5000000.0,
       "entry_mark": 4.58,
       "harvest": {
         "asset_class": "rates",
@@ -77,7 +77,7 @@
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 31500.0,
+        "giveback_usd": 18750.0,
         "holding_seconds": 3739908,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -91,16 +91,16 @@
         "position_id": "pos-1477172adb86",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
-        "realized_pnl_usd": -29500.0,
+        "realized_pnl_usd": -16750.0,
         "recorded_mfe_usd": 21000.0,
-        "retained_mfe_fraction": -0.5,
+        "retained_mfe_fraction": 0.1071,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 400000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": -10500.0,
+        "total_pnl_usd": 2250.0,
         "trade_id": "trd-trader-mean-reverter-pos-1477172adb86",
         "unrealized_pnl_usd": 19000.0
       },
@@ -145,7 +145,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "frustration": {
         "band": "calm",
@@ -179,7 +179,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "625970be789b3ba47adc4a7127f3b8bf15afbf236ca64773e0a21a529e7b7e04",
+    "state_sha256": "0162cb31f14ef05e615575248b7c20603351f707f500cb8d2fa0d084c6051ee6",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

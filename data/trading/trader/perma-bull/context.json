@@ -77,7 +77,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1250000.0,
     "risk_capital_utilization": 0.125,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 47910.42,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "975101e7df1e54610fd81cdcc8358dbbfed16ae75803ee42958dfe19dfd4cebc",
+  "memory_context_sha256": "d0d89dc9836a6d5576d65dfa6dbf818add276914c7be4fb97dc67ef91a34f2f7",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -209,7 +209,7 @@
         "horizon_status": "unspecified",
         "instrument": "SOFR_2027-03",
         "intended_horizon_days": null,
-        "mae_usd": -75000.0,
+        "mae_usd": -97500.0,
         "mechanical_order": false,
         "mfe_usd": 15000.0,
         "move_versus_entry_intent": "unknown",
@@ -255,8 +255,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.15
+        "trend": "down",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
@@ -266,17 +266,17 @@
       "defensiveness": {
         "band": "calm",
         "trend": "up",
-        "value": 0.21
+        "value": 0.22
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.21
+        "trend": "down",
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.14
+        "trend": "flat",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -312,14 +312,19 @@
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261030"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.09582083999999999,
+        "run_id": "overnight-20261102"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e180ce027c880cad236e23fe433b4d3882ad26a7c4580cbc6dcc112638e225ed",
+    "state_sha256": "2e1041d487270e55ba974cfe8919323ecea04e17d0ca06024a4d361da5fa4378",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 3,
+      "session_loss": 4,
       "session_win": 0
     }
   },

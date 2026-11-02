@@ -1847,6 +1847,92 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "Equities are holding up and implied volatility remains contained even with crude sharply higher on Strait of Hormuz mine claims, so the growth break that would force easier policy is not in the tape. The bond rally after the Federal Reserve hold looks like an over-discounted pivot: cash SOFR is still 3.94 against March 4.39, and inflation language stayed firm. Keep the existing Canadian, Australian and US front-end pays; commodity FX splits between oil-positive Canada and mixed Australia, and dollar-yen is already extended."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000.0,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Nineteen and a half basis points against from 4.52 to 4.325, but cash 3.94 versus March 4.325 still prices hikes. Do not add into the adverse mark and do not cover a still-priced tightening path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000.0,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Sixteen basis points against from 3.13 to 2.97, but cash 2.49 versus March 2.97 still prices 48bp of tightening and Brent 117.64 is a Canada growth impulse rather than a reason to cover. New Canadian risk stays blocked.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Working: cash 4.60 versus March 4.915, up from 4.765 entry. The energy impulse keeps the Australian hike path from being faded. Do not harvest a working pay and do not add non-US risk.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 63,
+      "decision_fingerprint": "2c42e7dce027eb7ab9dcc4b3286df9f7d0c2b3b2a38f153fcf4efd2a9daf602c",
+      "event_id": "jde-434c35d7d6d94a79",
+      "funding_view": null,
+      "invalidation": "Cover if risk assets sell off as the oil move becomes demand destruction, if March 2027 US, Canadian or Australian overnight funds reprice onto a cut versus cash, or if US inflation language turns toward easing while crude reverses without pass-through.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "975101e7df1e54610fd81cdcc8358dbbfed16ae75803ee42958dfe19dfd4cebc",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e180ce027c880cad236e23fe433b4d3882ad26a7c4580cbc6dcc112638e225ed"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Brent at 117.64 and WTI at 104.12 have not broken risk appetite: gold is 3898.90 and equity vol is 17.2, so the growth scare that would force a cut path is not in the tape. Cash SOFR is still 3.94 against March 4.325 and September 4.495, and Canadian cash overnight is 2.49 against March 2.97, so both paths still price tightening rather than easing. Australian cash 4.60 versus March 4.915 keeps the hike impulse in the working pay. Keep the three existing front-end pays; a new dollar-bloc FX ticket is noisier than those policy paths and is not cleaner than March SOFR.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "Brent at 117.64 and WTI at 104.12 have not broken risk appetite: gold is 3898.90 and equity vol is 17.2, so the growth scare that would force a cut path is not in the tape. Cash SOFR is still 3.94 against March 4.325 and September 4.495, and Canadian cash overnight is 2.49 against March 2.97, so both paths still price tightening rather than easing. Australian cash 4.60 versus March 4.915 keeps the hike impulse in the working pay. Keep the three existing front-end pays; a new dollar-bloc FX ticket is noisier than those policy paths and is not cleaner than March SOFR."
     }
   ],
   "schema_version": 1,

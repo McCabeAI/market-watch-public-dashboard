@@ -1560,6 +1560,62 @@
       "run_id": "overnight-20261030",
       "schema_version": 1,
       "thesis": "Cash CORRA is still 2.24 with no Bank of Canada headline, while the locked 2027 strip still prices March 2.99 through December 3.40. That unstarted re-hike path is the underpriced easing, so hold the existing receive and do not add. Canadian labor is still cooling and underlying inflation is low; three-digit oil is a reason not to add, not a reason to cover. Dollar-Canada mixes leftover US hike pricing with oil support for the Canadian dollar and is the worse expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000.0,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the existing long 2027 H-Z strip. Brent 117.64 argues against adding, not against staying received, and US 2-year 4.56 or March SOFR 4.325 is a second-country overlay rather than a cleaner expression of this Canadian path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-02T05:28:38.279813-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "da7ab7d7e328a6882058e0df048a9e7c8b667902e27f611b2c0f57960ad18139",
+      "event_id": "jde-e56354f3c5d2429b",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if March 2.97 and September 3.26 re-price higher together into a delivered 2027 tightening, or if the strip average reverses back through 3.40.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "73bbad7ffa0b4c8094e73b08f4bad42d191cb8e40119de26030414fd10a5413d",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f0aa3d14074a4247d60d7a244aef53c5a4dd4132477e65c407c01d7a0a077c56"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-02T05:28:38.279813-05:00",
+        "evidence_hash": "ddaab4446c3e9c85a29346d3bdb032f889f3c9bd3dffd7bc73033c6cbf86a3b4",
+        "overnight_run_id": "overnight-20261102",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The locked 2027 Canadian strip still prices a re-hike after the move from 3.40 to about 3.22: March 2.97, June 3.135, September 3.26. That upward path is the easing still underpriced; Brent at 117.64 is a hike headwind, so this is not a size-up, including through US March SOFR at 4.325 versus 3.94 on 29 October. Spot dollar-Canada mixes oil support for the Canadian dollar with leftover US hike pricing and is the worse expression of the same view.",
+      "run_id": "overnight-20261102",
+      "schema_version": 1,
+      "thesis": "The locked 2027 Canadian strip still prices a re-hike after the move from 3.40 to about 3.22: March 2.97, June 3.135, September 3.26. That upward path is the easing still underpriced; Brent at 117.64 is a hike headwind, so this is not a size-up, including through US March SOFR at 4.325 versus 3.94 on 29 October. Spot dollar-Canada mixes oil support for the Canadian dollar with leftover US hike pricing and is the worse expression of the same view."
     }
   ],
   "schema_version": 1,
