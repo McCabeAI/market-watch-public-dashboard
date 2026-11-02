@@ -538,6 +538,29 @@
     }).filter(Boolean);
   }
 
+  function fxLegStatus(permissions) {
+    var perms = permissions || {};
+    var names = (perms.blocked_legs || []).concat(perms.partial_legs || []);
+    var blocked = false;
+    names.forEach(function (name) {
+      if (name === "FX") blocked = true;
+    });
+    if (!blocked) return "";
+    return String(perms.fx_leg_status || "unavailable");
+  }
+
+  function ratesRestrictedCountries(permissions) {
+    var perms = permissions || {};
+    var countries = perms.countries || {};
+    var fxStatus = fxLegStatus(perms);
+    return Object.keys(countries).filter(function (code) {
+      var row = countries[code];
+      if (!row || row.eligible) return false;
+      if (fxStatus && row.sovereign_admission === "research_only") return false;
+      return true;
+    });
+  }
+
   function fleetFlags(seats, pms, permissions) {
     var fundingSeats = {};
     var fundingPms = {};
@@ -593,9 +616,9 @@
     (pms || []).forEach(function (pm) { takeBook(pm, "pm"); });
 
     var perms = permissions || {};
-    var countries = perms.countries || {};
-    var restricted = Object.keys(countries).filter(function (code) { return countries[code] && !countries[code].eligible; });
+    var restricted = ratesRestrictedCountries(perms);
     var eligible = perms.trade_eligible_countries || [];
+    var fxStatus = fxLegStatus(perms);
     var blocked = perms.blocked_sources || [];
     var researchGaps = researchGapCountries(perms);
     var researchSeries = perms.research_coverage_series || [];
@@ -636,6 +659,7 @@
         researchCoverageLabel: researchCoverageLabel,
         tradingRestricted: restricted.length > 0 || quarantined.length > 0,
         quarantined: quarantined,
+        fxStatus: fxStatus,
         sentence: permissionSentence(perms)
       }
     };
@@ -645,20 +669,23 @@
     var perms = permissions || {};
     var allowed = perms.trade_eligible_countries || [];
     var countries = perms.countries || {};
-    var restricted = Object.keys(countries).filter(function (code) {
-      return countries[code] && !countries[code].eligible;
-    });
+    var fxStatus = fxLegStatus(perms);
+    var restricted = ratesRestrictedCountries(perms);
     var researchOnly = Object.keys(countries).filter(function (code) {
       var row = countries[code];
       return row && row.eligible && row.sovereign_admission === "research_only";
     });
-    if (!allowed.length && !restricted.length && !researchGapCountries(perms).length && !researchOnly.length) return "";
+    if (!allowed.length && !restricted.length && !researchGapCountries(perms).length && !researchOnly.length && !fxStatus) return "";
     var sentence = "New risk eligible: " + allowed.join(" / ") +
       (restricted.length ? " · Restricted: " + restricted.join(" / ") : "") +
       ". Existing positions may still be held, reduced or closed.";
     if (researchOnly.length) {
       sentence += " " + researchOnly.join(" / ") +
         " sovereign rates are research-only and do not restrict spot.";
+    }
+    if (fxStatus) {
+      sentence += " FX is " + fxStatus +
+        "; spot FX is not eligible. Rates in eligible countries are unaffected.";
     }
     var gaps = researchGapCountries(perms);
     if (gaps.length) {
@@ -1021,7 +1048,8 @@
     money: money,
     displayName: displayName,
     formatStamp: formatStamp,
-    permissionSentence: permissionSentence
+    permissionSentence: permissionSentence,
+    flagHtml: flagHtml
   };
 
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -1145,6 +1173,11 @@
       items.push('<li><span class="mw-chip mw-chip--bad">Unavailable</span><p>P&amp;L unavailable: ' + namesOf(flags.pnlUnavailable) + "</p></li>");
     }
     var restriction = flags.restriction || {};
+    if (restriction.fxStatus) {
+      items.push('<li><span class="mw-chip mw-chip--warn">FX unavailable</span><p>FX is ' +
+        esc(restriction.fxStatus) +
+        ". Spot FX is not eligible. Rates in eligible countries are unaffected.</p></li>");
+    }
     var tradingRestricted = restriction.tradingRestricted;
     var researchLabel = restriction.researchCoverageLabel || "";
     if (researchLabel) {

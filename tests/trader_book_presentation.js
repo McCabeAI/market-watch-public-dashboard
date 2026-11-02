@@ -409,6 +409,36 @@ check(legacyFlags.restriction.tradingRestricted === false, "macro series ids are
 check(String(legacyFlags.restriction.researchCoverageLabel).indexOf("CA") !== -1, "legacy macro series stay visible");
 check(legacyFlags.restriction.sentence.indexOf("Restricted:") === -1, "legacy macro series do not restrict");
 
+const fxGapPerms = {
+  trade_eligible_countries: ["US", "CA", "AU", "EA", "JP"],
+  blocked_legs: ["FX"],
+  partial_legs: ["NZ_rates", "FX"],
+  fx_leg_status: "missing",
+  countries: {
+    US: { eligible: true },
+    CA: { eligible: true },
+    AU: { eligible: true },
+    NZ: { eligible: false, sovereign_admission: "research_only" },
+    EA: { eligible: true },
+    JP: { eligible: true },
+  },
+};
+const fxFlags = api.fleetFlags([], [], fxGapPerms);
+const fxSentence = api.permissionSentence(fxGapPerms);
+const fxHtml = api.flagHtml(fxFlags);
+check(fxFlags.restriction.tradingRestricted === false, "FX leg gap is not a fleet new-risk veto");
+check(fxFlags.restriction.fxStatus === "missing", "FX status is on the restriction");
+check(fxFlags.restriction.restricted.indexOf("US") === -1, "US rates stay off the restricted list");
+check(fxFlags.restriction.restricted.indexOf("NZ") === -1, "research-only NZ is not relabeled as a rates ban");
+check(fxSentence.indexOf("New risk eligible: US / CA / AU / EA / JP") !== -1, "rate-eligible countries stay listed");
+check(fxSentence.indexOf("FX is missing") !== -1, "FX missing is named");
+check(fxSentence.indexOf("spot FX is not eligible") !== -1, "spot FX stays ineligible");
+check(fxSentence.indexOf("do not restrict spot") === -1, "spot is not described as unrestricted");
+check(fxSentence.indexOf("Restricted: US") === -1, "FX failure does not restrict US");
+check(fxHtml.indexOf("FX unavailable") !== -1, "fleet flag names the FX leg");
+check(fxHtml.indexOf("New risk eligible") !== -1, "fleet flag keeps rates eligible");
+check(fxHtml.indexOf("New risk restricted") === -1, "FX leg is not a full new-risk restriction");
+
 const raw = fs.readFileSync(0, "utf8");
 const fixture = JSON.parse(raw);
 const traderTotal = api.sumKnownPnl(fixture.seats, function (seat) { return seat.net_pnl_usd; });
