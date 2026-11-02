@@ -84,7 +84,7 @@
       ]
     }
   ],
-  "as_of": "2026-10-30T06:33:05.373685-04:00",
+  "as_of": "2026-11-02T05:28:38.279813-05:00",
   "calibration": {
     "average_holding_seconds": 3142820,
     "average_realized_pnl_usd": 157206.2,
@@ -136,8 +136,8 @@
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 200000.0,
+    "risk_capital_utilization": 0.02,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -149,7 +149,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7624fb4a16830995f913611938aaa1dcfdeac6bdfbfd3126966f6ea8497cb770",
+  "memory_context_sha256": "9cc69fb51b970ff10d7b2ee33f543a322b8d15b142a07fb573a5e3044dfb77c2",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -162,20 +162,20 @@
         "catalyst_logic": "The hold is already printed; the leftover is persistence of the US-Japan policy gap versus an unowned mid-range USDJPY book, exhausted if Japan hikes or the United States cash rate converges.",
         "current_mark": 158.05929919137466,
         "current_notional_usd": 20000000.0,
-        "entry_mark": 158.06,
-        "expected_mark_direction": null,
+        "entry_mark": 158.05929919137466,
+        "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 255332,
+        "horizon_elapsed_fraction": 0.0657,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 45,
         "mae_usd": 0.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-012b8f0c252c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
