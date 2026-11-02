@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from scripts.trader_room.agent_config import get_profile, load_config
+
 ROOT = Path(__file__).resolve().parents[2]
 
 SCHEMA_VERSION = 1
@@ -12,7 +14,12 @@ CASH_CAPITAL_USD = 1_000_000_000
 RISK_CAPITAL_LIMIT_USD = 100_000_000
 MAX_DRAWDOWN_USD = 50_000_000
 PM_IDS = ("chatgpt", "swinger", "pragmatist", "grinder")
-AUTOMATED_PM_IDS = ("swinger", "pragmatist", "grinder")
+
+_CFG = load_config()
+_PROFILE = get_profile(config=_CFG)
+AUTOMATED_PM_IDS = tuple(_CFG["roster"]["automated_pms"])
+ALLOWED_SUBAGENT_MODELS = tuple(_PROFILE["pm_subagent_models"])
+
 CHATGPT_PM_ID = "chatgpt"
 
 ACTIONS = ("OPEN", "ADD", "HOLD", "REDUCE", "HEDGE", "CLOSE", "NO_TRADE")
@@ -23,7 +30,6 @@ ASSET_CLASSES = ("spot_fx", "rates", "curve", "rates_rv", "options")
 CURVE_FAMILIES = ("sofr", "corra", "aonia", "bond")
 EXPRESSION_FAMILIES = CURVE_FAMILIES + ("spot_fx", "options", "other")
 PRIORITIES = ("low", "medium", "high")
-ALLOWED_SUBAGENT_MODELS = ("grok-4.6", "composer-2.5")
 MAX_SUBAGENTS_PER_PM = 3
 
 DECISION_STATUSES = (

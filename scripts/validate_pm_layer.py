@@ -14,7 +14,8 @@ from scripts.pm.models import (
     assert_pm_launch_mechanism,
     pm_hook_policy,
 )
-from scripts.trader_room.constants import REGISTRY_PATH
+from scripts.trader_room.agent_config import check_agents
+from scripts.trader_room.models import load_registry
 from scripts.validate_trader_room import assert_agent_file
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -54,13 +55,16 @@ def main() -> None:
             assert "force_deployment" in body
             assert "near-zero" in body
 
-    registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    registry = load_registry()
     assert registry.get("pm_principal_model") == PM_PRINCIPAL_MODEL
     assert registry.get("pm_agent_frontmatter_model") == PM_AGENT_FRONTMATTER_MODEL
     assert tuple(registry.get("automated_pm_agent_ids") or ()) == AUTOMATED_PM_IDS
     forbidden = set(registry.get("pm_forbidden_task_principal_models") or [])
-    assert "grok-4.6" in forbidden
-    assert "cursor-grok-4.6-high-fast" in forbidden
+    assert PM_PRINCIPAL_MODEL in forbidden
+    assert f"cursor-{PM_PRINCIPAL_MODEL}-high-fast" in forbidden
+
+    agent_errors = check_agents(ROOT)
+    assert not agent_errors, "agent frontmatter drift:\n" + "\n".join(agent_errors)
 
     plan = build_pm_launch_plan(
         run_id="tr-test",

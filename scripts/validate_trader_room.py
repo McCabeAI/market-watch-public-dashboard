@@ -4,6 +4,10 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from scripts.trader_room.agent_config import check_agents
+from scripts.trader_room.constants import ADVOCATE_MODEL, AGENT_FRONTMATTER_MODEL
+from scripts.trader_room.models import load_registry
+
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / ".cursor" / "agents"
 DRIVE_FOLDER_ID = "1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD"
@@ -44,7 +48,7 @@ def assert_agent_file(name: str, path: Path) -> None:
     missing = REQUIRED_FIELDS - set(fm)
     assert not missing, f"{name}: missing frontmatter fields {sorted(missing)}"
     assert fm["name"] == name, f"{name}: frontmatter name mismatch"
-    assert fm["model"] == "grok-4.6[]", f"{name}: wrong model {fm['model']}"
+    assert fm["model"] == AGENT_FRONTMATTER_MODEL, f"{name}: wrong model {fm['model']}"
     assert fm["readonly"] == "true", f"{name}: must be readonly"
     assert fm["is_background"] == "true", f"{name}: must run in background"
 
@@ -158,11 +162,14 @@ def main() -> None:
     assert "trader-room/outbox" not in command
     assert "GITHUB_HANDOFF" not in command
 
-    registry = json.loads((ROOT / "scripts" / "trader_room" / "model_registry.json").read_text(encoding="utf-8"))
-    assert registry["advocate_model"] == "grok-4.6"
-    assert registry["aggregator_model"] == "grok-4.6"
-    assert registry["agent_frontmatter_model"] == "grok-4.6[]"
+    registry = load_registry()
+    assert registry["advocate_model"] == ADVOCATE_MODEL
+    assert registry["aggregator_model"] == ADVOCATE_MODEL
+    assert registry["agent_frontmatter_model"] == AGENT_FRONTMATTER_MODEL
     assert registry["subagent_models"] == ["composer-2.5"]
+
+    agent_errors = check_agents(ROOT)
+    assert not agent_errors, "agent frontmatter drift:\n" + "\n".join(agent_errors)
 
     hook = (ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh").read_text(encoding="utf-8")
     assert "TRADER_ROOM_MODEL_POLICY" in hook
