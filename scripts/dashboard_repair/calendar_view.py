@@ -25,6 +25,7 @@ from scripts.au_cpi_release.calendar import (
 from scripts.dashboard_repair.htmlutil import esc
 from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
 from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.us_employment.contract import EMPSIT_RELEASE_IDS, JOLTS_RELEASE_IDS
 
 ROOT = Path(__file__).resolve().parents[2]
 ET = ZoneInfo("America/New_York")
@@ -46,12 +47,14 @@ _MONTHS = {
 
 _AU_CPI_IDS = frozenset({"AU.Inflation.headline", "AU.Inflation.underlying"})
 _NZ_CPI_IDS = frozenset({"NZ.Inflation.headline", "NZ.Inflation.underlying"})
+# Membership only. Do not iterate these for display text; set order follows PYTHONHASHSEED.
+_JOLTS_CATALOG_IDS = frozenset(JOLTS_RELEASE_IDS)
+_EMPSIT_CATALOG_IDS = frozenset(EMPSIT_RELEASE_IDS)
 _RELEASE_FAMILY_TITLES = {
     "au_cpi": "Consumer Price Index, Australia (headline and trimmed-mean inflation)",
     "au_labour_force": "Labour Force, Australia",
     "chicago_fed_lmi": "Chicago Fed Labor Market Indicators (unemployment nowcast and flows)",
-    "us_empsit": "Employment Situation",
-    "us_empsit_derived": "Employment Situation (derived household context)",
+    "us_empsit": "US Nonfarm Payrolls (NFP) — BLS Employment Situation",
     "us_cpi": "Consumer Price Index",
     "nz_cpi": "Consumers Price Index",
 }
@@ -246,6 +249,41 @@ def _catalog_rows_by_id() -> dict[str, dict[str, Any]]:
     return {str(row.get("id") or ""): row for row in load_catalog()["series"]}
 
 
+def _registry_blob(row: dict[str, Any]) -> str:
+    return " ".join(str(url) for url in row.get("registry_urls") or []).lower()
+
+
+def _cites_jolts_release(row: dict[str, Any]) -> bool:
+    blob = _registry_blob(row)
+    return "/jlt/" in blob or "jolts.htm" in blob
+
+
+def _cites_empsit_release(row: dict[str, Any]) -> bool:
+    blob = _registry_blob(row)
+    return "/news.release/empsit" in blob or "empsit.htm" in blob
+
+
+def _is_us_employment_situation(series_id: str, row: dict[str, Any]) -> bool:
+    """Primary BLS Employment Situation metrics and context released with that print.
+
+    ``employment_section`` is also set on JOLTS, claims, Chicago Fed, and other labor
+    rows, so it is not a family key. JOLTS is identified by catalog id and the jlt registry.
+    """
+    if series_id in _JOLTS_CATALOG_IDS or _cites_jolts_release(row):
+        return False
+    method = str(row.get("retrieval_method") or "")
+    endpoint = str(row.get("endpoint") or "")
+    if method.startswith("bls_empsit"):
+        return True
+    if method == "derived_employment_context" or "derived://us-employment-context" in endpoint:
+        return True
+    if method == "bls_public_api_batch" and (
+        _cites_empsit_release(row) or series_id in _EMPSIT_CATALOG_IDS
+    ):
+        return True
+    return False
+
+
 def _release_family_key(series_id: str) -> str:
     if series_id in _AU_CPI_IDS:
         return "au_cpi"
@@ -257,12 +295,8 @@ def _release_family_key(series_id: str) -> str:
     method = str(row.get("retrieval_method") or "")
     if method == "chicago_fed_lmi_json":
         return "chicago_fed_lmi"
-    urls = " ".join(str(url) for url in row.get("registry_urls") or [])
-    if series_id.startswith("US.Labor."):
-        if method == "derived_employment_context" or "derived://us-employment-context" in str(row.get("endpoint") or ""):
-            return "us_empsit_derived"
-        if method.startswith("bls_empsit") or "empsit" in urls or row.get("employment_section"):
-            return "us_empsit"
+    if series_id.startswith("US.Labor.") and _is_us_employment_situation(series_id, row):
+        return "us_empsit"
     if series_id.startswith("US.Inflation.cpi"):
         return "us_cpi"
     return series_id
@@ -344,6 +378,8 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             current["source_url"] = row["source_url"]
         if row["reference_period"] and not current["reference_period"]:
             current["reference_period"] = row["reference_period"]
+        if str(row.get("publisher") or "") == "BLS":
+            current["publisher"] = "BLS"
     return list(grouped.values())
 
 
@@ -557,7 +593,43 @@ def _weekday(value: date | None) -> str:
     return value.strftime("%A")
 
 
+# Fixed order. A set would reshuffle this line across processes (PYTHONHASHSEED)
+# and change the research-site digest.
+_SCORED_EMPSIT_ORDER = ("US.Labor.payrolls", "US.Labor.unemployment", "US.Labor.wages")
+
+
+def _is_derived_empsit_series(series_id: str) -> bool:
+    row = _catalog_rows_by_id().get(series_id) or {}
+    method = str(row.get("retrieval_method") or "")
+    endpoint = str(row.get("endpoint") or "")
+    return method == "derived_employment_context" or "derived://us-employment-context" in endpoint
+
+
+def _empsit_face_roles(series_ids: list[str]) -> str:
+    by_id = _catalog_rows_by_id()
+    parts: list[str] = []
+    scored_names = [
+        str((by_id.get(series_id) or {}).get("canonical_name") or series_id)
+        for series_id in _SCORED_EMPSIT_ORDER
+        if series_id in series_ids
+    ]
+    if scored_names:
+        parts.append("Scored: " + ", ".join(scored_names))
+    if "US.Labor.participation" in series_ids:
+        participation = str((by_id.get("US.Labor.participation") or {}).get("canonical_name") or "Labor force participation rate")
+        parts.append(f"Context: {participation}")
+    if any(_is_derived_empsit_series(series_id) for series_id in series_ids):
+        parts.append("Derived household context")
+    return " · ".join(parts)
+
+
 def _impact_feed(impacts: list[str]) -> tuple[str, str]:
+    has_scored = any(text.startswith("Scored input:") for text in impacts)
+    has_context = any(
+        "Context only" in text or "Bridge input" in text or "zero score weight" in text for text in impacts
+    )
+    if has_scored and has_context:
+        return "Scored and context", "mw-chip--ok"
     for text in impacts:
         if text.startswith("Scored input:"):
             head = text.removeprefix("Scored input:").strip().split("·", 1)[0].strip()
@@ -634,6 +706,11 @@ def _event_html(item: dict[str, Any]) -> str:
         + "</details>"
     )
     local_show, et_show = _row_times(item)
+    series_ids = [str(series_id) for series_id in (item.get("series_ids") or [item.get("series_id")]) if series_id]
+    role_line = ""
+    if len(series_ids) > 1 and all(_release_family_key(series_id) == "us_empsit" for series_id in series_ids):
+        role_line = _empsit_face_roles(series_ids)
+    role_html = f'<span class="mw-asof mw-release-roles">{esc(role_line)}</span>' if role_line else ""
     return (
         '<article class="release-card mw-release-row" data-release-country="' + esc(item.get("country")) + '">'
         f'<div class="mw-release-date"><span class="mw-num mw-release-day">{esc(day_label)}</span>'
@@ -641,7 +718,8 @@ def _event_html(item: dict[str, Any]) -> str:
         + "</div>"
         f'<span class="mw-chip">{esc(item.get("country"))}</span>'
         f'<div class="mw-release-main"><b>{esc(title)}</b>'
-        f'<span class="mw-asof">{esc(item.get("publisher") or "Publisher not recorded")}</span></div>'
+        f'<span class="mw-asof">{esc(item.get("publisher") or "Publisher not recorded")}</span>'
+        f"{role_html}</div>"
         f'<div class="mw-release-times mw-asof"><span>Local {esc(local_show)}</span>'
         f'<span>ET {esc(et_show)}</span></div>'
         f'<span class="mw-chip {feed_class}">{esc(feed_label)}</span>'
