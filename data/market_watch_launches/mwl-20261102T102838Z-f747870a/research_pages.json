@@ -1,0 +1,303 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-02T10:48:12+00:00",
+      "release_sha256": "8e81298059a72d58b3b7f28f46136d071e176eb83280a6b42aa541fc6baceba9",
+      "run_attempt": "1",
+      "run_id": "41429026103",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/41429026103",
+      "site_sha256": "9e5c7d440b145be2b59301b99b811fbb7a5e78dbb58791e0638c85b7b6bb5cd1"
+    }
+  ],
+  "launch_id": "mwl-20261102T102838Z-f747870a",
+  "launch_terminal": false,
+  "packet_sha256": "8df4c08465c98a753dd97ccece6bf9e70c551e55370fa80ea4da109b2cf5d559",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-10-30T08:45:33.922459-04:00",
+      "as_of": "2026-10-30T06:33:05.373685-04:00",
+      "books_run_id": "overnight-20261030",
+      "overnight_run_id": "overnight-20261030",
+      "packet_sha256": "64e6de4144a04c2553f44d13b96066401021c5f5212a9071eb72d5f50547bd24"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-02T05:28:38.279813-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 14,
+        "partial": true
+      },
+      "as_of": "2026-11-02T05:28:38.279813-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 6,
+        "rejected": {
+          "unattributed": 3,
+          "unverified_source": 15
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "discovery_source": "bloomberg",
+          "headline": "Inflation Talk Returns to Earnings Calls in Echo of 2022 Shock",
+          "id": "news:6903056ac378d79c",
+          "published_at": "2026-11-01T21:19:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-02/inflation-talk-returns-to-earnings-calls-in-echo-of-2022-shock",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "discovery_source": "bloomberg",
+          "headline": "Xi Hosts Oman\u2019s Sultan for Rare Visit to China With Hormuz Shipping in Focus",
+          "id": "news:47266e006c2081db",
+          "published_at": "2026-11-01T20:29:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-02/xi-hosts-oman-s-sultan-for-rare-visit-to-china-with-hormuz-shipping-in-focus",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "bloomberg_credit",
+          "headline": "Alphabet Tests Bond Market\u2019s AI Faith With Second Euro Sale",
+          "id": "news:89b059310442c3eb",
+          "published_at": "2026-11-01T19:52:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-02/alphabet-kicks-off-sale-of-its-second-euro-bond-this-year",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "JPY"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "bloomberg",
+          "headline": "BOJ Signals Low Hopes for Consumer Spending as Population Falls",
+          "id": "news:4e5ad4f16cfc2781",
+          "published_at": "2026-11-01T18:29:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-02/boj-signals-low-hopes-for-consumer-spending-as-population-falls",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "bloomberg",
+          "headline": "Singapore\u2019s STTGDC Eyes $2.4 Billion Loan, Adds to AI Debt Binge",
+          "id": "news:4cd81f9499f27a53",
+          "published_at": "2026-11-01T11:01:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-02/singapore-s-sttgdc-eyes-2-4-billion-loan-adds-to-ai-debt-binge",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "discovery_source": "bloomberg_credit",
+          "headline": "The Bank of England Ponders a New Normal for Interest Rates",
+          "id": "news:9ed634a52970fbf7",
+          "published_at": "2026-11-01T11:01:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-02/the-bank-of-england-ponders-a-new-normal-for-interest-rates",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-02T05:28:38.279813-05:00",
+      "news_family_digest": "54f685911ff2d03a237b80377a35831428e66b9f596778dfbfa821d5c93e03f4",
+      "packet_sha256": "8df4c08465c98a753dd97ccece6bf9e70c551e55370fa80ea4da109b2cf5d559",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-02T05:28:38.279813-05:00",
+        "start": "2026-11-01T05:28:38.279813-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/freeze_binding.json",
+        "sha256": "94f3ac194356a5d9f77bd5b41dfe54b068bbd2390450aeb35e5688fc77ff731a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/remote_freeze.json",
+        "sha256": "355f534228ef49917eb22497c350b83dc14cc32eae7f3b2faef354323dc1cd03"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/artifacts/00_authenticate.json",
+        "sha256": "1aee8562b535d198098d9508490618334d7af62671c4b61042b9a8ceccecf445"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/artifacts/01_ingest.json",
+        "sha256": "a07e6d4c9417a6af25485741ea5687a3302ae76c75c5c2941bf1af212568b847"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/artifacts/02_acquire.json",
+        "sha256": "20787fdf27d1dcb6e2d3f76929fb58041c73982579be327663cfbf50c152fa7f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/artifacts/03_quality_gate.json",
+        "sha256": "6e20645c23ebe70fdbcf983db67aa790a3ff839947f9806eb26bfb531d3c8cd1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/artifacts/04_freeze.json",
+        "sha256": "c291eede80be05467038baa6526a78cc57fd15d2c58ca61f61866653a91f217e"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/temperature_scores.json",
+        "sha256": "0ca4e8b1b7c6424c9911df9cd711e786c89a3bc0528fddcb22fefd7a695fe7e9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/history/ca.json",
+        "sha256": "c63b14632a5cbb92bed673009ad43ed5ad27ad52c487203d831a6dbaaee2a64c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/history/ea.json",
+        "sha256": "ce9d1384af287c95c67db348dc4fd46e52a2c324673d4c5d8e4723a43259c240"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/history/jp.json",
+        "sha256": "9ee23b32ee992020ac34fdab2a62fbf7b603264e89b9d1cc11ffaf6cfbbc19bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261102T102838Z-f747870a/lineage/history/us.json",
+        "sha256": "d310dd98d37a99f804895c4f5eedf930cf61d6da5b971dfecbbcdaee2a3d5c92"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261102/reviews/review-001/evidence_snapshot.json",
+        "sha256": "e88ac3de6c1dbeb0af9b7b2e3bb481cadb7c538cb5be01cdf6e254447bb47dbb"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "2e5c6277e9568f0c086d8d907388c9f8f4e2b374fe5450cbbe771b3287305c7f"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261030/assembled_dataset.json",
+        "sha256": "027b7f50db1d3925963faa42e21c0adab73757444d36cad54ee8d6dbadae17d6"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "649665cac5dbcaf1dcf6f0a1628486eb501d23f1b57d85965fbe717214d26b7b"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "050392a1995d5280a1f4ac84e035c9f71c7d027005ffb99cfae8a357bb86946a"
+      }
+    ],
+    "launch_id": "mwl-20261102T102838Z-f747870a",
+    "market_state": {
+      "as_of": "2026-11-02T10:46:25Z",
+      "digest": "3465efeb0cb98b2b24ced1dc80709f32e6283399201fdb95b713345e6f8ea176",
+      "generated_at": "2026-11-02T10:46:25Z"
+    },
+    "news": {
+      "age_label": "70 h before this freeze",
+      "as_of": "2026-10-30T06:33:05.373685-04:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261030",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261102",
+    "packet_sha256": "8df4c08465c98a753dd97ccece6bf9e70c551e55370fa80ea4da109b2cf5d559",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "blocked_sources": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Consumer.income",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Labor.wages"
+      ],
+      "coverage": "PARTIAL",
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "trade_eligible_countries": [
+        "US"
+      ]
+    },
+    "remote_freeze_commit": "51301369c985a107b1992aa6427ac48b3d2f0bfe",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 0,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-02T10:28:38Z",
+      "inputs_last_ingested_at": "2026-10-30T10:33:05Z",
+      "score_state_sha256": "0ca4e8b1b7c6424c9911df9cd711e786c89a3bc0528fddcb22fefd7a695fe7e9"
+    },
+    "session_date": "2026-11-02",
+    "site_sha256": "9e5c7d440b145be2b59301b99b811fbb7a5e78dbb58791e0638c85b7b6bb5cd1",
+    "source_commit": "6e80a0e4240d29344c534866347cb20d4b67d5c5",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261102",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "8e81298059a72d58b3b7f28f46136d071e176eb83280a6b42aa541fc6baceba9",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-02",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
