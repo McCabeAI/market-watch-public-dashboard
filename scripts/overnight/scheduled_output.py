@@ -478,7 +478,9 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
 
     decisions = payload.get("decisions")
     if not isinstance(decisions, dict) or set(decisions) != expected_seats:
-        raise SchemaError("scheduled output must contain exactly the pinned N trader seats")
+        raise SchemaError(
+            f"scheduled output must contain exactly the pinned {len(expected_seats)} trader seats"
+        )
     for seat, decision in decisions.items():
         if not isinstance(decision, dict):
             raise SchemaError(f"{seat} decision must be an object")

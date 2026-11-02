@@ -50,7 +50,17 @@ following:
    child model IDs in ACP. Child models are enforced by Market Watch hooks
    (`.cursor/hooks/enforce-overnight-budget.py`) from the pin inside the frozen
    snapshot.
-6. **Caps travel with the request.** ACP treats
+6. **No hard-coded run-policy marker.** Stop putting a literal
+   `MW_OVERNIGHT_RUN_POLICY={"version":1,...,"total_model_cap":20,...}` line
+   in the provider prompt. The Market Watch hook reads the first marker in the
+   parent transcript. A v1 marker is accepted only for a legacy-equivalent pin:
+   14 seats, `grok-4.6` parent, 20/18/2. For any other pin, the run-policy and
+   graph markers must be the exact lines printed by
+   `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <bound evidence_snapshot.json>`.
+   ACP either copies those lines verbatim from Market Watch at the pinned
+   trusted-main SHA, or lets the parent emit them per
+   `.cursor/commands/manual-market-watch-review.md`.
+7. **Caps travel with the request.** ACP treats
    `budget.total_model_cap / grok_cap / composer_cap / current_graph` in the
    delegation request as opaque values bound to the launch. ACP may enforce
    them as its own outer ceiling. It must not hard-code 20/18/2.

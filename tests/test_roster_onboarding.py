@@ -87,7 +87,11 @@ class RosterOnboardingTests(unittest.TestCase):
         self.assertEqual(len(head_traders(cfg)), 14)
         agent_path = self.tmp / ".cursor" / "agents" / "synthetic-fifteenth.md"
         self.assertTrue(agent_path.is_file())
-        self.assertIn("model: grok-4.6[]", agent_path.read_text(encoding="utf-8"))
+        agent_text = agent_path.read_text(encoding="utf-8")
+        self.assertIn("model: grok-4.6[]", agent_text)
+        self.assertIn("No web, search, or new evidence acquisition.", agent_text)
+        self.assertIn("only with model composer-2.5", agent_text)
+        self.assertIn("one cogent actionable trade", agent_text)
         store = TradingStore(state_root=self.tmp)
         self.assertFalse((store.state_dir() / "trader" / "synthetic-fifteenth").exists())
 

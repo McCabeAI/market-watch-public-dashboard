@@ -545,8 +545,6 @@ def _admit_role_governed(
                     respond("deny", "Duplicate or unknown trader seat.")
                 if seat not in ac.pin_trader_ids(pin):
                     respond("deny", f"Trader seat {seat!r} is not in the pinned roster.")
-                if not state["synthesis"]:
-                    respond("deny", "Trader children require synthesis first.")
                 state["traders"][seat] = child_id
             elif role == "pm":
                 if not seat or seat in state["pms"]:

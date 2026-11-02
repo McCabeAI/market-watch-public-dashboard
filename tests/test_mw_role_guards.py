@@ -203,6 +203,17 @@ class RoleGuardTests(unittest.TestCase):
         self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
         blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=pm:{DAILY_PMS[0]}")
         self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("all pinned traders first", blocked.stdout)
+
+    def test_traders_admitted_without_optional_synthesis(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        for seat in DAILY_TRADERS:
+            admitted = self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=trader:{seat}")
+            self.assertEqual(admitted.returncode, 0, admitted.stdout)
+        late = self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        self.assertNotEqual(late.returncode, 0)
+        self.assertIn("before the first trader", late.stdout)
 
     def test_examiner_before_pms_denied(self) -> None:
         repo = self._seed_overnight_repo()
@@ -212,6 +223,7 @@ class RoleGuardTests(unittest.TestCase):
             self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=trader:{seat}")
         blocked = self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=learning_examiner")
         self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("requires all traders and PMs first", blocked.stdout)
 
     def test_synthesis_after_trader_denied(self) -> None:
         repo = self._seed_overnight_repo()
@@ -236,6 +248,7 @@ class RoleGuardTests(unittest.TestCase):
         self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
         blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task="MW_ROLE=trader:not-a-real-seat")
         self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("not-a-real-seat", blocked.stdout)
 
     def test_wrong_model_for_role_denied(self) -> None:
         repo = self._seed_overnight_repo()

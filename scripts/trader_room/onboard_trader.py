@@ -66,9 +66,25 @@ def _render_agent_md(
     remit: str,
     specialty: str,
     trader_model: str,
+    subagent_model: str,
+    may_no_trade: bool,
 ) -> str:
     mandate = _expression_mandate(specialty)
     body = persona.rstrip()
+    closing = (
+        "You may explicitly submit no-trade."
+        if may_no_trade
+        else "End with one cogent actionable trade inside this remit."
+    )
+    bounds = (
+        "Read `docs/TRADER_ROOM_PROTOCOL.md` and `docs/TRADER_ROOM_ON_DEMAND.md` before doing anything and "
+        "follow them. Argue your lens hard. Do not act as chair or choose a winner; ChatGPT outside Cursor is "
+        "the arbiter. Use only the exact frozen common evidence packet supplied by the parent. No web, search, "
+        "or new evidence acquisition. You may make at most two internal subagent calls, and only with model "
+        f"{subagent_model}; those subagents inherit the same evidence boundary. Rebuttal passes may not make "
+        f"subagent calls. {closing} Separate verified fact, inference and unknown. Never invent levels; use "
+        "explicit nulls. Return only one `TRADER_ROOM_CONTRIBUTION` JSON object matching the required trade schema."
+    )
     return (
         "---\n"
         f"name: {trader_id}\n"
@@ -79,7 +95,8 @@ def _render_agent_md(
         "---\n"
         f"{body}\n\n"
         f"Remit: {remit}\n\n"
-        f"{mandate}\n"
+        f"{mandate}\n\n"
+        f"{bounds}\n"
     )
 
 
@@ -172,6 +189,8 @@ def onboard_pending(
         remit=remit,
         specialty=specialty,
         trader_model=trader_model,
+        subagent_model=profile["roles"]["advocate_subagent"],
+        may_no_trade=may_no_trade,
     )
     plan = {
         "mode": "pending",
@@ -235,6 +254,8 @@ def onboard_activate(
         remit=remit,
         specialty=specialty,
         trader_model=trader_model,
+        subagent_model=profile["roles"]["advocate_subagent"],
+        may_no_trade=may_no_trade,
     )
 
     plan: dict[str, Any] = {

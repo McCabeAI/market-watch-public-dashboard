@@ -242,6 +242,7 @@ agree. If they disagree, the first child spawn is denied before any spend.
 | grok-4.6 | candidate-grok-4.7 | any | denied at first child (parent mismatch) |
 | grok-4.7 (after stage 1) | current-production-grok-4.6 | v2 | denied at first child (parent mismatch); do not run ACP stage 1 live before stage 2 is ready |
 | grok-4.7 | candidate-grok-4.7 (stage 2) | v2 | runs; traders/PMs/advocates/rebuttals on grok-4.7, Composer roles on 2.5 |
+| grok-4.6, ACP still emits literal v1 marker | current-production profile with a 15th active seat | v1 (first marker wins) | denied at first child: a v1 marker is valid only for a legacy-equivalent pin. A 15th live seat therefore needs ACP stage 1 item 6 (no hard-coded marker) |
 | any | historical run without pin | v1 | validates against the legacy 14-seat / grok-4.6 pin |
 
 ### Roll forward
