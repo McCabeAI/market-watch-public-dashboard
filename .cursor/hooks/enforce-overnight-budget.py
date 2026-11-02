@@ -10,6 +10,7 @@ import os
 import re
 import sys
 import subprocess
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -30,7 +31,6 @@ POLICIES = {
             "parent_total": 1,
             "parent_grok": 1,
         },
-        "root_models": {"grok-4.6", "composer-2.5"},
         "allow_nested_composer": False,
     },
     "trader-room-continuation": {
@@ -64,10 +64,13 @@ POLICIES = {
             "parent_total": 1,
             "parent_grok": 1,
         },
-        "root_models": {"grok-4.6"},
         "allow_nested_composer": True,
     },
 }
+
+ROLE_TAG_RE = re.compile(r"MW_ROLE=([a-z_]+(?::[a-z0-9-]+)?)")
+
+agent_config: Any = None
 
 
 def respond(permission: str, message: str | None = None) -> None:
@@ -105,20 +108,18 @@ def parse_policy(text: str) -> tuple[str, dict[str, Any], dict[str, Any]] | None
     return found[0] if found else None
 
 
-def validate_policy(kind: str, policy: dict[str, Any], spec: dict[str, Any]) -> None:
-    for key, expected in spec["required"].items():
-        if policy.get(key) != expected:
-            respond("deny", f"{kind} run policy {key} must equal {expected!r}.")
-
-
-def load_active(path: Path) -> dict[str, Any] | None:
-    if not path.is_file():
-        return None
+def _lazy_import_agent_config() -> Any:
+    global agent_config
+    if agent_config is not None:
+        return agent_config
+    repo_root = Path(__file__).resolve().parents[2]
+    sys.path.insert(0, str(repo_root))
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        from scripts.trader_room import agent_config as loaded
     except Exception:
-        respond("deny", f"Existing budget state {path} is unreadable.")
-
+        respond("deny", "Market Watch agent config is unavailable.")
+    agent_config = loaded
+    return agent_config
 
 
 def _git_json(path: str) -> dict[str, Any]:
@@ -158,7 +159,6 @@ def _try_git_json(path: str) -> dict[str, Any] | None:
 
 
 def _trusted_snapshot_path(base: str) -> str:
-    """Prefer the open review namespace; fall back to a legacy session snapshot."""
     index = _try_git_json(f"{base}/reviews/index.json")
     rows = list((index or {}).get("reviews") or [])
     chosen = None
@@ -177,7 +177,6 @@ def _trusted_snapshot_path(base: str) -> str:
 
 
 def verify_trusted_overnight_freeze() -> None:
-    """Require the current NY run's trusted freeze to exist in committed HEAD."""
     session = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
     run_id = f"overnight-{session}"
     base = f"data/overnight/runs/{run_id}"
@@ -202,6 +201,423 @@ def verify_trusted_overnight_freeze() -> None:
     if supplied != expected:
         respond("deny", f"{run_id} committed evidence snapshot hash is invalid.")
 
+
+def _resolve_overnight_pin(ac: Any) -> dict[str, Any]:
+    verify_trusted_overnight_freeze()
+    session = datetime.now(ZoneInfo("America/New_York")).strftime("%Y%m%d")
+    run_id = f"overnight-{session}"
+    base = f"data/overnight/runs/{run_id}"
+    snapshot = _git_json(_trusted_snapshot_path(base))
+    try:
+        pin = ac.pin_from_artifact(snapshot, kind="daily")
+        return ac.assert_acceptable_pin(pin)
+    except Exception as exc:
+        respond("deny", f"Overnight roster pin is not acceptable: {exc}")
+
+
+def _resolve_trader_room_pin(ac: Any) -> dict[str, Any]:
+    rel = "scripts/trader_room/model_registry.json"
+    try:
+        raw = subprocess.check_output(
+            ["git", "show", f"HEAD:{rel}"],
+            stderr=subprocess.DEVNULL,
+            text=True,
+        )
+    except (OSError, subprocess.CalledProcessError):
+        respond("deny", "Committed trader-room model registry is missing from HEAD.")
+    tmp_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8") as handle:
+            handle.write(raw)
+            tmp_path = Path(handle.name)
+        cfg = dict(ac.load_config(tmp_path, honor_env=False))
+        cfg["_source"] = "default"
+        pin = ac.build_pin("ondemand", config=cfg)
+        return ac.assert_acceptable_pin(pin)
+    except Exception as exc:
+        respond("deny", f"Trader-room roster pin is not acceptable: {exc}")
+    finally:
+        if tmp_path is not None:
+            tmp_path.unlink(missing_ok=True)
+
+
+def resolve_pin(kind: str, ac: Any) -> dict[str, Any]:
+    if kind == "overnight":
+        return _resolve_overnight_pin(ac)
+    if kind == "trader-room":
+        return _resolve_trader_room_pin(ac)
+    respond("deny", f"Pin resolution is not defined for {kind}.")
+
+
+def validate_policy(
+    kind: str,
+    policy: dict[str, Any],
+    spec: dict[str, Any],
+    pin: dict[str, Any] | None = None,
+) -> None:
+    version = policy.get("version")
+    ac = _lazy_import_agent_config()
+    if kind == "trader-room-continuation":
+        if version != 1:
+            respond("deny", f"{kind} run policy version must equal 1.")
+        for key, expected in spec["required"].items():
+            if policy.get(key) != expected:
+                respond("deny", f"{kind} run policy {key} must equal {expected!r}.")
+        return
+
+    if version == 1:
+        for key, expected in spec["required"].items():
+            if policy.get(key) != expected:
+                respond("deny", f"{kind} run policy {key} must equal {expected!r}.")
+        resolved = pin or resolve_pin(kind, ac)
+        if not ac.legacy_equivalent(resolved):
+            respond(
+                "deny",
+                f"{kind} version 1 run policy is not valid for the pinned non-legacy roster.",
+            )
+    elif version == 2:
+        resolved = pin or resolve_pin(kind, ac)
+        budget = resolved["budget"]
+        expected_fields: dict[str, Any] = {
+            "profile_id": resolved["profile_id"],
+            "traders": len(resolved["traders"]),
+            "roster_sha256": resolved["roster_sha256"],
+            "total_model_cap": budget["total_calls"],
+            "grok_cap": budget["grok_family_calls"],
+            "composer_cap": budget["composer_calls"],
+            "parent_model": resolved["roles"]["parent"],
+            "parent_total": 1,
+            "parent_grok": 1,
+        }
+        if kind == "overnight":
+            expected_fields["schedule_id"] = spec["required"]["schedule_id"]
+        else:
+            expected_fields["run_type"] = spec["required"]["run_type"]
+        for key, expected in expected_fields.items():
+            if policy.get(key) != expected:
+                respond("deny", f"{kind} run policy {key} must equal {expected!r}.")
+    else:
+        respond("deny", f"{kind} run policy version {version!r} is not supported.")
+
+
+def load_active(path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        respond("deny", f"Existing budget state {path} is unreadable.")
+
+
+def _parse_role_tag(task: str) -> tuple[str, str | None]:
+    matches = ROLE_TAG_RE.findall(task)
+    if not matches:
+        respond("deny", "Child task must include exactly one MW_ROLE tag.")
+    if len(set(matches)) != 1:
+        respond("deny", "Child task must include exactly one distinct MW_ROLE tag.")
+    token = matches[0]
+    if ":" in token:
+        role, seat = token.split(":", 1)
+        return role, seat
+    return token, None
+
+
+def _family_deltas(ac: Any, model: str) -> tuple[int, int]:
+    try:
+        normalized = ac.normalize_model(model)
+        family = ac.model_family(normalized)
+    except Exception:
+        respond("deny", f"Market Watch run blocks subagent model {model!r}.")
+    if family == "grok":
+        return 1, 0
+    if family == "composer":
+        return 0, 1
+    respond("deny", f"Market Watch run blocks subagent model {model!r}.")
+
+
+def _role_state(active: dict[str, Any]) -> dict[str, Any]:
+    return active.setdefault(
+        "role_state",
+        {
+            "synthesis": 0,
+            "traders": {},
+            "pms": {},
+            "learning_examiner": 0,
+            "advocates": {},
+            "rebuttals": {},
+        },
+    )
+
+
+def _check_subagent_type(event: dict[str, Any], pin: dict[str, Any], seat: str | None) -> None:
+    subagent_type = str(event.get("subagent_type") or "")
+    if not subagent_type:
+        return
+    traders = set(_lazy_import_agent_config().pin_trader_ids(pin))
+    pms = set(pin.get("automated_pms") or [])
+    if subagent_type in traders | pms and seat != subagent_type:
+        respond("deny", "subagent_type must match the MW_ROLE seat or PM id.")
+
+
+def _assert_role_model(ac: Any, pin: dict[str, Any], role: str, model: str, seat: str | None) -> None:
+    try:
+        ac.assert_role_model(pin, role, model, seat=seat)
+    except Exception as exc:
+        respond("deny", str(exc))
+
+
+def _admit_continuation(
+    *,
+    kind: str,
+    policy: dict[str, Any],
+    spec: dict[str, Any],
+    event: dict[str, Any],
+    parent_id: str,
+    child_id: str,
+    model: str,
+    task: str,
+    active_path: Path,
+    lock_path: Path,
+) -> None:
+    lock_path.touch(exist_ok=True)
+    with lock_path.open("r+") as lock_handle:
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
+        active = load_active(active_path)
+        if active is None:
+            active = {
+                "kind": kind,
+                "root_parent_conversation_id": parent_id,
+                "policy_digest": hashlib.sha256(json.dumps(policy, sort_keys=True).encode("utf-8")).hexdigest(),
+                "total": int(policy["parent_total"]),
+                "grok": int(policy["parent_grok"]),
+                "composer": 0,
+                "direct_children": {},
+                "children": [],
+            }
+        if active.get("kind") != kind:
+            respond("deny", "Run-budget state kind does not match the current policy.")
+        root_id = str(active.get("root_parent_conversation_id") or "")
+        direct_children = active.setdefault("direct_children", {})
+        if parent_id == root_id:
+            if model not in spec["root_models"]:
+                respond("deny", f"{kind} root may not launch subagent model {model!r}.")
+            direct_children[child_id] = {"model": model, "advocate": False, "composer_children": 0}
+        else:
+            respond("deny", f"Nested subagents are prohibited in the {kind} run.")
+        if model not in {"grok-4.6", "composer-2.5"}:
+            respond("deny", f"Market Watch run blocks subagent model {model!r}.")
+        next_total = int(active["total"]) + 1
+        next_grok = int(active["grok"]) + (1 if model == "grok-4.6" else 0)
+        next_composer = int(active["composer"]) + (1 if model == "composer-2.5" else 0)
+        if next_total > int(policy["total_model_cap"]):
+            respond("deny", f"{kind} total model invocation cap ({policy['total_model_cap']}) is exhausted.")
+        if next_grok > int(policy["grok_cap"]):
+            respond("deny", f"{kind} Grok 4.6 invocation cap ({policy['grok_cap']}) is exhausted.")
+        if next_composer > int(policy["composer_cap"]):
+            respond("deny", f"{kind} Composer 2.5 invocation cap ({policy['composer_cap']}) is exhausted.")
+        active["total"] = next_total
+        active["grok"] = next_grok
+        active["composer"] = next_composer
+        active["children"].append(
+            {
+                "parent_conversation_id": parent_id,
+                "subagent_id": child_id,
+                "tool_call_id": event.get("tool_call_id"),
+                "model": model,
+                "task": task,
+            }
+        )
+        active_path.write_text(json.dumps(active, sort_keys=True), encoding="utf-8")
+        respond("allow")
+
+
+def _admit_role_governed(
+    *,
+    kind: str,
+    policy: dict[str, Any],
+    spec: dict[str, Any],
+    pin: dict[str, Any],
+    event: dict[str, Any],
+    parent_id: str,
+    child_id: str,
+    model: str,
+    task: str,
+    active_path: Path,
+    lock_path: Path,
+) -> None:
+    ac = _lazy_import_agent_config()
+    n_traders = len(pin["traders"])
+    pms = list(pin.get("automated_pms") or [])
+    composer_per = int((pin["budget"].get("nodes") or {}).get("composer_per_advocate", 2))
+
+    lock_path.touch(exist_ok=True)
+    with lock_path.open("r+") as lock_handle:
+        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
+        active = load_active(active_path)
+        if active is None:
+            active = {
+                "kind": kind,
+                "root_parent_conversation_id": parent_id,
+                "policy_digest": hashlib.sha256(json.dumps(policy, sort_keys=True).encode("utf-8")).hexdigest(),
+                "total": int(policy["parent_total"]),
+                "grok": int(policy["parent_grok"]),
+                "composer": 0,
+                "direct_children": {},
+                "children": [],
+                "role_state": {
+                    "synthesis": 0,
+                    "traders": {},
+                    "pms": {},
+                    "learning_examiner": 0,
+                    "advocates": {},
+                    "rebuttals": {},
+                },
+            }
+
+        if active.get("kind") != kind:
+            respond("deny", "Run-budget state kind does not match the current policy.")
+
+        root_id = str(active.get("root_parent_conversation_id") or "")
+        direct_children = active.setdefault("direct_children", {})
+        state = _role_state(active)
+
+        role: str
+        seat: str | None
+        pin_role: str
+
+        if parent_id == root_id:
+            role, seat = _parse_role_tag(task)
+            if kind == "overnight":
+                allowed = {"synthesis", "trader", "pm", "learning_examiner"}
+                if role not in allowed:
+                    respond("deny", f"Unknown MW_ROLE {role!r} for overnight run.")
+                pin_role = {
+                    "synthesis": "synthesis",
+                    "trader": "trader",
+                    "pm": "pm_principal",
+                    "learning_examiner": "learning_examiner",
+                }[role]
+            else:
+                if role not in {"advocate", "rebuttal"}:
+                    respond("deny", f"Unknown MW_ROLE {role!r} for trader-room run.")
+                pin_role = role
+        else:
+            if kind != "trader-room" or not spec["allow_nested_composer"]:
+                respond("deny", f"Nested subagents are prohibited in the {kind} run.")
+            parent_meta = direct_children.get(parent_id)
+            if not parent_meta:
+                respond("deny", "Trader Room grandchildren deeper than one advocate layer are prohibited.")
+            if parent_meta.get("role") == "rebuttal":
+                respond("deny", "Rebuttal children may not launch subagents.")
+            if parent_meta.get("role") != "advocate":
+                respond("deny", "Only initial Trader Room advocates may launch internal subagents.")
+            tags = ROLE_TAG_RE.findall(task)
+            if tags:
+                if len(set(tags)) != 1 or tags[0] != "advocate_subagent":
+                    respond("deny", "Nested advocate subagent must use MW_ROLE=advocate_subagent when tagged.")
+            role = "advocate_subagent"
+            seat = None
+            pin_role = "advocate_subagent"
+
+        grok_delta, composer_delta = _family_deltas(ac, model)
+        next_total = int(active["total"]) + 1
+        next_grok = int(active["grok"]) + grok_delta
+        next_composer = int(active["composer"]) + composer_delta
+        if next_total > int(policy["total_model_cap"]):
+            respond("deny", f"{kind} total model invocation cap ({policy['total_model_cap']}) is exhausted.")
+        if next_grok > int(policy["grok_cap"]):
+            respond("deny", f"{kind} Grok-family invocation cap ({policy['grok_cap']}) is exhausted.")
+        if next_composer > int(policy["composer_cap"]):
+            respond("deny", f"{kind} Composer invocation cap ({policy['composer_cap']}) is exhausted.")
+
+        _check_subagent_type(event, pin, seat)
+        _assert_role_model(ac, pin, pin_role, model, seat)
+
+        if kind == "overnight":
+            if role == "synthesis":
+                if state["synthesis"]:
+                    respond("deny", "Overnight synthesis child is already admitted.")
+                if state["traders"]:
+                    respond("deny", "Synthesis must launch before the first trader child.")
+                state["synthesis"] = 1
+            elif role == "trader":
+                if not seat or seat in state["traders"]:
+                    respond("deny", "Duplicate or unknown trader seat.")
+                if seat not in ac.pin_trader_ids(pin):
+                    respond("deny", f"Trader seat {seat!r} is not in the pinned roster.")
+                if not state["synthesis"]:
+                    respond("deny", "Trader children require synthesis first.")
+                state["traders"][seat] = child_id
+            elif role == "pm":
+                if not seat or seat in state["pms"]:
+                    respond("deny", "Duplicate or unknown automated PM.")
+                if seat not in pms:
+                    respond("deny", f"PM {seat!r} is not in the pinned roster.")
+                if len(state["traders"]) < n_traders:
+                    respond("deny", "PM children require all pinned traders first.")
+                state["pms"][seat] = child_id
+            elif role == "learning_examiner":
+                if state["learning_examiner"]:
+                    respond("deny", "Learning examiner is already admitted.")
+                if len(state["traders"]) < n_traders or len(state["pms"]) < len(pms):
+                    respond("deny", "Learning examiner requires all traders and PMs first.")
+                state["learning_examiner"] = 1
+        elif parent_id == root_id:
+            if role == "advocate":
+                if not seat or seat in state["advocates"]:
+                    respond("deny", "Duplicate or unknown advocate seat.")
+                if seat not in ac.pin_trader_ids(pin):
+                    respond("deny", f"Advocate seat {seat!r} is not in the pinned roster.")
+                state["advocates"][seat] = child_id
+                direct_children[child_id] = {
+                    "model": model,
+                    "role": "advocate",
+                    "seat": seat,
+                    "composer_children": 0,
+                }
+            elif role == "rebuttal":
+                if not seat or seat in state["rebuttals"]:
+                    respond("deny", "Duplicate or unknown rebuttal seat.")
+                if seat not in state["advocates"]:
+                    respond("deny", "Rebuttal requires the matching advocate first.")
+                state["rebuttals"][seat] = child_id
+                direct_children[child_id] = {
+                    "model": model,
+                    "role": "rebuttal",
+                    "seat": seat,
+                    "composer_children": 0,
+                }
+        else:
+            used = int(direct_children[parent_id].get("composer_children", 0))
+            if used >= composer_per:
+                respond("deny", f"Trader Room advocate Composer subagent cap ({composer_per}) is exhausted.")
+            direct_children[parent_id]["composer_children"] = used + 1
+
+        if parent_id == root_id and kind == "trader-room" and role == "advocate":
+            pass  # direct_children already set
+        elif parent_id == root_id and kind == "trader-room" and role == "rebuttal":
+            pass
+        elif parent_id == root_id and kind == "overnight":
+            direct_children[child_id] = {"model": model, "role": role, "seat": seat, "composer_children": 0}
+
+        active["total"] = next_total
+        active["grok"] = next_grok
+        active["composer"] = next_composer
+        active["children"].append(
+            {
+                "parent_conversation_id": parent_id,
+                "subagent_id": child_id,
+                "tool_call_id": event.get("tool_call_id"),
+                "model": model,
+                "task": task,
+                "role": role,
+                "seat": seat,
+            }
+        )
+        active_path.write_text(json.dumps(active, sort_keys=True), encoding="utf-8")
+        respond("allow")
+
+
 def main() -> None:
     try:
         event = json.load(sys.stdin)
@@ -222,89 +638,39 @@ def main() -> None:
         respond("allow")
 
     kind, policy, spec = parsed
-    validate_policy(kind, policy, spec)
-    if kind == "overnight":
-        verify_trusted_overnight_freeze()
 
-    lock_path: Path = spec["lock"]
-    active_path: Path = spec["active"]
-    lock_path.touch(exist_ok=True)
-    with lock_path.open("r+") as lock_handle:
-        fcntl.flock(lock_handle.fileno(), fcntl.LOCK_EX)
-        active = load_active(active_path)
-
-        if active is None:
-            active = {
-                "kind": kind,
-                "root_parent_conversation_id": parent_id,
-                "policy_digest": hashlib.sha256(
-                    json.dumps(policy, sort_keys=True).encode("utf-8")
-                ).hexdigest(),
-                "total": int(policy["parent_total"]),
-                "grok": int(policy["parent_grok"]),
-                "composer": 0,
-                "direct_children": {},
-                "children": [],
-            }
-
-        if active.get("kind") != kind:
-            respond("deny", "Run-budget state kind does not match the current policy.")
-
-        root_id = str(active.get("root_parent_conversation_id") or "")
-        direct_children = active.setdefault("direct_children", {})
-
-        if parent_id == root_id:
-            if model not in spec["root_models"]:
-                respond("deny", f"{kind} root may not launch subagent model {model!r}.")
-            if kind == "trader-room" and model != "grok-4.6":
-                respond("deny", "Trader Room root may launch only direct Grok 4.6 children.")
-            direct_children[child_id] = {
-                "model": model,
-                "advocate": "TRADER_ROOM_ADVOCATE=1" in task if kind == "trader-room" else False,
-                "composer_children": 0,
-            }
-        else:
-            if not spec["allow_nested_composer"]:
-                respond("deny", f"Nested subagents are prohibited in the {kind} run.")
-            parent_meta = direct_children.get(parent_id)
-            if not parent_meta:
-                respond("deny", "Trader Room grandchildren deeper than one advocate layer are prohibited.")
-            if not parent_meta.get("advocate"):
-                respond("deny", "Only initial Trader Room advocates may launch internal subagents.")
-            if model != "composer-2.5":
-                respond("deny", "Trader Room advocate subagents must use composer-2.5.")
-            if int(parent_meta.get("composer_children", 0)) >= 2:
-                respond("deny", "Trader Room advocate Composer subagent cap (2) is exhausted.")
-            parent_meta["composer_children"] = int(parent_meta.get("composer_children", 0)) + 1
-
-        if model not in {"grok-4.6", "composer-2.5"}:
-            respond("deny", f"Market Watch run blocks subagent model {model!r}.")
-
-        next_total = int(active["total"]) + 1
-        next_grok = int(active["grok"]) + (1 if model == "grok-4.6" else 0)
-        next_composer = int(active["composer"]) + (1 if model == "composer-2.5" else 0)
-
-        if next_total > int(policy["total_model_cap"]):
-            respond("deny", f"{kind} total model invocation cap ({policy['total_model_cap']}) is exhausted.")
-        if next_grok > int(policy["grok_cap"]):
-            respond("deny", f"{kind} Grok 4.6 invocation cap ({policy['grok_cap']}) is exhausted.")
-        if next_composer > int(policy["composer_cap"]):
-            respond("deny", f"{kind} Composer 2.5 invocation cap ({policy['composer_cap']}) is exhausted.")
-
-        active["total"] = next_total
-        active["grok"] = next_grok
-        active["composer"] = next_composer
-        active["children"].append(
-            {
-                "parent_conversation_id": parent_id,
-                "subagent_id": child_id,
-                "tool_call_id": event.get("tool_call_id"),
-                "model": model,
-                "task": task,
-            }
+    if kind == "trader-room-continuation":
+        ac = _lazy_import_agent_config()
+        validate_policy(kind, policy, spec, ac.legacy_pin("ondemand"))
+        _admit_continuation(
+            kind=kind,
+            policy=policy,
+            spec=spec,
+            event=event,
+            parent_id=parent_id,
+            child_id=child_id,
+            model=model,
+            task=task,
+            active_path=spec["active"],
+            lock_path=spec["lock"],
         )
-        active_path.write_text(json.dumps(active, sort_keys=True), encoding="utf-8")
-        respond("allow")
+
+    ac = _lazy_import_agent_config()
+    pin = resolve_pin(kind, ac)
+    validate_policy(kind, policy, spec, pin)
+    _admit_role_governed(
+        kind=kind,
+        policy=policy,
+        spec=spec,
+        pin=pin,
+        event=event,
+        parent_id=parent_id,
+        child_id=child_id,
+        model=model,
+        task=task,
+        active_path=spec["active"],
+        lock_path=spec["lock"],
+    )
 
 
 if __name__ == "__main__":

@@ -402,7 +402,7 @@ class ReviewScopedFreezeHookTests(unittest.TestCase):
             event = {
                 "subagent_id": "sub-1",
                 "subagent_type": "generalPurpose",
-                "task": "test",
+                "task": "MW_ROLE=synthesis",
                 "parent_conversation_id": "root",
                 "tool_call_id": "tc",
                 "subagent_model": "composer-2.5",

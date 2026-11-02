@@ -88,22 +88,51 @@ def _packet_hash(packet: dict[str, Any]) -> str:
     return sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
 
 
-def validate_execution(execution: dict[str, Any], *, learning_examiner_required: bool = False) -> dict[str, Any]:
+def validate_execution(
+    execution: dict[str, Any],
+    *,
+    learning_examiner_required: bool = False,
+    pin: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    from scripts.trader_room import agent_config
+
+    resolved = pin or agent_config.legacy_pin("daily")
+    agent_config.verify_pin(resolved)
+    parent = resolved["roles"]["parent"]
+    budget = resolved["budget"]
+    total_cap = int(budget["total_calls"])
+    grok_cap = int(budget["grok_family_calls"])
+    composer_cap = int(budget["composer_calls"])
+
     if not isinstance(execution, dict):
         raise SchemaError("scheduled output missing execution object")
-    if execution.get("parent_model") != "grok-4.6":
-        raise SchemaError("scheduled parent must be grok-4.6")
-    allowed = set(execution.get("allowed_subagent_models") or [])
-    if allowed != ALLOWED_MODELS:
-        raise SchemaError(f"allowed_subagent_models must be exactly {sorted(ALLOWED_MODELS)}")
+    if execution.get("parent_model") != parent:
+        raise SchemaError(f"scheduled parent must be {parent}")
+    allowed_raw = execution.get("allowed_subagent_models")
+    if agent_config.legacy_equivalent(resolved):
+        allowed = set(allowed_raw or [])
+        if allowed != ALLOWED_MODELS:
+            raise SchemaError(f"allowed_subagent_models must be exactly {sorted(ALLOWED_MODELS)}")
+    else:
+        child_models = {
+            resolved["roles"]["trader"],
+            resolved["roles"]["pm_principal"],
+            resolved["roles"]["synthesis"],
+            resolved["roles"]["learning_examiner"],
+        }
+        if allowed_raw is not None and set(allowed_raw) != child_models:
+            raise SchemaError(
+                "allowed_subagent_models must match pinned child role models "
+                f"({sorted(child_models)})"
+            )
     if execution.get("auto_used") is not False:
         raise SchemaError("Cursor Auto is prohibited for the overnight run")
     if int(execution.get("other_models_calls", -1)) != 0:
         raise SchemaError("Other Models usage must be zero")
-    total_cap = int(execution.get("total_model_cap", -1))
-    grok_cap = int(execution.get("grok_cap", -1))
-    composer_cap = int(execution.get("composer_cap", -1))
-    if (total_cap, grok_cap, composer_cap) != (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP):
+    exec_total_cap = int(execution.get("total_model_cap", -1))
+    exec_grok_cap = int(execution.get("grok_cap", -1))
+    exec_composer_cap = int(execution.get("composer_cap", -1))
+    if (exec_total_cap, exec_grok_cap, exec_composer_cap) != (total_cap, grok_cap, composer_cap):
         raise SchemaError("scheduled output model caps do not match the approved Market Watch contract")
     total = int(execution.get("declared_total_model_calls", -1))
     grok = int(execution.get("declared_grok_calls", -1))
@@ -112,10 +141,10 @@ def validate_execution(execution: dict[str, Any], *, learning_examiner_required:
         raise SchemaError("declared model-call counts are inconsistent")
     if total > total_cap or grok > grok_cap or composer > composer_cap:
         raise SchemaError("declared model-call counts exceed the run budget")
-    if learning_examiner_required and (total, grok, composer) != (TOTAL_MODEL_CAP, GROK_CAP, COMPOSER_CAP):
+    if learning_examiner_required and (total, grok, composer) != (total_cap, grok_cap, composer_cap):
         raise SchemaError(
             "non-empty learning obligation manifest requires declared model calls "
-            f"{TOTAL_MODEL_CAP}/{GROK_CAP}/{COMPOSER_CAP}; got {total}/{grok}/{composer}"
+            f"{total_cap}/{grok_cap}/{composer_cap}; got {total}/{grok}/{composer}"
         )
     return execution
 
@@ -442,9 +471,14 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
     if agent_packet.get("packet_sha256") != expected_packet_hash:
         raise EvidenceBoundaryError("agent_packet packet_sha256 mismatch")
 
+    from scripts.trader_room import agent_config
+
+    pin = agent_config.assert_acceptable_pin(agent_config.pin_from_artifact(base, kind="daily"))
+    expected_seats = set(agent_config.pin_trader_ids(pin))
+
     decisions = payload.get("decisions")
-    if not isinstance(decisions, dict) or set(decisions) != set(STANDING_SEATS):
-        raise SchemaError("scheduled output must contain exactly the locked 14 trader seats")
+    if not isinstance(decisions, dict) or set(decisions) != expected_seats:
+        raise SchemaError("scheduled output must contain exactly the pinned N trader seats")
     for seat, decision in decisions.items():
         if not isinstance(decision, dict):
             raise SchemaError(f"{seat} decision must be an object")
@@ -499,6 +533,7 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
     validate_execution(
         payload.get("execution") or {},
         learning_examiner_required=bool(obligation_manifest.get("obligations")),
+        pin=pin,
     )
     try:
         validate_pm_decisions(

@@ -138,6 +138,8 @@ Full run policy:
 
 `MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":57,"grok_cap":29,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
 
+Each child task must start with its exact `MW_ROLE` tag: `MW_ROLE=advocate:<seat>`, `MW_ROLE=rebuttal:<seat>`, or (nested under an advocate) optional `MW_ROLE=advocate_subagent`. Seats come from the pinned roster in preflight `agent_roster_pin`. Non-legacy pins: `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind ondemand`.
+
 - total Grok ceiling 29 including ACP parent;
 - Composer ceiling 28;
 - total model ceiling 57;

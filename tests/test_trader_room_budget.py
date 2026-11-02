@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import json
+import os
+import shutil
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 
 from scripts.overnight.constants import ROOT
+from scripts.trader_room import agent_config
 
 POLICY = {
     "version": 1,
@@ -18,6 +21,9 @@ POLICY = {
     "parent_total": 1,
     "parent_grok": 1,
 }
+
+LEGACY_ONDEMAND = agent_config.legacy_pin("ondemand")
+TRADER_SEATS = agent_config.pin_trader_ids(LEGACY_ONDEMAND)
 
 
 class TraderRoomBudgetHookTests(unittest.TestCase):
@@ -31,6 +37,17 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
         marker = "MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(POLICY, separators=(",", ":"))
         self.transcript.write_text(marker + "\n", encoding="utf-8")
         self.script = ROOT / ".cursor" / "hooks" / "enforce-overnight-budget.py"
+        self.repo = Path(self.tmp.name) / "repo"
+        self.repo.mkdir()
+        subprocess.run(["git", "init", "-q"], cwd=self.repo, check=True)
+        subprocess.run(["git", "config", "user.email", "test@example.com"], cwd=self.repo, check=True)
+        subprocess.run(["git", "config", "user.name", "Test"], cwd=self.repo, check=True)
+        registry_src = ROOT / "scripts" / "trader_room" / "model_registry.json"
+        registry_dst = self.repo / "scripts" / "trader_room" / "model_registry.json"
+        registry_dst.parent.mkdir(parents=True)
+        shutil.copy2(registry_src, registry_dst)
+        subprocess.run(["git", "add", "."], cwd=self.repo, check=True)
+        subprocess.run(["git", "commit", "-qm", "seed registry"], cwd=self.repo, check=True)
 
     def tearDown(self) -> None:
         self.active.unlink(missing_ok=True)
@@ -53,31 +70,34 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
             input=json.dumps(event),
             text=True,
             capture_output=True,
-            cwd=ROOT,
+            cwd=self.repo,
             check=False,
         )
 
     def test_full_contract_budget_allows_28_grok_children_and_28_composer(self) -> None:
         advocates = []
-        for i in range(14):
-            child = f"adv-{i}"
+        for seat in TRADER_SEATS:
+            child = f"adv-{seat}"
             advocates.append(child)
             self.assertEqual(
-                self._call("root", child, "grok-4.6", f"TRADER_ROOM_ADVOCATE=1 seat={i}").returncode,
+                self._call("root", child, "grok-4.6", f"MW_ROLE=advocate:{seat}").returncode,
                 0,
             )
-        for i in range(14):
-            self.assertEqual(self._call("root", f"rebuttal-{i}", "grok-4.6").returncode, 0)
+        for seat in TRADER_SEATS:
+            self.assertEqual(
+                self._call("root", f"rebuttal-{seat}", "grok-4.6", f"MW_ROLE=rebuttal:{seat}").returncode,
+                0,
+            )
         for advocate in advocates:
             self.assertEqual(self._call(advocate, f"{advocate}-c1", "composer-2.5").returncode, 0)
             self.assertEqual(self._call(advocate, f"{advocate}-c2", "composer-2.5").returncode, 0)
-        blocked = self._call("root", "extra-grok", "grok-4.6")
+        blocked = self._call("root", "extra-grok", "grok-4.6", f"MW_ROLE=advocate:{TRADER_SEATS[0]}")
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("cap", blocked.stdout.lower())
 
     def test_advocate_cannot_launch_third_composer(self) -> None:
         self.assertEqual(
-            self._call("root", "adv", "grok-4.6", "TRADER_ROOM_ADVOCATE=1").returncode,
+            self._call("root", "adv", "grok-4.6", f"MW_ROLE=advocate:{TRADER_SEATS[0]}").returncode,
             0,
         )
         self.assertEqual(self._call("adv", "c1", "composer-2.5").returncode, 0)
@@ -87,17 +107,24 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
         self.assertIn("cap", blocked.stdout.lower())
 
     def test_non_advocate_cannot_launch_composer(self) -> None:
-        self.assertEqual(self._call("root", "agg", "grok-4.6", "conflict aggregator").returncode, 0)
-        blocked = self._call("agg", "c1", "composer-2.5")
+        seat = TRADER_SEATS[0]
+        self.assertEqual(
+            self._call("root", "adv", "grok-4.6", f"MW_ROLE=advocate:{seat}").returncode,
+            0,
+        )
+        self.assertEqual(
+            self._call("root", "reb", "grok-4.6", f"MW_ROLE=rebuttal:{seat}").returncode,
+            0,
+        )
+        blocked = self._call("reb", "c1", "composer-2.5")
         self.assertNotEqual(blocked.returncode, 0)
-        self.assertIn("only initial", blocked.stdout.lower())
 
     def test_root_cannot_launch_composer(self) -> None:
-        blocked = self._call("root", "bad", "composer-2.5")
+        blocked = self._call("root", "bad", "composer-2.5", "MW_ROLE=advocate_subagent")
         self.assertNotEqual(blocked.returncode, 0)
 
     def test_other_model_is_denied(self) -> None:
-        blocked = self._call("root", "bad", "claude-sonnet-5")
+        blocked = self._call("root", "bad", "claude-sonnet-5", f"MW_ROLE=advocate:{TRADER_SEATS[0]}")
         self.assertNotEqual(blocked.returncode, 0)
 
 

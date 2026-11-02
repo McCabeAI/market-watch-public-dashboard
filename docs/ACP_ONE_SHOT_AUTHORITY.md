@@ -23,7 +23,7 @@ ACP must, **without a shared secret**, read:
 
 ACP then:
 
-1. Runs the locked current graph for that frozen packet: **1 parent + 1 synthesis + 14 traders + 3 automated PMs + 1 learning examiner** (20 total calls, 18 grok-family, 2 composer). The learning examiner stays in the graph. A 19-call ceiling is the pre-examiner contract and is not valid. Read `budget.current_graph` on the delegation request and the `MW_CURRENT_GRAPH` marker in the launch command. Do not drop the examiner to shrink the graph.
+1. Runs the locked current graph for that frozen packet: **1 parent + 1 synthesis + 14 traders + 3 automated PMs + 1 learning examiner** (20 total calls, 18 grok-family, 2 composer). The learning examiner stays in the graph. A 19-call ceiling is the pre-examiner contract and is not valid. Read `budget.current_graph` on the delegation request and the `MW_CURRENT_GRAPH` marker in the launch command. Do not drop the examiner to shrink the graph. Child tasks must carry `MW_ROLE=…` tags; caps and models are derived from the evidence snapshot `agent_roster_pin` when present (see `docs/AGENT_ROSTER_MODEL_PROFILES.md`).
 2. Opens a **data-only** `[overnight-output]` pull request bound to the same `launch_id`, `review_id`, and `base_packet_sha256`.
 3. Sends a **single-use** `repository_dispatch` event:
 

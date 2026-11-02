@@ -8,6 +8,8 @@ from typing import Any
 
 from scripts.market_watch_launch import contract
 from scripts.market_watch_launch.call_graph import assert_launch_budget, current_graph
+from scripts.overnight.constants import ROOT
+from scripts.trader_room import agent_config
 from scripts.market_watch_launch.contract import (
     AWAITING_ACP,
     AWAITING_RESEARCH_PUBLICATION,
@@ -69,24 +71,53 @@ def _request_origin(launch: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _delegation_budget() -> dict[str, Any]:
-    graph = current_graph()
+def _resolve_daily_pin(launch: dict[str, Any] | None, ctx: dict[str, Any] | None) -> dict[str, Any]:
+    if launch and ctx:
+        freeze = _freeze_details(launch)
+        run_id = freeze.get("overnight_run_id") or launch.get("overnight_run_id")
+        review_id = freeze.get("review_id") or launch.get("review_id")
+        root = Path(ctx.get("root") or ROOT)
+        if isinstance(run_id, str) and run_id:
+            candidates: list[Path] = []
+            if isinstance(review_id, str) and review_id:
+                candidates.append(
+                    root
+                    / "data"
+                    / "overnight"
+                    / "runs"
+                    / run_id
+                    / "reviews"
+                    / review_id
+                    / "evidence_snapshot.json"
+                )
+            candidates.append(root / "data" / "overnight" / "runs" / run_id / "evidence_snapshot.json")
+            for path in candidates:
+                if path.is_file():
+                    snapshot = json.loads(path.read_text(encoding="utf-8"))
+                    pin = agent_config.pin_from_artifact(snapshot, kind="daily")
+                    return agent_config.assert_acceptable_pin(pin)
+    return agent_config.assert_acceptable_pin(agent_config.build_pin("daily"))
+
+
+def _delegation_budget(pin: dict[str, Any] | None = None) -> dict[str, Any]:
+    resolved = pin or agent_config.assert_acceptable_pin(agent_config.build_pin("daily"))
+    graph = current_graph(resolved)
     budget = {
         "launcher_id": LAUNCHER_ID,
         "legacy_schedule_id_inactive": LEGACY_SCHEDULE_ID,
         "total_model_cap": graph["total_calls"],
         "grok_cap": graph["grok_family_calls"],
         "composer_cap": graph["composer_calls"],
-        "parent_model": "grok-4.6",
+        "parent_model": resolved["roles"]["parent"],
         "frozen_command": ".cursor/commands/overnight-scheduled.md",
         "launch_command": ".cursor/commands/manual-market-watch-review.md",
         "current_graph": graph,
     }
-    assert_launch_budget(budget)
+    assert_launch_budget(budget, pin=resolved)
     return budget
 
 
-def build_delegation_request(launch: dict[str, Any]) -> dict[str, Any]:
+def build_delegation_request(launch: dict[str, Any], *, pin: dict[str, Any] | None = None) -> dict[str, Any]:
     freeze = _freeze_details(launch)
     launch_id = launch["launch_id"]
     binding_relpath = f"data/market_watch_launches/{launch_id}/freeze_binding.json"
@@ -112,7 +143,7 @@ def build_delegation_request(launch: dict[str, Any]) -> dict[str, Any]:
             "readable_without_secrets": True,
         },
         "origin": _request_origin(launch),
-        "budget": _delegation_budget(),
+        "budget": _delegation_budget(pin),
         "dispatch_when": "freeze-succeeded",
         "single_use": True,
     }
@@ -188,7 +219,8 @@ def run(launch: dict[str, Any], ctx: dict[str, Any]) -> dict[str, Any]:
                 },
             )
 
-    request = build_delegation_request(launch)
+    pin = _resolve_daily_pin(launch, ctx)
+    request = build_delegation_request(launch, pin=pin)
     request_path = launch_dir / "acp_one_shot_delegation_request.json"
     request_path.write_text(json.dumps(request, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 

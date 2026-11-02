@@ -10,6 +10,8 @@ Emit exactly once:
 MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
+Each child task must start with exactly one `MW_ROLE` tag (`MW_ROLE=synthesis`, `MW_ROLE=trader:<seat>`, `MW_ROLE=pm:<pm_id>`, `MW_ROLE=learning_examiner`) using seats from the pinned roster in `agent_roster_pin` on the evidence snapshot. Models come from the pin, never Auto. Non-legacy pins: `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <evidence_snapshot.json>`.
+
 Emit the current-graph marker exactly once. It is the launch ceiling. A 19-call ceiling is the pre-examiner graph and is not valid:
 
 ```
