@@ -75,7 +75,9 @@ class ProjectFactualProseTests(unittest.TestCase):
             unknown_calendar_countries=[],
         )
         self.assertIn("New risk stays restricted in US", text)
-        self.assertIn("due release could not be verified", text)
+        self.assertIn("because a required market leg is not usable", text)
+        self.assertNotIn("due release could not be verified", text)
+        self.assertNotIn("New risk stays restricted in US because a due release", text)
         self.assertNotIn("no new release was due", text)
 
     def test_carried_ca_blocked_us_scoped_not_due(self) -> None:
@@ -95,6 +97,18 @@ class ProjectFactualProseTests(unittest.TestCase):
             unknown_calendar_countries=["GB"],
         )
         self.assertIn("The release calendar for GB is unknown", text)
+        self.assertNotIn("no new release was due", text)
+
+    def test_research_gap_us_warning_not_restriction(self) -> None:
+        text = project_factual_prose(
+            blocked_countries=[],
+            carried_not_blocked=["US"],
+            unknown_calendar_countries=[],
+            research_gap_countries=["US"],
+        )
+        self.assertIn("Macro research coverage is incomplete for US", text)
+        self.assertIn("do not restrict trading", text)
+        self.assertNotIn("New risk stays restricted", text)
         self.assertNotIn("no new release was due", text)
 
 

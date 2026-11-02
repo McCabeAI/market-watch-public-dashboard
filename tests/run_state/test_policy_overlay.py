@@ -31,8 +31,9 @@ class PolicyOverlayLegacyBlockTests(unittest.TestCase):
         ]
         policy = evaluate_policy(states)
         out = _apply_policy_overlay(legacy, policy, states)
-        self.assertIn("macro:US", out["blocked_expressions"])
-        self.assertFalse(out["countries"]["US"]["eligible"])
+        self.assertNotIn("macro:US", out["blocked_expressions"])
+        self.assertIn("macro:US", out["research_coverage_gaps"])
+        self.assertTrue(out["countries"]["US"]["eligible"])
         self.assertTrue(out["countries"]["CA"]["eligible"])
         self.assertEqual(out["outcome"], "PASS")
 

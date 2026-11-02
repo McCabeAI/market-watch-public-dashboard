@@ -114,6 +114,8 @@ def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
         "blocked_expressions": list(gate.get("blocked_expressions") or []),
         "partial_expressions": list(gate.get("partial_expressions") or []),
         "blocked_sources": list(gate.get("blocked_sources") or []),
+        "research_coverage_gaps": list(gate.get("research_coverage_gaps") or []),
+        "research_coverage_series": list(gate.get("research_coverage_series") or []),
         "countries": {
             code: {
                 "eligible": bool((country_rows.get(code) or {}).get("eligible")),

@@ -6,6 +6,7 @@ import re
 from typing import Any
 
 from scripts.overnight.errors import SchemaError
+from scripts.run_state.prose import project_factual_prose
 
 # These belong in structured provenance/ops fields, never in public desk prose.
 _MACHINE_PATTERNS: tuple[re.Pattern[str], ...] = tuple(
@@ -457,6 +458,19 @@ def strip_unrelated_data_caveat(text: str, expression_countries: set[str] | None
     return " ".join(kept)
 
 
+def _research_gap_country_codes(trade_permissions: dict[str, Any]) -> list[str]:
+    raw = trade_permissions.get("research_coverage_gaps")
+    if not isinstance(raw, list):
+        return []
+    codes: list[str] = []
+    for item in raw:
+        if isinstance(item, str) and item.startswith("macro:"):
+            code = item.split(":", 1)[1]
+            if code:
+                codes.append(code)
+    return sorted(set(codes))
+
+
 def room_data_caveat(trade_permissions: dict[str, Any] | None) -> str | None:
     """One room-level sentence. Seat notes do not repeat it unless the expression needs it."""
     if not isinstance(trade_permissions, dict):
@@ -476,32 +490,24 @@ def room_data_caveat(trade_permissions: dict[str, Any] | None) -> str | None:
         if isinstance(row, dict) and row.get("eligible") is False
     )
     blocked_set = set(blocked)
-    carried_not_blocked = sorted(code for code in carried if code not in blocked_set)
-    parts: list[str] = []
-    if carried_not_blocked:
-        parts.append(
-            "Latest verified vintages for "
-            + ", ".join(carried_not_blocked)
-            + " are carried forward; no new release was due."
-        )
-    if blocked:
-        parts.append(
-            "New risk stays restricted in "
-            + ", ".join(blocked)
-            + " because a due release could not be verified."
-        )
+    research_gaps = _research_gap_country_codes(trade_permissions)
+    research_gap_set = set(research_gaps)
+    carried_not_blocked = sorted(
+        code for code in carried if code not in blocked_set and code not in research_gap_set
+    )
     unknown = trade_permissions.get("unknown_calendar_countries")
+    unknown_codes: list[str] = []
     if isinstance(unknown, list):
         unknown_codes = sorted({str(code) for code in unknown if code})
-        if unknown_codes:
-            parts.append(
-                "The release calendar for "
-                + ", ".join(unknown_codes)
-                + " is unknown; a not-due claim is not allowed."
-            )
-    if not parts:
+    text = project_factual_prose(
+        blocked_countries=blocked,
+        carried_not_blocked=carried_not_blocked,
+        unknown_calendar_countries=unknown_codes,
+        research_gap_countries=research_gaps or None,
+    )
+    if not text:
         return None
-    return " ".join(parts)
+    return text
 
 
 def public_research_summary(

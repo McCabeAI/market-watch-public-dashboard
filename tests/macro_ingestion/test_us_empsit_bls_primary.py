@@ -235,9 +235,12 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         store = json.loads(store_path.read_text()) if store_path.is_file() else {"observations": []}
         self.assertFalse(any(o.get("period") == "2026-09" for o in store.get("observations", [])))
         gate = self._gate_from_rows([by_id[s["id"]] for s in specs], specs)
-        self.assertIn("macro:US", gate.get("blocked_expressions") or [])
+        self.assertIn("macro:US", gate.get("research_coverage_gaps") or [])
+        self.assertNotIn("macro:US", gate.get("blocked_expressions") or [])
+        self.assertTrue(gate["countries"]["US"]["eligible"])
         for labor_id in LABOR_IDS:
-            self.assertIn(labor_id, gate.get("blocked_sources") or [])
+            self.assertIn(labor_id, gate.get("research_coverage_series") or [])
+            self.assertNotIn(labor_id, gate.get("blocked_sources") or [])
 
     def test_fred_fallback_when_bls_fails(self) -> None:
         unrate = _fred_csv("UNRATE", [("2026-08-01", 4.1), ("2026-09-01", 4.2)])

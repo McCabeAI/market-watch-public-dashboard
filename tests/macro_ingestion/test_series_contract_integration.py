@@ -142,11 +142,12 @@ class TestQualityGateContractMismatchIsolation(unittest.TestCase):
             },
         ]
         result = evaluate_gate(rows=rows, families=_fresh_market_families())
-        self.assertIn("macro:CA", result["blocked_expressions"])
-        self.assertNotIn("macro:AU", result["blocked_expressions"])
-        self.assertIn("CA.Labor.unemployment", result["blocked_sources"])
+        self.assertIn("macro:CA", result["research_coverage_gaps"])
+        self.assertNotIn("macro:AU", result["research_coverage_gaps"])
+        self.assertIn("CA.Labor.unemployment", result["research_coverage_series"])
+        self.assertNotIn("CA.Labor.unemployment", result.get("blocked_sources") or [])
         self.assertNotIn("AU.Labor.unemployment", result.get("blocked_sources") or [])
-        self.assertFalse(result["countries"]["CA"]["eligible"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
         self.assertTrue(result["countries"]["AU"]["eligible"])
         self.assertTrue(result["eligible"])
 

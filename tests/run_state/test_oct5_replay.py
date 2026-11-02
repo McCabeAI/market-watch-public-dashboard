@@ -59,9 +59,13 @@ class Oct5ReplayTests(unittest.TestCase):
     def test_gate_country_split(self) -> None:
         gate = self.packet["gate"]
         self.assertEqual(gate["outcome"], "PASS")
-        self.assertIn("macro:US", gate["blocked_expressions"])
-        self.assertEqual(gate["trade_eligible_countries"], ["CA", "AU", "NZ", "EA", "JP"])
-        self.assertFalse(gate["countries"]["US"]["eligible"])
+        self.assertNotIn("macro:US", gate["blocked_expressions"])
+        self.assertIn("macro:US", gate["research_coverage_gaps"])
+        self.assertEqual(
+            gate["trade_eligible_countries"],
+            ["US", "CA", "AU", "NZ", "EA", "JP"],
+        )
+        self.assertTrue(gate["countries"]["US"]["eligible"])
         for code in ("CA", "AU", "NZ", "EA", "JP"):
             self.assertTrue(gate["countries"][code]["eligible"])
 
@@ -78,8 +82,9 @@ class Oct5ReplayTests(unittest.TestCase):
     def test_public_caveat_blocked_us_not_not_due(self) -> None:
         caveat = self.packet["public_caveat"] or ""
         self.assertNotIn("no new release was due", caveat)
-        self.assertIn("New risk stays restricted in US", caveat)
-        self.assertIn("due release could not be verified", caveat)
+        self.assertIn("Macro research coverage is incomplete for US", caveat)
+        self.assertIn("do not restrict trading", caveat)
+        self.assertNotIn("New risk stays restricted", caveat)
 
     def test_policy_version(self) -> None:
         self.assertEqual(self.packet["policy_version"], "quality-policy/1")

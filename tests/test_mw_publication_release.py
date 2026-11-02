@@ -255,7 +255,9 @@ class StampTests(unittest.TestCase):
         self.assertIn("They are not today's positions.", html)
         self.assertIn("evidence boundary 27 Oct 2026 05:32 ET", html)
         self.assertIn("market data snapshot 27 Oct 2026 05:50 ET", html)
-        self.assertIn("PARTIAL coverage (macro:NZ)", html)
+        self.assertIn("Macro research coverage: macro:NZ", html)
+        self.assertIn("do not restrict trading", html)
+        self.assertNotIn("PARTIAL coverage (macro:NZ)", html)
         self.assertIn("Current verified headlines (as of 27 Oct 2026 05:32 ET)", html)
         self.assertIn("Previous accepted analysis (as of 26 Oct 2026 07:37 ET)", html)
         self.assertIn('data-headlines-panel="front"', html)
@@ -264,6 +266,21 @@ class StampTests(unittest.TestCase):
         self.assertIn("(as of 26 Oct 2026 07:37 ET, accepted 26 Oct 2026 08:55 ET)", html)
         with self.assertRaises(ValueError):
             pr.stamp_html(html, research())
+
+    def test_partial_coverage_research_gaps_field(self):
+        html = pr.stamp_html(
+            SITE_HTML,
+            research(
+                quality={
+                    "coverage": "PARTIAL",
+                    "research_coverage_gaps": ["macro:CA", "macro:AU"],
+                    "blocked_expressions": [],
+                }
+            ),
+        )
+        self.assertIn("Macro research coverage: macro:CA, macro:AU", html)
+        self.assertIn("do not restrict trading", html)
+        self.assertNotIn("New risk stays restricted", html)
 
     def test_research_banner_is_one_line_with_detail_collapsed(self):
         banner = pr.render_edition_banner(research())

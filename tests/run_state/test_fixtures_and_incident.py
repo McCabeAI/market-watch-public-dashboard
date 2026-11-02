@@ -92,9 +92,10 @@ class TestFixturesAndIncident(unittest.TestCase):
         gate = fx["gate_expectation"]
         self.assertEqual(gate["outcome"], "PASS")
         self.assertTrue(gate["eligible"])
-        self.assertEqual(gate["blocked_expressions"], ["macro:US"])
-        self.assertEqual(gate["trade_eligible_countries"], ["CA", "AU", "NZ", "EA", "JP"])
-        self.assertFalse(gate["us_eligible"])
+        self.assertEqual(gate["blocked_expressions"], [])
+        self.assertEqual(gate["research_coverage_gaps"], ["macro:US"])
+        self.assertEqual(gate["trade_eligible_countries"], ["US", "CA", "AU", "NZ", "EA", "JP"])
+        self.assertTrue(gate["us_eligible"])
 
         copies = fx["score_copies"]
         self.assertEqual(copies["score_copy_a"], {"id": "score_copy_a", "level": 50})

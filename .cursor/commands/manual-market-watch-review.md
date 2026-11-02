@@ -58,15 +58,17 @@ The parent may create a common **agent packet** from the trusted evidence plus t
 
 ### Trade-permission contract
 
-The deterministic `trade_permissions` block is authoritative for country-level new-risk eligibility. The aggregate `families.macro_hard.status` is diagnostic only and MUST NOT be treated as a global veto when `trade_permissions` marks the required country/countries eligible.
-
-- `OPEN` / `ADD`: allowed only when every country needed by the selected expression is eligible and the required market/rate legs are usable.
-- `HOLD` / `REDUCE` / `CLOSE`: remain valid management actions for existing positions.
-- `HEDGE`: a risk-management action, not proof that the book must be frozen. Propose it only when the frozen packet contains a markable hedge leg.
-- Never convert a US or AU data problem into a ban on an unrelated CA/NZ/EA/JP expression.
-- A not-due scored series that already has a verified vintage and failed only because of a timeout, HTTP error, source outage, or `budget_deferred` is a source-health carry-forward. It does not make that country ineligible and must not be described as hard data that could not be verified.
-- Block new risk only when a relevant due release cannot be verified, or the required historical observation itself is absent or invalid. Unknown country attribution stays fail-closed.
-- If a country is restricted, state the actual human-readable reason (for example, "August Australian labor could not be verified") rather than internal status enums. Put that caveat once in the research summary. Repeat it in a seat thesis only when it directly constrains that seat's selected expression.
+- `trade_permissions` is authoritative for executable eligibility. `macro_hard.status` is diagnostic only and is not a global veto.
+- `OPEN` / `ADD` / `HEDGE` are allowed when the selected expression has a verified sufficiently current paper mark, every required FX or rate leg is usable, instrument economics are supported, and risk-capital and drawdown limits pass. Missing, overdue, stale, or failed macro releases do not veto that trade, including same-country gaps.
+- `HOLD` / `REDUCE` / `CLOSE` remain valid for existing positions.
+- `HEDGE` only when the frozen packet has a markable hedge leg.
+- Do not `HOLD` a markable expression such as AUDCAD because CA or AU macro coverage is incomplete. Do not default to HOLD because a macro research gap exists.
+- `trade_eligible_countries` and `countries.eligible` follow markable rate legs. They are not reduced by macro gaps.
+- `research_coverage_gaps` (`macro:CA`) and `research_coverage_series` are research warnings. They are not blocked trading legs and must not be called blocked sources or country trading restrictions.
+- Spot FX, including AUDCAD and NZDUSD, follows the FX mark. NZD spot does not require an approved NZ sovereign curve or NZ_rates. NZ sovereign yields and rates RV that use them stay research-only and must not be opened.
+- A missing, stale, unverified, or invalid required price/FX/curve leg rejects only expressions that need that leg. Unsupported instruments/sovereigns reject only that instrument. Risk-capital and drawdown breaches reject the affected book. Unrelated instruments stay available.
+- A not-due scored series with a verified vintage that failed only on timeout, HTTP error, source outage, or `budget_deferred` is source-health carry-forward. It does not make the country ineligible.
+- State an actual trade restriction in human language only when the country or leg is actually ineligible. Put a macro research-coverage caveat once in the research summary. Do not repeat it as a reason to avoid a markable expression.
 
 ### Public narrative contract
 
@@ -87,7 +89,7 @@ Launch exactly the locked 14 trader seats as direct Grok children. Each gets:
 - the same agent packet and exact base packet/review identity;
 - only that seat's prior memory sidecar.
 
-Trader children cannot use tools or fetch evidence. A valid `HOLD` is a deliberate trading decision, but each seat must independently consider the full allowed action set for its book and remit. Do not default to HOLD because an unrelated country is restricted. An operational data failure must already have stopped the deterministic launch before ACP and must never be represented as 14 synthetic HOLDs.
+Trader children cannot use tools or fetch evidence. A valid `HOLD` is a deliberate trading decision, but each seat must independently consider the full allowed action set for its book and remit. Do not default to HOLD because an unrelated country is restricted. An operational data failure must already have stopped the deterministic launch before ACP and must never be represented as 14 synthetic HOLDs. A macro research gap is not an operational failure and is not a reason for a synthetic HOLD.
 
 ### Automated PMs
 

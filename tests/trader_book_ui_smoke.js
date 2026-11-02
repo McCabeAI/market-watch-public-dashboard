@@ -44,6 +44,7 @@ const traderPacket = {
   publication: { core_status: "ok", trader_books_status: "fresh" },
   trade_permissions: {
     trade_eligible_countries: ["CA", "NZ", "EA", "JP"],
+    research_coverage_gaps: ["macro:CA", "macro:AU"],
     countries: {
       CA: { eligible: true },
       NZ: { eligible: true },
@@ -227,6 +228,9 @@ flush().then(function () {
   check(root.indexOf("USD vs CAD remains the cleaner expression") !== -1, "human trader sentence survives telemetry cleanup");
   check(root.indexOf("New risk eligible: CA / NZ / EA / JP") !== -1, "country-specific new-risk permissions are visible");
   check(root.indexOf("Restricted: US / AU") !== -1, "restricted countries are visible");
+  check(root.indexOf("Macro research coverage") !== -1, "research coverage chip is visible");
+  check(root.indexOf("does not restrict trading") !== -1, "research gap does not restrict trading");
+  check(root.indexOf("Blocked sources") === -1, "blocked sources label is not shown");
     check(root.indexOf("Net financing") !== -1, "trader KPI uses net financing, not cash-yield alpha");
   check(root.indexOf("zero-return") !== -1, "leaderboard copy states SOFR is the zero-return benchmark");
   check(root.indexOf("Cash yield") === -1, "flat-book cash yield is not shown as alpha");

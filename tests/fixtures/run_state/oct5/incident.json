@@ -168,12 +168,13 @@
       "weight": 0.2
     }
   ],
-  "gate_expectation": {
+    "gate_expectation": {
     "outcome": "PASS",
     "eligible": true,
-    "blocked_expressions": ["macro:US"],
-    "trade_eligible_countries": ["CA", "AU", "NZ", "EA", "JP"],
-    "us_eligible": false
+    "blocked_expressions": [],
+    "research_coverage_gaps": ["macro:US"],
+    "trade_eligible_countries": ["US", "CA", "AU", "NZ", "EA", "JP"],
+    "us_eligible": true
   },
   "score_copies": {
     "score_copy_a": {"id": "score_copy_a", "level": 50},

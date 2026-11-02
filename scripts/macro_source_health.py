@@ -201,12 +201,11 @@ def annotate_row(
     out["prior_verified"] = prior
     if not out.get("observation_period"):
         out["observation_period"] = prior["observation_period"]
-    release_due = effective_release_due(out)
     out["source_health"] = {
         "state": "carried_forward",
         "classification": classification,
         "carried_forward": True,
-        "blocks_new_risk": release_due,
+        "blocks_new_risk": False,
         "fetch_status": out.get("status"),
         "fetch_error": out.get("error"),
         "observation_period": prior["observation_period"],
@@ -253,8 +252,7 @@ def source_health_entries(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
                 "classification": health.get("classification"),
                 "carried_forward": bool(health.get("carried_forward"))
                 and not effective_release_due(row),
-                "blocks_new_risk": effective_release_due(row)
-                or not bool(health.get("carried_forward")),
+                "blocks_new_risk": False,
                 "observation_period": health.get("observation_period") or row.get("observation_period"),
                 "retrieved_at": health.get("retrieved_at"),
                 "fetch_error": health.get("fetch_error") or row.get("error"),

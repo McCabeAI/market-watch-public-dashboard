@@ -55,8 +55,9 @@ class EvaluateGateTests(unittest.TestCase):
             }
         ]
         result = evaluate_gate(rows=rows, families=_fresh_market_families())
-        self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertIn("US.Inflation.core_pce", result["blocked_sources"])
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertIn("US.Inflation.core_pce", result["research_coverage_series"])
+        self.assertNotIn("US.Inflation.core_pce", result["blocked_sources"])
 
     def test_checked_unchanged_old_period_with_release_due_blocks(self) -> None:
         rows = [
@@ -72,8 +73,9 @@ class EvaluateGateTests(unittest.TestCase):
             }
         ]
         result = evaluate_gate(rows=rows, families=_fresh_market_families())
-        self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertIn("CA.Inflation.cpi", result["blocked_sources"])
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertIn("CA.Inflation.cpi", result["research_coverage_series"])
+        self.assertNotIn("CA.Inflation.cpi", result["blocked_sources"])
 
     def test_all_scored_critical_missing_not_hold(self) -> None:
         rows = [
@@ -95,8 +97,11 @@ class EvaluateGateTests(unittest.TestCase):
             },
         ]
         result = evaluate_gate(rows=rows, families=_fresh_market_families())
-        self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertEqual(result["reason"], "all_critical_missing")
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
+        self.assertTrue(result["eligible"])
+        self.assertIn("macro:US", result["research_coverage_gaps"])
+        self.assertIn("macro:CA", result["research_coverage_gaps"])
         self.assertEqual(result["hold_decisions_emitted"], 0)
         self.assertNotEqual(result["outcome"], "HOLD")
 
@@ -127,9 +132,11 @@ class EvaluateGateTests(unittest.TestCase):
         self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["coverage"], "PARTIAL")
         self.assertTrue(result["eligible"])
-        self.assertIn("CA.Inflation.cpi", result["blocked_sources"])
-        self.assertIn("macro:CA", result["blocked_expressions"])
+        self.assertIn("macro:CA", result["research_coverage_gaps"])
+        self.assertNotIn("macro:CA", result["blocked_expressions"])
+        self.assertIn("CA.Inflation.cpi", result["research_coverage_series"])
         self.assertTrue(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
         self.assertEqual(result["hold_decisions_emitted"], 0)
 
     def test_missing_due_us_does_not_block_verified_ca(self) -> None:
@@ -158,9 +165,10 @@ class EvaluateGateTests(unittest.TestCase):
         result = evaluate_gate(rows=rows, families=_fresh_market_families())
         self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["coverage"], "PARTIAL")
-        self.assertIn("macro:US", result["blocked_expressions"])
+        self.assertIn("macro:US", result["research_coverage_gaps"])
+        self.assertNotIn("macro:US", result["blocked_expressions"])
         self.assertTrue(result["countries"]["CA"]["eligible"])
-        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["US"]["eligible"])
 
     def test_fx_missing_blocks_launch_but_countries_remain_listed(self) -> None:
         rows = [
@@ -256,8 +264,10 @@ class EvaluateGateTests(unittest.TestCase):
         families["market_state"]["data"]["rates"]["US"]["status"] = "missing"
         self.assertIsNotNone(required_preflight_block(families))
         result = evaluate_gate(rows=rows, families=families)
-        self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertEqual(result["reason"], "no_markable_universe")
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertIn("US_rates", result["partial_legs"])
+        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
         self.assertEqual(result["hold_decisions_emitted"], 0)
 
     def test_us_rates_missing_leaves_verified_ca_eligible(self) -> None:

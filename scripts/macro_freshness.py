@@ -982,6 +982,9 @@ def macro_expression_block(
     if attributed is None:
         if status != "stale":
             return None
+        research_only = _known_country_codes(family.get("research_coverage_countries"))
+        if research_only is not None and needed and needed.issubset(research_only):
+            return None
         if needed:
             return "expression blocked by unattributed stale macro inputs: " + ", ".join(sorted(needed))
         return "expression blocked by unattributed stale macro inputs"

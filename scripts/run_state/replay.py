@@ -222,6 +222,7 @@ def replay_october5(fixture: dict) -> dict:
                 "blocks_new_risk": False,
             }
         ],
+        "research_coverage_gaps": list(gate.get("research_coverage_gaps") or []),
     }
     public_caveat = room_data_caveat(dict(permissions))
 
