@@ -2,6 +2,10 @@
 
 from __future__ import annotations
 
+import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -10,6 +14,7 @@ from scripts.market_watch_launch.pages import PAGES_RECONCILED
 from scripts.market_watch_launch.pages_recovery import (
     apply_published_pages,
     in_run_actions_run,
+    main,
     workflow_run_decision,
 )
 from scripts.market_watch_launch.state import LaunchStateStore
@@ -23,6 +28,10 @@ from tests.test_mw_launch_pages_recovery import (
     _materialize_pages_recovery_launch_state,
     _oct2_run,
 )
+
+NOV2 = "mwl-20261102T102838Z-f747870a"
+NOV2_RUN_ID = "41438960943"
+NOV2_HEAD_SHA = "3aaf22a786bf21fb17f0917f71e2377ba8412e87"
 
 
 def _happy_env(**overrides: str) -> dict[str, str]:
@@ -85,6 +94,198 @@ class InRunActionsRunTests(unittest.TestCase):
         with self.assertRaises(SystemExit) as ctx:
             in_run_actions_run(_happy_env(GITHUB_SERVER_URL="https://example.com"), deploy_result="success")
         self.assertIn("target repository", str(ctx.exception))
+
+
+def _nov2_env(**overrides: str) -> dict[str, str]:
+    base = {
+        "GITHUB_RUN_ID": NOV2_RUN_ID,
+        "GITHUB_SERVER_URL": "https://github.com",
+        "GITHUB_REPOSITORY": REPOSITORY,
+        "GITHUB_SHA": NOV2_HEAD_SHA,
+        "GITHUB_EVENT_NAME": "workflow_dispatch",
+        "GITHUB_REF": "refs/heads/main",
+        "GITHUB_WORKFLOW_REF": f"{REPOSITORY}/.github/workflows/deploy-pages.yml@refs/heads/main",
+    }
+    base.update(overrides)
+    return base
+
+
+class InRunEvidenceCliTests(unittest.TestCase):
+    def test_cli_in_run_evidence_without_repo_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "run.json"
+            env = os.environ.copy()
+            env.update(_happy_env())
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "scripts.market_watch_launch.pages_recovery",
+                    "in-run-evidence",
+                    "--deploy-result",
+                    "success",
+                    "--out",
+                    str(out),
+                ],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(proc.returncode, 0, msg=proc.stderr or proc.stdout)
+            payload = json.loads(out.read_text(encoding="utf-8"))
+            self.assertEqual(payload["evidence_source"], "in_run_deploy_job")
+
+            out2 = Path(tmp) / "run2.json"
+            old_env = {
+                key: os.environ.get(key)
+                for key in (
+                    "GITHUB_RUN_ID",
+                    "GITHUB_SERVER_URL",
+                    "GITHUB_REPOSITORY",
+                    "GITHUB_SHA",
+                    "GITHUB_EVENT_NAME",
+                    "GITHUB_REF",
+                    "GITHUB_WORKFLOW_REF",
+                )
+            }
+            try:
+                os.environ.update(_happy_env())
+                rc = main(
+                    [
+                        "in-run-evidence",
+                        "--deploy-result",
+                        "success",
+                        "--out",
+                        str(out2),
+                    ]
+                )
+            finally:
+                for key, value in old_env.items():
+                    if value is None:
+                        os.environ.pop(key, None)
+                    else:
+                        os.environ[key] = value
+            self.assertEqual(rc, 0)
+            self.assertEqual(
+                json.loads(out2.read_text(encoding="utf-8"))["evidence_source"],
+                "in_run_deploy_job",
+            )
+
+    def test_preflight_and_workflow_run_parse_repo_root_without_attribute_error(self) -> None:
+        rc = main(["preflight", "--launch-id", "mwl-nonexistent-test-id", "--repo-root", str(ROOT)])
+        self.assertEqual(rc, 1)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            run_json = Path(tmp) / "run.json"
+            run_json.write_text(json.dumps(_oct2_run()) + "\n", encoding="utf-8")
+            state_root = Path(tmp) / "state"
+            state_root.mkdir()
+            rc = main(
+                [
+                    "workflow-run",
+                    "--run-id",
+                    RUN_ID,
+                    "--run-json",
+                    str(run_json),
+                    "--repo-root",
+                    str(ROOT),
+                    "--state-root",
+                    str(state_root),
+                ]
+            )
+            self.assertEqual(rc, 1)
+
+
+class Nov2Stage08RecoveryPlanTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.state_root = Path(self.tmp.name)
+        launch_src = ROOT / "data" / "market_watch_launches" / NOV2 / "launch.json"
+        self.assertTrue(launch_src.is_file(), "Nov 2 launch.json must exist in worktree")
+        self.worktree_launch_bytes = launch_src.read_bytes()
+        base = self.state_root / "data" / "market_watch_launches"
+        nov2_dir = base / NOV2
+        nov2_dir.mkdir(parents=True)
+        (nov2_dir / "launch.json").write_bytes(self.worktree_launch_bytes)
+        index_src = ROOT / "data" / "market_watch_launches" / "index.json"
+        if index_src.is_file():
+            base.mkdir(parents=True, exist_ok=True)
+            (base / "index.json").write_bytes(index_src.read_bytes())
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _nov2_in_run_run(self) -> dict:
+        return in_run_actions_run(_nov2_env(), deploy_result="success")
+
+    def test_hermetic_apply_reconciles_temp_copy_without_touching_worktree(self) -> None:
+        run = self._nov2_in_run_run()
+        self.assertEqual(run["evidence_source"], "in_run_deploy_job")
+        self.assertEqual(str(run["id"]), NOV2_RUN_ID)
+        self.assertEqual(run["head_sha"], NOV2_HEAD_SHA)
+
+        decision = apply_published_pages(
+            repo_root=ROOT,
+            state_root=self.state_root,
+            launch_id=NOV2,
+            run=run,
+            run_id=NOV2_RUN_ID,
+            repository=REPOSITORY,
+        )
+        self.assertTrue(decision["changed"])
+        self.assertEqual(decision["run_id"], NOV2_RUN_ID)
+        self.assertEqual(decision["head_sha"], NOV2_HEAD_SHA)
+
+        store = LaunchStateStore(self.state_root)
+        launch = store.load_launch(NOV2)
+        details = launch["stages"]["08_pages"]["details"]
+        self.assertEqual(launch["status"], "succeeded")
+        self.assertEqual(launch["stages"]["08_pages"]["reason"], PAGES_RECONCILED)
+        self.assertTrue(details["production_published"])
+        evidence = details["publication_evidence"]
+        self.assertEqual(evidence["evidence_source"], "in_run_deploy_job")
+        self.assertEqual(evidence.get("run_id"), NOV2_RUN_ID)
+        self.assertEqual(evidence["head_sha"], NOV2_HEAD_SHA)
+
+        worktree_launch = ROOT / "data" / "market_watch_launches" / NOV2 / "launch.json"
+        self.assertEqual(worktree_launch.read_bytes(), self.worktree_launch_bytes)
+
+    def test_api_failure_conclusion_is_not_successful_reconciliation(self) -> None:
+        success = self._nov2_in_run_run()
+        failed_api = {
+            **success,
+            "conclusion": "failure",
+            "status": "completed",
+        }
+        with self.assertRaises(SystemExit) as ctx:
+            apply_published_pages(
+                repo_root=ROOT,
+                state_root=self.state_root,
+                launch_id=NOV2,
+                run=failed_api,
+                run_id=NOV2_RUN_ID,
+                repository=REPOSITORY,
+            )
+        self.assertIn("non-success conclusion", str(ctx.exception))
+
+        with self.assertRaises(SystemExit) as wf_ctx:
+            workflow_run_decision(
+                repo_root=ROOT,
+                state_root=self.state_root,
+                run=failed_api,
+                run_id=NOV2_RUN_ID,
+                repository=REPOSITORY,
+            )
+        self.assertIn("ambiguous pending finalized launches", str(wf_ctx.exception))
+
+        store = LaunchStateStore(self.state_root)
+        pending = store.load_launch(NOV2)
+        self.assertFalse(
+            ((pending.get("stages") or {}).get("08_pages") or {}).get("details", {}).get(
+                "production_published"
+            )
+        )
 
 
 class InRunReconcileApplyTests(unittest.TestCase):

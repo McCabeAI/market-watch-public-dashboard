@@ -772,12 +772,12 @@ def main(argv: list[str] | None = None) -> int:
     in_run_p.add_argument("--out", type=Path, required=True)
 
     args = parser.parse_args(argv)
-    root = Path(args.repo_root)
     try:
         if args.command == "in-run-evidence":
             payload = in_run_actions_run(os.environ, deploy_result=args.deploy_result)
             args.out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             return 0
+        root = Path(args.repo_root)
         if args.command == "preflight":
             preflight_worktree(root, args.launch_id, remote=args.remote, branch=args.branch)
             return 0
