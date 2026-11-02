@@ -170,7 +170,7 @@ class EvaluateGateTests(unittest.TestCase):
         self.assertTrue(result["countries"]["CA"]["eligible"])
         self.assertTrue(result["countries"]["US"]["eligible"])
 
-    def test_fx_missing_blocks_launch_but_countries_remain_listed(self) -> None:
+    def test_fx_missing_is_partial_and_countries_with_rates_stay_eligible(self) -> None:
         rows = [
             {
                 "series_id": "US.Inflation.core_pce",
@@ -196,11 +196,16 @@ class EvaluateGateTests(unittest.TestCase):
         families = _fresh_market_families()
         families["market_state"]["data"]["fx"] = {"status": "missing"}
         result = evaluate_gate(rows=rows, families=families)
-        self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertEqual(result["reason"], "no_markable_universe")
-        self.assertIn("FX", result["blocked_legs"])
-        self.assertIn("US", result["countries_unaffected"])
-        self.assertIn("CA", result["countries_unaffected"])
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
+        self.assertTrue(result["eligible"])
+        self.assertIsNone(result["reason"])
+        self.assertEqual(result["blocked_legs"], ["FX"])
+        self.assertIn("FX", result["partial_legs"])
+        self.assertIn("US", result["trade_eligible_countries"])
+        self.assertIn("CA", result["trade_eligible_countries"])
+        self.assertTrue(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["CA"]["eligible"])
 
     def test_optional_pmi_license_gap_partial_pass(self) -> None:
         rows = [
@@ -302,6 +307,50 @@ class EvaluateGateTests(unittest.TestCase):
         self.assertNotIn("US", result["trade_eligible_countries"])
         self.assertIn("US_rates", result["partial_legs"])
         self.assertEqual(result["hold_decisions_emitted"], 0)
+
+    def test_stage_run_reaches_success_when_fx_is_missing_and_rates_remain(self) -> None:
+        from scripts.market_watch_launch.quality_gate import run as quality_run
+        from scripts.overnight.store import OvernightStore
+
+        families = _fresh_market_families()
+        families["market_state"]["status"] = "stale"
+        families["market_state"]["data"]["fx"] = {"status": "missing"}
+        rows = [
+            {
+                "series_id": "US.Inflation.core_pce",
+                "country": "US",
+                "role": "scored",
+                "weight": 1.0,
+                "status": "checked_unchanged",
+                "release_due": False,
+                "observation_period": "2025-08",
+                "due_period": "2025-08",
+            }
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            store = OvernightStore(root=root, state_root=root)
+            store.write_artifact(
+                "overnight-20261102",
+                "collect.json",
+                {"families": families},
+            )
+            launch = {
+                "session_date": "2026-11-02",
+                "overnight_run_id": "overnight-20261102",
+                "stages": {
+                    "01_ingest": {"status": "succeeded", "details": {"rows": rows}},
+                    "02_acquire": {"status": "succeeded"},
+                },
+            }
+            receipt = quality_run(launch, {"root": root, "overnight_store_root": root})
+        self.assertEqual(receipt["status"], "succeeded")
+        details = receipt["details"]
+        self.assertEqual(details["outcome"], "PASS")
+        self.assertEqual(details["coverage"], "PARTIAL")
+        self.assertTrue(details["eligible"])
+        self.assertEqual(details["blocked_legs"], ["FX"])
+        self.assertIn("US", details["trade_eligible_countries"])
 
 
 class FixtureIngestTests(unittest.TestCase):

@@ -92,13 +92,197 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
         for code in ("CA", "AU", "NZ", "EA", "JP"):
             self.assertIn(code, result["trade_eligible_countries"])
 
-    def test_fx_missing_still_blocks_universe(self) -> None:
-        families = _fresh_market_families()
+    def test_fx_family_failure_stays_partial_when_rates_remain(self) -> None:
+        states = [
+            {
+                "run_id": "mwl-test",
+                "series_id": "US.Labor.payrolls",
+                "state_id": "mwl-test:US.Labor.payrolls",
+                "country": "US",
+                "trade_critical": True,
+                "carry_forward_reason": "old_but_current",
+            }
+        ]
+        cases = (
+            ("US", {}),
+            ("CA", {"US": {"status": "missing"}, "AU": {"status": "missing"}}),
+            ("AU", {"US": {"status": "missing"}, "CA": {"status": "missing"}}),
+        )
+        for market_status in ("fresh", "stale"):
+            for fx_status in ("missing", "stale", "invalid", "unavailable"):
+                for code, overrides in cases:
+                    families = _fresh_market_families(**overrides)
+                    families["market_state"]["status"] = market_status
+                    families["market_state"]["data"]["fx"] = {"status": fx_status}
+                    for result in (
+                        evaluate_gate(rows=_nov2_macro_rows(), families=families),
+                        evaluate_gate_canonical(states, families),
+                    ):
+                        self.assertEqual(result["outcome"], "PASS", (market_status, fx_status, code))
+                        self.assertEqual(result["coverage"], "PARTIAL")
+                        self.assertTrue(result["eligible"])
+                        self.assertIsNone(result["reason"])
+                        self.assertEqual(result["blocked_legs"], ["FX"])
+                        self.assertIn("FX", result["partial_legs"])
+                        self.assertEqual(result["fx_leg_status"], fx_status)
+                        self.assertIn(code, result["trade_eligible_countries"])
+                        self.assertTrue(result["countries"][code]["eligible"])
+                        self.assertNotIn("NZ", result["trade_eligible_countries"])
+                        self.assertFalse(result["countries"]["NZ"]["eligible"])
+                        self.assertNotIn("FX", result["blocked_expressions"])
+
+    def test_curve_mark_keeps_country_open_when_cash_and_fx_are_down(self) -> None:
+        dead = {code: {"status": "missing"} for code in ("US", "CA", "AU", "NZ", "EA", "JP")}
+        curves = {
+            "US": ("SOFR", {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 3.7}]}),
+            "CA": ("CORRA", {"contracts": [{"expiry": "2027-03", "implied_rate": 2.7}]}),
+            "AU": ("AONIA", {"status": "ok"}),
+        }
+        states = [
+            {
+                "run_id": "mwl-test",
+                "series_id": "US.Labor.payrolls",
+                "state_id": "mwl-test:US.Labor.payrolls",
+                "country": "US",
+                "trade_critical": True,
+                "carry_forward_reason": "old_but_current",
+            }
+        ]
+        for code, (curve_id, block) in curves.items():
+            families = _fresh_market_families(**dead)
+            families["market_state"]["status"] = "stale"
+            families["market_state"]["data"]["fx"] = {"status": "unavailable"}
+            families["market_state"]["data"]["tradable_rate_curves"] = {
+                "curves": {
+                    curve_id: block,
+                    "ESTR": {"status": "ok"},
+                }
+            }
+            for result in (
+                evaluate_gate(rows=_nov2_macro_rows(), families=families),
+                evaluate_gate_canonical(states, families),
+            ):
+                self.assertEqual(result["outcome"], "PASS", code)
+                self.assertEqual(result["coverage"], "PARTIAL")
+                self.assertEqual(result["trade_eligible_countries"], [code])
+                self.assertTrue(result["countries"][code]["curve_markable"])
+                self.assertIn(f"{code}_rates", result["partial_legs"])
+                self.assertIn("FX", result["blocked_legs"])
+                self.assertNotIn("EA", result["trade_eligible_countries"])
+                self.assertNotIn("NZ", result["trade_eligible_countries"])
+
+    def test_no_markable_universe_when_rates_and_fx_are_unusable(self) -> None:
+        overrides = {code: {"status": "missing"} for code in ("US", "CA", "AU", "NZ", "EA", "JP")}
+        overrides["NZ"] = {"status": "ok", "tenors": {"10Y": {"value": 4.5}}}
+        overrides["US"] = {"status": "invalid"}
+        overrides["CA"] = {"status": "unavailable"}
+        families = _fresh_market_families(**overrides)
         families["market_state"]["data"]["fx"] = {"status": "missing"}
-        result = evaluate_gate(rows=_nov2_macro_rows(), families=families)
+        families["market_state"]["data"]["tradable_rate_curves"] = {
+            "curves": {
+                "SOFR": {"status": "unavailable", "contracts": []},
+                "ESTR": {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 2.0}]},
+            }
+        }
+        states = [
+            {
+                "run_id": "mwl-test",
+                "series_id": "NZ.Inflation.cpi",
+                "state_id": "mwl-test:NZ.Inflation.cpi",
+                "country": "NZ",
+                "trade_critical": True,
+                "carry_forward_reason": "old_but_current",
+            }
+        ]
+        for result in (
+            evaluate_gate(rows=_nov2_macro_rows(), families=families),
+            evaluate_gate_canonical(states, families),
+        ):
+            self.assertEqual(result["outcome"], "BLOCKED")
+            self.assertEqual(result["coverage"], "NONE")
+            self.assertEqual(result["reason"], "no_markable_universe")
+            self.assertFalse(result["eligible"])
+            self.assertEqual(result["blocked_legs"], ["FX"])
+            self.assertEqual(result["trade_eligible_countries"], [])
+            self.assertNotIn("NZ", result["trade_eligible_countries"])
+            self.assertFalse(result["countries"]["NZ"]["eligible"])
+
+    def test_market_state_loss_still_blocks_before_legs(self) -> None:
+        for status in ("missing", "invalid", "unavailable"):
+            families = _fresh_market_families()
+            families["market_state"]["status"] = status
+            result = evaluate_gate(rows=_nov2_macro_rows(), families=families)
+            self.assertEqual(result["outcome"], "BLOCKED")
+            self.assertEqual(result["reason"], "no_markable_universe")
+            self.assertEqual(result["blocked_legs"], [])
+
+    def test_open_fx_position_still_blocks_the_book(self) -> None:
+        families = _fresh_market_families()
+        families["market_state"]["data"]["fx"] = {"status": "stale"}
+        result = evaluate_gate(
+            rows=_nov2_macro_rows(),
+            families=families,
+            positions=[
+                {
+                    "position_id": "pos-fx",
+                    "seat": "dollar-king",
+                    "instrument": "USDCAD",
+                    "asset_class": "spot_fx",
+                }
+            ],
+        )
         self.assertEqual(result["outcome"], "BLOCKED")
-        self.assertEqual(result["reason"], "no_markable_universe")
+        self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertIn("US", result["trade_eligible_countries"])
         self.assertIn("FX", result["blocked_legs"])
+
+    def test_fx_actions_reject_while_usd_rates_do_not(self) -> None:
+        from scripts.rates.executable_catalog import assess_expression
+
+        pairs = ("AUDCAD", "EURUSD", "USDCAD")
+        for market_status in ("fresh", "stale"):
+            for fx_status in ("missing", "stale", "invalid", "unavailable"):
+                families = self._markable_families({"status": "fresh"})
+                families["market_state"]["status"] = market_status
+                data = families["market_state"]["data"]
+                data["fx"]["status"] = fx_status
+                data["tradable_rate_curves"]["curves"]["SOFR"]["contracts"] = [
+                    {"expiry": "2027-03", "implied_rate": 3.7, "as_of": "2026-11-02"}
+                ]
+                data["tradable_rate_curves"]["curves"]["CORRA"] = {
+                    "status": "ok",
+                    "contracts": [{"expiry": "2027-03", "implied_rate": 2.7, "as_of": "2026-11-02"}],
+                }
+                for action in ("OPEN", "ADD", "HEDGE"):
+                    for pair in pairs:
+                        with self.assertRaises(FreshnessError):
+                            assert_action_allowed(
+                                action,
+                                families,
+                                seat="cross-merchant",
+                                instrument=pair,
+                                asset_class="spot_fx",
+                            )
+                    assert_action_allowed(
+                        action,
+                        families,
+                        seat="rate-hawk",
+                        instrument="SOFR_2027-03",
+                        asset_class="rates",
+                    )
+                    assert_action_allowed(
+                        action,
+                        families,
+                        seat="rate-hawk",
+                        instrument="US_10Y",
+                        asset_class="rates",
+                    )
+                sofr = assess_expression("SOFR_2027-03", market_state=data, notional_usd=10_000_000)
+                self.assertNotEqual(sofr["status"], "unavailable")
+                self.assertNotIn("USD conversion", sofr.get("reason") or "")
+                corra = assess_expression("CORRA_2027-03", market_state=data, notional_usd=10_000_000)
+                self.assertEqual(corra["status"], "unavailable")
+                self.assertIn("FX", corra["reason"])
 
     def test_policy_overdue_unverified_us_research_gap_only(self) -> None:
         states = [
@@ -275,6 +459,22 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
         permissions = _trade_permissions(launch)
         self.assertEqual(permissions["research_coverage_gaps"], ["macro:US"])
         self.assertEqual(permissions["research_coverage_series"], ["US.Labor.payrolls"])
+
+    def test_freeze_trade_permissions_disclose_blocked_fx_leg(self) -> None:
+        families = _fresh_market_families()
+        families["market_state"]["data"]["fx"] = {"status": "invalid"}
+        gate = evaluate_gate(rows=_nov2_macro_rows(), families=families)
+        launch = {"stages": {"03_quality_gate": {"details": gate}}}
+        permissions = _trade_permissions(launch)
+        self.assertTrue(permissions["eligible"])
+        self.assertEqual(permissions["coverage"], "PARTIAL")
+        self.assertEqual(permissions["blocked_legs"], ["FX"])
+        self.assertIn("FX", permissions["partial_legs"])
+        self.assertEqual(permissions["fx_leg_status"], "invalid")
+        self.assertIn("US", permissions["trade_eligible_countries"])
+        self.assertNotIn("NZ", permissions["trade_eligible_countries"])
+        self.assertFalse(permissions["countries"]["NZ"]["eligible"])
+        self.assertEqual(permissions["countries"]["NZ"]["sovereign_admission"], "research_only")
 
     def test_stale_ca_rates_not_macro_blocked_expression(self) -> None:
         families = _fresh_market_families(CA={"status": "stale"})

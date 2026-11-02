@@ -8,7 +8,7 @@ import re
 from datetime import date
 from typing import Any
 
-from scripts.country_registry import paper_sovereign_admission
+from scripts.country_registry import economies, paper_sovereign_admission
 from scripts.policy_path_data import _iso_calendar_date
 
 from scripts.market_watch_launch.contract import (
@@ -126,6 +126,50 @@ def _fx_leg_status(packet: dict[str, Any]) -> str:
         if isinstance(value, dict) and any(key in value for key in ("spot", "mid", "rate")):
             return "ok"
     return "missing"
+
+
+def _approved_curve_markable(packet: dict[str, Any], code: str) -> bool:
+    """True when an approved country's tradable curve carries a usable mark.
+
+    Research-only sovereigns and observe-only curves do not count. A blocking
+    curve status is not a mark, even when a number is still present.
+    """
+    if _research_only_sovereign(code):
+        return False
+    spec = economies().get(code) or {}
+    if not spec.get("has_tradable_short_rate_curve"):
+        return False
+    curve_id = spec.get("tradable_curve_id")
+    if not isinstance(curve_id, str) or not curve_id:
+        return False
+    curves = packet.get("tradable_rate_curves")
+    curve_map = curves.get("curves") if isinstance(curves, dict) else None
+    block = curve_map.get(curve_id) if isinstance(curve_map, dict) else None
+    if not isinstance(block, dict):
+        return False
+    explicit = _explicit_status(block)
+    if explicit in _BLOCKING_LEG_STATUSES:
+        return False
+    if explicit == "ok":
+        return True
+    if explicit:
+        return False
+    contracts = block.get("contracts")
+    if not isinstance(contracts, list):
+        return False
+    for row in contracts:
+        if not isinstance(row, dict):
+            continue
+        row_status = _explicit_status(row)
+        if row_status in _BLOCKING_LEG_STATUSES:
+            continue
+        for key in ("implied_rate", "rate", "value"):
+            value = row.get(key)
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                continue
+            if math.isfinite(float(value)):
+                return True
+    return False
 
 
 def _research_only_sovereign(code: str) -> bool:
@@ -432,7 +476,7 @@ def evaluate_gate(
 
     scored_rows = [row for row in rows if _is_scored_row(row)]
     # Macro release gaps stay on the research-coverage list. They do not block
-    # a launch that still has markable FX and rate legs.
+    # a launch that still has a markable rate leg or FX leg.
     blocking_scored = [
         row
         for row in scored_rows
@@ -508,23 +552,14 @@ def evaluate_gate(
         base["reason"] = "no_markable_universe"
         base["eligible"] = False
         return base
-    # A stale packet is not an empty universe. FX and each rate leg are judged
-    # below. One stale cash curve does not ban expressions that do not use it.
+    # A stale packet is not an empty universe. Each rate leg and the FX family
+    # are judged on their own. One stale cash curve does not ban expressions
+    # that do not use it. A missing, stale, invalid, or unavailable FX family
+    # blocks FX expressions. Approved rate or curve marks stay eligible.
 
     legs = _leg_statuses(packet)
-    fx_status = legs.get("FX", "missing")
-    if fx_status in _BLOCKING_LEG_STATUSES:
-        base["outcome"] = "BLOCKED"
-        base["coverage"] = "NONE"
-        base["reason"] = "no_markable_universe"
-        base["blocked_legs"] = ["FX"]
-        base["countries_unaffected"] = [
-            code
-            for code in COUNTRIES
-            if legs.get(f"{code}_rates", "missing") not in _BLOCKING_LEG_STATUSES
-        ]
-        base["eligible"] = False
-        return base
+    fx_status = str(legs.get("FX") or "missing")
+    fx_blocking = fx_status in _BLOCKING_LEG_STATUSES
 
     partial_legs: list[str] = []
     trade_eligible_countries: list[str] = []
@@ -538,10 +573,25 @@ def evaluate_gate(
             partial_legs.append(f"{code}_rates")
         # NZ sovereign cash is research-only. An unsupported curve must not
         # label the country restricted while NZD spot still has a mark.
-        country_eligible = (not rates_blocking) or research_only
+        # When the FX family cannot be marked, that spot is unavailable, and
+        # a research-only curve does not count as an executable rates leg.
+        curve_markable = False
+        if fx_blocking and not research_only and rates_blocking:
+            curve_markable = _approved_curve_markable(packet, code)
+            if curve_markable:
+                countries[code]["curve_markable"] = True
+        if research_only:
+            country_eligible = not fx_blocking
+        else:
+            country_eligible = (not rates_blocking) or curve_markable
         countries[code]["eligible"] = country_eligible
         if country_eligible:
             trade_eligible_countries.append(code)
+
+    if fx_blocking:
+        base["blocked_legs"] = ["FX"]
+        partial_legs.append("FX")
+        base["fx_leg_status"] = fx_status
 
     base["partial_legs"] = partial_legs
     base["trade_eligible_countries"] = trade_eligible_countries
@@ -699,8 +749,11 @@ def _apply_policy_overlay(
         research_only = _research_only_sovereign(code)
         if research_only:
             bucket["sovereign_admission"] = "research_only"
-        if rate_leg in partial_legs and not research_only:
+        fx_blocked = "FX" in list(out.get("blocked_legs") or [])
+        if research_only and fx_blocked:
             eligible = False
+        elif rate_leg in partial_legs and not research_only:
+            eligible = bool(bucket.get("curve_markable"))
         elif legacy_outcome == "BLOCKED":
             eligible = bool(bucket.get("eligible"))
         else:

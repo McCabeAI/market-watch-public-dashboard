@@ -112,8 +112,11 @@ def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
         "eligible": bool(gate.get("eligible")),
         "trade_eligible_countries": list(gate.get("trade_eligible_countries") or []),
         "blocked_expressions": list(gate.get("blocked_expressions") or []),
+        "blocked_legs": list(gate.get("blocked_legs") or []),
+        "partial_legs": list(gate.get("partial_legs") or []),
         "partial_expressions": list(gate.get("partial_expressions") or []),
         "blocked_sources": list(gate.get("blocked_sources") or []),
+        **({"fx_leg_status": gate.get("fx_leg_status")} if gate.get("fx_leg_status") else {}),
         "research_coverage_gaps": list(gate.get("research_coverage_gaps") or []),
         "research_coverage_series": list(gate.get("research_coverage_series") or []),
         "countries": {

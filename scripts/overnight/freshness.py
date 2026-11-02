@@ -365,7 +365,9 @@ def assert_action_allowed(
         raise FreshnessError(
             f"{seat} {action} blocked by stale/missing required evidence: {blocked}"
         )
-    if action in EXPANDING_ACTIONS:
+    # HEDGE is not an expanding family action, but it still needs the same
+    # instrument mark. A missing FX pair must not be sized as a hedge.
+    if action in EXPANDING_ACTIONS or action == "HEDGE":
         specific = expression_evidence_block(
             families,
             instrument=instrument,
