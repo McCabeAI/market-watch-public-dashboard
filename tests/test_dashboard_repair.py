@@ -350,6 +350,53 @@ class CalendarTests(unittest.TestCase):
             {"CPI All Items, seasonally adjusted", "Unemployment Rate"},
         )
 
+    def test_nfp_groups_bls_empsit_and_derived_household_one_card(self):
+        now = datetime(2026, 11, 2, 12, 0, tzinfo=ET)
+        model = build_release_model(now=now, score_as_of="2026-09-21")
+        html = render_releases(model)
+        empsit_cards = [
+            item
+            for item in model["upcoming"] + model["later"]
+            if "2026-11-06" in item.get("et_display", "")
+            and "08:30" in item.get("et_display", "")
+            and "ET" in item.get("et_display", "")
+            and "US.Labor.payrolls" in (item.get("series_ids") or [])
+        ]
+        self.assertEqual(len(empsit_cards), 1)
+        card = empsit_cards[0]
+        series_ids = set(card.get("series_ids") or [])
+        self.assertTrue(
+            {
+                "US.Labor.payrolls",
+                "US.Labor.unemployment",
+                "US.Labor.wages",
+                "US.Labor.participation",
+                "US.Labor.delta_labor_force",
+            }.issubset(series_ids)
+        )
+        self.assertIn("Nonfarm Payrolls (NFP)", _event_title(card))
+        self.assertIn("Employment Situation", _event_title(card))
+        self.assertNotIn("Employment Situation (derived household context)", html)
+        card_html = html.split("<article", 1)[1] if "<article" in html else html
+        for chunk in html.split('<article class="release-card'):
+            if "Nonfarm Payrolls (NFP)" in chunk and "2026-11-06" in chunk:
+                card_html = chunk
+                break
+        self.assertIn("Scored:", card_html)
+        self.assertIn("Context:", card_html)
+        self.assertIn("Derived household context", card_html)
+        self.assertIn("Scored and context", card_html)
+        self.assertIn("BLS", card_html)
+        self.assertNotIn("Market Watch</span></div>", card_html.split("mw-release-main", 1)[1].split("</div>", 1)[0])
+        self.assertIn("not yet in score ledger", card_html)
+        self.assertEqual(_release_family_key("US.Labor.delta_labor_force"), "us_empsit")
+        other = [
+            item
+            for item in model["upcoming"]
+            if item is not card and _release_family_key(str((item.get("series_ids") or ["x"])[0])) != "us_empsit"
+        ]
+        self.assertTrue(other, "expected a separate non-empsit release in the window")
+
     def test_release_date_and_weekday_stack_without_collision(self):
         html = render_releases(build_release_model(NOW, score_as_of="2026-09-21"))
         self.assertIn('class="mw-num mw-release-day"', html)

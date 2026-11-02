@@ -50,8 +50,7 @@ _RELEASE_FAMILY_TITLES = {
     "au_cpi": "Consumer Price Index, Australia (headline and trimmed-mean inflation)",
     "au_labour_force": "Labour Force, Australia",
     "chicago_fed_lmi": "Chicago Fed Labor Market Indicators (unemployment nowcast and flows)",
-    "us_empsit": "Employment Situation",
-    "us_empsit_derived": "Employment Situation (derived household context)",
+    "us_empsit": "US Nonfarm Payrolls (NFP) — BLS Employment Situation",
     "us_cpi": "Consumer Price Index",
     "nz_cpi": "Consumers Price Index",
 }
@@ -260,7 +259,7 @@ def _release_family_key(series_id: str) -> str:
     urls = " ".join(str(url) for url in row.get("registry_urls") or [])
     if series_id.startswith("US.Labor."):
         if method == "derived_employment_context" or "derived://us-employment-context" in str(row.get("endpoint") or ""):
-            return "us_empsit_derived"
+            return "us_empsit"
         if method.startswith("bls_empsit") or "empsit" in urls or row.get("employment_section"):
             return "us_empsit"
     if series_id.startswith("US.Inflation.cpi"):
@@ -344,6 +343,8 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             current["source_url"] = row["source_url"]
         if row["reference_period"] and not current["reference_period"]:
             current["reference_period"] = row["reference_period"]
+        if str(row.get("publisher") or "") == "BLS":
+            current["publisher"] = "BLS"
     return list(grouped.values())
 
 
@@ -557,7 +558,41 @@ def _weekday(value: date | None) -> str:
     return value.strftime("%A")
 
 
+_SCORED_EMPSIT_IDS = frozenset({"US.Labor.payrolls", "US.Labor.unemployment", "US.Labor.wages"})
+
+
+def _is_derived_empsit_series(series_id: str) -> bool:
+    row = _catalog_rows_by_id().get(series_id) or {}
+    method = str(row.get("retrieval_method") or "")
+    endpoint = str(row.get("endpoint") or "")
+    return method == "derived_employment_context" or "derived://us-employment-context" in endpoint
+
+
+def _empsit_face_roles(series_ids: list[str]) -> str:
+    by_id = _catalog_rows_by_id()
+    parts: list[str] = []
+    scored_names = [
+        str((by_id.get(series_id) or {}).get("canonical_name") or series_id)
+        for series_id in _SCORED_EMPSIT_IDS
+        if series_id in series_ids
+    ]
+    if scored_names:
+        parts.append("Scored: " + ", ".join(scored_names))
+    if "US.Labor.participation" in series_ids:
+        participation = str((by_id.get("US.Labor.participation") or {}).get("canonical_name") or "Labor force participation rate")
+        parts.append(f"Context: {participation}")
+    if any(_is_derived_empsit_series(series_id) for series_id in series_ids):
+        parts.append("Derived household context")
+    return " · ".join(parts)
+
+
 def _impact_feed(impacts: list[str]) -> tuple[str, str]:
+    has_scored = any(text.startswith("Scored input:") for text in impacts)
+    has_context = any(
+        "Context only" in text or "Bridge input" in text or "zero score weight" in text for text in impacts
+    )
+    if has_scored and has_context:
+        return "Scored and context", "mw-chip--ok"
     for text in impacts:
         if text.startswith("Scored input:"):
             head = text.removeprefix("Scored input:").strip().split("·", 1)[0].strip()
@@ -634,6 +669,11 @@ def _event_html(item: dict[str, Any]) -> str:
         + "</details>"
     )
     local_show, et_show = _row_times(item)
+    series_ids = [str(series_id) for series_id in (item.get("series_ids") or [item.get("series_id")]) if series_id]
+    role_line = ""
+    if len(series_ids) > 1 and all(_release_family_key(series_id) == "us_empsit" for series_id in series_ids):
+        role_line = _empsit_face_roles(series_ids)
+    role_html = f'<span class="mw-asof mw-release-roles">{esc(role_line)}</span>' if role_line else ""
     return (
         '<article class="release-card mw-release-row" data-release-country="' + esc(item.get("country")) + '">'
         f'<div class="mw-release-date"><span class="mw-num mw-release-day">{esc(day_label)}</span>'
@@ -641,7 +681,8 @@ def _event_html(item: dict[str, Any]) -> str:
         + "</div>"
         f'<span class="mw-chip">{esc(item.get("country"))}</span>'
         f'<div class="mw-release-main"><b>{esc(title)}</b>'
-        f'<span class="mw-asof">{esc(item.get("publisher") or "Publisher not recorded")}</span></div>'
+        f'<span class="mw-asof">{esc(item.get("publisher") or "Publisher not recorded")}</span>'
+        f"{role_html}</div>"
         f'<div class="mw-release-times mw-asof"><span>Local {esc(local_show)}</span>'
         f'<span>ET {esc(et_show)}</span></div>'
         f'<span class="mw-chip {feed_class}">{esc(feed_label)}</span>'
