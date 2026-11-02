@@ -13,7 +13,7 @@ from pathlib import Path
 from scripts.overnight.books import empty_books, ensure_roster_books, validate_books
 from scripts.overnight.constants import STARTING_NAV_USD
 from scripts.overnight.errors import SchemaError
-from scripts.overnight.evidence import freeze_snapshot
+from scripts.overnight.evidence import _prepare_prior_books, freeze_snapshot
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.trader_room.agent_config import (
     build_pin,
@@ -316,6 +316,49 @@ class RosterOnboardingTests(unittest.TestCase):
         pin = build_pin("daily")
         with self.assertRaises(SchemaError):
             ensure_roster_books(books, pin["traders"])
+
+    def test_freeze_prior_books_cold_starts_fifteenth_seat(self) -> None:
+        cfg = load_config(self.tmp / "scripts" / "trader_room" / "model_registry.json", honor_env=False)
+        traders = list(cfg["roster"]["traders"])
+        traders.append(
+            {
+                "id": "synthetic-fifteenth",
+                "remit": "synthetic fixture seat for roster onboarding tests",
+                "expression_specialty": "rates_first",
+                "may_no_trade": False,
+                "activation_date": "2026-11-02",
+                "status": "active",
+            }
+        )
+        cfg_path = self.tmp / "fifteen-seat-roster.json"
+        cfg15_raw = {k: v for k, v in cfg.items() if k != "_source"}
+        cfg15_raw["roster"] = {**cfg["roster"], "traders": traders}
+        cfg_path.write_text(json.dumps(cfg15_raw, indent=2) + "\n", encoding="utf-8")
+        books_path = self.tmp / "data" / "overnight" / "books" / "latest.json"
+        books_before = json.loads(books_path.read_text(encoding="utf-8"))
+        seat_hashes_before = {seat: sha256_json(payload) for seat, payload in books_before["seats"].items()}
+        prior_as_of = books_before["as_of"]
+        store = OvernightStore(root=self.tmp, state_root=self.tmp)
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+
+        when = datetime(2026, 11, 2, 1, 50, tzinfo=ZoneInfo("America/New_York"))
+        pin = build_pin("daily", config_path=cfg_path)
+        raw = store.read_books()
+        merged = ensure_roster_books(raw, pin["traders"])
+        self.assertEqual(merged["as_of"], prior_as_of)
+        for seat, digest in seat_hashes_before.items():
+            self.assertEqual(sha256_json(merged["seats"][seat]), digest)
+        prior = _prepare_prior_books(store, pin, run_id="overnight-roster-freeze-test", when=when)
+        self.assertEqual(prior["as_of"], prior_as_of)
+        for seat in seat_hashes_before:
+            self.assertEqual(prior["seats"][seat]["positions"], books_before["seats"][seat]["positions"])
+            self.assertEqual(prior["seats"][seat]["history"], books_before["seats"][seat]["history"])
+            self.assertEqual(prior["seats"][seat]["nav_usd"], books_before["seats"][seat]["nav_usd"])
+        new_seat = prior["seats"]["synthetic-fifteenth"]
+        self.assertEqual(new_seat["nav_usd"], STARTING_NAV_USD)
+        self.assertEqual(new_seat["positions"], [])
+        self.assertEqual(new_seat["history"], [])
 
     def test_freeze_embeds_pin(self) -> None:
         state_root = Path(tempfile.mkdtemp(prefix="mw-freeze-pin-"))

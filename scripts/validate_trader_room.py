@@ -2,28 +2,50 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
-from scripts.trader_room.agent_config import check_agents
+# CI invokes this file as `python scripts/validate_trader_room.py` without PYTHONPATH.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.trader_room.agent_config import check_agents, get_profile, head_traders, load_config, trader_entries
 from scripts.trader_room.constants import ADVOCATE_MODEL, AGENT_FRONTMATTER_MODEL
 from scripts.trader_room.models import load_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / ".cursor" / "agents"
 DRIVE_FOLDER_ID = "1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD"
-EXPECTED_ADVOCATES = {
-    "perma-bull", "perma-bear", "dollar-king", "cross-merchant",
-    "carry-is-king", "rate-hawk", "rate-dove", "value-guy",
-    "trend-follower", "mean-reverter", "positioning-cynic",
-    "catalyst-junkie", "vol-convexity", "no-trade-skeptic",
-}
+EXPECTED_ADVOCATES = {entry["id"] for entry in trader_entries()}
+ACTIVE_ADVOCATES = {entry["id"] for entry in head_traders()}
 EXPECTED_AGGREGATORS = {"conflict-aggregator", "final-aggregator"}
-EXPECTED_PM_AGENTS = {"swinger", "pragmatist", "grinder"}
+EXPECTED_PM_AGENTS = set(load_config()["roster"]["automated_pms"])
 REQUIRED_FIELDS = {"name", "description", "model", "readonly", "is_background"}
 MANDATORY_PACKET_SECTIONS = {
     "temperature_gauges", "central_bank_research", "news_and_research",
     "market_state", "research_method", "source_index", "known_gaps",
 }
+
+
+def _hook_allowed_models(kind: str) -> list[str]:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts/trader_room/agent_config.py"),
+            "hook-models",
+            "--kind",
+            kind,
+        ],
+        cwd=str(ROOT),
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    text = proc.stdout.strip()
+    return text.split() if text else []
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
@@ -78,7 +100,7 @@ def main() -> None:
                 assert "one cogent actionable trade" in body, f"{name}: must require one trade"
 
     protocol = (ROOT / "docs" / "TRADER_ROOM_PROTOCOL.md").read_text(encoding="utf-8")
-    for name in EXPECTED_ADVOCATES:
+    for name in ACTIVE_ADVOCATES:
         assert f"`{name}`" in protocol, f"protocol missing {name}"
     assert "STATUS: AWAITING_CHATGPT_ARBITRATION" in protocol
     assert "Cursor must not:" in protocol
@@ -173,7 +195,12 @@ def main() -> None:
 
     hook = (ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh").read_text(encoding="utf-8")
     assert "TRADER_ROOM_MODEL_POLICY" in hook
-    assert "grok-4.6|composer-2.5" in hook
+    assert "hook-models" in hook
+    assert "scripts/trader_room/agent_config.py" in hook
+    profile = get_profile()
+    roles = profile["roles"]
+    expected_tr = [roles["advocate"], roles["advocate_subagent"]]
+    assert _hook_allowed_models("trader-room") == expected_tr
 
     mcp_path = ROOT / ".cursor" / "mcp.json"
     config = json.loads(mcp_path.read_text(encoding="utf-8"))

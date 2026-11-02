@@ -446,8 +446,6 @@ def ensure_roster_books(
             remit_text=str(entry.get("remit") or ""),
             expression_specialty=str(entry.get("expression_specialty") or ""),
         )
-    if when is not None:
-        out["as_of"] = isoformat(now_ny(when))
     return out
 
 

@@ -80,7 +80,7 @@ REPO_ROOT=$(cd "$HOOK_DIR/../.." && pwd)
 hook_models() {
   kind=$1
   unset MW_AGENT_CONFIG_PATH
-  PYTHONPATH="$REPO_ROOT" python3 -m scripts.trader_room.agent_config hook-models --kind "$kind" 2>/dev/null || true
+  PYTHONPATH="$REPO_ROOT" python3 "$REPO_ROOT/scripts/trader_room/agent_config.py" hook-models --kind "$kind" 2>/dev/null || true
 }
 
 if [ -n "$PM_POLICY" ]; then
@@ -93,7 +93,7 @@ if [ -n "$PM_POLICY" ]; then
   [ -n "$ALLOWED" ] || deny "PM model policy could not load allowed models from the pinned roster."
   case " $ALLOWED " in
     *" $MODEL "*) allow ;;
-    *) deny "PM model policy allows only grok-4.6 principals and grok-4.6/composer-2.5 subagents. Refusing '$MODEL'." ;;
+    *) deny "PM model policy allows only the pinned profile models ($ALLOWED). Refusing '$MODEL'." ;;
   esac
 fi
 
@@ -102,7 +102,7 @@ if [ -n "$TR_POLICY" ]; then
   [ -n "$ALLOWED" ] || deny "Trader Room model policy could not load allowed models from the pinned roster."
   case " $ALLOWED " in
     *" $MODEL "*) allow ;;
-    *) deny "Trader Room model policy allows only grok-4.6 (advocates/aggregators) and composer-2.5 (internal advocate subagents). Refusing '$MODEL'." ;;
+    *) deny "Trader Room model policy allows only the pinned profile models ($ALLOWED). Refusing '$MODEL'." ;;
   esac
 fi
 

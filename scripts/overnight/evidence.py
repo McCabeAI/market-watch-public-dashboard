@@ -20,6 +20,24 @@ from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.trader_room.evidence import load_research_method
 
 
+def _prepare_prior_books(
+    store: OvernightStore,
+    pin: dict[str, Any],
+    *,
+    run_id: str,
+    when: datetime | None,
+) -> dict[str, Any]:
+    from scripts.trader_room.agent_config import pin_trader_ids
+
+    roster_ids = pin_trader_ids(pin)
+    if store.books_path().is_file():
+        raw = store.read_books()
+    else:
+        raw = empty_books(overnight_run_id=run_id, when=when, roster=roster_ids)
+    merged = ensure_roster_books(raw, pin["traders"])
+    return validate_books(merged, roster=roster_ids, entries=pin["traders"])
+
+
 def _snapshot_is_valid(packet: dict[str, Any], run_id: str, review_id: str) -> bool:
     if packet.get("type") != "OVERNIGHT_EVIDENCE_SNAPSHOT":
         return False
@@ -75,22 +93,16 @@ def freeze_snapshot(
     persist_review(store, meta)
     binding = capture_starting_book_hashes(store, run_id=run_id, when=when)
 
-    from scripts.trader_room.agent_config import build_pin, pin_trader_ids
+    from scripts.trader_room.agent_config import build_pin
 
     pin = build_pin("daily")
-    roster_ids = pin_trader_ids(pin)
 
     collect = store.read_artifact(run_id, "collect.json")
     delta = None
     if store.has_artifact(run_id, "pre_trader_delta.json"):
         delta = store.read_artifact(run_id, "pre_trader_delta.json")
     families = (delta or collect)["families"]
-    if store.books_path().is_file():
-        prior_books = validate_books(store.read_books())
-    else:
-        prior_books = empty_books(overnight_run_id=run_id, when=when)
-    prior_books = ensure_roster_books(prior_books, pin["traders"], when=when)
-    validate_books(prior_books, roster=roster_ids, entries=pin["traders"])
+    prior_books = _prepare_prior_books(store, pin, run_id=run_id, when=when)
     market_state = ((families.get("market_state") or {}).get("data") if isinstance(families.get("market_state"), dict) else None)
     funding_context = build_funding_context(market_state or {}, as_of=isoformat(now_ny(when)))
     packet = {

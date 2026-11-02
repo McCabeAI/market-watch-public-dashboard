@@ -4,6 +4,10 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 from scripts.pm.constants import AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
@@ -14,9 +18,9 @@ from scripts.pm.models import (
     assert_pm_launch_mechanism,
     pm_hook_policy,
 )
-from scripts.trader_room.agent_config import check_agents
+from scripts.trader_room.agent_config import check_agents, get_profile
 from scripts.trader_room.models import load_registry
-from scripts.validate_trader_room import assert_agent_file
+from scripts.validate_trader_room import _hook_allowed_models, assert_agent_file
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / ".cursor" / "agents"
@@ -79,9 +83,34 @@ def main() -> None:
         assert agent["max_subagents"] == MAX_SUBAGENTS_PER_PM
         assert_pm_launch_mechanism(agent["launch_mechanism"])
 
-    hook = (ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh").read_text(encoding="utf-8")
+    hook_path = ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh"
+    hook = hook_path.read_text(encoding="utf-8")
     assert "PM_MODEL_POLICY" in hook
-    assert "cursor-grok-4.6-*" in hook
+    assert "hook-models" in hook
+    assert "scripts/trader_room/agent_config.py" in hook
+    profile = get_profile()
+    assert _hook_allowed_models("pm") == profile["pm_subagent_models"]
+
+    policy = pm_hook_policy()
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as handle:
+        handle.write(policy + "\n")
+        transcript = handle.name
+    try:
+        proc = subprocess.run(
+            [
+                "sh",
+                str(hook_path),
+                json.dumps({"subagent_model": "cursor-grok-4.6-high-fast", "transcript_path": transcript}),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert proc.returncode != 0
+        combined = proc.stdout + proc.stderr
+        assert ".cursor/agents" in combined or "custom agent" in combined.lower()
+    finally:
+        Path(transcript).unlink(missing_ok=True)
 
     print(
         "PM layer validated: grok-4.6[] custom agents for swinger/pragmatist/grinder, "
