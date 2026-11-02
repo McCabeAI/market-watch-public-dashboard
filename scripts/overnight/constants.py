@@ -5,7 +5,14 @@ from __future__ import annotations
 from datetime import time
 from pathlib import Path
 
-from scripts.trader_room.constants import ADVOCATE_REMITS, STANDING_ADVOCATES
+from scripts.trader_room.constants import (
+    ADVOCATE_REMITS,
+    NO_TRADE_AGENT,
+    RATES_FIRST_SEATS,
+    SPOT_ONLY_SEATS,
+    STANDING_ADVOCATES,
+    VOL_SPECIALIST_SEAT,
+)
 
 ROOT = Path(__file__).resolve().parents[2]
 OVERNIGHT_TZ = "America/New_York"
@@ -20,11 +27,9 @@ COMPETITION_METRIC = "net_pnl_after_funding"
 STANDING_SEATS = STANDING_ADVOCATES
 SEAT_REMITS = dict(ADVOCATE_REMITS)
 
-# Dedicated spot-FX seats stay spot-oriented. Everyone else is rates-first.
-SPOT_SEATS = ("dollar-king", "cross-merchant")
-RATES_FIRST_SEATS = tuple(seat for seat in STANDING_SEATS if seat not in SPOT_SEATS)
-VOL_LAST_RESORT_SEAT = "vol-convexity"
-NO_TRADE_SEAT = "no-trade-skeptic"
+SPOT_SEATS = SPOT_ONLY_SEATS
+VOL_LAST_RESORT_SEAT = VOL_SPECIALIST_SEAT
+NO_TRADE_SEAT = NO_TRADE_AGENT
 
 ACTIONS = ("OPEN", "ADD", "HOLD", "REDUCE", "HEDGE", "CLOSE")
 EXPANDING_ACTIONS = ("OPEN", "ADD")

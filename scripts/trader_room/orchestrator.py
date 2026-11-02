@@ -9,11 +9,8 @@ from uuid import uuid4
 from scripts.trader_room.artifacts import persist_run
 from scripts.trader_room.budget import BudgetLedger
 from scripts.trader_room.conflict import detect_conflicts, rebuttal_assignments
-from scripts.trader_room.constants import (
-    DEFAULT_ESSENTIAL_FAMILIES,
-    ROOT,
-    STANDING_ADVOCATES,
-)
+from scripts.trader_room.agent_config import build_pin, pin_from_artifact, pin_trader_ids
+from scripts.trader_room.constants import DEFAULT_ESSENTIAL_FAMILIES, ROOT
 from scripts.trader_room.errors import LiveRunBlocked, SchemaError
 from scripts.trader_room.handoff import build_pm_handoff
 from scripts.trader_room.evidence import (
@@ -75,6 +72,7 @@ def prepare_evidence(
         "hashes": memory_index.get("hashes") or {},
         "paths": memory_index.get("paths") or {},
     }
+    preflight["agent_roster_pin"] = build_pin("ondemand")
     return frozen, preflight
 
 
@@ -88,12 +86,16 @@ def run_debate(
 ) -> dict[str, Any]:
     budget = BudgetLedger()
     budget.assert_baseline_room()
+    pin = pin_from_artifact(preflight, kind="ondemand")
+    advocates = pin_trader_ids(pin)
     originals: dict[str, dict[str, Any]] = {}
-    for agent in STANDING_ADVOCATES:
+    for agent in advocates:
         contribution = runner.run_advocate(agent, packet, budget)
         originals[agent] = validate_contribution(contribution, packet=packet, expected_agent=agent)
-    if set(originals) != set(STANDING_ADVOCATES):
-        raise SchemaError("round 1 did not return the complete 14-advocate roster")
+    if set(originals) != set(advocates):
+        raise SchemaError(
+            f"round 1 did not return the complete {len(advocates)}-advocate roster"
+        )
 
     conflict_map = validate_conflict_map(detect_conflicts(originals), originals)
     assignments = rebuttal_assignments(conflict_map)
@@ -113,8 +115,13 @@ def run_debate(
         originals=originals,
         conflict_map=conflict_map,
         rebuttals=rebuttals,
+        advocates=advocates,
     )
-    launch_plan = build_launch_plan(packet, memory_index=preflight.get("seat_memory"))
+    launch_plan = build_launch_plan(
+        packet,
+        memory_index=preflight.get("seat_memory"),
+        pin=pin,
+    )
     persist_root = artifact_root or root
     index = persist_run(
         root=persist_root,

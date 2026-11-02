@@ -24,7 +24,11 @@ from scripts.trader_room.rates_scan import (
 )
 
 
-def expression_rule(seat: str) -> str:
+def expression_rule(seat: str, *, expression_specialty: str | None = None) -> str:
+    if expression_specialty is not None:
+        if expression_specialty == "spot_only":
+            return "spot_only"
+        return "rates_first"
     if seat not in STANDING_SEATS:
         raise SchemaError(f"unknown seat {seat}")
     if seat in SPOT_SEATS:
@@ -32,7 +36,12 @@ def expression_rule(seat: str) -> str:
     return "rates_first"
 
 
-def remit(seat: str) -> str:
+def remit(seat: str, *, remit_text: str | None = None) -> str:
+    if remit_text is not None:
+        text = remit_text.strip()
+        if not text:
+            raise SchemaError(f"empty remit for {seat}")
+        return text
     if seat not in SEAT_REMITS:
         raise SchemaError(f"unknown seat remit {seat}")
     return SEAT_REMITS[seat]
@@ -133,5 +142,8 @@ def selected_asset_class(memo: dict[str, Any]) -> str | None:
 
 
 def assert_rates_first_roster() -> None:
-    if set(SPOT_SEATS) | set(RATES_FIRST_SEATS) != set(STANDING_SEATS):
-        raise SchemaError("spot and rates-first seats do not partition the standing 14")
+    if (
+        set(SPOT_SEATS) | set(RATES_FIRST_SEATS) | {VOL_LAST_RESORT_SEAT}
+        != set(STANDING_SEATS)
+    ):
+        raise SchemaError("spot, rates-first, and vol seats do not partition the standing roster")

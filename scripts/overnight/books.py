@@ -329,11 +329,16 @@ def realized_increment(position: dict[str, Any], *, exit_price: float, closed_no
     return float(valued["unrealized_pnl_usd"])
 
 
-def empty_seat(seat: str) -> dict[str, Any]:
+def empty_seat(
+    seat: str,
+    *,
+    remit_text: str | None = None,
+    expression_specialty: str | None = None,
+) -> dict[str, Any]:
     return {
         "seat": seat,
-        "remit": remit(seat),
-        "expression_rule": expression_rule(seat),
+        "remit": remit(seat, remit_text=remit_text),
+        "expression_rule": expression_rule(seat, expression_specialty=expression_specialty),
         "starting_nav_usd": STARTING_NAV_USD,
         "cash_usd": STARTING_NAV_USD,
         "nav_usd": STARTING_NAV_USD,
@@ -384,8 +389,14 @@ def empty_seat(seat: str) -> dict[str, Any]:
     }
 
 
-def empty_books(*, overnight_run_id: str | None = None, when: datetime | None = None) -> dict[str, Any]:
+def empty_books(
+    *,
+    overnight_run_id: str | None = None,
+    when: datetime | None = None,
+    roster: tuple[str, ...] | list[str] | None = None,
+) -> dict[str, Any]:
     stamp = isoformat(now_ny(when))
+    seats = tuple(roster) if roster is not None else STANDING_SEATS
     return {
         "schema_version": SCHEMA_VERSION,
         "starting_nav_usd": STARTING_NAV_USD,
@@ -394,8 +405,50 @@ def empty_books(*, overnight_run_id: str | None = None, when: datetime | None = 
         "evidence_cutoff": None,
         "review_status": "missing",
         "last_successful_review_run_id": None,
-        "seats": {seat: empty_seat(seat) for seat in STANDING_SEATS},
+        "seats": {seat: empty_seat(seat) for seat in seats},
     }
+
+
+def _roster_tuple(roster: tuple[str, ...] | list[str] | None) -> tuple[str, ...]:
+    if roster is None:
+        return STANDING_SEATS
+    return tuple(roster)
+
+
+def _entries_by_id(
+    entries: list[dict[str, Any]] | tuple[dict[str, Any], ...] | None,
+) -> dict[str, dict[str, Any]]:
+    if not entries:
+        return {}
+    return {str(entry["id"]): entry for entry in entries}
+
+
+def ensure_roster_books(
+    books: dict[str, Any],
+    roster_entries: list[dict[str, Any]] | tuple[dict[str, Any], ...],
+    *,
+    when: datetime | None = None,
+) -> dict[str, Any]:
+    out = deepcopy(books)
+    roster_ids = tuple(str(entry["id"]) for entry in roster_entries)
+    roster_set = set(roster_ids)
+    seat_keys = set(out.get("seats") or {})
+    unknown = seat_keys - roster_set
+    if unknown:
+        raise SchemaError(f"books contain seats not in roster: {sorted(unknown)}")
+    by_id = _entries_by_id(roster_entries)
+    for tid in roster_ids:
+        if tid in out["seats"]:
+            continue
+        entry = by_id[tid]
+        out["seats"][tid] = empty_seat(
+            tid,
+            remit_text=str(entry.get("remit") or ""),
+            expression_specialty=str(entry.get("expression_specialty") or ""),
+        )
+    if when is not None:
+        out["as_of"] = isoformat(now_ny(when))
+    return out
 
 
 PENDING_FORCE_FLATTEN_REASON = (
@@ -1372,9 +1425,11 @@ def apply_review(
     evidence_cutoff: str,
     when: datetime | None = None,
     market_state: dict[str, Any] | None = None,
+    roster: tuple[str, ...] | list[str] | None = None,
 ) -> dict[str, Any]:
-    if set(reviews) != set(STANDING_SEATS):
-        raise SchemaError(f"review must include every standing seat; missing/extra {set(reviews) ^ set(STANDING_SEATS)}")
+    seats = _roster_tuple(roster)
+    if set(reviews) != set(seats):
+        raise SchemaError(f"review must include every standing seat; missing/extra {set(reviews) ^ set(seats)}")
     out = deepcopy(books)
     prepared_reviews = deepcopy(reviews)
     if market_state is not None:
@@ -1387,7 +1442,7 @@ def apply_review(
     out["overnight_run_id"] = run_id
     out["evidence_cutoff"] = evidence_cutoff
     out["as_of"] = isoformat(now_ny(when))
-    for seat in STANDING_SEATS:
+    for seat in seats:
         payload = prepared_reviews[seat]
         if payload.get("seat") not in (None, seat):
             raise SchemaError(f"review seat mismatch for {seat}")
@@ -1435,19 +1490,34 @@ def _hold_memo(seat: str) -> dict[str, Any]:
     }
 
 
-def validate_books(books: dict[str, Any]) -> dict[str, Any]:
+def validate_books(
+    books: dict[str, Any],
+    *,
+    roster: tuple[str, ...] | list[str] | None = None,
+    entries: list[dict[str, Any]] | tuple[dict[str, Any], ...] | None = None,
+) -> dict[str, Any]:
     if books.get("schema_version") != SCHEMA_VERSION:
         raise SchemaError("books schema_version mismatch")
-    if set(books.get("seats") or {}) != set(STANDING_SEATS):
+    seats = _roster_tuple(roster)
+    if set(books.get("seats") or {}) != set(seats):
         raise SchemaError("books must contain every locked seat")
     if books.get("starting_nav_usd") != STARTING_NAV_USD:
         raise SchemaError(f"starting_nav_usd must be {STARTING_NAV_USD}")
+    entry_map = _entries_by_id(entries)
     for seat, item in books["seats"].items():
         if item.get("seat") != seat:
             raise SchemaError(f"seat key/name mismatch for {seat}")
-        if item.get("expression_rule") != expression_rule(seat):
+        entry = entry_map.get(seat)
+        specialty = str(entry.get("expression_specialty") or "") if entry else None
+        remit_text = str(entry.get("remit") or "") if entry else None
+        expected_rule = expression_rule(
+            seat,
+            expression_specialty=specialty if entry else None,
+        )
+        if item.get("expression_rule") != expected_rule:
             raise SchemaError(f"{seat} expression_rule drifted")
-        if item.get("remit") != remit(seat):
+        expected_remit = remit(seat, remit_text=remit_text if entry else None)
+        if item.get("remit") != expected_remit:
             raise SchemaError(f"{seat} remit drifted from the standing roster")
         item.setdefault("funding_cost_usd", 0.0)
         item.setdefault("cash_yield_usd", 0.0)

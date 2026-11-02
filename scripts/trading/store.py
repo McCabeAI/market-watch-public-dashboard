@@ -194,30 +194,36 @@ class TradingStore:
         return index
 
     def _ensure_identity_files(self, owner_type: str, owner_id: str) -> None:
-        if not self.journal_path(owner_type, owner_id).is_file():
-            self.write_json(self.journal_path(owner_type, owner_id), empty_journal())
-        if not self.lessons_path(owner_type, owner_id).is_file():
-            self.write_json(self.lessons_path(owner_type, owner_id), empty_lessons())
-        if not self.postmortems_path(owner_type, owner_id).is_file():
-            self.write_json(self.postmortems_path(owner_type, owner_id), empty_postmortems())
-        if not self.postmortems_due_path(owner_type, owner_id).is_file():
-            self.write_json(self.postmortems_due_path(owner_type, owner_id), empty_postmortems_due())
-        if not self.reflections_path(owner_type, owner_id).is_file():
-            self.write_json(self.reflections_path(owner_type, owner_id), empty_reflections())
-        if not self.reflections_due_path(owner_type, owner_id).is_file():
-            self.write_json(self.reflections_due_path(owner_type, owner_id), empty_reflections_due())
-        if not self.consequence_state_path(owner_type, owner_id).is_file():
-            self.write_json(self.consequence_state_path(owner_type, owner_id), empty_consequence_state())
-        if not self.learning_state_path(owner_type, owner_id).is_file():
-            self.write_json(self.learning_state_path(owner_type, owner_id), empty_learning_state())
-        if not self.psychology_events_path(owner_type, owner_id).is_file():
+        assert_identity(owner_type, owner_id)
+        self._ensure_identity_files_unscoped(owner_type, owner_id)
+
+    def _ensure_identity_files_unscoped(self, owner_type: str, owner_id: str) -> None:
+        base = self.state_dir() / owner_type / owner_id
+        base.mkdir(parents=True, exist_ok=True)
+        if not (base / "journal.json").is_file():
+            self.write_json(base / "journal.json", empty_journal())
+        if not (base / "lessons.json").is_file():
+            self.write_json(base / "lessons.json", empty_lessons())
+        if not (base / "postmortems.json").is_file():
+            self.write_json(base / "postmortems.json", empty_postmortems())
+        if not (base / "postmortems_due.json").is_file():
+            self.write_json(base / "postmortems_due.json", empty_postmortems_due())
+        if not (base / "reflections.json").is_file():
+            self.write_json(base / "reflections.json", empty_reflections())
+        if not (base / "reflections_due.json").is_file():
+            self.write_json(base / "reflections_due.json", empty_reflections_due())
+        if not (base / "consequence_state.json").is_file():
+            self.write_json(base / "consequence_state.json", empty_consequence_state())
+        if not (base / "learning_state.json").is_file():
+            self.write_json(base / "learning_state.json", empty_learning_state())
+        if not (base / "psychology_events.json").is_file():
             from scripts.trading.psychology import empty_events_doc
 
-            self.write_json(self.psychology_events_path(owner_type, owner_id), empty_events_doc(owner_type, owner_id))
-        if not self.psychology_state_path(owner_type, owner_id).is_file():
+            self.write_json(base / "psychology_events.json", empty_events_doc(owner_type, owner_id))
+        if not (base / "psychology_state.json").is_file():
             from scripts.trading.psychology import seed_state
 
-            self.write_json(self.psychology_state_path(owner_type, owner_id), seed_state(owner_type, owner_id))
+            self.write_json(base / "psychology_state.json", seed_state(owner_type, owner_id))
 
     def read_index(self) -> dict[str, Any]:
         return read_json(self.index_path())
@@ -369,3 +375,31 @@ class TradingStore:
 
     def trades_for(self, owner_type: str, owner_id: str) -> list[dict[str, Any]]:
         return [self.read_trade(trade_id) for trade_id in self.list_trade_ids(owner_type, owner_id)]
+
+
+def cold_start_identity(
+    store: TradingStore,
+    owner_type: str,
+    owner_id: str,
+    *,
+    allowed_traders: tuple[str, ...] | frozenset[str],
+) -> None:
+    """Create empty trading-memory files for one trader outside import-time STANDING_TRADERS."""
+    allowed = frozenset(allowed_traders)
+    if owner_type != "trader":
+        raise SchemaError(f"cold_start_identity only supports trader identities, got {owner_type!r}")
+    if owner_id not in allowed:
+        raise SchemaError(f"trader {owner_id!r} is not in the allowed roster")
+    id_dir = store.state_dir() / owner_type / owner_id
+    if id_dir.is_dir() and any(id_dir.iterdir()):
+        raise SchemaError(f"identity state already exists for {owner_id!r}")
+    if store.index_path().is_file():
+        index = store.read_index()
+        for row in index.get("identities") or []:
+            if row.get("owner_type") == owner_type and row.get("owner_id") == owner_id:
+                raise SchemaError(f"identity index row already exists for {owner_id!r}")
+    store._ensure_identity_files_unscoped(owner_type, owner_id)
+    if store.index_path().is_file():
+        index = store.read_index()
+        index.setdefault("identities", []).append(empty_identity_index(owner_type, owner_id))
+        store.write_index(index)

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from copy import deepcopy
 from datetime import datetime
+import json
 from pathlib import Path
 from typing import Any
 
@@ -14,6 +15,7 @@ from scripts.overnight.errors import SchemaError
 from scripts.overnight.expression import expression_rule
 from scripts.overnight.store import OvernightStore, write_json
 from scripts.trader_room.constants import STANDING_ADVOCATES
+from scripts.trader_room.agent_config import pin_from_artifact, pin_trader_ids
 from scripts.trader_room.errors import SchemaError as TraderSchemaError
 from scripts.trading.apply import apply_trader_review_with_memory
 from scripts.trading.store import TradingStore
@@ -216,15 +218,32 @@ def _learning_fields(contribution: dict[str, Any], rebuttal: dict[str, Any] | No
     return out
 
 
+def _advocates_for_run(run_dir: Path | None, packet: dict[str, Any]) -> tuple[str, ...]:
+    for source in (run_dir,):
+        if source is None:
+            continue
+        for name in ("preflight.json", "launch_plan.json"):
+            path = source / name
+            if path.is_file():
+                artifact = json.loads(path.read_text(encoding="utf-8"))
+                return pin_trader_ids(pin_from_artifact(artifact, kind="ondemand"))
+    if packet.get("agent_roster_pin"):
+        return pin_trader_ids(pin_from_artifact(packet, kind="ondemand"))
+    return STANDING_ADVOCATES
+
+
 def reviews_from_run(
     originals: dict[str, dict[str, Any]],
     rebuttals: dict[str, dict[str, Any]],
     memory_hashes: dict[str, str] | None,
     packet: dict[str, Any],
+    *,
+    advocates: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     hashes = memory_hashes or {}
+    roster = advocates or pin_trader_ids(pin_from_artifact(packet, kind="ondemand"))
     reviews: dict[str, Any] = {}
-    for seat in STANDING_SEATS:
+    for seat in roster:
         contribution = originals[seat]
         rebuttal = rebuttals.get(seat)
         trade = contribution.get("trade") or {}
@@ -250,7 +269,7 @@ def reviews_from_run(
             harvest_reviews = contribution.get("harvest_reviews")
         if harvest_reviews is not None:
             reviews[seat]["harvest_reviews"] = deepcopy(harvest_reviews)
-    if set(reviews) != set(STANDING_ADVOCATES):
+    if set(reviews) != set(roster):
         raise SchemaError("reviews must cover every standing advocate")
     return reviews
 
@@ -277,8 +296,9 @@ def persist_ondemand_trader_books(
     hashes = memory_hashes
     if hashes is None:
         hashes = ((packet.get("seat_memory") or {}).get("hashes") or {})
+    advocates = _advocates_for_run(run_dir, packet)
     families = overnight_families_from_packet(packet)
-    reviews = reviews_from_run(originals, rebuttals, hashes, packet)
+    reviews = reviews_from_run(originals, rebuttals, hashes, packet, advocates=advocates)
     stamp = now_ny(when)
     updated = apply_trader_review_with_memory(
         books,
@@ -302,7 +322,7 @@ def persist_ondemand_trader_books(
         "reviews": reviews,
         "blocked": {
             seat: list(updated["seats"][seat].get("blocked_opens") or [])
-            for seat in STANDING_SEATS
+            for seat in advocates
         },
     }
     write_json(run_dir / "paper_actions.json", audit_actions)

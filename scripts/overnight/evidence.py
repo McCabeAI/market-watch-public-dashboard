@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Any
 
 from scripts.funding.context import build_funding_context, competition_contract
-from scripts.overnight.books import empty_books, validate_books
+from scripts.overnight.books import empty_books, ensure_roster_books, validate_books
 from scripts.overnight.clock import isoformat, now_ny
 from scripts.overnight.constants import (
     FORBIDDEN_ACQUISITION,
@@ -75,6 +75,11 @@ def freeze_snapshot(
     persist_review(store, meta)
     binding = capture_starting_book_hashes(store, run_id=run_id, when=when)
 
+    from scripts.trader_room.agent_config import build_pin, pin_trader_ids
+
+    pin = build_pin("daily")
+    roster_ids = pin_trader_ids(pin)
+
     collect = store.read_artifact(run_id, "collect.json")
     delta = None
     if store.has_artifact(run_id, "pre_trader_delta.json"):
@@ -84,6 +89,8 @@ def freeze_snapshot(
         prior_books = validate_books(store.read_books())
     else:
         prior_books = empty_books(overnight_run_id=run_id, when=when)
+    prior_books = ensure_roster_books(prior_books, pin["traders"], when=when)
+    validate_books(prior_books, roster=roster_ids, entries=pin["traders"])
     market_state = ((families.get("market_state") or {}).get("data") if isinstance(families.get("market_state"), dict) else None)
     funding_context = build_funding_context(market_state or {}, as_of=isoformat(now_ny(when)))
     packet = {
@@ -167,6 +174,7 @@ def freeze_snapshot(
         from scripts.pm.books import validate_books as validate_pm_books
 
         packet["prior_pm_books"] = validate_pm_books(pm_store.read_books())
+    packet["agent_roster_pin"] = pin
     digest = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
     packet["packet_sha256"] = digest
     if snapshot_path.is_file():
