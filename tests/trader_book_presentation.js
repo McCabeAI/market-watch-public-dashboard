@@ -374,6 +374,24 @@ check(usBlockedFlags.restriction.tradingRestricted === true, "ineligible US trad
 const usBlockedSentence = api.permissionSentence(usBlockedPerms);
 check(usBlockedSentence.indexOf("Restricted: US") !== -1, "US blocked in sentence");
 
+const nzSpotPerms = {
+  trade_eligible_countries: ["US", "CA", "AU", "NZ", "EA", "JP"],
+  countries: {
+    US: { eligible: true },
+    CA: { eligible: true },
+    AU: { eligible: true },
+    NZ: { eligible: true, sovereign_admission: "research_only" },
+    EA: { eligible: true },
+    JP: { eligible: true },
+  },
+};
+const nzSentence = api.permissionSentence(nzSpotPerms);
+const nzFlags = api.fleetFlags([], [], nzSpotPerms);
+check(nzSentence.indexOf("Restricted: NZ") === -1, "NZD spot is not a country restriction");
+check(nzSentence.indexOf("NZ sovereign rates are research-only") !== -1, "NZ sovereign stays specific");
+check(nzFlags.restriction.tradingRestricted === false, "research-only NZ sovereign does not trading-restrict");
+check(nzFlags.restriction.restricted.indexOf("NZ") === -1, "NZ is absent from the restricted list");
+
 const legacySources = {
   trade_eligible_countries: ["US", "CA", "AU", "NZ", "EA", "JP"],
   countries: {

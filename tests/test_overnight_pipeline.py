@@ -1388,10 +1388,13 @@ class FreshnessMatrixTests(unittest.TestCase):
     def test_open_records_block_on_the_book(self):
         seat = empty_seat("dollar-king")
         stale = _fresh_families()
-        stale["macro_hard"]["status"] = "stale"
-        stale["macro_hard"].pop("fresh_countries", None)
-        stale["macro_hard"].pop("stale_countries", None)
-        stale["macro_hard"].pop("components", None)
+        stale["market_state"] = {
+            "status": "fresh",
+            "data": {
+                "rates": {"CA": {"status": "stale", "latest_observation": "2026-09-01"}},
+                "fx": {"status": "ok", "pairs": {"USDCAD": {"spot": 1.36, "as_of": "2026-09-18"}}},
+            },
+        }
         apply_action(
             seat,
             {
@@ -1409,6 +1412,29 @@ class FreshnessMatrixTests(unittest.TestCase):
         )
         self.assertEqual(seat["positions"], [])
         self.assertEqual(seat["history"][-1]["result"], "blocked_freshness")
+
+    def test_macro_gap_does_not_block_markable_spot_open(self):
+        seat = empty_seat("dollar-king")
+        families = _fresh_families()
+        families["macro_hard"] = {"status": "invalid"}
+        apply_action(
+            seat,
+            {
+                "action": "OPEN",
+                "instrument": "USDCAD",
+                "side": "long",
+                "notional_usd": 1_000_000,
+                "price": 1.36,
+                "asset_class": "spot_fx",
+                "expression_memo": _spot_memo(),
+            },
+            families=families,
+            run_id="overnight-20260918-dryrun-macro",
+            when=AS_OF,
+        )
+        self.assertEqual(len(seat["positions"]), 1)
+        self.assertEqual(seat["history"][-1]["result"], "applied")
+        self.assertNotEqual(seat["history"][-1]["result"], "blocked_freshness")
 
     def test_catastrophic_core_blocks_publish_stale_review_does_not(self):
         ok = publication_decision(families=_fresh_families(), trader_review_status="failed", last_successful_review_run_id="overnight-20260917")

@@ -8,6 +8,7 @@ import re
 from datetime import date
 from typing import Any
 
+from scripts.country_registry import paper_sovereign_admission
 from scripts.policy_path_data import _iso_calendar_date
 
 from scripts.market_watch_launch.contract import (
@@ -127,17 +128,8 @@ def _fx_leg_status(packet: dict[str, Any]) -> str:
     return "missing"
 
 
-def _normalize_preflight_stale(packet: dict[str, Any]) -> set[str]:
-    raw = packet.get("preflight_stale_sources")
-    if raw is None:
-        return set()
-    if isinstance(raw, (list, tuple, set, frozenset)):
-        return {str(item) for item in raw if item}
-    return set()
-
-
-def _ca_only_preflight_stale(packet: dict[str, Any]) -> bool:
-    return _normalize_preflight_stale(packet) == {"CA_rates"}
+def _research_only_sovereign(code: str) -> bool:
+    return paper_sovereign_admission(code) == "research_only"
 
 
 _SOFR_CONTRACT_INSTRUMENT = re.compile(r"^SOFR_(20\d{2}-\d{2})$", re.I)
@@ -516,24 +508,8 @@ def evaluate_gate(
         base["reason"] = "no_markable_universe"
         base["eligible"] = False
         return base
-    if market_status == "stale":
-        legs_preview = _leg_statuses(packet)
-        fx_preview = legs_preview.get("FX", "missing")
-        non_ca_rate_ok = any(
-            legs_preview.get(f"{code}_rates", "missing") not in _BLOCKING_LEG_STATUSES
-            for code in COUNTRIES
-            if code != "CA"
-        )
-        if not (
-            _ca_only_preflight_stale(packet)
-            and fx_preview not in _BLOCKING_LEG_STATUSES
-            and non_ca_rate_ok
-        ):
-            base["outcome"] = "BLOCKED"
-            base["coverage"] = "NONE"
-            base["reason"] = "no_markable_universe"
-            base["eligible"] = False
-            return base
+    # A stale packet is not an empty universe. FX and each rate leg are judged
+    # below. One stale cash curve does not ban expressions that do not use it.
 
     legs = _leg_statuses(packet)
     fx_status = legs.get("FX", "missing")
@@ -554,13 +530,18 @@ def evaluate_gate(
     trade_eligible_countries: list[str] = []
     for code in COUNTRIES:
         rate_status = legs.get(f"{code}_rates", "missing")
-        rates_ok = rate_status not in _BLOCKING_LEG_STATUSES
-        country_eligible = rates_ok
+        rates_blocking = rate_status in _BLOCKING_LEG_STATUSES
+        research_only = _research_only_sovereign(code)
+        if research_only:
+            countries[code]["sovereign_admission"] = "research_only"
+        if rates_blocking:
+            partial_legs.append(f"{code}_rates")
+        # NZ sovereign cash is research-only. An unsupported curve must not
+        # label the country restricted while NZD spot still has a mark.
+        country_eligible = (not rates_blocking) or research_only
         countries[code]["eligible"] = country_eligible
         if country_eligible:
             trade_eligible_countries.append(code)
-        elif rate_status in _BLOCKING_LEG_STATUSES:
-            partial_legs.append(f"{code}_rates")
 
     base["partial_legs"] = partial_legs
     base["trade_eligible_countries"] = trade_eligible_countries
@@ -715,7 +696,10 @@ def _apply_policy_overlay(
         if isinstance(research_cov, str) and research_cov:
             bucket["research_coverage"] = research_cov
 
-        if rate_leg in partial_legs:
+        research_only = _research_only_sovereign(code)
+        if research_only:
+            bucket["sovereign_admission"] = "research_only"
+        if rate_leg in partial_legs and not research_only:
             eligible = False
         elif legacy_outcome == "BLOCKED":
             eligible = bool(bucket.get("eligible"))

@@ -121,6 +121,11 @@ def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
                 "eligible": bool((country_rows.get(code) or {}).get("eligible")),
                 "scored_status": (country_rows.get(code) or {}).get("scored_status"),
                 "gaps": list((country_rows.get(code) or {}).get("gaps") or []),
+                **(
+                    {"sovereign_admission": (country_rows.get(code) or {}).get("sovereign_admission")}
+                    if (country_rows.get(code) or {}).get("sovereign_admission")
+                    else {}
+                ),
             }
             for code in sorted(country_rows)
         },

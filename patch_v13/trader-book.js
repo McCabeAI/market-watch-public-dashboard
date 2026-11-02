@@ -648,10 +648,18 @@
     var restricted = Object.keys(countries).filter(function (code) {
       return countries[code] && !countries[code].eligible;
     });
-    if (!allowed.length && !restricted.length && !researchGapCountries(perms).length) return "";
+    var researchOnly = Object.keys(countries).filter(function (code) {
+      var row = countries[code];
+      return row && row.eligible && row.sovereign_admission === "research_only";
+    });
+    if (!allowed.length && !restricted.length && !researchGapCountries(perms).length && !researchOnly.length) return "";
     var sentence = "New risk eligible: " + allowed.join(" / ") +
       (restricted.length ? " · Restricted: " + restricted.join(" / ") : "") +
       ". Existing positions may still be held, reduced or closed.";
+    if (researchOnly.length) {
+      sentence += " " + researchOnly.join(" / ") +
+        " sovereign rates are research-only and do not restrict spot.";
+    }
     var gaps = researchGapCountries(perms);
     if (gaps.length) {
       sentence += " Macro research coverage is incomplete for " + gaps.join(" / ") +

@@ -7,7 +7,8 @@ import unittest
 from scripts.market_watch_launch.freeze import _trade_permissions
 from scripts.market_watch_launch.quality_gate import evaluate_gate, evaluate_gate_canonical, apply_macro_overlay
 from scripts.macro_freshness import macro_expression_block
-from scripts.overnight.freshness import expression_dependencies
+from scripts.overnight.errors import FreshnessError
+from scripts.overnight.freshness import assert_action_allowed, expression_dependencies
 from scripts.overnight.mark_admission import entry_rejection
 from scripts.run_state.policy import evaluate_policy
 
@@ -161,6 +162,105 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
         self.assertEqual(nz_rv["reason"], "unsupported_mark_source")
         deps = expression_dependencies("NZDUSD", asset_class="spot_fx")
         self.assertNotIn("NZ_rates", deps)
+        self.assertIn("FX_NZDUSD", deps)
+
+    def _markable_families(self, macro: dict, **rate_overrides: dict) -> dict:
+        families = _fresh_market_families(**rate_overrides)
+        families["macro_hard"] = macro
+        families["news"] = {"status": "fresh"}
+        families["central_bank_research"] = {"status": "fresh"}
+        data = families["market_state"]["data"]
+        data["fx"] = {
+            "status": "ok",
+            "pairs": {
+                "USDCAD": {"spot": 1.36, "as_of": "2026-11-02"},
+                "AUDUSD": {"spot": 0.66, "as_of": "2026-11-02"},
+                "AUDCAD": {"spot": 0.91, "as_of": "2026-11-02"},
+                "NZDUSD": {"spot": 0.58, "as_of": "2026-11-02"},
+                "EURUSD": {"spot": 1.08, "as_of": "2026-11-02"},
+            },
+        }
+        data["tradable_rate_curves"] = {
+            "curves": {
+                "SOFR": {"status": "ok"},
+                "CORRA": {"status": "ok"},
+                "AONIA": {"status": "ok"},
+            }
+        }
+        data["policy_paths"] = {
+            "countries": {
+                "US": {"status": "ok", "benchmark": {"rate": 3.9}},
+                "CA": {"status": "ok"},
+                "AU": {"status": "ok"},
+            }
+        }
+        return families
+
+    def test_assert_action_allowed_ignores_macro_gaps_for_markable_instruments(self) -> None:
+        macro_cases = (
+            {"status": "missing"},
+            {"status": "invalid"},
+            {"status": "unavailable"},
+            {"status": "stale", "stale_countries": ["US", "CA", "AU", "NZ", "EA", "JP"], "fresh_countries": []},
+        )
+        instruments = (
+            ("USDCAD", "spot_fx"),
+            ("AUDUSD", "spot_fx"),
+            ("AUDCAD", "spot_fx"),
+            ("NZDUSD", "spot_fx"),
+            ("CORRA_2027-03", "rates"),
+            ("AONIA_2026-11", "rates"),
+            ("SOFR_2027-03", "rates"),
+        )
+        for macro in macro_cases:
+            families = self._markable_families(macro)
+            for action in ("OPEN", "ADD", "HEDGE"):
+                for instrument, asset_class in instruments:
+                    assert_action_allowed(
+                        action,
+                        families,
+                        seat="cross-merchant",
+                        instrument=instrument,
+                        asset_class=asset_class,
+                    )
+            self.assertIsNone(
+                macro_expression_block(families, instrument="AUDCAD", asset_class="spot_fx")
+            )
+
+    def test_missing_us_rates_do_not_ban_unrelated_spot(self) -> None:
+        families = self._markable_families({"status": "fresh"}, US={"status": "missing"}, AU={"status": "missing"})
+        for instrument in ("EURUSD", "AUDCAD", "NZDUSD"):
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="cross-merchant",
+                instrument=instrument,
+                asset_class="spot_fx",
+            )
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US_10Y", asset_class="rates")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AU_10Y", asset_class="rates")
+        nz = entry_rejection(instrument="NZ_10Y", asset_class="rates", action="OPEN")
+        self.assertEqual(nz["reason"], "unsupported_mark_source")
+
+    def test_unavailable_nz_curve_keeps_nzd_spot_country_eligible(self) -> None:
+        families = _fresh_market_families(NZ={"status": "unavailable", "error": "RBNZ unsupported"})
+        result = evaluate_gate(rows=_nov2_macro_rows(), families=families)
+        self.assertTrue(result["countries"]["NZ"]["eligible"])
+        self.assertIn("NZ", result["trade_eligible_countries"])
+        self.assertEqual(result["countries"]["NZ"]["sovereign_admission"], "research_only")
+        self.assertIn("NZ_rates", result["partial_legs"])
+        self.assertNotIn("NZ", [code for code, row in result["countries"].items() if row.get("eligible") is False])
+        families["news"] = {"status": "fresh"}
+        families["central_bank_research"] = {"status": "fresh"}
+        families["market_state"]["data"]["fx"] = {
+            "status": "ok",
+            "pairs": {"NZDUSD": {"spot": 0.58, "as_of": "2026-11-02"}},
+        }
+        assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="NZDUSD", asset_class="spot_fx")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="value-guy", instrument="NZ_10Y", asset_class="rates")
 
     def test_freeze_trade_permissions_copy_research_fields(self) -> None:
         gate_detail = {
