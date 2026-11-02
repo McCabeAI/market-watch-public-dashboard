@@ -193,6 +193,8 @@ def _verify_quality_gate(launch: dict[str, Any]) -> dict[str, Any]:
         "blocked_expressions": list(gate.get("blocked_expressions") or []),
         "blocked_sources": list(gate.get("blocked_sources") or []),
         "partial_series": list(gate.get("partial_series") or []),
+        "research_coverage_gaps": list(gate.get("research_coverage_gaps") or []),
+        "research_coverage_series": list(gate.get("research_coverage_series") or []),
     }
 
 

@@ -529,6 +529,38 @@
     list.push(row);
   }
 
+  function researchGapCountries(permissions) {
+    var raw = (permissions || {}).research_coverage_gaps || [];
+    return raw.map(function (entry) {
+      var text = String(entry || "");
+      if (text.indexOf("macro:") === 0) return text.slice(6);
+      return text;
+    }).filter(Boolean);
+  }
+
+  function fxLegStatus(permissions) {
+    var perms = permissions || {};
+    var names = (perms.blocked_legs || []).concat(perms.partial_legs || []);
+    var blocked = false;
+    names.forEach(function (name) {
+      if (name === "FX") blocked = true;
+    });
+    if (!blocked) return "";
+    return String(perms.fx_leg_status || "unavailable");
+  }
+
+  function ratesRestrictedCountries(permissions) {
+    var perms = permissions || {};
+    var countries = perms.countries || {};
+    var fxStatus = fxLegStatus(perms);
+    return Object.keys(countries).filter(function (code) {
+      var row = countries[code];
+      if (!row || row.eligible) return false;
+      if (fxStatus && row.sovereign_admission === "research_only") return false;
+      return true;
+    });
+  }
+
   function fleetFlags(seats, pms, permissions) {
     var fundingSeats = {};
     var fundingPms = {};
@@ -584,10 +616,16 @@
     (pms || []).forEach(function (pm) { takeBook(pm, "pm"); });
 
     var perms = permissions || {};
-    var countries = perms.countries || {};
-    var restricted = Object.keys(countries).filter(function (code) { return countries[code] && !countries[code].eligible; });
+    var restricted = ratesRestrictedCountries(perms);
     var eligible = perms.trade_eligible_countries || [];
+    var fxStatus = fxLegStatus(perms);
     var blocked = perms.blocked_sources || [];
+    var researchGaps = researchGapCountries(perms);
+    var researchSeries = perms.research_coverage_series || [];
+    var seriesLabel = researchSeries.length
+      ? humaniseBlockedSources(researchSeries)
+      : (blocked.length ? humaniseBlockedSources(blocked) : "");
+    var researchCoverageLabel = seriesLabel || (researchGaps.length ? researchGaps.join(" / ") : "");
     var quarantined = (perms.quarantined_positions || []).map(function (row) {
       return {
         seat: row.seat,
@@ -617,7 +655,11 @@
         restricted: restricted,
         blockedSources: blocked,
         blockedLabel: humaniseBlockedSources(blocked),
+        researchGaps: researchGaps,
+        researchCoverageLabel: researchCoverageLabel,
+        tradingRestricted: restricted.length > 0 || quarantined.length > 0,
         quarantined: quarantined,
+        fxStatus: fxStatus,
         sentence: permissionSentence(perms)
       }
     };
@@ -627,13 +669,30 @@
     var perms = permissions || {};
     var allowed = perms.trade_eligible_countries || [];
     var countries = perms.countries || {};
-    var restricted = Object.keys(countries).filter(function (code) {
-      return countries[code] && !countries[code].eligible;
+    var fxStatus = fxLegStatus(perms);
+    var restricted = ratesRestrictedCountries(perms);
+    var researchOnly = Object.keys(countries).filter(function (code) {
+      var row = countries[code];
+      return row && row.eligible && row.sovereign_admission === "research_only";
     });
-    if (!allowed.length && !restricted.length) return "";
-    return "New risk eligible: " + allowed.join(" / ") +
+    if (!allowed.length && !restricted.length && !researchGapCountries(perms).length && !researchOnly.length && !fxStatus) return "";
+    var sentence = "New risk eligible: " + allowed.join(" / ") +
       (restricted.length ? " · Restricted: " + restricted.join(" / ") : "") +
       ". Existing positions may still be held, reduced or closed.";
+    if (researchOnly.length) {
+      sentence += " " + researchOnly.join(" / ") +
+        " sovereign rates are research-only and do not restrict spot.";
+    }
+    if (fxStatus) {
+      sentence += " FX is " + fxStatus +
+        "; spot FX is not eligible. Rates in eligible countries are unaffected.";
+    }
+    var gaps = researchGapCountries(perms);
+    if (gaps.length) {
+      sentence += " Macro research coverage is incomplete for " + gaps.join(" / ") +
+        ". This does not restrict trading.";
+    }
+    return sentence;
   }
 
   function describeFunding(funding) {
@@ -989,7 +1048,8 @@
     money: money,
     displayName: displayName,
     formatStamp: formatStamp,
-    permissionSentence: permissionSentence
+    permissionSentence: permissionSentence,
+    flagHtml: flagHtml
   };
 
   if (typeof module === "object" && module.exports) module.exports = api;
@@ -1113,19 +1173,27 @@
       items.push('<li><span class="mw-chip mw-chip--bad">Unavailable</span><p>P&amp;L unavailable: ' + namesOf(flags.pnlUnavailable) + "</p></li>");
     }
     var restriction = flags.restriction || {};
-    var restrictedState = (restriction.restricted || []).length || restriction.blockedLabel || (restriction.quarantined || []).length;
-    if (restriction.sentence || restrictedState) {
-      var extra = "";
-      if (restriction.blockedLabel) extra += " Blocked sources: " + restriction.blockedLabel + ".";
+    if (restriction.fxStatus) {
+      items.push('<li><span class="mw-chip mw-chip--warn">FX unavailable</span><p>FX is ' +
+        esc(restriction.fxStatus) +
+        ". Spot FX is not eligible. Rates in eligible countries are unaffected.</p></li>");
+    }
+    var tradingRestricted = restriction.tradingRestricted;
+    var researchLabel = restriction.researchCoverageLabel || "";
+    if (researchLabel) {
+      items.push('<li><span class="mw-chip mw-chip--info">Macro research coverage</span><p>' +
+        esc(researchLabel) + ". This does not restrict trading.</p></li>");
+    }
+    if (restriction.sentence || tradingRestricted || (restriction.quarantined || []).length) {
       var quarantine = (restriction.quarantined || []).map(function (row) {
         return "<li>" + esc(row.label) + " · " + esc(row.human || row.instrument) +
           (row.instrument ? ' <span class="mw-raw">' + esc(row.instrument) + "</span>" : "") +
           (row.reason ? " · " + esc(humaniseDiagnostic(row.reason)) : "") + "</li>";
       }).join("");
-      var gateChip = restrictedState ? "mw-chip--warn" : "mw-chip--info";
-      var gateText = restrictedState ? "New risk restricted" : "New risk eligible";
+      var gateChip = tradingRestricted ? "mw-chip--warn" : "mw-chip--info";
+      var gateText = tradingRestricted ? "New risk restricted" : "New risk eligible";
       items.push('<li><span class="mw-chip ' + gateChip + '">' + gateText + "</span><p>" +
-        esc(restriction.sentence || "") + esc(extra) + "</p>" +
+        esc(restriction.sentence || "") + "</p>" +
         (quarantine ? "<ul>" + quarantine + "</ul>" : "") + "</li>");
     }
     if (flags.staleReviews.length) {

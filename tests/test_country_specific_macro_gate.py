@@ -53,10 +53,10 @@ class CountrySpecificMacroGateTests(unittest.TestCase):
             asset_class="rates",
         )
 
-    def test_usdcad_open_blocks_when_us_macro_is_stale(self) -> None:
-        with self.assertRaises(FreshnessError):
+    def test_usdcad_open_survives_stale_us_macro(self) -> None:
+        for action in ("OPEN", "ADD", "HEDGE"):
             assert_action_allowed(
-                "OPEN",
+                action,
                 _families(),
                 seat="dollar-king",
                 instrument="USDCAD",
@@ -85,78 +85,77 @@ class CountrySpecificMacroGateTests(unittest.TestCase):
             instrument="CORRA_2027-03",
             asset_class="rates",
         )
-        with self.assertRaises(FreshnessError):
+        assert_action_allowed(
+            "ADD",
+            families,
+            seat="dollar-king",
+            instrument="AUDUSD",
+            asset_class="spot_fx",
+        )
+
+    def test_missing_macro_family_does_not_veto_a_markable_instrument(self) -> None:
+        families = _families()
+        families.pop("macro_hard")
+        for instrument, asset_class in (
+            ("CORRA_2027-03", "rates"),
+            ("USDCAD", "spot_fx"),
+            ("AUDUSD", "spot_fx"),
+            ("NZDUSD", "spot_fx"),
+        ):
             assert_action_allowed(
-                "ADD",
+                "OPEN",
                 families,
-                seat="dollar-king",
-                instrument="AUDUSD",
+                seat="carry-is-king",
+                instrument=instrument,
+                asset_class=asset_class,
+            )
+
+    def test_unattributed_or_invalid_macro_does_not_veto(self) -> None:
+        cases = (
+            {"status": "stale"},
+            {"status": "stale", "fresh_countries": [], "stale_countries": []},
+            {"status": "stale", "fresh_countries": ["CA"], "stale_countries": ["USA"]},
+            {"status": "invalid"},
+            {"status": "unavailable"},
+            {"status": "missing"},
+        )
+        for macro in cases:
+            families = _families()
+            families["macro_hard"] = macro
+            assert_action_allowed(
+                "OPEN",
+                families,
+                seat="carry-is-king",
+                instrument="CORRA_2027-03",
+                asset_class="rates",
+            )
+            assert_action_allowed(
+                "HEDGE",
+                families,
+                seat="cross-merchant",
+                instrument="AUDCAD",
                 asset_class="spot_fx",
             )
 
-    def test_missing_macro_family_fails_closed(self) -> None:
+    def test_stale_ca_rates_still_block_only_ca_expressions(self) -> None:
         families = _families()
-        families.pop("macro_hard")
+        families["macro_hard"] = {"status": "missing"}
+        families["market_state"]["data"]["rates"]["CA"] = {"status": "stale"}
         with self.assertRaises(FreshnessError):
             assert_action_allowed(
                 "OPEN",
                 families,
-                seat="carry-is-king",
-                instrument="CORRA_2027-03",
-                asset_class="rates",
+                seat="dollar-king",
+                instrument="USDCAD",
+                asset_class="spot_fx",
             )
-
-    def test_unattributed_aggregate_stale_fails_closed(self) -> None:
-        families = _families()
-        families["macro_hard"] = {"status": "stale"}
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed(
-                "OPEN",
-                families,
-                seat="carry-is-king",
-                instrument="CORRA_2027-03",
-                asset_class="rates",
-            )
-
-    def test_empty_country_lists_fail_closed(self) -> None:
-        families = _families()
-        families["macro_hard"]["status"] = "stale"
-        families["macro_hard"]["fresh_countries"] = []
-        families["macro_hard"]["stale_countries"] = []
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed(
-                "OPEN",
-                families,
-                seat="carry-is-king",
-                instrument="CORRA_2027-03",
-                asset_class="rates",
-            )
-
-    def test_unknown_country_codes_fail_closed(self) -> None:
-        families = _families()
-        families["macro_hard"]["status"] = "stale"
-        families["macro_hard"]["fresh_countries"] = ["CA"]
-        families["macro_hard"]["stale_countries"] = ["USA"]
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed(
-                "OPEN",
-                families,
-                seat="carry-is-king",
-                instrument="CORRA_2027-03",
-                asset_class="rates",
-            )
-
-    def test_invalid_macro_family_still_fails_closed(self) -> None:
-        families = _families()
-        families["macro_hard"]["status"] = "invalid"
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed(
-                "ADD",
-                families,
-                seat="carry-is-king",
-                instrument="CORRA_2027-03",
-                asset_class="rates",
-            )
+        assert_action_allowed(
+            "OPEN",
+            families,
+            seat="cross-merchant",
+            instrument="EURUSD",
+            asset_class="spot_fx",
+        )
 
 
 if __name__ == "__main__":

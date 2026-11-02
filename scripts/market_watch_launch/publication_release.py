@@ -353,8 +353,15 @@ def render_edition_banner(release: dict[str, Any]) -> str:
         )
         quality = release.get("quality") or {}
         if quality.get("coverage") == "PARTIAL":
-            gaps = ", ".join(str(item) for item in quality.get("blocked_expressions") or []) or "see Sources"
-            items.append(f"Quality gate PASS with PARTIAL coverage ({_esc(gaps)}). See Sources for source health.")
+            research_gaps = quality.get("research_coverage_gaps")
+            if isinstance(research_gaps, list) and research_gaps:
+                gaps = ", ".join(str(item) for item in research_gaps)
+            else:
+                gaps = ", ".join(str(item) for item in quality.get("blocked_expressions") or []) or "see Sources"
+            items.append(
+                f"Quality gate PASS with PARTIAL coverage. Macro research coverage: {_esc(gaps)}. "
+                f"These gaps do not restrict trading. See Sources for source health."
+            )
         items.append("The final edition replaces this page on the same URL once traders and PMs are accepted.")
     else:
         title = f"Final edition · {session}"

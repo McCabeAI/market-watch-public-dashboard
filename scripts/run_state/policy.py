@@ -72,7 +72,7 @@ def evaluate_policy(
 ) -> dict:
     carry_forward_reasons: Dict[str, Any] = {}
     unknown_calendar_series: List[str] = []
-    blocked_countries: set[str] = set()
+    research_gap_countries: set[str] = set()
 
     for state in states:
         state_id = str(state.get("state_id") or "")
@@ -93,17 +93,25 @@ def evaluate_policy(
         if country not in countries or not _trade_critical(state):
             continue
         if reason == "overdue_unverified":
-            blocked_countries.add(country)
+            research_gap_countries.add(country)
 
     unknown_calendar_series = sorted(set(unknown_calendar_series))
-    blocked_expressions = [f"macro:{code}" for code in countries if code in blocked_countries]
-    trade_eligible_countries = [code for code in countries if code not in blocked_countries]
-    countries_out = {code: {"eligible": code not in blocked_countries} for code in countries}
+    research_coverage_gaps = [
+        f"macro:{code}" for code in countries if code in research_gap_countries
+    ]
+    countries_out = {
+        code: {
+            "eligible": True,
+            "research_coverage": "gap" if code in research_gap_countries else "ok",
+        }
+        for code in countries
+    }
 
     return {
         "policy_version": POLICY_VERSION,
-        "blocked_expressions": blocked_expressions,
-        "trade_eligible_countries": trade_eligible_countries,
+        "blocked_expressions": [],
+        "research_coverage_gaps": research_coverage_gaps,
+        "trade_eligible_countries": list(countries),
         "unknown_calendar_series": unknown_calendar_series,
         "carry_forward_reasons": carry_forward_reasons,
         "countries": countries_out,

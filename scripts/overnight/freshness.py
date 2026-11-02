@@ -141,6 +141,10 @@ def expression_dependencies(
             deps.add("JP_rates")
         if "CA" in (left, right):
             deps.add("CA_rates")
+        if "US" in (left, right):
+            deps.add("US_rates")
+        if "AU" in (left, right):
+            deps.add("AU_rates")
     if re.search(_bounded_token("NZD") + r"|" + _bounded_token("NZ") + r"(?![A-Z])", upper):
         deps.add("NZ_rates")
     if re.search(
@@ -169,11 +173,20 @@ def expression_dependencies(
         deps.add("CORRA_curve")
     if re.search(_bounded_token("AONIA"), upper):
         deps.add("AONIA_curve")
+    # USD and AUD in a spot pair are not a sovereign-curve dependency.
+    # US and AU cash legs apply only to the sovereign instrument itself.
+    _sovereign_tenor = r"(?:2Y|5Y|10Y|30Y|LONG|2S10S|5S10S)"
+    if re.search(rf"(?<![A-Z0-9])US[ _]{_sovereign_tenor}(?![A-Z0-9])", upper):
+        deps.add("US_rates")
+    if re.search(rf"(?<![A-Z0-9])AU[ _]{_sovereign_tenor}(?![A-Z0-9])", upper):
+        deps.add("AU_rates")
     from scripts.overnight.mark_admission import classify_exposure
 
     info = classify_exposure(instrument, asset_class=asset_class, expression=expression)
     for dep in info.get("spot_rate_deps_to_ignore") or ():
         deps.discard(dep)
+    for pair in info.get("fx_pairs") or ():
+        deps.add(f"FX_{pair}")
     return deps
 
 
@@ -196,17 +209,46 @@ def _policy_country(packet: dict[str, Any], code: str) -> dict[str, Any] | None:
     return block if isinstance(block, dict) else None
 
 
+_RATE_DEPENDENCY_COUNTRY = {
+    "US_rates": "US",
+    "CA_rates": "CA",
+    "AU_rates": "AU",
+    "NZ_rates": "NZ",
+    "EA_rates": "EA",
+    "JP_rates": "JP",
+}
+
+
+def _fx_pair_status(packet: dict[str, Any], pair: str) -> str:
+    """Status of one FX pair. Absent pair matrices are not invented marks."""
+    fx = packet.get("fx") if isinstance(packet.get("fx"), dict) else {}
+    fx_status = str(fx.get("status") or "")
+    if fx_status in _BLOCKING_SOURCE_STATUSES:
+        return fx_status
+    pairs = fx.get("pairs") if isinstance(fx.get("pairs"), dict) else None
+    if pairs is None:
+        return "ok"
+    row = pairs.get(pair)
+    if not isinstance(row, dict):
+        return "missing"
+    pair_status = str(row.get("status") or "")
+    if pair_status in _BLOCKING_SOURCE_STATUSES:
+        return pair_status
+    if row.get("spot") is None and row.get("mid") is None:
+        return "missing"
+    return "ok"
+
+
 def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
     rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
     curves = ((packet.get("tradable_rate_curves") or {}).get("curves") or {})
     stale = packet.get("stale_sources")
     unavailable = packet.get("unavailable_sources")
-    if dependency == "NZ_rates":
-        return _named_status(rates.get("NZ"), stale, unavailable, source_key="NZ_rates")
-    if dependency == "JP_rates":
-        return _named_status(rates.get("JP"), stale, unavailable, source_key="JP_rates")
-    if dependency == "CA_rates":
-        return _named_status(rates.get("CA"), stale, unavailable, source_key="CA_rates")
+    rate_country = _RATE_DEPENDENCY_COUNTRY.get(dependency)
+    if rate_country:
+        return _named_status(rates.get(rate_country), stale, unavailable, source_key=dependency)
+    if dependency.startswith("FX_") and len(dependency) == 9:
+        return _fx_pair_status(packet, dependency[3:])
     curve_ids = {"SOFR_curve": "SOFR", "CORRA_curve": "CORRA", "AONIA_curve": "AONIA"}
     curve_id = curve_ids.get(dependency)
     if curve_id:
@@ -231,13 +273,13 @@ def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
 
 
 def required_preflight_block(families: dict[str, Any]) -> str | None:
-    """Fail closed when a required US/AU cash curve or ECB FX is unusable.
+    """Source-collection diagnostic for US/AU cash curves and ECB FX.
 
-    Canadian benchmark cash staleness is enforced per expression and on the
-    existing book; it does not veto every trade. Policy paths and tradable
-    futures strips are expression-specific. An SR3, CORRA, or AONIA outage
-    does not veto an unrelated trade. CME positioning is supplemental and is
-    not a preflight input.
+    This does not admit or reject a trade. Instrument execution uses
+    ``expression_evidence_block`` for the legs that expression actually
+    depends on. A stale US or AU curve, or a stale FX fixing, must not veto
+    an unrelated instrument. Canadian benchmark cash staleness is also
+    per expression. CME positioning is not a preflight input.
     """
     packet = _market_packet(families)
     if packet is None:
@@ -280,6 +322,22 @@ def expression_evidence_block(
     return "expression blocked by stale/missing required leg: " + ", ".join(blocked)
 
 
+def _execution_family_block(families: dict[str, Any]) -> list[str]:
+    """Families that still veto every OPEN/ADD.
+
+    News that is stale, missing, invalid, or unavailable does. A stale
+    market-state packet does not: that staleness is a quote or curve leg, and
+    only the expression that uses the leg fails. A missing, invalid, or
+    unavailable market packet still means nothing can be marked. Macroeconomic
+    coverage is not an execution family.
+    """
+    blocked = blocked_expanding_families(families)
+    market = families.get("market_state") if isinstance(families.get("market_state"), dict) else {}
+    if str(market.get("status") or "missing") == "stale":
+        return [name for name in blocked if name != "market_state"]
+    return blocked
+
+
 def assert_action_allowed(
     action: str,
     families: dict[str, Any],
@@ -302,15 +360,14 @@ def assert_action_allowed(
             raise FreshnessError(
                 f"{seat} {action} blocked: {rejection['reason']}: {rejection['message']}"
             )
-    blocked = blocked_expanding_families(families)
+    blocked = _execution_family_block(families)
     if action in EXPANDING_ACTIONS and blocked:
         raise FreshnessError(
             f"{seat} {action} blocked by stale/missing required evidence: {blocked}"
         )
-    if action in EXPANDING_ACTIONS:
-        preflight = required_preflight_block(families)
-        if preflight:
-            raise FreshnessError(f"{seat} {action} blocked: {preflight}")
+    # HEDGE is not an expanding family action, but it still needs the same
+    # instrument mark. A missing FX pair must not be sized as a hedge.
+    if action in EXPANDING_ACTIONS or action == "HEDGE":
         specific = expression_evidence_block(
             families,
             instrument=instrument,
@@ -319,16 +376,6 @@ def assert_action_allowed(
         )
         if specific:
             raise FreshnessError(f"{seat} {action} blocked: {specific}")
-        from scripts.macro_freshness import macro_expression_block
-
-        macro_specific = macro_expression_block(
-            families,
-            instrument=instrument,
-            asset_class=asset_class,
-            expression=expression,
-        )
-        if macro_specific:
-            raise FreshnessError(f"{seat} {action} blocked: {macro_specific}")
     return blocked
 
 

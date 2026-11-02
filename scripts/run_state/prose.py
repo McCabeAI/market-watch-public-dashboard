@@ -17,9 +17,11 @@ def project_factual_prose(
     blocked_countries: list[str],
     carried_not_blocked: list[str],
     unknown_calendar_countries: list[str],
+    research_gap_countries: list[str] | None = None,
 ) -> str:
     parts: list[str] = []
-    carried = [code for code in carried_not_blocked if code]
+    research_set = frozenset(code for code in (research_gap_countries or []) if code)
+    carried = [code for code in carried_not_blocked if code and code not in research_set]
     blocked = [code for code in blocked_countries if code]
     unknown = [code for code in unknown_calendar_countries if code]
     if carried:
@@ -32,8 +34,16 @@ def project_factual_prose(
         parts.append(
             "New risk stays restricted in "
             + ", ".join(blocked)
-            + " because a due release could not be verified."
+            + " because a required market leg is not usable."
         )
+    if research_gap_countries:
+        gap_codes = [code for code in research_gap_countries if code]
+        if gap_codes:
+            parts.append(
+                "Macro research coverage is incomplete for "
+                + ", ".join(gap_codes)
+                + "; missing, overdue, stale, or failed releases do not restrict trading."
+            )
     if unknown:
         parts.append(
             "The release calendar for "

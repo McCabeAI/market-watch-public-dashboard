@@ -480,8 +480,10 @@ class Oct16UnmarkableIsolationTests(unittest.TestCase):
         self.assertEqual(result["quarantine_reason"], "unsupported_mark_source")
         self.assertEqual(result["hold_decisions_emitted"], 0)
         self.assertFalse(result["synthetic_holds"])
-        self.assertEqual(set(result["trade_eligible_countries"]), {"US", "CA", "AU", "EA", "JP"})
-        self.assertNotIn("NZ", result["trade_eligible_countries"])
+        self.assertEqual(set(result["trade_eligible_countries"]), {"US", "CA", "AU", "NZ", "EA", "JP"})
+        self.assertTrue(result["countries"]["NZ"]["eligible"])
+        self.assertEqual(result["countries"]["NZ"]["sovereign_admission"], "research_only")
+        self.assertIn("NZ_rates", result["partial_legs"])
         quarantined = {row["position_id"]: row for row in result["quarantined_positions"]}
         self.assertEqual(set(quarantined), {"pos-f895a4694dd7", "pm-pragmatist-3afafe53c6d7"})
         for row in quarantined.values():

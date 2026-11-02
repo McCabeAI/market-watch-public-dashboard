@@ -142,8 +142,8 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertIn("EA", at_collect["fresh_countries"])
         families = _families(at_collect)
         assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="EURJPY", asset_class="spot_fx")
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
+        assert_action_allowed("HEDGE", families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
         expired = assess_macro_family(ROOT, when=datetime(2026, 9, 23, 12, 0, tzinfo=NY))
         self.assertEqual(expired["status"], "stale")
         self.assertIsNone(expired["as_of"])
@@ -228,10 +228,9 @@ class LedgerFreshnessTests(unittest.TestCase):
         families = _families(result)
         assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="AUDNZD", asset_class="spot_fx")
         assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AONIA_2026-11", asset_class="rates")
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US 10Y", asset_class="rates")
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
+        assert_action_allowed("ADD", families, seat="rate-hawk", instrument="US 10Y", asset_class="rates")
+        self.assertIsNone(macro_expression_block(families, instrument="USDCAD", asset_class="spot_fx"))
 
     def test_failed_source_and_partial_transform_stay_visible(self) -> None:
         when = SEP23
@@ -260,8 +259,8 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertNotIn("AU", result["stale_countries"])
         families = _families(result)
         assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="AUDNZD", asset_class="spot_fx")
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="carry-is-king", instrument="CORRA_2027-03", asset_class="rates")
+        assert_action_allowed("OPEN", families, seat="carry-is-king", instrument="CORRA_2027-03", asset_class="rates")
+        self.assertIsNone(macro_expression_block(families, instrument="CORRA_2027-03", asset_class="rates"))
 
     def test_unexpected_revision_is_not_written_into_the_ledger(self) -> None:
         when = SEP23
@@ -538,8 +537,10 @@ class LedgerFreshnessTests(unittest.TestCase):
             "status": "fresh",
             "data": {"rates": {"US": {"status": "stale"}}, "fx": {"status": "ok"}},
         }
+        assert_action_allowed("OPEN", curve, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", curve, seat="cross-merchant", instrument="AUDCAD", asset_class="spot_fx")
         with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", curve, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+            assert_action_allowed("OPEN", curve, seat="rate-hawk", instrument="US_10Y", asset_class="rates")
 
     def test_missing_preserved_component_blocks_only_its_country_when_due(self) -> None:
         result = refresh_macro_sources(
@@ -555,9 +556,9 @@ class LedgerFreshnessTests(unittest.TestCase):
         self.assertNotIn("US", result["stale_countries"])
         families = _families(result)
         assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US 10Y", asset_class="rates")
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="AUDNZD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="AUDNZD", asset_class="spot_fx")
         self.assertIsNone(macro_expression_block(families, instrument="US 10Y"))
+        self.assertIsNone(macro_expression_block(families, instrument="AUDNZD", asset_class="spot_fx"))
 
 
 class FrozenSessionTests(unittest.TestCase):

@@ -101,10 +101,10 @@ class SourceHealthGateTests(unittest.TestCase):
             "observation_period": "2026-08",
         }
         result = evaluate_gate(rows=[row, ca], families=_families())
-        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["US"]["eligible"])
         self.assertTrue(result["countries"]["CA"]["eligible"])
-        self.assertIn("macro:US", result["blocked_expressions"])
-        self.assertNotIn("CA", result["blocked_expressions"])
+        self.assertIn("macro:US", result["research_coverage_gaps"])
+        self.assertNotIn("macro:US", result["blocked_expressions"])
 
     def test_budget_deferred_not_due_does_not_block(self) -> None:
         row = annotate_row(
@@ -143,8 +143,9 @@ class SourceHealthGateTests(unittest.TestCase):
             history={"components": {}},
         )
         result = evaluate_gate(rows=[row], families=_families())
-        self.assertFalse(result["countries"]["US"]["eligible"])
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertTrue(result["countries"]["US"]["eligible"])
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertIn("macro:US", result["research_coverage_gaps"])
 
     def test_cadence_backstop_marks_previous_release_not_current(self) -> None:
         row = {
@@ -169,7 +170,8 @@ class SourceHealthGateTests(unittest.TestCase):
             "observation_period": "2026-08",
         }
         result = evaluate_gate(rows=[row, ca], families=_families())
-        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["US"]["eligible"])
+        self.assertIn("macro:US", result["research_coverage_gaps"])
         self.assertTrue(result["countries"]["CA"]["eligible"])
 
     def test_backstop_fetch_failure_keeps_dated_prior_visible_not_eligible(self) -> None:
@@ -225,9 +227,10 @@ class SourceHealthGateTests(unittest.TestCase):
             "observation_period": "2026-08",
         }
         result = evaluate_gate(rows=[row, ca], families=_families())
-        self.assertFalse(result["countries"]["US"]["eligible"])
+        self.assertTrue(result["countries"]["US"]["eligible"])
         self.assertTrue(result["countries"]["CA"]["eligible"])
-        self.assertTrue(result["source_health"][0]["blocks_new_risk"])
+        self.assertIn("macro:US", result["research_coverage_gaps"])
+        self.assertFalse(result["source_health"][0]["blocks_new_risk"])
 
         wrong_transform = annotate_row(
             {

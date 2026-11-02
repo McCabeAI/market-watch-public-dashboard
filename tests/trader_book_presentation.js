@@ -337,6 +337,108 @@ const sorted = [
 ].slice().sort(function (a, b) { return api.compareRows(a, b, "net", -1, "trader"); });
 check(sorted.map(function (row) { return row.seat; }).join(",") === "c,b,a", "nulls sort last");
 
+const allEligible = {
+  CA: { eligible: true },
+  NZ: { eligible: true },
+  EA: { eligible: true },
+  JP: { eligible: true },
+  US: { eligible: true },
+  AU: { eligible: true },
+};
+const researchPerms = {
+  trade_eligible_countries: ["CA", "NZ", "EA", "JP", "US", "AU"],
+  countries: allEligible,
+  research_coverage_gaps: ["macro:CA", "macro:AU"],
+};
+const researchFlags = api.fleetFlags([], [], researchPerms);
+check(researchFlags.restriction.restricted.length === 0, "research gaps do not restrict countries");
+check(researchFlags.restriction.tradingRestricted === false, "research gaps alone do not trading-restrict");
+const researchSentence = api.permissionSentence(researchPerms);
+check(researchSentence.indexOf("Macro research coverage is incomplete for CA / AU") !== -1, "research sentence");
+check(researchSentence.indexOf("does not restrict trading") !== -1, "research sentence clarifies trading");
+check(researchSentence.indexOf("Restricted:") === -1, "research-only sentence has no restricted list");
+
+const usBlockedPerms = {
+  trade_eligible_countries: ["CA", "NZ", "EA", "JP"],
+  countries: {
+    CA: { eligible: true },
+    NZ: { eligible: true },
+    EA: { eligible: true },
+    JP: { eligible: true },
+    US: { eligible: false },
+    AU: { eligible: true },
+  },
+};
+const usBlockedFlags = api.fleetFlags([], [], usBlockedPerms);
+check(usBlockedFlags.restriction.tradingRestricted === true, "ineligible US trading-restricts");
+const usBlockedSentence = api.permissionSentence(usBlockedPerms);
+check(usBlockedSentence.indexOf("Restricted: US") !== -1, "US blocked in sentence");
+
+const nzSpotPerms = {
+  trade_eligible_countries: ["US", "CA", "AU", "NZ", "EA", "JP"],
+  countries: {
+    US: { eligible: true },
+    CA: { eligible: true },
+    AU: { eligible: true },
+    NZ: { eligible: true, sovereign_admission: "research_only" },
+    EA: { eligible: true },
+    JP: { eligible: true },
+  },
+};
+const nzSentence = api.permissionSentence(nzSpotPerms);
+const nzFlags = api.fleetFlags([], [], nzSpotPerms);
+check(nzSentence.indexOf("Restricted: NZ") === -1, "NZD spot is not a country restriction");
+check(nzSentence.indexOf("NZ sovereign rates are research-only") !== -1, "NZ sovereign stays specific");
+check(nzFlags.restriction.tradingRestricted === false, "research-only NZ sovereign does not trading-restrict");
+check(nzFlags.restriction.restricted.indexOf("NZ") === -1, "NZ is absent from the restricted list");
+
+const legacySources = {
+  trade_eligible_countries: ["US", "CA", "AU", "NZ", "EA", "JP"],
+  countries: {
+    US: { eligible: true },
+    CA: { eligible: true },
+    AU: { eligible: true },
+    NZ: { eligible: true },
+    EA: { eligible: true },
+    JP: { eligible: true },
+  },
+  blocked_sources: ["CA.Inflation.cpi"],
+};
+const legacyFlags = api.fleetFlags([], [], legacySources);
+check(legacyFlags.restriction.tradingRestricted === false, "macro series ids are not a trade restriction");
+check(String(legacyFlags.restriction.researchCoverageLabel).indexOf("CA") !== -1, "legacy macro series stay visible");
+check(legacyFlags.restriction.sentence.indexOf("Restricted:") === -1, "legacy macro series do not restrict");
+
+const fxGapPerms = {
+  trade_eligible_countries: ["US", "CA", "AU", "EA", "JP"],
+  blocked_legs: ["FX"],
+  partial_legs: ["NZ_rates", "FX"],
+  fx_leg_status: "missing",
+  countries: {
+    US: { eligible: true },
+    CA: { eligible: true },
+    AU: { eligible: true },
+    NZ: { eligible: false, sovereign_admission: "research_only" },
+    EA: { eligible: true },
+    JP: { eligible: true },
+  },
+};
+const fxFlags = api.fleetFlags([], [], fxGapPerms);
+const fxSentence = api.permissionSentence(fxGapPerms);
+const fxHtml = api.flagHtml(fxFlags);
+check(fxFlags.restriction.tradingRestricted === false, "FX leg gap is not a fleet new-risk veto");
+check(fxFlags.restriction.fxStatus === "missing", "FX status is on the restriction");
+check(fxFlags.restriction.restricted.indexOf("US") === -1, "US rates stay off the restricted list");
+check(fxFlags.restriction.restricted.indexOf("NZ") === -1, "research-only NZ is not relabeled as a rates ban");
+check(fxSentence.indexOf("New risk eligible: US / CA / AU / EA / JP") !== -1, "rate-eligible countries stay listed");
+check(fxSentence.indexOf("FX is missing") !== -1, "FX missing is named");
+check(fxSentence.indexOf("spot FX is not eligible") !== -1, "spot FX stays ineligible");
+check(fxSentence.indexOf("do not restrict spot") === -1, "spot is not described as unrestricted");
+check(fxSentence.indexOf("Restricted: US") === -1, "FX failure does not restrict US");
+check(fxHtml.indexOf("FX unavailable") !== -1, "fleet flag names the FX leg");
+check(fxHtml.indexOf("New risk eligible") !== -1, "fleet flag keeps rates eligible");
+check(fxHtml.indexOf("New risk restricted") === -1, "FX leg is not a full new-risk restriction");
+
 const raw = fs.readFileSync(0, "utf8");
 const fixture = JSON.parse(raw);
 const traderTotal = api.sumKnownPnl(fixture.seats, function (seat) { return seat.net_pnl_usd; });

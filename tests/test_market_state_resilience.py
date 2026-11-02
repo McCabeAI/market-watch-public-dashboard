@@ -342,23 +342,59 @@ class PreflightGateTests(unittest.TestCase):
         self.assertEqual(history[-1]["percent_rate"], 3.64)
         self.assertEqual(history[-1]["effective_date"], "2026-09-18")
 
-    def test_required_preflight_us_ca_au_failures_block_globally(self) -> None:
-        for code in ("US", "AU"):
-            packet = _packet()
-            packet["rates"][code] = {"status": "stale", "latest_observation": "2026-09-01"}
-            packet["stale_sources"] = [f"{code}_rates"]
-            packet["preflight_stale_sources"] = [f"{code}_rates"]
-            packet["status"] = "stale"
-            families = _families(packet, family_status="fresh")
-            with self.assertRaises(FreshnessError):
-                assert_action_allowed(
-                    "OPEN",
-                    families,
-                    seat="dollar-king",
-                    instrument="USDCAD" if code == "US" else "AONIA_2026-11",
-                )
-            with self.assertRaises(FreshnessError):
-                assert_action_allowed("ADD", families, seat="carry-is-king", instrument="EURUSD")
+    def test_stale_us_or_au_rates_block_only_expressions_that_use_them(self) -> None:
+        packet = _packet()
+        packet["rates"]["US"] = {"status": "stale", "latest_observation": "2026-09-01"}
+        packet["stale_sources"] = ["US_rates"]
+        packet["preflight_stale_sources"] = ["US_rates"]
+        packet["status"] = "stale"
+        packet["fx"]["pairs"] = {
+            "EURUSD": {"spot": 1.08, "as_of": "2026-09-21"},
+            "AUDCAD": {"spot": 0.91, "as_of": "2026-09-21"},
+            "USDCAD": {"spot": 1.36, "as_of": "2026-09-21"},
+        }
+        families = _families(packet, family_status="stale")
+        for action in ("OPEN", "ADD", "HEDGE"):
+            assert_action_allowed(action, families, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+            assert_action_allowed(action, families, seat="cross-merchant", instrument="AUDCAD", asset_class="spot_fx")
+            assert_action_allowed(action, families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="carry-is-king", instrument="CORRA_2027-03", asset_class="rates")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AONIA_2026-11", asset_class="rates")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="SOFR_2027-03", asset_class="rates")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US_10Y", asset_class="rates")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("ADD", families, seat="value-guy", instrument="CA-US_10Y", asset_class="rates_rv")
+
+        packet = _packet()
+        packet["rates"]["AU"] = {"status": "missing"}
+        packet["fx"]["status"] = "ok"
+        packet["fx"]["pairs"] = {"AUDCAD": {"spot": 0.91, "as_of": "2026-09-21"}, "EURUSD": {"spot": 1.08}}
+        families = _families(packet, family_status="fresh")
+        assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="AUDCAD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+        assert_action_allowed("ADD", families, seat="rate-hawk", instrument="AONIA_2026-11", asset_class="rates")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="AU_10Y", asset_class="rates")
+
+    def test_missing_fx_blocks_only_fx_expressions(self) -> None:
+        packet = _packet()
+        packet["fx"] = {"status": "missing"}
+        families = _families(packet)
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("ADD", families, seat="cross-merchant", instrument="AUDCAD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="carry-is-king", instrument="CORRA_2027-03", asset_class="rates")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US_10Y", asset_class="rates")
+        packet["fx"] = {
+            "status": "ok",
+            "pairs": {"EURUSD": {"spot": 1.08, "as_of": "2026-09-21"}},
+        }
+        families = _families(packet)
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="cross-merchant", instrument="AUDCAD", asset_class="spot_fx")
 
     def test_stale_ca_blocks_only_ca_expressions(self) -> None:
         packet = _packet()
@@ -431,8 +467,7 @@ class PreflightGateTests(unittest.TestCase):
         packet["preflight_stale_sources"] = ["CFTC_positioning"]
         packet["status"] = "stale"
         families = _families(packet, family_status="stale")
-        with self.assertRaises(FreshnessError):
-            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURJPY")
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURJPY")
 
 
 class PaperExpressionGateTests(unittest.TestCase):

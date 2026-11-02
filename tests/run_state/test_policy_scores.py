@@ -35,10 +35,13 @@ class PolicyScoresTests(unittest.TestCase):
             self._labor_state("employment", reason="old_but_current", country="CA"),
         ]
         policy = evaluate_policy(states)
-        self.assertEqual(policy["blocked_expressions"], ["macro:US"])
+        self.assertEqual(policy["blocked_expressions"], [])
+        self.assertEqual(policy["research_coverage_gaps"], ["macro:US"])
         self.assertIn("CA", policy["trade_eligible_countries"])
+        self.assertIn("US", policy["trade_eligible_countries"])
         self.assertTrue(policy["countries"]["CA"]["eligible"])
-        self.assertFalse(policy["countries"]["US"]["eligible"])
+        self.assertTrue(policy["countries"]["US"]["eligible"])
+        self.assertEqual(policy["countries"]["US"]["research_coverage"], "gap")
 
     def test_unknown_calendar_listed_not_blocking(self) -> None:
         series_id = "NZ.Inflation.cpi"

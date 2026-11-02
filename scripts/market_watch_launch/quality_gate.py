@@ -8,7 +8,9 @@ import re
 from datetime import date
 from typing import Any
 
+from scripts.country_registry import economies, paper_sovereign_admission
 from scripts.policy_path_data import _iso_calendar_date
+from scripts.rates.contract_economics import CURVE_SPEC, parse_contract_id
 
 from scripts.market_watch_launch.contract import (
     BLOCKING_SERIES_STATUSES,
@@ -24,6 +26,8 @@ from scripts.run_state.policy import evaluate_policy
 _STAGE = "03_quality_gate"
 _BLOCKING_LEG_STATUSES = frozenset({"stale", "missing", "invalid", "unavailable"})
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})
+_CONTRACT_MONTH = re.compile(r"^(20\d{2})-(\d{2})$")
+_QUOTE_KEYS = ("implied_rate", "rate", "value")
 
 
 def _is_scored_row(row: dict[str, Any]) -> bool:
@@ -127,17 +131,120 @@ def _fx_leg_status(packet: dict[str, Any]) -> str:
     return "missing"
 
 
-def _normalize_preflight_stale(packet: dict[str, Any]) -> set[str]:
-    raw = packet.get("preflight_stale_sources")
-    if raw is None:
-        return set()
-    if isinstance(raw, (list, tuple, set, frozenset)):
-        return {str(item) for item in raw if item}
-    return set()
+def _finite_contract_quote(row: dict[str, Any]) -> bool:
+    """True when the row carries a finite numeric implied rate or quote."""
+    for key in _QUOTE_KEYS:
+        value = row.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        if math.isfinite(float(value)):
+            return True
+    return False
 
 
-def _ca_only_preflight_stale(packet: dict[str, Any]) -> bool:
-    return _normalize_preflight_stale(packet) == {"CA_rates"}
+def _expiry_on_curve(curve_id: str, expiry: Any) -> str | None:
+    """Contract month on this curve, using the existing supported-id shape.
+
+    SOFR, CORRA, and AONIA use ``parse_contract_id``. Other registry curves
+    (TONA) use the same ``YYYY-MM`` month already accepted as a paper alias.
+    This does not apply a second expiry calendar or quote-freshness window.
+    """
+    if not isinstance(expiry, str):
+        return None
+    text = expiry.strip()
+    if not text:
+        return None
+    if curve_id in CURVE_SPEC:
+        parsed = parse_contract_id(f"{curve_id}_{text}")
+        if parsed is None or parsed.spec.curve_id != curve_id:
+            return None
+        return parsed.expiry
+    match = _CONTRACT_MONTH.fullmatch(text)
+    if match is None:
+        return None
+    month = int(match.group(2))
+    if month < 1 or month > 12:
+        return None
+    return text
+
+
+def _supported_contract_row(curve_id: str, row: dict[str, Any]) -> bool:
+    """True when the row names one supported contract on ``curve_id``.
+
+    A present expiry that is not a contract month is invalid. An exchange
+    code counts only when it parses onto this curve; unparsed labels such as
+    two-digit CORRA codes stay compatible with a valid expiry and do not
+    invent a second symbology.
+    """
+    expiry_token = _expiry_on_curve(curve_id, row.get("expiry"))
+    if "expiry" in row and row.get("expiry") not in (None, "") and expiry_token is None:
+        return False
+    parsed_expiries: list[str] = []
+    for key in ("code", "instrument"):
+        token = row.get(key)
+        if not isinstance(token, str) or not token.strip():
+            continue
+        parsed = parse_contract_id(token.strip())
+        if parsed is None:
+            continue
+        if parsed.spec.curve_id != curve_id:
+            return False
+        parsed_expiries.append(parsed.expiry)
+    if parsed_expiries and any(item != parsed_expiries[0] for item in parsed_expiries):
+        return False
+    if parsed_expiries:
+        if expiry_token is not None and expiry_token != parsed_expiries[0]:
+            return False
+        return True
+    return expiry_token is not None
+
+
+def _usable_curve_contract(curve_id: str, row: Any) -> bool:
+    if not isinstance(row, dict):
+        return False
+    row_status = _explicit_status(row)
+    if row_status in _BLOCKING_LEG_STATUSES:
+        return False
+    if row_status and row_status != "ok":
+        return False
+    if not _supported_contract_row(curve_id, row):
+        return False
+    return _finite_contract_quote(row)
+
+
+def _approved_curve_markable(packet: dict[str, Any], code: str) -> bool:
+    """True when an approved country's tradable curve has a usable contract.
+
+    Research-only sovereigns and observe-only curves do not count. A blocking
+    curve or contract status is not a mark, even when a number is still
+    present. Curve status ``ok`` is not a mark by itself.
+    """
+    if _research_only_sovereign(code):
+        return False
+    spec = economies().get(code) or {}
+    if not spec.get("has_tradable_short_rate_curve"):
+        return False
+    curve_id = spec.get("tradable_curve_id")
+    if not isinstance(curve_id, str) or not curve_id:
+        return False
+    curves = packet.get("tradable_rate_curves")
+    curve_map = curves.get("curves") if isinstance(curves, dict) else None
+    block = curve_map.get(curve_id) if isinstance(curve_map, dict) else None
+    if not isinstance(block, dict):
+        return False
+    explicit = _explicit_status(block)
+    if explicit in _BLOCKING_LEG_STATUSES:
+        return False
+    if explicit and explicit != "ok":
+        return False
+    contracts = block.get("contracts")
+    if not isinstance(contracts, list):
+        return False
+    return any(_usable_curve_contract(curve_id, row) for row in contracts)
+
+
+def _research_only_sovereign(code: str) -> bool:
+    return paper_sovereign_admission(code) == "research_only"
 
 
 _SOFR_CONTRACT_INSTRUMENT = re.compile(r"^SOFR_(20\d{2}-\d{2})$", re.I)
@@ -372,14 +479,21 @@ def _country_release_due_blocking(rows: list[dict[str, Any]], country: str) -> l
     return blocked
 
 
-def _macro_eligible_countries(rows: list[dict[str, Any]]) -> list[str]:
-    eligible: list[str] = []
+def _research_coverage_gaps(rows: list[dict[str, Any]]) -> list[str]:
+    gaps: list[str] = []
     for code in COUNTRIES:
-        if _country_release_due_blocking(rows, code):
+        scored = [
+            row
+            for row in rows
+            if str(row.get("country") or "") == code and _is_scored_row(row)
+        ]
+        if not scored:
             continue
-        if _country_has_verified_scored(rows, code):
-            eligible.append(code)
-    return eligible
+        if _country_release_due_blocking(rows, code):
+            gaps.append(f"macro:{code}")
+        elif not _country_has_verified_scored(rows, code):
+            gaps.append(f"macro:{code}")
+    return gaps
 
 
 def _country_rollups(rows: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -432,9 +546,8 @@ def evaluate_gate(
                 row["weight"] = spec.get("weight")
 
     scored_rows = [row for row in rows if _is_scored_row(row)]
-    verified_scored = [row for row in scored_rows if _counts_as_verified_scored(row)]
-    # A scored failure blocks the launch only when that series is release-due.
-    # Historical catalog gaps that are not due stay on the partial matrix.
+    # Macro release gaps stay on the research-coverage list. They do not block
+    # a launch that still has a markable rate leg or FX leg.
     blocking_scored = [
         row
         for row in scored_rows
@@ -464,13 +577,12 @@ def evaluate_gate(
         if expr not in partial_expressions:
             partial_expressions.append(expr)
 
-    blocked_sources = [str(row.get("series_id")) for row in blocking_scored if row.get("series_id")]
+    research_coverage_series = [
+        str(row.get("series_id")) for row in blocking_scored if row.get("series_id")
+    ]
+    research_coverage_gaps = _research_coverage_gaps(rows)
+    blocked_sources: list[str] = []
     blocked_expressions: list[str] = []
-    for code in COUNTRIES:
-        if _country_release_due_blocking(rows, code):
-            expr = f"macro:{code}"
-            if expr not in blocked_expressions:
-                blocked_expressions.append(expr)
 
     countries = _country_rollups(rows)
 
@@ -480,6 +592,8 @@ def evaluate_gate(
         "reason": None,
         "blocked_sources": blocked_sources,
         "blocked_expressions": blocked_expressions,
+        "research_coverage_gaps": research_coverage_gaps,
+        "research_coverage_series": research_coverage_series,
         "blocked_legs": [],
         "partial_expressions": partial_expressions,
         "partial_series": partial_series,
@@ -491,14 +605,8 @@ def evaluate_gate(
         "source_health": source_health,
     }
 
-    if not scored_rows or len(verified_scored) == 0:
-        base["outcome"] = "BLOCKED"
-        base["coverage"] = "NONE"
-        base["reason"] = "all_critical_missing"
-        base["eligible"] = False
-        for code in countries:
-            countries[code]["eligible"] = False
-        return base
+    if not scored_rows:
+        base["research_coverage_gaps"] = [f"macro:{code}" for code in COUNTRIES]
 
     market_block = families.get("market_state") or {}
     market_status = str(market_block.get("status") or "missing")
@@ -515,53 +623,46 @@ def evaluate_gate(
         base["reason"] = "no_markable_universe"
         base["eligible"] = False
         return base
-    if market_status == "stale":
-        legs_preview = _leg_statuses(packet)
-        fx_preview = legs_preview.get("FX", "missing")
-        non_ca_rate_ok = any(
-            legs_preview.get(f"{code}_rates", "missing") not in _BLOCKING_LEG_STATUSES
-            for code in COUNTRIES
-            if code != "CA"
-        )
-        if not (
-            _ca_only_preflight_stale(packet)
-            and fx_preview not in _BLOCKING_LEG_STATUSES
-            and non_ca_rate_ok
-        ):
-            base["outcome"] = "BLOCKED"
-            base["coverage"] = "NONE"
-            base["reason"] = "no_markable_universe"
-            base["eligible"] = False
-            return base
+    # A stale packet is not an empty universe. Each rate leg and the FX family
+    # are judged on their own. One stale cash curve does not ban expressions
+    # that do not use it. A missing, stale, invalid, or unavailable FX family
+    # blocks FX expressions. Approved rate or curve marks stay eligible.
 
     legs = _leg_statuses(packet)
-    fx_status = legs.get("FX", "missing")
-    macro_eligible = _macro_eligible_countries(rows)
-    if fx_status in _BLOCKING_LEG_STATUSES:
-        base["outcome"] = "BLOCKED"
-        base["coverage"] = "NONE"
-        base["reason"] = "no_markable_universe"
-        base["blocked_legs"] = ["FX"]
-        base["countries_unaffected"] = macro_eligible
-        base["eligible"] = False
-        return base
+    fx_status = str(legs.get("FX") or "missing")
+    fx_blocking = fx_status in _BLOCKING_LEG_STATUSES
 
     partial_legs: list[str] = []
     trade_eligible_countries: list[str] = []
     for code in COUNTRIES:
-        due_block = _country_release_due_blocking(rows, code)
         rate_status = legs.get(f"{code}_rates", "missing")
-        rates_ok = rate_status not in _BLOCKING_LEG_STATUSES
-        country_eligible = (
-            not due_block
-            and _country_has_verified_scored(rows, code)
-            and rates_ok
-        )
+        rates_blocking = rate_status in _BLOCKING_LEG_STATUSES
+        research_only = _research_only_sovereign(code)
+        if research_only:
+            countries[code]["sovereign_admission"] = "research_only"
+        if rates_blocking:
+            partial_legs.append(f"{code}_rates")
+        # NZ sovereign cash is research-only. An unsupported curve must not
+        # label the country restricted while NZD spot still has a mark.
+        # When the FX family cannot be marked, that spot is unavailable, and
+        # a research-only curve does not count as an executable rates leg.
+        curve_markable = False
+        if fx_blocking and not research_only and rates_blocking:
+            curve_markable = _approved_curve_markable(packet, code)
+            if curve_markable:
+                countries[code]["curve_markable"] = True
+        if research_only:
+            country_eligible = not fx_blocking
+        else:
+            country_eligible = (not rates_blocking) or curve_markable
         countries[code]["eligible"] = country_eligible
         if country_eligible:
             trade_eligible_countries.append(code)
-        elif rate_status in _BLOCKING_LEG_STATUSES:
-            partial_legs.append(f"{code}_rates")
+
+    if fx_blocking:
+        base["blocked_legs"] = ["FX"]
+        partial_legs.append("FX")
+        base["fx_leg_status"] = fx_status
 
     base["partial_legs"] = partial_legs
     base["trade_eligible_countries"] = trade_eligible_countries
@@ -592,8 +693,7 @@ def evaluate_gate(
         optional_gaps
         or partial_legs
         or nondue_scored_gaps
-        or blocking_scored
-        or blocked_expressions
+        or research_coverage_gaps
         or base.get("quarantined_positions")
     )
     base["coverage"] = "PARTIAL" if has_partial else "COMPLETE"
@@ -659,123 +759,51 @@ def _gate_rows_from_states(states: list[dict[str, Any]]) -> list[dict[str, Any]]
     return rows
 
 
-def _overlay_state_country(state: dict[str, Any]) -> str | None:
-    country = state.get("country")
-    if isinstance(country, str) and country:
-        return country
-    series_id = state.get("series_id")
-    if isinstance(series_id, str) and "." in series_id:
-        return series_id.split(".", 1)[0]
-    return None
-
-
-def _overlay_trade_critical(state: dict[str, Any]) -> bool:
-    if "trade_critical" in state:
-        return bool(state["trade_critical"])
-    role = state.get("role")
-    weight = state.get("weight")
-    if role == "scored" and weight is not None:
-        try:
-            return float(weight) > 0
-        except (TypeError, ValueError):
-            return False
-    return False
-
-
-def _legacy_country_blocked(result: dict[str, Any], code: str) -> bool:
-    countries = result.get("countries")
-    if isinstance(countries, dict):
-        bucket = countries.get(code)
-        if isinstance(bucket, dict) and bucket.get("eligible") is False:
-            return True
-    for expr in result.get("blocked_expressions") or []:
-        if expr == f"macro:{code}":
-            return True
-    return False
-
-
-def _legacy_country_series_ids(result: dict[str, Any], code: str) -> set[str]:
-    ids: set[str] = set()
-    prefix = f"{code}."
-    for sid in result.get("blocked_sources") or []:
-        text = str(sid)
-        if text.startswith(prefix):
-            ids.add(text)
-    for sid in result.get("partial_series") or []:
-        text = str(sid)
-        if text.startswith(prefix):
-            ids.add(text)
-    countries = result.get("countries")
-    if isinstance(countries, dict):
-        bucket = countries.get(code)
-        if isinstance(bucket, dict):
-            for sid in bucket.get("gaps") or []:
-                ids.add(str(sid))
-    return ids
-
-
-def _policy_may_clear_legacy_block(
-    states: list[dict[str, Any]], code: str, legacy: dict[str, Any]
-) -> bool:
-    country_states = [
-        st for st in states if isinstance(st, dict) and _overlay_state_country(st) == code
-    ]
-    if not country_states:
-        return False
-    trade_critical_states = [st for st in country_states if _overlay_trade_critical(st)]
-    if any(st.get("carry_forward_reason") == "overdue_unverified" for st in trade_critical_states):
-        return False
-    tc_series_in_states = {
-        str(st.get("series_id"))
-        for st in trade_critical_states
-        if st.get("series_id")
-    }
-    legacy_series = _legacy_country_series_ids(legacy, code)
-    if legacy_series and not legacy_series.issubset(tc_series_in_states):
-        return False
-    if not legacy_series and not tc_series_in_states:
-        return False
-    return True
-
-
 def _apply_policy_overlay(
     result: dict[str, Any], policy: dict[str, Any], states: list[dict[str, Any]]
 ) -> dict[str, Any]:
+    del states  # Trade eligibility comes from the gate's rate legs, not these states.
     out = dict(result)
     legacy_outcome = out.get("outcome")
     out["policy_version"] = policy["policy_version"]
 
-    states_by_country: dict[str, list[dict[str, Any]]] = {}
-    for st in states:
-        if not isinstance(st, dict):
-            continue
-        code = _overlay_state_country(st)
-        if code:
-            states_by_country.setdefault(code, []).append(st)
+    research_coverage_gaps: list[str] = []
+    for source in (
+        result.get("research_coverage_gaps") or [],
+        policy.get("research_coverage_gaps") or [],
+    ):
+        for item in source:
+            text = str(item)
+            if text not in research_coverage_gaps:
+                research_coverage_gaps.append(text)
 
-    policy_blocks = list(policy.get("blocked_expressions") or [])
-    legacy_blocks = list(result.get("blocked_expressions") or [])
     merged_blocks: list[str] = []
-    for expr in policy_blocks:
-        if expr not in merged_blocks:
-            merged_blocks.append(expr)
-    for expr in legacy_blocks:
-        if not isinstance(expr, str) or not expr.startswith("macro:"):
+    for expr in list(result.get("blocked_expressions") or []) + list(
+        policy.get("blocked_expressions") or []
+    ):
+        if isinstance(expr, str) and expr.startswith("macro:"):
+            if expr not in research_coverage_gaps:
+                research_coverage_gaps.append(expr)
             continue
-        code = expr.split(":", 1)[1]
-        if code not in states_by_country and expr not in merged_blocks:
-            merged_blocks.append(expr)
+        if expr not in merged_blocks:
+            merged_blocks.append(str(expr))
+
+    research_coverage_series: list[str] = []
+    for source in (
+        result.get("research_coverage_series") or [],
+        policy.get("research_coverage_series") or [],
+    ):
+        for sid in source:
+            text = str(sid)
+            if text not in research_coverage_series:
+                research_coverage_series.append(text)
+
+    partial_legs = list(out.get("partial_legs") or [])
 
     countries = out.get("countries")
     if not isinstance(countries, dict):
         countries = {}
         out["countries"] = countries
-
-    policy_blocked_codes = {
-        expr.split(":", 1)[1]
-        for expr in policy_blocks
-        if isinstance(expr, str) and expr.startswith("macro:") and ":" in expr
-    }
 
     trade_eligible: list[str] = []
     for code in COUNTRIES:
@@ -783,37 +811,32 @@ def _apply_policy_overlay(
         if not isinstance(bucket, dict):
             bucket = {}
             countries[code] = bucket
+        rate_leg = f"{code}_rates"
         policy_info = (policy.get("countries") or {}).get(code) or {}
-        policy_eligible = bool(policy_info.get("eligible"))
-        legacy_blocked = _legacy_country_blocked(result, code)
+        research_cov = policy_info.get("research_coverage")
+        if isinstance(research_cov, str) and research_cov:
+            bucket["research_coverage"] = research_cov
 
-        if code not in states_by_country:
-            if legacy_blocked:
-                eligible = False
-            else:
-                eligible = bool(bucket.get("eligible"))
-        elif code in policy_blocked_codes:
+        research_only = _research_only_sovereign(code)
+        if research_only:
+            bucket["sovereign_admission"] = "research_only"
+        fx_blocked = "FX" in list(out.get("blocked_legs") or [])
+        if research_only and fx_blocked:
             eligible = False
-        elif legacy_blocked and not _policy_may_clear_legacy_block(states, code, result):
-            eligible = False
+        elif rate_leg in partial_legs and not research_only:
+            eligible = bool(bucket.get("curve_markable"))
+        elif legacy_outcome == "BLOCKED":
+            eligible = bool(bucket.get("eligible"))
         else:
-            eligible = policy_eligible
+            eligible = True
 
         bucket["eligible"] = eligible
         if eligible:
             trade_eligible.append(code)
 
-    for code in COUNTRIES:
-        if code not in states_by_country and _legacy_country_blocked(result, code):
-            expr = f"macro:{code}"
-            if expr not in merged_blocks:
-                merged_blocks.append(expr)
-        elif not countries.get(code, {}).get("eligible"):
-            expr = f"macro:{code}"
-            if expr not in merged_blocks:
-                merged_blocks.append(expr)
-
     out["blocked_expressions"] = merged_blocks
+    out["research_coverage_gaps"] = research_coverage_gaps
+    out["research_coverage_series"] = research_coverage_series
     out["trade_eligible_countries"] = trade_eligible
 
     if legacy_outcome != "BLOCKED":
@@ -852,31 +875,42 @@ def apply_macro_overlay(families: dict[str, Any], rows: list[dict[str, Any]]) ->
     notes = list(macro.get("notes") or [])
 
     if not rows:
-        macro["status"] = "invalid"
+        macro["status"] = "stale"
         macro["fresh_countries"] = []
-        macro["stale_countries"] = list(COUNTRIES)
+        macro["stale_countries"] = []
+        macro["research_coverage_countries"] = list(COUNTRIES)
         notes.append("macro ingestion rows empty")
     else:
         fresh_countries: list[str] = []
-        stale_countries: list[str] = []
+        research_coverage_countries: list[str] = []
         for code in COUNTRIES:
             verified = _country_has_verified_scored(rows, code)
             due_block = _country_release_due_blocking(rows, code)
             if verified and not due_block:
                 fresh_countries.append(code)
             else:
-                stale_countries.append(code)
+                research_coverage_countries.append(code)
 
         macro["fresh_countries"] = fresh_countries
-        macro["stale_countries"] = stale_countries
-        macro["status"] = "fresh" if fresh_countries else ("stale" if stale_countries else "invalid")
-        if stale_countries:
-            notes.append("country-specific macro restrictions: " + ", ".join(stale_countries))
+        macro["research_coverage_countries"] = research_coverage_countries
+        # Research coverage gaps are informational; they must not block trading legs.
+        macro["stale_countries"] = []
+        if fresh_countries:
+            macro["status"] = "fresh"
+        elif research_coverage_countries:
+            macro["status"] = "stale"
+        else:
+            macro["status"] = "invalid"
+        if research_coverage_countries:
+            notes.append(
+                "country-specific macro research coverage gaps: "
+                + ", ".join(research_coverage_countries)
+            )
         carried = sorted({str(row.get("country")) for row in rows if carried_forward(row) and row.get("country")})
         if carried:
             macro["source_health_countries"] = carried
-            stale_set = set(stale_countries)
-            carried_not_stale = [code for code in carried if code not in stale_set]
+            research_set = set(research_coverage_countries)
+            carried_not_stale = [code for code in carried if code not in research_set]
             if carried_not_stale:
                 notes.append(
                     "source-health carry-forward (not-due, prior vintage kept): "
@@ -888,6 +922,8 @@ def apply_macro_overlay(families: dict[str, Any], rows: list[dict[str, Any]]) ->
     macro["components"] = [dict(row) for row in rows]
     out["macro_hard"] = macro
     return out
+
+
 def _annotate_source_health(rows: list[dict[str, Any]], ctx: dict) -> list[dict[str, Any]]:
     """Carry forward canonical vintages when a not-due fetch failed transiently."""
     root = ctx.get("root")

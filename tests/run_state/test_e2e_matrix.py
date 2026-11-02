@@ -268,10 +268,11 @@ class RunStateE2EMatrixTests(unittest.TestCase):
             self.assertEqual(event["reason"], "budget_deferred")
 
         gate = packet["gate"]
-        self.assertIn("macro:US", gate["blocked_expressions"])
+        self.assertIn("macro:US", gate["research_coverage_gaps"])
+        self.assertNotIn("macro:US", gate["blocked_expressions"])
         self.assertEqual(
             gate["trade_eligible_countries"],
-            ["CA", "AU", "NZ", "EA", "JP"],
+            ["US", "CA", "AU", "NZ", "EA", "JP"],
         )
         caveat = packet["public_caveat"] or ""
         self.assertNotIn("no new release was due", caveat)
@@ -323,7 +324,8 @@ class RunStateE2EMatrixTests(unittest.TestCase):
         )
         self.assertEqual(state["carry_forward_reason"], "overdue_unverified")
         policy = evaluate_policy([state])
-        self.assertEqual(policy["blocked_expressions"], ["macro:US"])
+        self.assertEqual(policy["blocked_expressions"], [])
+        self.assertEqual(policy["research_coverage_gaps"], ["macro:US"])
 
     def test_non_due_checked(self) -> None:
         series_id = "US.Consumer.confidence"
@@ -490,9 +492,10 @@ class RunStateE2EMatrixTests(unittest.TestCase):
             )
         )
         policy = evaluate_policy(states)
-        self.assertEqual(policy["blocked_expressions"], ["macro:US"])
+        self.assertEqual(policy["blocked_expressions"], [])
+        self.assertEqual(policy["research_coverage_gaps"], ["macro:US"])
         self.assertTrue(policy["countries"]["CA"]["eligible"])
-        self.assertFalse(policy["countries"]["US"]["eligible"])
+        self.assertTrue(policy["countries"]["US"]["eligible"])
 
     def test_url_less_and_empty_discovery(self) -> None:
         item = normalize_evidence_item(_evidence_item())

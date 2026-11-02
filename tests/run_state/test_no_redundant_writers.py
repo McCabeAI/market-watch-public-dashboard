@@ -106,7 +106,27 @@ class RoomDataCaveatGuardTests(unittest.TestCase):
         self.assertIsNotNone(text)
         assert text is not None
         self.assertNotIn("no new release was due", text)
-        self.assertIn("due release", text)
+        self.assertIn("because a required market leg is not usable", text)
+        self.assertNotIn("due release", text)
+
+    def test_us_eligible_research_gap_no_not_due_or_restriction(self) -> None:
+        permissions: dict[str, Any] = {
+            "countries": {"US": {"eligible": True}},
+            "research_coverage_gaps": ["macro:US"],
+            "source_health": [
+                {
+                    "country": "US",
+                    "carried_forward": True,
+                    "blocks_new_risk": False,
+                },
+            ],
+        }
+        text = room_data_caveat(permissions)
+        self.assertIsNotNone(text)
+        assert text is not None
+        self.assertIn("Macro research coverage is incomplete for US", text)
+        self.assertNotIn("no new release was due", text)
+        self.assertNotIn("New risk stays restricted", text)
 
 
 class PublishOfflineSignatureTests(unittest.TestCase):

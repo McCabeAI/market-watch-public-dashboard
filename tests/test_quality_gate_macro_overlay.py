@@ -31,7 +31,8 @@ class QualityGateMacroOverlayTests(unittest.TestCase):
         macro = apply_macro_overlay(families, rows)["macro_hard"]
         self.assertEqual(macro["status"], "fresh")
         self.assertIn("CA", macro["fresh_countries"])
-        self.assertIn("US", macro["stale_countries"])
+        self.assertIn("US", macro["research_coverage_countries"])
+        self.assertEqual(macro["stale_countries"], [])
 
     def test_due_missing_country_stays_restricted(self) -> None:
         rows = [
@@ -57,8 +58,9 @@ class QualityGateMacroOverlayTests(unittest.TestCase):
             },
         ]
         macro = apply_macro_overlay({"macro_hard": {"notes": []}}, rows)["macro_hard"]
-        self.assertIn("AU", macro["stale_countries"])
+        self.assertIn("AU", macro["research_coverage_countries"])
         self.assertIn("CA", macro["fresh_countries"])
+        self.assertEqual(macro["stale_countries"], [])
         self.assertEqual(macro["status"], "fresh")
 
 
