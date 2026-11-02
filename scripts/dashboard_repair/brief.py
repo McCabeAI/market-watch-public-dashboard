@@ -134,6 +134,27 @@ def ranked_impulses(state: Mapping[str, Any], limit: int = 5) -> list[dict[str, 
     return rows[:limit]
 
 
+def ranked_rate_cohorts(
+    rows: list[Mapping[str, Any]], limit_per_cohort: int = 3
+) -> list[dict[str, Any]]:
+    """Group rate moves by observation date; newest cohort first; never interleave dates."""
+    buckets: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        as_of = str(row.get("as_of") or "")
+        buckets.setdefault(as_of, []).append(dict(row))
+
+    def _cohort_order(as_of: str) -> int:
+        parsed = _parse_date(as_of)
+        return parsed.toordinal() if parsed is not None else 0
+
+    cohorts: list[dict[str, Any]] = []
+    for as_of in sorted(buckets.keys(), key=_cohort_order, reverse=True):
+        ranked = buckets[as_of]
+        ranked.sort(key=lambda item: (-abs(float(item["value"])), str(item.get("label") or "")))
+        cohorts.append({"as_of": as_of, "rows": ranked[:limit_per_cohort]})
+    return cohorts
+
+
 def ranked_moves(cards: list[Mapping[str, Any]], limit: int = 3) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     """Two lists. Basis-point changes never share a ranking with percent changes."""
     rates: list[dict[str, Any]] = []
@@ -460,8 +481,49 @@ def _prints_block(country_detail: Mapping[str, Any] | None, scores: Mapping[str,
     )
 
 
-def _moves_block(cards: list[Mapping[str, Any]]) -> str:
-    rates, percents = ranked_moves(cards)
+def _moves_block(cards: list[Mapping[str, Any]], packet: Mapping[str, Any] | None) -> str:
+    from scripts.dashboard_repair.tape import rate_close_moves
+
+    _, percents = ranked_moves(cards)
+    rate_rows = rate_close_moves(dict(packet)) if isinstance(packet, Mapping) else []
+    cohorts = ranked_rate_cohorts(rate_rows)
+
+    def _rate_listing() -> str:
+        title = "Rates (bp)"
+        empty = "No yield change in basis points is in the packet."
+        if not cohorts:
+            return f'<p class="brief-sub">{esc(title)}</p><p class="brief-caption">{esc(empty)}</p>'
+        multi = len(cohorts) > 1
+        bits = [f'<p class="brief-sub">{esc(title)}</p>']
+        if multi:
+            bits.append(
+                '<p class="brief-caption">These official closes fall on different dates; '
+                "they are not the same move window.</p>"
+            )
+        horizon = "1 observation, prior official close"
+        for cohort in cohorts:
+            when = _asof_text(cohort.get("as_of"))
+            bits.append(f'<p class="brief-cohort-head">{esc(when)}</p>')
+            bits.append(
+                f'<p class="brief-caption">{esc(horizon)}. '
+                "Change versus the prior official close (one observation).</p>"
+            )
+            items = []
+            for row in cohort["rows"]:
+                stale = ""
+                if str(row.get("status") or "") == "stale":
+                    stale = ' <span class="mw-chip mw-chip--warn">Stale</span>'
+                row_when = _asof_text(row.get("as_of"))
+                items.append(
+                    "<li>"
+                    f'<span class="brief-name">{esc(row["label"])}</span>'
+                    f"{_change_face(row)}"
+                    f'<span class="mw-asof">{esc(row_when)}</span>'
+                    f"{stale}"
+                    "</li>"
+                )
+            bits.append('<ol class="brief-list">' + "".join(items) + "</ol>")
+        return "".join(bits)
 
     def listing(title: str, rows: list[dict[str, Any]], empty: str) -> str:
         if not rows:
@@ -481,8 +543,8 @@ def _moves_block(cards: list[Mapping[str, Any]]) -> str:
     return (
         '<section class="brief-block">'
         "<h3>Largest market moves</h3>"
-        '<p class="brief-caption">Prior official close. Basis points and percent changes are ranked separately.</p>'
-        + listing("Rates (bp)", rates, "No yield change in basis points is in the packet.")
+        '<p class="brief-caption">Basis points and percent changes are ranked separately.</p>'
+        + _rate_listing()
         + listing("FX and commodities (%)", percents, "No percent change is in the packet.")
         + "</section>"
     )
@@ -546,7 +608,7 @@ def render_brief(
         '<div class="desk-brief-grid">'
         + _impulse_block(scores)
         + _prints_block(country_detail, scores)
-        + _moves_block(cards)
+        + _moves_block(cards, packet)
         + _caveat_block(cards, scores, packet, calendar)
         + "</div></section>"
     )

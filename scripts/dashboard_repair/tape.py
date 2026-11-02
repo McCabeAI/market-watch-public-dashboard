@@ -293,6 +293,67 @@ def _cross_card(key: str, label: str, packet: dict[str, Any]) -> dict[str, Any]:
     )
 
 
+_RATE_CLOSE_ORDER = ("US", "CA", "AU", "NZ", "EA", "JP")
+_RATE_CLOSE_TENORS = ("2Y", "5Y", "10Y")
+_RATE_CLOSE_LABELS: dict[str, dict[str, str]] = {
+    "US": {"2Y": "US 2Y", "5Y": "US 5Y", "10Y": "US 10Y"},
+    "CA": {"2Y": "CA 2Y", "5Y": "CA 5Y", "10Y": "CA 10Y"},
+    "AU": {"2Y": "AU 2Y", "5Y": "AU 5Y", "10Y": "AU 10Y"},
+    "NZ": {"2Y": "NZ 2Y", "5Y": "NZ 5Y", "10Y": "NZ 10Y"},
+    "EA": {"2Y": "DE 2Y Bund", "5Y": "DE 5Y Bund", "10Y": "DE 10Y Bund"},
+    "JP": {"2Y": "JP 2Y", "5Y": "JP 5Y", "10Y": "JP 10Y"},
+}
+_RATE_CLOSE_HORIZON = "1 observation, prior official close"
+
+
+def rate_close_moves(packet: dict[str, Any] | None) -> list[dict[str, Any]]:
+    """All eligible 2Y/5Y/10Y bp_1d rows for desk-brief rate rankings (not the 10Y tape strip)."""
+    if not isinstance(packet, dict):
+        return []
+    rates = packet.get("rates") if isinstance(packet.get("rates"), dict) else {}
+    rows: list[dict[str, Any]] = []
+    for country in _RATE_CLOSE_ORDER:
+        block = rates.get(country) if isinstance(rates.get(country), dict) else None
+        if block is None:
+            continue
+        status = str(block.get("status") or "unverified")
+        if status not in {"ok", "stale"}:
+            continue
+        tenors = block.get("tenors") if isinstance(block.get("tenors"), dict) else {}
+        labels = _RATE_CLOSE_LABELS.get(country, {})
+        for tenor in _RATE_CLOSE_TENORS:
+            tenor_row = tenors.get(tenor) if isinstance(tenors.get(tenor), dict) else None
+            if tenor_row is None or tenor_row.get("value") is None:
+                continue
+            try:
+                level = float(tenor_row["value"])
+            except (TypeError, ValueError):
+                continue
+            if country == "US" and level < 1.0:
+                continue
+            if tenor_row.get("bp_1d") is None:
+                continue
+            try:
+                bp = float(tenor_row["bp_1d"])
+            except (TypeError, ValueError):
+                continue
+            as_of = str(tenor_row.get("as_of") or block.get("latest_observation") or "")
+            rows.append(
+                {
+                    "key": f"{country}{tenor}",
+                    "label": labels.get(tenor, f"{country} {tenor}"),
+                    "value": bp,
+                    "unit": "bp",
+                    "as_of": as_of,
+                    "status": status,
+                    "tenor": tenor,
+                    "country": country,
+                    "horizon": _RATE_CLOSE_HORIZON,
+                }
+            )
+    return rows
+
+
 def tape_cards(packet: dict[str, Any] | None) -> list[dict[str, Any]]:
     if not isinstance(packet, dict):
         return [
