@@ -5,7 +5,12 @@ from __future__ import annotations
 import unittest
 
 from scripts.market_watch_launch.freeze import _trade_permissions
-from scripts.market_watch_launch.quality_gate import evaluate_gate, evaluate_gate_canonical, apply_macro_overlay
+from scripts.market_watch_launch.quality_gate import (
+    _approved_curve_markable,
+    apply_macro_overlay,
+    evaluate_gate,
+    evaluate_gate_canonical,
+)
 from scripts.macro_freshness import macro_expression_block
 from scripts.overnight.errors import FreshnessError
 from scripts.overnight.freshness import assert_action_allowed, expression_dependencies
@@ -134,9 +139,21 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
     def test_curve_mark_keeps_country_open_when_cash_and_fx_are_down(self) -> None:
         dead = {code: {"status": "missing"} for code in ("US", "CA", "AU", "NZ", "EA", "JP")}
         curves = {
-            "US": ("SOFR", {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 3.7}]}),
+            "US": (
+                "SOFR",
+                {
+                    "status": "ok",
+                    "contracts": [{"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.7}],
+                },
+            ),
             "CA": ("CORRA", {"contracts": [{"expiry": "2027-03", "implied_rate": 2.7}]}),
-            "AU": ("AONIA", {"status": "ok"}),
+            "AU": (
+                "AONIA",
+                {
+                    "status": "ok",
+                    "contracts": [{"expiry": "2026-11", "code": "IBX6", "implied_rate": 4.4}],
+                },
+            ),
         }
         states = [
             {
@@ -170,6 +187,210 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
                 self.assertIn("FX", result["blocked_legs"])
                 self.assertNotIn("EA", result["trade_eligible_countries"])
                 self.assertNotIn("NZ", result["trade_eligible_countries"])
+
+    def test_approved_curve_markable_requires_supported_contract_quote(self) -> None:
+        def packet(curve_id: str, block: dict) -> dict:
+            return {
+                "generated_at": "2026-11-02T08:00:00-05:00",
+                "tradable_rate_curves": {"curves": {curve_id: block}},
+            }
+
+        sofr = {"expiry": "2027-03", "code": "SR3H7", "implied_rate": 3.7}
+        self.assertFalse(_approved_curve_markable(packet("SOFR", {"status": "ok"}), "US"))
+        self.assertFalse(
+            _approved_curve_markable(packet("SOFR", {"status": "ok", "implied_rate": 3.7}), "US")
+        )
+        self.assertFalse(
+            _approved_curve_markable(packet("SOFR", {"status": "ok", "contracts": []}), "US")
+        )
+        self.assertFalse(
+            _approved_curve_markable(packet("SOFR", {"status": "ok", "contracts": None}), "US")
+        )
+        self.assertFalse(
+            _approved_curve_markable(
+                packet("SOFR", {"status": "ok", "contracts": [{"implied_rate": 3.7}]}),
+                "US",
+            )
+        )
+        for quote in (float("nan"), float("inf"), float("-inf"), True, False, "3.7", None):
+            self.assertFalse(
+                _approved_curve_markable(
+                    packet(
+                        "SOFR",
+                        {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": quote}]},
+                    ),
+                    "US",
+                ),
+                quote,
+            )
+        for status in ("stale", "invalid", "missing", "unavailable", "expired"):
+            self.assertFalse(
+                _approved_curve_markable(
+                    packet(
+                        "SOFR",
+                        {"status": "ok", "contracts": [{**sofr, "status": status}]},
+                    ),
+                    "US",
+                ),
+                status,
+            )
+        for block in (
+            {"status": "ok", "contracts": [{"expiry": "2027-13", "implied_rate": 3.7}]},
+            {"status": "ok", "contracts": [{"expiry": "not-a-contract", "implied_rate": 3.7}]},
+            {"status": "ok", "contracts": [{"code": "NOTREAL", "implied_rate": 3.7}]},
+            {"status": "ok", "contracts": [{"instrument": "US_10Y", "value": 4.1}]},
+            {
+                "status": "ok",
+                "contracts": [{"expiry": "2027-06", "code": "SR3H7", "implied_rate": 3.7}],
+            },
+            {"status": "stale", "contracts": [sofr]},
+            {"status": "unavailable", "contracts": [sofr]},
+            {"status": "partial", "contracts": [sofr]},
+        ):
+            self.assertFalse(_approved_curve_markable(packet("SOFR", block), "US"), block)
+
+        self.assertTrue(_approved_curve_markable(packet("SOFR", {"status": "ok", "contracts": [sofr]}), "US"))
+        self.assertTrue(
+            _approved_curve_markable(
+                packet("SOFR", {"contracts": [{"expiry": "2027-03", "rate": 3.5}]}),
+                "US",
+            )
+        )
+        self.assertTrue(
+            _approved_curve_markable(
+                packet("SOFR", {"status": "ok", "contracts": [{"code": "SR3H7", "value": 3.5}]}),
+                "US",
+            )
+        )
+        self.assertTrue(
+            _approved_curve_markable(
+                packet(
+                    "SOFR",
+                    {
+                        "status": "ok",
+                        "contracts": [
+                            {"expiry": "2027-03", "implied_rate": float("nan")},
+                            {"status": "stale", "expiry": "2027-06", "implied_rate": 3.4},
+                            sofr,
+                        ],
+                    },
+                ),
+                "US",
+            )
+        )
+        self.assertTrue(
+            _approved_curve_markable(
+                packet(
+                    "CORRA",
+                    {
+                        "status": "ok",
+                        "contracts": [{"expiry": "2028-03", "code": "CRAH28", "implied_rate": 3.5}],
+                    },
+                ),
+                "CA",
+            )
+        )
+        self.assertTrue(
+            _approved_curve_markable(
+                packet(
+                    "AONIA",
+                    {"status": "ok", "contracts": [{"expiry": "2026-11", "code": "IBX6", "implied_rate": 4.4}]},
+                ),
+                "AU",
+            )
+        )
+        self.assertFalse(
+            _approved_curve_markable(
+                packet("CORRA", {"status": "ok", "contracts": [{"code": "SR3H7", "implied_rate": 3.7}]}),
+                "CA",
+            )
+        )
+        sofr_only = packet("SOFR", {"status": "ok", "contracts": [sofr]})
+        self.assertFalse(_approved_curve_markable(sofr_only, "CA"))
+        self.assertFalse(_approved_curve_markable(sofr_only, "AU"))
+        self.assertFalse(_approved_curve_markable(sofr_only, "NZ"))
+        self.assertFalse(_approved_curve_markable(sofr_only, "EA"))
+        self.assertFalse(_approved_curve_markable(sofr_only, "JP"))
+        self.assertTrue(
+            _approved_curve_markable(
+                packet("TONA", {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 0.0}]}),
+                "JP",
+            )
+        )
+        self.assertFalse(_approved_curve_markable(packet("TONA", {"status": "ok"}), "JP"))
+        self.assertFalse(
+            _approved_curve_markable(
+                packet("TONA", {"status": "ok", "contracts": [{"expiry": "2027-13", "implied_rate": 0.5}]}),
+                "JP",
+            )
+        )
+        self.assertFalse(
+            _approved_curve_markable(
+                packet("ESTR", {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 2.0}]}),
+                "EA",
+            )
+        )
+
+    def test_status_ok_without_usable_contract_blocks_the_universe(self) -> None:
+        dead = {code: {"status": "missing"} for code in ("US", "CA", "AU", "NZ", "EA", "JP")}
+        dead["NZ"] = {"status": "ok", "tenors": {"10Y": {"value": 4.5}}}
+        dead["US"] = {"status": "invalid"}
+        families = _fresh_market_families(**dead)
+        families["market_state"]["data"]["fx"] = {"status": "unavailable"}
+        families["market_state"]["data"]["tradable_rate_curves"] = {
+            "curves": {
+                "SOFR": {"status": "ok"},
+                "CORRA": {"status": "ok", "contracts": []},
+                "AONIA": {
+                    "status": "ok",
+                    "contracts": [
+                        {"implied_rate": float("nan")},
+                        {"expiry": "2026-11", "implied_rate": True},
+                        {"expiry": "2026-11", "implied_rate": float("inf")},
+                        {"expiry": "2026-11", "status": "stale", "code": "IBX6", "implied_rate": 4.4},
+                        {"expiry": "2026-11", "status": "invalid", "implied_rate": 4.4},
+                        {"expiry": "2026-11", "status": "expired", "implied_rate": 4.4},
+                        {"expiry": "not-a-contract", "implied_rate": 4.4},
+                        {"expiry": "2026-13", "implied_rate": 4.4},
+                        {"instrument": "US_10Y", "value": 4.1},
+                        {"expiry": "2026-11"},
+                    ],
+                },
+                "ESTR": {"status": "ok", "contracts": [{"expiry": "2027-03", "implied_rate": 2.0}]},
+                "TONA": {"status": "ok"},
+            }
+        }
+        states = [
+            {
+                "run_id": "mwl-test",
+                "series_id": "US.Labor.payrolls",
+                "state_id": "mwl-test:US.Labor.payrolls",
+                "country": "US",
+                "trade_critical": True,
+                "carry_forward_reason": "old_but_current",
+            }
+        ]
+        packet = families["market_state"]["data"]
+        self.assertFalse(_approved_curve_markable(packet, "US"))
+        self.assertFalse(_approved_curve_markable(packet, "CA"))
+        self.assertFalse(_approved_curve_markable(packet, "AU"))
+        self.assertFalse(_approved_curve_markable(packet, "NZ"))
+        self.assertFalse(_approved_curve_markable(packet, "EA"))
+        self.assertFalse(_approved_curve_markable(packet, "JP"))
+        for result in (
+            evaluate_gate(rows=_nov2_macro_rows(), families=families),
+            evaluate_gate_canonical(states, families),
+        ):
+            self.assertEqual(result["outcome"], "BLOCKED")
+            self.assertEqual(result["coverage"], "NONE")
+            self.assertEqual(result["reason"], "no_markable_universe")
+            self.assertFalse(result["eligible"])
+            self.assertEqual(result["trade_eligible_countries"], [])
+            self.assertNotIn("NZ", result["trade_eligible_countries"])
+            self.assertFalse(result["countries"]["NZ"]["eligible"])
+            for code in ("US", "CA", "AU", "EA", "JP"):
+                self.assertFalse(result["countries"][code]["eligible"])
+                self.assertFalse(result["countries"][code].get("curve_markable"))
 
     def test_no_markable_universe_when_rates_and_fx_are_unusable(self) -> None:
         overrides = {code: {"status": "missing"} for code in ("US", "CA", "AU", "NZ", "EA", "JP")}

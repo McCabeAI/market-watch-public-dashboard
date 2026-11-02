@@ -10,6 +10,7 @@ from typing import Any
 
 from scripts.country_registry import economies, paper_sovereign_admission
 from scripts.policy_path_data import _iso_calendar_date
+from scripts.rates.contract_economics import CURVE_SPEC, parse_contract_id
 
 from scripts.market_watch_launch.contract import (
     BLOCKING_SERIES_STATUSES,
@@ -25,6 +26,8 @@ from scripts.run_state.policy import evaluate_policy
 _STAGE = "03_quality_gate"
 _BLOCKING_LEG_STATUSES = frozenset({"stale", "missing", "invalid", "unavailable"})
 _ZERO_WEIGHT_ROLES = frozenset({"context", "registry_unweighted", "explanatory_alias"})
+_CONTRACT_MONTH = re.compile(r"^(20\d{2})-(\d{2})$")
+_QUOTE_KEYS = ("implied_rate", "rate", "value")
 
 
 def _is_scored_row(row: dict[str, Any]) -> bool:
@@ -128,11 +131,93 @@ def _fx_leg_status(packet: dict[str, Any]) -> str:
     return "missing"
 
 
+def _finite_contract_quote(row: dict[str, Any]) -> bool:
+    """True when the row carries a finite numeric implied rate or quote."""
+    for key in _QUOTE_KEYS:
+        value = row.get(key)
+        if isinstance(value, bool) or not isinstance(value, (int, float)):
+            continue
+        if math.isfinite(float(value)):
+            return True
+    return False
+
+
+def _expiry_on_curve(curve_id: str, expiry: Any) -> str | None:
+    """Contract month on this curve, using the existing supported-id shape.
+
+    SOFR, CORRA, and AONIA use ``parse_contract_id``. Other registry curves
+    (TONA) use the same ``YYYY-MM`` month already accepted as a paper alias.
+    This does not apply a second expiry calendar or quote-freshness window.
+    """
+    if not isinstance(expiry, str):
+        return None
+    text = expiry.strip()
+    if not text:
+        return None
+    if curve_id in CURVE_SPEC:
+        parsed = parse_contract_id(f"{curve_id}_{text}")
+        if parsed is None or parsed.spec.curve_id != curve_id:
+            return None
+        return parsed.expiry
+    match = _CONTRACT_MONTH.fullmatch(text)
+    if match is None:
+        return None
+    month = int(match.group(2))
+    if month < 1 or month > 12:
+        return None
+    return text
+
+
+def _supported_contract_row(curve_id: str, row: dict[str, Any]) -> bool:
+    """True when the row names one supported contract on ``curve_id``.
+
+    A present expiry that is not a contract month is invalid. An exchange
+    code counts only when it parses onto this curve; unparsed labels such as
+    two-digit CORRA codes stay compatible with a valid expiry and do not
+    invent a second symbology.
+    """
+    expiry_token = _expiry_on_curve(curve_id, row.get("expiry"))
+    if "expiry" in row and row.get("expiry") not in (None, "") and expiry_token is None:
+        return False
+    parsed_expiries: list[str] = []
+    for key in ("code", "instrument"):
+        token = row.get(key)
+        if not isinstance(token, str) or not token.strip():
+            continue
+        parsed = parse_contract_id(token.strip())
+        if parsed is None:
+            continue
+        if parsed.spec.curve_id != curve_id:
+            return False
+        parsed_expiries.append(parsed.expiry)
+    if parsed_expiries and any(item != parsed_expiries[0] for item in parsed_expiries):
+        return False
+    if parsed_expiries:
+        if expiry_token is not None and expiry_token != parsed_expiries[0]:
+            return False
+        return True
+    return expiry_token is not None
+
+
+def _usable_curve_contract(curve_id: str, row: Any) -> bool:
+    if not isinstance(row, dict):
+        return False
+    row_status = _explicit_status(row)
+    if row_status in _BLOCKING_LEG_STATUSES:
+        return False
+    if row_status and row_status != "ok":
+        return False
+    if not _supported_contract_row(curve_id, row):
+        return False
+    return _finite_contract_quote(row)
+
+
 def _approved_curve_markable(packet: dict[str, Any], code: str) -> bool:
-    """True when an approved country's tradable curve carries a usable mark.
+    """True when an approved country's tradable curve has a usable contract.
 
     Research-only sovereigns and observe-only curves do not count. A blocking
-    curve status is not a mark, even when a number is still present.
+    curve or contract status is not a mark, even when a number is still
+    present. Curve status ``ok`` is not a mark by itself.
     """
     if _research_only_sovereign(code):
         return False
@@ -150,26 +235,12 @@ def _approved_curve_markable(packet: dict[str, Any], code: str) -> bool:
     explicit = _explicit_status(block)
     if explicit in _BLOCKING_LEG_STATUSES:
         return False
-    if explicit == "ok":
-        return True
-    if explicit:
+    if explicit and explicit != "ok":
         return False
     contracts = block.get("contracts")
     if not isinstance(contracts, list):
         return False
-    for row in contracts:
-        if not isinstance(row, dict):
-            continue
-        row_status = _explicit_status(row)
-        if row_status in _BLOCKING_LEG_STATUSES:
-            continue
-        for key in ("implied_rate", "rate", "value"):
-            value = row.get(key)
-            if isinstance(value, bool) or not isinstance(value, (int, float)):
-                continue
-            if math.isfinite(float(value)):
-                return True
-    return False
+    return any(_usable_curve_contract(curve_id, row) for row in contracts)
 
 
 def _research_only_sovereign(code: str) -> bool:
