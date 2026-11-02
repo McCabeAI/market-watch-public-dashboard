@@ -25,6 +25,7 @@ from scripts.au_cpi_release.calendar import (
 from scripts.dashboard_repair.htmlutil import esc
 from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
 from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.us_employment.contract import EMPSIT_RELEASE_IDS, JOLTS_RELEASE_IDS
 
 ROOT = Path(__file__).resolve().parents[2]
 ET = ZoneInfo("America/New_York")
@@ -46,6 +47,9 @@ _MONTHS = {
 
 _AU_CPI_IDS = frozenset({"AU.Inflation.headline", "AU.Inflation.underlying"})
 _NZ_CPI_IDS = frozenset({"NZ.Inflation.headline", "NZ.Inflation.underlying"})
+# Membership only. Do not iterate these for display text; set order follows PYTHONHASHSEED.
+_JOLTS_CATALOG_IDS = frozenset(JOLTS_RELEASE_IDS)
+_EMPSIT_CATALOG_IDS = frozenset(EMPSIT_RELEASE_IDS)
 _RELEASE_FAMILY_TITLES = {
     "au_cpi": "Consumer Price Index, Australia (headline and trimmed-mean inflation)",
     "au_labour_force": "Labour Force, Australia",
@@ -245,6 +249,41 @@ def _catalog_rows_by_id() -> dict[str, dict[str, Any]]:
     return {str(row.get("id") or ""): row for row in load_catalog()["series"]}
 
 
+def _registry_blob(row: dict[str, Any]) -> str:
+    return " ".join(str(url) for url in row.get("registry_urls") or []).lower()
+
+
+def _cites_jolts_release(row: dict[str, Any]) -> bool:
+    blob = _registry_blob(row)
+    return "/jlt/" in blob or "jolts.htm" in blob
+
+
+def _cites_empsit_release(row: dict[str, Any]) -> bool:
+    blob = _registry_blob(row)
+    return "/news.release/empsit" in blob or "empsit.htm" in blob
+
+
+def _is_us_employment_situation(series_id: str, row: dict[str, Any]) -> bool:
+    """Primary BLS Employment Situation metrics and context released with that print.
+
+    ``employment_section`` is also set on JOLTS, claims, Chicago Fed, and other labor
+    rows, so it is not a family key. JOLTS is identified by catalog id and the jlt registry.
+    """
+    if series_id in _JOLTS_CATALOG_IDS or _cites_jolts_release(row):
+        return False
+    method = str(row.get("retrieval_method") or "")
+    endpoint = str(row.get("endpoint") or "")
+    if method.startswith("bls_empsit"):
+        return True
+    if method == "derived_employment_context" or "derived://us-employment-context" in endpoint:
+        return True
+    if method == "bls_public_api_batch" and (
+        _cites_empsit_release(row) or series_id in _EMPSIT_CATALOG_IDS
+    ):
+        return True
+    return False
+
+
 def _release_family_key(series_id: str) -> str:
     if series_id in _AU_CPI_IDS:
         return "au_cpi"
@@ -256,12 +295,8 @@ def _release_family_key(series_id: str) -> str:
     method = str(row.get("retrieval_method") or "")
     if method == "chicago_fed_lmi_json":
         return "chicago_fed_lmi"
-    urls = " ".join(str(url) for url in row.get("registry_urls") or [])
-    if series_id.startswith("US.Labor."):
-        if method == "derived_employment_context" or "derived://us-employment-context" in str(row.get("endpoint") or ""):
-            return "us_empsit"
-        if method.startswith("bls_empsit") or "empsit" in urls or row.get("employment_section"):
-            return "us_empsit"
+    if series_id.startswith("US.Labor.") and _is_us_employment_situation(series_id, row):
+        return "us_empsit"
     if series_id.startswith("US.Inflation.cpi"):
         return "us_cpi"
     return series_id
@@ -558,7 +593,9 @@ def _weekday(value: date | None) -> str:
     return value.strftime("%A")
 
 
-_SCORED_EMPSIT_IDS = frozenset({"US.Labor.payrolls", "US.Labor.unemployment", "US.Labor.wages"})
+# Fixed order. A set would reshuffle this line across processes (PYTHONHASHSEED)
+# and change the research-site digest.
+_SCORED_EMPSIT_ORDER = ("US.Labor.payrolls", "US.Labor.unemployment", "US.Labor.wages")
 
 
 def _is_derived_empsit_series(series_id: str) -> bool:
@@ -573,7 +610,7 @@ def _empsit_face_roles(series_ids: list[str]) -> str:
     parts: list[str] = []
     scored_names = [
         str((by_id.get(series_id) or {}).get("canonical_name") or series_id)
-        for series_id in _SCORED_EMPSIT_IDS
+        for series_id in _SCORED_EMPSIT_ORDER
         if series_id in series_ids
     ]
     if scored_names:

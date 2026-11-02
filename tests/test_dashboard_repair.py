@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 import base64
+import copy
 import gzip
+import os
+import subprocess
+import sys
 import unittest
 from datetime import datetime
 from pathlib import Path
@@ -12,7 +16,16 @@ from zoneinfo import ZoneInfo
 from scripts.apply_six_economy_dashboard import apply_six_economy_dashboard
 from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html
 from scripts.dashboard_repair.brief import ranked_impulses, ranked_moves
-from scripts.dashboard_repair.calendar_view import _event_title, _release_family_key, build_release_model, render_releases
+from scripts.dashboard_repair.calendar_view import (
+    _empsit_face_roles,
+    _event_title,
+    _release_family_key,
+    build_release_model,
+    render_releases,
+)
+from scripts.macro_ingestion.contract import load_catalog
+from scripts.macro_ingestion.us_employment.contract import JOLTS_RELEASE_IDS
+from scripts.macro_ingestion.us_employment.schedule import parse_bls_month_schedule
 from scripts.dashboard_repair.sources_view import render_sources
 from scripts.dashboard_repair.official_schedule import parse_abs_future_releases, parse_stats_nz_next_release
 from scripts.dashboard_repair.scoreboard import score_cards
@@ -382,20 +395,224 @@ class CalendarTests(unittest.TestCase):
             if "Nonfarm Payrolls (NFP)" in chunk and "2026-11-06" in chunk:
                 card_html = chunk
                 break
-        self.assertIn("Scored:", card_html)
+        self.assertIn(
+            "Scored: All Employees, Total Nonfarm, Unemployment Rate, "
+            "Average Hourly Earnings of All Employees, Total Private",
+            card_html,
+        )
         self.assertIn("Context:", card_html)
         self.assertIn("Derived household context", card_html)
         self.assertIn("Scored and context", card_html)
         self.assertIn("BLS", card_html)
+        self.assertTrue(all(not str(series_id).startswith("US.Labor.jolts_") for series_id in series_ids))
         self.assertNotIn("Market Watch</span></div>", card_html.split("mw-release-main", 1)[1].split("</div>", 1)[0])
         self.assertIn("not yet in score ledger", card_html)
         self.assertEqual(_release_family_key("US.Labor.delta_labor_force"), "us_empsit")
+        self.assertEqual(_release_family_key("US.Labor.participation"), "us_empsit")
+        self.assertNotEqual(_release_family_key("US.Labor.jolts_openings"), "us_empsit")
         other = [
             item
             for item in model["upcoming"]
             if item is not card and _release_family_key(str((item.get("series_ids") or ["x"])[0])) != "us_empsit"
         ]
         self.assertTrue(other, "expected a separate non-empsit release in the window")
+
+    def test_empsit_role_line_is_identical_across_hash_seeds(self):
+        """Two interpreter processes must emit the same scored-role line and release HTML."""
+        script = """
+import hashlib
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from scripts.dashboard_repair.calendar_view import _empsit_face_roles, build_release_model, render_releases
+ids = [
+    "US.Labor.delta_labor_force",
+    "US.Labor.wages",
+    "US.Labor.participation",
+    "US.Labor.payrolls",
+    "US.Labor.unemployment",
+]
+print(_empsit_face_roles(ids))
+now = datetime(2026, 11, 2, 12, 0, tzinfo=ZoneInfo("America/New_York"))
+html = render_releases(build_release_model(now, score_as_of="2026-09-21"))
+print(hashlib.sha256(html.encode()).hexdigest())
+"""
+
+        def run(seed: str) -> tuple[str, str]:
+            env = os.environ.copy()
+            env["PYTHONHASHSEED"] = seed
+            env["PYTHONPATH"] = str(ROOT)
+            proc = subprocess.run(
+                [sys.executable, "-c", script],
+                cwd=ROOT,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            role, digest = proc.stdout.strip().splitlines()
+            return role, digest
+
+        expected = (
+            "Scored: All Employees, Total Nonfarm, Unemployment Rate, "
+            "Average Hourly Earnings of All Employees, Total Private · "
+            "Context: Labor force participation rate · Derived household context"
+        )
+        role_a, digest_a = run("0")
+        role_b, digest_b = run("1")
+        self.assertEqual(role_a, expected)
+        self.assertEqual(role_b, expected)
+        self.assertEqual(digest_a, digest_b)
+        self.assertEqual(_empsit_face_roles(
+            ["US.Labor.wages", "US.Labor.unemployment", "US.Labor.payrolls"]
+        ), "Scored: All Employees, Total Nonfarm, Unemployment Rate, Average Hourly Earnings of All Employees, Total Private")
+
+    def test_jolts_actual_schedule_stays_out_of_nfp_card(self):
+        """Pinned JOLTS dates are empty. A parsed JOLTS cell must not become the NFP card.
+
+        fragments/us.json leaves JOLTS unparsed. The 10:00 cell below is only the
+        official month-page parser's JOLTS family, not a newly pinned calendar day.
+        """
+        catalog = load_catalog()["series"]
+        by_id = {row["id"]: row for row in catalog}
+        jolts_ids = [series_id for series_id in JOLTS_RELEASE_IDS if series_id in by_id]
+        self.assertGreaterEqual(len(jolts_ids), 8)
+        for series_id in jolts_ids:
+            row = by_id[series_id]
+            self.assertEqual(row.get("retrieval_method"), "bls_public_api_batch")
+            self.assertEqual(row.get("employment_section"), "current_flows")
+            urls = " ".join(row.get("registry_urls") or [])
+            self.assertIn("https://www.bls.gov/jlt/", urls)
+            self.assertNotIn("empsit", urls)
+            rule = row.get("release_rule") or {}
+            self.assertEqual(rule.get("dates") or [], [])
+            self.assertIn("do not list JOLTS", str(rule.get("note") or ""))
+            self.assertEqual(_release_family_key(series_id), series_id)
+            self.assertNotEqual(_release_family_key(series_id), "us_empsit")
+        for series_id in (
+            "US.Labor.initial_claims",
+            "US.Labor.continuing_claims",
+            "US.Labor.adp_employment",
+            "US.Labor.ism_manufacturing_employment",
+            "US.Labor.breakeven_employment",
+            "US.Labor.challenger_job_cuts",
+        ):
+            self.assertNotEqual(_release_family_key(series_id), "us_empsit", series_id)
+        self.assertEqual(_release_family_key("US.Labor.chicago_fed_u3_nowcast_final"), "chicago_fed_lmi")
+        self.assertEqual(_release_family_key("US.Labor.payrolls"), "us_empsit")
+        self.assertEqual(_release_family_key("US.Labor.participation"), "us_empsit")
+        self.assertEqual(_release_family_key("US.Labor.delta_labor_force"), "us_empsit")
+
+        now = datetime(2026, 11, 2, 12, 0, tzinfo=ET)
+        model = build_release_model(now=now, score_as_of="2026-09-21")
+        nfp_cards = [
+            item
+            for item in model["upcoming"] + model["later"] + model["recent"]
+            if "US.Labor.payrolls" in (item.get("series_ids") or [])
+            and "2026-11-06" in item.get("et_display", "")
+            and "08:30" in item.get("et_display", "")
+        ]
+        self.assertEqual(len(nfp_cards), 1)
+        nfp = nfp_cards[0]
+        nfp_ids = set(nfp.get("series_ids") or [])
+        self.assertTrue(
+            {
+                "US.Labor.payrolls",
+                "US.Labor.unemployment",
+                "US.Labor.wages",
+                "US.Labor.participation",
+                "US.Labor.delta_labor_force",
+            }.issubset(nfp_ids)
+        )
+        self.assertTrue(all(series_id not in nfp_ids for series_id in jolts_ids))
+        placed = {
+            series_id
+            for item in model["upcoming"] + model["later"] + model["recent"]
+            for series_id in item.get("series_ids") or []
+        }
+        self.assertTrue(all(series_id not in placed for series_id in jolts_ids))
+
+        page = """
+        <table>
+          <tr><td id="d1104"><p class="day">4</p><p><strong>Job Openings and Labor Turnover<br></strong>September 2026<br>10:00 AM</p></td></tr>
+          <tr><td id="d1106"><p class="day">6</p><p><strong>Employment Situation<br></strong>October 2026<br>08:30 AM</p></td></tr>
+        </table>
+        """
+        parsed = parse_bls_month_schedule(page, year=2026, month=11)
+        jolts_cell = next(item for item in parsed if item["family"] == "jolts")
+        empsit_cell = next(item for item in parsed if item["family"] == "empsit")
+        self.assertEqual(jolts_cell["stamp"], "2026-11-04T10:00:00")
+        self.assertEqual(empsit_cell["stamp"], "2026-11-06T08:30:00")
+        self.assertNotEqual(jolts_cell["stamp"], empsit_cell["stamp"])
+        note = str((by_id[jolts_ids[0]].get("release_rule") or {}).get("note") or "")
+        scheduled = build_release_model(
+            now=now,
+            series=copy.deepcopy(catalog),
+            score_as_of="2026-09-21",
+            fetched_slots=[
+                {
+                    "series_ids": jolts_ids,
+                    "country": "US",
+                    "publisher": "BLS",
+                    "source_url": "https://www.bls.gov/jlt/",
+                    "provenance": note,
+                    "reference_period": jolts_cell["period"],
+                    "clock": "verified",
+                    "timezone": "America/New_York",
+                    "stamp": jolts_cell["stamp"],
+                }
+            ],
+        )
+        jolts_cards = [
+            item
+            for item in scheduled["upcoming"] + scheduled["later"] + scheduled["recent"]
+            if any(series_id in jolts_ids for series_id in item.get("series_ids") or [])
+        ]
+        self.assertEqual(len(jolts_cards), len(jolts_ids))
+        html = render_releases(scheduled)
+        seen_titles = set()
+        for card in jolts_cards:
+            title = _event_title(card)
+            seen_titles.add(title)
+            self.assertNotIn("Nonfarm Payrolls", title)
+            self.assertNotIn("Employment Situation", title)
+            self.assertEqual(card.get("series_ids"), [card["series_ids"][0]])
+            series_id = card["series_ids"][0]
+            self.assertEqual(title, by_id[series_id]["canonical_name"])
+            self.assertTrue(title.startswith("JOLTS "))
+            self.assertEqual(card.get("publisher"), "BLS")
+            self.assertIn("10:00", card.get("et_display", ""))
+            self.assertNotIn("08:30", card.get("et_display", ""))
+            impacts = " ".join(str(text) for text in card.get("impacts") or [])
+            self.assertIn("Context only", impacts)
+            self.assertNotIn("Scored input:", impacts)
+            for chunk in html.split('<article class="release-card'):
+                if title in chunk and "2026-11-04" in chunk:
+                    self.assertIn("Context only", chunk)
+                    self.assertNotIn("Nonfarm Payrolls", chunk)
+                    self.assertIn("do not list JOLTS", chunk)
+                    self.assertIn("https://www.bls.gov/jlt/", chunk)
+                    break
+            else:
+                self.fail(f"missing rendered JOLTS card for {title}")
+        self.assertEqual(len(seen_titles), len(jolts_ids))
+        still = [
+            item
+            for item in scheduled["upcoming"] + scheduled["later"]
+            if "US.Labor.payrolls" in (item.get("series_ids") or [])
+            and "2026-11-06" in item.get("et_display", "")
+            and "08:30" in item.get("et_display", "")
+        ]
+        self.assertEqual(len(still), 1)
+        self.assertIn("Nonfarm Payrolls (NFP)", _event_title(still[0]))
+        self.assertTrue(all(series_id not in (still[0].get("series_ids") or []) for series_id in jolts_ids))
+        nfp_html = ""
+        for chunk in html.split('<article class="release-card'):
+            if "Nonfarm Payrolls (NFP)" in chunk and "2026-11-06" in chunk:
+                nfp_html = chunk
+                break
+        self.assertIn("Scored and context", nfp_html)
+        self.assertNotIn("JOLTS", nfp_html)
 
     def test_release_date_and_weekday_stack_without_collision(self):
         html = render_releases(build_release_model(NOW, score_as_of="2026-09-21"))
