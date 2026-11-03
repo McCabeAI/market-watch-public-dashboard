@@ -3,31 +3,62 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
+import os
 import re
 import sys
 from datetime import date
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 from scripts.overnight.books import empty_seat
 from scripts.overnight.constants import BOOKS_RELPATH, ROOT as REPO_ROOT
+from scripts.overnight.store import _dump as overnight_json_dump
 from scripts.overnight.store import sha256_json, write_json
 from scripts.trader_room.agent_config import (
     AgentConfigError,
+    daily_agent_name,
+    daily_agent_text,
     get_profile,
     head_traders,
     load_config,
+    split_daily_agents,
+    today_ny,
 )
 from scripts.trading.store import TradingStore, cold_start_identity
 
 _KEBAB_ID = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)*$")
 _PLACEHOLDER = re.compile(r"\b(todo|tbd|placeholder|lorem)\b", re.IGNORECASE)
 _EXPRESSION_SPECIALTIES = frozenset({"rates_first", "spot_only", "options_specialist"})
+_CHECKPOINT_NAME = ".mw-onboarding-checkpoint.json"
+_IDENTITY_JSON_FILES = (
+    "journal.json",
+    "lessons.json",
+    "postmortems.json",
+    "postmortems_due.json",
+    "reflections.json",
+    "reflections_due.json",
+    "consequence_state.json",
+    "learning_state.json",
+    "psychology_events.json",
+    "psychology_state.json",
+)
+
+_FAULT_AFTER: str | None = None
+
+
+def _maybe_fault(stage: str) -> None:
+    if _FAULT_AFTER == stage:
+        raise RuntimeError(f"onboarding fault injected after stage {stage!r}")
 
 
 def _config_path(root: Path) -> Path:
     return root / "scripts" / "trader_room" / "model_registry.json"
+
+
+def _checkpoint_path(root: Path) -> Path:
+    return root / _CHECKPOINT_NAME
 
 
 def _validate_persona(text: str) -> None:
@@ -65,7 +96,7 @@ def _render_agent_md(
     persona: str,
     remit: str,
     specialty: str,
-    trader_model: str,
+    agent_model: str,
     subagent_model: str,
     may_no_trade: bool,
 ) -> str:
@@ -89,7 +120,7 @@ def _render_agent_md(
         "---\n"
         f"name: {trader_id}\n"
         f"description: {description}\n"
-        f"model: {trader_model}[]\n"
+        f"model: {agent_model}[]\n"
         "readonly: true\n"
         "is_background: true\n"
         "---\n"
@@ -100,12 +131,29 @@ def _render_agent_md(
     )
 
 
+def _daily_text_or_none(profile: dict[str, Any], agent_path: Path, base_text: str, trader_id: str) -> str | None:
+    if not split_daily_agents(profile["roles"]):
+        return None
+    return daily_agent_text(base_text, agent_path, trader_id, profile["roles"]["trader"])
+
+
 def _load_config_raw(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _config_json_text(payload: dict[str, Any]) -> str:
+    return json.dumps(payload, indent=2) + "\n"
+
+
+def _atomic_write_text(path: Path, text: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    tmp.replace(path)
+
+
 def _write_config_raw(path: Path, payload: dict[str, Any]) -> None:
-    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    _atomic_write_text(path, _config_json_text(payload))
 
 
 def _trader_ids(config: dict[str, Any]) -> set[str]:
@@ -155,6 +203,218 @@ def _identity_file_hashes(store: TradingStore) -> dict[str, str]:
     return out
 
 
+def _path_prior_state(path: Path) -> dict[str, str]:
+    if path.is_dir():
+        return {"state": "dir"}
+    if path.is_file():
+        encoded = base64.standard_b64encode(path.read_bytes()).decode("ascii")
+        return {"state": "present", "b64": encoded}
+    return {"state": "absent"}
+
+
+def _snapshot_paths(paths: list[Path]) -> dict[str, dict[str, str]]:
+    out: dict[str, dict[str, str]] = {}
+    seen: set[str] = set()
+    for path in paths:
+        key = str(path.resolve())
+        if key in seen:
+            continue
+        seen.add(key)
+        out[key] = _path_prior_state(path)
+    return out
+
+
+def _refuse_if_checkpoint(root: Path) -> None:
+    if _checkpoint_path(root).is_file():
+        raise AgentConfigError(
+            "incomplete onboarding checkpoint exists at "
+            f"{_CHECKPOINT_NAME!r}; run onboard_trader with --recover (and --root) to restore prior state"
+        )
+
+
+def _write_checkpoint_exclusive(root: Path, payload: dict[str, Any]) -> None:
+    path = _checkpoint_path(root)
+    flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL
+    fd = os.open(str(path), flags, 0o600)
+    try:
+        data = (json.dumps(payload, indent=2) + "\n").encode("utf-8")
+        os.write(fd, data)
+        os.fsync(fd)
+    finally:
+        os.close(fd)
+
+
+def _delete_checkpoint(root: Path) -> None:
+    _checkpoint_path(root).unlink(missing_ok=True)
+
+
+def _restore_from_checkpoint_data(root: Path, data: dict[str, Any]) -> None:
+    paths = data.get("paths") or {}
+    trader_id = str(data.get("trader_id") or "")
+    store = TradingStore(root=root, state_root=root)
+    id_dir = store.state_dir() / "trader" / trader_id
+    id_dir_key = str(id_dir.resolve())
+    id_dir_was_absent = paths.get(id_dir_key, {}).get("state") == "absent"
+
+    for path_str, meta in paths.items():
+        path = Path(path_str)
+        state = meta.get("state")
+        if state == "present":
+            raw = base64.standard_b64decode(str(meta["b64"]))
+            path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_write_bytes(path, raw)
+        elif state == "dir":
+            continue
+        elif state == "absent":
+            if path.is_file():
+                path.unlink()
+            elif path.is_dir():
+                try:
+                    path.rmdir()
+                except OSError:
+                    pass
+        else:
+            raise AgentConfigError(f"invalid checkpoint entry for {path_str!r}")
+
+    if id_dir_was_absent and id_dir.is_dir():
+        try:
+            if not any(id_dir.iterdir()):
+                id_dir.rmdir()
+        except OSError:
+            pass
+
+
+def _atomic_write_bytes(path: Path, data: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_bytes(data)
+    tmp.replace(path)
+
+
+def _onboarding_rollback(root: Path, checkpoint: dict[str, Any]) -> None:
+    _restore_from_checkpoint_data(root, checkpoint)
+    _delete_checkpoint(root)
+
+
+def recover_incomplete(root: Path) -> dict[str, Any]:
+    cp = _checkpoint_path(root)
+    if not cp.is_file():
+        raise AgentConfigError("no onboarding checkpoint to recover")
+    data = json.loads(cp.read_text(encoding="utf-8"))
+    _restore_from_checkpoint_data(root, data)
+    _delete_checkpoint(root)
+    return {
+        "recovered": True,
+        "trader_id": data.get("trader_id"),
+        "mode": data.get("mode"),
+    }
+
+
+def _validate_config_candidate(config_path: Path, candidate: dict[str, Any]) -> dict[str, Any]:
+    tmp = config_path.with_name(config_path.name + ".validate.tmp")
+    try:
+        _write_config_raw(tmp, candidate)
+        return load_config(tmp, honor_env=False)
+    finally:
+        tmp.unlink(missing_ok=True)
+
+
+def _planned_identity_paths(store: TradingStore, trader_id: str) -> list[Path]:
+    base = store.state_dir() / "trader" / trader_id
+    paths: list[Path] = [store.index_path(), base]
+    for name in _IDENTITY_JSON_FILES:
+        paths.append(base / name)
+    return paths
+
+
+def _run_checkpointed(
+    *,
+    root: Path,
+    mode: str,
+    trader_id: str,
+    tracked_paths: list[Path],
+    apply: Callable[[], None],
+) -> None:
+    _refuse_if_checkpoint(root)
+    checkpoint_body = {
+        "trader_id": trader_id,
+        "mode": mode,
+        "paths": _snapshot_paths(tracked_paths),
+    }
+    _write_checkpoint_exclusive(root, checkpoint_body)
+    try:
+        apply()
+    except BaseException:
+        _onboarding_rollback(root, checkpoint_body)
+        raise
+    else:
+        _delete_checkpoint(root)
+
+
+def _assert_canonical_books_bytes(books_path: Path, books: dict[str, Any]) -> None:
+    expected = overnight_json_dump(books)
+    actual = books_path.read_text(encoding="utf-8")
+    if actual != expected:
+        raise AgentConfigError("books latest.json was not written with the canonical overnight serializer")
+
+
+def _build_active_config(
+    config: dict[str, Any],
+    *,
+    trader_id: str,
+    existing: dict[str, Any] | None,
+    remit: str,
+    specialty: str,
+    may_no_trade: bool,
+    activation_date: str,
+) -> dict[str, Any]:
+    mutated = json.loads(json.dumps(config))
+    if existing is None:
+        mutated.setdefault("roster", {}).setdefault("traders", []).append(
+            {
+                "id": trader_id,
+                "remit": remit,
+                "expression_specialty": specialty,
+                "may_no_trade": may_no_trade,
+                "activation_date": activation_date,
+                "status": "active",
+            }
+        )
+    else:
+        target = _find_trader(mutated, trader_id)
+        assert target is not None
+        target["status"] = "active"
+        if remit:
+            target["remit"] = remit
+        target["expression_specialty"] = specialty
+        target["may_no_trade"] = may_no_trade
+        target["activation_date"] = activation_date
+    return mutated
+
+
+def _build_pending_config(
+    config: dict[str, Any],
+    *,
+    trader_id: str,
+    remit: str,
+    specialty: str,
+    may_no_trade: bool,
+    activation_date: str,
+) -> dict[str, Any]:
+    mutated = json.loads(json.dumps(config))
+    mutated.setdefault("roster", {}).setdefault("traders", []).append(
+        {
+            "id": trader_id,
+            "remit": remit,
+            "expression_specialty": specialty,
+            "may_no_trade": may_no_trade,
+            "activation_date": activation_date,
+            "status": "pending",
+        }
+    )
+    return mutated
+
+
 def onboard_pending(
     *,
     root: Path,
@@ -167,51 +427,67 @@ def onboard_pending(
     may_no_trade: bool,
     dry_run: bool,
 ) -> dict[str, Any]:
+    _refuse_if_checkpoint(root)
     config_path = _config_path(root)
     config = _load_config_raw(config_path)
     if trader_id in _trader_ids(config):
         raise AgentConfigError(f"trader id {trader_id!r} already exists in roster config")
     profile = get_profile(config=config)
-    trader_model = profile["roles"]["trader"]
-    entry = {
-        "id": trader_id,
-        "remit": remit,
-        "expression_specialty": specialty,
-        "may_no_trade": may_no_trade,
-        "activation_date": activation_date,
-        "status": "pending",
-    }
+    debate_model = profile["roles"]["advocate"]
     agent_path = root / ".cursor" / "agents" / f"{trader_id}.md"
+    daily_path = root / ".cursor" / "agents" / f"{daily_agent_name(trader_id)}.md"
     agent_text = _render_agent_md(
         trader_id=trader_id,
         description=description,
         persona=persona,
         remit=remit,
         specialty=specialty,
-        trader_model=trader_model,
+        agent_model=debate_model,
         subagent_model=profile["roles"]["advocate_subagent"],
         may_no_trade=may_no_trade,
     )
+    daily_text = _daily_text_or_none(profile, agent_path, agent_text, trader_id)
+    candidate = _build_pending_config(
+        config,
+        trader_id=trader_id,
+        remit=remit,
+        specialty=specialty,
+        may_no_trade=may_no_trade,
+        activation_date=activation_date,
+    )
+    _validate_config_candidate(config_path, candidate)
+
     plan = {
         "mode": "pending",
         "trader_id": trader_id,
         "config_path": str(config_path),
         "agent_path": str(agent_path),
-        "entry": entry,
         "dry_run": dry_run,
     }
     if dry_run:
         return plan
-    backup = config_path.read_text(encoding="utf-8")
-    config.setdefault("roster", {}).setdefault("traders", []).append(entry)
-    _write_config_raw(config_path, config)
-    try:
+
+    tracked = [config_path, agent_path]
+    if daily_text is not None:
+        tracked.append(daily_path)
+
+    def _apply() -> None:
+        agent_path.parent.mkdir(parents=True, exist_ok=True)
+        _atomic_write_text(agent_path, agent_text)
+        if daily_text is not None:
+            _atomic_write_text(daily_path, daily_text)
+        _maybe_fault("agent")
+        _write_config_raw(config_path, candidate)
+        _maybe_fault("config")
         load_config(config_path, honor_env=False)
-    except AgentConfigError:
-        config_path.write_text(backup, encoding="utf-8")
-        raise
-    agent_path.parent.mkdir(parents=True, exist_ok=True)
-    agent_path.write_text(agent_text, encoding="utf-8")
+
+    _run_checkpointed(
+        root=root,
+        mode="pending",
+        trader_id=trader_id,
+        tracked_paths=tracked,
+        apply=_apply,
+    )
     plan["written"] = True
     return plan
 
@@ -227,13 +503,24 @@ def onboard_activate(
     persona: str,
     may_no_trade: bool,
     dry_run: bool,
+    today: date | None = None,
 ) -> dict[str, Any]:
+    _refuse_if_checkpoint(root)
     config_path = _config_path(root)
     config = _load_config_raw(config_path)
     existing = _find_trader(config, trader_id)
     store = TradingStore(root=root, state_root=root)
     if _identity_exists(store, trader_id) or _books_seat_exists(root, trader_id):
         raise AgentConfigError(f"refusing activation: state already exists for {trader_id!r}")
+
+    act_day = date.fromisoformat(activation_date)
+    ny_today = today_ny() if today is None else today
+    if act_day > ny_today:
+        raise AgentConfigError(
+            f"refusing live activation: activation_date {activation_date} is after today "
+            f"({ny_today.isoformat()}, America/New_York); register the seat as pending now and "
+            f"run --activate on or after {activation_date}"
+        )
 
     prior_books_hashes: dict[str, str] = {}
     books_path = root / BOOKS_RELPATH
@@ -244,8 +531,9 @@ def onboard_activate(
     prior_identity_hashes = _identity_file_hashes(store)
 
     profile = get_profile(config=config)
-    trader_model = profile["roles"]["trader"]
+    debate_model = profile["roles"]["advocate"]
     agent_path = root / ".cursor" / "agents" / f"{trader_id}.md"
+    daily_path = root / ".cursor" / "agents" / f"{daily_agent_name(trader_id)}.md"
     write_agent = not agent_path.is_file()
     agent_text = _render_agent_md(
         trader_id=trader_id,
@@ -253,10 +541,31 @@ def onboard_activate(
         persona=persona,
         remit=remit,
         specialty=specialty,
-        trader_model=trader_model,
+        agent_model=debate_model,
         subagent_model=profile["roles"]["advocate_subagent"],
         may_no_trade=may_no_trade,
     )
+    base_text = agent_text if write_agent else agent_path.read_text(encoding="utf-8")
+    daily_text = _daily_text_or_none(profile, agent_path, base_text, trader_id)
+    if daily_text is not None and daily_path.is_file() and daily_path.read_text(encoding="utf-8") == daily_text:
+        daily_text = None
+
+    candidate = _build_active_config(
+        config,
+        trader_id=trader_id,
+        existing=existing,
+        remit=remit,
+        specialty=specialty,
+        may_no_trade=may_no_trade,
+        activation_date=activation_date,
+    )
+    validated = _validate_config_candidate(config_path, candidate)
+    active_allowed = tuple(t["id"] for t in head_traders(validated, as_of=ny_today))
+    if trader_id not in active_allowed:
+        raise AgentConfigError(
+            f"trader {trader_id!r} is not a live head seat as of {ny_today.isoformat()}; "
+            "check activation_date and status"
+        )
 
     plan: dict[str, Any] = {
         "mode": "activate",
@@ -269,90 +578,121 @@ def onboard_activate(
     if dry_run:
         return plan
 
-    backup = config_path.read_text(encoding="utf-8")
-    if existing is None:
-        config.setdefault("roster", {}).setdefault("traders", []).append(
-            {
-                "id": trader_id,
-                "remit": remit,
-                "expression_specialty": specialty,
-                "may_no_trade": may_no_trade,
-                "activation_date": activation_date,
-                "status": "active",
-            }
-        )
-    else:
-        existing["status"] = "active"
-        if remit:
-            existing["remit"] = remit
-        existing["expression_specialty"] = specialty
-        existing["may_no_trade"] = may_no_trade
-        existing["activation_date"] = activation_date
-
-    _write_config_raw(config_path, config)
-    try:
-        validated = load_config(config_path, honor_env=False)
-    except AgentConfigError:
-        config_path.write_text(backup, encoding="utf-8")
-        raise
-
+    tracked: list[Path] = list(_planned_identity_paths(store, trader_id))
+    if books_path.is_file():
+        tracked.append(books_path)
     if write_agent:
-        agent_path.parent.mkdir(parents=True, exist_ok=True)
-        agent_path.write_text(agent_text, encoding="utf-8")
+        tracked.append(agent_path)
+    if daily_text is not None:
+        tracked.append(daily_path)
+    tracked.append(config_path)
 
-    active_allowed = tuple(t["id"] for t in head_traders(validated))
-    cold_start_identity(store, "trader", trader_id, allowed_traders=active_allowed)
+    books_payload: dict[str, Any] | None = None
 
-    if books_path.is_file():
-        books = json.loads(books_path.read_text(encoding="utf-8"))
-        entry = _find_trader(validated, trader_id) or {}
-        seat = empty_seat(
-            trader_id,
-            remit_text=str(entry.get("remit") or remit),
-            expression_specialty=str(entry.get("expression_specialty") or specialty),
-        )
-        for seat_id, prior_hash in prior_books_hashes.items():
-            if sha256_json(books["seats"][seat_id]) != prior_hash:
-                raise AgentConfigError(f"existing seat {seat_id} changed before append")
-        books["seats"][trader_id] = seat
-        write_json(books_path, books)
+    def _assert_prior_state_unchanged() -> None:
+        if books_path.is_file():
+            books_after = json.loads(books_path.read_text(encoding="utf-8"))
+            new_books_hashes = _seat_hashes(books_after)
+            for seat_id, prior_hash in prior_books_hashes.items():
+                if new_books_hashes.get(seat_id) != prior_hash:
+                    raise AgentConfigError(f"append-only books violation for seat {seat_id}")
+        new_identity_hashes = _identity_file_hashes(store)
+        for rel, prior_hash in prior_identity_hashes.items():
+            if new_identity_hashes.get(rel) != prior_hash:
+                raise AgentConfigError(f"append-only identity violation for {rel}")
 
-    new_books_hashes = {}
-    if books_path.is_file():
-        books_after = json.loads(books_path.read_text(encoding="utf-8"))
-        new_books_hashes = _seat_hashes(books_after)
-        for seat_id, prior_hash in prior_books_hashes.items():
-            if new_books_hashes.get(seat_id) != prior_hash:
-                raise AgentConfigError(f"append-only books violation for seat {seat_id}")
+    def _apply() -> None:
+        nonlocal books_payload
+        cold_start_identity(store, "trader", trader_id, allowed_traders=active_allowed)
+        _maybe_fault("identity")
 
-    new_identity_hashes = _identity_file_hashes(store)
-    for rel, prior_hash in prior_identity_hashes.items():
-        if new_identity_hashes.get(rel) != prior_hash:
-            raise AgentConfigError(f"append-only identity violation for {rel}")
+        if books_path.is_file():
+            books = json.loads(books_path.read_text(encoding="utf-8"))
+            entry = _find_trader(validated, trader_id) or {}
+            seat = empty_seat(
+                trader_id,
+                remit_text=str(entry.get("remit") or remit),
+                expression_specialty=str(entry.get("expression_specialty") or specialty),
+            )
+            for seat_id, prior_hash in prior_books_hashes.items():
+                if sha256_json(books["seats"][seat_id]) != prior_hash:
+                    raise AgentConfigError(f"existing seat {seat_id} changed before append")
+            books["seats"][trader_id] = seat
+            books_payload = books
+            write_json(books_path, books)
+            _assert_canonical_books_bytes(books_path, books)
+            _maybe_fault("books")
+
+        if write_agent:
+            agent_path.parent.mkdir(parents=True, exist_ok=True)
+            _atomic_write_text(agent_path, agent_text)
+        if daily_text is not None:
+            _atomic_write_text(daily_path, daily_text)
+        _maybe_fault("agent")
+
+        _assert_prior_state_unchanged()
+        _write_config_raw(config_path, candidate)
+        load_config(config_path, honor_env=False)
+        _maybe_fault("config")
+
+    _run_checkpointed(
+        root=root,
+        mode="activate",
+        trader_id=trader_id,
+        tracked_paths=tracked,
+        apply=_apply,
+    )
 
     plan["written"] = True
-    plan["active_traders"] = len(head_traders(validated))
+    plan["active_traders"] = len(head_traders(validated, as_of=ny_today))
     return plan
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="scripts.trader_room.onboard_trader")
-    parser.add_argument("--id", required=True, help="lower-kebab trader id")
-    parser.add_argument("--remit", required=True, help="explicit non-empty remit")
+    parser.add_argument("--id", help="lower-kebab trader id")
+    parser.add_argument("--remit", help="explicit non-empty remit")
     parser.add_argument(
         "--expression-specialty",
-        required=True,
         choices=sorted(_EXPRESSION_SPECIALTIES),
     )
-    parser.add_argument("--activation-date", required=True, help="YYYY-MM-DD")
-    parser.add_argument("--description", required=True, help="one-line agent description")
-    parser.add_argument("--persona-file", type=Path, required=True)
+    parser.add_argument("--activation-date", help="YYYY-MM-DD")
+    parser.add_argument("--description", help="one-line agent description")
+    parser.add_argument("--persona-file", type=Path)
     parser.add_argument("--may-no-trade", action="store_true")
     parser.add_argument("--activate", action="store_true")
     parser.add_argument("--confirm-live-activation", action="store_true")
+    parser.add_argument("--recover", action="store_true", help="restore state from checkpoint")
     parser.add_argument("--root", type=Path, default=REPO_ROOT)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
+
+    root = args.root.resolve()
+
+    if args.recover:
+        try:
+            summary = recover_incomplete(root)
+            print(json.dumps({"ok": True, **summary}, indent=2))
+            return 0
+        except AgentConfigError as exc:
+            print(json.dumps({"ok": False, "error": str(exc)}))
+            return 1
+
+    missing = [
+        name
+        for name, value in (
+            ("--id", args.id),
+            ("--remit", args.remit),
+            ("--expression-specialty", args.expression_specialty),
+            ("--activation-date", args.activation_date),
+            ("--description", args.description),
+            ("--persona-file", args.persona_file),
+        )
+        if not value
+    ]
+    if missing:
+        print(json.dumps({"ok": False, "error": f"required arguments missing: {', '.join(missing)}"}))
+        return 2
 
     trader_id = args.id.strip()
     remit = args.remit.strip()
@@ -382,7 +722,6 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps({"ok": False, "error": "activation requires --confirm-live-activation"}))
         return 2
 
-    root = args.root.resolve()
     try:
         if args.activate:
             summary = onboard_activate(

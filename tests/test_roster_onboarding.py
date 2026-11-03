@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import shutil
 import subprocess
 import tempfile
 import unittest
+from datetime import date
 from pathlib import Path
+from unittest import mock
 
 from scripts.overnight.books import empty_books, ensure_roster_books, validate_books
 from scripts.overnight.constants import STARTING_NAV_USD
@@ -16,6 +19,7 @@ from scripts.overnight.errors import SchemaError
 from scripts.overnight.evidence import _prepare_prior_books, freeze_snapshot
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.trader_room.agent_config import (
+    AgentConfigError,
     build_pin,
     head_traders,
     legacy_pin,
@@ -59,11 +63,53 @@ def _persona_file(tmp: Path, *, text: str | None = None) -> Path:
     return path
 
 
+def _tree_digest(root: Path) -> tuple[frozenset[str], dict[str, str]]:
+    dirs: set[str] = set()
+    files: dict[str, str] = {}
+    for path in root.rglob("*"):
+        rel = str(path.relative_to(root))
+        if path.is_dir():
+            dirs.add(rel)
+        elif path.is_file():
+            files[rel] = hashlib.sha256(path.read_bytes()).hexdigest()
+    return frozenset(dirs), files
+
+
+def _synthetic_persona() -> str:
+    base = REAL_PERSONA.read_text(encoding="utf-8").strip()
+    extra = (
+        " Synthetic fifteenth roster seat persona extension for checkpoint and rollback tests "
+        "across identity, books, agent, and config stages without forbidden markers."
+    )
+    text = (base + extra).strip()
+    assert len(text) >= 200
+    return text
+
+
+def _activate_kwargs(tmp: Path, *, activation_date: str = "2026-11-02", today: date | None = None) -> dict:
+    persona = _persona_file(tmp, text=_synthetic_persona())
+    kw = dict(
+        root=tmp,
+        trader_id="synthetic-fifteenth",
+        remit="synthetic fixture seat for roster onboarding tests",
+        specialty="rates_first",
+        activation_date=activation_date,
+        description="Synthetic fifteenth seat for onboarding tests.",
+        persona=persona.read_text(encoding="utf-8"),
+        may_no_trade=False,
+        dry_run=False,
+    )
+    if today is not None:
+        kw["today"] = today
+    return kw
+
+
 class RosterOnboardingTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = _build_temp_root()
 
     def tearDown(self) -> None:
+        onboard_mod._FAULT_AFTER = None
         shutil.rmtree(self.tmp, ignore_errors=True)
 
     def test_onboard_pending_writes_agent_and_no_state(self) -> None:
@@ -390,6 +436,174 @@ class RosterOnboardingTests(unittest.TestCase):
         self.assertEqual(tuple(t["id"] for t in pin["traders"]), tuple(t["id"] for t in head_traders()))
         expected = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
         self.assertEqual(packet["packet_sha256"], expected)
+
+    def test_activate_refuses_future_activation_date_unchanged_root(self) -> None:
+        kwargs = _activate_kwargs(self.tmp, activation_date="2026-11-05", today=date(2026, 11, 3))
+        dirs_before, files_before = _tree_digest(self.tmp)
+        with self.assertRaises(AgentConfigError):
+            onboard_mod.onboard_activate(**kwargs)
+        dirs_after, files_after = _tree_digest(self.tmp)
+        self.assertEqual(dirs_before, dirs_after)
+        self.assertEqual(files_before, files_after)
+        self.assertFalse((self.tmp / onboard_mod._CHECKPOINT_NAME).exists())
+
+    def test_activation_head_traders_respects_as_of(self) -> None:
+        onboard_mod.onboard_activate(**_activate_kwargs(self.tmp, activation_date="2026-11-02", today=date(2026, 11, 3)))
+        cfg = load_config(self.tmp / "scripts" / "trader_room" / "model_registry.json", honor_env=False)
+        self.assertEqual(len(head_traders(cfg, as_of=date(2026, 11, 1))), 14)
+        self.assertEqual(len(head_traders(cfg, as_of=date(2026, 11, 2))), 15)
+
+    def test_future_dated_active_seat_pin_schedule(self) -> None:
+        cfg_path = self.tmp / "scripts" / "trader_room" / "model_registry.json"
+        cfg = json.loads(cfg_path.read_text(encoding="utf-8"))
+        cfg.setdefault("roster", {}).setdefault("traders", []).append(
+            {
+                "id": "synthetic-fifteenth",
+                "remit": "synthetic fixture seat for roster onboarding tests",
+                "expression_specialty": "rates_first",
+                "may_no_trade": False,
+                "activation_date": "2026-12-01",
+                "status": "active",
+            }
+        )
+        cfg_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
+        cfg_loaded = load_config(cfg_path, honor_env=False)
+        pin14 = build_pin("daily", config=cfg_loaded, as_of=date(2026, 11, 30))
+        self.assertEqual(len(pin14["traders"]), 14)
+        self.assertEqual(pin14["budget"]["total_calls"], 20)
+        self.assertEqual(pin14["budget"]["grok_family_calls"], 18)
+        self.assertEqual(pin14["budget"]["composer_calls"], 2)
+        pin15 = build_pin("daily", config=cfg_loaded, as_of=date(2026, 12, 1))
+        self.assertEqual(len(pin15["traders"]), 15)
+        self.assertEqual(pin15["budget"]["total_calls"], 21)
+        self.assertEqual(pin15["budget"]["grok_family_calls"], 19)
+        self.assertEqual(pin15["budget"]["composer_calls"], 2)
+        ondemand = build_pin("ondemand", config=cfg_loaded, as_of=date(2026, 12, 1))
+        self.assertEqual(ondemand["budget"]["total_calls"], 61)
+        self.assertEqual(ondemand["budget"]["grok_family_calls"], 31)
+        self.assertEqual(ondemand["budget"]["composer_calls"], 30)
+
+    def test_fault_injection_leaves_root_unchanged(self) -> None:
+        for stage in ("identity", "books", "agent", "config"):
+            with self.subTest(stage=stage):
+                tmp = _build_temp_root()
+                try:
+                    kwargs = _activate_kwargs(tmp)
+                    dirs_before, files_before = _tree_digest(tmp)
+                    onboard_mod._FAULT_AFTER = stage
+                    with self.assertRaises(RuntimeError):
+                        onboard_mod.onboard_activate(**kwargs)
+                    dirs_after, files_after = _tree_digest(tmp)
+                    self.assertEqual(dirs_before, dirs_after)
+                    self.assertEqual(files_before, files_after)
+                    self.assertFalse((tmp / onboard_mod._CHECKPOINT_NAME).exists())
+                finally:
+                    onboard_mod._FAULT_AFTER = None
+                    shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_crash_checkpoint_refused_and_recover_restores_bytes(self) -> None:
+        kwargs = _activate_kwargs(self.tmp)
+        dirs_before, files_before = _tree_digest(self.tmp)
+        onboard_mod._FAULT_AFTER = "config"
+
+        def _crash_rollback(root: Path, checkpoint: dict) -> None:
+            del root, checkpoint
+
+        with mock.patch.object(onboard_mod, "_onboarding_rollback", side_effect=_crash_rollback):
+            with self.assertRaises(RuntimeError):
+                onboard_mod.onboard_activate(**kwargs)
+        self.assertTrue((self.tmp / onboard_mod._CHECKPOINT_NAME).is_file())
+        with self.assertRaises(AgentConfigError):
+            onboard_mod.onboard_activate(**kwargs)
+        onboard_mod.recover_incomplete(self.tmp)
+        dirs_after, files_after = _tree_digest(self.tmp)
+        self.assertEqual(dirs_before, dirs_after)
+        self.assertEqual(files_before, files_after)
+        self.assertFalse((self.tmp / onboard_mod._CHECKPOINT_NAME).exists())
+
+    def test_prior_fourteen_bytes_unchanged_after_fifteenth_activation(self) -> None:
+        store = TradingStore(state_root=self.tmp)
+        books_path = self.tmp / "data" / "overnight" / "books" / "latest.json"
+        books_before = json.loads(books_path.read_text(encoding="utf-8"))
+        seat_hashes_before = {seat: sha256_json(payload) for seat, payload in books_before["seats"].items()}
+        identity_bytes_before: dict[str, bytes] = {}
+        for path in (store.state_dir() / "trader").rglob("*.json"):
+            rel = str(path.relative_to(self.tmp))
+            identity_bytes_before[rel] = path.read_bytes()
+        onboard_mod.onboard_activate(**_activate_kwargs(self.tmp))
+        books_after = json.loads(books_path.read_text(encoding="utf-8"))
+        for seat, digest in seat_hashes_before.items():
+            self.assertEqual(sha256_json(books_after["seats"][seat]), digest)
+            self.assertEqual(books_after["seats"][seat], books_before["seats"][seat])
+        for rel, prior in identity_bytes_before.items():
+            self.assertEqual((self.tmp / rel).read_bytes(), prior)
+
+    def test_pending_rollback_when_agent_fault_leaves_config_unchanged(self) -> None:
+        config_path = self.tmp / "scripts" / "trader_room" / "model_registry.json"
+        config_before = config_path.read_bytes()
+        persona = _persona_file(self.tmp, text=_synthetic_persona())
+        onboard_mod._FAULT_AFTER = "agent"
+        with self.assertRaises(RuntimeError):
+            onboard_mod.onboard_pending(
+                root=self.tmp,
+                trader_id="synthetic-fifteenth",
+                remit="synthetic fixture seat for roster onboarding tests",
+                specialty="rates_first",
+                activation_date="2026-12-01",
+                description="Synthetic fifteenth seat for onboarding tests.",
+                persona=persona.read_text(encoding="utf-8"),
+                may_no_trade=False,
+                dry_run=False,
+            )
+        self.assertEqual(config_path.read_bytes(), config_before)
+        self.assertFalse((self.tmp / onboard_mod._CHECKPOINT_NAME).exists())
+
+    def test_leftover_checkpoint_is_reported_before_state_checks(self) -> None:
+        (self.tmp / onboard_mod._CHECKPOINT_NAME).write_text("{}", encoding="utf-8")
+        with self.assertRaisesRegex(AgentConfigError, "--recover"):
+            onboard_mod.onboard_activate(**_activate_kwargs(self.tmp))
+
+
+class SplitProfileOnboardingTests(unittest.TestCase):
+    """Daily trader model differs from the debate model: onboarding writes both agents atomically."""
+
+    def setUp(self) -> None:
+        self.tmp = _build_temp_root()
+        config_path = self.tmp / "scripts" / "trader_room" / "model_registry.json"
+        raw = json.loads(config_path.read_text(encoding="utf-8"))
+        raw["profiles"][raw["active_profile"]]["roles"]["trader"] = "grok-4.7"
+        config_path.write_text(json.dumps(raw, indent=2) + "\n", encoding="utf-8")
+        self.env = mock.patch.dict(os.environ, {"MW_AGENT_CONFIG_PATH": str(config_path)})
+        self.env.start()
+        from scripts.trader_room.agent_config import render_agents
+
+        render_agents(self.tmp)
+
+    def tearDown(self) -> None:
+        self.env.stop()
+        onboard_mod._FAULT_AFTER = None
+        shutil.rmtree(self.tmp, ignore_errors=True)
+
+    def test_activation_writes_debate_and_daily_agents(self) -> None:
+        from scripts.trader_room.agent_config import check_agents
+
+        self.assertEqual(check_agents(self.tmp), [])
+        onboard_mod.onboard_activate(**_activate_kwargs(self.tmp))
+        agents = self.tmp / ".cursor" / "agents"
+        base = (agents / "synthetic-fifteenth.md").read_text(encoding="utf-8")
+        daily = (agents / "daily-synthetic-fifteenth.md").read_text(encoding="utf-8")
+        self.assertIn("model: grok-4.6[]", base)
+        self.assertIn("model: grok-4.7[]", daily)
+        self.assertIn("name: daily-synthetic-fifteenth", daily)
+        self.assertEqual(check_agents(self.tmp), [])
+
+    def test_fault_after_agents_removes_both_agent_files(self) -> None:
+        kwargs = _activate_kwargs(self.tmp)
+        dirs_before, files_before = _tree_digest(self.tmp)
+        onboard_mod._FAULT_AFTER = "agent"
+        with self.assertRaises(RuntimeError):
+            onboard_mod.onboard_activate(**kwargs)
+        self.assertEqual(_tree_digest(self.tmp), (dirs_before, files_before))
 
 
 if __name__ == "__main__":

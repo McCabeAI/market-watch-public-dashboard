@@ -1026,7 +1026,7 @@ def _roster_agent_ids(cfg: dict[str, Any]) -> tuple[str, ...]:
     return tuple(str(e["id"]) for e in cfg["roster"]["traders"])
 
 
-def _daily_agent_text(base_text: str, base_path: Path, seat: str, trader_model: str) -> str:
+def daily_agent_text(base_text: str, base_path: Path, seat: str, trader_model: str) -> str:
     return _set_frontmatter(
         base_text,
         base_path,
@@ -1087,7 +1087,7 @@ def check_agents(root: Path) -> list[str]:
             continue
         if not base_path.is_file():
             continue
-        expected = _daily_agent_text(base_path.read_text(encoding="utf-8"), base_path, seat, roles["trader"])
+        expected = daily_agent_text(base_path.read_text(encoding="utf-8"), base_path, seat, roles["trader"])
         if path.read_text(encoding="utf-8") != expected:
             errors.append(f"{name}: drifted from {seat}.md or the trader model (run render-agents)")
 
@@ -1115,7 +1115,7 @@ def render_agents(root: Path) -> int:
     for name, seat in daily.items():
         base_path = agent_dir / f"{seat}.md"
         path = agent_dir / f"{name}.md"
-        expected = _daily_agent_text(base_path.read_text(encoding="utf-8"), base_path, seat, roles["trader"])
+        expected = daily_agent_text(base_path.read_text(encoding="utf-8"), base_path, seat, roles["trader"])
         if not path.is_file() or path.read_text(encoding="utf-8") != expected:
             path.write_text(expected, encoding="utf-8")
             changed += 1
