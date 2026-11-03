@@ -16,11 +16,12 @@ from scripts.country_registry import history_files
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.semantic_guards import implausible_nz_employment_qoq_values
 from scripts.macro_ingestion.ca_score_identity import expand_equal_mean_points
-from scripts.macro_ingestion.canonical_bridge import _skip_id
+from scripts.macro_ingestion.canonical_bridge import _series_allowed, _skip_id
 from scripts.macro_ingestion.score_bridge import (
     points_from_observation_stores,
     recompute_scores_after_observation,
 )
+from scripts.run_state.identity import _period_is_future
 from scripts.temperature_level import period_sort_key
 from scripts.temperature_level import (
     CALIBRATION_PATH,
@@ -40,11 +41,12 @@ _NON_BLOCKING_SKIP_REASONS = frozenset(
         "duplicate_value",
         "context_not_scored",
         "not_a_forward_observation",
-        "methodology_break_guard",
         "final_not_superseded_by_flash",
         "retired_unobserved",
     }
 )
+
+_SCORE_RECONCILE_COUNTRIES = frozenset({"US", "CA", "AU", "NZ", "EA", "JP"})
 
 
 def _sha256_bytes(data: bytes) -> str:
@@ -206,6 +208,154 @@ def _scored_lineage_rejections(
             }
         )
 
+    return rejections
+
+
+def _point_is_eligible_for_reconciliation(
+    point: dict[str, Any],
+    *,
+    spec: dict[str, Any],
+    checked_at: str,
+) -> bool:
+    if str(point.get("role") or "") != "scored":
+        return False
+    period = point.get("period")
+    if not isinstance(period, str):
+        return False
+    try:
+        period_sort_key(period)
+    except ValueError:
+        return False
+    if _period_is_future(period, checked_at):
+        return False
+    if _finite_value(point.get("value")) is None:
+        return False
+    series_id = point.get("series_id")
+    if not isinstance(series_id, str) or not series_id:
+        return False
+    src_tf = str(spec.get("source_transformation") or "")
+    if str(point.get("transformation") or "") != src_tf:
+        return False
+    return _series_allowed(spec, series_id)
+
+
+def _merge_skip_reason_by_point(
+    points: list[dict[str, Any]],
+    merge: dict[str, Any],
+) -> dict[tuple[str, str, str, str], str]:
+    appended = list(merge.get("appended") or [])
+    skipped = list(merge.get("skipped") or [])
+    reasons: dict[tuple[str, str, str, str], str] = {}
+    ai = 0
+    si = 0
+    for point in points:
+        catalog_id = str(point.get("catalog_id") or point.get("id") or "")
+        period = str(point.get("period") or "")
+        series_id = str(point.get("series_id") or "")
+        transformation = str(point.get("transformation") or "")
+        key = (catalog_id, period, series_id, transformation)
+        reason, entry, ai, si = _point_merge_outcome(
+            point, appended=appended, skipped=skipped, append_index=ai, skip_index=si
+        )
+        if entry is not None:
+            continue
+        if reason:
+            reasons[key] = reason
+    return reasons
+
+
+def _scored_component_stale_rejections(
+    *,
+    points: list[dict[str, Any]],
+    merge: dict[str, Any],
+    calibration: dict[str, Any],
+    score_state: dict[str, Any],
+    checked_at: str,
+) -> list[dict[str, Any]]:
+    """Fail closed when verified store has a newer eligible print than scored as_of."""
+    skip_by_key = _merge_skip_reason_by_point(points, merge)
+    rejections: list[dict[str, Any]] = []
+    weights = calibration.get("weights") or {}
+    components = calibration.get("components") or {}
+    points_by_catalog: dict[str, list[dict[str, Any]]] = {}
+    for point in points:
+        catalog_id = str(point.get("catalog_id") or point.get("id") or "")
+        if catalog_id:
+            points_by_catalog.setdefault(catalog_id, []).append(point)
+
+    for catalog_id, spec in components.items():
+        if not isinstance(spec, dict):
+            continue
+        parts = catalog_id.split(".")
+        if len(parts) != 3 or parts[0] not in _SCORE_RECONCILE_COUNTRIES:
+            continue
+        country, dimension, component = parts
+        try:
+            weight = float(weights[country][dimension][component])
+        except (KeyError, TypeError, ValueError):
+            weight = 0.0
+        if weight <= 0:
+            continue
+        if spec.get("observed") is False:
+            continue
+
+        eligible = [
+            pt
+            for pt in points_by_catalog.get(catalog_id, [])
+            if _point_is_eligible_for_reconciliation(pt, spec=spec, checked_at=checked_at)
+        ]
+        if not eligible:
+            continue
+        latest_store = max((str(pt["period"]) for pt in eligible), key=period_sort_key)
+        metric = _component_metric(score_state, catalog_id)
+        scored_as_of = metric.get("as_of") if isinstance(metric, dict) else None
+        if not isinstance(scored_as_of, str):
+            scored_as_of = None
+        if scored_as_of is not None:
+            try:
+                if period_sort_key(latest_store) <= period_sort_key(scored_as_of):
+                    continue
+            except ValueError:
+                continue
+        else:
+            continue
+
+        stale_points = [
+            pt
+            for pt in eligible
+            if period_sort_key(str(pt["period"])) > period_sort_key(scored_as_of)
+        ]
+        stale_points.sort(key=lambda pt: period_sort_key(str(pt["period"])), reverse=True)
+        reason = "scored_component_stale"
+        for pt in stale_points:
+            key = (
+                catalog_id,
+                str(pt.get("period") or ""),
+                str(pt.get("series_id") or ""),
+                str(pt.get("transformation") or ""),
+            )
+            skip_reason = skip_by_key.get(key)
+            if skip_reason == "retired_unobserved":
+                reason = ""
+                break
+            if skip_reason == "methodology_break_guard":
+                reason = "methodology_break_guard"
+                break
+            if skip_reason and skip_reason not in _NON_BLOCKING_SKIP_REASONS:
+                reason = skip_reason
+                break
+        if not reason:
+            continue
+        pick = stale_points[0]
+        rejections.append(
+            {
+                "id": catalog_id,
+                "reason": reason,
+                "series_id": str(pick.get("series_id") or ""),
+                "transformation": str(pick.get("transformation") or ""),
+                "period": str(pick.get("period") or ""),
+            }
+        )
     return rejections
 
 
@@ -411,6 +561,14 @@ def stage_verified_lineage(
         histories_before_merge=histories_before_merge,
         calibration=calibration,
     )
+    if not rejections and bridge.state is not None:
+        rejections = _scored_component_stale_rejections(
+            points=verified_points,
+            merge=merge,
+            calibration=calibration,
+            score_state=bridge.state,
+            checked_at=checked_at,
+        )
     if rejections:
         _copy_canonical_histories(canonical_history_dir, staging_history)
         if scores_path.is_file():
