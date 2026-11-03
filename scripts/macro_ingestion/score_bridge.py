@@ -19,6 +19,7 @@ from scripts.macro_ingestion.contract import (
     load_catalog,
     lookup_series_by_observation_key,
 )
+from scripts.macro_ingestion.release_date_recovery import enrich_points_release_dates
 from scripts.macro_ingestion.vintage import load_store
 from scripts.temperature_level import (
     CALIBRATION_PATH,
@@ -109,6 +110,7 @@ def points_from_observation_stores(
             }
             if _scoring_point_semantically_valid(candidate):
                 points.append(candidate)
+    enrich_points_release_dates(points)
     return points
 
 

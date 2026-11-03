@@ -3,6 +3,10 @@
 from __future__ import annotations
 
 import hashlib
+import json
+import os
+import re
+import urllib.parse
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
@@ -24,6 +28,10 @@ COUNTRY = "US"
 
 ROOT = Path(__file__).resolve().parents[3]
 FRED_GRAPH_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
+BEA_NIPA_API_URL = "https://apps.bea.gov/api/data/"
+US_GDP_DOMESTIC_DEMAND_ID = "US.Activity.gdp_domestic_demand"
+
+_USER_ID_QUERY = re.compile(r"UserID=[^&\s\"']+", re.IGNORECASE)
 
 _US_LABOR_WAGES_ID = "US.Labor.wages"
 
@@ -51,6 +59,31 @@ _CHALLENGE_MARKERS = (
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _redact_bea_secrets(text: str, *, api_key: str | None = None) -> str:
+    if not text:
+        return text
+    out = str(text)
+    key = api_key if api_key is not None else os.environ.get("BEA_API_KEY")
+    if key:
+        out = out.replace(key, "[REDACTED]")
+    return _USER_ID_QUERY.sub("UserID=[REDACTED]", out)
+
+
+def _bea_ledger_extra(
+    *,
+    fred_failure: str,
+    bea_fallback: str,
+    api_key: str | None = None,
+    **extra: Any,
+) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "fred_failure": _redact_bea_secrets(fred_failure, api_key=api_key),
+        "bea_fallback": bea_fallback,
+    }
+    row.update(extra)
+    return row
 
 
 def _is_challenge_page(body: bytes) -> bool:
@@ -244,6 +277,227 @@ def _fetch_fred_bls_alternate(
     }
 
 
+def _bea_quarter_period(time_period: str) -> str | None:
+    text = str(time_period or "").strip().upper()
+    if len(text) == 6 and text[4] == "Q" and text[5] in "1234":
+        return f"{text[:4]}-{text[4:]}"
+    return None
+
+
+def _bea_period_to_fred_stamp(period: str) -> str | None:
+    if "-Q" not in period:
+        return None
+    try:
+        year = int(period[:4])
+        quarter = int(period[-1])
+    except ValueError:
+        return None
+    month = (quarter - 1) * 3 + 1
+    return f"{year}-{month:02d}"
+
+
+def _bea_gdp_row_ok(row: dict[str, Any]) -> bool:
+    series_code = str(row.get("SeriesCode") or row.get("SERIES_CODE") or "").strip().upper()
+    if series_code == "A191RL":
+        return True
+    line_number = str(row.get("LineNumber") or row.get("LINE_NUMBER") or "").strip()
+    if line_number != "1":
+        return False
+    description = str(row.get("LineDescription") or row.get("LINE_DESCRIPTION") or "").strip()
+    if not description:
+        return True
+    return description.lower() == "gross domestic product"
+
+
+def _bea_gdp_level_rows(payload: dict[str, Any]) -> list[tuple[str, float]]:
+    try:
+        data = payload["BEAAPI"]["Results"]["Data"]
+    except (KeyError, TypeError):
+        return []
+    if not isinstance(data, list):
+        return []
+    rows: list[tuple[str, float]] = []
+    for row in data:
+        if not isinstance(row, dict) or not _bea_gdp_row_ok(row):
+            continue
+        period = _bea_quarter_period(str(row.get("TimePeriod") or row.get("TIME_PERIOD") or ""))
+        raw_value = str(row.get("DataValue") or row.get("DATA_VALUE") or "").strip()
+        if not period or not raw_value or raw_value in {"...", "(NA)"}:
+            continue
+        try:
+            value = float(raw_value)
+        except ValueError:
+            continue
+        fred_stamp = _bea_period_to_fred_stamp(period)
+        if fred_stamp is None:
+            continue
+        rows.append((fred_stamp, value))
+    return sorted(rows, key=lambda item: item[0])
+
+
+def _fetch_bea_real_gdp_fallback(
+    spec: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+    now: datetime | None,
+    fred_error: str | None,
+    http_status: int | None = None,
+    body: bytes = b"",
+) -> dict[str, Any]:
+    api_key = os.environ.get("BEA_API_KEY")
+    public_url = BEA_NIPA_API_URL
+    base: dict[str, Any] = {"http_status": http_status, "body": body}
+    fred_note = _redact_bea_secrets(fred_error or "fred_fetch_failed", api_key=api_key)
+    if not api_key:
+        return {
+            **base,
+            "ok": False,
+            "status": "source_failed",
+            "error": fred_note,
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="skipped_missing_api_key",
+                api_key=api_key,
+            ),
+        }
+    year = (now or datetime.now()).year
+    params = urllib.parse.urlencode(
+        {
+            "UserID": api_key,
+            "method": "GetData",
+            "DataSetName": "NIPA",
+            "TableName": "T10101",
+            "Frequency": "Q",
+            "Year": f"{year - 1},{year}",
+            "ResultFormat": "JSON",
+        }
+    )
+    bea_request_url = f"{BEA_NIPA_API_URL}?{params}"
+    try:
+        response = opener(bea_request_url, timeout=timeout)
+    except BaseException as exc:  # noqa: BLE001
+        token = f"bea_fallback_failed:{type(exc).__name__}"
+        return {
+            **base,
+            "ok": False,
+            "status": "source_failed",
+            "error": _redact_bea_secrets(f"{fred_note}; {token}", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
+        }
+    bea_body: bytes = response.get("body") or b""
+    bea_base = {"http_status": response.get("http_status"), "body": bea_body}
+    if not response.get("ok") or not bea_body:
+        err_token = "bea_fallback_failed:fetch_error"
+        return {
+            **bea_base,
+            "ok": False,
+            "status": "source_failed",
+            "error": _redact_bea_secrets(f"{fred_note}; {err_token}", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
+        }
+    try:
+        payload = json.loads(bea_body.decode("utf-8", errors="replace"))
+    except json.JSONDecodeError:
+        return {
+            **bea_base,
+            "ok": False,
+            "status": "source_failed",
+            "error": _redact_bea_secrets(f"{fred_note}; bea_fallback_failed:invalid_json", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
+        }
+    level_rows = _bea_gdp_level_rows(payload)
+    if not level_rows:
+        return {
+            **bea_base,
+            "ok": False,
+            "status": "source_failed",
+            "error": _redact_bea_secrets(f"{fred_note}; bea_fallback_failed:no_gdp_rows", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
+        }
+    point = _derive_points_from_levels(spec, level_rows, source_url=public_url)
+    scored = _scored_transform_point(point, str(spec.get("transform") or ""))
+    if scored is None:
+        return {
+            **bea_base,
+            "ok": False,
+            "status": "source_failed",
+            "error": _redact_bea_secrets(
+                f"{fred_note}; bea_fallback_failed:transform_not_derived",
+                api_key=api_key,
+            ),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
+        }
+    digest = _sha256(bea_body)
+    return {
+        **bea_base,
+        "ok": True,
+        "points": point,
+        "vintage": "latest_available",
+        "raw_sha256": digest,
+        "accepted_source": "bea_official_fallback",
+        "ledger_extra": _bea_ledger_extra(
+            fred_failure=fred_error or "fred_fetch_failed",
+            bea_fallback="success",
+            api_key=api_key,
+            accepted_source="bea_official_fallback",
+        ),
+    }
+
+
+def _fred_failure_with_optional_bea(
+    spec: dict[str, Any],
+    failure: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+    now: datetime | None,
+) -> dict[str, Any]:
+    if str(spec.get("id")) != US_GDP_DOMESTIC_DEMAND_ID:
+        return failure
+    bea = _fetch_bea_real_gdp_fallback(
+        spec,
+        opener=opener,
+        timeout=timeout,
+        now=now,
+        fred_error=str(failure.get("error") or failure.get("status") or "fred_fetch_failed"),
+        http_status=failure.get("http_status"),
+        body=failure.get("body") or b"",
+    )
+    if bea.get("ok"):
+        return bea
+    merged = dict(failure)
+    merged["ledger_extra"] = bea.get("ledger_extra") or failure.get("ledger_extra")
+    if failure.get("status") == "license_gap":
+        merged["status"] = "license_gap"
+        merged["error"] = failure.get("error") or "fred_challenge_page"
+        if failure.get("challenge_page"):
+            merged["challenge_page"] = True
+    elif bea.get("error"):
+        merged["error"] = bea["error"]
+    return merged
+
+
 def _fetch_fred_series(
     spec: dict[str, Any],
     *,
@@ -289,14 +543,30 @@ def _fetch_fred_series(
         if alternate is not None:
             return alternate
         if isinstance(exc, TimeoutError) or "timeout" in str(exc).lower():
-            return {
+            failure = {
                 "ok": False,
                 "status": "source_failed",
                 "error": str(exc),
                 "http_status": None,
                 "body": b"",
             }
-        raise
+        elif str(spec.get("id")) == US_GDP_DOMESTIC_DEMAND_ID:
+            failure = {
+                "ok": False,
+                "status": "source_failed",
+                "error": str(exc),
+                "http_status": None,
+                "body": b"",
+            }
+        else:
+            raise
+        return _fred_failure_with_optional_bea(
+            spec,
+            failure,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
     http_status = response.get("http_status")
     body: bytes = response.get("body") or b""
     base: dict[str, Any] = {
@@ -313,20 +583,32 @@ def _fetch_fred_series(
         )
         if alternate is not None:
             return alternate
-        return {
-            **base,
-            "ok": False,
-            "status": "source_failed",
-            "error": response.get("error") or "fred_fetch_failed",
-        }
+        return _fred_failure_with_optional_bea(
+            spec,
+            {
+                **base,
+                "ok": False,
+                "status": "source_failed",
+                "error": response.get("error") or "fred_fetch_failed",
+            },
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
     if _is_challenge_page(body):
-        return {
-            **base,
-            "ok": False,
-            "status": "license_gap",
-            "challenge_page": True,
-            "error": "fred_challenge_page",
-        }
+        return _fred_failure_with_optional_bea(
+            spec,
+            {
+                **base,
+                "ok": False,
+                "status": "license_gap",
+                "challenge_page": True,
+                "error": "fred_challenge_page",
+            },
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
     text = body.decode("utf-8", errors="replace")
     parsed = parse_fred_csv(text)
     if not parsed:
@@ -339,12 +621,18 @@ def _fetch_fred_series(
         )
         if alternate is not None:
             return alternate
-        return {
-            **base,
-            "ok": False,
-            "status": "source_failed",
-            "error": "fred_csv_empty",
-        }
+        return _fred_failure_with_optional_bea(
+            spec,
+            {
+                **base,
+                "ok": False,
+                "status": "source_failed",
+                "error": "fred_csv_empty",
+            },
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
     point = _derive_points_from_levels(spec, parsed, source_url=url)
     scored = _scored_transform_point(point, str(spec.get("transform") or ""))
     if scored is None:
@@ -718,18 +1006,20 @@ def _fetch_ism_series(
         parsed = release["parsed"]
         url = str(release.get("resolved_url") or spec.get("endpoint") or "")
         digest = _sha256(body)
+        point: dict[str, Any] = {
+            "period": parsed["period"],
+            "value": parsed["value"],
+            "transformation": spec.get("transform"),
+            "revision_status": "final",
+            "source_url": url,
+        }
+        release_date = parsed.get("release_date")
+        if isinstance(release_date, str) and release_date:
+            point["release_date"] = release_date[:10]
         return {
             **base,
             "ok": True,
-            "points": [
-                {
-                    "period": parsed["period"],
-                    "value": parsed["value"],
-                    "transformation": spec.get("transform"),
-                    "revision_status": "final",
-                    "source_url": url,
-                }
-            ],
+            "points": [point],
             "vintage": "latest_available",
             "raw_sha256": digest,
         }

@@ -23,6 +23,17 @@ from scripts.temperature_level import (
 
 _FLASH_REVISION = frozenset({"flash", "preliminary", "prelim"})
 _ISO_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+_ANNOTATION_PERIOD_TOKENS = frozenset(
+    {
+        "n/a",
+        "na",
+        "none",
+        "null",
+        "not applicable",
+        "not_applicable",
+        "-",
+    }
+)
 # Per-print facts of the template row. A new print must not inherit them.
 _PER_PRINT_FIELDS = (
     "release_date",
@@ -128,6 +139,22 @@ def _break_period(item: Any, *, quarterly: bool) -> str | None:
     return None
 
 
+def _methodology_break_is_annotation_only(item: Any) -> bool:
+    """True when a break entry documents history only and must not block scoring."""
+    if not isinstance(item, dict):
+        return False
+    raw_date = item.get("date")
+    if isinstance(raw_date, str) and raw_date.strip():
+        return False
+    period = item.get("period")
+    if period is None or (isinstance(period, str) and not str(period).strip()):
+        return True
+    token = str(period).strip().lower().replace(" ", "_")
+    if token in _ANNOTATION_PERIOD_TOKENS:
+        return True
+    return str(period).strip().lower() in _ANNOTATION_PERIOD_TOKENS
+
+
 def _methodology_blocks(comp: dict[str, Any], period: str) -> bool:
     """Block a print that crosses an unresolved or not-yet-continued break.
 
@@ -140,6 +167,10 @@ def _methodology_blocks(comp: dict[str, Any], period: str) -> bool:
     quarterly = "-Q" in period
     break_keys: list[tuple[int, int]] = []
     for item in breaks:
+        if not isinstance(item, dict):
+            return True
+        if _methodology_break_is_annotation_only(item):
+            continue
         boundary = _break_period(item, quarterly=quarterly)
         if boundary is None:
             return True
@@ -147,6 +178,8 @@ def _methodology_blocks(comp: dict[str, Any], period: str) -> bool:
             break_keys.append(period_sort_key(boundary))
         except ValueError:
             return True
+    if not break_keys:
+        return False
     try:
         incoming = period_sort_key(period)
     except ValueError:

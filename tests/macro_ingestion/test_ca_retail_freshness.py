@@ -72,9 +72,24 @@ class MethodologyBreakKeyTests(unittest.TestCase):
         self.assertFalse(_methodology_blocks(comp, "2025-Q3"))
 
     def test_break_without_period_or_date_still_blocks(self) -> None:
-        # US ISM rows carry only a note; that stays fail-closed.
-        self.assertTrue(_methodology_blocks(self._comp([{"note": "harvested from press"}]), "2026-09"))
+        self.assertFalse(
+            _methodology_blocks(self._comp([{"note": "harvested from press"}]), "2026-09")
+        )
         self.assertTrue(_methodology_blocks(self._comp([{"date": "March 2023"}]), "2026-09"))
+
+    def test_period_na_annotation_does_not_block(self) -> None:
+        comp = self._comp([{"period": "n/a", "note": "Balance statistic centred near 0"}])
+        self.assertFalse(_methodology_blocks(comp, "2026-10"))
+
+    def test_note_only_break_mixed_with_continued_dated_break_does_not_block(self) -> None:
+        comp = self._comp(
+            [
+                {"note": "harvested from press releases"},
+                {"date": "2023-03-24", "note": "table replaced"},
+            ],
+            last="2026-08",
+        )
+        self.assertFalse(_methodology_blocks(comp, "2026-09"))
 
     def test_period_keyed_break_blocks_until_the_series_continues(self) -> None:
         unresolved = self._comp([{"period": "2024-01", "note": "base year"}], last="2023-12")
@@ -180,7 +195,10 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
             points = points_from_observation_stores(observations_dir=self._store_dir(Path(tmp)), checked_at=CHECKED_AT)
         histories = copy.deepcopy(base)
         result = merge_scored_points(histories, cal, points, checked_at=CHECKED_AT)
-        self.assertEqual(result["appended"], [])
+        retail_appended = [a for a in result["appended"] if a["id"] == "CA.Consumer.retail"]
+        self.assertEqual(retail_appended, [])
+        ea_appended = [a for a in result["appended"] if a["id"] == "EA.Consumer.confidence"]
+        self.assertEqual(len(ea_appended), 4)
         retail_skips = {s["reason"] for s in result["skipped"] if s["id"] == "CA.Consumer.retail"}
         # Revisions of already-scored Apr-Jun stay out (forward-only identity rule).
         self.assertIn("partial_series_mismatch", retail_skips)
@@ -209,6 +227,8 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
                 for key, comp in hist["components"].items():
                     if key != "Consumer.retail":
                         self.assertEqual(comp, base["CA"]["components"][key])
+            elif code == "EA":
+                continue
             else:
                 self.assertEqual(hist, base[code])
 
@@ -229,7 +249,10 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
             )
         histories = copy.deepcopy(base)
         result = merge_scored_points(histories, cal, points, checked_at=CHECKED_AT)
-        self.assertEqual(result["appended"], [])
+        retail_appended = [a for a in result["appended"] if a["id"] == "CA.Consumer.retail"]
+        self.assertEqual(retail_appended, [])
+        ea_appended = [a for a in result["appended"] if a["id"] == "EA.Consumer.confidence"]
+        self.assertEqual(len(ea_appended), 4)
         rows = {o["reference_period"]: o for o in histories["CA"]["components"]["Consumer.retail"]["observations"]}
         self.assertEqual(len([p for p in rows if p in ("2026-07", "2026-08")]), 2)
         periods = [o["reference_period"] for o in histories["CA"]["components"]["Consumer.retail"]["observations"]]

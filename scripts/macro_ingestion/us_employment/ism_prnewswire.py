@@ -25,6 +25,8 @@ _TITLE_PERIOD = re.compile(
     r"(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})",
     re.IGNORECASE,
 )
+_META_DATE = re.compile(r'<meta\s+name="date"\s+content="([^"]+)"', re.IGNORECASE)
+_JSON_LD_PUBLISHED = re.compile(r'"datePublished"\s*:\s*"([^"]+)"', re.IGNORECASE)
 _MONTHS = (
     "January",
     "February",
@@ -43,6 +45,16 @@ _MONTHS = (
 
 def _listing_cache_key(services: bool) -> str:
     return f"ism:prnewswire_listing:{int(services)}"
+
+
+def _publisher_release_date(text: str) -> str | None:
+    match = _META_DATE.search(text)
+    if match:
+        return match.group(1)[:10]
+    match = _JSON_LD_PUBLISHED.search(text)
+    if match:
+        return match.group(1)[:10]
+    return None
 
 
 def discover_latest_release_path(body: bytes, *, services: bool) -> str | None:
@@ -140,7 +152,11 @@ def parse_ism_pmi(body: bytes, *, services: bool) -> dict[str, Any] | None:
             period = f"{period_match.group(2)}-{month_num:02d}"
     if period is None:
         return None
-    return {"value": value, "period": period}
+    out: dict[str, Any] = {"value": value, "period": period}
+    release_date = _publisher_release_date(text)
+    if release_date:
+        out["release_date"] = release_date
+    return out
 
 
 def fetch_ism_pmi_release(
