@@ -10,19 +10,25 @@ from unittest.mock import patch
 
 from scripts.trader_room.agent_config import (
     AgentConfigError,
+    agent_for_role,
     assert_acceptable_pin,
     build_pin,
     check_agents,
     current_graph_marker_for,
     daily_budget,
     head_traders,
+    launch_agents,
     legacy_equivalent,
     legacy_pin,
     load_config,
     ondemand_budget,
     overnight_policy_marker,
+    pin_model_family,
     render_agents,
+    scheduled_traders,
     seal_pin,
+    set_role_model,
+    today_ny,
     trader_room_policy_marker,
     verify_pin,
 )
@@ -257,6 +263,258 @@ class AgentConfigTests(unittest.TestCase):
         self.assertIn('"version":2', marker)
         self.assertIn('"traders":15', marker)
         self.assertIn(sealed["roster_sha256"], marker)
+
+
+def _raw_config() -> dict:
+    return {k: v for k, v in load_config().items() if not str(k).startswith("_")}
+
+
+def _write_tmp_config(data: dict) -> Path:
+    handle = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False, encoding="utf-8")
+    json.dump(data, handle, indent=2)
+    handle.close()
+    return Path(handle.name)
+
+
+def _copy_agents(dst_root: Path) -> Path:
+    agents_dst = dst_root / ".cursor" / "agents"
+    agents_dst.mkdir(parents=True)
+    for path in (ROOT / ".cursor" / "agents").glob("*.md"):
+        (agents_dst / path.name).write_bytes(path.read_bytes())
+    return agents_dst
+
+
+class SplitWorkflowModelTests(unittest.TestCase):
+    """Daily trader vs on-demand advocate models through separate custom agents."""
+
+    def _split_raw(self) -> dict:
+        raw = _raw_config()
+        pid = raw["active_profile"]
+        raw["profiles"][pid]["roles"]["trader"] = "grok-4.7"
+        return raw
+
+    def test_split_profile_loads_and_pins_both_models(self) -> None:
+        path = _write_tmp_config(self._split_raw())
+        try:
+            cfg = load_config(path)
+            daily = build_pin("daily", config=cfg)
+            ondemand = build_pin("ondemand", config=cfg)
+            self.assertEqual(daily["roles"]["trader"], "grok-4.7")
+            self.assertEqual(ondemand["roles"]["advocate"], "grok-4.6")
+            self.assertEqual(daily["model_families"]["grok-4.7"], "grok")
+            self.assertFalse(legacy_equivalent(daily))
+            self.assertEqual(daily["budget"]["grok_family_calls"], 18)
+            rows = {r["tag"]: r for r in launch_agents(daily) if "tag" in r}
+            self.assertEqual(rows["MW_ROLE=trader:perma-bull"]["agent"], "daily-perma-bull")
+            self.assertEqual(rows["MW_ROLE=trader:perma-bull"]["model"], "grok-4.7")
+            rows_od = {r["tag"]: r for r in launch_agents(ondemand) if "tag" in r}
+            self.assertEqual(rows_od["MW_ROLE=advocate:perma-bull"]["agent"], "perma-bull")
+            self.assertEqual(agent_for_role(daily["roles"], "pm_principal", "swinger"), "swinger")
+            self.assertIsNone(agent_for_role(daily["roles"], "synthesis", None))
+        finally:
+            path.unlink(missing_ok=True)
+
+    def test_render_split_then_unsplit(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            agents = _copy_agents(root)
+            split_path = root / "split.json"
+            split_path.write_text(json.dumps(self._split_raw()), encoding="utf-8")
+            with patch.dict(os.environ, {"MW_AGENT_CONFIG_PATH": str(split_path)}):
+                self.assertTrue(check_agents(root))
+                render_agents(root)
+                self.assertEqual(check_agents(root), [])
+            daily = (agents / "daily-perma-bull.md").read_text(encoding="utf-8")
+            base = (agents / "perma-bull.md").read_text(encoding="utf-8")
+            self.assertIn("name: daily-perma-bull", daily)
+            self.assertIn("model: grok-4.7[]", daily)
+            self.assertIn("model: grok-4.6[]", base)
+            self.assertEqual(daily.split("\n---\n", 1)[1], base.split("\n---\n", 1)[1])
+            self.assertEqual(len(list(agents.glob("daily-*.md"))), 14)
+
+            (agents / "daily-perma-bull.md").write_text(daily + "\nHand edit.\n", encoding="utf-8")
+            with patch.dict(os.environ, {"MW_AGENT_CONFIG_PATH": str(split_path)}):
+                self.assertTrue(any("daily-perma-bull" in e for e in check_agents(root)))
+
+            plain_path = root / "plain.json"
+            plain_path.write_text(json.dumps(_raw_config()), encoding="utf-8")
+            with patch.dict(os.environ, {"MW_AGENT_CONFIG_PATH": str(plain_path)}):
+                self.assertTrue(any("stale" in e for e in check_agents(root)))
+                render_agents(root)
+                self.assertEqual(check_agents(root), [])
+            self.assertEqual(list(agents.glob("daily-*.md")), [])
+            for path in (ROOT / ".cursor" / "agents").glob("*.md"):
+                self.assertEqual((agents / path.name).read_bytes(), path.read_bytes(), path.name)
+
+    def test_advocate_rebuttal_split_rejected_with_reason(self) -> None:
+        raw = _raw_config()
+        pid = raw["active_profile"]
+        raw["profiles"][pid]["roles"]["rebuttal"] = "grok-4.7"
+        path = _write_tmp_config(raw)
+        try:
+            with self.assertRaisesRegex(AgentConfigError, "one frontmatter model"):
+                load_config(path)
+        finally:
+            path.unlink(missing_ok=True)
+
+    def test_unbudgeted_family_is_an_explicit_constraint(self) -> None:
+        raw = _raw_config()
+        raw["model_families"]["claude-opus-5-5"] = "claude"
+        path = _write_tmp_config(raw)
+        try:
+            with self.assertRaisesRegex(AgentConfigError, "re-budget"):
+                load_config(path)
+        finally:
+            path.unlink(missing_ok=True)
+
+        raw = _raw_config()
+        pid = raw["active_profile"]
+        raw["profiles"][pid]["roles"]["trader"] = "composer-2.5"
+        path = _write_tmp_config(raw)
+        try:
+            with self.assertRaisesRegex(AgentConfigError, "re-budget"):
+                load_config(path)
+        finally:
+            path.unlink(missing_ok=True)
+
+    def test_unapproved_or_runtime_slug_models_rejected(self) -> None:
+        for bad in ("grok-4.7-high", "cursor-grok-4.7-high", "Auto", "default", "grok-4.5", "composer-2.5-fast"):
+            raw = _raw_config()
+            raw["profiles"]["candidate-grok-4.7"]["roles"]["trader"] = bad
+            path = _write_tmp_config(raw)
+            try:
+                with self.assertRaises(AgentConfigError, msg=bad):
+                    load_config(path)
+            finally:
+                path.unlink(missing_ok=True)
+
+    def test_reserved_agent_names_rejected_as_trader_ids(self) -> None:
+        for bad_id in ("daily-perma-bull", "final-aggregator"):
+            raw = _raw_config()
+            raw["roster"]["traders"].append(
+                {
+                    "id": bad_id,
+                    "remit": "synthetic",
+                    "expression_specialty": "rates_first",
+                    "may_no_trade": False,
+                    "activation_date": "2026-09-18",
+                    "status": "pending",
+                }
+            )
+            path = _write_tmp_config(raw)
+            try:
+                with self.assertRaises(AgentConfigError, msg=bad_id):
+                    load_config(path)
+            finally:
+                path.unlink(missing_ok=True)
+
+
+class PinIntegrityTests(unittest.TestCase):
+    def test_verify_pin_never_reads_head_config(self) -> None:
+        pin = build_pin("daily")
+        with patch("scripts.trader_room.agent_config.load_config", side_effect=AgentConfigError("boom")):
+            verify_pin(pin)
+            verify_pin(legacy_pin("daily"))
+            self.assertTrue(legacy_equivalent(pin))
+            self.assertEqual(pin_model_family(pin, "grok-4.6"), "grok")
+
+    def test_pin_family_tamper_rejected(self) -> None:
+        pin = build_pin("daily")
+        body = dict(pin)
+        body["model_families"] = {**pin["model_families"], "grok-4.6": "composer"}
+        with self.assertRaises(AgentConfigError):
+            verify_pin(seal_pin(body))
+        body = {k: v for k, v in pin.items() if k != "model_families"}
+        with self.assertRaises(AgentConfigError):
+            verify_pin(seal_pin(body))
+        body = dict(pin)
+        body["model_families"] = {**pin["model_families"], "grok-4.7": "grok"}
+        with self.assertRaises(AgentConfigError):
+            verify_pin(seal_pin(body))
+
+    def test_current_production_pin_is_legacy_equivalent(self) -> None:
+        for kind, caps in (("daily", (20, 18, 2)), ("ondemand", (57, 29, 28))):
+            pin = assert_acceptable_pin(build_pin(kind))
+            self.assertTrue(legacy_equivalent(pin))
+            budget = pin["budget"]
+            self.assertEqual((budget["total_calls"], budget["grok_family_calls"], budget["composer_calls"]), caps)
+
+
+class ActivationDateTests(unittest.TestCase):
+    def _raw_with_seat(self, activation_date: str, status: str = "active") -> dict:
+        raw = _raw_config()
+        raw["roster"]["traders"].append(
+            {
+                "id": "synthetic-fifteenth",
+                "remit": "synthetic fifteenth seat for activation-date tests",
+                "expression_specialty": "rates_first",
+                "may_no_trade": False,
+                "activation_date": activation_date,
+                "status": status,
+            }
+        )
+        return raw
+
+    def test_future_active_seat_not_pinned_until_date(self) -> None:
+        path = _write_tmp_config(self._raw_with_seat("2026-12-01"))
+        try:
+            cfg = load_config(path)
+            before = build_pin("daily", config=cfg, as_of="2026-11-30")
+            self.assertEqual(len(before["traders"]), 14)
+            self.assertEqual(before["roster_as_of"], "2026-11-30")
+            self.assertEqual(before["budget"]["total_calls"], 20)
+            self.assertEqual([t["id"] for t in scheduled_traders(cfg, as_of="2026-11-30")], ["synthetic-fifteenth"])
+            on_day = build_pin("daily", config=cfg, as_of="2026-12-01")
+            self.assertEqual(len(on_day["traders"]), 15)
+            self.assertEqual(
+                (on_day["budget"]["total_calls"], on_day["budget"]["grok_family_calls"], on_day["budget"]["composer_calls"]),
+                (21, 19, 2),
+            )
+            od = build_pin("ondemand", config=cfg, as_of="2026-12-01")
+            self.assertEqual(
+                (od["budget"]["total_calls"], od["budget"]["grok_family_calls"], od["budget"]["composer_calls"]),
+                (61, 31, 30),
+            )
+            od_before = build_pin("ondemand", config=cfg, as_of="2026-11-30")
+            self.assertEqual(od_before["budget"]["total_calls"], 57)
+        finally:
+            path.unlink(missing_ok=True)
+
+    def test_as_of_uses_new_york_date(self) -> None:
+        from datetime import datetime, timezone
+
+        late_utc = datetime(2026, 12, 1, 3, 0, tzinfo=timezone.utc)
+        self.assertEqual(today_ny(late_utc).isoformat(), "2026-11-30")
+        path = _write_tmp_config(self._raw_with_seat("2026-12-01"))
+        try:
+            cfg = load_config(path)
+            self.assertEqual(len(head_traders(cfg, as_of=late_utc)), 14)
+        finally:
+            path.unlink(missing_ok=True)
+
+
+class SetRoleTests(unittest.TestCase):
+    def test_set_role_guards_and_pairs_debate_roles(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "model_registry.json"
+            original = (ROOT / "scripts" / "trader_room" / "model_registry.json").read_bytes()
+            path.write_bytes(original)
+            with self.assertRaisesRegex(AgentConfigError, "ACP-owned"):
+                set_role_model("candidate-grok-4.7", "parent", "grok-4.6", config_path=path)
+            with self.assertRaisesRegex(AgentConfigError, "active production profile"):
+                set_role_model("current-production-grok-4.6", "trader", "grok-4.7", config_path=path)
+            with self.assertRaises(AgentConfigError):
+                set_role_model("candidate-grok-4.7", "trader", "composer-2.5", config_path=path)
+            with self.assertRaises(AgentConfigError):
+                set_role_model("candidate-grok-4.7", "advocate", "grok-4.7-high", config_path=path)
+            self.assertEqual(path.read_bytes(), original)
+
+            changed = set_role_model("candidate-grok-4.7", "advocate", "grok-4.6", config_path=path)
+            self.assertEqual(changed, ["advocate", "rebuttal"])
+            cfg = load_config(path, honor_env=False)
+            roles = cfg["profiles"]["candidate-grok-4.7"]["roles"]
+            self.assertEqual((roles["trader"], roles["advocate"], roles["rebuttal"]), ("grok-4.7", "grok-4.6", "grok-4.6"))
+            self.assertEqual(cfg["profiles"]["current-production-grok-4.6"], load_config()["profiles"]["current-production-grok-4.6"])
 
 
 if __name__ == "__main__":

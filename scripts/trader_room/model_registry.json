@@ -32,7 +32,10 @@
   ],
   "notes": [
     "Cursor custom-agent frontmatter uses <model>[] (empty thinking-level parameter), which routes to the exact pinned model id.",
-    "Profile or roster changes require `python -m scripts.trader_room.agent_config render-agents`; do not edit .cursor/agents/*.md model lines by hand."
+    "Profile or roster changes require `python -m scripts.trader_room.agent_config render-agents`; do not edit .cursor/agents/*.md model lines by hand.",
+    "model_families is the approved exact-id list. Only the grok and composer families have run caps; another family is a re-budget change, not a registry edit.",
+    "roles.parent mirrors ACP's one-shot parent and is changed only in a coordinated ACP cutover. trader (daily) may differ from advocate == rebuttal (on-demand); render-agents then generates daily-<seat> agents.",
+    "A trader is live only when status is active and activation_date <= the pin date (America/New_York)."
   ],
   "profiles": {
     "current-production-grok-4.6": {

@@ -10,7 +10,9 @@ Emit exactly once:
 MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
 ```
 
-Every direct child task must begin with exactly one role tag from the pinned roster in the frozen snapshot `agent_roster_pin` (or the legacy 14-seat roster when no pin is present): `MW_ROLE=synthesis`, `MW_ROLE=trader:<seat>`, `MW_ROLE=pm:<pm_id>`, `MW_ROLE=learning_examiner`. Models come from the pin; never `Auto`. For a non-legacy pin, print markers with `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <evidence_snapshot.json>` and emit those lines instead of the literals below where they differ.
+Every direct child task must contain exactly one role tag (once, even if repeated text would be identical) from the pinned roster in the frozen snapshot `agent_roster_pin` (or the legacy 14-seat roster when no pin is present): `MW_ROLE=synthesis`, `MW_ROLE=trader:<seat>`, `MW_ROLE=pm:<pm_id>`, `MW_ROLE=learning_examiner`. Models come from the pin; never `Auto`. `PYTHONPATH=. python -m scripts.trader_room.agent_config agents --kind daily --snapshot <evidence_snapshot.json>` prints each child's tag, custom agent (`<seat>`, or `daily-<seat>` when the pinned profile gives daily traders their own model) and exact model.
+
+The literal markers in this file are valid only for a legacy-equivalent pin (14 seats, `grok-4.6`, 20/18/2). The hook uses the first marker in the transcript, so a non-legacy pin cannot be run from this file until the literals are replaced by the output of `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <evidence_snapshot.json>` (stage 2 in `docs/AGENT_ROSTER_MODEL_PROFILES.md`). Such a run is denied at the first child.
 
 Emit the current-graph marker exactly once. The one-shot launch ceiling is 20 calls, not 19:
 
