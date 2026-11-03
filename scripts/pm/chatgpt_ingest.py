@@ -28,6 +28,7 @@ from scripts.pm.data_requests import apply_requests, empty_registry
 from scripts.pm.errors import FreshnessError, SchemaError
 from scripts.pm.review_packets import (
     build_all_packets,
+    packet_id,
     market_state_from_source,
     select_daily_pm_source,
 )
@@ -114,6 +115,43 @@ def validate_chatgpt_decision(
     return payload
 
 
+def frozen_chatgpt_packet(store: PMStore, source: Any) -> dict[str, Any]:
+    """Read the frozen accepted review, not a fresh time-dependent memory rebuild.
+
+    Rebuilding the packet during ingestion changes holding_seconds and therefore
+    its SHA even though no new market evidence arrived. The saved packet is the
+    immutable decision contract; source identity and its own hash are rechecked.
+    """
+    path = store.packet_path(CHATGPT_PM_ID)
+    if not path.is_file():
+        raise FreshnessError("current ChatGPT review packet is not published; refresh PM packets")
+    packet = store.read_json(path)
+    if not isinstance(packet, dict):
+        raise FreshnessError("stored ChatGPT review packet is invalid")
+    expected_id = packet_id(
+        CHATGPT_PM_ID,
+        str(source.overnight_run_id or source.run_id),
+        review_id=source.review_id if source.is_overnight else None,
+    )
+    expected_fields = {
+        "review_packet_id": expected_id,
+        "pm_id": CHATGPT_PM_ID,
+        "source": source.kind,
+        "review_id": source.review_id if source.is_overnight else None,
+        "evidence_cutoff": source.evidence.get("as_of"),
+        "evidence_packet_sha256": source.evidence.get("packet_sha256"),
+    }
+    for field, expected_value in expected_fields.items():
+        if packet.get(field) != expected_value:
+            raise FreshnessError(
+                f"stored ChatGPT review packet {field} does not match current accepted review"
+            )
+    expected_hash = sha256_json({k: v for k, v in packet.items() if k != "review_packet_sha256"})
+    if packet.get("review_packet_sha256") != expected_hash:
+        raise FreshnessError("stored ChatGPT review packet hash integrity failed")
+    return packet
+
+
 def load_or_empty_books(
     store: PMStore,
     *,
@@ -179,14 +217,7 @@ def apply_chatgpt_decision(
         overnight_run_id=source.overnight_run_id,
     )
     registry = load_or_empty_registry(store)
-    packets = build_all_packets(
-        root=store.root,
-        state_root=store.state_root,
-        books=books,
-        registry=registry,
-        source=source,
-    )
-    packet = packets[CHATGPT_PM_ID]
+    packet = frozen_chatgpt_packet(store, source)
     payload = validate_chatgpt_decision(payload, packet=packet)
     market_state = market_state_from_source(source)
     run_id = source.overnight_run_id or source.trader_room_run_id
@@ -304,14 +335,8 @@ def main(argv: list[str] | None = None) -> int:
             overnight_run_id=source.overnight_run_id,
         )
         registry = load_or_empty_registry(store)
-        packets = build_all_packets(
-            root=store.root,
-            state_root=store.state_root,
-            books=books,
-            registry=registry,
-            source=source,
-        )
-        validate_chatgpt_decision(payload, packet=packets[CHATGPT_PM_ID])
+        packet = frozen_chatgpt_packet(store, source)
+        validate_chatgpt_decision(payload, packet=packet)
         print(
             json.dumps(
                 {
