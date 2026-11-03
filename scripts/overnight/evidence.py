@@ -95,7 +95,7 @@ def freeze_snapshot(
 
     from scripts.trader_room.agent_config import build_pin
 
-    pin = build_pin("daily")
+    pin = build_pin("daily", as_of=now_ny(when))
 
     collect = store.read_artifact(run_id, "collect.json")
     delta = None

@@ -11,7 +11,15 @@ from pathlib import Path
 # CI invokes this file as `python scripts/validate_trader_room.py` without PYTHONPATH.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from scripts.trader_room.agent_config import check_agents, get_profile, head_traders, load_config, trader_entries
+from scripts.trader_room.agent_config import (
+    check_agents,
+    daily_agent_name,
+    get_profile,
+    head_traders,
+    load_config,
+    split_daily_agents,
+    trader_entries,
+)
 from scripts.trader_room.constants import ADVOCATE_MODEL, AGENT_FRONTMATTER_MODEL
 from scripts.trader_room.models import load_registry
 
@@ -22,6 +30,12 @@ EXPECTED_ADVOCATES = {entry["id"] for entry in trader_entries()}
 ACTIVE_ADVOCATES = {entry["id"] for entry in head_traders()}
 EXPECTED_AGGREGATORS = {"conflict-aggregator", "final-aggregator"}
 EXPECTED_PM_AGENTS = set(load_config()["roster"]["automated_pms"])
+_ROLES = get_profile()["roles"]
+EXPECTED_DAILY_AGENTS = (
+    {daily_agent_name(seat) for seat in EXPECTED_ADVOCATES} if split_daily_agents(_ROLES) else set()
+)
+PM_FRONTMATTER_MODEL = f"{_ROLES['pm_principal']}[]"
+DAILY_FRONTMATTER_MODEL = f"{_ROLES['trader']}[]"
 REQUIRED_FIELDS = {"name", "description", "model", "readonly", "is_background"}
 MANDATORY_PACKET_SECTIONS = {
     "temperature_gauges", "central_bank_research", "news_and_research",
@@ -65,12 +79,12 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return data
 
 
-def assert_agent_file(name: str, path: Path) -> None:
+def assert_agent_file(name: str, path: Path, expected_model: str = AGENT_FRONTMATTER_MODEL) -> None:
     fm = parse_frontmatter(path.read_text(encoding="utf-8"))
     missing = REQUIRED_FIELDS - set(fm)
     assert not missing, f"{name}: missing frontmatter fields {sorted(missing)}"
     assert fm["name"] == name, f"{name}: frontmatter name mismatch"
-    assert fm["model"] == AGENT_FRONTMATTER_MODEL, f"{name}: wrong model {fm['model']}"
+    assert fm["model"] == expected_model, f"{name}: wrong model {fm['model']}"
     assert fm["readonly"] == "true", f"{name}: must be readonly"
     assert fm["is_background"] == "true", f"{name}: must run in background"
 
@@ -78,7 +92,7 @@ def assert_agent_file(name: str, path: Path) -> None:
 def main() -> None:
     assert AGENT_DIR.is_dir(), "missing .cursor/agents"
     agent_files = {p.stem: p for p in AGENT_DIR.glob("*.md")}
-    expected_trader = EXPECTED_ADVOCATES | EXPECTED_AGGREGATORS
+    expected_trader = EXPECTED_ADVOCATES | EXPECTED_AGGREGATORS | EXPECTED_DAILY_AGENTS
     assert EXPECTED_PM_AGENTS <= set(agent_files), (
         f"missing PM custom agents: {sorted(EXPECTED_PM_AGENTS - set(agent_files))}"
     )
@@ -87,9 +101,10 @@ def main() -> None:
         f"trader agent roster mismatch: expected={sorted(expected_trader)} actual={sorted(trader_files)}"
     )
     for name, path in sorted(trader_files.items()):
-        assert_agent_file(name, path)
+        expected_model = DAILY_FRONTMATTER_MODEL if name in EXPECTED_DAILY_AGENTS else AGENT_FRONTMATTER_MODEL
+        assert_agent_file(name, path, expected_model)
     for name in sorted(EXPECTED_PM_AGENTS):
-        assert_agent_file(name, agent_files[name])
+        assert_agent_file(name, agent_files[name], PM_FRONTMATTER_MODEL)
         body = path.read_text(encoding="utf-8")
         if name in EXPECTED_ADVOCATES:
             assert "composer-2.5" in body, f"{name}: missing composer-2.5 subagent bound"

@@ -7,13 +7,41 @@ import hashlib
 import json
 import os
 import re
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from scripts.trader_room.errors import ModelPolicyError
 
 CONFIG_PATH = Path(__file__).resolve().parent / "model_registry.json"
+ROSTER_TZ = "America/New_York"
+
+# Run-policy markers, hooks, scheduled-output acceptance and the ACP delegation
+# request carry exactly one cap per family below (grok_cap, composer_cap). A
+# model in any other family has no cap to debit, so admitting one needs a
+# re-budget change across those surfaces, not a registry edit.
+BUDGET_FAMILIES: tuple[str, ...] = ("grok", "composer")
+
+# The ACP parent is launched by ACP from ACP's own one-shot config. The profile
+# value mirrors it so hooks can deny a mismatch; it is not changed from here.
+ACP_OWNED_ROLES: frozenset[str] = frozenset({"parent"})
+
+# Daily traders use a separate rendered custom agent only when the profile gives
+# them a different model from the on-demand advocates (one model per agent file).
+DAILY_AGENT_PREFIX = "daily-"
+REFERENCE_AGENTS: tuple[str, ...] = ("conflict-aggregator", "final-aggregator")
+
+ROLE_WORKFLOWS: dict[str, str] = {
+    "parent": "acp",
+    "synthesis": "daily",
+    "trader": "daily",
+    "pm_principal": "daily",
+    "learning_examiner": "daily",
+    "advocate": "ondemand",
+    "rebuttal": "ondemand",
+    "advocate_subagent": "ondemand",
+}
 
 ROLES: tuple[str, ...] = (
     "parent",
@@ -181,6 +209,8 @@ _LEGACY_ROLES: dict[str, str] = {
 
 _LEGACY_PM_SUBAGENT_MODELS: tuple[str, ...] = ("grok-4.6", "composer-2.5")
 
+_LEGACY_MODEL_FAMILIES: dict[str, str] = {"grok-4.6": "grok", "composer-2.5": "composer"}
+
 
 class AgentConfigError(ModelPolicyError):
     """Agent roster config failed validation."""
@@ -221,6 +251,44 @@ def _validate_iso_date(value: str, *, label: str) -> None:
         raise AgentConfigError(f"{label} must be ISO date YYYY-MM-DD, got {value!r}") from exc
 
 
+def today_ny(now: datetime | None = None) -> date:
+    moment = now or datetime.now(ZoneInfo(ROSTER_TZ))
+    if moment.tzinfo is None:
+        moment = moment.replace(tzinfo=ZoneInfo(ROSTER_TZ))
+    return moment.astimezone(ZoneInfo(ROSTER_TZ)).date()
+
+
+def _as_of_date(as_of: date | datetime | str | None) -> date:
+    if as_of is None:
+        return today_ny()
+    if isinstance(as_of, datetime):
+        return today_ny(as_of)
+    if isinstance(as_of, date):
+        return as_of
+    try:
+        return date.fromisoformat(str(as_of))
+    except ValueError as exc:
+        raise AgentConfigError(f"as_of must be ISO date YYYY-MM-DD, got {as_of!r}") from exc
+
+
+def _validate_model_families(config: dict[str, Any]) -> None:
+    families = config.get("model_families")
+    if not isinstance(families, dict) or not families:
+        raise AgentConfigError("model_families must be a non-empty object")
+    forbidden = {str(x) for x in (config.get("forbidden_models") or [])}
+    for model, family in families.items():
+        normalized = normalize_model(str(model))
+        if normalized != model:
+            raise AgentConfigError(f"model_families key {model!r} must be an exact model id")
+        if model in forbidden:
+            raise AgentConfigError(f"model {model!r} is both approved and forbidden")
+        if family not in BUDGET_FAMILIES:
+            raise AgentConfigError(
+                f"model {model!r} family {family!r} has no run budget cap; only {list(BUDGET_FAMILIES)} are "
+                "budgeted. Adding a family needs a re-budget change (markers, hooks, scheduled output, ACP request)."
+            )
+
+
 def _validate_profile_models(profile: dict[str, Any], config: dict[str, Any], *, profile_id: str) -> None:
     families = config.get("model_families") or {}
     forbidden = {str(x) for x in (config.get("forbidden_models") or [])}
@@ -250,14 +318,16 @@ def _validate_profile_models(profile: dict[str, Any], config: dict[str, Any], *,
         if families[model] != expected_family:
             raise AgentConfigError(
                 f"profile {profile_id!r} role {role} model {model!r} "
-                f"family {families[model]!r} != required {expected_family!r}"
+                f"family {families[model]!r} != required {expected_family!r}; the {role} calls are "
+                f"debited from the {expected_family} cap, so moving the role to another family is a re-budget change"
             )
         normalized_roles[role] = model
 
-    if normalized_roles["trader"] != normalized_roles["advocate"]:
-        raise AgentConfigError("trader and advocate models must match")
     if normalized_roles["advocate"] != normalized_roles["rebuttal"]:
-        raise AgentConfigError("advocate and rebuttal models must match")
+        raise AgentConfigError(
+            "advocate and rebuttal models must match: a rebuttal relaunches the same "
+            ".cursor/agents/<seat>.md custom agent, which has exactly one frontmatter model"
+        )
 
     pm_models = profile.get("pm_subagent_models")
     if not isinstance(pm_models, list) or not pm_models:
@@ -290,6 +360,8 @@ def _validate_roster(roster: dict[str, Any]) -> None:
         tid = str(entry.get("id") or "").strip()
         if not tid or not _KEBAB_ID.match(tid):
             raise AgentConfigError(f"invalid trader id {tid!r}")
+        if tid.startswith(DAILY_AGENT_PREFIX) or tid in REFERENCE_AGENTS:
+            raise AgentConfigError(f"trader id {tid!r} collides with a reserved custom-agent name")
         if tid in seen_ids:
             raise AgentConfigError(f"duplicate trader id {tid!r}")
         seen_ids.add(tid)
@@ -315,6 +387,8 @@ def _validate_roster(roster: dict[str, Any]) -> None:
             raise AgentConfigError(f"invalid automated_pm id {pid!r}")
         if pid in seen_pms:
             raise AgentConfigError(f"duplicate automated_pm id {pid!r}")
+        if pid in seen_ids or pid.startswith(DAILY_AGENT_PREFIX) or pid in REFERENCE_AGENTS:
+            raise AgentConfigError(f"automated_pm id {pid!r} collides with a trader or reserved agent name")
         seen_pms.add(pid)
 
 
@@ -330,6 +404,8 @@ def load_config(path: Path | None = None, *, honor_env: bool = True) -> dict[str
         raise AgentConfigError(f"unsupported schema_version {raw.get('schema_version')!r}")
     if raw.get("type") != "MW_AGENT_MODEL_ROSTER_CONFIG":
         raise AgentConfigError(f"unexpected config type {raw.get('type')!r}")
+
+    _validate_model_families(raw)
 
     profiles = raw.get("profiles")
     if not isinstance(profiles, dict) or not profiles:
@@ -403,10 +479,38 @@ def _head_trader_entry(entry: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def head_traders(config: dict[str, Any] | None = None) -> tuple[dict[str, Any], ...]:
+def _is_live(entry: dict[str, Any], as_of: date) -> bool:
+    if entry.get("status") != "active":
+        return False
+    return date.fromisoformat(str(entry["activation_date"])) <= as_of
+
+
+def head_traders(
+    config: dict[str, Any] | None = None,
+    *,
+    as_of: date | datetime | str | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Live seats: status active and activation_date on or before as_of (default: today, New York)."""
     cfg = config or load_config()
+    day = _as_of_date(as_of)
     roster = cfg["roster"]["traders"]
-    return tuple(_head_trader_entry(e) for e in roster if e.get("status") == "active")
+    return tuple(_head_trader_entry(e) for e in roster if _is_live(e, day))
+
+
+def scheduled_traders(
+    config: dict[str, Any] | None = None,
+    *,
+    as_of: date | datetime | str | None = None,
+) -> tuple[dict[str, Any], ...]:
+    """Seats marked active whose activation_date is still in the future."""
+    cfg = config or load_config()
+    day = _as_of_date(as_of)
+    roster = cfg["roster"]["traders"]
+    return tuple(
+        _head_trader_entry(e)
+        for e in roster
+        if e.get("status") == "active" and not _is_live(e, day)
+    )
 
 
 def trader_entries(config: dict[str, Any] | None = None, *, status: str | None = None) -> tuple[dict[str, Any], ...]:
@@ -481,6 +585,10 @@ def _budget_for_kind(kind: str, n: int) -> dict[str, Any]:
     raise AgentConfigError(f"unknown pin kind {kind!r}")
 
 
+def _pin_models(roles: dict[str, str], pm_subagent_models: list[str] | tuple[str, ...]) -> list[str]:
+    return sorted({*(str(m) for m in roles.values()), *(str(m) for m in pm_subagent_models)})
+
+
 def build_pin(
     kind: str,
     *,
@@ -488,6 +596,7 @@ def build_pin(
     allow_candidate: bool = False,
     config_path: Path | None = None,
     config: dict[str, Any] | None = None,
+    as_of: date | datetime | str | None = None,
 ) -> dict[str, Any]:
     cfg = config
     if cfg is None:
@@ -497,17 +606,23 @@ def build_pin(
         raise AgentConfigError(
             f"profile {profile['id']!r} status {profile['status']!r} cannot be pinned without allow_candidate"
         )
-    traders = head_traders(cfg)
+    day = _as_of_date(as_of)
+    traders = head_traders(cfg, as_of=day)
     pms = tuple(cfg["roster"]["automated_pms"])
     budget = _budget_for_kind(kind, len(traders))
+    families = cfg.get("model_families") or {}
+    roles = dict(profile["roles"])
+    pm_models = list(profile["pm_subagent_models"])
     pin: dict[str, Any] = {
         "type": "MW_AGENT_ROSTER_PIN",
         "version": 1,
         "kind": kind,
         "profile_id": profile["id"],
         "profile_status": profile["status"],
-        "roles": dict(profile["roles"]),
-        "pm_subagent_models": list(profile["pm_subagent_models"]),
+        "roster_as_of": day.isoformat(),
+        "roles": roles,
+        "pm_subagent_models": pm_models,
+        "model_families": {m: str(families[m]) for m in _pin_models(roles, pm_models)},
         "traders": [dict(t) for t in traders],
         "automated_pms": list(pms),
         "budget": budget,
@@ -543,8 +658,10 @@ def legacy_pin(kind: str) -> dict[str, Any]:
         "kind": kind,
         "profile_id": "legacy-v1-grok-4.6",
         "profile_status": "active",
+        "roster_as_of": None,
         "roles": dict(_LEGACY_ROLES),
         "pm_subagent_models": list(_LEGACY_PM_SUBAGENT_MODELS),
+        "model_families": dict(_LEGACY_MODEL_FAMILIES),
         "traders": traders,
         "automated_pms": list(_LEGACY_AUTOMATED_PMS),
         "budget": budget,
@@ -558,15 +675,38 @@ def legacy_pin(kind: str) -> dict[str, Any]:
     return pin
 
 
+def pin_model_family(pin: dict[str, Any], model: str) -> str:
+    """Budget family from the pin's own frozen table, never from the head config."""
+    normalized = normalize_model(model)
+    families = pin.get("model_families")
+    if not isinstance(families, dict) or normalized not in families:
+        raise AgentConfigError(f"model {normalized!r} is not in the pin's model_families")
+    family = str(families[normalized])
+    if family not in BUDGET_FAMILIES:
+        raise AgentConfigError(f"model {normalized!r} family {family!r} is not budgeted")
+    return family
+
+
 def _assert_roles_family_consistent(pin: dict[str, Any]) -> None:
     roles = pin.get("roles") or {}
+    if set(roles) != set(ROLES):
+        raise AgentConfigError(f"pin roles must be exactly {list(ROLES)}")
+    families = pin.get("model_families")
+    if not isinstance(families, dict):
+        raise AgentConfigError("pin model_families must be an object")
+    pm_models = pin.get("pm_subagent_models") or []
+    if set(families) != set(_pin_models(roles, pm_models)):
+        raise AgentConfigError("pin model_families must cover exactly the pinned models")
     for role in ROLES:
-        if role not in roles:
-            raise AgentConfigError(f"pin missing role {role!r}")
         model = normalize_model(str(roles[role]))
-        fam = model_family(model)
-        if ROLE_FAMILIES[role] != fam:
+        if model != roles[role]:
+            raise AgentConfigError(f"pin role {role} model {roles[role]!r} is not an exact id")
+        if ROLE_FAMILIES[role] != pin_model_family(pin, model):
             raise AgentConfigError(f"pin role {role} family mismatch for {model!r}")
+    for model in pm_models:
+        pin_model_family(pin, str(model))
+    if roles["advocate"] != roles["rebuttal"]:
+        raise AgentConfigError("pin advocate and rebuttal models must match")
 
 
 def verify_pin(pin: dict[str, Any]) -> dict[str, Any]:
@@ -629,6 +769,10 @@ def legacy_equivalent(pin: dict[str, Any]) -> bool:
         return False
     if pin.get("roles") != legacy["roles"]:
         return False
+    if list(pin.get("automated_pms") or []) != legacy["automated_pms"]:
+        return False
+    if sorted(pin.get("pm_subagent_models") or []) != sorted(legacy["pm_subagent_models"]):
+        return False
     budget = pin.get("budget") or {}
     kind = pin["kind"]
     if kind == "daily":
@@ -652,6 +796,85 @@ def legacy_equivalent(pin: dict[str, Any]) -> bool:
 
 def pin_trader_ids(pin: dict[str, Any]) -> tuple[str, ...]:
     return tuple(str(t["id"]) for t in pin.get("traders") or [])
+
+
+def split_daily_agents(roles: dict[str, Any]) -> bool:
+    return str(roles["trader"]) != str(roles["advocate"])
+
+
+def daily_agent_name(seat: str) -> str:
+    return f"{DAILY_AGENT_PREFIX}{seat}"
+
+
+def agent_for_role(roles: dict[str, Any], role: str, seat: str | None) -> str | None:
+    """Custom agent that pins the exact model for a seat-bearing role, or None."""
+    if role == "trader":
+        if not seat:
+            return None
+        return daily_agent_name(seat) if split_daily_agents(roles) else seat
+    if role in {"advocate", "rebuttal", "pm_principal"}:
+        return seat or None
+    return None
+
+
+def known_agent_names(pin: dict[str, Any]) -> frozenset[str]:
+    seats = pin_trader_ids(pin)
+    names = {*seats, *(daily_agent_name(s) for s in seats), *(pin.get("automated_pms") or [])}
+    return frozenset(names)
+
+
+def launch_agents(pin: dict[str, Any]) -> list[dict[str, Any]]:
+    """Per-role custom agent and exact model the parent must use for this pin."""
+    roles = pin["roles"]
+    rows: list[dict[str, Any]] = [
+        {"role": "parent", "agent": None, "model": roles["parent"], "owner": "acp"},
+    ]
+    if pin["kind"] == "daily":
+        rows.append({"role": "synthesis", "tag": "MW_ROLE=synthesis", "agent": None, "model": roles["synthesis"]})
+        for seat in pin_trader_ids(pin):
+            rows.append(
+                {
+                    "role": "trader",
+                    "tag": f"MW_ROLE=trader:{seat}",
+                    "agent": agent_for_role(roles, "trader", seat),
+                    "model": roles["trader"],
+                }
+            )
+        for pm_id in pin.get("automated_pms") or []:
+            rows.append(
+                {
+                    "role": "pm_principal",
+                    "tag": f"MW_ROLE=pm:{pm_id}",
+                    "agent": pm_id,
+                    "model": roles["pm_principal"],
+                }
+            )
+        rows.append(
+            {
+                "role": "learning_examiner",
+                "tag": "MW_ROLE=learning_examiner",
+                "agent": None,
+                "model": roles["learning_examiner"],
+            }
+        )
+    else:
+        for seat in pin_trader_ids(pin):
+            rows.append(
+                {"role": "advocate", "tag": f"MW_ROLE=advocate:{seat}", "agent": seat, "model": roles["advocate"]}
+            )
+        for seat in pin_trader_ids(pin):
+            rows.append(
+                {"role": "rebuttal", "tag": f"MW_ROLE=rebuttal:{seat}", "agent": seat, "model": roles["rebuttal"]}
+            )
+        rows.append(
+            {
+                "role": "advocate_subagent",
+                "tag": "MW_ROLE=advocate_subagent",
+                "agent": None,
+                "model": roles["advocate_subagent"],
+            }
+        )
+    return rows
 
 
 def assert_role_model(
@@ -757,6 +980,15 @@ def current_graph_marker_for(pin: dict[str, Any]) -> str:
     return "MW_CURRENT_GRAPH=" + json.dumps(payload, separators=(",", ":"), sort_keys=True)
 
 
+def _frontmatter_bounds(text: str, path: Path) -> int:
+    if not text.startswith("---\n"):
+        raise AgentConfigError(f"{path}: missing frontmatter")
+    end = text.find("\n---\n", 4)
+    if end == -1:
+        raise AgentConfigError(f"{path}: missing closing frontmatter")
+    return end
+
+
 def _parse_frontmatter_model(text: str) -> str | None:
     if not text.startswith("---\n"):
         return None
@@ -769,92 +1001,184 @@ def _parse_frontmatter_model(text: str) -> str | None:
     return None
 
 
+def _set_frontmatter(text: str, path: Path, updates: dict[str, str]) -> str:
+    end = _frontmatter_bounds(text, path)
+    seen: set[str] = set()
+    new_lines: list[str] = []
+    for line in text[4:end].splitlines():
+        key = line.split(":", 1)[0].strip() if ":" in line else ""
+        if key in updates:
+            new_lines.append(f"{key}: {updates[key]}")
+            seen.add(key)
+        else:
+            new_lines.append(line)
+    missing = sorted(set(updates) - seen)
+    if missing:
+        raise AgentConfigError(f"{path}: frontmatter lacks {missing}")
+    return "---\n" + "\n".join(new_lines) + text[end:]
+
+
 def _expected_frontmatter(role_model: str) -> str:
     return f"{normalize_model(role_model)}[]"
+
+
+def _roster_agent_ids(cfg: dict[str, Any]) -> tuple[str, ...]:
+    return tuple(str(e["id"]) for e in cfg["roster"]["traders"])
+
+
+def _daily_agent_text(base_text: str, base_path: Path, seat: str, trader_model: str) -> str:
+    return _set_frontmatter(
+        base_text,
+        base_path,
+        {
+            "name": daily_agent_name(seat),
+            "description": (
+                f"Daily Market Watch trader seat {seat}. Generated from {seat}.md by "
+                "agent_config render-agents; do not edit."
+            ),
+            "model": _expected_frontmatter(trader_model),
+        },
+    )
+
+
+def _agent_plan(cfg: dict[str, Any]) -> tuple[dict[str, str], dict[str, str]]:
+    """Return (base agent -> frontmatter model, daily agent -> source seat)."""
+    roles = get_profile(config=cfg)["roles"]
+    debate_fm = _expected_frontmatter(roles["advocate"])
+    pm_fm = _expected_frontmatter(roles["pm_principal"])
+    base: dict[str, str] = {}
+    for seat in _roster_agent_ids(cfg):
+        base[seat] = debate_fm
+    for name in REFERENCE_AGENTS:
+        base[name] = debate_fm
+    for pm_id in cfg["roster"]["automated_pms"]:
+        base[str(pm_id)] = pm_fm
+    daily: dict[str, str] = {}
+    if split_daily_agents(roles):
+        for seat in _roster_agent_ids(cfg):
+            daily[daily_agent_name(seat)] = seat
+    return base, daily
 
 
 def check_agents(root: Path) -> list[str]:
     """Return list of drift error messages (empty if ok)."""
     cfg = load_config()
-    profile = get_profile(config=cfg)
-    trader_model = profile["roles"]["trader"]
-    pm_model = profile["roles"]["pm_principal"]
-    expected_trader_fm = _expected_frontmatter(trader_model)
-    expected_pm_fm = _expected_frontmatter(pm_model)
-
+    roles = get_profile(config=cfg)["roles"]
+    base, daily = _agent_plan(cfg)
     agent_dir = root / ".cursor" / "agents"
-    errors: list[str] = []
     if not agent_dir.is_dir():
         return [f"missing agent directory {agent_dir}"]
 
-    for entry in head_traders(cfg):
-        path = agent_dir / f"{entry['id']}.md"
+    errors: list[str] = []
+    for name, expected_fm in base.items():
+        path = agent_dir / f"{name}.md"
         if not path.is_file():
             errors.append(f"missing agent file {path}")
             continue
         fm = _parse_frontmatter_model(path.read_text(encoding="utf-8"))
-        if fm != expected_trader_fm:
-            errors.append(f"{entry['id']}: model line {fm!r} != {expected_trader_fm!r}")
+        if fm != expected_fm:
+            errors.append(f"{name}: model line {fm!r} != {expected_fm!r}")
 
-    for pm_id in cfg["roster"]["automated_pms"]:
-        path = agent_dir / f"{pm_id}.md"
+    for name, seat in daily.items():
+        path = agent_dir / f"{name}.md"
+        base_path = agent_dir / f"{seat}.md"
         if not path.is_file():
-            errors.append(f"missing PM agent file {path}")
+            errors.append(f"missing daily trader agent file {path} (run render-agents)")
             continue
-        fm = _parse_frontmatter_model(path.read_text(encoding="utf-8"))
-        if fm != expected_pm_fm:
-            errors.append(f"{pm_id}: model line {fm!r} != {expected_pm_fm!r}")
+        if not base_path.is_file():
+            continue
+        expected = _daily_agent_text(base_path.read_text(encoding="utf-8"), base_path, seat, roles["trader"])
+        if path.read_text(encoding="utf-8") != expected:
+            errors.append(f"{name}: drifted from {seat}.md or the trader model (run render-agents)")
 
+    for path in sorted(agent_dir.glob(f"{DAILY_AGENT_PREFIX}*.md")):
+        if path.stem not in daily:
+            errors.append(f"{path.stem}: stale daily trader agent; trader and advocate models match (run render-agents)")
     return errors
 
 
 def render_agents(root: Path) -> int:
     cfg = load_config()
-    profile = get_profile(config=cfg)
-    trader_fm = _expected_frontmatter(profile["roles"]["trader"])
-    pm_fm = _expected_frontmatter(profile["roles"]["pm_principal"])
+    roles = get_profile(config=cfg)["roles"]
+    base, daily = _agent_plan(cfg)
     agent_dir = root / ".cursor" / "agents"
     changed = 0
 
-    def rewrite(path: Path, expected: str) -> None:
-        nonlocal changed
+    for name, expected_fm in base.items():
+        path = agent_dir / f"{name}.md"
         text = path.read_text(encoding="utf-8")
-        if not text.startswith("---\n"):
-            raise AgentConfigError(f"{path}: missing frontmatter")
-        end = text.find("\n---\n", 4)
-        if end == -1:
-            raise AgentConfigError(f"{path}: missing closing frontmatter")
-        block = text[4:end]
-        lines = block.splitlines()
-        new_lines: list[str] = []
-        found = False
-        for line in lines:
-            if line.strip().startswith("model:"):
-                new_lines.append(f"model: {expected}")
-                found = True
-            else:
-                new_lines.append(line)
-        if not found:
-            raise AgentConfigError(f"{path}: no model line")
-        new_text = "---\n" + "\n".join(new_lines) + text[end:]
+        new_text = _set_frontmatter(text, path, {"model": expected_fm})
         if new_text != text:
             path.write_text(new_text, encoding="utf-8")
             changed += 1
 
-    for entry in head_traders(cfg):
-        rewrite(agent_dir / f"{entry['id']}.md", trader_fm)
-    for pm_id in cfg["roster"]["automated_pms"]:
-        rewrite(agent_dir / f"{pm_id}.md", pm_fm)
+    for name, seat in daily.items():
+        base_path = agent_dir / f"{seat}.md"
+        path = agent_dir / f"{name}.md"
+        expected = _daily_agent_text(base_path.read_text(encoding="utf-8"), base_path, seat, roles["trader"])
+        if not path.is_file() or path.read_text(encoding="utf-8") != expected:
+            path.write_text(expected, encoding="utf-8")
+            changed += 1
+
+    for path in sorted(agent_dir.glob(f"{DAILY_AGENT_PREFIX}*.md")):
+        if path.stem not in daily:
+            path.unlink()
+            changed += 1
     return changed
 
 
-def _cli_markers(kind: str, snapshot_path: Path | None) -> None:
+def set_role_model(
+    profile_id: str,
+    role: str,
+    model: str,
+    *,
+    config_path: Path = CONFIG_PATH,
+    allow_active_profile: bool = False,
+) -> list[str]:
+    """Set one role model in one profile; returns the roles changed."""
+    if role in ACP_OWNED_ROLES:
+        raise AgentConfigError(
+            f"{role!r} is ACP-owned: change the parent in ACP's one-shot config and mirror it here in the "
+            "same staged cutover (docs/ACP_MODEL_ROSTER_MIGRATION_CONTRACT.md)"
+        )
+    if role not in ROLES:
+        raise AgentConfigError(f"unknown role {role!r}; roles are {list(ROLES)}")
+    raw = json.loads(config_path.read_text(encoding="utf-8"))
+    profiles = raw.get("profiles") or {}
+    if profile_id not in profiles:
+        raise AgentConfigError(f"unknown profile {profile_id!r}")
+    profile = profiles[profile_id]
+    if profile.get("status") == "active" and not allow_active_profile:
+        raise AgentConfigError(
+            f"profile {profile_id!r} is the active production profile; editing it changes live models "
+            "and needs explicit authorization (--allow-active-profile)"
+        )
+    targets = ["advocate", "rebuttal"] if role in {"advocate", "rebuttal"} else [role]
+    normalized = normalize_model(model)
+    for target in targets:
+        profile["roles"][target] = normalized
+    tmp = config_path.with_name(f".{config_path.name}.tmp")
+    tmp.write_text(json.dumps(raw, indent=2) + "\n", encoding="utf-8")
+    try:
+        load_config(tmp, honor_env=False)
+    except AgentConfigError:
+        tmp.unlink(missing_ok=True)
+        raise
+    os.replace(tmp, config_path)
+    return targets
+
+
+def _cli_pin(kind: str, snapshot_path: Path | None) -> dict[str, Any]:
     if snapshot_path:
         data = json.loads(snapshot_path.read_text(encoding="utf-8"))
         pin = pin_from_artifact(data, kind=kind)
     else:
         pin = build_pin(kind)
-    assert_acceptable_pin(pin)
+    return assert_acceptable_pin(pin)
+
+
+def _cli_markers(kind: str, snapshot_path: Path | None) -> None:
+    pin = _cli_pin(kind, snapshot_path)
     if kind == "daily":
         print(overnight_policy_marker(pin))
         print(current_graph_marker_for(pin))
@@ -862,14 +1186,49 @@ def _cli_markers(kind: str, snapshot_path: Path | None) -> None:
         print(trader_room_policy_marker(pin))
 
 
+def _cli_show() -> None:
+    cfg = load_config()
+    profiles: dict[str, Any] = {}
+    for pid in cfg["profiles"]:
+        prof = get_profile(pid, cfg)
+        by_workflow: dict[str, dict[str, str]] = {}
+        for role, model in prof["roles"].items():
+            by_workflow.setdefault(ROLE_WORKFLOWS[role], {})[role] = model
+        by_workflow.setdefault("daily", {})["pm_subagent_models"] = prof["pm_subagent_models"]
+        profiles[pid] = {
+            "status": prof["status"],
+            "roles": by_workflow,
+            "split_daily_agents": split_daily_agents(prof["roles"]),
+        }
+    print(
+        json.dumps(
+            {
+                "active_profile": cfg["active_profile"],
+                "approved_models": cfg["model_families"],
+                "profiles": profiles,
+                "live_traders": [t["id"] for t in head_traders(cfg)],
+                "scheduled_traders": [
+                    {"id": t["id"], "activation_date": t["activation_date"]} for t in scheduled_traders(cfg)
+                ],
+                "pending_traders": [t["id"] for t in trader_entries(cfg, status="pending")],
+            },
+            indent=2,
+        )
+    )
+
+
 def _cli_hook_models(hook_kind: str) -> None:
     cfg = load_config()
     profile = get_profile(config=cfg)
+    roles = profile["roles"]
     if hook_kind == "pm":
         models = profile["pm_subagent_models"]
     elif hook_kind == "trader-room":
-        roles = profile["roles"]
         models = [roles["advocate"], roles["advocate_subagent"]]
+    elif hook_kind == "daily":
+        models = sorted({roles[r] for r in ("synthesis", "trader", "pm_principal", "learning_examiner")})
+    elif hook_kind == "ondemand":
+        models = sorted({roles[r] for r in ("advocate", "rebuttal", "advocate_subagent")})
     else:
         raise SystemExit(f"unknown hook kind {hook_kind!r}")
     print(" ".join(models))
@@ -889,8 +1248,21 @@ def main(argv: list[str] | None = None) -> int:
     p_markers.add_argument("--kind", choices=["daily", "ondemand"], required=True)
     p_markers.add_argument("--snapshot", type=Path, default=None)
 
+    p_agents = sub.add_parser("agents", help="print role tag, custom agent and exact model per child")
+    p_agents.add_argument("--kind", choices=["daily", "ondemand"], required=True)
+    p_agents.add_argument("--snapshot", type=Path, default=None)
+
+    sub.add_parser("show", help="print profiles by workflow and the live/scheduled/pending roster")
+
+    p_set = sub.add_parser("set-role", help="set one role model in one profile (validated)")
+    p_set.add_argument("--profile", required=True)
+    p_set.add_argument("--role", required=True, choices=[r for r in ROLES if r not in ACP_OWNED_ROLES])
+    p_set.add_argument("--model", required=True)
+    p_set.add_argument("--config", type=Path, default=CONFIG_PATH)
+    p_set.add_argument("--allow-active-profile", action="store_true")
+
     p_hook = sub.add_parser("hook-models", help="print allowed child models for hooks")
-    p_hook.add_argument("--kind", choices=["pm", "trader-room"], required=True)
+    p_hook.add_argument("--kind", choices=["pm", "trader-room", "daily", "ondemand"], required=True)
 
     args = parser.parse_args(argv)
 
@@ -907,6 +1279,29 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "markers":
         _cli_markers(args.kind, args.snapshot)
+        return 0
+
+    if args.command == "agents":
+        print(json.dumps(launch_agents(_cli_pin(args.kind, args.snapshot)), indent=2))
+        return 0
+
+    if args.command == "show":
+        _cli_show()
+        return 0
+
+    if args.command == "set-role":
+        try:
+            changed = set_role_model(
+                args.profile,
+                args.role,
+                args.model,
+                config_path=args.config,
+                allow_active_profile=args.allow_active_profile,
+            )
+        except AgentConfigError as exc:
+            print(json.dumps({"ok": False, "error": str(exc)}))
+            return 1
+        print(json.dumps({"ok": True, "profile": args.profile, "roles": changed, "model": args.model}))
         return 0
 
     if args.command == "hook-models":

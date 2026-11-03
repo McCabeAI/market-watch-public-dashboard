@@ -22,7 +22,7 @@ def load_registry(path: Path | None = None) -> dict[str, Any]:
     profile = get_profile(config=cfg)
     roles = profile["roles"]
     pm_model = roles["pm_principal"]
-    advocate = roles["trader"]
+    advocate = roles["advocate"]
     subagent = roles["advocate_subagent"]
 
     cursor_variants = (
@@ -43,7 +43,8 @@ def load_registry(path: Path | None = None) -> dict[str, Any]:
         "schema_version": 2,
         "active_profile": cfg["active_profile"],
         "advocate_model": advocate,
-        "aggregator_model": roles.get("advocate", advocate),
+        "daily_trader_model": roles["trader"],
+        "aggregator_model": advocate,
         "agent_frontmatter_model": f"{advocate}[]",
         "subagent_models": [subagent],
         "pm_principal_model": pm_model,

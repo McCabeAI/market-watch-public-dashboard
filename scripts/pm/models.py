@@ -1,4 +1,4 @@
-"""PM principal/subagent model routing (exact grok-4.6 / composer-2.5 only)."""
+"""PM principal/subagent model routing (exact models from the active roster profile)."""
 
 from __future__ import annotations
 
@@ -6,14 +6,13 @@ import json
 
 from scripts.pm.constants import ALLOWED_SUBAGENT_MODELS, AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
 from scripts.trader_room.agent_config import get_profile, load_config
-from scripts.trader_room.constants import AGENT_FRONTMATTER_MODEL
 from scripts.trader_room.errors import ModelPolicyError
 from scripts.trader_room.models import assert_advocate_model, normalize_model
 
 _CFG = load_config()
 _PROFILE = get_profile(config=_CFG)
 PM_PRINCIPAL_MODEL = _PROFILE["roles"]["pm_principal"]
-PM_AGENT_FRONTMATTER_MODEL = AGENT_FRONTMATTER_MODEL
+PM_AGENT_FRONTMATTER_MODEL = f"{PM_PRINCIPAL_MODEL}[]"
 
 _CURSOR_VARIANTS = (
     "high",
