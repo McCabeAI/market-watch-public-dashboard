@@ -220,6 +220,8 @@ jobs:
           ISSUE_URL: ${{ needs.guard.outputs.issue_url }}
           EVENT_NAME: ${{ github.event_name }}
           REPOSITORY_PERMISSION: ${{ needs.guard.outputs.repository_permission }}
+          # Optional. Empty when the repository secret is unset; GDP then keeps the FRED result and does not invent a quarter.
+          BEA_API_KEY: ${{ secrets.BEA_API_KEY }}
         run: |
           set -euo pipefail
           ARGS=(

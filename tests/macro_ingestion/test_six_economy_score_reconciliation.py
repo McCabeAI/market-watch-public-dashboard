@@ -25,7 +25,10 @@ from scripts.macro_ingestion.canonical_bridge import merge_scored_points
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
 from scripts.macro_ingestion.us_employment.ism_prnewswire import parse_ism_pmi
-from scripts.market_watch_launch.lineage import stage_verified_lineage
+from scripts.market_watch_launch.lineage import (
+    _scored_component_stale_rejections,
+    stage_verified_lineage,
+)
 from scripts.temperature_level import (
     CALIBRATION_PATH,
     build_score_state,
@@ -286,6 +289,148 @@ class SixEconomyReconciliationMatrixTests(unittest.TestCase):
                 points=[point],
             )
             self.assertTrue(result["ok"])
+
+
+def _nz_unemployment_point(period: str = "2026-Q3", value: float = 5.1) -> dict:
+    return {
+        "country": "NZ",
+        "catalog_id": "NZ.Labor.unemployment",
+        "role": "scored",
+        "series_id": "HLFQ.S1F3S",
+        "period": period,
+        "value": value,
+        "transformation": "percent",
+        "revision_status": "final",
+    }
+
+
+class MissingScoredAsOfTests(unittest.TestCase):
+    def test_valid_forward_print_reaches_scored_as_of(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp) / "history"
+            shutil.copytree(HISTORY_DIR, work)
+            launch_dir = Path(tmp) / "launch"
+            launch_dir.mkdir()
+            result = stage_verified_lineage(
+                launch_dir=launch_dir,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=work,
+                calibration_path=CALIBRATION_PATH,
+                points=[_nz_unemployment_point()],
+            )
+            self.assertTrue(result["ok"], msg=result.get("rejections") or result.get("error"))
+            self.assertGreater(result["appended_count"], 0)
+            scores = json.loads(
+                (launch_dir / "lineage/temperature_scores.json").read_text(encoding="utf-8")
+            )
+            as_of = scores["countries"]["NZ"]["Labor"]["component_state"]["unemployment"]["as_of"]
+            self.assertEqual(as_of, "2026-Q3")
+
+    def test_no_prior_history_rejects_eligible_point(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        history_key = cal["components"]["NZ.Labor.unemployment"]["history_key"]
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp) / "history"
+            shutil.copytree(HISTORY_DIR, work)
+            country = json.loads((work / "nz.json").read_text(encoding="utf-8"))
+            country["components"][history_key]["observations"] = []
+            (work / "nz.json").write_text(json.dumps(country, indent=2) + "\n", encoding="utf-8")
+            launch_dir = Path(tmp) / "launch"
+            launch_dir.mkdir()
+            result = stage_verified_lineage(
+                launch_dir=launch_dir,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=work,
+                calibration_path=CALIBRATION_PATH,
+                points=[_nz_unemployment_point()],
+            )
+            self.assertFalse(result["ok"])
+            self.assertEqual(result["appended_count"], 0)
+            self.assertEqual(result.get("error"), "score_lineage_rejected")
+            matched = [
+                row
+                for row in result.get("rejections") or []
+                if row.get("id") == "NZ.Labor.unemployment"
+            ]
+            self.assertEqual(len(matched), 1)
+            self.assertEqual(matched[0]["reason"], "missing_scored_as_of")
+            self.assertEqual(matched[0]["period"], "2026-Q3")
+            self.assertFalse((launch_dir / "lineage/temperature_scores.json").is_file())
+
+    def test_missing_as_of_without_an_eligible_point_does_not_fail(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        history_key = cal["components"]["NZ.Labor.unemployment"]["history_key"]
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp) / "history"
+            shutil.copytree(HISTORY_DIR, work)
+            country = json.loads((work / "nz.json").read_text(encoding="utf-8"))
+            country["components"][history_key]["observations"] = []
+            (work / "nz.json").write_text(json.dumps(country, indent=2) + "\n", encoding="utf-8")
+            launch_dir = Path(tmp) / "launch"
+            launch_dir.mkdir()
+            result = stage_verified_lineage(
+                launch_dir=launch_dir,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=work,
+                calibration_path=CALIBRATION_PATH,
+                points=[],
+            )
+            self.assertTrue(result["ok"], msg=result.get("rejections") or result.get("error"))
+            reasons = {row.get("reason") for row in result.get("rejections") or []}
+            self.assertNotIn("missing_scored_as_of", reasons)
+
+    def test_invalid_as_of_and_excluded_points(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        point = _nz_unemployment_point()
+        score_state = {
+            "countries": {
+                "NZ": {
+                    "Labor": {
+                        "component_state": {
+                            "unemployment": {"observed": True, "as_of": "n/a", "level": 50.0}
+                        }
+                    }
+                }
+            }
+        }
+        merge = {"appended": [], "skipped": [{"id": point["catalog_id"], "reason": "partial_malformed"}]}
+        rejected = _scored_component_stale_rejections(
+            points=[point],
+            merge=merge,
+            calibration=cal,
+            score_state=score_state,
+            checked_at=CHECKED_AT,
+        )
+        self.assertEqual(
+            [(row["id"], row["reason"], row["period"]) for row in rejected],
+            [("NZ.Labor.unemployment", "missing_scored_as_of", "2026-Q3")],
+        )
+
+        future = _nz_unemployment_point(period="2027-06")
+        invalid = _nz_unemployment_point(value=float("nan"))
+        quiet = _scored_component_stale_rejections(
+            points=[future, invalid],
+            merge={"appended": [], "skipped": []},
+            calibration=cal,
+            score_state=score_state,
+            checked_at=CHECKED_AT,
+        )
+        self.assertEqual(quiet, [])
+
+
+class IngestionWorkflowBeaKeyTests(unittest.TestCase):
+    def test_secret_is_injected_only_on_ingestion_steps(self) -> None:
+        launch = (ROOT / ".github/workflows/launch-market-watch.yml").read_text(encoding="utf-8")
+        macro = (ROOT / ".github/workflows/macro-ingestion.yml").read_text(encoding="utf-8")
+        binding = "BEA_API_KEY: ${{ secrets.BEA_API_KEY }}"
+        self.assertEqual(launch.count(binding), 1)
+        self.assertEqual(macro.count(binding), 1)
+        launch_cli = launch.split("- name: Run launch CLI", 1)[1].split("- name: Commit freeze", 1)[0]
+        self.assertIn(binding, launch_cli)
+        ingest = macro.split("- name: Run ingestion", 1)[1].split("- name: Commit live ingestion", 1)[0]
+        self.assertIn(binding, ingest)
+        self.assertNotIn("BEA_API_KEY", macro.split("- name: Run unit tests", 1)[1])
+        self.assertNotIn("BEA_API_KEY", launch.split("- name: Record Stage 05", 1)[1])
 
 
 class BeaGdpFallbackTests(unittest.TestCase):

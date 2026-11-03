@@ -308,25 +308,29 @@ def _scored_component_stale_rejections(
             continue
         latest_store = max((str(pt["period"]) for pt in eligible), key=period_sort_key)
         metric = _component_metric(score_state, catalog_id)
-        scored_as_of = metric.get("as_of") if isinstance(metric, dict) else None
-        if not isinstance(scored_as_of, str):
-            scored_as_of = None
-        if scored_as_of is not None:
+        raw_as_of = metric.get("as_of") if isinstance(metric, dict) else None
+        scored_key: tuple[int, int] | None = None
+        if isinstance(raw_as_of, str) and raw_as_of.strip():
             try:
-                if period_sort_key(latest_store) <= period_sort_key(scored_as_of):
-                    continue
+                scored_key = period_sort_key(raw_as_of)
             except ValueError:
-                continue
-        else:
+                scored_key = None
+        if scored_key is not None and period_sort_key(latest_store) <= scored_key:
             continue
 
-        stale_points = [
-            pt
-            for pt in eligible
-            if period_sort_key(str(pt["period"])) > period_sort_key(scored_as_of)
-        ]
+        if scored_key is None:
+            # An eligible current print with no usable scored period is an omission,
+            # not an unreleased series. Unreleased series never reach this branch.
+            stale_points = list(eligible)
+            reason = "missing_scored_as_of"
+        else:
+            stale_points = [
+                pt
+                for pt in eligible
+                if period_sort_key(str(pt["period"])) > scored_key
+            ]
+            reason = "scored_component_stale"
         stale_points.sort(key=lambda pt: period_sort_key(str(pt["period"])), reverse=True)
-        reason = "scored_component_stale"
         for pt in stale_points:
             key = (
                 catalog_id,
@@ -341,6 +345,10 @@ def _scored_component_stale_rejections(
             if skip_reason == "methodology_break_guard":
                 reason = "methodology_break_guard"
                 break
+            # Missing as_of stays the diagnosis. A merge skip explains how the
+            # print was omitted; it must not turn the omission back into success.
+            if reason == "missing_scored_as_of":
+                continue
             if skip_reason and skip_reason not in _NON_BLOCKING_SKIP_REASONS:
                 reason = skip_reason
                 break
