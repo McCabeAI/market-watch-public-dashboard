@@ -68,7 +68,11 @@ POLICIES = {
     },
 }
 
-ROLE_TAG_RE = re.compile(r"MW_ROLE=([a-z_]+(?::[a-z0-9-]+)?)")
+_MW_ROLE_OCCURRENCE_RE = re.compile(r"(?i)MW_ROLE")
+_STRICT_ROLE_TAG_RE = re.compile(
+    r"(?<![A-Za-z0-9_=:/.-])MW_ROLE=(?P<role>[a-z_]+)"
+    r"(?::(?P<seat>[a-z0-9]+(?:-[a-z0-9]+)*))?(?=[\s`\"']|$)"
+)
 
 agent_config: Any = None
 
@@ -92,6 +96,7 @@ def transcript_text(event: dict[str, Any]) -> str:
 
 
 def parse_policy(text: str) -> tuple[str, dict[str, Any], dict[str, Any]] | None:
+    """First marker of each kind governs; later copies are never parsed."""
     normalized = text.replace('\\\"', '"')
     found: list[tuple[str, dict[str, Any], dict[str, Any]]] = []
     for kind, spec in POLICIES.items():
@@ -232,7 +237,7 @@ def _resolve_trader_room_pin(ac: Any) -> dict[str, Any]:
             tmp_path = Path(handle.name)
         cfg = dict(ac.load_config(tmp_path, honor_env=False))
         cfg["_source"] = "default"
-        pin = ac.build_pin("ondemand", config=cfg)
+        pin = ac.build_pin("ondemand", config=cfg, as_of=ac.today_ny())
         return ac.assert_acceptable_pin(pin)
     except Exception as exc:
         respond("deny", f"Trader-room roster pin is not acceptable: {exc}")
@@ -279,6 +284,7 @@ def validate_policy(
         resolved = pin or resolve_pin(kind, ac)
         budget = resolved["budget"]
         expected_fields: dict[str, Any] = {
+            "version": 2,
             "profile_id": resolved["profile_id"],
             "traders": len(resolved["traders"]),
             "roster_sha256": resolved["roster_sha256"],
@@ -293,6 +299,8 @@ def validate_policy(
             expected_fields["schedule_id"] = spec["required"]["schedule_id"]
         else:
             expected_fields["run_type"] = spec["required"]["run_type"]
+        if set(policy.keys()) != set(expected_fields.keys()):
+            respond("deny", f"{kind} run policy must contain exactly the expected v2 keys.")
         for key, expected in expected_fields.items():
             if policy.get(key) != expected:
                 respond("deny", f"{kind} run policy {key} must equal {expected!r}.")
@@ -309,23 +317,57 @@ def load_active(path: Path) -> dict[str, Any] | None:
         respond("deny", f"Existing budget state {path} is unreadable.")
 
 
-def _parse_role_tag(task: str) -> tuple[str, str | None]:
-    matches = ROLE_TAG_RE.findall(task)
-    if not matches:
+def _mw_role_occurrence_count(task: str) -> int:
+    return len(_MW_ROLE_OCCURRENCE_RE.findall(task))
+
+
+def _strict_role_tag(task: str) -> tuple[str, str | None]:
+    count = _mw_role_occurrence_count(task)
+    if count == 0:
         respond("deny", "Child task must include exactly one MW_ROLE tag.")
-    if len(set(matches)) != 1:
-        respond("deny", "Child task must include exactly one distinct MW_ROLE tag.")
-    token = matches[0]
-    if ":" in token:
-        role, seat = token.split(":", 1)
-        return role, seat
-    return token, None
+    if count > 1:
+        respond("deny", "Child task must include exactly one MW_ROLE tag.")
+    match = _STRICT_ROLE_TAG_RE.search(task)
+    if not match:
+        respond("deny", "Child task MW_ROLE tag is malformed.")
+    return match.group("role"), match.group("seat")
 
 
-def _family_deltas(ac: Any, model: str) -> tuple[int, int]:
+def _parse_role_tag(task: str) -> tuple[str, str | None]:
+    return _strict_role_tag(task)
+
+
+def _validate_parsed_role(kind: str, role: str, seat: str | None) -> None:
+    if kind == "overnight":
+        allowed = {"synthesis", "trader", "pm", "learning_examiner"}
+        if role not in allowed:
+            respond("deny", f"Unknown MW_ROLE {role!r} for overnight run.")
+        if role in {"trader", "pm"} and not seat:
+            respond("deny", f"MW_ROLE {role!r} requires a seat or PM id.")
+        if role in {"synthesis", "learning_examiner"} and seat:
+            respond("deny", f"MW_ROLE {role!r} must not include a seat suffix.")
+    else:
+        if role not in {"advocate", "rebuttal"}:
+            respond("deny", f"Unknown MW_ROLE {role!r} for trader-room run.")
+        if not seat:
+            respond("deny", f"MW_ROLE {role!r} requires a seat.")
+
+
+def _parse_nested_advocate_tag(task: str) -> None:
+    count = _mw_role_occurrence_count(task)
+    if count == 0:
+        return
+    if count > 1:
+        respond("deny", "Child task must include exactly one MW_ROLE tag.")
+    match = _STRICT_ROLE_TAG_RE.search(task)
+    if not match or match.group("role") != "advocate_subagent" or match.group("seat"):
+        respond("deny", "Nested advocate subagent must use MW_ROLE=advocate_subagent when tagged.")
+
+
+def _family_deltas(ac: Any, pin: dict[str, Any], model: str) -> tuple[int, int]:
     try:
         normalized = ac.normalize_model(model)
-        family = ac.model_family(normalized)
+        family = ac.pin_model_family(pin, normalized)
     except Exception:
         respond("deny", f"Market Watch run blocks subagent model {model!r}.")
     if family == "grok":
@@ -349,14 +391,30 @@ def _role_state(active: dict[str, Any]) -> dict[str, Any]:
     )
 
 
-def _check_subagent_type(event: dict[str, Any], pin: dict[str, Any], seat: str | None) -> None:
+def _check_subagent_type(
+    ac: Any,
+    event: dict[str, Any],
+    pin: dict[str, Any],
+    pin_role: str,
+    seat: str | None,
+) -> None:
     subagent_type = str(event.get("subagent_type") or "")
     if not subagent_type:
         return
-    traders = set(_lazy_import_agent_config().pin_trader_ids(pin))
-    pms = set(pin.get("automated_pms") or [])
-    if subagent_type in traders | pms and seat != subagent_type:
-        respond("deny", "subagent_type must match the MW_ROLE seat or PM id.")
+    known = ac.known_agent_names(pin)
+    if subagent_type not in known:
+        return
+    expected = ac.agent_for_role(pin["roles"], pin_role, seat)
+    if expected is None:
+        respond(
+            "deny",
+            f"subagent_type {subagent_type!r} is not allowed for MW_ROLE role {pin_role!r}.",
+        )
+    if subagent_type != expected:
+        respond(
+            "deny",
+            f"subagent_type must be {expected!r} for this MW_ROLE tag, not {subagent_type!r}.",
+        )
 
 
 def _assert_role_model(ac: Any, pin: dict[str, Any], role: str, model: str, seat: str | None) -> None:
@@ -487,10 +545,8 @@ def _admit_role_governed(
 
         if parent_id == root_id:
             role, seat = _parse_role_tag(task)
+            _validate_parsed_role(kind, role, seat)
             if kind == "overnight":
-                allowed = {"synthesis", "trader", "pm", "learning_examiner"}
-                if role not in allowed:
-                    respond("deny", f"Unknown MW_ROLE {role!r} for overnight run.")
                 pin_role = {
                     "synthesis": "synthesis",
                     "trader": "trader",
@@ -498,8 +554,6 @@ def _admit_role_governed(
                     "learning_examiner": "learning_examiner",
                 }[role]
             else:
-                if role not in {"advocate", "rebuttal"}:
-                    respond("deny", f"Unknown MW_ROLE {role!r} for trader-room run.")
                 pin_role = role
         else:
             if kind != "trader-room" or not spec["allow_nested_composer"]:
@@ -511,15 +565,12 @@ def _admit_role_governed(
                 respond("deny", "Rebuttal children may not launch subagents.")
             if parent_meta.get("role") != "advocate":
                 respond("deny", "Only initial Trader Room advocates may launch internal subagents.")
-            tags = ROLE_TAG_RE.findall(task)
-            if tags:
-                if len(set(tags)) != 1 or tags[0] != "advocate_subagent":
-                    respond("deny", "Nested advocate subagent must use MW_ROLE=advocate_subagent when tagged.")
+            _parse_nested_advocate_tag(task)
             role = "advocate_subagent"
             seat = None
             pin_role = "advocate_subagent"
 
-        grok_delta, composer_delta = _family_deltas(ac, model)
+        grok_delta, composer_delta = _family_deltas(ac, pin, model)
         next_total = int(active["total"]) + 1
         next_grok = int(active["grok"]) + grok_delta
         next_composer = int(active["composer"]) + composer_delta
@@ -530,7 +581,7 @@ def _admit_role_governed(
         if next_composer > int(policy["composer_cap"]):
             respond("deny", f"{kind} Composer invocation cap ({policy['composer_cap']}) is exhausted.")
 
-        _check_subagent_type(event, pin, seat)
+        _check_subagent_type(ac, event, pin, pin_role, seat)
         _assert_role_model(ac, pin, pin_role, model, seat)
 
         if kind == "overnight":
@@ -617,6 +668,7 @@ def _admit_role_governed(
 
 
 def main() -> None:
+    os.environ.pop("MW_AGENT_CONFIG_PATH", None)
     try:
         event = json.load(sys.stdin)
     except Exception:

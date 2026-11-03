@@ -43,6 +43,15 @@ if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
     | head -n 1 || true)
 fi
 
+HOOK_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_ROOT=$(cd "$HOOK_DIR/../.." && pwd)
+
+hook_models() {
+  kind=$1
+  unset MW_AGENT_CONFIG_PATH
+  PYTHONPATH="$REPO_ROOT" python3 "$REPO_ROOT/scripts/trader_room/agent_config.py" hook-models --kind "$kind" 2>/dev/null || true
+}
+
 if [ -n "$POLICY" ]; then
   case "$POLICY" in
     *'"allowed_models":null'*) ;;
@@ -56,6 +65,25 @@ if [ -n "$POLICY" ]; then
       deny "Subagent model '$MODEL' is not in this run's ACP allowed_subagent_models list."
       ;;
   esac
+fi
+
+MW_RUN_ALLOWED=""
+if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
+  if head -c 65536 "$TRANSCRIPT" 2>/dev/null | sed 's/\\"/"/g' | grep -Fq 'MW_OVERNIGHT_RUN_POLICY={"version"'; then
+    MW_RUN_ALLOWED=$(hook_models daily)
+    [ -n "$MW_RUN_ALLOWED" ] || deny "Overnight run policy could not load allowed models from the active roster profile."
+    case " $MW_RUN_ALLOWED " in
+      *" $MODEL "*) allow ;;
+      *) deny "Overnight run policy allows only the active profile's role models ($MW_RUN_ALLOWED). Refusing '$MODEL'." ;;
+    esac
+  elif head -c 65536 "$TRANSCRIPT" 2>/dev/null | sed 's/\\"/"/g' | grep -Fq 'MW_TRADER_ROOM_RUN_POLICY={"version"'; then
+    MW_RUN_ALLOWED=$(hook_models ondemand)
+    [ -n "$MW_RUN_ALLOWED" ] || deny "Trader Room run policy could not load allowed models from the active roster profile."
+    case " $MW_RUN_ALLOWED " in
+      *" $MODEL "*) allow ;;
+      *) deny "Trader Room run policy allows only the active profile's role models ($MW_RUN_ALLOWED). Refusing '$MODEL'." ;;
+    esac
+  fi
 fi
 
 TR_POLICY=""
@@ -74,15 +102,6 @@ if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
     | head -n 1 || true)
 fi
 
-HOOK_DIR=$(cd "$(dirname "$0")" && pwd)
-REPO_ROOT=$(cd "$HOOK_DIR/../.." && pwd)
-
-hook_models() {
-  kind=$1
-  unset MW_AGENT_CONFIG_PATH
-  PYTHONPATH="$REPO_ROOT" python3 "$REPO_ROOT/scripts/trader_room/agent_config.py" hook-models --kind "$kind" 2>/dev/null || true
-}
-
 if [ -n "$PM_POLICY" ]; then
   case "$MODEL" in
     cursor-grok-*)
@@ -90,23 +109,23 @@ if [ -n "$PM_POLICY" ]; then
       ;;
   esac
   ALLOWED=$(hook_models pm)
-  [ -n "$ALLOWED" ] || deny "PM model policy could not load allowed models from the pinned roster."
+  [ -n "$ALLOWED" ] || deny "PM model policy could not load allowed models from the active roster profile."
   case " $ALLOWED " in
     *" $MODEL "*) allow ;;
-    *) deny "PM model policy allows only the pinned profile models ($ALLOWED). Refusing '$MODEL'." ;;
+    *) deny "PM model policy allows only the active profile models ($ALLOWED). Refusing '$MODEL'." ;;
   esac
 fi
 
 if [ -n "$TR_POLICY" ]; then
   ALLOWED=$(hook_models trader-room)
-  [ -n "$ALLOWED" ] || deny "Trader Room model policy could not load allowed models from the pinned roster."
+  [ -n "$ALLOWED" ] || deny "Trader Room model policy could not load allowed models from the active roster profile."
   case " $ALLOWED " in
     *" $MODEL "*) allow ;;
-    *) deny "Trader Room model policy allows only the pinned profile models ($ALLOWED). Refusing '$MODEL'." ;;
+    *) deny "Trader Room model policy allows only the active profile models ($ALLOWED). Refusing '$MODEL'." ;;
   esac
 fi
 
 case " $DEFAULT_MODELS " in
   *" $MODEL "*) allow ;;
-  *) deny "Subagent model '$MODEL' is outside the repository default Cursor-model allowlist (composer-2.5, grok-4.6, grok-4.5). Use an allowed model or launch a new ACP run with an explicit allowed_subagent_models override." ;;
+  *) deny "Subagent model '$MODEL' is outside the repository default Cursor-model allowlist (composer-2.5, grok-4.6, grok-4.7, grok-4.5). Use an allowed model or launch a new ACP run with an explicit allowed_subagent_models override." ;;
 esac

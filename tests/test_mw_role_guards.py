@@ -88,8 +88,21 @@ TR_POLICY_V1 = {
 }
 
 
+def _daily_pin_split_trader_model() -> dict:
+    body = agent_config.build_pin("daily")
+    roles = dict(body["roles"])
+    roles["trader"] = "grok-4.7"
+    families = dict(body["model_families"])
+    families["grok-4.7"] = "grok"
+    stripped = {k: v for k, v in body.items() if k not in ("roster_sha256", "pin_sha256")}
+    stripped["roles"] = roles
+    stripped["model_families"] = families
+    return agent_config.seal_pin(stripped)
+
+
 class RoleGuardTests(unittest.TestCase):
     script = ROOT / ".cursor" / "hooks" / "enforce-overnight-budget.py"
+    shell_hook = ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh"
 
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
@@ -184,6 +197,17 @@ class RoleGuardTests(unittest.TestCase):
             capture_output=True,
             cwd=repo,
             check=False,
+            env=env,
+        )
+
+    def _shell_hook(self, *, model: str, transcript_text: str) -> subprocess.CompletedProcess:
+        self.transcript.write_text(transcript_text + "\n", encoding="utf-8")
+        return subprocess.run(
+            ["sh", str(self.shell_hook), json.dumps({"subagent_model": model, "transcript_path": str(self.transcript)})],
+            capture_output=True,
+            text=True,
+            check=False,
+            cwd=ROOT,
         )
 
     def _overnight_marker(self, pin: dict | None = None) -> str:
@@ -587,6 +611,232 @@ class RoleGuardTests(unittest.TestCase):
             (budget["total_model_cap"], budget["grok_cap"], budget["composer_cap"], budget["parent_model"]),
             (20, 18, 2, "grok-4.6"),
         )
+
+    def test_repeated_identical_mw_role_tag_denied(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        seat = DAILY_TRADERS[0]
+        dup = f"MW_ROLE=trader:{seat} MW_ROLE=trader:{seat}"
+        blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task=dup)
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("exactly one MW_ROLE", blocked.stdout)
+
+        repo_tr = self._seed_tr_repo()
+        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        dup_adv = f"MW_ROLE=advocate:{seat} MW_ROLE=advocate:{seat}"
+        blocked_adv = self._hook(repo=repo_tr, parent="root", model="grok-4.6", task=dup_adv)
+        self.assertNotEqual(blocked_adv.returncode, 0)
+
+    def test_nested_repeated_advocate_subagent_tag_denied(self) -> None:
+        repo = self._seed_tr_repo()
+        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        seat = ONDEMAND_TRADERS[0]
+        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child="adv")
+        blocked = self._hook(
+            repo=repo,
+            parent="adv",
+            model="composer-2.5",
+            task="MW_ROLE=advocate_subagent MW_ROLE=advocate_subagent",
+            child="c1",
+        )
+        self.assertNotEqual(blocked.returncode, 0)
+
+    def test_malformed_mw_role_tags_denied(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        seat = DAILY_TRADERS[0]
+        for task in (
+            f"MW_ROLE=trader:{seat}/extra",
+            f"MW_ROLE=trader:{seat}.bad",
+            f"MW_ROLE=trader:{seat}:extra",
+            f"mw_role=trader:{seat}",
+            f"XMW_ROLE=trader:{seat}",
+        ):
+            blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task=task)
+            self.assertNotEqual(blocked.returncode, 0, task)
+
+        backtick = f"`MW_ROLE=trader:{seat}`"
+        allowed = self._hook(repo=repo, parent="root", model="grok-4.6", task=backtick)
+        self.assertEqual(allowed.returncode, 0, allowed.stdout)
+
+    def test_unknown_role_and_seat_rules_denied(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        blocked_role = self._hook(repo=repo, parent="root", model="grok-4.6", task="MW_ROLE=advocate:perma-bull")
+        self.assertNotEqual(blocked_role.returncode, 0)
+        blocked_seat = self._hook(repo=repo, parent="root", model="grok-4.6", task="MW_ROLE=trader")
+        self.assertNotEqual(blocked_seat.returncode, 0)
+        blocked_syn = self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis:perma-bull")
+        self.assertNotEqual(blocked_syn.returncode, 0)
+
+    def test_subagent_type_seat_rules(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        seat = DAILY_TRADERS[0]
+        other = DAILY_TRADERS[1]
+        self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        blocked = self._hook(
+            repo=repo,
+            parent="root",
+            model="grok-4.6",
+            task=f"MW_ROLE=trader:{seat}",
+            subagent_type=other,
+        )
+        self.assertNotEqual(blocked.returncode, 0)
+        allowed = self._hook(
+            repo=repo,
+            parent="root",
+            model="grok-4.6",
+            task=f"MW_ROLE=trader:{seat}",
+            subagent_type=seat,
+        )
+        self.assertEqual(allowed.returncode, 0, allowed.stdout)
+
+    def test_split_pin_daily_agent_subagent_type(self) -> None:
+        pin = _daily_pin_split_trader_model()
+        snap = {"schema_version": 1, "type": "OVERNIGHT_EVIDENCE_SNAPSHOT", "agent_roster_pin": pin}
+        repo = self._seed_overnight_repo(snapshot=snap)
+        self._write_marker(agent_config.overnight_policy_marker(pin))
+        seat = agent_config.pin_trader_ids(pin)[0]
+        daily_name = f"daily-{seat}"
+        self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        blocked_seat = self._hook(
+            repo=repo,
+            parent="root",
+            model="grok-4.7",
+            task=f"MW_ROLE=trader:{seat}",
+            subagent_type=seat,
+        )
+        self.assertNotEqual(blocked_seat.returncode, 0)
+        blocked_model = self._hook(
+            repo=repo,
+            parent="root",
+            model="grok-4.6",
+            task=f"MW_ROLE=trader:{seat}",
+            subagent_type=daily_name,
+        )
+        self.assertNotEqual(blocked_model.returncode, 0)
+        allowed = self._hook(
+            repo=repo,
+            parent="root",
+            model="grok-4.7",
+            task=f"MW_ROLE=trader:{seat}",
+            subagent_type=daily_name,
+        )
+        self.assertEqual(allowed.returncode, 0, allowed.stdout)
+
+    def test_v1_marker_first_then_v2_denied(self) -> None:
+        pin = _daily_pin_with_extra_trader()
+        snap = {"schema_version": 1, "type": "OVERNIGHT_EVIDENCE_SNAPSHOT", "agent_roster_pin": pin}
+        repo = self._seed_overnight_repo(snapshot=snap)
+        v2 = agent_config.overnight_policy_marker(pin)
+        self.transcript.write_text(
+            "MW_OVERNIGHT_RUN_POLICY=" + json.dumps(OVERNIGHT_POLICY_V1, separators=(",", ":")) + "\n" + v2 + "\n",
+            encoding="utf-8",
+        )
+        blocked = self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("non-legacy", blocked.stdout.lower())
+
+    def test_later_quoted_marker_does_not_block_legacy_run(self) -> None:
+        repo = self._seed_overnight_repo()
+        self.transcript.write_text(
+            self._overnight_marker()
+            + "\n(tool output) docs say: MW_OVERNIGHT_RUN_POLICY={\"version\":1,...}\n",
+            encoding="utf-8",
+        )
+        allowed = self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        self.assertEqual(allowed.returncode, 0, allowed.stdout)
+
+    def test_v2_marker_validation(self) -> None:
+        pin = _daily_pin_with_extra_trader()
+        snap = {"schema_version": 1, "type": "OVERNIGHT_EVIDENCE_SNAPSHOT", "agent_roster_pin": pin}
+        repo = self._seed_overnight_repo(snapshot=snap)
+        good = json.loads(agent_config.overnight_policy_marker(pin).split("=", 1)[1])
+        self._write_marker("MW_OVERNIGHT_RUN_POLICY=" + json.dumps(good, separators=(",", ":")))
+        self.assertEqual(
+            self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis").returncode,
+            0,
+        )
+
+        extra = dict(good, extra_key=1)
+        self._write_marker("MW_OVERNIGHT_RUN_POLICY=" + json.dumps(extra, separators=(",", ":")))
+        self.assertNotEqual(
+            self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis").returncode,
+            0,
+        )
+
+        bad_profile = dict(good, profile_id="wrong-profile")
+        self._write_marker("MW_OVERNIGHT_RUN_POLICY=" + json.dumps(bad_profile, separators=(",", ":")))
+        self.assertNotEqual(
+            self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis").returncode,
+            0,
+        )
+
+        bad_roster = dict(good, roster_sha256="0" * 64)
+        self._write_marker("MW_OVERNIGHT_RUN_POLICY=" + json.dumps(bad_roster, separators=(",", ":")))
+        self.assertNotEqual(
+            self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis").returncode,
+            0,
+        )
+
+        bad_traders = dict(good, traders=99)
+        self._write_marker("MW_OVERNIGHT_RUN_POLICY=" + json.dumps(bad_traders, separators=(",", ":")))
+        self.assertNotEqual(
+            self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis").returncode,
+            0,
+        )
+
+    def test_v1_marker_wrong_parent_model_denied(self) -> None:
+        repo = self._seed_overnight_repo()
+        bad = dict(OVERNIGHT_POLICY_V1, parent_model="grok-4.7")
+        self._write_marker("MW_OVERNIGHT_RUN_POLICY=" + json.dumps(bad, separators=(",", ":")))
+        blocked = self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        self.assertNotEqual(blocked.returncode, 0)
+
+    def test_mw_agent_config_path_does_not_override_hook(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        permissive = Path(self.tmp.name) / "permissive_registry.json"
+        shutil.copy2(ROOT / "scripts" / "trader_room" / "model_registry.json", permissive)
+        env = os.environ.copy()
+        env["MW_AGENT_CONFIG_PATH"] = str(permissive)
+        event = {
+            "subagent_id": "child-x",
+            "subagent_type": "generalPurpose",
+            "task": "MW_ROLE=synthesis",
+            "parent_conversation_id": "root",
+            "tool_call_id": "tc",
+            "subagent_model": "grok-4.7",
+            "transcript_path": str(self.transcript),
+        }
+        proc = subprocess.run(
+            ["python3", str(self.script)],
+            input=json.dumps(event),
+            text=True,
+            capture_output=True,
+            cwd=repo,
+            check=False,
+            env=env,
+        )
+        self.assertNotEqual(proc.returncode, 0)
+
+    def test_shell_hook_overnight_marker_models(self) -> None:
+        marker = self._overnight_marker()
+        for model in ("composer-2.5", "grok-4.6"):
+            proc = self._shell_hook(model=model, transcript_text=marker)
+            self.assertEqual(proc.returncode, 0, proc.stdout)
+        for model in ("grok-4.7-high", "auto"):
+            proc = self._shell_hook(model=model, transcript_text=marker)
+            self.assertNotEqual(proc.returncode, 0, model)
+
+    def test_shell_hook_acp_overrides_overnight_marker(self) -> None:
+        marker = self._overnight_marker()
+        acp = 'ACP_SUBAGENT_POLICY={"version":1,"allowed_models":["grok-4.7","composer-2.5"]}'
+        transcript = acp + "\n" + marker
+        self.assertEqual(self._shell_hook(model="grok-4.7", transcript_text=transcript).returncode, 0)
+        self.assertEqual(self._shell_hook(model="composer-2.5", transcript_text=transcript).returncode, 0)
+        self.assertNotEqual(self._shell_hook(model="grok-4.6", transcript_text=transcript).returncode, 0)
 
 
 if __name__ == "__main__":
