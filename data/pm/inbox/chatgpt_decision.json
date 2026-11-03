@@ -2,34 +2,34 @@
   "schema_version": 1,
   "type": "PM_DECISION",
   "pm_id": "chatgpt",
-  "review_packet_id": "prp-chatgpt-overnight-20261002-review-001",
-  "review_packet_sha256": "ea582a2d7479b018836f4340f175c21874d68a32cbef21d825e6d6b1e319cdc2",
-  "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+  "review_packet_id": "prp-chatgpt-overnight-20261103-review-001",
+  "review_packet_sha256": "079e728c510cfa8736b80c24d40ae394fededae278ba2c9b67ed5c5cf5a387f5",
+  "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
   "actions": [
     {
-      "action": "HOLD",
+      "action": "REDUCE",
       "instrument": "CORRA_2027H-Z",
       "asset_class": "rates",
       "position_id": "pm-chatgpt-595561a1b90f",
-      "thesis": "Hold the existing 2027 H/M/U/Z CORRA receive, but do not add. The exact strip has normalized materially in our favor to about 3.22 from the 3.40 entry, yet it still averages roughly 91bp above 2.31 cash and March alone remains around 2.945. Canadian underlying inflation near 1.95% and weak domestic labor still do not validate the full 2027 hike path. Brent near 102 and the LNG Canada expansion are genuine upside risks to Canadian inflation and activity, so the remaining edge is smaller and does not justify adding.",
-      "invalidation": "Reduce or close if the full H/M/U/Z strip re-cheapens back through roughly 3.35-3.40 with follow-through, especially if March CORRA moves back above about 3.20 and that move is confirmed by firmer Canadian underlying inflation, labor/wages, or explicitly hawkish BoC guidance. Elevated oil by itself is not sufficient invalidation.",
-      "conviction": 62,
-      "note": "Oct 2 review at the actual position level: HOLD 500mm, no add. The trade has paid about 18bp at the strip level, but a large residual hike path remains. Preserve the position while tightening the de-risk trigger around a renewed strip cheapening plus domestic confirmation."
+      "notional_usd": 250000000,
+      "thesis": "Take profit on half the existing 2027 CORRA H/M/U/Z receive while preserving a 250m residual. The November 2 frozen contract mids average 3.16%, down from the 3.40% entry; roughly 62bp of 2027 tightening remains priced above 2.54% CORRA. September underlying Canadian inflation near 1.85% and unemployment near 6.5% still challenge a full hiking cycle, but the late-October BoC hike and Brent around 105 weaken the one-way receive thesis.",
+      "invalidation": "For the remaining 250m receive, reduce or close if persistent underlying Canadian inflation and labor/wage reacceleration plus BoC guidance validate the further tightening priced in the strip. A renewed move in the same four-contract strip toward 3.35-3.40 alongside that fundamental confirmation requires a fresh decision; do not mistake one component contract for the strip.",
+      "conviction": 56,
+      "note": "Partial profit-taking, not a reversal. Reduce 250m of 500m at trusted frozen packet mid; retain 250m. No add or new position."
     }
   ],
-  "thesis": "Maintain the existing 500mm receive in the 2027 CORRA H/M/U/Z strip. The position-level expression has moved from 3.40 at entry to about 3.22, so part of the original mispricing has normalized, but the strip still embeds substantial tightening relative to 2.31 cash while Canadian underlying inflation remains near 2% and domestic labor evidence is weak. Oil and LNG Canada reduce the asymmetry enough to rule out an add, not enough to reverse or close the trade without domestic confirmation.",
-  "invalidation": "De-risk on a sustained reversal of the exact strip back toward or through 3.35-3.40, particularly with March above about 3.20 and Canadian core inflation, labor/wages, or BoC communication validating a materially tighter 2027 path. A headline-energy move without domestic pass-through is not enough.",
-  "conviction": 62,
-  "rationale": "The current-cycle decision is based on the actual book expression rather than a component contract. The exact equal-weight Mar/Jun/Sep/Dec 2027 CORRA strip is marked around 3.22 versus a 3.40 entry, while March is 2.945 versus 2.31 cash. That means the receive has already delivered meaningful normalization, but the average strip still embeds roughly 91bp of tightening above cash. Canadian underlying inflation is about 1.95%, and the frozen domestic evidence does not show the labor/core reacceleration that would validate that full path. The opposing evidence is real: Brent remains near 102 and LNG Canada has moved ahead, so the later-2027 legs are less clean than March and the trade should not be enlarged. Portfolio pass: long CADJPY or short USDCAD could offset a Canada-energy/hawk shock, but both add separate FX and yen/USD regime risk and are weaker independent edges; long US 10Y and receiving AONIA add overlapping duration/disinflation beta rather than diversification. With only about 5mm of shocked risk against a 100mm risk-capital limit, capacity is not the constraint. Risk/reward after the 18bp move is. Keep the one-position book, no add and no hedge.",
-  "synthesis": "Oct 2 ChatGPT PM refresh: HOLD the existing 500mm 2027 CORRA H/M/U/Z receive at the exact expression level, raise conviction modestly because the strip has moved in the thesis direction, but do not add because much of the easy normalization has occurred and persistent energy/LNG Canada risk challenges the later-2027 legs. No second trade clears the bar after the portfolio-diversification pass.",
-  "memory_context_sha256": "4783ff6ed997eccb5b5d772fc4f0e9f09c9a98b37875db997fcd5395ebd461a3",
-  "postmortems": [],
-  "memory_updates": [],
+  "thesis": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move.",
+  "invalidation": "Do not retain the residual merely because the original thesis was right. Close or reduce further if core inflation, wages, employment and BoC communication substantiate additional hikes, especially if the exact 2027 H/M/U/Z strip backs up toward its 3.35-3.40 entry zone.",
+  "conviction": 56,
+  "rationale": "Independent November 3 PM decision from frozen packet overnight-20261103 (08:22 ET cutoff; contract marks dated November 2). The 3.40 entry versus 3.16 four-leg strip signals partial normalization. Taking off 250m recognizes progress while retaining exposure to a meaningful 62bp 2027 premium over CORRA. The incremental forward edge is narrower because the BoC has delivered tightening and Brent is around $105. Considered full HOLD: unjustified at original size in this energy regime. Considered full CLOSE: leaves too little expression of weak labor and sub-2% underlying inflation against additional market-priced hikes. No additional independent FX, SOFR or other duration position presents a cleaner risk-diversifying edge from the frozen data. All marks, cash, NAV and realized P&L must be generated solely by trusted book code.",
+  "synthesis": "Reduce half of the ChatGPT PM 2027 CORRA receive, from 500m to 250m. No new positions. Preserve the residual while Canadian underlying inflation and labor remain inconsistent with the full further tightening implied by the curve; re-underwrite after each policy and inflation catalyst.",
+  "memory_context_sha256": "acac7e4082df2c8cd9f88d03dd18b034a67b2467080050e8c911cb28e43c22cf",
   "alerts": [
-    "Full 2027 CORRA H/M/U/Z strip re-cheapens through roughly 3.35-3.40 with follow-through",
-    "March 2027 CORRA moves back above about 3.20 while oil remains elevated",
-    "Canadian underlying inflation, labor, or wages reaccelerate enough to validate the hike path",
-    "BoC communication or delivered policy validates materially more 2027 tightening"
+    "Review the exact CORRA H/M/U/Z 2027 strip, not March alone",
+    "BoC communication and the next Canadian core CPI/labor releases can change the remaining edge",
+    "Watch renewed strip cheapening toward 3.35-3.40 together with domestic inflation or labor confirmation"
   ],
-  "future_data_requests": []
+  "future_data_requests": [],
+  "postmortems": [],
+  "memory_updates": []
 }
