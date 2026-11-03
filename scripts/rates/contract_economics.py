@@ -291,6 +291,18 @@ def current_fx_quote(currency: str, market_state: Mapping[str, Any] | None = Non
             "as_of": row.get("as_of"),
             "source": f"market_state.fx.{pair}",
         }
+    if isinstance(row, Mapping):
+        from scripts.market_state import fx_clock_from_packet, fx_pair_age_status
+
+        age_status = fx_pair_age_status(row.get("as_of"), fx_clock_from_packet(market_state))
+        if age_status in _FX_BLOCKING_STATUSES:
+            return {
+                "status": age_status,
+                "usd_per_unit": None,
+                "pair": pair,
+                "as_of": row.get("as_of"),
+                "source": f"market_state.fx.{pair}",
+            }
     spot = row.get("spot") if isinstance(row, Mapping) else row
     try:
         spot_f = float(spot)

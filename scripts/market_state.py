@@ -1260,6 +1260,94 @@ def _is_fx_book(obj: object) -> bool:
     return isinstance(obj, Mapping) and "pairs" in obj and "status" in obj and "unavailable" in obj
 
 
+def fx_clock_from_packet(packet: Mapping | None) -> date | None:
+    """Calendar date of a snapshot clock. Missing clocks do not invent a fixing date."""
+    if not isinstance(packet, Mapping):
+        return None
+    raw = packet.get("generated_at")
+    if not isinstance(raw, str) or len(raw) < 10:
+        return None
+    try:
+        return date.fromisoformat(raw[:10])
+    except ValueError:
+        return None
+
+
+def fx_pair_age_status(as_of: object, clock: date | None) -> str | None:
+    """Per-cross freshness against ``clock``.
+
+    ``None`` means the cross is inside the FX window, or the clock/date is
+    absent and the caller must use an explicit status. A week-old fixing is
+    stale. A fixing older than ``FAIL_AFTER_DAYS`` is unavailable.
+    """
+    if clock is None or not as_of:
+        return None
+    try:
+        observed = date.fromisoformat(str(as_of)[:10])
+    except ValueError:
+        return "invalid"
+    age = (clock - observed).days
+    if age < 0:
+        return None
+    if age > FAIL_AFTER_DAYS:
+        return "unavailable"
+    if age > STALE_AFTER_DAYS["FX"]:
+        return "stale"
+    return None
+
+
+def _stamp_cross_freshness(pairs_out: dict[str, dict], numeric: dict, *, today: date) -> None:
+    """Mark each cross from its own last common fixing.
+
+    A newer cross in the same bundle does not refresh an older one, and a
+    too-old fixing is not left behind as a numeric mark.
+    """
+    limit = STALE_AFTER_DAYS["FX"]
+    for pair, row in list(pairs_out.items()):
+        if not isinstance(row, dict):
+            continue
+        if row.get("status") == "unavailable" or row.get("spot") is None:
+            continue
+        try:
+            observed = date.fromisoformat(str(row.get("as_of")))
+        except (TypeError, ValueError):
+            pairs_out[pair] = _fx_unavailable_pair_record(
+                reason=f"{pair} missing observation date",
+                error=f"{pair} missing observation date",
+                missing_currencies=[],
+            )
+            numeric.pop(pair, None)
+            continue
+        age = max(0, (today - observed).days)
+        if age > FAIL_AFTER_DAYS:
+            pairs_out[pair] = _fx_unavailable_pair_record(
+                reason=f"{pair} observation {observed.isoformat()} is {age} days old",
+                error=(
+                    f"{pair} observation is {age} days old; refusing to emit a fabricated "
+                    "or silently substituted substitute"
+                ),
+                missing_currencies=[],
+            )
+            numeric.pop(pair, None)
+            continue
+        if age > limit:
+            stamped = dict(row)
+            stamped["status"] = "stale"
+            stamped["age_days"] = age
+            pairs_out[pair] = stamped
+
+
+def _fx_family_status(pairs_out: dict[str, dict], newest_status: str, *, from_book: bool) -> str:
+    statuses = [str((row or {}).get("status") or "ok") for row in pairs_out.values() if isinstance(row, dict)]
+    if not statuses or all(status == "unavailable" for status in statuses):
+        return "unavailable"
+    if newest_status == "stale" or all(status in {"stale", "unavailable"} for status in statuses):
+        return "stale"
+    if from_book or any(status != "ok" for status in statuses):
+        return "partial"
+    return "ok"
+
+
 def _fx_snapshot_from_fetch(
     fx_raw: object,
     *,
@@ -1299,10 +1387,8 @@ def _fx_snapshot_from_fetch(
             freshness = _freshness(fx_age or 0, "FX")
         except MarketStateError as exc:
             return _fx_family_unavailable(str(exc))
-        if freshness == "stale":
-            fx_status = "stale"
-        else:
-            fx_status = "partial"
+        _stamp_cross_freshness(pairs_out, numeric, today=today)
+        fx_status = _fx_family_status(pairs_out, freshness, from_book=True)
         return pairs_out, numeric, latest_fx_date, fx_age, fx_status, book_errors, fx_currency_unavailable
 
     if not isinstance(fx_raw, Mapping):
@@ -1312,9 +1398,11 @@ def _fx_snapshot_from_fetch(
     latest_fx_date = max(date.fromisoformat(v["as_of"]) for v in pairs_out.values())
     fx_age = max(0, (today - latest_fx_date).days)
     try:
-        fx_status = _freshness(fx_age, "FX")
+        freshness = _freshness(fx_age, "FX")
     except MarketStateError as exc:
         return _fx_family_unavailable(str(exc))
+    _stamp_cross_freshness(pairs_out, numeric_plain, today=today)
+    fx_status = _fx_family_status(pairs_out, freshness, from_book=False)
     return pairs_out, numeric_plain, latest_fx_date, fx_age, fx_status, None, []
 
 
@@ -1381,7 +1469,7 @@ def build_snapshot(
     rates: dict[str, dict] = {}
     stale_sources: list[str] = []
     unavailable_sources: list[str] = []
-    for country in unavailable_rate_countries:
+    for country in sorted(unavailable_rate_countries):
         src = f"{country}_rates"
         if src not in unavailable_sources:
             unavailable_sources.append(src)
@@ -1490,7 +1578,7 @@ def build_snapshot(
         fx, fx_numeric, latest_fx_date, fx_age, fx_status, fx_error, fx_ccy_unavail = _fx_snapshot_from_fetch(
             fx_fetched, today=today
         )
-        for key in fx_ccy_unavail:
+        for key in sorted(set(fx_ccy_unavail)):
             if key not in unavailable_sources:
                 unavailable_sources.append(key)
         if fx_status == "stale":
@@ -1771,6 +1859,12 @@ def build_snapshot(
         canada_prima_pressure = prima_unavailable_block(str(exc))
         unavailable_sources.append("canada_prima_pressure")
 
+    # Source lists are part of the serialized packet. Set iteration and fetch
+    # order must not change bytes or digests.
+    stale_sources = sorted(set(stale_sources))
+    unavailable_sources = sorted(set(unavailable_sources))
+    preflight_stale = [source for source in stale_sources if _preflight_blocking_source(source)]
+
     cross_assets_block: dict = {
         "series": cross_meta,
         "status": cross_assets_status,
@@ -1820,6 +1914,17 @@ def build_snapshot(
         "status": fx_status,
         "note": "Information/reference rates, not executable prices. All 45 G10 crosses are deterministic ratios of the same ECB EUR fixing date.",
     }
+    observed_fixings = {
+        str(row.get("as_of"))
+        for row in fx.values()
+        if isinstance(row, dict) and row.get("spot") is not None and row.get("as_of")
+    }
+    if len(observed_fixings) > 1:
+        fx_source["note"] = (
+            "Each cross is a ratio of its two legs on one shared ECB fixing date. "
+            "Legs from different fixing dates are never mixed. A cross whose own fixing "
+            "is stale is marked stale and is not a mark."
+        )
     if fx_error and fx_status != "ok":
         fx_source["error"] = fx_error
 
@@ -2033,6 +2138,7 @@ def validate_snapshot(s: Mapping) -> None:
     for required in ("EURUSD", "USDJPY", "AUDNZD", "NOKSEK", "USDCAD"):
         if required not in s["fx"]["pairs"]:
             raise MarketStateError(f"missing required FX pair {required}")
+    fx_family_status = str((s.get("fx") or {}).get("status") or "")
     for pair, m in s["fx"]["pairs"].items():
         if m.get("status") == "unavailable":
             if m.get("spot") is not None:
@@ -2040,6 +2146,16 @@ def validate_snapshot(s: Mapping) -> None:
             if not (m.get("reason") or m.get("error")):
                 raise MarketStateError(f"unavailable FX pair {pair} missing provenance")
             continue
+        if m.get("status") not in {None, "ok", "stale"}:
+            raise MarketStateError(f"{pair} invalid status {m.get('status')}")
+        if m.get("status") == "stale":
+            age = m.get("age_days")
+            if not isinstance(age, int) or isinstance(age, bool) or age <= STALE_AFTER_DAYS["FX"]:
+                raise MarketStateError(f"{pair} stale without a stale observation age")
+            if age > FAIL_AFTER_DAYS:
+                raise MarketStateError(f"{pair} is too old to remain a stale mark")
+            if fx_family_status == "ok":
+                raise MarketStateError("fresh FX family contains a stale cross")
         if not (0 < m["spot"] < 1000):
             raise MarketStateError(f"implausible FX spot {pair}: {m['spot']}")
         if not m.get("as_of"):

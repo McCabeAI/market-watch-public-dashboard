@@ -1,16 +1,27 @@
+import hashlib
+import json
+import os
+import subprocess
+import sys
 import unittest
 from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
 from unittest import mock
 
 from scripts.market_state import (
     FAIL_AFTER_DAYS,
     G10,
     MarketStateError,
+    build_fx_crosses,
     build_snapshot,
     fetch_fx,
     fx_pair_names,
     validate_snapshot,
 )
+from scripts.overnight.errors import FreshnessError
+from scripts.overnight.freshness import assert_action_allowed
+from scripts.overnight.paper_marks import PaperMarkError, resolve_paper_mid
+from scripts.rates.contract_economics import current_fx_quote
 
 from tests.test_market_state import _ea_rates, _jp_rates, _rate_fx_patches, _series
 
@@ -215,6 +226,193 @@ class PartialSourceSnapshotTests(unittest.TestCase):
         validate_snapshot(snapshot)
         self.assertEqual(snapshot["method"]["fx_pair_count"], 45)
         self.assertFalse(any(m.get("status") == "unavailable" for m in snapshot["fx"]["pairs"].values()))
+        books = Path(__file__).resolve().parents[1] / "data" / "overnight" / "books" / "latest.json"
+        if books.is_file():
+            before = books.read_bytes()
+            with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+                again = build_snapshot(include_cross_assets=False, today=date(2026, 8, 30))
+            self.assertEqual(books.read_bytes(), before)
+            self.assertEqual(again["method"]["fx_pair_count"], 45)
+
+    def test_crosses_keep_each_legs_common_fixing_date(self):
+        old = date(2026, 10, 20)
+        fresh = date(2026, 11, 3)
+        currency = {ccy: {old: 1.2, fresh: 1.25} for ccy in G10}
+        currency["EUR"] = {old: 1.0, fresh: 1.0}
+        currency["AUD"] = {old: 1.6}
+        crosses = build_fx_crosses(currency, date(2026, 1, 1))
+        self.assertEqual(max(crosses["EURUSD"]), fresh)
+        self.assertEqual(max(crosses["EURAUD"]), old)
+        self.assertNotIn(fresh, crosses["EURAUD"])
+        self.assertNotIn(fresh, crosses["AUDUSD"])
+
+    def test_one_stale_cross_is_not_tradable_while_contemporaneous_crosses_and_rates_are(self):
+        start = date(2026, 10, 1)
+        today = date(2026, 11, 3)
+        fresh_day = today
+        stale_day = today - timedelta(days=7)
+        too_old_day = today - timedelta(days=FAIL_AFTER_DAYS + 5)
+        us, ca, au, nz = _rate_fixtures(start)
+        fresh = {fresh_day: 1.1}
+        fx = {pair: dict(fresh) for pair in fx_pair_names()}
+        fx["USDCAD"] = {stale_day: 1.36}
+        fx["GBPUSD"] = {too_old_day: 1.27}
+        patches = _rate_fx_patches(us=us, ca=ca, au=au, fx=fx, nz=nz, start=start)
+        with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+            snapshot = build_snapshot(include_cross_assets=False, today=today)
+        validate_snapshot(snapshot)
+        pairs = snapshot["fx"]["pairs"]
+        self.assertEqual(snapshot["fx"]["status"], "partial")
+        self.assertEqual(pairs["EURUSD"]["as_of"], fresh_day.isoformat())
+        self.assertNotIn("status", pairs["EURUSD"])
+        self.assertEqual(pairs["USDCAD"]["status"], "stale")
+        self.assertEqual(pairs["USDCAD"]["as_of"], stale_day.isoformat())
+        self.assertEqual(pairs["USDCAD"]["age_days"], 7)
+        self.assertIsNotNone(pairs["USDCAD"]["spot"])
+        self.assertNotEqual(pairs["USDCAD"]["as_of"], pairs["EURUSD"]["as_of"])
+        self.assertEqual(pairs["GBPUSD"]["status"], "unavailable")
+        self.assertIsNone(pairs["GBPUSD"]["spot"])
+        self.assertEqual(snapshot["rates"]["US"]["status"], "ok")
+        self.assertEqual(snapshot["rates"]["CA"]["status"], "ok")
+        families = {
+            "news": {"status": "fresh"},
+            "market_state": {"status": "fresh", "data": snapshot},
+        }
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="USDCAD", asset_class="spot_fx")
+        with self.assertRaises(FreshnessError):
+            assert_action_allowed("OPEN", families, seat="dollar-king", instrument="GBPUSD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="dollar-king", instrument="EURUSD", asset_class="spot_fx")
+        assert_action_allowed("OPEN", families, seat="rate-hawk", instrument="US_10Y", asset_class="rates")
+        cad = current_fx_quote("CAD", snapshot)
+        aud = current_fx_quote("AUD", snapshot)
+        self.assertEqual(cad["status"], "stale")
+        self.assertIsNone(cad["usd_per_unit"])
+        self.assertEqual(aud["status"], "ok")
+        self.assertIsNotNone(aud["usd_per_unit"])
+        with self.assertRaises(PaperMarkError):
+            resolve_paper_mid(snapshot, "USDCAD", asset_class="fx")
+        marked = resolve_paper_mid(snapshot, "EURUSD", asset_class="fx")
+        self.assertEqual(marked["value"], pairs["EURUSD"]["spot"])
+        from scripts.dashboard_repair.tape import tape_cards
+
+        cards = {card["key"]: card for card in tape_cards(snapshot)}
+        self.assertEqual(cards["USDCAD"]["status"], "stale")
+        self.assertIn("Stale", cards["USDCAD"]["detail"])
+
+    def test_each_sovereign_outage_stays_inside_that_market(self):
+        start = date(2026, 8, 1)
+        today = date(2026, 8, 30)
+        us, ca, au, nz = _rate_fixtures(start)
+        fx = _full_fx_crosses(start)
+        fetchers = {
+            "US": "scripts.market_state.fetch_us_rates",
+            "CA": "scripts.market_state.fetch_ca_rates",
+            "AU": "scripts.market_state.fetch_au_rates",
+            "NZ": "scripts.market_state.fetch_nz_rates",
+            "EA": "scripts.market_state.fetch_ea_bund_rates",
+            "JP": "scripts.market_state.fetch_jp_jgb_rates",
+        }
+        for country, target in fetchers.items():
+            with self.subTest(country=country):
+                patches = _rate_fx_patches(us=us, ca=ca, au=au, fx=fx, nz=nz, start=start)
+                with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+                    with mock.patch(target, side_effect=MarketStateError(f"{country} HTTP Error 500")):
+                        snapshot = build_snapshot(include_cross_assets=False, today=today)
+                validate_snapshot(snapshot)
+                self.assertEqual(snapshot["rates"][country]["status"], "unavailable")
+                self.assertIn("HTTP Error 500", snapshot["rates"][country]["error"])
+                self.assertIn(f"{country}_rates", snapshot["unavailable_sources"])
+                survivor = "CA" if country != "CA" else "US"
+                self.assertEqual(snapshot["rates"][survivor]["status"], "ok")
+                self.assertEqual(snapshot["fx"]["status"], "ok")
+                self.assertEqual(sum(1 for row in snapshot["fx"]["pairs"].values() if row.get("spot") is not None), 45)
+
+    def test_serialized_snapshot_is_stable_across_hash_seeds(self):
+        script = r"""
+import hashlib, json
+from datetime import date
+from unittest import mock
+from scripts.market_state import MarketStateError, build_snapshot, fx_pair_names
+
+start = date(2026, 11, 3)
+today = date(2026, 11, 3)
+fresh = {today: 1.1}
+
+def series(value):
+    return {today: value}
+
+us = {"2Y": series(4.0), "5Y": series(4.2), "10Y": series(4.4), "30Y": series(4.7)}
+ca = {"2Y": series(2.5), "5Y": series(2.7), "10Y": series(3.0), "LONG": series(3.3)}
+au = {"2Y": series(3.5), "5Y": series(3.8), "10Y": series(4.1)}
+nz = {"2Y": series(3.2), "5Y": series(3.6), "10Y": series(4.0)}
+ea = {"2Y": series(2.1), "5Y": series(2.3), "10Y": series(2.5), "30Y": series(2.8)}
+jp = {"2Y": series(0.8), "5Y": series(1.1), "10Y": series(1.6), "30Y": series(2.4)}
+cad_pairs = [pair for pair in fx_pair_names() if "CAD" in pair]
+fx = {
+    "status": "partial",
+    "pairs": {pair: dict(fresh) for pair in fx_pair_names() if "CAD" not in pair},
+    "unavailable": {
+        pair: {
+            "status": "unavailable",
+            "spot": None,
+            "as_of": None,
+            "reason": "missing FX leg(s): CAD",
+            "error": "HTTP Error 500: Internal Server Error",
+            "missing_currencies": ["CAD"],
+        }
+        for pair in cad_pairs
+    },
+    "currencies": {"CAD": {"status": "unavailable", "error": "HTTP Error 500: Internal Server Error"}, "EUR": {"status": "unavailable", "error": "HTTP Error 500: Internal Server Error"}},
+    "errors": ["ECB SDMX CAD/EUR HTTP Error 500: Internal Server Error"],
+}
+patches = [
+    mock.patch("scripts.market_state.fetch_us_rates", side_effect=MarketStateError("US HTTP Error 500")),
+    mock.patch("scripts.market_state.fetch_ca_rates", side_effect=MarketStateError("CA HTTP Error 500")),
+    mock.patch("scripts.market_state.fetch_au_rates", side_effect=MarketStateError("AU HTTP Error 500")),
+    mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=ea),
+    mock.patch("scripts.market_state.fetch_jp_jgb_rates", side_effect=MarketStateError("JP HTTP Error 500")),
+    mock.patch("scripts.market_state.fetch_fx", return_value=fx),
+    mock.patch("scripts.market_state.fetch_nz_rates", side_effect=MarketStateError("NZ HTTP Error 500")),
+]
+with patches[0], patches[1], patches[2], patches[3], patches[4], patches[5], patches[6]:
+    snapshot = build_snapshot(include_cross_assets=False, today=today)
+raw = json.dumps(snapshot, sort_keys=False, separators=(",", ":"))
+canon = json.dumps(snapshot, sort_keys=True, separators=(",", ":"))
+print(hashlib.sha256(raw.encode()).hexdigest())
+print(hashlib.sha256(canon.encode()).hexdigest())
+print(json.dumps(snapshot["unavailable_sources"]))
+print(str(len(snapshot["fx"]["pairs"])))
+print(str(sum(1 for row in snapshot["fx"]["pairs"].values() if row.get("spot") is not None)))
+"""
+        root = Path(__file__).resolve().parents[1]
+        digests = []
+        lists = []
+        for seed in ("0", "1", "123456"):
+            env = dict(os.environ)
+            env["PYTHONHASHSEED"] = seed
+            env["PYTHONPATH"] = str(root)
+            proc = subprocess.run(
+                [sys.executable, "-c", script],
+                cwd=root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            lines = proc.stdout.strip().splitlines()
+            digests.append((lines[0], lines[1]))
+            lists.append(lines[2])
+            self.assertEqual(lines[3], "45")
+            self.assertEqual(lines[4], "36")
+        self.assertEqual(len(set(digests)), 1, digests)
+        self.assertEqual(len(set(lists)), 1, lists)
+        unavailable = json.loads(lists[0])
+        for name in ("AU_rates", "CA_rates", "JP_rates", "NZ_rates", "US_rates", "FX_CAD"):
+            self.assertIn(name, unavailable)
+        self.assertNotIn("EA_rates", unavailable)
+        self.assertEqual(unavailable, sorted(unavailable))
 
 
 if __name__ == "__main__":

@@ -236,6 +236,11 @@ def _fx_pair_status(packet: dict[str, Any], pair: str) -> str:
         return pair_status
     if row.get("spot") is None and row.get("mid") is None:
         return "missing"
+    from scripts.market_state import fx_clock_from_packet, fx_pair_age_status
+
+    age_status = fx_pair_age_status(row.get("as_of"), fx_clock_from_packet(packet))
+    if age_status in _BLOCKING_SOURCE_STATUSES:
+        return age_status
     return "ok"
 
 
