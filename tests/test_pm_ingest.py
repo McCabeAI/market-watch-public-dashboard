@@ -8,6 +8,7 @@ from unittest import mock
 
 from scripts.pm.chatgpt_ingest import (
     apply_chatgpt_decision,
+    main as chatgpt_cli_main,
     frozen_chatgpt_packet,
     validate_chatgpt_decision,
 )
@@ -79,6 +80,18 @@ class ChatGPTIngestTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
+
+    def test_cli_validate_prints_frozen_packet_id(self) -> None:
+        decision_path = self.state / "chatgpt_decision.json"
+        decision_path.write_text(json.dumps(_decision(self.packet)), encoding="utf-8")
+        with mock.patch("scripts.pm.chatgpt_ingest.PMStore", return_value=self.store), mock.patch(
+            "builtins.print"
+        ) as printed:
+            status = chatgpt_cli_main(["validate", "--input", str(decision_path)])
+        self.assertEqual(status, 0)
+        response = json.loads(printed.call_args.args[0])
+        self.assertEqual(response["status"], "valid")
+        self.assertEqual(response["review_packet_id"], self.packet["review_packet_id"])
 
     def test_frozen_packet_identity_is_stable_across_validation(self) -> None:
         source = select_daily_pm_source(
