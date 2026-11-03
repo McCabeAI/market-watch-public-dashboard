@@ -183,8 +183,13 @@ Every launch freezes one `MW_AGENT_ROSTER_PIN`:
 
 - **Live seats.** A seat is in a pin only when `status` is `active` **and**
   `activation_date <= roster_as_of` (New York calendar date). A seat marked
-  active with a future date is "scheduled": it is in no pin, budget, books
-  check or hook until that date.
+  active with a future date is "scheduled" and is in no pin or budget.
+  The committed registry may not contain scheduled seats: loading it fails,
+  so CI and every reader fail closed. The reason is that acceptance, books,
+  memory and apply paths still read the live roster rather than the pin, so a
+  seat must only go live together with its cold-start state, through
+  `onboard_trader --activate`. Future-dated active seats exist only in
+  fixture configs (`MW_AGENT_CONFIG_PATH`), where the pin rule is tested.
 - **Daily:** `scripts/overnight/evidence.py:freeze_snapshot` pins on the freeze
   date and writes the pin into the evidence snapshot as `agent_roster_pin`.
   ACP already binds that snapshot's `packet_sha256`, so the pin is covered by
@@ -315,7 +320,11 @@ PYTHONPATH=. python -m scripts.trader_room.onboard_trader --recover [--root <rep
 - `--activate --confirm-live-activation` is the explicit human activation. It
   is refused while `activation_date` is after today's New York date, so a seat
   cannot be activated early; register it as pending and activate on or after
-  the date. On success it creates cold-start state:
+  the date. It is also refused while the latest daily review is open
+  (`allocating`, `freezing`, `frozen` or `accepting`): that review was frozen
+  with the old roster, and its acceptance still checks the live roster. Activate
+  after the day's review is accepted and before the next freeze. On success it
+  creates cold-start state:
   - the trading memory files under `data/trading/trader/<id>/` plus the index
     row, through the existing empty constructors;
   - a `$100m` cold-start seat in `data/overnight/books/latest.json`, built
@@ -358,7 +367,8 @@ hook when the marker is truthful).
 | ACP parent | MW active profile | First marker | Result |
 | --- | --- | --- | --- |
 | grok-4.6 (today) | current-production-grok-4.6, 14 live seats | v1 literal | runs, 14 seats, 20/18/2 |
-| grok-4.6 | current-production, 15th seat scheduled for a future date | v1 literal | runs with 14 seats until the date (seat not in the pin) |
+| grok-4.6 | current-production, 15th seat pending (any date) | v1 literal | runs with 14 seats (seat not in the pin) |
+| grok-4.6 | registry with an active seat whose date is in the future | any | refused: the committed registry fails to load (keep the seat pending) |
 | grok-4.6 | current-production, 15th seat live | v1 literal | denied at first child: v1 is valid only for a legacy-equivalent pin. Needs stage 1 item 6 and the stage 2 command change |
 | grok-4.6 | current-production with split trader model | v1 literal | denied at first child (not legacy-equivalent); same prerequisite |
 | grok-4.6 | candidate-grok-4.7 | any | ACP gate refuses the request (`parent_model` mismatch); without the gate, the hook denies the first child |
