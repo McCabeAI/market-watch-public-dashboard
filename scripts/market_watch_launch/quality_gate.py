@@ -86,6 +86,61 @@ def _market_packet(families: dict[str, Any]) -> dict[str, Any] | None:
     return data if isinstance(data, dict) else None
 
 
+def _family_research_digest(families: dict[str, Any], name: str) -> bool:
+    block = families.get(name)
+    if not isinstance(block, dict):
+        return False
+    status = str(block.get("status") or "")
+    if status not in {"fresh", "stale"}:
+        return False
+    digest = block.get("digest")
+    return isinstance(digest, str) and bool(digest)
+
+
+def _macro_hard_research_evidence(families: dict[str, Any]) -> bool:
+    block = families.get("macro_hard")
+    if not isinstance(block, dict):
+        return False
+    status = str(block.get("status") or "")
+    if status not in {"fresh", "stale"}:
+        return False
+    digest = block.get("digest")
+    if isinstance(digest, str) and digest:
+        return True
+    if block.get("temperature_scores"):
+        return True
+    components = block.get("components")
+    return isinstance(components, list) and bool(components)
+
+
+def _research_evidence_available(families: dict[str, Any], rows: list[dict[str, Any]]) -> bool:
+    if rows:
+        return True
+    if _macro_hard_research_evidence(families):
+        return True
+    for name in ("news", "central_bank_research"):
+        if _family_research_digest(families, name):
+            return True
+    return False
+
+
+def _trader_blocked_research_pass(
+    base: dict[str, Any],
+    *,
+    reason: str,
+    coverage: str = "PARTIAL",
+) -> dict[str, Any]:
+    base["outcome"] = "PASS"
+    base["coverage"] = coverage
+    base["reason"] = reason
+    base["eligible"] = False
+    base["trader_eligible"] = False
+    base["research_eligible"] = True
+    base["trader_execution"] = "blocked"
+    base["trader_block_reason"] = reason
+    return base
+
+
 def _explicit_status(block: Any) -> str | None:
     if not isinstance(block, dict):
         return None
@@ -612,12 +667,16 @@ def evaluate_gate(
     market_status = str(market_block.get("status") or "missing")
     packet = _market_packet(families)
     if packet is None:
+        if _research_evidence_available(families, rows):
+            return _trader_blocked_research_pass(base, reason="no_markable_universe", coverage="PARTIAL")
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
         base["eligible"] = False
         return base
     if market_status in {"missing", "invalid", "unavailable"}:
+        if _research_evidence_available(families, rows):
+            return _trader_blocked_research_pass(base, reason="no_markable_universe", coverage="PARTIAL")
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
@@ -677,6 +736,12 @@ def evaluate_gate(
             base["unmarkable_positions"] = unmarkable
             base.update(decision["gate_fields"])
             if decision["mode"] == "block":
+                if _research_evidence_available(families, rows):
+                    return _trader_blocked_research_pass(
+                        base,
+                        reason="existing_book_unmarkable",
+                        coverage="PARTIAL",
+                    )
                 base["outcome"] = "BLOCKED"
                 base["reason"] = "existing_book_unmarkable"
                 base["eligible"] = False
@@ -684,6 +749,8 @@ def evaluate_gate(
                 return base
 
     if not trade_eligible_countries:
+        if _research_evidence_available(families, rows):
+            return _trader_blocked_research_pass(base, reason="no_markable_universe", coverage="PARTIAL")
         base["outcome"] = "BLOCKED"
         base["coverage"] = "NONE"
         base["reason"] = "no_markable_universe"
@@ -698,6 +765,9 @@ def evaluate_gate(
     )
     base["coverage"] = "PARTIAL" if has_partial else "COMPLETE"
     base["eligible"] = True
+    base["trader_eligible"] = True
+    base["research_eligible"] = True
+    base["trader_execution"] = "allowed"
     return base
 
 
@@ -766,6 +836,9 @@ def _apply_policy_overlay(
     out = dict(result)
     legacy_outcome = out.get("outcome")
     out["policy_version"] = policy["policy_version"]
+    for key in ("research_eligible", "trader_eligible", "trader_execution", "trader_block_reason"):
+        if key in result:
+            out[key] = result[key]
 
     research_coverage_gaps: list[str] = []
     for source in (
@@ -839,7 +912,11 @@ def _apply_policy_overlay(
     out["research_coverage_series"] = research_coverage_series
     out["trade_eligible_countries"] = trade_eligible
 
-    if legacy_outcome != "BLOCKED":
+    trader_execution = out.get("trader_execution")
+    trader_eligible = out.get("trader_eligible")
+    if trader_execution == "blocked" or trader_eligible is False:
+        out["eligible"] = False
+    elif legacy_outcome != "BLOCKED":
         if trade_eligible:
             out["eligible"] = True
         if legacy_outcome == "PASS":

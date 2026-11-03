@@ -27,7 +27,7 @@ RESEARCH_SRC = (REPO / "scripts" / "market_watch_launch" / "research_pages.py").
 
 # deploy-pages entrypoints the research edition deliberately does not run.
 EXEMPT_ENTRYPOINTS = {
-    "scripts/market_state.py": "research serves the frozen packet's market_state through cross_asset_data.public_snapshot",
+    "scripts/market_state.py": "research publishes a frozen market payload through public_snapshot; a missing payload is an explicit unavailable document and does not call market_state.py",
     "scripts/policy_state.py": "research uses the committed policy artifact; it does not refresh live policy data",
     "scripts/temperature_level.py": "diagnostic --print-levels; research recomputes scores from the staged histories instead",
     "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",

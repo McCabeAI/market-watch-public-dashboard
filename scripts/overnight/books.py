@@ -1256,9 +1256,20 @@ def _resize(
             position.pop("_closed_lots", None)
         else:
             exit_price = action.get("price", position.get("mark_price"))
-            if exit_price in (None, ""):
-                realized = 0.0
-                seat_book["alerts"].append(f"{position['position_id']} reduced without a price; realized P&L left at 0")
+            if exit_price in (None, "") or position.get("mark_status") == "unavailable":
+                action["pending_mark"] = True
+                action["fill_status"] = "pending_mark"
+                action["realized_pnl_usd"] = None
+                action["lots_closed"] = 0
+                action["lots_added"] = 0
+                position["exit_status"] = "pending_mark"
+                position["pnl_unavailable"] = True
+                position["mark_status"] = "unavailable"
+                seat_book["alerts"].append(
+                    f"{position['position_id']} {action.get('action') or 'resize'} left pending: "
+                    "current marks are unavailable; no fill or P&L was invented"
+                )
+                return
             else:
                 realized = realized_increment(position, exit_price=float(exit_price), closed_notional=delta)
             position["notional_usd"] = new_n

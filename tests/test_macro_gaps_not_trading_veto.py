@@ -381,10 +381,13 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
             evaluate_gate(rows=_nov2_macro_rows(), families=families),
             evaluate_gate_canonical(states, families),
         ):
-            self.assertEqual(result["outcome"], "BLOCKED")
-            self.assertEqual(result["coverage"], "NONE")
+            self.assertEqual(result["outcome"], "PASS")
+            self.assertEqual(result["coverage"], "PARTIAL")
             self.assertEqual(result["reason"], "no_markable_universe")
             self.assertFalse(result["eligible"])
+            self.assertTrue(result["research_eligible"])
+            self.assertFalse(result["trader_eligible"])
+            self.assertEqual(result["trader_execution"], "blocked")
             self.assertEqual(result["trade_eligible_countries"], [])
             self.assertNotIn("NZ", result["trade_eligible_countries"])
             self.assertFalse(result["countries"]["NZ"]["eligible"])
@@ -419,10 +422,12 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
             evaluate_gate(rows=_nov2_macro_rows(), families=families),
             evaluate_gate_canonical(states, families),
         ):
-            self.assertEqual(result["outcome"], "BLOCKED")
-            self.assertEqual(result["coverage"], "NONE")
+            self.assertEqual(result["outcome"], "PASS")
+            self.assertEqual(result["coverage"], "PARTIAL")
             self.assertEqual(result["reason"], "no_markable_universe")
             self.assertFalse(result["eligible"])
+            self.assertTrue(result["research_eligible"])
+            self.assertEqual(result["trader_execution"], "blocked")
             self.assertEqual(result["blocked_legs"], ["FX"])
             self.assertEqual(result["trade_eligible_countries"], [])
             self.assertNotIn("NZ", result["trade_eligible_countries"])
@@ -433,8 +438,12 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
             families = _fresh_market_families()
             families["market_state"]["status"] = status
             result = evaluate_gate(rows=_nov2_macro_rows(), families=families)
-            self.assertEqual(result["outcome"], "BLOCKED")
+            self.assertEqual(result["outcome"], "PASS")
+            self.assertEqual(result["coverage"], "PARTIAL")
             self.assertEqual(result["reason"], "no_markable_universe")
+            self.assertFalse(result["eligible"])
+            self.assertTrue(result["research_eligible"])
+            self.assertEqual(result["trader_execution"], "blocked")
             self.assertEqual(result["blocked_legs"], [])
 
     def test_open_fx_position_still_blocks_the_book(self) -> None:
@@ -452,8 +461,12 @@ class MacroGapsNotTradingVetoTests(unittest.TestCase):
                 }
             ],
         )
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
         self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
         self.assertIn("US", result["trade_eligible_countries"])
         self.assertIn("FX", result["blocked_legs"])
 

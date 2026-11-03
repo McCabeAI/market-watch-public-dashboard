@@ -104,7 +104,7 @@ _RV_LEG_ORDER = {
 }
 REQUIRED_POLICY_COUNTRIES = ("US", "CA", "AU")
 REQUIRED_OFFICIAL_CURVE_COUNTRIES = ("US", "CA", "AU")
-UNAVAILABLE_OK_RATE_COUNTRIES = frozenset({"NZ"})
+UNAVAILABLE_OK_RATE_COUNTRIES = frozenset(RATE_COUNTRIES)
 
 # Daily sources may miss weekends/holidays. RBA F2 is weekly with a 2-business-day lag.
 STALE_AFTER_DAYS = stale_after_days()
@@ -920,6 +920,33 @@ def parse_ecb_fx_csv(text: str) -> dict[str, dict[date, float]]:
     return currency
 
 
+def fx_pair_names() -> tuple[str, ...]:
+    pairs: list[str] = []
+    for i, base in enumerate(FX_ORDER):
+        for quote in FX_ORDER[i + 1 :]:
+            pairs.append(f"{base}{quote}")
+    return tuple(pairs)
+
+
+def _fx_pair_legs(pair: str) -> tuple[str, str]:
+    for i, base in enumerate(FX_ORDER):
+        for quote in FX_ORDER[i + 1 :]:
+            if f"{base}{quote}" == pair:
+                return base, quote
+    raise MarketStateError(f"unknown FX pair {pair}")
+
+
+def _fx_unavailable_pair_record(*, reason: str, error: str, missing_currencies: Sequence[str]) -> dict:
+    return {
+        "status": "unavailable",
+        "spot": None,
+        "as_of": None,
+        "reason": reason,
+        "error": error,
+        "missing_currencies": list(missing_currencies),
+    }
+
+
 def build_fx_crosses(currency_per_eur: Mapping[str, Mapping[date, float]], start: date) -> dict[str, dict[date, float]]:
     """Derive all 45 unique G10 crosses from the same ECB EUR fixing date.
 
@@ -929,16 +956,65 @@ def build_fx_crosses(currency_per_eur: Mapping[str, Mapping[date, float]], start
     out: dict[str, dict[date, float]] = {}
     for i, base in enumerate(FX_ORDER):
         for quote in FX_ORDER[i + 1 :]:
-            common = sorted(set(currency_per_eur[base]) & set(currency_per_eur[quote]))
+            base_series = currency_per_eur.get(base) or {}
+            quote_series = currency_per_eur.get(quote) or {}
+            common = sorted(set(base_series) & set(quote_series))
             series = {
-                d: currency_per_eur[quote][d] / currency_per_eur[base][d]
+                d: quote_series[d] / base_series[d]
                 for d in common
-                if d >= start and currency_per_eur[base][d] > 0
+                if d >= start and base_series[d] > 0
             }
-            out[f"{base}{quote}"] = series
-    if len(out) != 45 or any(not s for s in out.values()):
-        raise MarketStateError(f"expected 45 populated G10 crosses, got {len(out)}")
+            if series:
+                out[f"{base}{quote}"] = series
     return out
+
+
+def _build_fx_book(
+    parsed: Mapping[str, Mapping[date, float]],
+    start: date,
+    *,
+    errors: list[str],
+    currency_errors: Mapping[str, str],
+) -> dict:
+    crosses = build_fx_crosses(parsed, start)
+    unavailable: dict[str, dict] = {}
+    pairs: dict[str, dict[date, float]] = {}
+    for pair in fx_pair_names():
+        base, quote = _fx_pair_legs(pair)
+        missing_ccys = [c for c in (base, quote) if not parsed.get(c)]
+        if pair in crosses and crosses[pair]:
+            pairs[pair] = crosses[pair]
+        else:
+            err = currency_errors.get(missing_ccys[0]) if len(missing_ccys) == 1 else "; ".join(
+                f"{c}: {currency_errors.get(c, 'missing observations')}" for c in missing_ccys
+            )
+            unavailable[pair] = _fx_unavailable_pair_record(
+                reason=f"missing FX leg(s): {', '.join(missing_ccys) if missing_ccys else pair}",
+                error=err or "missing FX observations",
+                missing_currencies=missing_ccys,
+            )
+    currencies: dict[str, dict] = {}
+    for ccy in G10:
+        if parsed.get(ccy):
+            currencies[ccy] = {"status": "ok"}
+        else:
+            currencies[ccy] = {
+                "status": "unavailable",
+                "error": currency_errors.get(ccy, "missing observations"),
+            }
+    source_observation = None
+    if pairs:
+        latest = max(max(series) for series in pairs.values())
+        source_observation = latest.isoformat()
+    status = "unavailable" if not pairs else "partial"
+    return {
+        "status": status,
+        "pairs": pairs,
+        "unavailable": unavailable,
+        "currencies": currencies,
+        "errors": errors,
+        "source_observation": source_observation,
+    }
 
 
 def _fetch_ecb_sdmx(
@@ -960,37 +1036,56 @@ def _merge_fx_legs(
         dest.setdefault(key, {}).update(series)
 
 
-def fetch_fx(start: date) -> dict[str, dict[date, float]]:
+def fetch_fx(start: date) -> dict[str, dict[date, float]] | dict:
     needed = [c for c in G10 if c != "EUR"]
+    parsed: dict[str, dict[date, float]] = {c: {} for c in G10}
+    errors: list[str] = []
+    currency_errors: dict[str, str] = {}
+    combined_failed = False
     try:
         # Combined 5-year query is one round-trip but ECB sometimes 504s it.
-        parsed = _fetch_ecb_sdmx("+".join(needed), start, timeout=60, retries=2)
-        require_g10_fx(parsed)
+        merged = _fetch_ecb_sdmx("+".join(needed), start, timeout=60, retries=2)
+        require_g10_fx(merged)
+        parsed = merged
     except MarketStateError as exc:
-        parsed = {c: {} for c in G10}
-        errors = [str(exc)]
+        combined_failed = True
+        errors.append(str(exc))
         for ccy in needed:
             try:
                 extra = _fetch_ecb_sdmx(ccy, start, timeout=ECB_TIMEOUT, retries=ECB_RETRIES)
             except MarketStateError as inner:
-                errors.append(f"{ccy}: {inner}")
+                msg = f"{ccy}: {inner}"
+                errors.append(msg)
+                currency_errors[ccy] = str(inner)
                 continue
             _merge_fx_legs(parsed, extra)
-        try:
-            require_g10_fx(parsed)
-        except MarketStateError:
-            raise MarketStateError(
+    usd = parsed.get("USD") or {}
+    if usd:
+        latest_usd = usd[max(usd)]
+        if not (0.5 < latest_usd < 2.5):
+            usd_err = f"implausible ECB EURUSD reference rate: {latest_usd}"
+            parsed["USD"] = {}
+            currency_errors["USD"] = usd_err
+            errors.append(usd_err)
+    missing = [c for c in G10 if not parsed.get(c)]
+    if missing:
+        if combined_failed:
+            errors.append(
                 "ECB SDMX combined query failed and per-currency fallback still missing "
-                f"{[c for c in G10 if not parsed[c]]}: {errors[-1]}"
-            ) from exc
+                f"{missing}: {errors[-1]}"
+            )
+        for ccy in missing:
+            if ccy != "EUR" and ccy not in currency_errors:
+                currency_errors[ccy] = "missing observations"
+        return _build_fx_book(parsed, start, errors=errors, currency_errors=currency_errors)
+
     latest = max(max(series) for series in parsed.values() if series)
     if (datetime.now(timezone.utc).date() - latest).days > FAIL_AFTER_DAYS:
         raise MarketStateError(f"ECB SDMX latest observation {latest.isoformat()} is too old")
-    usd = parsed["USD"]
-    latest_usd = usd[max(usd)]
-    if not (0.5 < latest_usd < 2.5):
-        raise MarketStateError(f"implausible ECB EURUSD reference rate: {latest_usd}")
-    return build_fx_crosses(parsed, start)
+    crosses = build_fx_crosses(parsed, start)
+    if len(crosses) != 45 or any(not s for s in crosses.values()):
+        raise MarketStateError(f"expected 45 populated G10 crosses, got {len(crosses)}")
+    return crosses
 
 
 def curve_spread(short: Mapping[date, float], long: Mapping[date, float]) -> dict[date, float]:
@@ -1080,6 +1175,52 @@ def _housing_unavailable(country: str, reason: str) -> dict:
     }
 
 
+def _housing_feed_block(country: str, feed_names: Sequence[str], error: str) -> dict:
+    """Unavailable housing block that still names every required feed."""
+    return {
+        "country": country,
+        "status": "unavailable",
+        "error": error,
+        "feeds": {
+            name: {"status": "unavailable", "url": "unavailable", "as_of": None, "error": error}
+            for name in feed_names
+        },
+        "method": {
+            "model_calls": 0,
+            "credentials_required": [],
+            "purpose": f"{country} housing transmission context; non-blocking for core macro/rates.",
+            "trader_packet_delivery": "market_state_passthrough",
+        },
+    }
+
+
+_AU_HOUSING_FEEDS = (
+    "prices_and_turnover",
+    "building_approvals",
+    "housing_lending",
+    "housing_credit",
+    "mortgage_rates",
+    "mortgage_cash_flow",
+)
+_US_HOUSING_FEEDS = (
+    "prices",
+    "sales_inventory",
+    "construction",
+    "mortgage_credit",
+    "mortgage_rates",
+    "mortgage_burden",
+)
+_CA_HOUSING_FEEDS = (
+    "new_home_prices",
+    "construction",
+    "building_permits",
+    "mortgage_lending",
+    "mortgage_balances",
+    "mortgage_rates",
+    "mortgage_burden",
+)
+
+
 def _unavailable_rate_rv(reason: str) -> dict:
     return {
         "as_of": None,
@@ -1097,8 +1238,8 @@ def _unavailable_rate_rv(reason: str) -> dict:
     }
 
 
-def _nz_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dict]:
-    """Return empty NZ raw series and a rates block with explicit provenance."""
+def _country_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dict]:
+    """Return empty raw series and a rates block with explicit provenance."""
     empty = {t: {} for t in RATE_TENORS}
     block = {
         "tenors": {t: _empty_tenor_metrics() for t in RATE_TENORS},
@@ -1109,6 +1250,166 @@ def _nz_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dic
         "error": error,
     }
     return empty, block
+
+
+def _nz_rates_unavailable(error: str) -> tuple[dict[str, dict[date, float]], dict]:
+    return _country_rates_unavailable(error)
+
+
+def _is_fx_book(obj: object) -> bool:
+    return isinstance(obj, Mapping) and "pairs" in obj and "status" in obj and "unavailable" in obj
+
+
+def fx_clock_from_packet(packet: Mapping | None) -> date | None:
+    """Calendar date of a snapshot clock. Missing clocks do not invent a fixing date."""
+    if not isinstance(packet, Mapping):
+        return None
+    raw = packet.get("generated_at")
+    if not isinstance(raw, str) or len(raw) < 10:
+        return None
+    try:
+        return date.fromisoformat(raw[:10])
+    except ValueError:
+        return None
+
+
+def fx_pair_age_status(as_of: object, clock: date | None) -> str | None:
+    """Per-cross freshness against ``clock``.
+
+    ``None`` means the cross is inside the FX window, or the clock/date is
+    absent and the caller must use an explicit status. A week-old fixing is
+    stale. A fixing older than ``FAIL_AFTER_DAYS`` is unavailable.
+    """
+    if clock is None or not as_of:
+        return None
+    try:
+        observed = date.fromisoformat(str(as_of)[:10])
+    except ValueError:
+        return "invalid"
+    age = (clock - observed).days
+    if age < 0:
+        return None
+    if age > FAIL_AFTER_DAYS:
+        return "unavailable"
+    if age > STALE_AFTER_DAYS["FX"]:
+        return "stale"
+    return None
+
+
+def _stamp_cross_freshness(pairs_out: dict[str, dict], numeric: dict, *, today: date) -> None:
+    """Mark each cross from its own last common fixing.
+
+    A newer cross in the same bundle does not refresh an older one, and a
+    too-old fixing is not left behind as a numeric mark.
+    """
+    limit = STALE_AFTER_DAYS["FX"]
+    for pair, row in list(pairs_out.items()):
+        if not isinstance(row, dict):
+            continue
+        if row.get("status") == "unavailable" or row.get("spot") is None:
+            continue
+        try:
+            observed = date.fromisoformat(str(row.get("as_of")))
+        except (TypeError, ValueError):
+            pairs_out[pair] = _fx_unavailable_pair_record(
+                reason=f"{pair} missing observation date",
+                error=f"{pair} missing observation date",
+                missing_currencies=[],
+            )
+            numeric.pop(pair, None)
+            continue
+        age = max(0, (today - observed).days)
+        if age > FAIL_AFTER_DAYS:
+            pairs_out[pair] = _fx_unavailable_pair_record(
+                reason=f"{pair} observation {observed.isoformat()} is {age} days old",
+                error=(
+                    f"{pair} observation is {age} days old; refusing to emit a fabricated "
+                    "or silently substituted substitute"
+                ),
+                missing_currencies=[],
+            )
+            numeric.pop(pair, None)
+            continue
+        if age > limit:
+            stamped = dict(row)
+            stamped["status"] = "stale"
+            stamped["age_days"] = age
+            pairs_out[pair] = stamped
+
+
+def _fx_family_status(pairs_out: dict[str, dict], newest_status: str, *, from_book: bool) -> str:
+    statuses = [str((row or {}).get("status") or "ok") for row in pairs_out.values() if isinstance(row, dict)]
+    if not statuses or all(status == "unavailable" for status in statuses):
+        return "unavailable"
+    if newest_status == "stale" or all(status in {"stale", "unavailable"} for status in statuses):
+        return "stale"
+    if from_book or any(status != "ok" for status in statuses):
+        return "partial"
+    return "ok"
+
+
+def _fx_snapshot_from_fetch(
+    fx_raw: object,
+    *,
+    today: date,
+) -> tuple[dict[str, dict], dict[str, dict[date, float]], date | None, int | None, str, str | None, list[str]]:
+    """Return pair metrics, numeric series for opportunities, dates, status, error, FX_ccy unavailable ids."""
+    fx_currency_unavailable: list[str] = []
+    if _is_fx_book(fx_raw):
+        book = fx_raw
+        numeric = dict(book.get("pairs") or {})
+        pairs_out: dict[str, dict] = {}
+        for pair in fx_pair_names():
+            if pair in numeric and numeric[pair]:
+                pairs_out[pair] = fx_metrics(numeric[pair])
+            else:
+                pairs_out[pair] = (book.get("unavailable") or {}).get(
+                    pair,
+                    _fx_unavailable_pair_record(
+                        reason="missing FX observations",
+                        error="missing FX observations",
+                        missing_currencies=[],
+                    ),
+                )
+        for ccy, meta in (book.get("currencies") or {}).items():
+            if ccy != "EUR" and (meta or {}).get("status") == "unavailable":
+                fx_currency_unavailable.append(f"FX_{ccy}")
+        latest_fx_date: date | None = None
+        fx_age: int | None = None
+        if numeric:
+            latest_fx_date = max(max(series) for series in numeric.values())
+            fx_age = max(0, (today - latest_fx_date).days)
+        book_errors = "; ".join(str(item) for item in (book.get("errors") or []) if item) or None
+        book_status = str(book.get("status") or "unavailable")
+        if book_status == "unavailable" or not numeric:
+            return pairs_out, {}, None, None, "unavailable", book_errors, fx_currency_unavailable
+        try:
+            freshness = _freshness(fx_age or 0, "FX")
+        except MarketStateError as exc:
+            return _fx_family_unavailable(str(exc))
+        _stamp_cross_freshness(pairs_out, numeric, today=today)
+        fx_status = _fx_family_status(pairs_out, freshness, from_book=True)
+        return pairs_out, numeric, latest_fx_date, fx_age, fx_status, book_errors, fx_currency_unavailable
+
+    if not isinstance(fx_raw, Mapping):
+        raise MarketStateError("fetch_fx returned unexpected payload")
+    numeric_plain = {k: v for k, v in fx_raw.items() if isinstance(v, Mapping) and v}
+    pairs_out = {pair: fx_metrics(series) for pair, series in numeric_plain.items()}
+    latest_fx_date = max(date.fromisoformat(v["as_of"]) for v in pairs_out.values())
+    fx_age = max(0, (today - latest_fx_date).days)
+    try:
+        freshness = _freshness(fx_age, "FX")
+    except MarketStateError as exc:
+        return _fx_family_unavailable(str(exc))
+    _stamp_cross_freshness(pairs_out, numeric_plain, today=today)
+    fx_status = _fx_family_status(pairs_out, freshness, from_book=False)
+    return pairs_out, numeric_plain, latest_fx_date, fx_age, fx_status, None, []
+
+
+def _fx_family_unavailable(error: str) -> tuple[dict[str, dict], dict[str, dict[date, float]], None, None, str, str, list[str]]:
+    record = _fx_unavailable_pair_record(reason="FX family unavailable", error=error, missing_currencies=[])
+    pairs = {pair: dict(record) for pair in fx_pair_names()}
+    return pairs, {}, None, None, "unavailable", error, []
 
 
 def build_snapshot(
@@ -1141,29 +1442,64 @@ def build_snapshot(
         recorded = getattr(fetch_nz_rates, "last_provenance", None)
         nz_provenance = recorded if isinstance(recorded, dict) else None
 
-    rates_raw = {
-        "US": fetch_us_rates(start, today),
-        "CA": fetch_ca_rates(start, today),
-        "AU": fetch_au_rates(start, today),
-        "NZ": nz_raw,
-        "EA": fetch_ea_bund_rates(start, today, fetch_bytes=fetch_bytes),
-        "JP": fetch_jp_jgb_rates(start, today, fetch_bytes=fetch_bytes),
+    unavailable_rate_countries: set[str] = set()
+    country_errors: dict[str, str] = {}
+    rates_raw: dict[str, dict[str, dict[date, float]]] = {"NZ": nz_raw}
+    if nz_error:
+        unavailable_rate_countries.add("NZ")
+        country_errors["NZ"] = nz_error
+
+    rate_fetchers = {
+        "US": lambda: fetch_us_rates(start, today),
+        "CA": lambda: fetch_ca_rates(start, today),
+        "AU": lambda: fetch_au_rates(start, today),
+        "EA": lambda: fetch_ea_bund_rates(start, today, fetch_bytes=fetch_bytes),
+        "JP": lambda: fetch_jp_jgb_rates(start, today, fetch_bytes=fetch_bytes),
     }
+    for country, fetcher in rate_fetchers.items():
+        try:
+            rates_raw[country] = fetcher()
+        except MarketStateError as exc:
+            err = str(exc)
+            country_errors[country] = err
+            empty, _ = _country_rates_unavailable(err)
+            rates_raw[country] = empty
+            unavailable_rate_countries.add(country)
+
     rates: dict[str, dict] = {}
     stale_sources: list[str] = []
     unavailable_sources: list[str] = []
-    if nz_error:
-        unavailable_sources.append("NZ_rates")
-        stale_sources.append("NZ_rates")
-    for country, tenors in rates_raw.items():
-        if country == "NZ" and nz_block is not None:
-            rates[country] = nz_block
+    for country in sorted(unavailable_rate_countries):
+        src = f"{country}_rates"
+        if src not in unavailable_sources:
+            unavailable_sources.append(src)
+        if country == "NZ" and src not in stale_sources:
+            stale_sources.append(src)
+
+    def _set_country_unavailable(country: str, error: str) -> None:
+        empty, block = _country_rates_unavailable(error)
+        rates_raw[country] = empty
+        rates[country] = block
+        unavailable_rate_countries.add(country)
+        country_errors[country] = error
+        src = f"{country}_rates"
+        if src not in unavailable_sources:
+            unavailable_sources.append(src)
+        if country == "NZ" and src not in stale_sources:
+            stale_sources.append(src)
+
+    for country in RATE_COUNTRIES:
+        if country in unavailable_rate_countries:
+            _, block = _country_rates_unavailable(country_errors.get(country, "leg rates unavailable"))
+            rates[country] = block
             continue
+        tenors = rates_raw[country]
         extra = extra_rate_tenor(country)
         required = RATE_TENORS + ((extra,) if extra else ())
         missing = [t for t in required if t not in tenors or not tenors[t]]
         if missing:
-            raise MarketStateError(f"{country} missing required tenors: {missing}")
+            _set_country_unavailable(country, f"{country} missing required tenors: {missing}")
+            continue
         metrics = {tenor: rate_metrics(series) for tenor, series in tenors.items() if series}
         curves = {
             "2s10s": spread_metrics_bps(curve_spread(tenors["2Y"], tenors["10Y"])),
@@ -1172,31 +1508,35 @@ def build_snapshot(
         latest_as_of = max(date.fromisoformat(metrics[t]["as_of"]) for t in RATE_TENORS)
         age_days = max(0, (today - latest_as_of).days)
         freshness_fields: dict[str, object] = {}
-        if country == "JP":
-            if age_days > FAIL_AFTER_DAYS:
-                raise MarketStateError(
-                    f"JP observation is {age_days} days old; refusing to emit a fabricated or silently substituted substitute"
-                )
-            status = jgb_observation_status(latest_as_of, today)
-            freshness_fields = {
-                "age_business_days": japan_business_days_since(latest_as_of, today),
-                "freshness_rule": "japan_business_day_publication_lag",
-            }
-        elif country == "CA":
-            if age_days > FAIL_AFTER_DAYS:
-                raise MarketStateError(
-                    f"CA observation is {age_days} days old; refusing to emit a fabricated or silently substituted substitute"
-                )
-            status = ca_observation_status(latest_as_of, today)
-            freshness_fields = {
-                "age_calendar_days": age_days,
-                "age_business_days": canada_business_days_since(latest_as_of, today),
-                "freshness_rule": CA_FRESHNESS_RULE,
-                "minimum_fresh_observation": minimum_fresh_ca_observation(today).isoformat(),
-                "publication_lag_business_days": CA_PUBLICATION_LAG_BUSINESS_DAYS,
-            }
-        else:
-            status = _freshness(age_days, country)
+        try:
+            if country == "JP":
+                if age_days > FAIL_AFTER_DAYS:
+                    raise MarketStateError(
+                        f"JP observation is {age_days} days old; refusing to emit a fabricated or silently substituted substitute"
+                    )
+                status = jgb_observation_status(latest_as_of, today)
+                freshness_fields = {
+                    "age_business_days": japan_business_days_since(latest_as_of, today),
+                    "freshness_rule": "japan_business_day_publication_lag",
+                }
+            elif country == "CA":
+                if age_days > FAIL_AFTER_DAYS:
+                    raise MarketStateError(
+                        f"CA observation is {age_days} days old; refusing to emit a fabricated or silently substituted substitute"
+                    )
+                status = ca_observation_status(latest_as_of, today)
+                freshness_fields = {
+                    "age_calendar_days": age_days,
+                    "age_business_days": canada_business_days_since(latest_as_of, today),
+                    "freshness_rule": CA_FRESHNESS_RULE,
+                    "minimum_fresh_observation": minimum_fresh_ca_observation(today).isoformat(),
+                    "publication_lag_business_days": CA_PUBLICATION_LAG_BUSINESS_DAYS,
+                }
+            else:
+                status = _freshness(age_days, country)
+        except MarketStateError as exc:
+            _set_country_unavailable(country, str(exc))
+            continue
         if status == "stale":
             stale_sources.append(f"{country}_rates")
         rates[country] = {
@@ -1209,49 +1549,58 @@ def build_snapshot(
         }
 
     rate_rv: dict[str, dict] = {}
-    nz_available = nz_error is None
-    unavailable_rate_countries = set()
-    if not nz_available:
-        unavailable_rate_countries.add("NZ")
     for a, b in RV_PAIRS:
         left, right = _rv_leg_order(a, b)
         for tenor in RATE_TENORS:
             if left in unavailable_rate_countries or right in unavailable_rate_countries:
-                rate_rv[f"{left}-{right}_{tenor}"] = _unavailable_rate_rv(
-                    nz_error or "leg rates unavailable"
-                )
+                leg_err = country_errors.get(left) or country_errors.get(right) or "leg rates unavailable"
+                rate_rv[f"{left}-{right}_{tenor}"] = _unavailable_rate_rv(leg_err)
                 continue
             left_series = (rates_raw.get(left) or {}).get(tenor) or {}
             right_series = (rates_raw.get(right) or {}).get(tenor) or {}
             common = rv_spread(left_series, right_series) if left_series and right_series else {}
             if not common:
-                if (left, right) in CORE_RV_PAIRS or (right, left) in CORE_RV_PAIRS:
-                    raise MarketStateError(
-                        f"no overlapping {left}/{right} {tenor} observation dates; refusing to forward-fill"
-                    )
                 rate_rv[f"{left}-{right}_{tenor}"] = _unavailable_rate_rv(
                     f"no overlapping {left}/{right} {tenor} observation dates"
                 )
                 continue
             rate_rv[f"{left}-{right}_{tenor}"] = spread_metrics_bps(common)
 
-    fx_raw = fetch_fx(start)
-    fx = {pair: fx_metrics(series) for pair, series in fx_raw.items()}
-    latest_fx_date = max(date.fromisoformat(v["as_of"]) for v in fx.values())
-    fx_age = max(0, (today - latest_fx_date).days)
-    fx_status = _freshness(fx_age, "FX")
-    if fx_status == "stale":
+    try:
+        fx_fetched = fetch_fx(start)
+    except MarketStateError as exc:
+        fx, fx_numeric, latest_fx_date, fx_age, fx_status, fx_error, _fx_ccy_unavail = _fx_family_unavailable(
+            str(exc)
+        )
+        unavailable_sources.append("FX")
         stale_sources.append("FX")
+    else:
+        fx, fx_numeric, latest_fx_date, fx_age, fx_status, fx_error, fx_ccy_unavail = _fx_snapshot_from_fetch(
+            fx_fetched, today=today
+        )
+        for key in sorted(set(fx_ccy_unavail)):
+            if key not in unavailable_sources:
+                unavailable_sources.append(key)
+        if fx_status == "stale":
+            stale_sources.append("FX")
+        if fx_status == "unavailable":
+            unavailable_sources.append("FX")
+            stale_sources.append("FX")
+            fx_error = fx_error or "FX unavailable"
 
     if include_australia_housing is None:
         include_australia_housing = include_cross_assets
-    australia_housing = (
-        collect_australia_housing(
-            today=today,
-            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
-        )
-        if include_australia_housing
-        else {
+    if include_australia_housing:
+        try:
+            australia_housing = collect_australia_housing(
+                today=today,
+                fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2, user_agent=BROWSER_USER_AGENT),
+            )
+        except Exception as exc:
+            australia_housing = _housing_feed_block("AU", _AU_HOUSING_FEEDS, str(exc))
+            unavailable_sources.append("AU_housing")
+    else:
+        australia_housing = {
             "country": "AU",
             "status": "unavailable",
             "feeds": {
@@ -1277,17 +1626,20 @@ def build_snapshot(
                 "trader_packet_delivery": "market_state_passthrough",
             },
         }
-    )
 
     if include_us_housing is None:
         include_us_housing = include_cross_assets
-    us_housing = (
-        collect_us_housing(
-            today=today,
-            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2),
-        )
-        if include_us_housing
-        else {
+    if include_us_housing:
+        try:
+            us_housing = collect_us_housing(
+                today=today,
+                fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2),
+            )
+        except Exception as exc:
+            us_housing = _housing_feed_block("US", _US_HOUSING_FEEDS, str(exc))
+            unavailable_sources.append("US_housing")
+    else:
+        us_housing = {
             "country": "US",
             "status": "unavailable",
             "feeds": {
@@ -1296,17 +1648,20 @@ def build_snapshot(
             },
             "method": {"model_calls": 0, "credentials_required": [], "trader_packet_delivery": "market_state_passthrough"},
         }
-    )
 
     if include_canada_housing is None:
         include_canada_housing = include_cross_assets
-    canada_housing = (
-        collect_canada_housing(
-            today=today,
-            fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2),
-        )
-        if include_canada_housing
-        else {
+    if include_canada_housing:
+        try:
+            canada_housing = collect_canada_housing(
+                today=today,
+                fetch_bytes=lambda url: fetch_bytes(url, timeout=20, retries=2),
+            )
+        except Exception as exc:
+            canada_housing = _housing_feed_block("CA", _CA_HOUSING_FEEDS, str(exc))
+            unavailable_sources.append("CA_housing")
+    else:
+        canada_housing = {
             "country": "CA",
             "status": "unavailable",
             "feeds": {
@@ -1315,18 +1670,45 @@ def build_snapshot(
             },
             "method": {"model_calls": 0, "credentials_required": [], "trader_packet_delivery": "market_state_passthrough"},
         }
-    )
 
-    cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes) if include_cross_assets else ({}, {})
+    cross_assets_error: str | None = None
     if include_cross_assets:
-        stamp_latest_values(cross_raw, cross_meta)
-    opportunities = build_opportunities(rates_raw, fx_raw, cross_raw, cross_meta, today)
+        try:
+            cross_raw, cross_meta = collect_cross_assets(start, today, fetch_bytes)
+            stamp_latest_values(cross_raw, cross_meta)
+            cross_assets_status = "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok"
+        except Exception as exc:
+            cross_raw, cross_meta = {}, {}
+            cross_assets_status = "unavailable"
+            cross_assets_error = str(exc)
+            unavailable_sources.append("cross_assets")
+    else:
+        cross_raw, cross_meta = {}, {}
+        cross_assets_status = "ok"
+    opportunities = build_opportunities(rates_raw, fx_numeric, cross_raw, cross_meta, today)
     if include_policy_paths is None:
         include_policy_paths = include_cross_assets
-    policy_paths = (
-        collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
-        if include_policy_paths
-        else {
+    if include_policy_paths:
+        try:
+            policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
+        except Exception as exc:
+            policy_paths = {
+                "status": "unavailable",
+                "error": str(exc),
+                "countries": {
+                    c: {"status": "unavailable", "error": str(exc)}
+                    for c in REQUIRED_POLICY_COUNTRIES
+                },
+                "sources": {},
+                "method": {
+                    "model_calls": 0,
+                    "credentials_required": [],
+                    "purpose": "policy expectations context before sovereign-curve/RV trade construction",
+                },
+            }
+            unavailable_sources.append("policy_paths")
+    else:
+        policy_paths = {
             "status": "unavailable",
             "countries": {
                 c: {"status": "unavailable", "error": "policy path collection disabled for this invocation"}
@@ -1339,7 +1721,6 @@ def build_snapshot(
                 "purpose": "policy expectations context before sovereign-curve/RV trade construction",
             },
         }
-    )
     tradable_rate_curves = build_tradable_rate_curves(policy_paths)
     if include_policy_paths and tradable_rate_curves.get("status") != "ok":
         from scripts.country_registry import required_tradable_curve_ids
@@ -1353,10 +1734,28 @@ def build_snapshot(
 
     if include_official_curves is None:
         include_official_curves = include_cross_assets
-    official_curves = (
-        collect_official_curves(today=today, fetch_bytes=fetch_bytes)
-        if include_official_curves
-        else {
+    if include_official_curves:
+        try:
+            official_curves = collect_official_curves(today=today, fetch_bytes=fetch_bytes)
+        except Exception as exc:
+            official_curves = {
+                "status": "unavailable",
+                "error": str(exc),
+                "countries": {
+                    c: {"status": "unavailable", "error": str(exc)}
+                    for c in REQUIRED_OFFICIAL_CURVE_COUNTRIES
+                },
+                "errors": {c: str(exc) for c in REQUIRED_OFFICIAL_CURVE_COUNTRIES},
+                "method": {
+                    "model_calls": 0,
+                    "credentials_required": [],
+                    "purpose": "official government zero/forward curve proxy for deterministic paper fwd-fwd and curve marks",
+                    "ois_equivalence": "proxy_only",
+                },
+            }
+            unavailable_sources.append("official_curves")
+    else:
+        official_curves = {
             "status": "unavailable",
             "countries": {
                 c: {"status": "unavailable", "error": "official curve collection disabled for this invocation"}
@@ -1370,7 +1769,6 @@ def build_snapshot(
                 "ois_equivalence": "proxy_only",
             },
         }
-    )
     if include_official_curves and official_curves.get("status") != "ok":
         for country in REQUIRED_OFFICIAL_CURVE_COUNTRIES:
             if (official_curves.get("countries", {}).get(country) or {}).get("status") != "ok":
@@ -1406,17 +1804,27 @@ def build_snapshot(
     if include_positioning is None:
         include_positioning = include_cross_assets
     positioning_start = today - timedelta(days=366 * 3 + 30)
-    positioning = (
-        build_positioning(today=today, start=positioning_start, fetch_bytes=fetch_bytes)
-        if include_positioning
-        else {
+    if include_positioning:
+        try:
+            positioning = build_positioning(today=today, start=positioning_start, fetch_bytes=fetch_bytes)
+        except Exception as exc:
+            err = str(exc)
+            positioning = {
+                "status": "unavailable",
+                "error": err,
+                "cftc_tff": {"status": "unavailable", "error": err, "instruments": {}},
+                "cme": {"status": "unavailable", "error": err, "instruments": {}},
+                "method": {"model_calls": 0, "credentials_required": []},
+            }
+            unavailable_sources.append("positioning")
+    else:
+        positioning = {
             "status": "unavailable",
             "error": "positioning collection disabled for this invocation",
             "cftc_tff": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "instruments": {}},
             "cme": {"status": "unavailable", "error": "positioning collection disabled for this invocation", "instruments": {}},
             "method": {"model_calls": 0, "credentials_required": []},
         }
-    )
     if include_positioning:
         if positioning["cftc_tff"].get("status") == "unavailable":
             unavailable_sources.append("CFTC_positioning")
@@ -1438,14 +1846,88 @@ def build_snapshot(
         or "Indicative closing government-bond yields with a one-day publication lag.",
         "source_kind": (nz_provenance or {}).get("source_kind") or "rbnz_b2_xlsx",
     }
-    if nz_error:
-        nz_source["error"] = nz_error
+    if nz_error or rates["NZ"].get("status") == "unavailable":
+        nz_source["error"] = nz_error or rates["NZ"].get("error")
         nz_source["observation_date"] = None
-    from scripts.prima_pressure.handoff import prima_block_for_snapshot
+    from scripts.prima_pressure.handoff import prima_block_for_snapshot, unavailable_block as prima_unavailable_block
 
-    canada_prima_pressure = prima_block_for_snapshot(
-        today, include_cross_assets=include_cross_assets
-    )
+    try:
+        canada_prima_pressure = prima_block_for_snapshot(
+            today, include_cross_assets=include_cross_assets
+        )
+    except Exception as exc:
+        canada_prima_pressure = prima_unavailable_block(str(exc))
+        unavailable_sources.append("canada_prima_pressure")
+
+    # Source lists are part of the serialized packet. Set iteration and fetch
+    # order must not change bytes or digests.
+    stale_sources = sorted(set(stale_sources))
+    unavailable_sources = sorted(set(unavailable_sources))
+    preflight_stale = [source for source in stale_sources if _preflight_blocking_source(source)]
+
+    cross_assets_block: dict = {
+        "series": cross_meta,
+        "status": cross_assets_status,
+        "compact": compact_cross_assets(
+            {
+                "generated_at": None,
+                "cross_assets": {
+                    "series": cross_meta,
+                    "status": cross_assets_status,
+                },
+            }
+        ),
+    }
+    if cross_assets_error:
+        cross_assets_block["error"] = cross_assets_error
+
+    def _sovereign_rate_source(
+        *,
+        name: str,
+        url: str,
+        download_url: str,
+        country: str,
+        note: str | None = None,
+    ) -> dict:
+        block = rates[country]
+        out: dict = {
+            "name": name,
+            "url": url,
+            "download_url": download_url,
+            "observation_date": block.get("latest_observation"),
+            "status": block.get("status"),
+        }
+        if note:
+            out["note"] = note
+        if block.get("status") == "unavailable":
+            out["error"] = block.get("error")
+            out["observation_date"] = None
+        return out
+
+    fx_source: dict = {
+        "name": "ECB euro foreign exchange reference rates",
+        "url": ECB_FX_PAGE,
+        "download_url": ECB_FX_SDMX_URL.format(
+            currencies="+".join(c for c in G10 if c != "EUR")
+        ),
+        "observation_date": latest_fx_date.isoformat() if latest_fx_date else None,
+        "status": fx_status,
+        "note": "Information/reference rates, not executable prices. All 45 G10 crosses are deterministic ratios of the same ECB EUR fixing date.",
+    }
+    observed_fixings = {
+        str(row.get("as_of"))
+        for row in fx.values()
+        if isinstance(row, dict) and row.get("spot") is not None and row.get("as_of")
+    }
+    if len(observed_fixings) > 1:
+        fx_source["note"] = (
+            "Each cross is a ratio of its two legs on one shared ECB fixing date. "
+            "Legs from different fixing dates are never mixed. A cross whose own fixing "
+            "is stale is marked stale and is not a mark."
+        )
+    if fx_error and fx_status != "ok":
+        fx_source["error"] = fx_error
+
     return {
         "policy_paths": policy_paths,
         "tradable_rate_curves": tradable_rate_curves,
@@ -1456,19 +1938,7 @@ def build_snapshot(
         "euro_area_housing": euro_area_housing,
         "japan_housing": japan_housing,
         "euro_area_fragmentation": euro_area_fragmentation,
-        "cross_assets": {
-            "series": cross_meta,
-            "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok",
-            "compact": compact_cross_assets(
-                {
-                    "generated_at": None,
-                    "cross_assets": {
-                        "series": cross_meta,
-                        "status": "partial" if any(m["status"] != "ok" for m in cross_meta.values()) else "ok",
-                    },
-                }
-            ),
-        },
+        "cross_assets": cross_assets_block,
         "opportunities": opportunities,
         "relative_rate_analytics": _relative_rate_analytics(tradable_rate_curves, fx),
         "positioning": positioning,
@@ -1484,26 +1954,25 @@ def build_snapshot(
         "rates": rates,
         "rate_rv": rate_rv,
         "fx": {
-            "source_observation": latest_fx_date.isoformat(),
+            "source_observation": latest_fx_date.isoformat() if latest_fx_date else None,
             "age_days": fx_age,
             "status": fx_status,
             "pairs": fx,
+            **({"error": fx_error} if fx_error else {}),
         },
         "sources": {
-            "US_rates": {
-                "name": "U.S. Treasury daily par yield curve",
-                "url": TREASURY_PAGE,
-                "download_url": TREASURY_URL.format(year=today.year),
-                "observation_date": rates["US"]["latest_observation"],
-                "status": rates["US"]["status"],
-            },
-            "CA_rates": {
-                "name": "Bank of Canada Valet benchmark bonds",
-                "url": BOC_DOCS,
-                "download_url": BOC_GROUP_URL,
-                "observation_date": rates["CA"]["latest_observation"],
-                "status": rates["CA"]["status"],
-                "note": (
+            "US_rates": _sovereign_rate_source(
+                name="U.S. Treasury daily par yield curve",
+                url=TREASURY_PAGE,
+                download_url=TREASURY_URL.format(year=today.year),
+                country="US",
+            ),
+            "CA_rates": _sovereign_rate_source(
+                name="Bank of Canada Valet benchmark bonds",
+                url=BOC_DOCS,
+                download_url=BOC_GROUP_URL,
+                country="CA",
+                note=(
                     "Bank of Canada Valet selected benchmark bond yields are prior mid-market closing "
                     "yields published once each Canadian business day at 09:30–10:00 ET, with a one "
                     "Canadian business-day publication lag. Weekends and Bank publication holidays do "
@@ -1511,31 +1980,28 @@ def build_snapshot(
                     "rewritten forward. A missing Friday print is not evidence the Friday session "
                     "was a holiday."
                 ),
-            },
-            "AU_rates": {
-                "name": "Reserve Bank of Australia F2 government-bond yields",
-                "url": RBA_PAGE,
-                "download_url": RBA_URL,
-                "observation_date": rates["AU"]["latest_observation"],
-                "status": rates["AU"]["status"],
-                "note": "RBA assessed closing yields; research context only; not a financial benchmark; typically weekly with a two-business-day lag.",
-            },
+            ),
+            "AU_rates": _sovereign_rate_source(
+                name="Reserve Bank of Australia F2 government-bond yields",
+                url=RBA_PAGE,
+                download_url=RBA_URL,
+                country="AU",
+                note="RBA assessed closing yields; research context only; not a financial benchmark; typically weekly with a two-business-day lag.",
+            ),
             "NZ_rates": nz_source,
-            "EA_rates": {
-                "name": "Deutsche Bundesbank BBSSY German Bund par yields",
-                "url": BUNDESBANK_PAGE,
-                "download_url": "https://api.statistiken.bundesbank.de/rest/data/BBSSY",
-                "observation_date": rates["EA"]["latest_observation"],
-                "status": rates["EA"]["status"],
-                "note": "Germany is the EUR cash-rates benchmark only; EA temperature is euro-area macro/policy.",
-            },
-            "JP_rates": {
-                "name": "Ministry of Finance Japan JGB benchmark par yields",
-                "url": MOF_JGB_PAGE_EN,
-                "download_url": MOF_JGB_CURRENT_EN,
-                "observation_date": rates["JP"]["latest_observation"],
-                "status": rates["JP"]["status"],
-            },
+            "EA_rates": _sovereign_rate_source(
+                name="Deutsche Bundesbank BBSSY German Bund par yields",
+                url=BUNDESBANK_PAGE,
+                download_url="https://api.statistiken.bundesbank.de/rest/data/BBSSY",
+                country="EA",
+                note="Germany is the EUR cash-rates benchmark only; EA temperature is euro-area macro/policy.",
+            ),
+            "JP_rates": _sovereign_rate_source(
+                name="Ministry of Finance Japan JGB benchmark par yields",
+                url=MOF_JGB_PAGE_EN,
+                download_url=MOF_JGB_CURRENT_EN,
+                country="JP",
+            ),
             "CFTC_positioning": {
                 "name": "CFTC Traders in Financial Futures - Futures Only",
                 "url": positioning["cftc_tff"].get("source_url", "https://publicreporting.cftc.gov/stories/s/TFF-Futures-Only/98ig-3k9y/"),
@@ -1552,16 +2018,7 @@ def build_snapshot(
                 "status": positioning["cme"].get("status"),
                 **({"error": positioning["cme"].get("error")} if positioning["cme"].get("status") == "unavailable" else {}),
             },
-            "FX": {
-                "name": "ECB euro foreign exchange reference rates",
-                "url": ECB_FX_PAGE,
-                "download_url": ECB_FX_SDMX_URL.format(
-                    currencies="+".join(c for c in G10 if c != "EUR")
-                ),
-                "observation_date": latest_fx_date.isoformat(),
-                "status": fx_status,
-                "note": "Information/reference rates, not executable prices. All 45 G10 crosses are deterministic ratios of the same ECB EUR fixing date.",
-            },
+            "FX": fx_source,
         },
         "method": {
             "model_calls": 0,
@@ -1681,7 +2138,24 @@ def validate_snapshot(s: Mapping) -> None:
     for required in ("EURUSD", "USDJPY", "AUDNZD", "NOKSEK", "USDCAD"):
         if required not in s["fx"]["pairs"]:
             raise MarketStateError(f"missing required FX pair {required}")
+    fx_family_status = str((s.get("fx") or {}).get("status") or "")
     for pair, m in s["fx"]["pairs"].items():
+        if m.get("status") == "unavailable":
+            if m.get("spot") is not None:
+                raise MarketStateError(f"unavailable FX pair {pair} must not include numeric spot")
+            if not (m.get("reason") or m.get("error")):
+                raise MarketStateError(f"unavailable FX pair {pair} missing provenance")
+            continue
+        if m.get("status") not in {None, "ok", "stale"}:
+            raise MarketStateError(f"{pair} invalid status {m.get('status')}")
+        if m.get("status") == "stale":
+            age = m.get("age_days")
+            if not isinstance(age, int) or isinstance(age, bool) or age <= STALE_AFTER_DAYS["FX"]:
+                raise MarketStateError(f"{pair} stale without a stale observation age")
+            if age > FAIL_AFTER_DAYS:
+                raise MarketStateError(f"{pair} is too old to remain a stale mark")
+            if fx_family_status == "ok":
+                raise MarketStateError("fresh FX family contains a stale cross")
         if not (0 < m["spot"] < 1000):
             raise MarketStateError(f"implausible FX spot {pair}: {m['spot']}")
         if not m.get("as_of"):

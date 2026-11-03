@@ -228,7 +228,24 @@ def _fx_card(pair: str, packet: dict[str, Any]) -> dict[str, Any]:
     source = source or {}
     pairs = fx.get("pairs") if isinstance(fx.get("pairs"), dict) else {}
     row = pairs.get(pair) if isinstance(pairs.get(pair), dict) else None
-    status = str((row or {}).get("status") or fx.get("status") or source.get("status") or "unavailable")
+    row_status = str(row.get("status") or "") if isinstance(row, dict) else ""
+    family_status = str(fx.get("status") or source.get("status") or "")
+    if row_status:
+        status = row_status
+    elif family_status in {"stale", "unavailable", "missing", "invalid"}:
+        status = family_status
+    elif isinstance(row, dict) and row.get("spot") is not None:
+        status = "ok"
+    else:
+        status = "unavailable"
+    if isinstance(row, dict) and row.get("as_of"):
+        from scripts.market_state import fx_clock_from_packet, fx_pair_age_status
+
+        age_status = fx_pair_age_status(row.get("as_of"), fx_clock_from_packet(packet))
+        if age_status == "unavailable":
+            return _unavailable(pair, pair, f"{pair} fixing {row.get('as_of')} is too old to display as a mark")
+        if age_status == "stale":
+            status = "stale"
     if row is None or row.get("spot") is None or status == "unavailable":
         return _unavailable(pair, pair, "ECB reference cross missing from market-state")
     if status not in {"ok", "stale"}:
