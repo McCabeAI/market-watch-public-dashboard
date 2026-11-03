@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-02T06:42:41.189332-05:00",
+  "as_of": "2026-11-03T09:35:29.777603-05:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -72,7 +72,7 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 198535.68,
+    "best_trader_net_pnl_usd": 175980.82,
     "best_trader_outearn_streak": 0,
     "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
@@ -81,7 +81,7 @@
     "competition_rank": 3,
     "competitive_rank": 3,
     "drawdown_usd": 860728.88,
-    "gap_to_best_trader_usd": 81383.36,
+    "gap_to_best_trader_usd": 103938.22,
     "high_water_nav_usd": 1001140647.92,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 279919.04,
@@ -90,7 +90,7 @@
       "competitive_pressure"
     ],
     "raw_pnl_rank": 3,
-    "spread_to_leader_pm_usd": -569044.93,
+    "spread_to_leader_pm_usd": -802963.4,
     "status": "ok",
     "total_pnl_usd": 327500.0
   },
@@ -102,8 +102,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e0716209562a4692bebe5271b2692fa4a269c8abe6f31b62150967d401a178c9",
-  "open_positions": [],
+  "memory_context_sha256": "f674bfcc662e7668da907b12bc62416600937673ef24b538e6046559e64f023d",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 70,
+      "current_notional_usd": 300000000.0,
+      "entry_mark": 1.25,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The late-October New Zealand policy surprise is already in the kiwi and does not justify AUDNZD at a five-year extreme versus a modest yield gap; a kiwi bounce off the cheap tail is the path, not a new Australian shock.",
+        "current_mark": 1.2455636090977256,
+        "current_notional_usd": 300000000.0,
+        "entry_mark": 1.2455636090977256,
+        "expected_mark_direction": "lower",
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 270,
+        "horizon_elapsed_fraction": 0.0001,
+        "horizon_status": "within",
+        "instrument": "AUDNZD",
+        "intended_horizon_days": 21,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "flat",
+        "order_policy": "review_only",
+        "position_id": "pm-swinger-f8f9feb515d2",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Cross mean-reverts from 1.2456 toward 1.20-1.22 as New Zealand cheapness versus Australia normalizes off the five-year tail.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 3000000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-03T09:30:59.132629-05:00",
+      "position_id": "pm-swinger-f8f9feb515d2",
+      "risk_capital_usd": 3000000.0,
+      "side": "short",
+      "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+    }
+  ],
   "owner_id": "swinger",
   "owner_type": "pm",
   "postmortems_due": [],
@@ -137,7 +187,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.32
+        "value": 0.33
       },
       "frustration": {
         "band": "calm",
@@ -172,24 +222,24 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261029"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261030"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261102"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261103"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "559bbc032e2f1d68bc3d234eb7c26fda87b5bd360d292d9c4c0e786c36dbd703",
+    "state_sha256": "c2a4a5f3db09c31367d23d033cc3c1d835060796b3b64d66932b7c0964ee8018",
     "streaks": {
-      "flat_cycles": 6,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

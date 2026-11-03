@@ -97,6 +97,8 @@ jobs:
         env:
           MODE: ${{ steps.resolve.outputs.mode }}
           COUNTRY: ${{ steps.resolve.outputs.country }}
+          # Optional. Empty when the repository secret is unset; GDP then keeps the FRED result and does not invent a quarter.
+          BEA_API_KEY: ${{ secrets.BEA_API_KEY }}
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 -m scripts.macro_ingestion.cli \

@@ -421,6 +421,12 @@ def collect_inputs(
                     "non-preflight source staleness stays visible and does not block the market_state family: "
                     + ", ".join(visible)
                 )
+            isolated = [str(item) for item in (market_payload.get("unavailable_sources") or [])]
+            if isolated:
+                market_notes.append("source-isolated unavailable feeds: " + ", ".join(isolated))
+            fx_block = market_payload.get("fx")
+            if isinstance(fx_block, dict) and fx_block.get("error"):
+                market_notes.append(str(fx_block["error"]))
         except Exception as exc:
             market_status = "unavailable"
             market_as_of = None

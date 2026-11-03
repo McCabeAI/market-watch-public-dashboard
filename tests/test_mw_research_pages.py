@@ -626,5 +626,120 @@ class CliTests(FixtureCase):
         code, payload = self.run_cli("guard", "--site-dir", str(site), "--now", NOW.isoformat(), env=self.ACTIONS_ENV)
         self.assertEqual((code, payload["kind"], payload["reason"]), (0, "skip", "final_phase_authorized"))
 
+
+class MissingMarketPublicationTests(FixtureCase):
+    """Authenticated macro and news can publish when the market payload is absent."""
+
+    def test_stage03_stage04_research_build_publishes_unavailable_market(self):
+        from scripts.market_watch_launch.graph import run_stage
+
+        collect_rel = Path("data/overnight/runs/overnight-20261027/collect.json")
+        collect = self.read(collect_rel)
+        market = collect["families"]["market_state"]
+        market["status"] = "unavailable"
+        market["data"] = None
+        market["as_of"] = None
+        market["digest"] = None
+        market["notes"] = ["offline collect: market_state not fetched"]
+        self.write(collect_rel, collect)
+
+        def prepare(launch: dict) -> None:
+            launch["request"]["mode"] = "fixture"
+            launch["request"]["rerun"] = True
+            launch["request"]["market_state_path"] = "data/overnight/fixtures/missing-market-state.json"
+            launch["stages"]["03_quality_gate"]["status"] = "pending"
+            launch["stages"]["04_freeze"]["status"] = "pending"
+            launch["status"] = "running"
+
+        self.edit_launch(prepare)
+        binding = self.root / LAUNCH_REL / "freeze_binding.json"
+        if binding.exists():
+            binding.unlink()
+
+        gated = run_stage(LAUNCH, "03_quality_gate", root=self.root, state_root=self.root, when=NOW)
+        gate = gated["launch"]["stages"]["03_quality_gate"]
+        self.assertEqual(gate["status"], "succeeded", gate.get("reason") or gate.get("details"))
+        details = gate["details"]
+        self.assertEqual(details["outcome"], "PASS")
+        self.assertTrue(details["research_eligible"])
+        self.assertFalse(details["eligible"])
+        self.assertEqual(details["trader_execution"], "blocked")
+        self.assertEqual(details["reason"], "no_markable_universe")
+
+        frozen = run_stage(LAUNCH, "04_freeze", root=self.root, state_root=self.root, when=NOW)
+        freeze = frozen["launch"]["stages"]["04_freeze"]
+        self.assertEqual(freeze["status"], "succeeded", freeze.get("reason") or freeze.get("details"))
+        review_id = freeze["details"]["review_id"]
+        packet_sha = freeze["details"]["packet_sha256"]
+        packet = self.read(Path("data/overnight/runs/overnight-20261027/reviews") / review_id / "evidence_snapshot.json")
+        family = packet["families"]["market_state"]
+        self.assertEqual(family["status"], "unavailable")
+        self.assertIsNone(family.get("data"))
+        self.assertTrue(packet["families"]["macro_hard"].get("digest") or packet["families"]["macro_hard"].get("temperature_scores"))
+        self.assertIn(packet["families"]["news"].get("status"), {"fresh", "stale"})
+
+        def restore_live(launch: dict) -> None:
+            launch["request"]["mode"] = "live"
+            launch["request"]["rerun"] = False
+            launch["request"].pop("market_state_path", None)
+
+        self.edit_launch(restore_live)
+        saved = self.read(LAUNCH_REL / "launch.json")
+        self.assertEqual(saved["stages"]["05_acp_handoff"]["status"], "pending")
+        self.assertNotEqual(saved["stages"]["07_finalize"]["status"], "succeeded")
+
+        scores = self.root / LAUNCH_REL / "lineage" / "temperature_scores.json"
+        original_scores = scores.read_text(encoding="utf-8")
+        scores.write_text(original_scores + " ", encoding="utf-8")
+        binding_payload = self.read(LAUNCH_REL / "freeze_binding.json")
+        attest = {
+            "commit_sha": _git(self.root, "rev-parse", "HEAD"),
+            "packet_sha256": binding_payload["packet_sha256"],
+            "pm_books_sha256": binding_payload["starting_pm_books_sha256"],
+            "score_state_sha256": binding_payload["score_state_sha256"],
+            "trader_books_sha256": binding_payload["starting_trader_books_sha256"],
+        }
+        self.write(LAUNCH_REL / "remote_freeze.json", attest)
+        _commit(self.root, "freeze research evidence without market-state")
+        attest["commit_sha"] = _git(self.root, "rev-parse", "HEAD")
+        self.write(LAUNCH_REL / "remote_freeze.json", attest)
+        _commit(self.root, "attest research freeze without market-state")
+        with self.assertRaises(rp.ResearchRefusal) as ctx:
+            self.contract()
+        self.assertEqual(ctx.exception.reason, "staged_scores_hash_mismatch")
+        scores.write_text(original_scores, encoding="utf-8")
+        _commit(self.root, "restore staged scores")
+
+        contract = self.contract()
+        self.assertEqual(contract["market_state"]["status"], "unavailable")
+        self.assertIsNone(contract["market_state"]["generated_at"])
+        self.assertFalse(contract["quality"]["eligible"])
+        self.assertTrue(contract["quality"]["research_eligible"])
+        self.assertEqual(contract["quality"]["trader_execution"], "blocked")
+        self.assertEqual(contract["review_id"], review_id)
+        self.assertEqual(contract["packet_sha256"], packet_sha)
+
+        site = Path(tempfile.mkdtemp(prefix="mw-research-absent-market-")) / "site"
+        self.addCleanup(shutil.rmtree, site.parent, True)
+        release = rp.build_research_site(self.root, site, contract, now=NOW)
+        self.assertEqual(release["phase"], "research")
+        self.assertEqual(release["trader_cycle"]["status"], "pending")
+        self.assertNotEqual(release["phase"], "final")
+        market_doc = json.loads((site / "market-state.json").read_text(encoding="utf-8"))
+        self.assertEqual(market_doc["status"], "unavailable")
+        self.assertIsNone(market_doc["generated_at"])
+        self.assertFalse(rp._publication_has_numeric_mark(market_doc))
+        html = (site / "index.html").read_text(encoding="utf-8")
+        self.assertIn("market data unavailable", html)
+        self.assertIn("unavailable", html.lower())
+        self.assertIn('data-publication-phase="research"', html)
+        self.assertNotIn("Final edition", html)
+        trader = json.loads((site / "trader-books.json").read_text(encoding="utf-8"))
+        self.assertEqual(trader["publication"]["trader_books_status"], "previous_cycle")
+        self.assertEqual(trader["edition"]["phase"], "research")
+        self.assertEqual(self.read(LAUNCH_REL / "launch.json")["stages"]["05_acp_handoff"]["status"], "pending")
+        self.assertNotEqual(self.read(LAUNCH_REL / "launch.json")["stages"]["07_finalize"]["status"], "succeeded")
+
+
 if __name__ == "__main__":
     unittest.main()

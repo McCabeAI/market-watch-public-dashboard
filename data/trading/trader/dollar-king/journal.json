@@ -1620,6 +1620,62 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "The dollar still belongs versus yen: official SOFR is 3.94 against cash TONA 1.227 and March 2027 TONA 1.665, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 157.25 versus 158.06 at entry, a cheaper dollar print after a one-day decline, not a closed United States-Japan rate gap and not a chase. Dollar-Canada at 1.3969 is the worse dollar pair while Brent is 117.64, so the live twenty million dollar-yen long is the expression that stays on."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 20000000,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": "Keep the live twenty million dollar-yen long. SOFR 3.95 versus cash TONA 1.227 and March TONA 1.665 still pays the United States-Japan gap, and 157.90 is a cheaper dollar than 158.06, not a thesis break. Dollar-Canada at 1.3974 with Brent 104.77 is the inferior dollar pair and is not opened.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 74,
+      "decision_fingerprint": "2d16308e1da757ae8a7488c794c27da4386bf9c47250625592456af95ffb3db2",
+      "event_id": "jde-abfd9682deb0488e",
+      "funding_view": null,
+      "invalidation": "The long is wrong if a later freeze shows Japan hiking and TONA catching the March contract from the Japan side, or if official SOFR converges toward TONA from the United States side. A Ministry of Finance intervention print that reverses the leftover also kills it; three-digit oil is why dollar-Canada stays flat, not why this dollar-yen line is cut.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e1d38aee3cfe444e01bfbdafea57b88b2bbdb32a4a02199228791ac822621922",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1d0efb59b0a0ea859da27955bb3463a4c355ec1e40bff1fa042ae72f44b9f2bd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar still belongs versus yen: official SOFR is 3.95 against cash TONA 1.227 and March 2027 TONA 1.665, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 157.90 versus 158.06 at entry, a cheaper dollar print after a one-day rise from the prior book mark, not a closed United States-Japan rate gap and not a chase. Dollar-Canada at 1.3974 is the worse dollar pair while Brent is 104.77, so the live twenty million dollar-yen long is the expression that stays on.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "The dollar still belongs versus yen: official SOFR is 3.95 against cash TONA 1.227 and March 2027 TONA 1.665, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 157.90 versus 158.06 at entry, a cheaper dollar print after a one-day rise from the prior book mark, not a closed United States-Japan rate gap and not a chase. Dollar-Canada at 1.3974 is the worse dollar pair while Brent is 104.77, so the live twenty million dollar-yen long is the expression that stays on."
     }
   ],
   "schema_version": 1,

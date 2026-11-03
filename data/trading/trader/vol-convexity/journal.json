@@ -1554,6 +1554,60 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "The book is flat. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with US 10-year 4.94 or dollar-yen 157.25. Brent at 117.64 against the VIX at 17.2 is jump risk that spot and duration do not own cleanly, but without a surface it stays unowned. Stay flat rather than inventing premiums or forcing a rates substitute."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat and there is no paper-markable listed-option premium, implied volatility, or strike. Do not invent an options surface or substitute a directional March SOFR or dollar-yen ticket.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "cae8310eaaedd9ab20982652cab790d295c649815ddb919b16147c90e5a254ac",
+      "event_id": "jde-8e4bc180eb4a4a6c",
+      "funding_view": null,
+      "invalidation": "A later freeze supplies paper-markable listed-option premium, implied volatility, and strike mids for a front-end or yen event structure that can be compared with March SOFR 4.345 versus cash 3.95 and with dollar-yen 157.90.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7211619b603cec3eaba37bdbf455b7bd0eb01df1542d7d488943a23ed42ed5a2",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9da2826598f8779380c3be5b27b439fa5dff26fc0e3afcb34ab69942838c66de"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat. Cash SOFR is 3.95 with March implied at 4.345 after a hold, so the front end is two-way rather than a one-sided policy path, and dollar-yen at 157.90 is the wrong expression of that timing risk. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with March SOFR or with dollar-yen. Stay flat rather than inventing a surface or substituting a directional rates or yen ticket.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "The book is flat. Cash SOFR is 3.95 with March implied at 4.345 after a hold, so the front end is two-way rather than a one-sided policy path, and dollar-yen at 157.90 is the wrong expression of that timing risk. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with March SOFR or with dollar-yen. Stay flat rather than inventing a surface or substituting a directional rates or yen ticket."
     }
   ],
   "schema_version": 1,

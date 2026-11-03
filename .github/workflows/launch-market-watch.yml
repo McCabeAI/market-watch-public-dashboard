@@ -220,6 +220,8 @@ jobs:
           ISSUE_URL: ${{ needs.guard.outputs.issue_url }}
           EVENT_NAME: ${{ github.event_name }}
           REPOSITORY_PERMISSION: ${{ needs.guard.outputs.repository_permission }}
+          # Optional. Empty when the repository secret is unset; GDP then keeps the FRED result and does not invent a quarter.
+          BEA_API_KEY: ${{ secrets.BEA_API_KEY }}
         run: |
           set -euo pipefail
           ARGS=(
@@ -308,8 +310,31 @@ jobs:
           test -n "$attested"
 
       - name: Fail the job when the launch itself failed
-        if: always() && steps.launch.outputs.cli_code == '1'
-        run: exit 1
+        if: always() && steps.launch.outputs.launch_id != ''
+        env:
+          LAUNCH_RESULT: ${{ runner.temp }}/launch-result.json
+          CLI_CODE: ${{ steps.launch.outputs.cli_code }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, ".")
+          from scripts.market_watch_launch.cli import launch_job_failed
+          path = Path(os.environ["LAUNCH_RESULT"])
+          payload = json.loads(path.read_text()) if path.is_file() else {}
+          failed = launch_job_failed(payload) or os.environ.get("CLI_CODE") == "1"
+          status = payload.get("status")
+          summary = os.environ.get("GITHUB_STEP_SUMMARY")
+          line = f"Launch status: {status or 'unknown'}. Job failed: {failed}."
+          print(line)
+          if summary:
+              Path(summary).write_text(line + "\n")
+          if failed:
+              reason = payload.get("reason") or (payload.get("stages") or {}).get("03_quality_gate", {}).get("reason")
+              print(f"::error::Market Watch launch {status} did not publish. {reason or ''}")
+              sys.exit(1)
+          PY
 
   research:
     name: Publish research edition

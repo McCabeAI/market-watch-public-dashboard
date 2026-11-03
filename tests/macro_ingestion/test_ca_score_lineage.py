@@ -241,9 +241,10 @@ class CaScoreLineageTests(unittest.TestCase):
             self.assertTrue(result["ok"], msg=result.get("error"))
             self.assertNotEqual(result.get("error"), "score_lineage_rejected")
             self.assertEqual(result.get("rejections") or [], [])
-            # July 2026 retail is already in canonical history; replay appends nothing new.
-            self.assertEqual(result["appended_count"], 0)
-            self.assertEqual(result.get("appended_points") or [], [])
+            # July 2026 retail is already in canonical history; EA confidence backfills now append.
+            self.assertEqual(result["appended_count"], 4)
+            catalog_ids = {row["catalog_id"] for row in result.get("appended_points") or []}
+            self.assertEqual(catalog_ids, {"EA.Consumer.confidence"})
 
             staged_ca = json.loads((launch_dir / "lineage" / "history" / "ca.json").read_text(encoding="utf-8"))
             [july] = [
@@ -736,9 +737,9 @@ class CaInflationOct20LineageTests(unittest.TestCase):
             self.assertAlmostEqual(float(aug_trim["value"]), 1.9)
             self.assertAlmostEqual(float(aug_med["value"]), 2.0)
 
-            # Three CPI prints; July retail is already in canonical history.
-            self.assertEqual(result["appended_count"], 3)
-            self.assertEqual(len(result["appended_points"]), 3)
+            # Three CPI prints plus EA confidence backfills previously blocked by annotation-only breaks.
+            self.assertEqual(result["appended_count"], 7)
+            self.assertEqual(len(result["appended_points"]), 7)
             retail_prov = [
                 (row["period"], row["source_series_id"])
                 for row in result["appended_points"]

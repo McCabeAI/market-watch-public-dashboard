@@ -32,7 +32,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-02T05:28:38.279813-05:00",
+  "as_of": "2026-11-03T08:22:57.179127-05:00",
   "calibration": {
     "average_holding_seconds": 383514,
     "average_realized_pnl_usd": -28000.0,
@@ -70,23 +70,23 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": 5,
-    "competitive_rank": 5,
-    "drawdown_usd": 27.36,
-    "giveback_usd": 27.36,
-    "high_water_nav_usd": 100059639.2,
+    "competition_rank": 2,
+    "competitive_rank": 2,
+    "drawdown_usd": 82.08,
+    "giveback_usd": 82.08,
+    "high_water_nav_usd": 100110472.18,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100059611.84,
-    "net_pnl_usd": 59611.84,
+    "nav_usd": 100110390.1,
+    "net_pnl_usd": 110390.1,
     "pressure_flags": [],
     "prior_competition_rank": 2,
-    "rank_change": 3,
-    "raw_pnl_rank": 5,
-    "recent_pattern": "flat",
+    "rank_change": 0,
+    "raw_pnl_rank": 2,
+    "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 250000.0,
     "risk_capital_utilization": 0.025,
-    "session_pnl_change_usd": -50778.26,
+    "session_pnl_change_usd": -49192.17,
     "status": "ok"
   },
   "learning": {
@@ -97,7 +97,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0dd57eaadb3c6efb6fac54ed7f8aa078bf00a6dac8d8154cccdbd595d51cfaba",
+  "memory_context_sha256": "90700b26bc30d147ed84779bf2f52a4a31dfc48d9a2a2abf9b5b2ecc6c55cfd1",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -108,38 +108,38 @@
         "asset_class": "spot_fx",
         "catalyst_by": "2026-12-13",
         "catalyst_logic": "The Fed hold is through, WTI is 102.78, and AUDCAD remains a five-year extreme versus a live Canadian oil impulse, so the residual peer gap can start to close now.",
-        "current_mark": 0.9832723141017549,
+        "current_mark": 0.9812625754527162,
         "current_notional_usd": 25000000.0,
         "entry_mark": 0.9878711307643715,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 50860.34,
-        "holding_seconds": 349447,
-        "horizon_elapsed_fraction": 0.0899,
+        "giveback_usd": 49219.6,
+        "holding_seconds": 446306,
+        "horizon_elapsed_fraction": 0.1148,
         "horizon_status": "within",
         "instrument": "AUDCAD",
         "intended_horizon_days": 45,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 167242.34,
+        "mfe_usd": 216461.94,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-63923b5f6571",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "AUDCAD mean-reverts as the Canadian oil terms-of-trade premium is paid in the cross after the Fed hold, not through further cheapening of the already-repriced Canada front end.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 167242.34,
-        "retained_mfe_fraction": 0.6959,
+        "recorded_mfe_usd": 216461.94,
+        "retained_mfe_fraction": 0.7726,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 250000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 116382.0,
+        "total_pnl_usd": 167242.34,
         "trade_id": "trd-trader-value-guy-pos-63923b5f6571",
-        "unrealized_pnl_usd": 116382.0
+        "unrealized_pnl_usd": 167242.34
       },
       "instrument": "AUDCAD",
       "opened_at": "2026-10-29T04:24:31.160680-04:00",
@@ -167,12 +167,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.2
+        "trend": "down",
+        "value": 0.19
       },
       "defensiveness": {
         "band": "calm",
@@ -182,11 +182,11 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -196,7 +196,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.52
       },
       "thesis_attachment": {
@@ -216,16 +216,6 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.23270928,
-        "run_id": "overnight-20261030"
-      },
-      {
-        "kind": "rank_gain_major",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261030"
-      },
-      {
-        "kind": "session_gain",
         "magnitude": 0.10155652,
         "run_id": "overnight-20261102"
       },
@@ -233,15 +223,20 @@
         "kind": "rank_gain_major",
         "magnitude": 1.0,
         "run_id": "overnight-20261102"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.09838434,
+        "run_id": "overnight-20261103"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b591e3a15ee9c551abda403de0301b8ee0f8bcf043150606b63242e9e0f7d245",
+    "state_sha256": "3d9d2fb15fd2548907e0486035e43a9ba894f2e5703bd57958e69a00e43732ee",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 2
+      "session_win": 3
     }
   },
   "recent_closed_trades": [

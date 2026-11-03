@@ -1757,6 +1757,77 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "March Canada implieds are 2.97 versus a 2.995 entry, so the receive tightened instead of backing up with Brent at 117.64. March Australia is 4.915 versus a 4.83 entry, an 8.5 basis-point cheapening from entry with no Canada or Australia cash print to re-measure leftover hikes. Cash SOFR is 3.94 as of 29 October against March SOFR at 4.325 and the two-year at 4.56, so a new dollar receive would have 38.5 to 62 basis points of unused tightening, but it would add the same oil overlay. Keep both live receives; do not pay SOFR, and do not start a new United States coupon or March SOFR receive into 117 oil."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "March Canada implieds are 2.925 versus a 2.995 entry, so the receive tightened further as Brent faded to 104.77. Cash 2.55 still leaves 37.5bp of unused hike.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "March Australia is 4.935 versus a 4.83 entry, against, but cash 4.60 still prices 33.5bp of tightening. Flattening on a mark against entry would treat oil-path beta as a stop the cash rate has not confirmed.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 63,
+      "decision_fingerprint": "b364541fb637abbd2f07df0aa241232964aab1902431eb202270d43b04f2bb91",
+      "event_id": "jde-930eade8fa1e4bda",
+      "funding_view": null,
+      "invalidation": "The Canada receive is wrong if March implieds reverse back through 2.995 and stay there, or if cash Canada itself rises enough to close the leftover from the overnight side. The Australia receive is wrong if March implieds extend through 4.94 and stay there, or if cash Australia jumps toward 4.935. Brent at 104.77 is not the stop.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2dcc02175bfa37858466c791b885776d4563e26a2bb01daa3ddbc3c13bfbe56a",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5db9cd78fc0a07370861f3b4ed466d552b93966d0c413763f5cef3b144415790"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March Canada implieds are 2.925 versus a 2.995 entry, so the receive kept working as Brent faded to 104.77 from older oil-story highs. Cash Canada is 2.55, which still leaves 37.5 basis points of unused hike in March; that leftover, not the oil headline, is the carry. March Australia is 4.935 versus a 4.83 entry, against the mark, but cash Australia at 4.60 still prices 33.5 basis points of tightening. Keep both live receives; do not start a new March SOFR receive just because a similar leftover exists.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "March Canada implieds are 2.925 versus a 2.995 entry, so the receive kept working as Brent faded to 104.77 from older oil-story highs. Cash Canada is 2.55, which still leaves 37.5 basis points of unused hike in March; that leftover, not the oil headline, is the carry. March Australia is 4.935 versus a 4.83 entry, against the mark, but cash Australia at 4.60 still prices 33.5 basis points of tightening. Keep both live receives; do not start a new March SOFR receive just because a similar leftover exists."
     }
   ],
   "schema_version": 1,

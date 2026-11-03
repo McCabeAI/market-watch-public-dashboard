@@ -783,8 +783,11 @@ class ApprovedUnmarkableBookTests(unittest.TestCase):
             }
         ]
         result = evaluate_gate(rows=_scored_rows_g5(), families=families, positions=positions)
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
         self.assertIn("US", result["trade_eligible_countries"])
 
 

@@ -247,9 +247,10 @@ class MarketStateTests(unittest.TestCase):
             raise MarketStateError(f"{currencies} 504")
 
         with mock.patch("scripts.market_state._fetch_ecb_sdmx", side_effect=fake_sdmx):
-            with self.assertRaises(MarketStateError) as ctx:
-                fetch_fx(date(2021, 1, 1))
-        self.assertIn("per-currency fallback still missing", str(ctx.exception))
+            book = fetch_fx(date(2021, 1, 1))
+        self.assertEqual(book["status"], "partial")
+        self.assertIn("per-currency fallback still missing", " ".join(book.get("errors") or []))
+        self.assertTrue(any("CAD" in p for p in book.get("unavailable", {})))
 
     def test_ecb_rejects_missing_g10_currency(self):
         text = "Date,USD,JPY\n2026-09-08,1.21,181\n"
@@ -463,8 +464,12 @@ class MarketStateTests(unittest.TestCase):
         ), mock.patch("scripts.market_state.fetch_ea_bund_rates", return_value=_ea_rates(start)), mock.patch(
             "scripts.market_state.fetch_jp_jgb_rates", return_value=_jp_rates(start)
         ), mock.patch("scripts.market_state.fetch_fx", return_value=fx):
-            with self.assertRaises(MarketStateError):
-                build_snapshot(include_cross_assets=False, today=date(2026, 8, 30) + timedelta(days=FAIL_AFTER_DAYS + 2))
+            too_old = build_snapshot(
+                include_cross_assets=False, today=date(2026, 8, 30) + timedelta(days=FAIL_AFTER_DAYS + 2)
+            )
+        validate_snapshot(too_old)
+        self.assertEqual(too_old["rates"]["US"]["status"], "unavailable")
+        self.assertIn("days old", too_old["rates"]["US"].get("error", ""))
 
 
 if __name__ == "__main__":

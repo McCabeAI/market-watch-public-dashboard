@@ -1,8 +1,9 @@
 {
-  "as_of": "2026-11-02T05:28:38.279813-05:00",
+  "as_of": "2026-11-03T08:22:57.179127-05:00",
   "central_bank_research": [
     {
       "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+      "id": null,
       "published_at": null,
       "source_name": null,
       "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal.",
@@ -10,6 +11,7 @@
     },
     {
       "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+      "id": null,
       "published_at": null,
       "source_name": null,
       "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero.",
@@ -17,6 +19,7 @@
     },
     {
       "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+      "id": null,
       "published_at": null,
       "source_name": null,
       "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September.",
@@ -971,7 +974,7 @@
         "score": 15
       },
       "primary_category": "macro",
-      "published_at": "",
+      "published_at": null,
       "source_name": null,
       "summary": "Stockpiles that cushion supply shocks are scarily thin unless Hormuz reopens.",
       "transmission": {
@@ -1031,7 +1034,7 @@
         "score": 15
       },
       "primary_category": "macro",
-      "published_at": "",
+      "published_at": null,
       "source_name": null,
       "summary": "LNG shipments through Hormuz extended a rebound that began in September.",
       "transmission": {
@@ -1064,6 +1067,60 @@
         "score": 15
       },
       "url": null
+    },
+    {
+      "country_codes": [],
+      "headline": "Blackstone president calls for more equity to fund AI buildout as debt risks mount",
+      "id": "news:0b61f288530f1538",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 11
+      },
+      "primary_category": "macro",
+      "published_at": "2026-11-03T00:46:36-05:00",
+      "source_name": "CNBC",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads",
+          "UST"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      },
+      "url": "https://www.cnbc.com/2026/11/03/equity-ai-debt-blackstone-pimco-financing.html"
     },
     {
       "country_codes": [
@@ -1177,115 +1234,6 @@
     },
     {
       "country_codes": [],
-      "headline": "Inflation Talk Returns to Earnings Calls in Echo of 2022 Shock",
-      "id": "news:6903056ac378d79c",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "primary_category": "inflation",
-      "published_at": "2026-11-01T21:19:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Inflation is top of mind for Corporate America this earnings season, with mentions on earnings calls on track for their biggest jump since the 2022 price shock.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-02/inflation-talk-returns-to-earnings-calls-in-echo-of-2022-shock"
-    },
-    {
-      "country_codes": [
-        "JP"
-      ],
-      "headline": "BOJ Signals Low Hopes for Consumer Spending as Population Falls",
-      "id": "news:4e5ad4f16cfc2781",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "primary_category": "macro",
-      "published_at": "2026-11-01T18:29:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "The Bank of Japan signaled that the shrinking of Japan\u2019s population means that it\u2019s increasingly difficult to achieve robust growth in overall consumer spending, suggesting that weak aggregate ...",
-      "transmission": {
-        "affected_assets": [
-          "JPY"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-02/boj-signals-low-hopes-for-consumer-spending-as-population-falls"
-    },
-    {
-      "country_codes": [],
       "headline": "Banks Shelve Bond Sale for Anthropic-Tied Texas Data Center",
       "id": "news:c2a542e2cd0cb42f",
       "market_salience": {
@@ -1393,11 +1341,67 @@
         "score": 11
       },
       "url": "https://www.bloomberg.com/news/articles/2026-10-27/blackrock-s-rieder-spent-all-weekend-doing-deals-in-ai-debt-rush"
+    },
+    {
+      "country_codes": [
+        "US"
+      ],
+      "headline": "Treasury yields rise as investors weigh midterm vote, jobs data and Iran tensions",
+      "id": "news:040834acfae812d4",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "primary_category": "rates",
+      "published_at": "2026-11-03T06:52:48-05:00",
+      "source_name": "CNBC",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      },
+      "url": "https://www.cnbc.com/2026/11/03/us-treasury-yields-bonds.html"
     }
   ],
-  "overnight_run_id": "overnight-20261102",
+  "overnight_run_id": "overnight-20261103",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Overnight tone stays dominated by triple-digit crude and Gulf shipping risk, with Brent near 118 and WTI above 104, gold holding near 3,899, and U.S. equities still elevated though the S&P print is older than the Dow and Nasdaq marks. The Fed's late-October hold and firm inflation rhetoric keep front-end U.S. rates anchored\u2014SOFR 3.94 percent with the 10-year at 4.94 percent, about 35 basis points lower over the month\u2014while earnings callers are again flagging cost pressure at the fastest pace since 2022. Hormuz headlines, including Iran claims, safe-passage diplomacy, and thin spare capacity, reinforce the oil bid; AI-related credit issuance stays active but uneven. The Bank of Japan held with underlying inflation at 2 percent yet weak spending expectations; the Bank of England is debating a higher-rate normal. New risk is open only in the United States this cycle. Canada, Australia, New Zealand, the euro area, and Japan cannot take fresh exposure because key consumer, activity, labor, and income releases could not be verified in time; existing positions may still be managed.",
+  "summary": "Overnight, the desk reads a firm but not panic-risk tape: Brent 104.77 and WTI 96.46 keep an energy premium in place while gold at 3969.60 and equities near recent highs (Nasdaq 25164, Dow 51983) argue investors are not de-risking hard; VIX 19.42 sits in a moderate band. Cash SOFR is 3.95 percent and the 2027 strip still embeds additional tightening (June 4.47, December 4.475), consistent with a Federal Reserve that held in late October and sounded firm on inflation even as the 10-year drifted higher. Gulf logistics remain the swing factor: Iran mining claims and earlier strike headlines versus safe-passage diplomacy and a thin supply-buffer warning. The Bank of Japan held with underlying inflation at 2 percent for the first time since 2013; New Zealand's late-October surprise still echoes in a kiwi that is very cheap on five-year ranges. AI-linked credit headlines add a financing angle without a clear risk-off trigger. Consumer and activity coverage for Canada, Australia, New Zealand, the euro area, and Japan is incomplete \u2014 a research caveat, not a reason to stand down from markable markets.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }

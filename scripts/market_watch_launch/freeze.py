@@ -135,6 +135,11 @@ def _trade_permissions(launch: dict[str, Any]) -> dict[str, Any]:
         "source_health": list(gate.get("source_health") or []),
         "expansion_rule": "country_and_expression_specific",
         **frozen_permission_fields(gate),
+        **{
+            key: gate[key]
+            for key in ("trader_eligible", "research_eligible", "trader_execution", "trader_block_reason")
+            if key in gate
+        },
     }
 
 

@@ -46,6 +46,9 @@ def _path_get(root: Mapping[str, Any], path: str) -> tuple[float, str | None]:
             raise PaperMarkError(f"paper-mark source path missing: {path}")
         node = node[part]
     if isinstance(node, Mapping):
+        status = str(node.get("status") or "")
+        if status in {"stale", "missing", "invalid", "unavailable"}:
+            raise PaperMarkError(f"{path} is {status}")
         as_of = node.get("as_of") or node.get("observation_date")
         for key in ("value", "rate", "bps", "spot", "discount_factor"):
             if node.get(key) is not None:
@@ -62,6 +65,16 @@ def _fx_mark(state: Mapping[str, Any], pair: str) -> dict[str, Any]:
     row = pairs.get(pair)
     if not isinstance(row, Mapping) or row.get("spot") is None:
         raise PaperMarkError(f"FX paper mid unavailable for {pair}")
+    status = str(row.get("status") or "")
+    if status in _BLOCKING_RATE_STATUSES:
+        raise PaperMarkError(f"FX paper mid unavailable for {pair}: {status}")
+    from scripts.market_state import fx_clock_from_packet, fx_pair_age_status
+
+    age_status = fx_pair_age_status(row.get("as_of"), fx_clock_from_packet(state))
+    if age_status in _BLOCKING_RATE_STATUSES:
+        raise PaperMarkError(f"FX paper mid unavailable for {pair}: {age_status}")
+    if str(fx.get("status") or "") in _BLOCKING_RATE_STATUSES:
+        raise PaperMarkError(f"FX paper mid unavailable for {pair}: family {fx.get('status')}")
     return {
         "value": _number(row["spot"], pair),
         "quote_unit": "spot",

@@ -308,11 +308,14 @@ def render_edition_banner(release: dict[str, Any]) -> str:
         )
         frozen = format_et(release.get("frozen_at"))
         market = release.get("market_state") or {}
+        if market.get("status") == "unavailable" or not (market.get("as_of") or market.get("generated_at")):
+            market_text = "market data unavailable"
+        else:
+            market_text = f"market data snapshot {_esc(format_et(market.get('as_of') or market.get('generated_at')))}"
         items.append(
             f"Market data, scores, releases and sources come from the verified Stage 04 freeze of launch "
             f"<span class=\"mw-raw\">{_esc(launch_id)}</span> (evidence boundary {_esc(frozen)}, "
-            f"packet <span class=\"mw-raw\">{_esc(packet[:12])}</span>, market data snapshot "
-            f"{_esc(format_et(market.get('as_of') or market.get('generated_at')))})."
+            f"packet <span class=\"mw-raw\">{_esc(packet[:12])}</span>, {market_text})."
         )
         books = release.get("books") or {}
         items.append(

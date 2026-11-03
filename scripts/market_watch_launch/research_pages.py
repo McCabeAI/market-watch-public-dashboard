@@ -184,9 +184,19 @@ def _verify_artifact_hashes(root: Path, launch: dict[str, Any]) -> None:
 
 def _verify_quality_gate(launch: dict[str, Any]) -> dict[str, Any]:
     gate = _details(launch, "03_quality_gate")
-    if gate.get("outcome") != "PASS" or gate.get("coverage") not in ACCEPTED_GATE_COVERAGE or gate.get("eligible") is not True:
-        raise _fail("quality_gate_not_pass", f"outcome={gate.get('outcome')} coverage={gate.get('coverage')}")
-    return {
+    eligible = gate.get("eligible") is True
+    research_eligible = gate.get("research_eligible") is True
+    if gate.get("outcome") != "PASS" or gate.get("coverage") not in ACCEPTED_GATE_COVERAGE:
+        raise _fail(
+            "quality_gate_not_pass",
+            f"outcome={gate.get('outcome')} coverage={gate.get('coverage')}",
+        )
+    if not eligible and not research_eligible:
+        raise _fail(
+            "quality_gate_not_pass",
+            f"outcome={gate.get('outcome')} coverage={gate.get('coverage')} eligible={gate.get('eligible')}",
+        )
+    out: dict[str, Any] = {
         "outcome": gate.get("outcome"),
         "coverage": gate.get("coverage"),
         "trade_eligible_countries": list(gate.get("trade_eligible_countries") or []),
@@ -196,6 +206,13 @@ def _verify_quality_gate(launch: dict[str, Any]) -> dict[str, Any]:
         "research_coverage_gaps": list(gate.get("research_coverage_gaps") or []),
         "research_coverage_series": list(gate.get("research_coverage_series") or []),
     }
+    if "eligible" in gate:
+        out["eligible"] = gate.get("eligible") is True
+    if "research_eligible" in gate:
+        out["research_eligible"] = gate.get("research_eligible")
+    if "trader_execution" in gate:
+        out["trader_execution"] = gate.get("trader_execution")
+    return out
 
 
 def _binding_rel(launch_id: str) -> str:
@@ -264,6 +281,74 @@ def _verify_binding_and_attestation(root: Path, launch: dict[str, Any], *, requi
     return {"binding": binding, "attestation": attest, "remote_freeze_commit": commit, "source_commit": head}
 
 
+_ABSENT_MARKET_STATUSES = frozenset({"missing", "unavailable", "invalid"})
+
+
+def _market_family(packet: dict[str, Any]) -> dict[str, Any] | None:
+    family = (packet.get("families") or {}).get("market_state")
+    return family if isinstance(family, dict) else None
+
+
+def market_payload_is_explicitly_absent(family: dict[str, Any] | None) -> bool:
+    """True when the frozen family attests that no market payload exists.
+
+    A fresh or stale family with no payload is not this case: that is a broken
+    packet and still fails closed. A payload that carries ``generated_at`` is a
+    real snapshot, including one whose legs are internally unavailable.
+    """
+    if not isinstance(family, dict):
+        return False
+    if str(family.get("status") or "") not in _ABSENT_MARKET_STATUSES:
+        return False
+    data = family.get("data")
+    if data is None:
+        return True
+    return isinstance(data, dict) and not data.get("generated_at")
+
+
+def unavailable_market_publication(reason: str) -> dict[str, Any]:
+    """Public market document with no prices. Charts must render unavailable."""
+    text = reason or "frozen market-state unavailable"
+    return {
+        "schema_version": 1,
+        "status": "unavailable",
+        "availability": "missing",
+        "generated_at": None,
+        "error": text,
+        "rates": {},
+        "rate_rv": {},
+        "fx": {
+            "status": "unavailable",
+            "pairs": {},
+            "source_observation": None,
+            "error": text,
+        },
+        "cross_assets": {"status": "unavailable", "series": {}, "error": text},
+        "sources": {},
+        "stale_sources": [],
+        "unavailable_sources": ["market_state"],
+        "method": {
+            "model_calls": 0,
+            "credentials_required": [],
+            "note": "Frozen evidence did not include a market-state payload. No prices were substituted.",
+        },
+    }
+
+
+def _publication_has_numeric_mark(node: Any) -> bool:
+    mark_keys = {"spot", "mid", "value", "bps", "rate"}
+    if isinstance(node, dict):
+        for key, value in node.items():
+            if key in mark_keys and isinstance(value, (int, float)) and not isinstance(value, bool):
+                return True
+            if _publication_has_numeric_mark(value):
+                return True
+        return False
+    if isinstance(node, list):
+        return any(_publication_has_numeric_mark(item) for item in node)
+    return False
+
+
 def _verify_packet(root: Path, freeze: dict[str, Any]) -> dict[str, Any]:
     from scripts.overnight.errors import EvidenceBoundaryError, SchemaError
     from scripts.overnight.evidence import require_snapshot
@@ -276,10 +361,13 @@ def _verify_packet(root: Path, freeze: dict[str, Any]) -> dict[str, Any]:
         raise _fail("frozen_packet_invalid", str(exc)) from exc
     if packet.get("packet_sha256") != freeze.get("packet_sha256"):
         raise _fail("frozen_packet_hash_mismatch")
-    market = ((packet.get("families") or {}).get("market_state") or {}).get("data")
-    if not isinstance(market, dict) or not market.get("generated_at"):
-        raise _fail("frozen_market_state_missing")
-    return packet
+    family = _market_family(packet)
+    payload = family.get("data") if isinstance(family, dict) else None
+    if isinstance(payload, dict) and payload.get("generated_at"):
+        return packet
+    if market_payload_is_explicitly_absent(family):
+        return packet
+    raise _fail("frozen_market_state_missing")
 
 
 def _verify_lineage(root: Path, launch: dict[str, Any]) -> dict[str, Any]:
@@ -454,7 +542,22 @@ def research_contract(
         previous_accepted_items=list(news_context.get("news") or []),
         packet_sha256=str(freeze.get("packet_sha256")),
     )
-    market = packet["families"]["market_state"]
+    market_family = packet["families"].get("market_state") if isinstance(packet["families"].get("market_state"), dict) else {}
+    market_payload = market_family.get("data") if isinstance(market_family.get("data"), dict) else None
+    if isinstance(market_payload, dict) and market_payload.get("generated_at"):
+        market_record = {
+            "as_of": market_family.get("as_of"),
+            "generated_at": market_payload.get("generated_at"),
+            "digest": market_family.get("digest"),
+        }
+    else:
+        market_record = {
+            "status": "unavailable",
+            "as_of": None,
+            "generated_at": None,
+            "digest": market_family.get("digest"),
+            "reason": "frozen_market_state_missing",
+        }
     return {
         "launch_id": launch["launch_id"],
         "launch_stamp": launch_stamp(launch["launch_id"]),
@@ -473,7 +576,7 @@ def research_contract(
         "books": {k: v for k, v in books.items() if k != "dataset"},
         "news": news,
         "headlines": headlines,
-        "market_state": {"as_of": market.get("as_of"), "generated_at": market["data"].get("generated_at"), "digest": market.get("digest")},
+        "market_state": market_record,
         "inputs": _input_receipts(root, launch, books),
     }
 
@@ -654,13 +757,21 @@ def build_research_site(
         packet = require_snapshot(OvernightStore(root=work), contract["overnight_run_id"], contract["review_id"])
         if packet.get("packet_sha256") != contract["packet_sha256"]:
             raise _fail("frozen_packet_hash_mismatch")
-        frozen_market = packet["families"]["market_state"]["data"]
-        try:
-            validate_snapshot(frozen_market)
-            public = public_snapshot(frozen_market)
-            validate_snapshot(public)
-        except MarketStateError as exc:
-            raise _fail("frozen_market_state_invalid", str(exc)) from exc
+        family = _market_family(packet)
+        frozen_market = family.get("data") if isinstance(family, dict) else None
+        if isinstance(frozen_market, dict) and frozen_market.get("generated_at"):
+            try:
+                validate_snapshot(frozen_market)
+                public = public_snapshot(frozen_market)
+                validate_snapshot(public)
+            except MarketStateError as exc:
+                raise _fail("frozen_market_state_invalid", str(exc)) from exc
+        elif market_payload_is_explicitly_absent(family):
+            notes = family.get("notes") if isinstance(family, dict) and isinstance(family.get("notes"), list) else []
+            reason = "; ".join(str(note) for note in notes if note) or "frozen market-state unavailable"
+            public = unavailable_market_publication(reason)
+        else:
+            raise _fail("frozen_market_state_missing")
         (site / "market-state.json").write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         _run(work, ["scripts/apply_market_data_tab.py", str(index)], label="market data tab")
         _run(work, ["scripts/apply_trader_book_tab.py", str(index)], label="trader book tab")
@@ -712,6 +823,8 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     if release.get("type") != RELEASE_TYPE or release.get("phase") != PHASE_RESEARCH:
         raise _fail("release_phase_mismatch")
     if (release.get("trader_cycle") or {}).get("status") != "pending":
+        raise _fail("release_claims_trader_cycle")
+    if (contract.get("quality") or {}).get("trader_execution") == "blocked" and release.get("phase") != PHASE_RESEARCH:
         raise _fail("release_claims_trader_cycle")
     if release.get("site_sha256") != site_digest(site):
         raise _fail("site_digest_mismatch")
@@ -936,12 +1049,21 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     validate_public_packet({k: v for k, v in pm.items() if k != "edition"})
 
     market = _read_json(site / "market-state.json")
-    if market.get("generated_at") != (contract.get("market_state") or {}).get("generated_at"):
-        raise _fail("market_state_not_frozen_packet")
-    try:
-        validate_snapshot(market)
-    except MarketStateError as exc:
-        raise _fail("market_state_invalid", str(exc)) from exc
+    contract_market = contract.get("market_state") or {}
+    if contract_market.get("status") == "unavailable":
+        if market.get("status") != "unavailable" or market.get("generated_at"):
+            raise _fail("market_state_not_frozen_packet")
+        if _publication_has_numeric_mark(market):
+            raise _fail("market_state_invalid", "unavailable market publication contains a numeric mark")
+        if "unavailable" not in html.lower():
+            raise _fail("market_state_invalid", "market charts are not marked unavailable")
+    else:
+        if market.get("generated_at") != contract_market.get("generated_at"):
+            raise _fail("market_state_not_frozen_packet")
+        try:
+            validate_snapshot(market)
+        except MarketStateError as exc:
+            raise _fail("market_state_invalid", str(exc)) from exc
     health = _read_json(site / "source-health.json")
     if health.get("launch_id") != contract["launch_id"]:
         raise _fail("source_health_not_this_launch", str(health.get("launch_id")))

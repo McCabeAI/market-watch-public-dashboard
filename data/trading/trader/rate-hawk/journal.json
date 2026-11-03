@@ -2255,6 +2255,92 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "Cash SOFR is still 3.94 dated 29 October, while September 2027 is only 4.495, so 55 basis points of tightening remain even as Brent sits at 117.64. That energy-versus-path gap is still the higher-for-longer ticket, so keep paying September rather than covering the drift from 4.755. March CORRA at 2.97 remains 48 basis points over cash 2.49, and June AONIA near 4.925 still prices a tighter Australian cash setting against 4.60. Dollar-Canada around 1.3969 mixes oil support for the Canadian dollar with leftover US hike pricing and does not isolate the path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Keep paying September SOFR. Cash 3.95 versus 4.505 still prices 55.5 basis points of tightening after the Fed held and talked tough.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 12500000.0,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Keep paying March Canada. Cash 2.55 versus 2.925 still prices 37.5 basis points of tightening, not a cover after the drift from 3.06 with Brent still 104.77.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Keep paying June Australia as the energy residual. Strip 4.935 versus cash 4.60 still prices 33.5 basis points of tightening.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "d3bc10850398ccfdfdc708361c89bcd08ab0250e7f85914c558947149b3a6a1f",
+      "event_id": "jde-c094d4fce43d4c5f",
+      "funding_view": null,
+      "invalidation": "The book is wrong if September SOFR loses the hike path and converges toward cash 3.95, if Brent leaves three-digit territory, or if March Canada retraces toward cash 2.55.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cd8ec3094656bc4e0776b6f293da879cb4632ae57f200aedd6356ec83387a81e",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a884658bd9d0c2b781ba4fbdcae227c947fa1ac558013c49dd7f2a96af98c572"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official cash SOFR is 3.95 dated 2 November against September 2027 at 4.505, so 55.5 basis points of tightening remain after the Federal Reserve held and talked tough; that leftover is still the higher-for-longer ticket, so keep paying September rather than covering the drift from 4.755. March Canada at 2.925 remains 37.5 basis points over cash 2.55. June Australia at 4.935 versus cash 4.60 still prices a tighter Australian cash setting. Dollar-Canada around 1.3974 mixes oil support for the Canadian dollar with leftover US hike pricing and does not isolate the path.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "Official cash SOFR is 3.95 dated 2 November against September 2027 at 4.505, so 55.5 basis points of tightening remain after the Federal Reserve held and talked tough; that leftover is still the higher-for-longer ticket, so keep paying September rather than covering the drift from 4.755. March Canada at 2.925 remains 37.5 basis points over cash 2.55. June Australia at 4.935 versus cash 4.60 still prices a tighter Australian cash setting. Dollar-Canada around 1.3974 mixes oil support for the Canadian dollar with leftover US hike pricing and does not isolate the path."
     }
   ],
   "schema_version": 1,

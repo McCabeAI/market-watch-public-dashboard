@@ -4,7 +4,32 @@
   "learning_default_count": 1,
   "learning_status": "compliant",
   "repeated_error_escalations": [],
-  "retrieved_lessons": [],
+  "retrieved_lessons": [
+    {
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "disposition": "DOES_NOT_APPLY",
+      "instruments": [
+        "AUDNZD"
+      ],
+      "lesson_id": "les-a8f64a5fd921",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "rationale": "That rule is about an AUDCAD richness fade that needed housing or Bank of Canada path time longer than an overnight clock, and about not flipping the same Australia-Canada cross. This ticket is a from-flat AUDNZD short at a 99.6 five-year extreme. It is Australia versus New Zealand, not Australia versus Canada, and it is opened as a multi-week swing rather than a two-to-three-day fade of the just-closed Canada cross.",
+      "run_id": "overnight-20261103"
+    },
+    {
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "disposition": "DOES_NOT_APPLY",
+      "instruments": [
+        "AUDNZD"
+      ],
+      "lesson_id": "les-bd910b94260a",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "rationale": "That rule says stay flat after closing AUDCAD until a new Australia-versus-Canada policy, growth, inflation, or carry gap appears. This open is not a reverse of that Canada cross and does not use oil or diplomacy as a reason to own CAD. It fades Australia-New Zealand richness on a markable cross after the late-October New Zealand surprise already cheapened kiwi.",
+      "run_id": "overnight-20261103"
+    }
+  ],
   "schema_version": 1,
   "type": "LEARNING_COMPLIANCE"
 }

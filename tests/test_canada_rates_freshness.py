@@ -260,8 +260,11 @@ class CanadaQualityGateTests(unittest.TestCase):
             }
         ]
         result = evaluate_gate(rows=_scored_rows_us_ca(), families=families, positions=positions)
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
         self.assertIn("US", result["trade_eligible_countries"])
         unmarkable = result["unmarkable_positions"][0]
         self.assertEqual(unmarkable["instrument"], "USDCAD")
@@ -303,8 +306,11 @@ class CanadaQualityGateTests(unittest.TestCase):
         rows = [row for row in _scored_rows_us_ca() if row["country"] == "CA"]
         positions = [{"position_id": "pos-cad", "seat": "dollar-king", "instrument": "USDCAD", "asset_class": "spot_fx"}]
         result = evaluate_gate(rows=rows, families=families, positions=positions)
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
         self.assertEqual(result["unmarkable_positions"][0]["observation_date"], "2026-10-01")
         self.assertNotIn("CA", result["trade_eligible_countries"])
 

@@ -27,7 +27,7 @@ RESEARCH_SRC = (REPO / "scripts" / "market_watch_launch" / "research_pages.py").
 
 # deploy-pages entrypoints the research edition deliberately does not run.
 EXEMPT_ENTRYPOINTS = {
-    "scripts/market_state.py": "research serves the frozen packet's market_state through cross_asset_data.public_snapshot",
+    "scripts/market_state.py": "research publishes a frozen market payload through public_snapshot; a missing payload is an explicit unavailable document and does not call market_state.py",
     "scripts/policy_state.py": "research uses the committed policy artifact; it does not refresh live policy data",
     "scripts/temperature_level.py": "diagnostic --print-levels; research recomputes scores from the staged histories instead",
     "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",
@@ -218,8 +218,26 @@ class LaunchResearchWorkflowWiringTests(unittest.TestCase):
         self.assertNotIn("schedule:", LAUNCH_WF)
         self.assertNotIn("sleep 15", LAUNCH_WF)
         self.assertNotIn("workflow_run:", LAUNCH_WF)
-        for forbidden in ("secrets.", "cursor", "06_acceptance", "07_finalize", "08_pages", "gh workflow run", "deploy-pages.yml"):
+        for forbidden in ("cursor", "06_acceptance", "07_finalize", "08_pages", "gh workflow run", "deploy-pages.yml"):
             self.assertNotIn(forbidden, lowered)
+        for provider_secret in (
+            "cursor_api_key",
+            "openai_api_key",
+            "anthropic_api_key",
+            "secrets.github_token",
+        ):
+            self.assertNotIn(provider_secret, lowered)
+        # The only repository secret in this workflow is the BEA GDP data-source
+        # key, and only on the launch CLI step that runs ingestion.
+        allowed = "secrets.bea_api_key"
+        self.assertEqual(lowered.count("secrets."), 1)
+        self.assertEqual(lowered.count(allowed), 1)
+        orchestrate = job_block(LAUNCH_WF, "orchestrate")
+        launch_step = orchestrate.split("- name: Run launch CLI", 1)[1].split("- name:", 1)[0]
+        self.assertIn("BEA_API_KEY: ${{ secrets.BEA_API_KEY }}", launch_step)
+        self.assertEqual(launch_step.lower().count("secrets."), 1)
+        for job in ("guard", "research", "handoff", "unit-tests"):
+            self.assertNotIn("secrets.", job_block(LAUNCH_WF, job).lower())
 
     def test_launch_concurrency_routes_only_real_launches(self):
         conc = re.search(r"^concurrency:\n(.*?)^jobs:", LAUNCH_WF, flags=re.M | re.S).group(1)

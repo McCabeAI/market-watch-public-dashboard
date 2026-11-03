@@ -78,8 +78,15 @@
     return `<details class="md-health"><summary>Data coverage & methodology <span>${base.concat(extra).filter(s=>status(s)!=='ok').length} sources need attention</span></summary><div class="md-health-grid">${base.concat(extra).map(s=>`<div><b>${esc(s.label)}</b>${badge(status(s))}<small>${esc(s.as_of||'No observation')}</small><a href="${esc(/^https:\/\//.test(s.url)?s.url:'#')}" target="_blank" rel="noopener noreferrer">Source ↗</a><p>${esc(s.note||'')}${s.error?' '+esc(s.error):''}</p></div>`).join('')}</div><p>${esc(packet.opportunities.method.note)} Daily reference data, with different fixing and close times. Gold and copper use vendor continuous futures history, including rolls. Brent and WTI are EIA spot assessments via FRED. Source failures remain unavailable; no substitute prices are invented.</p></details>`;
   }
   function render(){
+    if(!packet || packet.status==='unavailable' || packet.availability==='missing' || !packet.opportunities){
+      const reason=(packet && (packet.error || packet.reason)) || 'Frozen market-state was not available.';
+      meta.innerHTML=badge('Unavailable')+'<span>Market data unavailable</span>';
+      root.innerHTML=`<div class="md-empty"><h3>Market data unavailable</h3><p>${esc(reason)}</p><p>No prices, charts, or substitute marks are shown.</p></div>`;
+      return;
+    }
     const stale=series().filter(s=>status(s)!=='ok').length;
-    meta.innerHTML=badge('Daily research snapshot')+`<span>Built ${esc(packet.generated_at.replace('T',' ').replace('Z',' UTC'))}</span>`;
+    const built=packet.generated_at ? String(packet.generated_at).replace('T',' ').replace('Z',' UTC') : 'unavailable';
+    meta.innerHTML=badge('Daily research snapshot')+`<span>Built ${esc(built)}</span>`;
     root.innerHTML=`<div class="md-toolbar"><nav aria-label="Market data views">${views.map(v=>`<button type="button" data-view="${v}" aria-pressed="${v===view}" class="${v===view?'active':''}">${v}</button>`).join('')}</nav><div class="md-filters"><label>Horizon <select id="md-horizon">${['1D','5D','1M','3M'].map(h=>`<option ${h===horizon?'selected':''}>${h}</option>`).join('')}</select></label><label>Scope <select id="md-scope">${['All markets','CAD / AUD / NZD'].map(s=>`<option ${s===scope?'selected':''}>${s}</option>`).join('')}</select></label><label class="md-search">Find <input id="md-search" type="search" value="${esc(query)}" placeholder="Market or expression" /></label></div></div><div class="md-context"><span>${badge('DAILY · NOT LIVE')} Fixings and closing data. ${stale?`${stale} screens have stale or missing inputs.`:'All screen inputs within source publication lags.'}</span><span>Default move window: ${horizon} · Level baseline: up to 252 prior observations</span></div><div class="md-content">${view==='Watchlist'?watchlist():view==='Curves & rates'?curves():view==='Cross-asset'?crossAssets():view==='Carry'?carry():table(series().filter(matches))}</div>${health()}`;
     root.querySelectorAll('[data-view]').forEach(b=>b.addEventListener('click',()=>{view=b.dataset.view;render();}));
     root.querySelector('#md-horizon').addEventListener('change',e=>{horizon=e.target.value;render();});
@@ -87,6 +94,7 @@
     root.querySelector('#md-search').addEventListener('change',e=>{query=e.target.value;render();root.querySelector('#md-search').focus();});
   }
   fetch('market-state.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error('Market packet HTTP '+r.status);return r.json();}).then(p=>{
+    if(p && (p.status==='unavailable' || p.availability==='missing')){packet=p;render();return;}
     if(p.opportunities?.version!==1)throw new Error('The opportunity packet is not available in this build.');packet=p;render();
   }).catch(e=>{meta.textContent='Data unavailable';root.innerHTML=`<div class="md-empty"><h3>Market screens could not load</h3><p>${esc(e.message)}</p><p>No signals can be evaluated without the market packet.</p><button type="button" id="md-retry">Retry</button></div>`;root.querySelector('#md-retry').addEventListener('click',()=>location.reload());});
 })();

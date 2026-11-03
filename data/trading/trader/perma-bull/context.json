@@ -28,7 +28,7 @@
       "trade_ids": []
     }
   ],
-  "as_of": "2026-11-02T05:28:38.279813-05:00",
+  "as_of": "2026-11-03T08:22:57.179127-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -63,12 +63,12 @@
     "competition_eligible": true,
     "competition_rank": 13,
     "competitive_rank": 13,
-    "drawdown_usd": 105339.68,
-    "giveback_usd": 105339.68,
+    "drawdown_usd": 153250.1,
+    "giveback_usd": 153250.1,
     "high_water_nav_usd": 100009786.12,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99904446.44,
-    "net_pnl_usd": -95553.56,
+    "nav_usd": 99856536.02,
+    "net_pnl_usd": -143463.98,
     "pressure_flags": [],
     "prior_competition_rank": 13,
     "rank_change": 0,
@@ -77,7 +77,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1250000.0,
     "risk_capital_utilization": 0.125,
-    "session_pnl_change_usd": 47910.42,
+    "session_pnl_change_usd": 7637.15,
     "status": "ok"
   },
   "learning": {
@@ -88,7 +88,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d0d89dc9836a6d5576d65dfa6dbf818add276914c7be4fb97dc67ef91a34f2f7",
+  "memory_context_sha256": "89276013a10d64d2c45377aa1c7adae0238d7c2d6e1351752b46bfaff9504351",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -99,14 +99,14 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 2.99,
+        "current_mark": 2.97,
         "current_notional_usd": 50000000.0,
         "entry_mark": 3.13,
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 80000.0,
-        "holding_seconds": 3739908,
+        "giveback_usd": 90000.0,
+        "holding_seconds": 3836767,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -121,16 +121,16 @@
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 10000.0,
-        "retained_mfe_fraction": -7.0,
+        "retained_mfe_fraction": -8.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 500000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": -70000.0,
+        "total_pnl_usd": -80000.0,
         "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119",
-        "unrealized_pnl_usd": -70000.0
+        "unrealized_pnl_usd": -80000.0
       },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-09-19T22:36:50.082404-04:00",
@@ -148,14 +148,14 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 4.935,
+        "current_mark": 4.915,
         "current_notional_usd": 25000000.0,
         "entry_mark": 4.765,
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 1250.0,
-        "holding_seconds": 1212048,
+        "giveback_usd": 6250.0,
+        "holding_seconds": 1308907,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "AONIA_2027-03",
@@ -170,16 +170,16 @@
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 43750.0,
-        "retained_mfe_fraction": 0.9714,
+        "retained_mfe_fraction": 0.8571,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 250000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 42500.0,
+        "total_pnl_usd": 37500.0,
         "trade_id": "trd-trader-perma-bull-pos-78563c24fe05",
-        "unrealized_pnl_usd": 42500.0
+        "unrealized_pnl_usd": 37500.0
       },
       "instrument": "AONIA_2027-03",
       "opened_at": "2026-10-19T04:47:49.555730-04:00",
@@ -197,14 +197,14 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 4.39,
+        "current_mark": 4.325,
         "current_notional_usd": 50000000.0,
         "entry_mark": 4.52,
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 80000.0,
-        "holding_seconds": 1108638,
+        "giveback_usd": 112500.0,
+        "holding_seconds": 1205497,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "SOFR_2027-03",
@@ -219,16 +219,16 @@
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 15000.0,
-        "retained_mfe_fraction": -4.3333,
+        "retained_mfe_fraction": -6.5,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 500000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": -65000.0,
+        "total_pnl_usd": -97500.0,
         "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42",
-        "unrealized_pnl_usd": -65000.0
+        "unrealized_pnl_usd": -97500.0
       },
       "instrument": "SOFR_2027-03",
       "opened_at": "2026-10-20T09:31:20.120731-04:00",
@@ -256,7 +256,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -265,18 +265,18 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.22
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.2
+        "value": 0.19
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.15
+        "trend": "down",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -321,7 +321,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "2e1041d487270e55ba974cfe8919323ecea04e17d0ca06024a4d361da5fa4378",
+    "state_sha256": "acb07bc07761a62936ed4279ece9c845e949f7b0e6a6147ed307af1cafe59566",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 4,
