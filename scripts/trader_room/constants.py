@@ -4,52 +4,41 @@ from __future__ import annotations
 
 from pathlib import Path
 
+from scripts.trader_room.agent_config import get_profile, head_traders, load_config
+
 ROOT = Path(__file__).resolve().parents[2]
 PACKAGE_DIR = Path(__file__).resolve().parent
 REGISTRY_PATH = PACKAGE_DIR / "model_registry.json"
 
-STANDING_ADVOCATES = (
-    "perma-bull",
-    "perma-bear",
-    "dollar-king",
-    "cross-merchant",
-    "carry-is-king",
-    "rate-hawk",
-    "rate-dove",
-    "value-guy",
-    "trend-follower",
-    "mean-reverter",
-    "positioning-cynic",
-    "catalyst-junkie",
-    "vol-convexity",
-    "no-trade-skeptic",
-)
+_CFG = load_config()
+_PROFILE = get_profile(config=_CFG)
+_HEAD = head_traders(_CFG)
 
-AGGREGATORS = ("conflict-aggregator", "final-aggregator")
-NO_TRADE_AGENT = "no-trade-skeptic"
+STANDING_ADVOCATES = tuple(t["id"] for t in _HEAD)
+
+ADVOCATE_REMITS = {t["id"]: t["remit"] for t in _HEAD}
+
+SPOT_ONLY_SEATS = tuple(t["id"] for t in _HEAD if t["expression_specialty"] == "spot_only")
+_vol_specialists = [t["id"] for t in _HEAD if t["expression_specialty"] == "options_specialist"]
+if len(_vol_specialists) != 1:
+    raise RuntimeError(
+        f"expected exactly one options_specialist seat, found {len(_vol_specialists)}: {_vol_specialists}"
+    )
+VOL_SPECIALIST_SEAT = _vol_specialists[0]
+
+_no_trade = [t["id"] for t in _HEAD if t["may_no_trade"]]
+if len(_no_trade) != 1:
+    raise RuntimeError(f"expected exactly one may_no_trade seat, found {len(_no_trade)}: {_no_trade}")
+NO_TRADE_AGENT = _no_trade[0]
+
 TRADE_REQUIRED_AGENTS = tuple(a for a in STANDING_ADVOCATES if a != NO_TRADE_AGENT)
-SPOT_ONLY_SEATS = ("dollar-king", "cross-merchant")
-VOL_SPECIALIST_SEAT = "vol-convexity"
-RATES_FIRST_SEATS = tuple(a for a in STANDING_ADVOCATES if a not in (*SPOT_ONLY_SEATS, VOL_SPECIALIST_SEAT))
+RATES_FIRST_SEATS = tuple(
+    a for a in STANDING_ADVOCATES if a not in (*SPOT_ONLY_SEATS, VOL_SPECIALIST_SEAT)
+)
 ASSET_CLASSES = ("spot_fx", "rates", "curve", "rates_rv", "options")
 EXPRESSION_SELECTIONS = ("rates", "spot", "options")
 
-ADVOCATE_REMITS = {
-    "perma-bull": "strongest pro-growth, risk-on or cyclical macro expression",
-    "perma-bear": "strongest defensive, slowdown, stress or risk-off macro expression",
-    "dollar-king": "express macro views through USD spot whenever a defensible USD pair exists",
-    "cross-merchant": "cleaner relative-value expressions outside USD",
-    "carry-is-king": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
-    "rate-hawk": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
-    "rate-dove": "underpriced easing, lower-rate repricing, or growth weakness",
-    "value-guy": "historical or fundamental dislocations and convergence trades",
-    "trend-follower": "persistent price, rates and macro trends; reject premature fades",
-    "mean-reverter": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
-    "positioning-cynic": "attack crowded ideas; prefer better ownership asymmetry",
-    "catalyst-junkie": "credible path from mispricing to repricing",
-    "vol-convexity": "asymmetric optionality; challenge spot expressions",
-    "no-trade-skeptic": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
-}
+AGGREGATORS = ("conflict-aggregator", "final-aggregator")
 
 EVIDENCE_FAMILIES = (
     "temperature_gauges",
@@ -70,18 +59,22 @@ MANDATORY_PACKET_SECTIONS = (
 )
 DEFAULT_ESSENTIAL_FAMILIES = EVIDENCE_FAMILIES
 
-ADVOCATE_MODEL = "grok-4.6"
-AGGREGATOR_MODEL = "grok-4.6"
-AGENT_FRONTMATTER_MODEL = "grok-4.6[]"
-SUBAGENT_MODEL = "composer-2.5"
+_ROLES = _PROFILE["roles"]
+_n = len(STANDING_ADVOCATES)
+
+ADVOCATE_MODEL = _ROLES["advocate"]
+DAILY_TRADER_MODEL = _ROLES["trader"]
+AGGREGATOR_MODEL = ADVOCATE_MODEL
+AGENT_FRONTMATTER_MODEL = f"{ADVOCATE_MODEL}[]"
+SUBAGENT_MODEL = _ROLES["advocate_subagent"]
 ALLOWED_GROK_MODELS = (ADVOCATE_MODEL, AGGREGATOR_MODEL)
 ALLOWED_SUBAGENT_MODELS = (SUBAGENT_MODEL,)
 
-GROK_BASELINE = 14  # 14 advocates; conflict mapping and final handoff are deterministic
-GROK_REBUTTAL_MAX = 14
-GROK_CEILING = 28
+GROK_BASELINE = _n
+GROK_REBUTTAL_MAX = _n
+GROK_CEILING = 2 * _n
 COMPOSER_PER_ADVOCATE = 2
-COMPOSER_CEILING = 28
+COMPOSER_CEILING = 2 * _n
 
 REQUIRED_TRADE_FIELDS = (
     "instrument",

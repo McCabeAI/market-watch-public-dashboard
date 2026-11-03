@@ -4,11 +4,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from scripts.market_watch_launch.call_graph import COMPOSER_CALLS, GROK_FAMILY_CALLS, TOTAL_CALLS
 from scripts.market_watch_launch.contract import LAUNCHER_ID
-from scripts.overnight.constants import SCHEMA_VERSION, STANDING_SEATS
+from scripts.overnight.constants import SCHEMA_VERSION
 from scripts.overnight.scheduled_output import AGENT_PACKET_TYPE, SCHEDULE_ID
 from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.trader_room import agent_config
 from scripts.pm.automated import dry_run_pm_decisions
 from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
@@ -130,6 +130,22 @@ def build_stub_output(
     memory_hashes = (base_packet.get("seat_memory") or {}).get("hashes") or {}
     pm_memory = (base_packet.get("pm_memory") or {}).get("hashes") or {}
 
+    pin = agent_config.assert_acceptable_pin(agent_config.pin_from_artifact(base_packet, kind="daily"))
+    trader_ids = agent_config.pin_trader_ids(pin)
+    budget = pin["budget"]
+    if agent_config.legacy_equivalent(pin):
+        allowed_subagent_models = ["composer-2.5", "grok-4.6"]
+    else:
+        roles = pin["roles"]
+        allowed_subagent_models = sorted(
+            {
+                roles["trader"],
+                roles["pm_principal"],
+                roles["synthesis"],
+                roles["learning_examiner"],
+            }
+        )
+
     agent_packet: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "type": AGENT_PACKET_TYPE,
@@ -158,18 +174,18 @@ def build_stub_output(
         "provider": "stub",
         "agent_packet": agent_packet,
         "decisions": {
-            seat: _hold_decision(seat, run_id, packet_hash, cutoff) for seat in STANDING_SEATS
+            seat: _hold_decision(seat, run_id, packet_hash, cutoff) for seat in trader_ids
         },
         "pm_decisions": _pm_block(run_id, packet_hash, cutoff, pm_memory or memory_hashes),
         "execution": {
-            "parent_model": "grok-4.6",
-            "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-            "total_model_cap": TOTAL_CALLS,
-            "grok_cap": GROK_FAMILY_CALLS,
-            "composer_cap": COMPOSER_CALLS,
-            "declared_total_model_calls": TOTAL_CALLS,
-            "declared_grok_calls": GROK_FAMILY_CALLS,
-            "declared_composer_calls": COMPOSER_CALLS,
+            "parent_model": pin["roles"]["parent"],
+            "allowed_subagent_models": allowed_subagent_models,
+            "total_model_cap": budget["total_calls"],
+            "grok_cap": budget["grok_family_calls"],
+            "composer_cap": budget["composer_calls"],
+            "declared_total_model_calls": budget["total_calls"],
+            "declared_grok_calls": budget["grok_family_calls"],
+            "declared_composer_calls": budget["composer_calls"],
             "other_models_calls": 0,
             "auto_used": False,
         },

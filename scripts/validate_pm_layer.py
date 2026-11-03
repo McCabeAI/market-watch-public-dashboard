@@ -4,6 +4,10 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 from scripts.pm.constants import AUTOMATED_PM_IDS, MAX_SUBAGENTS_PER_PM
@@ -14,8 +18,9 @@ from scripts.pm.models import (
     assert_pm_launch_mechanism,
     pm_hook_policy,
 )
-from scripts.trader_room.constants import REGISTRY_PATH
-from scripts.validate_trader_room import assert_agent_file
+from scripts.trader_room.agent_config import check_agents, get_profile
+from scripts.trader_room.models import load_registry
+from scripts.validate_trader_room import _hook_allowed_models, assert_agent_file
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / ".cursor" / "agents"
@@ -54,13 +59,16 @@ def main() -> None:
             assert "force_deployment" in body
             assert "near-zero" in body
 
-    registry = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
+    registry = load_registry()
     assert registry.get("pm_principal_model") == PM_PRINCIPAL_MODEL
     assert registry.get("pm_agent_frontmatter_model") == PM_AGENT_FRONTMATTER_MODEL
     assert tuple(registry.get("automated_pm_agent_ids") or ()) == AUTOMATED_PM_IDS
     forbidden = set(registry.get("pm_forbidden_task_principal_models") or [])
-    assert "grok-4.6" in forbidden
-    assert "cursor-grok-4.6-high-fast" in forbidden
+    assert PM_PRINCIPAL_MODEL in forbidden
+    assert f"cursor-{PM_PRINCIPAL_MODEL}-high-fast" in forbidden
+
+    agent_errors = check_agents(ROOT)
+    assert not agent_errors, "agent frontmatter drift:\n" + "\n".join(agent_errors)
 
     plan = build_pm_launch_plan(
         run_id="tr-test",
@@ -75,9 +83,34 @@ def main() -> None:
         assert agent["max_subagents"] == MAX_SUBAGENTS_PER_PM
         assert_pm_launch_mechanism(agent["launch_mechanism"])
 
-    hook = (ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh").read_text(encoding="utf-8")
+    hook_path = ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh"
+    hook = hook_path.read_text(encoding="utf-8")
     assert "PM_MODEL_POLICY" in hook
-    assert "cursor-grok-4.6-*" in hook
+    assert "hook-models" in hook
+    assert "scripts/trader_room/agent_config.py" in hook
+    profile = get_profile()
+    assert _hook_allowed_models("pm") == profile["pm_subagent_models"]
+
+    policy = pm_hook_policy()
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as handle:
+        handle.write(policy + "\n")
+        transcript = handle.name
+    try:
+        proc = subprocess.run(
+            [
+                "sh",
+                str(hook_path),
+                json.dumps({"subagent_model": "cursor-grok-4.6-high-fast", "transcript_path": transcript}),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert proc.returncode != 0
+        combined = proc.stdout + proc.stderr
+        assert ".cursor/agents" in combined or "custom agent" in combined.lower()
+    finally:
+        Path(transcript).unlink(missing_ok=True)
 
     print(
         "PM layer validated: grok-4.6[] custom agents for swinger/pragmatist/grinder, "

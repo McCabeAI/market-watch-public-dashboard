@@ -28,6 +28,11 @@ from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
 from scripts.pm.store import PMStore
 from scripts.trading.store import TradingStore
+from scripts.trader_room import agent_config
+
+LEGACY_DAILY = agent_config.legacy_pin("daily")
+DAILY_TRADERS = agent_config.pin_trader_ids(LEGACY_DAILY)
+DAILY_PMS = list(LEGACY_DAILY["automated_pms"])
 
 AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
 POLICY = {
@@ -520,11 +525,11 @@ class BudgetHookTests(unittest.TestCase):
         self.lock.unlink(missing_ok=True)
         self.tmp.cleanup()
 
-    def _call(self, parent: str, model: str, *, child_id: str | None = None) -> subprocess.CompletedProcess:
+    def _call(self, parent: str, model: str, *, child_id: str | None = None, task: str = "test") -> subprocess.CompletedProcess:
         event = {
             "subagent_id": child_id or f"sub-{model}-{os.urandom(4).hex()}",
             "subagent_type": "generalPurpose",
-            "task": "test",
+            "task": task,
             "parent_conversation_id": parent,
             "tool_call_id": "tc",
             "subagent_model": model,
@@ -541,17 +546,25 @@ class BudgetHookTests(unittest.TestCase):
         )
 
     def test_budget_enforces_total_and_per_model_caps(self) -> None:
-        # Parent already counted: total=1, grok=1
-        self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
-        for _ in range(14):
-            self.assertEqual(self._call("root", "grok-4.6").returncode, 0)
-        for _ in range(3):
-            self.assertEqual(self._call("root", "grok-4.6").returncode, 0)
-        blocked_grok = self._call("root", "grok-4.6")
+        self.assertEqual(self._call("root", "composer-2.5", task="MW_ROLE=synthesis").returncode, 0)
+        for seat in DAILY_TRADERS:
+            self.assertEqual(
+                self._call("root", "grok-4.6", task=f"MW_ROLE=trader:{seat}").returncode,
+                0,
+            )
+        for pm_id in DAILY_PMS:
+            self.assertEqual(
+                self._call("root", "grok-4.6", task=f"MW_ROLE=pm:{pm_id}").returncode,
+                0,
+            )
+        blocked_grok = self._call("root", "grok-4.6", task=f"MW_ROLE=trader:{DAILY_TRADERS[0]}")
         self.assertNotEqual(blocked_grok.returncode, 0)
         self.assertIn("cap", blocked_grok.stdout.lower())
-        self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
-        blocked_composer = self._call("root", "composer-2.5")
+        self.assertEqual(
+            self._call("root", "composer-2.5", task="MW_ROLE=learning_examiner").returncode,
+            0,
+        )
+        blocked_composer = self._call("root", "composer-2.5", task="MW_ROLE=synthesis")
         self.assertNotEqual(blocked_composer.returncode, 0)
         self.assertIn("cap", blocked_composer.stdout.lower())
 
@@ -560,18 +573,22 @@ class BudgetHookTests(unittest.TestCase):
         snapshot = self.repo / "data" / "overnight" / "runs" / f"overnight-{today}" / "evidence_snapshot.json"
         subprocess.run(["git", "rm", "-q", str(snapshot.relative_to(self.repo))], cwd=self.repo, check=True)
         subprocess.run(["git", "commit", "-qm", "remove freeze"], cwd=self.repo, check=True)
-        blocked = self._call("root", "composer-2.5")
+        blocked = self._call("root", "composer-2.5", task="MW_ROLE=synthesis")
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("trusted freeze", blocked.stdout.lower())
 
     def test_nested_child_is_denied(self) -> None:
-        self.assertEqual(self._call("root", "composer-2.5").returncode, 0)
-        blocked = self._call("child-conversation", "grok-4.6")
+        child = "child-conversation"
+        self.assertEqual(
+            self._call("root", "composer-2.5", child_id=child, task="MW_ROLE=synthesis").returncode,
+            0,
+        )
+        blocked = self._call(child, "grok-4.6", task=f"MW_ROLE=trader:{DAILY_TRADERS[0]}")
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("nested", blocked.stdout.lower())
 
     def test_other_model_is_denied(self) -> None:
-        blocked = self._call("root", "claude-sonnet-5")
+        blocked = self._call("root", "claude-sonnet-5", task="MW_ROLE=synthesis")
         self.assertNotEqual(blocked.returncode, 0)
 
 

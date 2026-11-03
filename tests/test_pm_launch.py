@@ -15,7 +15,6 @@ from scripts.pm.models import (
     assert_pm_principal_model,
     pm_hook_policy,
 )
-from scripts.trader_room.constants import REGISTRY_PATH
 from scripts.trader_room.models import load_registry
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -40,11 +39,10 @@ class PMLaunchPlanTests(unittest.TestCase):
 
     def test_registry_documents_pm_routing(self) -> None:
         registry = load_registry()
-        on_disk = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
         self.assertEqual(registry["advocate_model"], PM_PRINCIPAL_MODEL)
-        self.assertEqual(on_disk["pm_principal_model"], PM_PRINCIPAL_MODEL)
-        self.assertEqual(on_disk["pm_agent_frontmatter_model"], PM_AGENT_FRONTMATTER_MODEL)
-        self.assertEqual(on_disk["pm_principal_launch_mechanism"], "cursor_custom_agent")
+        self.assertEqual(registry["pm_principal_model"], PM_PRINCIPAL_MODEL)
+        self.assertEqual(registry["pm_agent_frontmatter_model"], PM_AGENT_FRONTMATTER_MODEL)
+        self.assertEqual(registry["pm_principal_launch_mechanism"], "cursor_custom_agent")
 
     def test_pm_agent_frontmatter_matches_trader_room(self) -> None:
         for pm_id in ("swinger", "pragmatist", "grinder"):

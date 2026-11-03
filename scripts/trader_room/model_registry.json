@@ -1,39 +1,16 @@
 {
-  "schema_version": 1,
-  "source": "repository Cursor model-routing surfaces",
-  "validated_against": [
-    ".cursor/hooks/enforce-subagent-models.sh",
-    ".cursor/agents/*.md frontmatter",
-    "docs/TRADER_ROOM_PROTOCOL.md"
-  ],
-  "notes": [
-    "Exact IDs are taken from the current repository hook/agent catalog, not guessed from marketing names.",
-    "Cursor custom-agent frontmatter uses grok-4.6[] (empty thinking-level parameter), which routes to grok-4.6.",
-    "Internal advocate subagents may use only composer-2.5. Fast/high/low variants are not allowed.",
-    "Automated PM principals (swinger, pragmatist, grinder) use the same grok-4.6[] custom-agent frontmatter as Trader Room advocates; do not launch PM principals via Task model grok-4.6."
-  ],
-  "advocate_model": "grok-4.6",
-  "aggregator_model": "grok-4.6",
-  "agent_frontmatter_model": "grok-4.6[]",
-  "subagent_models": ["composer-2.5"],
-  "pm_principal_model": "grok-4.6",
-  "pm_agent_frontmatter_model": "grok-4.6[]",
-  "automated_pm_agent_ids": ["swinger", "pragmatist", "grinder"],
-  "pm_allowed_subagent_models": ["grok-4.6", "composer-2.5"],
-  "pm_principal_launch_mechanism": "cursor_custom_agent",
-  "pm_forbidden_task_principal_models": [
-    "grok-4.6",
-    "inherit",
-    "cursor-grok-4.6-high",
-    "cursor-grok-4.6-high-fast",
-    "cursor-grok-4.6-low",
-    "cursor-grok-4.6-low-fast",
-    "cursor-grok-4.6-medium",
-    "cursor-grok-4.6-medium-fast",
-    "cursor-grok-4.6-xhigh",
-    "cursor-grok-4.6-xhigh-fast"
-  ],
+  "schema_version": 2,
+  "type": "MW_AGENT_MODEL_ROSTER_CONFIG",
+  "active_profile": "current-production-grok-4.6",
+  "model_families": {
+    "grok-4.6": "grok",
+    "grok-4.7": "grok",
+    "composer-2.5": "composer"
+  },
   "forbidden_models": [
+    "auto",
+    "inherit",
+    "default",
     "grok-4.5",
     "composer-2.5-fast",
     "cursor-grok-4.6-high",
@@ -43,6 +20,172 @@
     "cursor-grok-4.6-medium",
     "cursor-grok-4.6-medium-fast",
     "cursor-grok-4.6-xhigh",
-    "cursor-grok-4.6-xhigh-fast"
-  ]
+    "cursor-grok-4.6-xhigh-fast",
+    "cursor-grok-4.7-high",
+    "cursor-grok-4.7-high-fast",
+    "cursor-grok-4.7-low",
+    "cursor-grok-4.7-low-fast",
+    "cursor-grok-4.7-medium",
+    "cursor-grok-4.7-medium-fast",
+    "cursor-grok-4.7-xhigh",
+    "cursor-grok-4.7-xhigh-fast"
+  ],
+  "notes": [
+    "Cursor custom-agent frontmatter uses <model>[] (empty thinking-level parameter), which routes to the exact pinned model id.",
+    "Profile or roster changes require `python -m scripts.trader_room.agent_config render-agents`; do not edit .cursor/agents/*.md model lines by hand.",
+    "model_families is the approved exact-id list. Only the grok and composer families have run caps; another family is a re-budget change, not a registry edit.",
+    "roles.parent mirrors ACP's one-shot parent and is changed only in a coordinated ACP cutover. trader (daily) may differ from advocate == rebuttal (on-demand); render-agents then generates daily-<seat> agents.",
+    "A trader is live only when status is active and activation_date <= the pin date (America/New_York)."
+  ],
+  "profiles": {
+    "current-production-grok-4.6": {
+      "status": "active",
+      "roles": {
+        "parent": "grok-4.6",
+        "trader": "grok-4.6",
+        "advocate": "grok-4.6",
+        "rebuttal": "grok-4.6",
+        "pm_principal": "grok-4.6",
+        "synthesis": "composer-2.5",
+        "learning_examiner": "composer-2.5",
+        "advocate_subagent": "composer-2.5"
+      },
+      "pm_subagent_models": ["grok-4.6", "composer-2.5"]
+    },
+    "candidate-grok-4.7": {
+      "status": "candidate",
+      "requires": [
+        "acp_parent_grok_4_7_migration",
+        "explicit_human_cutover_authorization"
+      ],
+      "roles": {
+        "parent": "grok-4.7",
+        "trader": "grok-4.7",
+        "advocate": "grok-4.7",
+        "rebuttal": "grok-4.7",
+        "pm_principal": "grok-4.7",
+        "synthesis": "composer-2.5",
+        "learning_examiner": "composer-2.5",
+        "advocate_subagent": "composer-2.5"
+      },
+      "pm_subagent_models": ["grok-4.7", "composer-2.5"]
+    }
+  },
+  "roster": {
+    "traders": [
+      {
+        "id": "perma-bull",
+        "remit": "strongest pro-growth, risk-on or cyclical macro expression",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "perma-bear",
+        "remit": "strongest defensive, slowdown, stress or risk-off macro expression",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "dollar-king",
+        "remit": "express macro views through USD spot whenever a defensible USD pair exists",
+        "expression_specialty": "spot_only",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "cross-merchant",
+        "remit": "cleaner relative-value expressions outside USD",
+        "expression_specialty": "spot_only",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "carry-is-king",
+        "remit": "positive carry and patient expressions across rates and FX unless a catalyst overwhelms it",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "rate-hawk",
+        "remit": "underpriced hawkish policy, higher terminal rates, or higher-rate repricing",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "rate-dove",
+        "remit": "underpriced easing, lower-rate repricing, or growth weakness",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "value-guy",
+        "remit": "historical or fundamental dislocations and convergence trades",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "trend-follower",
+        "remit": "persistent price, rates and macro trends; reject premature fades",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "mean-reverter",
+        "remit": "fade statistically or fundamentally stretched market moves when reversal conditions exist",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "positioning-cynic",
+        "remit": "attack crowded ideas; prefer better ownership asymmetry",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "catalyst-junkie",
+        "remit": "credible path from mispricing to repricing",
+        "expression_specialty": "rates_first",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "vol-convexity",
+        "remit": "asymmetric optionality; challenge spot expressions",
+        "expression_specialty": "options_specialist",
+        "may_no_trade": false,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      },
+      {
+        "id": "no-trade-skeptic",
+        "remit": "apparent edges are priced, too noisy, too crowded or poorly timed; may submit no-trade",
+        "expression_specialty": "rates_first",
+        "may_no_trade": true,
+        "activation_date": "2026-09-18",
+        "status": "active"
+      }
+    ],
+    "automated_pms": ["swinger", "pragmatist", "grinder"]
+  }
 }

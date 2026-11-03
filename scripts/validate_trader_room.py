@@ -2,24 +2,64 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
+
+# CI invokes this file as `python scripts/validate_trader_room.py` without PYTHONPATH.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
+from scripts.trader_room.agent_config import (
+    check_agents,
+    daily_agent_name,
+    get_profile,
+    head_traders,
+    load_config,
+    split_daily_agents,
+    trader_entries,
+)
+from scripts.trader_room.constants import ADVOCATE_MODEL, AGENT_FRONTMATTER_MODEL
+from scripts.trader_room.models import load_registry
 
 ROOT = Path(__file__).resolve().parents[1]
 AGENT_DIR = ROOT / ".cursor" / "agents"
 DRIVE_FOLDER_ID = "1NS6Qb6vNGKM18_PW0zPl4NOIJZOLyfUD"
-EXPECTED_ADVOCATES = {
-    "perma-bull", "perma-bear", "dollar-king", "cross-merchant",
-    "carry-is-king", "rate-hawk", "rate-dove", "value-guy",
-    "trend-follower", "mean-reverter", "positioning-cynic",
-    "catalyst-junkie", "vol-convexity", "no-trade-skeptic",
-}
+EXPECTED_ADVOCATES = {entry["id"] for entry in trader_entries()}
+ACTIVE_ADVOCATES = {entry["id"] for entry in head_traders()}
 EXPECTED_AGGREGATORS = {"conflict-aggregator", "final-aggregator"}
-EXPECTED_PM_AGENTS = {"swinger", "pragmatist", "grinder"}
+EXPECTED_PM_AGENTS = set(load_config()["roster"]["automated_pms"])
+_ROLES = get_profile()["roles"]
+EXPECTED_DAILY_AGENTS = (
+    {daily_agent_name(seat) for seat in EXPECTED_ADVOCATES} if split_daily_agents(_ROLES) else set()
+)
+PM_FRONTMATTER_MODEL = f"{_ROLES['pm_principal']}[]"
+DAILY_FRONTMATTER_MODEL = f"{_ROLES['trader']}[]"
 REQUIRED_FIELDS = {"name", "description", "model", "readonly", "is_background"}
 MANDATORY_PACKET_SECTIONS = {
     "temperature_gauges", "central_bank_research", "news_and_research",
     "market_state", "research_method", "source_index", "known_gaps",
 }
+
+
+def _hook_allowed_models(kind: str) -> list[str]:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(ROOT / "scripts/trader_room/agent_config.py"),
+            "hook-models",
+            "--kind",
+            kind,
+        ],
+        cwd=str(ROOT),
+        env={**os.environ, "PYTHONPATH": str(ROOT)},
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    text = proc.stdout.strip()
+    return text.split() if text else []
 
 
 def parse_frontmatter(text: str) -> dict[str, str]:
@@ -39,12 +79,12 @@ def parse_frontmatter(text: str) -> dict[str, str]:
     return data
 
 
-def assert_agent_file(name: str, path: Path) -> None:
+def assert_agent_file(name: str, path: Path, expected_model: str = AGENT_FRONTMATTER_MODEL) -> None:
     fm = parse_frontmatter(path.read_text(encoding="utf-8"))
     missing = REQUIRED_FIELDS - set(fm)
     assert not missing, f"{name}: missing frontmatter fields {sorted(missing)}"
     assert fm["name"] == name, f"{name}: frontmatter name mismatch"
-    assert fm["model"] == "grok-4.6[]", f"{name}: wrong model {fm['model']}"
+    assert fm["model"] == expected_model, f"{name}: wrong model {fm['model']}"
     assert fm["readonly"] == "true", f"{name}: must be readonly"
     assert fm["is_background"] == "true", f"{name}: must run in background"
 
@@ -52,7 +92,7 @@ def assert_agent_file(name: str, path: Path) -> None:
 def main() -> None:
     assert AGENT_DIR.is_dir(), "missing .cursor/agents"
     agent_files = {p.stem: p for p in AGENT_DIR.glob("*.md")}
-    expected_trader = EXPECTED_ADVOCATES | EXPECTED_AGGREGATORS
+    expected_trader = EXPECTED_ADVOCATES | EXPECTED_AGGREGATORS | EXPECTED_DAILY_AGENTS
     assert EXPECTED_PM_AGENTS <= set(agent_files), (
         f"missing PM custom agents: {sorted(EXPECTED_PM_AGENTS - set(agent_files))}"
     )
@@ -61,9 +101,10 @@ def main() -> None:
         f"trader agent roster mismatch: expected={sorted(expected_trader)} actual={sorted(trader_files)}"
     )
     for name, path in sorted(trader_files.items()):
-        assert_agent_file(name, path)
+        expected_model = DAILY_FRONTMATTER_MODEL if name in EXPECTED_DAILY_AGENTS else AGENT_FRONTMATTER_MODEL
+        assert_agent_file(name, path, expected_model)
     for name in sorted(EXPECTED_PM_AGENTS):
-        assert_agent_file(name, agent_files[name])
+        assert_agent_file(name, agent_files[name], PM_FRONTMATTER_MODEL)
         body = path.read_text(encoding="utf-8")
         if name in EXPECTED_ADVOCATES:
             assert "composer-2.5" in body, f"{name}: missing composer-2.5 subagent bound"
@@ -74,7 +115,7 @@ def main() -> None:
                 assert "one cogent actionable trade" in body, f"{name}: must require one trade"
 
     protocol = (ROOT / "docs" / "TRADER_ROOM_PROTOCOL.md").read_text(encoding="utf-8")
-    for name in EXPECTED_ADVOCATES:
+    for name in ACTIVE_ADVOCATES:
         assert f"`{name}`" in protocol, f"protocol missing {name}"
     assert "STATUS: AWAITING_CHATGPT_ARBITRATION" in protocol
     assert "Cursor must not:" in protocol
@@ -158,15 +199,23 @@ def main() -> None:
     assert "trader-room/outbox" not in command
     assert "GITHUB_HANDOFF" not in command
 
-    registry = json.loads((ROOT / "scripts" / "trader_room" / "model_registry.json").read_text(encoding="utf-8"))
-    assert registry["advocate_model"] == "grok-4.6"
-    assert registry["aggregator_model"] == "grok-4.6"
-    assert registry["agent_frontmatter_model"] == "grok-4.6[]"
+    registry = load_registry()
+    assert registry["advocate_model"] == ADVOCATE_MODEL
+    assert registry["aggregator_model"] == ADVOCATE_MODEL
+    assert registry["agent_frontmatter_model"] == AGENT_FRONTMATTER_MODEL
     assert registry["subagent_models"] == ["composer-2.5"]
+
+    agent_errors = check_agents(ROOT)
+    assert not agent_errors, "agent frontmatter drift:\n" + "\n".join(agent_errors)
 
     hook = (ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh").read_text(encoding="utf-8")
     assert "TRADER_ROOM_MODEL_POLICY" in hook
-    assert "grok-4.6|composer-2.5" in hook
+    assert "hook-models" in hook
+    assert "scripts/trader_room/agent_config.py" in hook
+    profile = get_profile()
+    roles = profile["roles"]
+    expected_tr = [roles["advocate"], roles["advocate_subagent"]]
+    assert _hook_allowed_models("trader-room") == expected_tr
 
     mcp_path = ROOT / ".cursor" / "mcp.json"
     config = json.loads(mcp_path.read_text(encoding="utf-8"))

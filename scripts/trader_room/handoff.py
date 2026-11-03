@@ -13,7 +13,8 @@ from typing import Any
 
 from scripts.trader_room.artifacts import write_json
 from scripts.trader_room.conflict import rebuttal_assignments
-from scripts.trader_room.constants import HANDOFF_MARKER, STANDING_ADVOCATES
+from scripts.trader_room.constants import HANDOFF_MARKER
+from scripts.trader_room.agent_config import pin_from_artifact, pin_trader_ids
 from scripts.trader_room.schema import (
     validate_conflict_map,
     validate_contribution,
@@ -22,9 +23,14 @@ from scripts.trader_room.schema import (
 )
 
 
-def agreement_clusters(originals: dict[str, dict[str, Any]]) -> list[dict[str, Any]]:
+def agreement_clusters(
+    originals: dict[str, dict[str, Any]],
+    *,
+    advocates: tuple[str, ...] | None = None,
+) -> list[dict[str, Any]]:
+    roster = advocates or pin_trader_ids(pin_from_artifact({}, kind="ondemand"))
     groups: dict[str, list[str]] = {}
-    for agent in STANDING_ADVOCATES:
+    for agent in roster:
         item = originals[agent]
         trade = item.get("trade")
         if not trade:
@@ -89,8 +95,10 @@ def build_pm_handoff(
     conflict_map: dict[str, Any],
     rebuttals: dict[str, dict[str, Any]],
     artifact_index: dict[str, Any] | None = None,
+    advocates: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     run_id = packet["run_id"]
+    roster = advocates or pin_trader_ids(pin_from_artifact({}, kind="ondemand"))
     conflicts = list(conflict_map.get("conflicts") or [])
     handoff = {
         "type": "TRADER_ROOM_PM_HANDOFF",
@@ -103,9 +111,9 @@ def build_pm_handoff(
                 "ref": f"trader-room/runs/{run_id}/submissions/{agent}.json",
                 "trade": originals[agent].get("trade"),
             }
-            for agent in STANDING_ADVOCATES
+            for agent in roster
         ],
-        "agreement_clusters": agreement_clusters(originals),
+        "agreement_clusters": agreement_clusters(originals, advocates=roster),
         "conflicts": [
             {
                 "id": item["id"],
@@ -140,7 +148,7 @@ def build_pm_handoff(
             for agent, item in rebuttals.items()
         ],
         "shared_assumptions": [
-            "All 14 seats used the identical frozen evidence packet and cutoff.",
+            f"All {len(roster)} seats used the identical frozen evidence packet and cutoff.",
             "No advocate, rebuttal, or final handoff acquired new evidence after freeze.",
         ],
         "unresolved_questions_and_gaps": list(packet.get("known_gaps") or []),
@@ -162,7 +170,12 @@ def finalize_run_dir(*, root: Path, run_dir: Path) -> dict[str, Any]:
         raise ValueError(f"run directory {run_dir.name} does not match packet run_id {run_id}")
 
     originals: dict[str, dict[str, Any]] = {}
-    for agent in STANDING_ADVOCATES:
+    preflight = {}
+    preflight_path = run_dir / "preflight.json"
+    if preflight_path.is_file():
+        preflight = json.loads(preflight_path.read_text(encoding="utf-8"))
+    advocates = pin_trader_ids(pin_from_artifact(preflight, kind="ondemand"))
+    for agent in advocates:
         path = run_dir / "submissions" / f"{agent}.json"
         contribution = json.loads(path.read_text(encoding="utf-8"))
         originals[agent] = validate_contribution(
@@ -209,6 +222,7 @@ def finalize_run_dir(*, root: Path, run_dir: Path) -> dict[str, Any]:
         conflict_map=conflict_map,
         rebuttals=rebuttals,
         artifact_index=index,
+        advocates=advocates,
     )
     validate_pm_handoff(
         handoff,

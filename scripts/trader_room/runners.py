@@ -274,6 +274,16 @@ class ModelRunner(Protocol):
     ) -> dict[str, Any]: ...
 
 
+def _pinned_role_model(budget: BudgetLedger, role: str, default: str) -> str:
+    if budget.pin is None:
+        if role == "advocate_subagent":
+            assert_subagent_model(default)
+        else:
+            assert_advocate_model(default)
+        return default
+    return str(budget.pin["roles"][role])
+
+
 class DryRunRunner:
     """Deterministic stand-in that never calls Grok or Composer."""
 
@@ -283,11 +293,11 @@ class DryRunRunner:
         self.composer_calls_per_advocate = composer_calls_per_advocate
 
     def run_advocate(self, agent: str, packet: dict[str, Any], budget: BudgetLedger) -> dict[str, Any]:
-        assert_advocate_model(ADVOCATE_MODEL)
-        budget.charge("advocate", ADVOCATE_MODEL, agent, f"round1:{agent}")
+        advocate_model = _pinned_role_model(budget, "advocate", ADVOCATE_MODEL)
+        budget.charge("advocate", advocate_model, agent, f"round1:{agent}")
         for idx in range(self.composer_calls_per_advocate):
-            assert_subagent_model(SUBAGENT_MODEL)
-            budget.charge("subagent", SUBAGENT_MODEL, agent, f"round1:{agent}:subagent:{idx+1}")
+            subagent_model = _pinned_role_model(budget, "advocate_subagent", SUBAGENT_MODEL)
+            budget.charge("subagent", subagent_model, agent, f"round1:{agent}:subagent:{idx+1}")
         trade = _trade_from_spec(agent, packet)
         confidence = 40 if agent == NO_TRADE_AGENT else 58
         payload = {
@@ -342,8 +352,8 @@ class DryRunRunner:
         assignment: dict[str, Any],
         budget: BudgetLedger,
     ) -> dict[str, Any]:
-        assert_advocate_model(ADVOCATE_MODEL)
-        budget.charge("rebuttal", ADVOCATE_MODEL, agent, f"rebuttal:{agent}")
+        rebuttal_model = _pinned_role_model(budget, "rebuttal", ADVOCATE_MODEL)
+        budget.charge("rebuttal", rebuttal_model, agent, f"rebuttal:{agent}")
         opponents = assignment["opponents"]
         return {
             "type": "TRADER_ROOM_REBUTTAL",
@@ -400,37 +410,53 @@ class LiveRunner:
 
 
 
-def build_launch_plan(packet: dict[str, Any], memory_index: dict[str, Any] | None = None) -> dict[str, Any]:
+def build_launch_plan(
+    packet: dict[str, Any],
+    memory_index: dict[str, Any] | None = None,
+    *,
+    pin: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    from scripts.trader_room.agent_config import build_pin
+
+    roster_pin = pin or build_pin("ondemand")
+    n = len(roster_pin["traders"])
+    advocate_model = roster_pin["roles"]["advocate"]
+    frontmatter_model = f"{advocate_model}[]"
+    subagent_model = roster_pin["roles"]["advocate_subagent"]
     sidecar = memory_index or {}
     hashes = sidecar.get("hashes") or {}
     paths = sidecar.get("paths") or {}
+    traders = roster_pin["traders"]
+    may_no_trade = {str(t["id"]): bool(t.get("may_no_trade")) for t in traders}
     return {
         "run_id": packet["run_id"],
         "evidence_cutoff": packet["as_of"],
         "packet_sha256": packet.get("packet_sha256"),
         "common_evidence_sha256": packet.get("packet_sha256"),
         "memory_isolation": "own_sidecar_only",
+        "agent_roster_pin": roster_pin,
+        "agent_roster_pin_sha256": roster_pin["pin_sha256"],
         "advocates": [
             {
-                "name": name,
-                "model": ADVOCATE_MODEL,
-                "frontmatter_model": "grok-4.6[]",
+                "name": str(trader["id"]),
+                "model": advocate_model,
+                "frontmatter_model": frontmatter_model,
                 "max_subagents": 2,
-                "subagent_model": SUBAGENT_MODEL,
-                "trade_required": name != NO_TRADE_AGENT,
-                "memory_context_sha256": hashes.get(name),
-                "memory_sidecar_path": paths.get(name) or f"memory/{name}.json",
+                "subagent_model": subagent_model,
+                "trade_required": not may_no_trade.get(str(trader["id"]), False),
+                "memory_context_sha256": hashes.get(str(trader["id"])),
+                "memory_sidecar_path": paths.get(str(trader["id"])) or f"memory/{trader['id']}.json",
             }
-            for name in STANDING_ADVOCATES
+            for trader in traders
         ],
         "conflict_stage": {"type": "deterministic_conflict_synopsis_v1", "model_calls": 0},
         "final_handoff": {"type": "deterministic_pm_handoff_v1", "model_calls": 0},
         "ceilings": {
-            "repository_grok_baseline": 14,
-            "grok_rebuttal_max": 14,
-            "repository_grok_ceiling": 28,
-            "composer_ceiling": 28,
-            "acp_parent_inclusive_grok_ceiling": 29,
-            "acp_parent_inclusive_total_ceiling": 57,
+            "repository_grok_baseline": n,
+            "grok_rebuttal_max": n,
+            "repository_grok_ceiling": 2 * n,
+            "composer_ceiling": 2 * n,
+            "acp_parent_inclusive_grok_ceiling": 2 * n + 1,
+            "acp_parent_inclusive_total_ceiling": 4 * n + 1,
         },
     }

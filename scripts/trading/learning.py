@@ -27,6 +27,7 @@ from scripts.trading.constants import (
     SKILL_LUCK_VALUES,
     YES_NO_NA,
 )
+from scripts.trader_room.agent_config import get_profile, load_config as _load_agent_config
 from scripts.trading.errors import SchemaError
 from scripts.trading.store import TradingStore, assert_identity
 
@@ -679,7 +680,7 @@ def standing_floor_for_learning_default(standing: str, *, learning_status: str) 
 
 
 EXAMINER_ROLE = "learning_quality_examiner"
-EXAMINER_MODEL = "composer-2.5"
+EXAMINER_MODEL = get_profile(config=_load_agent_config())["roles"]["learning_examiner"]
 SUBMISSION_KINDS = ("postmortem", "performance_reflection")
 EXAMINER_FORBIDDEN_KEYS = {
     "actions",

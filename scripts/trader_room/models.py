@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import Any
 
+from scripts.trader_room.agent_config import get_profile, load_config, normalize_model as _normalize_model
 from scripts.trader_room.constants import (
     ADVOCATE_MODEL,
     AGGREGATOR_MODEL,
@@ -18,13 +18,49 @@ from scripts.trader_room.errors import ModelPolicyError
 
 
 def load_registry(path: Path | None = None) -> dict[str, Any]:
-    registry_path = path or REGISTRY_PATH
-    data = json.loads(registry_path.read_text(encoding="utf-8"))
-    if data.get("advocate_model") != ADVOCATE_MODEL:
+    cfg = load_config(path)
+    profile = get_profile(config=cfg)
+    roles = profile["roles"]
+    pm_model = roles["pm_principal"]
+    advocate = roles["advocate"]
+    subagent = roles["advocate_subagent"]
+
+    cursor_variants = (
+        "high",
+        "high-fast",
+        "low",
+        "low-fast",
+        "medium",
+        "medium-fast",
+        "xhigh",
+        "xhigh-fast",
+    )
+    pm_forbidden = (pm_model, "inherit") + tuple(
+        f"cursor-{pm_model}-{variant}" for variant in cursor_variants
+    )
+
+    data: dict[str, Any] = {
+        "schema_version": 2,
+        "active_profile": cfg["active_profile"],
+        "advocate_model": advocate,
+        "daily_trader_model": roles["trader"],
+        "aggregator_model": advocate,
+        "agent_frontmatter_model": f"{advocate}[]",
+        "subagent_models": [subagent],
+        "pm_principal_model": pm_model,
+        "pm_agent_frontmatter_model": f"{pm_model}[]",
+        "automated_pm_agent_ids": list(cfg["roster"]["automated_pms"]),
+        "pm_allowed_subagent_models": list(profile["pm_subagent_models"]),
+        "pm_principal_launch_mechanism": "cursor_custom_agent",
+        "pm_forbidden_task_principal_models": list(pm_forbidden),
+        "forbidden_models": list(cfg.get("forbidden_models") or []),
+    }
+
+    if data["advocate_model"] != ADVOCATE_MODEL:
         raise ModelPolicyError(
             f"registry advocate_model {data.get('advocate_model')!r} != {ADVOCATE_MODEL}"
         )
-    if data.get("aggregator_model") != AGGREGATOR_MODEL:
+    if data["aggregator_model"] != AGGREGATOR_MODEL:
         raise ModelPolicyError(
             f"registry aggregator_model {data.get('aggregator_model')!r} != {AGGREGATOR_MODEL}"
         )
@@ -40,12 +76,12 @@ def load_registry(path: Path | None = None) -> dict[str, Any]:
 
 
 def normalize_model(model: str | None) -> str:
-    if not model:
-        raise ModelPolicyError("missing model id")
-    value = model.strip()
-    if value.endswith("[]"):
-        value = value[:-2]
-    return value
+    try:
+        return _normalize_model(model)
+    except Exception as exc:
+        if isinstance(exc, ModelPolicyError):
+            raise
+        raise ModelPolicyError(str(exc)) from exc
 
 
 def assert_advocate_model(model: str | None) -> str:

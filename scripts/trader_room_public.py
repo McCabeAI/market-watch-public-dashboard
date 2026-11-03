@@ -16,6 +16,7 @@ from typing import Any
 
 from scripts.overnight.public_prose import sanitize_public_value
 from scripts.trader_room.constants import HANDOFF_MARKER, STANDING_ADVOCATES
+from scripts.trader_room.agent_config import pin_from_artifact, pin_trader_ids
 
 ROOT = Path(__file__).resolve().parents[1]
 PUBLIC_RELPATH = Path("data/trader-room/public/latest.json")
@@ -113,6 +114,16 @@ def list_run_dirs(root: Path = ROOT) -> list[Path]:
     )
 
 
+def _expected_advocates(run_dir: Path) -> set[str]:
+    for name in ("preflight.json", "launch_plan.json"):
+        path = run_dir / name
+        if path.is_file():
+            artifact = _load(path)
+            if isinstance(artifact, dict):
+                return set(pin_trader_ids(pin_from_artifact(artifact, kind="ondemand")))
+    return set(STANDING_ADVOCATES)
+
+
 def completeness_errors(run_dir: Path) -> list[str]:
     """Return why a run is not a complete valid public candidate. Empty = valid."""
     errors: list[str] = []
@@ -124,7 +135,7 @@ def completeness_errors(run_dir: Path) -> list[str]:
         errors.append("missing submissions/")
         return errors
     seats = {path.stem for path in submissions_dir.glob("*.json")}
-    expected = set(STANDING_ADVOCATES)
+    expected = _expected_advocates(run_dir)
     if seats != expected:
         missing = sorted(expected - seats)
         extra = sorted(seats - expected)

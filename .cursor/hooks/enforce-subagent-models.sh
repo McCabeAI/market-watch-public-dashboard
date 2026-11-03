@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 
-DEFAULT_MODELS="composer-2.5 grok-4.6 grok-4.5"
+DEFAULT_MODELS="composer-2.5 grok-4.6 grok-4.7 grok-4.5"
 
 json_escape() {
   printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
@@ -26,6 +26,9 @@ fi
 
 MODEL=$(printf '%s' "$INPUT" | sed -n 's/.*"subagent_model"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n 1)
 [ -n "$MODEL" ] || deny "Subagent blocked: Cursor did not provide subagent_model."
+case "$MODEL" in
+  *[]) MODEL=${MODEL%[]} ;;
+esac
 
 TRANSCRIPT=$(printf '%s' "$INPUT" | sed -n 's/.*"transcript_path"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -n 1)
 if [ -z "$TRANSCRIPT" ] && [ -n "${CURSOR_TRANSCRIPT_PATH:-}" ]; then
@@ -40,6 +43,15 @@ if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
     | head -n 1 || true)
 fi
 
+HOOK_DIR=$(cd "$(dirname "$0")" && pwd)
+REPO_ROOT=$(cd "$HOOK_DIR/../.." && pwd)
+
+hook_models() {
+  kind=$1
+  unset MW_AGENT_CONFIG_PATH
+  PYTHONPATH="$REPO_ROOT" python3 "$REPO_ROOT/scripts/trader_room/agent_config.py" hook-models --kind "$kind" 2>/dev/null || true
+}
+
 if [ -n "$POLICY" ]; then
   case "$POLICY" in
     *'"allowed_models":null'*) ;;
@@ -53,6 +65,25 @@ if [ -n "$POLICY" ]; then
       deny "Subagent model '$MODEL' is not in this run's ACP allowed_subagent_models list."
       ;;
   esac
+fi
+
+MW_RUN_ALLOWED=""
+if [ -n "$TRANSCRIPT" ] && [ -r "$TRANSCRIPT" ]; then
+  if head -c 65536 "$TRANSCRIPT" 2>/dev/null | sed 's/\\"/"/g' | grep -Fq 'MW_OVERNIGHT_RUN_POLICY={"version"'; then
+    MW_RUN_ALLOWED=$(hook_models daily)
+    [ -n "$MW_RUN_ALLOWED" ] || deny "Overnight run policy could not load allowed models from the active roster profile."
+    case " $MW_RUN_ALLOWED " in
+      *" $MODEL "*) allow ;;
+      *) deny "Overnight run policy allows only the active profile's role models ($MW_RUN_ALLOWED). Refusing '$MODEL'." ;;
+    esac
+  elif head -c 65536 "$TRANSCRIPT" 2>/dev/null | sed 's/\\"/"/g' | grep -Fq 'MW_TRADER_ROOM_RUN_POLICY={"version"'; then
+    MW_RUN_ALLOWED=$(hook_models ondemand)
+    [ -n "$MW_RUN_ALLOWED" ] || deny "Trader Room run policy could not load allowed models from the active roster profile."
+    case " $MW_RUN_ALLOWED " in
+      *" $MODEL "*) allow ;;
+      *) deny "Trader Room run policy allows only the active profile's role models ($MW_RUN_ALLOWED). Refusing '$MODEL'." ;;
+    esac
+  fi
 fi
 
 TR_POLICY=""
@@ -73,22 +104,28 @@ fi
 
 if [ -n "$PM_POLICY" ]; then
   case "$MODEL" in
-    grok-4.6|composer-2.5) allow ;;
-    cursor-grok-4.6-*)
+    cursor-grok-*)
       deny "PM routing blocked runtime slug '$MODEL'. Launch principals via .cursor/agents/{swinger,pragmatist,grinder}.md (frontmatter grok-4.6[]), not Task model grok-4.6/inherit."
       ;;
-    *) deny "PM model policy allows only grok-4.6 principals and grok-4.6/composer-2.5 subagents. Refusing '$MODEL'." ;;
+  esac
+  ALLOWED=$(hook_models pm)
+  [ -n "$ALLOWED" ] || deny "PM model policy could not load allowed models from the active roster profile."
+  case " $ALLOWED " in
+    *" $MODEL "*) allow ;;
+    *) deny "PM model policy allows only the active profile models ($ALLOWED). Refusing '$MODEL'." ;;
   esac
 fi
 
 if [ -n "$TR_POLICY" ]; then
-  case "$MODEL" in
-    grok-4.6|composer-2.5) allow ;;
-    *) deny "Trader Room model policy allows only grok-4.6 (advocates/aggregators) and composer-2.5 (internal advocate subagents). Refusing '$MODEL'." ;;
+  ALLOWED=$(hook_models trader-room)
+  [ -n "$ALLOWED" ] || deny "Trader Room model policy could not load allowed models from the active roster profile."
+  case " $ALLOWED " in
+    *" $MODEL "*) allow ;;
+    *) deny "Trader Room model policy allows only the active profile models ($ALLOWED). Refusing '$MODEL'." ;;
   esac
 fi
 
 case " $DEFAULT_MODELS " in
   *" $MODEL "*) allow ;;
-  *) deny "Subagent model '$MODEL' is outside the repository default Cursor-model allowlist (composer-2.5, grok-4.6, grok-4.5). Use an allowed model or launch a new ACP run with an explicit allowed_subagent_models override." ;;
+  *) deny "Subagent model '$MODEL' is outside the repository default Cursor-model allowlist (composer-2.5, grok-4.6, grok-4.7, grok-4.5). Use an allowed model or launch a new ACP run with an explicit allowed_subagent_models override." ;;
 esac
