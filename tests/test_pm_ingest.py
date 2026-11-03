@@ -4,8 +4,14 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
-from scripts.pm.chatgpt_ingest import apply_chatgpt_decision, validate_chatgpt_decision
+from scripts.pm.chatgpt_ingest import (
+    apply_chatgpt_decision,
+    frozen_chatgpt_packet,
+    validate_chatgpt_decision,
+)
+from scripts.pm.review_packets import select_daily_pm_source
 from scripts.pm.cli import init_layer
 from scripts.pm.constants import CHATGPT_PM_ID, SCHEMA_VERSION
 from scripts.pm.errors import FreshnessError, SchemaError
@@ -73,6 +79,39 @@ class ChatGPTIngestTests(unittest.TestCase):
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
+
+    def test_frozen_packet_identity_is_stable_across_validation(self) -> None:
+        source = select_daily_pm_source(
+            self.store.root, self.store.state_root, allow_trader_room_fallback=True
+        )
+        # A re-built memory snapshot contains volatile holding_seconds. The
+        # immutable review must be the contract for an authored PM decision.
+        with mock.patch(
+            "scripts.pm.chatgpt_ingest.build_all_packets",
+            side_effect=AssertionError("must not rebuild the frozen pre-apply packet"),
+        ):
+            packet = frozen_chatgpt_packet(self.store, source)
+            self.assertEqual(packet["review_packet_sha256"], self.packet["review_packet_sha256"])
+            validate_chatgpt_decision(_decision(self.packet), packet=packet)
+
+    def test_frozen_packet_corruption_and_old_source_are_rejected(self) -> None:
+        source = select_daily_pm_source(
+            self.store.root, self.store.state_root, allow_trader_room_fallback=True
+        )
+        original = self.store.read_json(self.store.packet_path("chatgpt"))
+        tampered = dict(original)
+        tampered["review_packet_sha256"] = "a" * 64
+        self.store.write_json(self.store.packet_path("chatgpt"), tampered)
+        with self.assertRaisesRegex(FreshnessError, "integrity"):
+            frozen_chatgpt_packet(self.store, source)
+
+        altered_identity = dict(original)
+        altered_identity["review_packet_id"] = "prp-chatgpt-old-review"
+        self.store.write_json(self.store.packet_path("chatgpt"), altered_identity)
+        with self.assertRaisesRegex(FreshnessError, "current accepted review"):
+            frozen_chatgpt_packet(self.store, source)
+
+        self.store.write_json(self.store.packet_path("chatgpt"), original)
 
     def test_valid_no_trade_ingest_persists_requests(self) -> None:
         result = apply_chatgpt_decision(self.store, _decision(self.packet), write=True)
