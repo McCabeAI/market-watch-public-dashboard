@@ -435,6 +435,17 @@ def load_config(path: Path | None = None, *, honor_env: bool = True) -> dict[str
 
     _validate_roster(raw.get("roster") or {})
 
+    if source == "default":
+        # Acceptance, books and memory readers use the live roster, so the committed
+        # registry may only carry seats that onboard_trader --activate has made live.
+        scheduled = scheduled_traders(raw)
+        if scheduled:
+            ids = [t["id"] for t in scheduled]
+            raise AgentConfigError(
+                f"active seats with a future activation_date in the committed registry: {ids}; "
+                "keep them pending and run onboard_trader --activate on or after the date"
+            )
+
     raw["_source"] = source
     return raw
 

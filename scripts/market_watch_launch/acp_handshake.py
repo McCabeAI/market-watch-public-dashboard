@@ -96,7 +96,8 @@ def _resolve_daily_pin(launch: dict[str, Any] | None, ctx: dict[str, Any] | None
                     snapshot = json.loads(path.read_text(encoding="utf-8"))
                     pin = agent_config.pin_from_artifact(snapshot, kind="daily")
                     return agent_config.assert_acceptable_pin(pin)
-    return agent_config.assert_acceptable_pin(agent_config.build_pin("daily"))
+    session_date = (launch or {}).get("session_date")
+    return agent_config.assert_acceptable_pin(agent_config.build_pin("daily", as_of=session_date or None))
 
 
 def _delegation_budget(pin: dict[str, Any] | None = None) -> dict[str, Any]:

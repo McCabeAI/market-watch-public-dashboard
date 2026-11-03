@@ -440,6 +440,48 @@ class PinIntegrityTests(unittest.TestCase):
             self.assertEqual((budget["total_calls"], budget["grok_family_calls"], budget["composer_calls"]), caps)
 
 
+class PinConsumerTests(unittest.TestCase):
+    def _pin_with_model_absent_from_head(self) -> dict:
+        body = dict(build_pin("ondemand"))
+        body["roles"] = {**body["roles"], "advocate": "grok-4.8", "rebuttal": "grok-4.8"}
+        body["model_families"] = {**body["model_families"], "grok-4.8": "grok"}
+        return seal_pin(body)
+
+    def test_budget_ledger_charges_from_pin_families(self) -> None:
+        from scripts.trader_room.budget import BudgetError, BudgetLedger
+
+        pin = self._pin_with_model_absent_from_head()
+        verify_pin(pin)
+        ledger = BudgetLedger(pin=pin)
+        ledger.charge("advocate", "grok-4.8", "perma-bull", "round1")
+        self.assertEqual(ledger.grok, 1)
+        with self.assertRaises(BudgetError):
+            ledger.charge("advocate", "grok-4.6", "perma-bear", "round1")
+
+    def test_dry_run_runner_charges_pinned_models(self) -> None:
+        from scripts.trader_room.budget import BudgetLedger
+        from scripts.trader_room.runners import _pinned_role_model
+
+        pin = self._pin_with_model_absent_from_head()
+        ledger = BudgetLedger(pin=pin)
+        self.assertEqual(_pinned_role_model(ledger, "advocate", "grok-4.6"), "grok-4.8")
+        self.assertEqual(_pinned_role_model(ledger, "advocate_subagent", "composer-2.5"), "composer-2.5")
+
+    def test_handshake_fallback_pins_on_session_date(self) -> None:
+        from scripts.market_watch_launch import acp_handshake
+
+        seen: dict = {}
+        real = acp_handshake.agent_config.build_pin
+
+        def capture(kind, **kwargs):
+            seen.update(kwargs)
+            return real(kind, **kwargs)
+
+        with patch.object(acp_handshake.agent_config, "build_pin", side_effect=capture):
+            acp_handshake._resolve_daily_pin({"session_date": "2026-11-03"}, None)
+        self.assertEqual(seen.get("as_of"), "2026-11-03")
+
+
 class ActivationDateTests(unittest.TestCase):
     def _raw_with_seat(self, activation_date: str, status: str = "active") -> dict:
         raw = _raw_config()

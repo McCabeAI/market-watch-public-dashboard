@@ -274,6 +274,16 @@ class ModelRunner(Protocol):
     ) -> dict[str, Any]: ...
 
 
+def _pinned_role_model(budget: BudgetLedger, role: str, default: str) -> str:
+    if budget.pin is None:
+        if role == "advocate_subagent":
+            assert_subagent_model(default)
+        else:
+            assert_advocate_model(default)
+        return default
+    return str(budget.pin["roles"][role])
+
+
 class DryRunRunner:
     """Deterministic stand-in that never calls Grok or Composer."""
 
@@ -283,11 +293,11 @@ class DryRunRunner:
         self.composer_calls_per_advocate = composer_calls_per_advocate
 
     def run_advocate(self, agent: str, packet: dict[str, Any], budget: BudgetLedger) -> dict[str, Any]:
-        assert_advocate_model(ADVOCATE_MODEL)
-        budget.charge("advocate", ADVOCATE_MODEL, agent, f"round1:{agent}")
+        advocate_model = _pinned_role_model(budget, "advocate", ADVOCATE_MODEL)
+        budget.charge("advocate", advocate_model, agent, f"round1:{agent}")
         for idx in range(self.composer_calls_per_advocate):
-            assert_subagent_model(SUBAGENT_MODEL)
-            budget.charge("subagent", SUBAGENT_MODEL, agent, f"round1:{agent}:subagent:{idx+1}")
+            subagent_model = _pinned_role_model(budget, "advocate_subagent", SUBAGENT_MODEL)
+            budget.charge("subagent", subagent_model, agent, f"round1:{agent}:subagent:{idx+1}")
         trade = _trade_from_spec(agent, packet)
         confidence = 40 if agent == NO_TRADE_AGENT else 58
         payload = {
@@ -342,8 +352,8 @@ class DryRunRunner:
         assignment: dict[str, Any],
         budget: BudgetLedger,
     ) -> dict[str, Any]:
-        assert_advocate_model(ADVOCATE_MODEL)
-        budget.charge("rebuttal", ADVOCATE_MODEL, agent, f"rebuttal:{agent}")
+        rebuttal_model = _pinned_role_model(budget, "rebuttal", ADVOCATE_MODEL)
+        budget.charge("rebuttal", rebuttal_model, agent, f"rebuttal:{agent}")
         opponents = assignment["opponents"]
         return {
             "type": "TRADER_ROOM_REBUTTAL",

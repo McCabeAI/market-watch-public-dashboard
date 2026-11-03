@@ -558,6 +558,43 @@ class RosterOnboardingTests(unittest.TestCase):
         self.assertEqual(config_path.read_bytes(), config_before)
         self.assertFalse((self.tmp / onboard_mod._CHECKPOINT_NAME).exists())
 
+    def test_activation_refused_while_daily_review_open(self) -> None:
+        index_dir = self.tmp / "data" / "overnight" / "runs" / "overnight-20261102" / "reviews"
+        index_dir.mkdir(parents=True)
+        (index_dir / "index.json").write_text(
+            json.dumps({"reviews": [{"review_id": "review-001", "status": "frozen"}]}), encoding="utf-8"
+        )
+        kwargs = _activate_kwargs(self.tmp)
+        before = _tree_digest(self.tmp)
+        with self.assertRaisesRegex(AgentConfigError, "review overnight-20261102/review-001 is open"):
+            onboard_mod.onboard_activate(**kwargs)
+        self.assertEqual(_tree_digest(self.tmp), before)
+        (index_dir / "index.json").write_text(
+            json.dumps({"reviews": [{"review_id": "review-001", "status": "accepted"}]}), encoding="utf-8"
+        )
+        onboard_mod.onboard_activate(**kwargs)
+
+    def test_committed_registry_rejects_future_dated_active_seat(self) -> None:
+        config_path = self.tmp / "scripts" / "trader_room" / "model_registry.json"
+        raw = json.loads(config_path.read_text(encoding="utf-8"))
+        raw["roster"]["traders"].append(
+            {
+                "id": "synthetic-fifteenth",
+                "remit": "synthetic fixture seat",
+                "expression_specialty": "rates_first",
+                "may_no_trade": False,
+                "activation_date": "2999-01-01",
+                "status": "active",
+            }
+        )
+        config_path.write_text(json.dumps(raw, indent=2) + "\n", encoding="utf-8")
+        from scripts.trader_room import agent_config as ac
+
+        with mock.patch.object(ac, "CONFIG_PATH", config_path):
+            with self.assertRaisesRegex(AgentConfigError, "future activation_date"):
+                ac.load_config(config_path)
+        self.assertEqual(len(ac.build_pin("daily", config=ac.load_config(config_path))["traders"]), 14)
+
     def test_leftover_checkpoint_is_reported_before_state_checks(self) -> None:
         (self.tmp / onboard_mod._CHECKPOINT_NAME).write_text("{}", encoding="utf-8")
         with self.assertRaisesRegex(AgentConfigError, "--recover"):

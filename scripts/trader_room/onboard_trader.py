@@ -14,6 +14,7 @@ from typing import Any, Callable
 
 from scripts.overnight.books import empty_seat
 from scripts.overnight.constants import BOOKS_RELPATH, ROOT as REPO_ROOT
+from scripts.overnight.reviews import OPEN_STATUSES
 from scripts.overnight.store import _dump as overnight_json_dump
 from scripts.overnight.store import sha256_json, write_json
 from scripts.trader_room.agent_config import (
@@ -32,6 +33,7 @@ _KEBAB_ID = re.compile(r"^[a-z][a-z0-9]*(-[a-z0-9]+)*$")
 _PLACEHOLDER = re.compile(r"\b(todo|tbd|placeholder|lorem)\b", re.IGNORECASE)
 _EXPRESSION_SPECIALTIES = frozenset({"rates_first", "spot_only", "options_specialist"})
 _CHECKPOINT_NAME = ".mw-onboarding-checkpoint.json"
+_RUN_ID = re.compile(r"^overnight-\d{8}$")
 _IDENTITY_JSON_FILES = (
     "journal.json",
     "lessons.json",
@@ -55,6 +57,24 @@ def _maybe_fault(stage: str) -> None:
 
 def _config_path(root: Path) -> Path:
     return root / "scripts" / "trader_room" / "model_registry.json"
+
+
+def _open_daily_review(root: Path) -> str | None:
+    """Latest overnight run's open review, if any (acceptance still uses the live roster)."""
+    runs = root / "data" / "overnight" / "runs"
+    if not runs.is_dir():
+        return None
+    run_ids = sorted(p.name for p in runs.iterdir() if _RUN_ID.match(p.name))
+    if not run_ids:
+        return None
+    index_path = runs / run_ids[-1] / "reviews" / "index.json"
+    if not index_path.is_file():
+        return None
+    index = json.loads(index_path.read_text(encoding="utf-8"))
+    for row in index.get("reviews") or []:
+        if isinstance(row, dict) and row.get("status") in OPEN_STATUSES:
+            return f"{run_ids[-1]}/{row.get('review_id')}"
+    return None
 
 
 def _checkpoint_path(root: Path) -> Path:
@@ -512,6 +532,13 @@ def onboard_activate(
     store = TradingStore(root=root, state_root=root)
     if _identity_exists(store, trader_id) or _books_seat_exists(root, trader_id):
         raise AgentConfigError(f"refusing activation: state already exists for {trader_id!r}")
+
+    open_review = _open_daily_review(root)
+    if open_review is not None:
+        raise AgentConfigError(
+            f"refusing live activation while daily review {open_review} is open; "
+            "activate after it is accepted and before the next freeze"
+        )
 
     act_day = date.fromisoformat(activation_date)
     ny_today = today_ny() if today is None else today

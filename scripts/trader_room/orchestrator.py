@@ -84,9 +84,9 @@ def run_debate(
     root: Path = ROOT,
     artifact_root: Path | None = None,
 ) -> dict[str, Any]:
-    budget = BudgetLedger()
-    budget.assert_baseline_room()
     pin = pin_from_artifact(preflight, kind="ondemand")
+    budget = BudgetLedger(pin=pin)
+    budget.assert_baseline_room()
     advocates = pin_trader_ids(pin)
     originals: dict[str, dict[str, Any]] = {}
     for agent in advocates:

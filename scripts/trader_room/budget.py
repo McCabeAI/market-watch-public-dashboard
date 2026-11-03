@@ -99,7 +99,8 @@ class BudgetLedger:
         composer_per = self._composer_per_advocate
         trader_ids = set(agent_config.pin_trader_ids(pin))
 
-        if agent_config.model_family(normalized) == "grok":
+        family = agent_config.pin_model_family(pin, normalized)
+        if family == "grok":
             if self.grok + 1 > grok_ceiling:
                 raise BudgetError(
                     f"Grok ceiling {grok_ceiling} exceeded by {purpose} ({role})"
@@ -111,7 +112,7 @@ class BudgetLedger:
                     )
                 self.rebuttals += 1
             self.grok += 1
-        elif agent_config.model_family(normalized) == "composer":
+        elif family == "composer":
             if role != "subagent":
                 raise BudgetError(f"composer-2.5 may only be charged as subagent, not {role}")
             if agent not in trader_ids:
