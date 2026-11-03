@@ -10,6 +10,16 @@ from pathlib import Path
 from scripts.market_watch_launch.graph import run_launch, run_stage
 
 
+def launch_job_failed(result: dict) -> bool:
+    """True when the orchestrated launch did not produce a publishable success.
+
+    Canonical launch status is unchanged. Running and succeeded launches,
+    including a freeze-stopped launch that is still "running" because later
+    stages are pending, are not failures. Blocked and failed are.
+    """
+    return str(result.get("status") or "") in {"failed", "blocked"}
+
+
 def _build_launch_request(args: argparse.Namespace) -> dict:
     request: dict = {
         "rerun": bool(args.rerun),
@@ -51,10 +61,7 @@ def cmd_launch(args: argparse.Namespace) -> int:
         through=args.through,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
-    status = result["status"]
-    if status == "failed":
-        return 1
-    return 0
+    return 1 if launch_job_failed(result) else 0
 
 
 def cmd_show(args: argparse.Namespace) -> int:
@@ -74,7 +81,9 @@ def cmd_stage(args: argparse.Namespace) -> int:
         state_root=Path(args.state_root),
     )
     print(json.dumps(result, indent=2, sort_keys=True))
-    if result["status"] == "failed":
+    # Stage 05 stays blocked while it waits for research publication, remote
+    # freeze, or ACP. That is the two-trigger handoff, not a failed launch.
+    if result.get("status") == "failed":
         return 1
     return 0
 
