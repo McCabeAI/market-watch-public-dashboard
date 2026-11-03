@@ -980,8 +980,11 @@ class SofrQualityGateSr3Tests(unittest.TestCase):
             families=families,
             positions=self._sofr_positions(),
         )
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
         for row in result["unmarkable_positions"]:
             self.assertIsNone(row["observation_date"])
 
@@ -1028,8 +1031,11 @@ class SofrQualityGateSr3Tests(unittest.TestCase):
             families=families,
             positions=self._sofr_positions(),
         )
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
         self.assertEqual(result["reason"], "existing_book_unmarkable")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
         unmarkable = {row["instrument"]: row for row in result["unmarkable_positions"]}
         self.assertNotIn("SOFR_2027-03", unmarkable)
         sep = unmarkable["SOFR_2027-09"]

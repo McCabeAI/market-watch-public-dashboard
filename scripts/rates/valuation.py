@@ -205,6 +205,14 @@ def _side_sign(side: Any) -> int:
 
 
 def legacy_rate_pnl(position: Mapping[str, Any], *, exit_price: float | None = None, closed_notional: float | None = None) -> dict[str, Any]:
+    if position.get("mark_status") == "unavailable" and exit_price is None:
+        return {
+            "unrealized_pnl_usd": None,
+            "pnl_unavailable": True,
+            "pnl_note": "mark unavailable; stale print is not a current P&L",
+            "valuation_method": LEGACY_METHOD,
+            "isolated": True,
+        }
     entry = position.get("entry_price")
     mark = exit_price if exit_price is not None else position.get("mark_price")
     notional = closed_notional if closed_notional is not None else position.get("notional_usd")

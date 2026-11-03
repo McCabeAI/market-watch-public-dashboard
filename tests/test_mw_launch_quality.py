@@ -249,8 +249,12 @@ class EvaluateGateTests(unittest.TestCase):
         families = _fresh_market_families()
         families["market_state"] = {"status": "missing", "data": None}
         result = evaluate_gate(rows=rows, families=families)
-        self.assertEqual(result["outcome"], "BLOCKED")
+        self.assertEqual(result["outcome"], "PASS")
+        self.assertEqual(result["coverage"], "PARTIAL")
         self.assertEqual(result["reason"], "no_markable_universe")
+        self.assertFalse(result["eligible"])
+        self.assertTrue(result["research_eligible"])
+        self.assertEqual(result["trader_execution"], "blocked")
 
     def test_required_preflight_failure(self) -> None:
         rows = [

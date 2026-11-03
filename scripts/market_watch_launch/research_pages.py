@@ -184,9 +184,19 @@ def _verify_artifact_hashes(root: Path, launch: dict[str, Any]) -> None:
 
 def _verify_quality_gate(launch: dict[str, Any]) -> dict[str, Any]:
     gate = _details(launch, "03_quality_gate")
-    if gate.get("outcome") != "PASS" or gate.get("coverage") not in ACCEPTED_GATE_COVERAGE or gate.get("eligible") is not True:
-        raise _fail("quality_gate_not_pass", f"outcome={gate.get('outcome')} coverage={gate.get('coverage')}")
-    return {
+    eligible = gate.get("eligible") is True
+    research_eligible = gate.get("research_eligible") is True
+    if gate.get("outcome") != "PASS" or gate.get("coverage") not in ACCEPTED_GATE_COVERAGE:
+        raise _fail(
+            "quality_gate_not_pass",
+            f"outcome={gate.get('outcome')} coverage={gate.get('coverage')}",
+        )
+    if not eligible and not research_eligible:
+        raise _fail(
+            "quality_gate_not_pass",
+            f"outcome={gate.get('outcome')} coverage={gate.get('coverage')} eligible={gate.get('eligible')}",
+        )
+    out: dict[str, Any] = {
         "outcome": gate.get("outcome"),
         "coverage": gate.get("coverage"),
         "trade_eligible_countries": list(gate.get("trade_eligible_countries") or []),
@@ -196,6 +206,11 @@ def _verify_quality_gate(launch: dict[str, Any]) -> dict[str, Any]:
         "research_coverage_gaps": list(gate.get("research_coverage_gaps") or []),
         "research_coverage_series": list(gate.get("research_coverage_series") or []),
     }
+    if "research_eligible" in gate:
+        out["research_eligible"] = gate.get("research_eligible")
+    if "trader_execution" in gate:
+        out["trader_execution"] = gate.get("trader_execution")
+    return out
 
 
 def _binding_rel(launch_id: str) -> str:
