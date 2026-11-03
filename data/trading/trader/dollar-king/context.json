@@ -131,14 +131,14 @@
     "nav_usd": 100052861.79,
     "net_pnl_usd": 52861.79,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 3,
+    "rank_change": 2,
     "raw_pnl_rank": 5,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -82119.49,
     "status": "ok"
   },
   "learning": {
@@ -149,7 +149,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e1d38aee3cfe444e01bfbdafea57b88b2bbdb32a4a02199228791ac822621922",
+  "memory_context_sha256": "ad3e7e58c9278f9aeb82e236bf9ff0448f99002b0fa1dcc9fe07be0eb950e46a",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -218,38 +218,38 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.17
+        "trend": "down",
+        "value": 0.16
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.2
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.26
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.25
+        "trend": "down",
+        "value": 0.24
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.19
+        "trend": "down",
+        "value": 0.17
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.07
+        "trend": "flat",
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.54
+        "trend": "up",
+        "value": 0.55
       },
       "thesis_attachment": {
         "band": "calm",
@@ -267,11 +267,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261029"
-      },
-      {
         "kind": "session_loss",
         "magnitude": 0.20487238,
         "run_id": "overnight-20261102"
@@ -280,15 +275,20 @@
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261102"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.16423898,
+        "run_id": "overnight-20261103"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1d0efb59b0a0ea859da27955bb3463a4c355ec1e40bff1fa042ae72f44b9f2bd",
+    "state_sha256": "ddbc93ac6350a9c3f6a101cb3b1b4f699dc461cb227bf2c16b20b7257bea6f18",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 6,
-      "session_win": 0
+      "session_loss": 0,
+      "session_win": 1
     }
   },
   "recent_closed_trades": [

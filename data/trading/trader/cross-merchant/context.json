@@ -145,8 +145,8 @@
     "nav_usd": 100068079.93,
     "net_pnl_usd": 68079.93,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 5,
+    "rank_change": -1,
     "raw_pnl_rank": 4,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -163,8 +163,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "58bb10a553d593ae0b7379f90d2a01bcfceca7c1f81eb422780db8b4ddb6c7b6",
-  "open_positions": [],
+  "memory_context_sha256": "db9b6be1fdea6587e7d9bfecd5a5fc6fa20a4388448f34fdf7dad9d7bdf7e9a5",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 56,
+      "current_notional_usd": 20000000.0,
+      "entry_mark": 1.25,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The edge is the extreme cross location versus a 3.5-percentile NZDUSD that mixes in the dollar; it is exhausted if AUDNZD holds a new high through 1.2456 or if a New Zealand cash or policy gap starts paying Australia as hard as the listed Australia-Canada cash wedge.",
+        "current_mark": 1.2455636090977256,
+        "current_notional_usd": 20000000.0,
+        "entry_mark": 1.25,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "AUDNZD",
+        "intended_horizon_days": 45,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-525ff12dcad9",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 200000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-03T08:22:57.179127-05:00",
+      "position_id": "pos-525ff12dcad9",
+      "risk_capital_usd": 200000.0,
+      "side": "short",
+      "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
+    }
+  ],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -182,8 +232,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.23
+        "trend": "down",
+        "value": 0.21
       },
       "complacency": {
         "band": "calm",
@@ -197,12 +247,12 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.17
+        "trend": "down",
+        "value": 0.16
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.14
       },
       "revenge_pressure": {
@@ -233,11 +283,6 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261029"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261030"
       },
       {
@@ -248,9 +293,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ee20182751d6a941077c535c88bfc4e2d7abde51e1fe6d259c823f4b29431489",
+    "state_sha256": "9bd93c455568c719e1d7ba047dfda4c5a1ba673ef7e924368f51eac4bb00d2a6",
     "streaks": {
-      "flat_cycles": 5,
+      "flat_cycles": 0,
       "session_loss": 1,
       "session_win": 0
     }

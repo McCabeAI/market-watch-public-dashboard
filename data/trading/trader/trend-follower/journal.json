@@ -1640,6 +1640,62 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "US two-year, five-year and ten-year yields have all fallen on the one-day, five-day and one-month windows, so the coupon downtrend is still live rather than a one-day bounce. Cash SOFR is 3.94 with March at 4.325 and September at 4.495, which still prices tightening, but that path is not permission to fade duration after a 32 basis-point two-year decline. Receive March SOFR so the listed front-end can follow the coupon move lower; dollar-yen at 157.25 is mixed across those same windows and is a weaker expression of the same impulse."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-96a63a1df145",
+          "rationale": "Keep the one-day-old 25 million March receive. Five-year and ten-year are still lower over one month, two-year 4.59 has not reclaimed 4.67, and two basis points of March cheapening is not a coupon-trend break.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "05b3e7903c7448375624053e0e62b8c9a8e247bf58d0f6153f34381c1495919c",
+      "event_id": "jde-b5670607284047db",
+      "funding_view": null,
+      "invalidation": "Cut if the US two-year reclaims and holds 4.67, or if March implied continues higher while two-year, five-year and ten-year yields reverse higher together.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9920f473ebc1405de718a0ed052bba01fc352d38ae770b4cd785e59db1103c68",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cb51b18b308b1de9d743cb379afc9a175f076fc70f950594a4406d8e40aec36b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is long 25 million March SOFR at 4.325, now 4.345, two basis points against, with cash SOFR 3.95. United States coupons are still below the prior-month highs: two-year 4.59 is down 19 basis points over one month, five-year 4.70 is down 31, and ten-year 4.91 is down 33, even after a one-day two-year bounce. A one-day-old receive does not become a fade because March cheapened two basis points while five-years and tens kept making lower yields. Hold the existing March receive; dollar-yen at 157.90 is not cleaner.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "The book is long 25 million March SOFR at 4.325, now 4.345, two basis points against, with cash SOFR 3.95. United States coupons are still below the prior-month highs: two-year 4.59 is down 19 basis points over one month, five-year 4.70 is down 31, and ten-year 4.91 is down 33, even after a one-day two-year bounce. A one-day-old receive does not become a fade because March cheapened two basis points while five-years and tens kept making lower yields. Hold the existing March receive; dollar-yen at 157.90 is not cleaner."
     }
   ],
   "schema_version": 1,

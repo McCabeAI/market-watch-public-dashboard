@@ -1616,6 +1616,62 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "The locked 2027 Canadian strip still prices a re-hike after the move from 3.40 to about 3.22: March 2.97, June 3.135, September 3.26. That upward path is the easing still underpriced; Brent at 117.64 is a hike headwind, so this is not a size-up, including through US March SOFR at 4.325 versus 3.94 on 29 October. Spot dollar-Canada mixes oil support for the Canadian dollar with leftover US hike pricing and is the worse expression of the same view."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000.0,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the existing 42.5 million 2027 Canada strip receive. Cash 2.55 versus a still-hiking 2027 path leaves unused tightening; the book mark through 3.4 is working, not a completed trade.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "83f48786d645253a72eecc302ff56c881754b50cf3b261b3c0138d0350f7509f",
+      "event_id": "jde-d8b343826e8a46d9",
+      "funding_view": null,
+      "invalidation": "Stop holding if the 2027 Canada strip mark revisits the 3.4 entry on a hike-validating reprice, or if cash Canada rises toward the 2.925 March contract in a way that confirms the 2027 tightening path. Oil alone is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "805433d043b6d798dae06a3d30e893291103e6f3f64dc07deed80082f4afd6d2",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a5a375ab6374ebc51cb5b4603db6fdf0f9ea9358e2e57122a798c280fc965f53"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash Canada is 2.55 against a 2027 path of March 2.925, June 3.075, September 3.19 and December 3.28, so the strip still prices hikes rather than cuts. The live 2027 Canada strip receive remains the cleanest underpriced-easing expression: entry 3.4 is already through the book mark near 3.18, but that average is still far above cash and still embeds 2027 tightening. Restrictive policy and Brent at 104.77 can bite demand before those hikes land. Cash SOFR 3.95 versus March 4.345 rhymes but does not replace the existing Canada strip.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "Cash Canada is 2.55 against a 2027 path of March 2.925, June 3.075, September 3.19 and December 3.28, so the strip still prices hikes rather than cuts. The live 2027 Canada strip receive remains the cleanest underpriced-easing expression: entry 3.4 is already through the book mark near 3.18, but that average is still far above cash and still embeds 2027 tightening. Restrictive policy and Brent at 104.77 can bite demand before those hikes land. Cash SOFR 3.95 versus March 4.345 rhymes but does not replace the existing Canada strip."
     }
   ],
   "schema_version": 1,

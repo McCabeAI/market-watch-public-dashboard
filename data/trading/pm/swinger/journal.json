@@ -1646,6 +1646,73 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "Three-digit crude still finances a front-end backup even after the hold, while United States coupons have already taken thirty-two to thirty-five basis points of rally. Remaining March hike premium is only about thirty-eight basis points above cash, which is not enough payoff versus an oil-driven backup, and paying that same strip would be fading a downtrend that has not reversed. With no fresh dated United States path, stay flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 300000000,
+          "position_id": null,
+          "rationale": "Independent concentrated fade of the 99.6 five-year extreme. Short AUDNZD isolates kiwi cheapness versus Australia rather than fighting a firm dollar. Size for a few percent of adverse extension without filling the shock budget. The booked Canada receive lesson stays on that name and does not apply here.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-03T09:30:59.132629-05:00",
+      "conviction": 70,
+      "decision_fingerprint": "be3e26c66a25a2784453e1fe7a10bd4aa98d0f5da88b92567005217f7cf4877a",
+      "event_id": "jde-ac1df38c1d824d02",
+      "funding_view": null,
+      "invalidation": "Cover if AUDNZD holds above 1.27 or if a Hormuz-driven oil bid sends the cross to a new high while NZDUSD breaks 0.55.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-f8f9feb515d2"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+      ],
+      "memory_context_sha256": "e0716209562a4692bebe5271b2692fa4a269c8abe6f31b62150967d401a178c9",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "not_applicable",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "Rank 3 does not force a ticket. The AUDNZD extreme is the swing on its own; a hidden rank still opens this short and still leaves the Canada receive closed.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "not_behind",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "559bbc032e2f1d68bc3d234eb7c26fda87b5bd360d292d9c4c0e786c36dbd703"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1558f4fa11c8a47ad53ef4b6cc067369e5d8ffb1af6772eb9880df08e9bbb2d0",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261103-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AUDNZD at 1.2456 is a five-year extreme while NZDUSD still sits in the cheap tail at 0.5627. That cross has stretched far beyond a 30-basis-point Australia versus New Zealand 10-year gap, and it is the only concentrated, asymmetric swing on a firm tape. Short the cross as a real swing; oil remaining bid is the accepted tax, not a reason to stay flat. CORRA March stays closed: 2.55 cash versus 2.925 is the same leftover path already booked into the event-implied print, not a new dislocation versus cash or the Bank of Canada.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "AUDNZD at 1.2456 is a five-year extreme while NZDUSD still sits in the cheap tail at 0.5627. That cross has stretched far beyond a 30-basis-point Australia versus New Zealand 10-year gap, and it is the only concentrated, asymmetric swing on a firm tape. Short the cross as a real swing; oil remaining bid is the accepted tax, not a reason to stay flat. CORRA March stays closed: 2.55 cash versus 2.925 is the same leftover path already booked into the event-implied print, not a new dislocation versus cash or the Bank of Canada."
     }
   ],
   "schema_version": 1,

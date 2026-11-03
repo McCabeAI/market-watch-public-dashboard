@@ -1623,6 +1623,75 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "Cash at the official overnight rate is the book. Receiving March SOFR after a hold, while the strip still marks Dec 4.13 through Sep 4.495 and Brent/WTI remain elevated, is a two-sided directional view rather than a preservation edge. The ten-year at 4.94 is a residual-cut story on an empty book; paying it from flat donates roughly a point of coupon versus cash unless yields sell off more than a spent hold and energy-driven inflation already allow, and receiving it fights that same inflation backdrop."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": "Fade the 99.6 five-year extreme in AUDNZD at 1.2456 as a reduced-size cheap-kiwi relative-value short. Australian hike pricing and mild negative carry cap conviction, so size is half the 20 million merchant ticket and de-risk is fast if the cross extends.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-03T09:30:59.662793-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "450a15836837e643d934977f7a23462d638cc3c627daeb5e10be1f29d160b04e",
+      "event_id": "jde-9579044ef22344c9",
+      "funding_view": null,
+      "invalidation": "Exit if AUDNZD holds the extreme and prints through 1.255, if Australian implied tightening keeps repricing the Aussie higher versus kiwi, or if a Hormuz shock produces a one-way commodity-FX move that prevents mean reversion.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-grinder-9366bc9ee048"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-grinder-pm-grinder-9366bc9ee048"
+      ],
+      "memory_context_sha256": "2b781def1b56f165db5fa4ddfeeca191b43b06e4f82f30997ff046bb33ff4814",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "A reduced AUDNZD fade is the same call without rank visibility. Standing does not enlarge size and does not create a second ticket.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "variance",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "34f925fb585e5eb3ab73eb5a2d2ac4b4d0c90b0358144d867d04ce77de4765cc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "c24b2add6229edf83964ddd572f12b66d1b749d8e32945560b29de766c162eb5",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261103-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AUDNZD at 1.2456 is a 99.6 five-year extreme while kiwi is independently cheap versus the dollar at a 3.5 five-year percentile. Shorting the cross is the cleaner kiwi mean-reversion expression: it fades rich Aussie versus cheap kiwi without a naked long in a high-beta commodity currency while Hormuz remains the swing factor. Australian tightening into March is a real headwind and carry is mildly against the short, so the ticket is half the merchant size, short-dated, and cut quickly if the cross extends rather than mean-reverts. Even a half-percent fade covers the official overnight charge on a two-to-three percent adverse path.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "AUDNZD at 1.2456 is a 99.6 five-year extreme while kiwi is independently cheap versus the dollar at a 3.5 five-year percentile. Shorting the cross is the cleaner kiwi mean-reversion expression: it fades rich Aussie versus cheap kiwi without a naked long in a high-beta commodity currency while Hormuz remains the swing factor. Australian tightening into March is a real headwind and carry is mildly against the short, so the ticket is half the merchant size, short-dated, and cut quickly if the cross extends rather than mean-reverts. Even a half-percent fade covers the official overnight charge on a two-to-three percent adverse path."
     }
   ],
   "schema_version": 1,

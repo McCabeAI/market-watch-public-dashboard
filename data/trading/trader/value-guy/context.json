@@ -86,7 +86,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 250000.0,
     "risk_capital_utilization": 0.025,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -49192.17,
     "status": "ok"
   },
   "learning": {
@@ -97,7 +97,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b5fd2aea7994adf46d80eda3e9dd14c8456b701bf578135c43b775edaad381cd",
+  "memory_context_sha256": "90700b26bc30d147ed84779bf2f52a4a31dfc48d9a2a2abf9b5b2ecc6c55cfd1",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -114,7 +114,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 49219.6,
         "holding_seconds": 446306,
         "horizon_elapsed_fraction": 0.1148,
         "horizon_status": "within",
@@ -122,15 +122,15 @@
         "intended_horizon_days": 45,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 167242.34,
+        "mfe_usd": 216461.94,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-63923b5f6571",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "AUDCAD mean-reverts as the Canadian oil terms-of-trade premium is paid in the cross after the Fed hold, not through further cheapening of the already-repriced Canada front end.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 167242.34,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 216461.94,
+        "retained_mfe_fraction": 0.7726,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 250000.0,
@@ -167,12 +167,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.2
+        "trend": "down",
+        "value": 0.19
       },
       "defensiveness": {
         "band": "calm",
@@ -182,11 +182,11 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -196,7 +196,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.52
       },
       "thesis_attachment": {
@@ -216,16 +216,6 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.23270928,
-        "run_id": "overnight-20261030"
-      },
-      {
-        "kind": "rank_gain_major",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261030"
-      },
-      {
-        "kind": "session_gain",
         "magnitude": 0.10155652,
         "run_id": "overnight-20261102"
       },
@@ -233,15 +223,20 @@
         "kind": "rank_gain_major",
         "magnitude": 1.0,
         "run_id": "overnight-20261102"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.09838434,
+        "run_id": "overnight-20261103"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b591e3a15ee9c551abda403de0301b8ee0f8bcf043150606b63242e9e0f7d245",
+    "state_sha256": "3d9d2fb15fd2548907e0486035e43a9ba894f2e5703bd57958e69a00e43732ee",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 2
+      "session_win": 3
     }
   },
   "recent_closed_trades": [

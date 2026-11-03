@@ -1640,6 +1640,62 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "The Canada 2027 receive is still the crowded desk expression: carry remains long March CORRA and dove remains received in the 2027 strip, so this book stays the pay rather than joining that receive. March implieds at 2.97 versus cash 2.49 still leave 48 basis points of unused hike, and Brent at 117.64 keeps oil-driven Canada inflation pressure in the tape instead of a reason to cover. Cheapness versus cash is their entry, not ours. Dollar-Canada at 1.3969 would only restate the same Canada overlay, so the existing March pay stays the cleaner expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000.0,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Keep the existing March Canada short. Other desks still own the Canada 2027 receive; cheapness versus cash 2.55 is their entry, not a cover.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "204ee97c624ce630b2e8146150df57d4f554bf60d4d71cfce6882a6b33c77406",
+      "event_id": "jde-f65b290ae2284cfc",
+      "funding_view": null,
+      "invalidation": "Stand down if the crowded Canada 2027 receive is cut or flipped so the fade is no longer the unowned side, or if March Canada collapses toward cash 2.55 while that receive crowd stays on.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "bee268ffdfea43f1c30b423dd7a218b9e72d79bd296b87d708c13e6faf1964ee",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f396e3deeb948d53dc102263810f01bd52cde08297c261b9764e646e0316495c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Canada March receive is still the crowded desk expression: carry remains long March Canada, dove remains received in the 2027 strip, and the existing short stays the pay rather than covering into that receive. March implieds at 2.925 versus cash 2.55 still leave 37.5 basis points of unused hike, and Brent at 104.77 has not made those desks flatten. Dollar-Canada at 1.3974 would only restate the same Canada overlay those receives already own.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "The Canada March receive is still the crowded desk expression: carry remains long March Canada, dove remains received in the 2027 strip, and the existing short stays the pay rather than covering into that receive. March implieds at 2.925 versus cash 2.55 still leave 37.5 basis points of unused hike, and Brent at 104.77 has not made those desks flatten. Dollar-Canada at 1.3974 would only restate the same Canada overlay those receives already own."
     }
   ],
   "schema_version": 1,

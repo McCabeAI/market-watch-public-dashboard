@@ -1,5 +1,32 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-03T09:30:59.388258-05:00",
+      "created_run_id": "overnight-20261103",
+      "facts": {
+        "asset_class": "rates_rv",
+        "closed_at": "2026-11-03T09:30:59.388258-05:00",
+        "conviction": 64,
+        "entry_mark": -23.0,
+        "exit_mark": 0.0,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 1736823,
+        "instrument": "NZ-US_10Y",
+        "invalidation": "Cover the CORRA receive if Bank of Canada 2027 hikes are delivered or the strip reprices back through the 3.13 entry, especially on a sticky oil-and-goods inflation impulse. Cover the NZ-US short if the 10-year spread cheapens further from minus 23 basis points toward richer New Zealand, including on an RBNZ easing surprise or a Treasury-led selloff that leaves New Zealand yields stuck.",
+        "opened_at": "2026-10-14T07:03:55.974585-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 184000.0,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-12902ca9aa76",
+      "status": "due",
+      "trade_id": "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

@@ -1586,6 +1586,62 @@
       "run_id": "overnight-20261102",
       "schema_version": 1,
       "thesis": "The book stays short 25 million Australian dollar-Canada at 0.9813, still a five-year richness extreme, while Brent at 117.64 and WTI at 104.12 keep paying Canada versus Australia on terms of trade. Canada two-year is 3.36, a 97th one-year percentile, and March implied 2.97 still sits 48 basis points over cash 2.49, so the Canada tightness that made the cross rich is intact. The March United States-Canada pack at 135 basis points versus 145 in cash is not a cheap rates residual, so leftover value stays in the existing cross rather than a new coupon or pack."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-63923b5f6571",
+          "rationale": "Keep the existing 25 million Australian dollar-Canada short at 0.9793. Oil is still 96 and 105, and March implied 2.925 versus cash 2.55 is already through 2.75, so leftover value is not a new rates ticket.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-03T08:22:57.179127-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "910a30d626258b1e0209bb7c62d6c2443f99a3a7d80b5f156ee106d54f5d6971",
+      "event_id": "jde-c52d1015f46c437a",
+      "funding_view": null,
+      "invalidation": "Cover if Australian dollar-Canada prints a new five-year extreme while Brent remains near 104.77. Also cover if March implied falls toward cash 2.55 with crude unchanged, which would mean Canada is easing into the oil impulse instead of the cross paying the terms of trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-63923b5f6571"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b5fd2aea7994adf46d80eda3e9dd14c8456b701bf578135c43b775edaad381cd",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b591e3a15ee9c551abda403de0301b8ee0f8bcf043150606b63242e9e0f7d245"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "1c6c74807b13a0e3aeb78799eae3741b499ceab868612004b80d83609e66369f",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays short 25 million Australian dollar-Canada at 0.9793, still the 90th five-year percentile versus 0.9879 entry, while Brent at 104.77 and WTI at 96.46 keep paying Canada versus Australia on oil terms of trade. Cash Australia 4.60 versus Canada 2.55 leaves Australia 205 basis points ahead, and March Canada implied 2.925 still sits 37.5 basis points over cash, so leftover Canada policy tightness is already in the front end. The March United States-Canada pack versus cash is only a 2 basis point residual, so leftover Canadian dollar value stays in the existing cross rather than a new coupon or pack.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "The book stays short 25 million Australian dollar-Canada at 0.9793, still the 90th five-year percentile versus 0.9879 entry, while Brent at 104.77 and WTI at 96.46 keep paying Canada versus Australia on oil terms of trade. Cash Australia 4.60 versus Canada 2.55 leaves Australia 205 basis points ahead, and March Canada implied 2.925 still sits 37.5 basis points over cash, so leftover Canada policy tightness is already in the front end. The March United States-Canada pack versus cash is only a 2 basis point residual, so leftover Canadian dollar value stays in the existing cross rather than a new coupon or pack."
     }
   ],
   "schema_version": 1,
