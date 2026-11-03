@@ -342,7 +342,7 @@ def main(argv: list[str] | None = None) -> int:
                 {
                     "status": "valid",
                     "pm_id": CHATGPT_PM_ID,
-                    "review_packet_id": packets[CHATGPT_PM_ID]["review_packet_id"],
+                    "review_packet_id": packet["review_packet_id"],
                     "source": source.kind,
                     "overnight_run_id": source.overnight_run_id,
                 }
