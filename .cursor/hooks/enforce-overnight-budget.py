@@ -69,9 +69,13 @@ POLICIES = {
 }
 
 _MW_ROLE_OCCURRENCE_RE = re.compile(r"(?i)MW_ROLE")
+# The tag is exact. Closing punctuation is a terminator only when it does not
+# continue the token, so `seat.bad`, `seat/extra`, and `seat:extra` stay malformed.
+# Duplicate `MW_ROLE` text is still rejected by the occurrence count above this match.
 _STRICT_ROLE_TAG_RE = re.compile(
     r"(?<![A-Za-z0-9_=:/.-])MW_ROLE=(?P<role>[a-z_]+)"
-    r"(?::(?P<seat>[a-z0-9]+(?:-[a-z0-9]+)*))?(?=[\s`\"']|$)"
+    r"(?::(?P<seat>[a-z0-9]+(?:-[a-z0-9]+)*))?"
+    r"(?=[\s`\"']|$|[.,;!?)*\]]+(?=[\s`\"']|$))"
 )
 
 agent_config: Any = None

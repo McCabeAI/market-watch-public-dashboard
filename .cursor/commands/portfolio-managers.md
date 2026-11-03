@@ -75,6 +75,6 @@ Include in the parent transcript for hook enforcement:
 
 `PM_MODEL_POLICY={"version":1,"principal_model":"grok-4.6","principal_launch":"cursor_custom_agent","subagent_models":["grok-4.6", "composer-2.5"],"max_subagents_per_pm":3}`
 
-On Market Watch daily runs, each PM child task must start with `MW_ROLE=pm:<pm_id>` (`swinger`, `pragmatist`, `grinder`) and use the model from the pinned roster.
+On Market Watch daily runs, each PM child task must include `MW_ROLE=pm:<pm_id>` (`swinger`, `pragmatist`, `grinder`) alone on its own line and use the model from the pinned roster. Do not mention `MW_ROLE` a second time.
 
 Auto, Other Models, and Fast/high/low Grok aliases remain prohibited.

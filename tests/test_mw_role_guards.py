@@ -659,6 +659,40 @@ class RoleGuardTests(unittest.TestCase):
         allowed = self._hook(repo=repo, parent="root", model="grok-4.6", task=backtick)
         self.assertEqual(allowed.returncode, 0, allowed.stdout)
 
+    def test_own_line_and_closing_punctuation_accepted(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        seat = DAILY_TRADERS[0]
+        cases = (
+            ("grok-4.6", f"MW_ROLE=trader:{seat}\n"),
+            ("grok-4.6", f"Review the book.\nMW_ROLE=trader:{seat}\n"),
+            ("grok-4.6", f"MW_ROLE=trader:{seat}."),
+            ("grok-4.6", f"MW_ROLE=trader:{seat},"),
+            ("grok-4.6", f"MW_ROLE=trader:{seat}, then the book"),
+            ("grok-4.6", f"(MW_ROLE=trader:{seat})"),
+            ("grok-4.6", f"**MW_ROLE=trader:{seat}**"),
+            ("composer-2.5", "MW_ROLE=synthesis."),
+        )
+        for model, task in cases:
+            self.overnight_active.unlink(missing_ok=True)
+            allowed = self._hook(repo=repo, parent="root", model=model, task=task)
+            self.assertEqual(allowed.returncode, 0, (task, allowed.stdout))
+
+    def test_glued_punctuation_suffix_still_denied(self) -> None:
+        repo = self._seed_overnight_repo()
+        self._write_marker(self._overnight_marker())
+        seat = DAILY_TRADERS[0]
+        for task in (
+            f"MW_ROLE=trader:{seat}.bad",
+            f"MW_ROLE=trader:{seat},extra",
+            f"MW_ROLE=trader:{seat})more",
+            f"**MW_ROLE=trader:{seat}**extra",
+            f"MW_ROLE=synthesis.extra",
+            f"MW_ROLE=trader:{seat}. MW_ROLE=trader:{seat}",
+        ):
+            blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task=task)
+            self.assertNotEqual(blocked.returncode, 0, task)
+
     def test_unknown_role_and_seat_rules_denied(self) -> None:
         repo = self._seed_overnight_repo()
         self._write_marker(self._overnight_marker())
