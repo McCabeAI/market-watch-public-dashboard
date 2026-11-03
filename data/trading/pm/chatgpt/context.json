@@ -38,7 +38,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-03T09:35:29.695226-05:00",
+  "as_of": "2026-11-03T18:36:08.391692-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -73,7 +73,7 @@
   },
   "consequence": {
     "best_trader_net_pnl_usd": 175980.82,
-    "best_trader_outearn_streak": 0,
+    "best_trader_outearn_streak": null,
     "best_trader_seat": "positioning-cynic",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -102,12 +102,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "acac7e4082df2c8cd9f88d03dd18b034a67b2467080050e8c911cb28e43c22cf",
+  "memory_context_sha256": "892f9f12cf1ef1443577c0b544e45c2caa72abc7166f475d953ca1279ad7a6e5",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 68,
-      "current_notional_usd": 500000000.0,
+      "current_notional_usd": 250000000.0,
       "entry_mark": 3.4,
       "harvest": {
         "asset_class": "rates",
@@ -120,20 +120,20 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 3839075,
+        "holding_seconds": 3871514,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027H-Z",
         "intended_horizon_days": null,
         "mae_usd": -118750.0,
         "mechanical_order": false,
-        "mfe_usd": 737500.0,
+        "mfe_usd": 1337500.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pm-chatgpt-595561a1b90f",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": 600000.0,
         "recorded_mfe_usd": 737500.0,
         "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
@@ -142,7 +142,7 @@
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 737500.0,
+        "total_pnl_usd": 1337500.0,
         "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
         "unrealized_pnl_usd": 737500.0
       },

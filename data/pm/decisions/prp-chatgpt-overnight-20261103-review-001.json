@@ -1,0 +1,53 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "REDUCE",
+        "asset_class": "rates",
+        "conviction": 56,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "For the remaining 250m receive, reduce or close if persistent underlying Canadian inflation and labor/wage reacceleration plus BoC guidance validate the further tightening priced in the strip. A renewed move in the same four-contract strip toward 3.35-3.40 alongside that fundamental confirmation requires a fresh decision; do not mistake one component contract for the strip.",
+        "note": "Partial profit-taking, not a reversal. Reduce 250m of 500m at trusted frozen packet mid; retain 250m. No add or new position.",
+        "notional_usd": 250000000,
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "thesis": "Take profit on half the existing 2027 CORRA H/M/U/Z receive while preserving a 250m residual. The November 2 frozen contract mids average 3.16%, down from the 3.40% entry; roughly 62bp of 2027 tightening remains priced above 2.54% CORRA. September underlying Canadian inflation near 1.85% and unemployment near 6.5% still challenge a full hiking cycle, but the late-October BoC hike and Brent around 105 weaken the one-way receive thesis."
+      }
+    ],
+    "alerts": [
+      "Review the exact CORRA H/M/U/Z 2027 strip, not March alone",
+      "BoC communication and the next Canadian core CPI/labor releases can change the remaining edge",
+      "Watch renewed strip cheapening toward 3.35-3.40 together with domestic inflation or labor confirmation"
+    ],
+    "conviction": 56,
+    "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+    "future_data_requests": [],
+    "invalidation": "Do not retain the residual merely because the original thesis was right. Close or reduce further if core inflation, wages, employment and BoC communication substantiate additional hikes, especially if the exact 2027 H/M/U/Z strip backs up toward its 3.35-3.40 entry zone.",
+    "memory_context_sha256": "acac7e4082df2c8cd9f88d03dd18b034a67b2467080050e8c911cb28e43c22cf",
+    "memory_updates": [],
+    "pm_id": "chatgpt",
+    "postmortems": [],
+    "rationale": "Independent November 3 PM decision from frozen packet overnight-20261103 (08:22 ET cutoff; contract marks dated November 2). The 3.40 entry versus 3.16 four-leg strip signals partial normalization. Taking off 250m recognizes progress while retaining exposure to a meaningful 62bp 2027 premium over CORRA. The incremental forward edge is narrower because the BoC has delivered tightening and Brent is around $105. Considered full HOLD: unjustified at original size in this energy regime. Considered full CLOSE: leaves too little expression of weak labor and sub-2% underlying inflation against additional market-priced hikes. No additional independent FX, SOFR or other duration position presents a cleaner risk-diversifying edge from the frozen data. All marks, cash, NAV and realized P&L must be generated solely by trusted book code.",
+    "review_packet_id": "prp-chatgpt-overnight-20261103-review-001",
+    "review_packet_sha256": "079e728c510cfa8736b80c24d40ae394fededae278ba2c9b67ed5c5cf5a387f5",
+    "schema_version": 1,
+    "synthesis": "Reduce half of the ChatGPT PM 2027 CORRA receive, from 500m to 250m. No new positions. Preserve the residual while Canadian underlying inflation and labor remain inconsistent with the full further tightening implied by the curve; re-underwrite after each policy and inflation catalyst.",
+    "thesis": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move.",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "already_applied": false,
+    "as_of": "2026-11-03T18:36:08.903279-05:00",
+    "decision_fingerprint": "d5d0fcdc96ebe14e2a4ab89228f6a7fadd24ad9e04d707616ccaf7248a532200",
+    "decision_status": "active",
+    "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+    "gross_utilization_usd": 250000000.0,
+    "overnight_run_id": "overnight-20261103",
+    "pm_id": "chatgpt",
+    "review_packet_id": "prp-chatgpt-overnight-20261103-review-001",
+    "review_packet_sha256": "079e728c510cfa8736b80c24d40ae394fededae278ba2c9b67ed5c5cf5a387f5",
+    "schema_version": 1,
+    "source": "overnight_scheduled_review",
+    "trader_room_run_id": null,
+    "type": "PM_CHATGPT_APPLY_RECEIPT"
+  }
+}

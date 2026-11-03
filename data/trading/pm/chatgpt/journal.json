@@ -159,6 +159,64 @@
       "run_id": "overnight-20261002",
       "schema_version": 1,
       "thesis": "Maintain the existing 500mm receive in the 2027 CORRA H/M/U/Z strip. The position-level expression has moved from 3.40 at entry to about 3.22, so part of the original mispricing has normalized, but the strip still embeds substantial tightening relative to 2.31 cash while Canadian underlying inflation remains near 2% and domestic labor evidence is weak. Oil and LNG Canada reduce the asymmetry enough to rule out an add, not enough to reverse or close the trade without domestic confirmation."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 250000000,
+          "position_id": "pm-chatgpt-595561a1b90f",
+          "rationale": "Partial profit-taking, not a reversal. Reduce 250m of 500m at trusted frozen packet mid; retain 250m. No add or new position.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-03T18:36:08.042362-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "bfc558beae5e592d464e09fc34a88bbbbd242c3a25471b3ab1b8bb47d3dffd0b",
+      "event_id": "jde-2c433e94a5934e8c",
+      "funding_view": null,
+      "invalidation": "Do not retain the residual merely because the original thesis was right. Close or reduce further if core inflation, wages, employment and BoC communication substantiate additional hikes, especially if the exact 2027 H/M/U/Z strip backs up toward its 3.35-3.40 entry zone.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-chatgpt-595561a1b90f"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+      ],
+      "memory_context_sha256": "acac7e4082df2c8cd9f88d03dd18b034a67b2467080050e8c911cb28e43c22cf",
+      "outcome_links": [],
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": null
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+        "evidence_hash": "079e728c510cfa8736b80c24d40ae394fededae278ba2c9b67ed5c5cf5a387f5",
+        "overnight_run_id": "overnight-20261103",
+        "review_id": null,
+        "review_packet_id": "prp-chatgpt-overnight-20261103-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Independent November 3 PM decision from frozen packet overnight-20261103 (08:22 ET cutoff; contract marks dated November 2). The 3.40 entry versus 3.16 four-leg strip signals partial normalization. Taking off 250m recognizes progress while retaining exposure to a meaningful 62bp 2027 premium over CORRA. The incremental forward edge is narrower because the BoC has delivered tightening and Brent is around $105. Considered full HOLD: unjustified at original size in this energy regime. Considered full CLOSE: leaves too little expression of weak labor and sub-2% underlying inflation against additional market-priced hikes. No additional independent FX, SOFR or other duration position presents a cleaner risk-diversifying edge from the frozen data. All marks, cash, NAV and realized P&L must be generated solely by trusted book code.",
+      "run_id": "overnight-20261103",
+      "schema_version": 1,
+      "thesis": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move."
     }
   ],
   "schema_version": 1,
