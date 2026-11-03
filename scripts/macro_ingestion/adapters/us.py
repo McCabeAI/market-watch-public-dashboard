@@ -5,6 +5,7 @@ from __future__ import annotations
 import hashlib
 import json
 import os
+import re
 import urllib.parse
 from datetime import datetime
 from pathlib import Path
@@ -29,6 +30,8 @@ ROOT = Path(__file__).resolve().parents[3]
 FRED_GRAPH_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
 BEA_NIPA_API_URL = "https://apps.bea.gov/api/data/"
 US_GDP_DOMESTIC_DEMAND_ID = "US.Activity.gdp_domestic_demand"
+
+_USER_ID_QUERY = re.compile(r"UserID=[^&\s\"']+", re.IGNORECASE)
 
 _US_LABOR_WAGES_ID = "US.Labor.wages"
 
@@ -56,6 +59,31 @@ _CHALLENGE_MARKERS = (
 
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
+
+
+def _redact_bea_secrets(text: str, *, api_key: str | None = None) -> str:
+    if not text:
+        return text
+    out = str(text)
+    key = api_key if api_key is not None else os.environ.get("BEA_API_KEY")
+    if key:
+        out = out.replace(key, "[REDACTED]")
+    return _USER_ID_QUERY.sub("UserID=[REDACTED]", out)
+
+
+def _bea_ledger_extra(
+    *,
+    fred_failure: str,
+    bea_fallback: str,
+    api_key: str | None = None,
+    **extra: Any,
+) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "fred_failure": _redact_bea_secrets(fred_failure, api_key=api_key),
+        "bea_fallback": bea_fallback,
+    }
+    row.update(extra)
+    return row
 
 
 def _is_challenge_page(body: bytes) -> bool:
@@ -269,14 +297,16 @@ def _bea_period_to_fred_stamp(period: str) -> str | None:
 
 
 def _bea_gdp_row_ok(row: dict[str, Any]) -> bool:
-    line_number = str(row.get("LineNumber") or row.get("LINE_NUMBER") or "").strip()
-    if line_number == "1":
-        return True
     series_code = str(row.get("SeriesCode") or row.get("SERIES_CODE") or "").strip().upper()
     if series_code == "A191RL":
         return True
-    description = str(row.get("LineDescription") or row.get("LINE_DESCRIPTION") or "").lower()
-    return "gross domestic product" in description and "product" in description
+    line_number = str(row.get("LineNumber") or row.get("LINE_NUMBER") or "").strip()
+    if line_number != "1":
+        return False
+    description = str(row.get("LineDescription") or row.get("LINE_DESCRIPTION") or "").strip()
+    if not description:
+        return True
+    return description.lower() == "gross domestic product"
 
 
 def _bea_gdp_level_rows(payload: dict[str, Any]) -> list[tuple[str, float]]:
@@ -318,17 +348,18 @@ def _fetch_bea_real_gdp_fallback(
     api_key = os.environ.get("BEA_API_KEY")
     public_url = BEA_NIPA_API_URL
     base: dict[str, Any] = {"http_status": http_status, "body": body}
-    fred_note = fred_error or "fred_fetch_failed"
+    fred_note = _redact_bea_secrets(fred_error or "fred_fetch_failed", api_key=api_key)
     if not api_key:
         return {
             **base,
             "ok": False,
             "status": "source_failed",
             "error": fred_note,
-            "ledger_extra": {
-                "fred_failure": fred_note,
-                "bea_fallback": "skipped_missing_api_key",
-            },
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="skipped_missing_api_key",
+                api_key=api_key,
+            ),
         }
     year = (now or datetime.now()).year
     params = urllib.parse.urlencode(
@@ -346,29 +377,32 @@ def _fetch_bea_real_gdp_fallback(
     try:
         response = opener(bea_request_url, timeout=timeout)
     except BaseException as exc:  # noqa: BLE001
+        token = f"bea_fallback_failed:{type(exc).__name__}"
         return {
             **base,
             "ok": False,
             "status": "source_failed",
-            "error": f"{fred_note}; bea_fallback: {exc}",
-            "ledger_extra": {
-                "fred_failure": fred_note,
-                "bea_fallback": "failed",
-            },
+            "error": _redact_bea_secrets(f"{fred_note}; {token}", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
         }
     bea_body: bytes = response.get("body") or b""
     bea_base = {"http_status": response.get("http_status"), "body": bea_body}
     if not response.get("ok") or not bea_body:
-        err = str(response.get("error") or "bea_fetch_failed")
+        err_token = "bea_fallback_failed:fetch_error"
         return {
             **bea_base,
             "ok": False,
             "status": "source_failed",
-            "error": f"{fred_note}; bea_fallback: {err}",
-            "ledger_extra": {
-                "fred_failure": fred_note,
-                "bea_fallback": "failed",
-            },
+            "error": _redact_bea_secrets(f"{fred_note}; {err_token}", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
         }
     try:
         payload = json.loads(bea_body.decode("utf-8", errors="replace"))
@@ -377,11 +411,12 @@ def _fetch_bea_real_gdp_fallback(
             **bea_base,
             "ok": False,
             "status": "source_failed",
-            "error": f"{fred_note}; bea_fallback: invalid_json",
-            "ledger_extra": {
-                "fred_failure": fred_note,
-                "bea_fallback": "failed",
-            },
+            "error": _redact_bea_secrets(f"{fred_note}; bea_fallback_failed:invalid_json", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
         }
     level_rows = _bea_gdp_level_rows(payload)
     if not level_rows:
@@ -389,11 +424,12 @@ def _fetch_bea_real_gdp_fallback(
             **bea_base,
             "ok": False,
             "status": "source_failed",
-            "error": f"{fred_note}; bea_fallback: no_gdp_rows",
-            "ledger_extra": {
-                "fred_failure": fred_note,
-                "bea_fallback": "failed",
-            },
+            "error": _redact_bea_secrets(f"{fred_note}; bea_fallback_failed:no_gdp_rows", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
         }
     point = _derive_points_from_levels(spec, level_rows, source_url=public_url)
     scored = _scored_transform_point(point, str(spec.get("transform") or ""))
@@ -402,11 +438,15 @@ def _fetch_bea_real_gdp_fallback(
             **bea_base,
             "ok": False,
             "status": "source_failed",
-            "error": f"{fred_note}; bea_fallback: transform_not_derived",
-            "ledger_extra": {
-                "fred_failure": fred_note,
-                "bea_fallback": "failed",
-            },
+            "error": _redact_bea_secrets(
+                f"{fred_note}; bea_fallback_failed:transform_not_derived",
+                api_key=api_key,
+            ),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+            ),
         }
     digest = _sha256(bea_body)
     return {
@@ -416,11 +456,12 @@ def _fetch_bea_real_gdp_fallback(
         "vintage": "latest_available",
         "raw_sha256": digest,
         "accepted_source": "bea_official_fallback",
-        "ledger_extra": {
-            "fred_failure": fred_note,
-            "bea_fallback": "success",
-            "accepted_source": "bea_official_fallback",
-        },
+        "ledger_extra": _bea_ledger_extra(
+            fred_failure=fred_error or "fred_fetch_failed",
+            bea_fallback="success",
+            api_key=api_key,
+            accepted_source="bea_official_fallback",
+        ),
     }
 
 
@@ -447,7 +488,12 @@ def _fred_failure_with_optional_bea(
         return bea
     merged = dict(failure)
     merged["ledger_extra"] = bea.get("ledger_extra") or failure.get("ledger_extra")
-    if bea.get("error"):
+    if failure.get("status") == "license_gap":
+        merged["status"] = "license_gap"
+        merged["error"] = failure.get("error") or "fred_challenge_page"
+        if failure.get("challenge_page"):
+            merged["challenge_page"] = True
+    elif bea.get("error"):
         merged["error"] = bea["error"]
     return merged
 
@@ -497,20 +543,30 @@ def _fetch_fred_series(
         if alternate is not None:
             return alternate
         if isinstance(exc, TimeoutError) or "timeout" in str(exc).lower():
-            return _fred_failure_with_optional_bea(
-                spec,
-                {
-                    "ok": False,
-                    "status": "source_failed",
-                    "error": str(exc),
-                    "http_status": None,
-                    "body": b"",
-                },
-                opener=opener,
-                timeout=timeout,
-                now=now,
-            )
-        raise
+            failure = {
+                "ok": False,
+                "status": "source_failed",
+                "error": str(exc),
+                "http_status": None,
+                "body": b"",
+            }
+        elif str(spec.get("id")) == US_GDP_DOMESTIC_DEMAND_ID:
+            failure = {
+                "ok": False,
+                "status": "source_failed",
+                "error": str(exc),
+                "http_status": None,
+                "body": b"",
+            }
+        else:
+            raise
+        return _fred_failure_with_optional_bea(
+            spec,
+            failure,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
     http_status = response.get("http_status")
     body: bytes = response.get("body") or b""
     base: dict[str, Any] = {
@@ -540,13 +596,19 @@ def _fetch_fred_series(
             now=now,
         )
     if _is_challenge_page(body):
-        return {
-            **base,
-            "ok": False,
-            "status": "license_gap",
-            "challenge_page": True,
-            "error": "fred_challenge_page",
-        }
+        return _fred_failure_with_optional_bea(
+            spec,
+            {
+                **base,
+                "ok": False,
+                "status": "license_gap",
+                "challenge_page": True,
+                "error": "fred_challenge_page",
+            },
+            opener=opener,
+            timeout=timeout,
+            now=now,
+        )
     text = body.decode("utf-8", errors="replace")
     parsed = parse_fred_csv(text)
     if not parsed:

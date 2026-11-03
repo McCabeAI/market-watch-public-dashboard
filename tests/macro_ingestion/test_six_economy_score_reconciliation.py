@@ -341,6 +341,57 @@ class BeaGdpFallbackTests(unittest.TestCase):
         extra = payload.get("ledger_extra") or {}
         self.assertEqual(extra.get("bea_fallback"), "skipped_missing_api_key")
 
+    def test_bea_opener_exception_does_not_leak_api_key(self) -> None:
+        secret = "SECRETBEAKEY"
+
+        def opener(url: str, *, timeout: float = 20, **kwargs):
+            if "fred.stlouisfed.org" in url:
+                raise TimeoutError("The read operation timed out")
+            if "apps.bea.gov" in url:
+                raise RuntimeError(f"request failed for {url}")
+            raise AssertionError(url)
+
+        with mock.patch.dict(os.environ, {"BEA_API_KEY": secret}):
+            payload = fetch_series(self.gdp_spec, opener=opener, now=self.now)
+        self.assertFalse(payload.get("ok"))
+        error_text = str(payload.get("error") or "")
+        extra = payload.get("ledger_extra") or {}
+        extra_blob = json.dumps(extra)
+        self.assertNotIn(secret, error_text)
+        self.assertNotIn("UserID=", error_text)
+        self.assertNotIn(secret, extra_blob)
+        self.assertNotIn("UserID=", extra_blob)
+        self.assertIn("bea_fallback_failed", error_text)
+
+    def test_bea_row_filter_rejects_substring_gdp_description(self) -> None:
+        from scripts.macro_ingestion.adapters.us import _bea_gdp_level_rows
+
+        payload = {
+            "BEAAPI": {
+                "Results": {
+                    "Data": [
+                        {
+                            "LineNumber": "2",
+                            "SeriesCode": "OTHER",
+                            "LineDescription": "Gross domestic product, personal consumption",
+                            "TimePeriod": "2026Q3",
+                            "DataValue": "9.9",
+                        },
+                        {
+                            "LineNumber": "1",
+                            "SeriesCode": "A191RL",
+                            "LineDescription": "Gross domestic product",
+                            "TimePeriod": "2026Q3",
+                            "DataValue": "2.8",
+                        },
+                    ]
+                }
+            }
+        }
+        rows = _bea_gdp_level_rows(payload)
+        self.assertEqual(len(rows), 1)
+        self.assertAlmostEqual(rows[-1][1], 2.8)
+
     def test_ism_parse_reads_publisher_date_when_present(self) -> None:
         parsed = parse_ism_pmi(ISM_DATE_FIXTURE.read_bytes(), services=False)
         self.assertIsNotNone(parsed)
