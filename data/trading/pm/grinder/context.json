@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-03T09:31:00.281800-05:00",
+  "as_of": "2026-11-03T09:35:30.005528-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -65,7 +65,7 @@
       "competitive_pressure"
     ],
     "raw_pnl_rank": 4,
-    "spread_to_leader_pm_usd": -848963.97,
+    "spread_to_leader_pm_usd": -1082882.44,
     "status": "ok",
     "total_pnl_usd": 0.0
   },
@@ -77,7 +77,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "51b83b2ec0d97044fe5b2b7ed587d6daab2cb0a33630a56c35b7a26dd2b7695e",
+  "memory_context_sha256": "1a51f153c9094cc18d583fbaee2d0eaa9543b63df2360702bc5f587494e22026",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -90,20 +90,20 @@
         "catalyst_logic": "No single event required; kiwi cheapness versus both Australia and the dollar is already extreme, and the Australian March tightening premium looks largely in the cross.",
         "current_mark": 1.2455636090977256,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 1.25,
-        "expected_mark_direction": null,
+        "entry_mark": 1.2455636090977256,
+        "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 270,
+        "horizon_elapsed_fraction": 0.0001,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 40,
         "mae_usd": -0.0,
         "mechanical_order": false,
         "mfe_usd": -0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pm-grinder-9366bc9ee048",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",

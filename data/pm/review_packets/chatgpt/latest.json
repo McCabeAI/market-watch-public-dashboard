@@ -8213,7 +8213,7 @@
   },
   "market_state": {
     "cross_assets": {
-      "generated_at": "2026-11-03T13:47:25Z",
+      "generated_at": "2026-11-03T14:35:29Z",
       "marks": [
         {
           "as_of": "2026-11-02",
@@ -8495,7 +8495,7 @@
       "source_observation": "2026-11-02",
       "status": "ok"
     },
-    "generated_at": "2026-11-03T13:47:25Z",
+    "generated_at": "2026-11-03T14:35:29Z",
     "official_curves": {
       "curves": {
         "AU": {
@@ -11452,49 +11452,49 @@
             {
               "code": "COAG27",
               "expiry": "2027-02",
-              "implied_rate": 2.77
+              "implied_rate": 2.785
             }
           ],
           "contracts_3m": [
             {
               "code": "CRAU26",
               "expiry": "2026-09",
-              "implied_rate": 2.4175
+              "implied_rate": 2.415
             },
             {
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.72
+              "implied_rate": 2.735
             },
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 2.925
+              "implied_rate": 2.96
             },
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.075
+              "implied_rate": 3.12
             },
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.19
+              "implied_rate": 3.235
             },
             {
               "code": "CRAZ27",
               "expiry": "2027-12",
-              "implied_rate": 3.28
+              "implied_rate": 3.325
             },
             {
               "code": "CRAH28",
               "expiry": "2028-03",
-              "implied_rate": 3.35
+              "implied_rate": 3.4
             },
             {
               "code": "CRAM28",
               "expiry": "2028-06",
-              "implied_rate": 3.4
+              "implied_rate": 3.445
             }
           ],
           "status": "ok"
@@ -11551,12 +11551,53 @@
           "status": "ok"
         },
         "US": {
-          "contracts_1m": [],
+          "contracts_1m": [
+            {
+              "code": "SR1X26",
+              "expiry": "2026-11",
+              "implied_rate": 3.8975
+            },
+            {
+              "code": "SR1Z26",
+              "expiry": "2026-12",
+              "implied_rate": 4.03
+            },
+            {
+              "code": "SR1F27",
+              "expiry": "2027-01",
+              "implied_rate": 4.0975
+            },
+            {
+              "code": "SR1G27",
+              "expiry": "2027-02",
+              "implied_rate": 4.1425
+            },
+            {
+              "code": "SR1H27",
+              "expiry": "2027-03",
+              "implied_rate": 4.215
+            },
+            {
+              "code": "SR1J27",
+              "expiry": "2027-04",
+              "implied_rate": 4.295
+            },
+            {
+              "code": "SR1K27",
+              "expiry": "2027-05",
+              "implied_rate": 4.355
+            },
+            {
+              "code": "SR1M27",
+              "expiry": "2027-06",
+              "implied_rate": 4.415
+            }
+          ],
           "contracts_3m": [
             {
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.14
+              "implied_rate": 4.145
             },
             {
               "code": "SR3H7",
@@ -11576,7 +11617,7 @@
             {
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.475
+              "implied_rate": 4.48
             },
             {
               "code": "SR3H8",
@@ -11586,12 +11627,12 @@
             {
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.425
+              "implied_rate": 4.43
             },
             {
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.41
+              "implied_rate": 4.42
             }
           ],
           "status": "ok"
@@ -11889,148 +11930,46 @@
         "z_5y": -0.49360850440591386
       },
       "AU-NZ_10Y": {
-        "as_of": "2026-10-28",
-        "bps": 27.800000000000047,
-        "chg_1d_bps": 9.600000000000009,
-        "chg_1m_bps": 2.5000000000000355,
-        "chg_1y_bps": 13.30000000000009,
-        "chg_3m_bps": -0.4999999999999005,
-        "chg_5d_bps": 8.800000000000008,
-        "chg_6m_bps": -0.9999999999998899,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-05-21",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -16.7,
-            "forward_3m_move": 17.4,
-            "level": -24.099999999999966,
-            "prior_1m_move": 2.5
-          },
-          {
-            "as_of": "2025-11-18",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 3.9,
-            "forward_3m_move": 19.7,
-            "level": 15.59999999999997,
-            "prior_1m_move": 2.5
-          },
-          {
-            "as_of": "2024-04-02",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 15.8,
-            "forward_3m_move": 25.9,
-            "level": -58.30000000000002,
-            "prior_1m_move": 2.6
-          },
-          {
-            "as_of": "2025-08-13",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 11.4,
-            "forward_3m_move": 45.0,
-            "level": -17.400000000000038,
-            "prior_1m_move": 2.6
-          }
-        ],
-        "pctile_1y": 46.03174603174603,
-        "pctile_5y": 89.04109589041096,
-        "z_1y": -0.044183502188802445,
-        "z_5y": 1.5504643747094562
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "AU-NZ_2Y": {
-        "as_of": "2026-10-28",
-        "bps": 112.09999999999995,
-        "chg_1d_bps": 17.79999999999994,
-        "chg_1m_bps": 3.299999999999983,
-        "chg_1y_bps": 33.49999999999994,
-        "chg_3m_bps": 21.499999999999943,
-        "chg_5d_bps": 20.59999999999991,
-        "chg_6m_bps": 3.799999999999983,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-05-21",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -20.8,
-            "forward_3m_move": 24.4,
-            "level": 5.099999999999971,
-            "prior_1m_move": 3.3
-          },
-          {
-            "as_of": "2026-01-08",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 8.5,
-            "forward_3m_move": 15.9,
-            "level": 89.00000000000001,
-            "prior_1m_move": 3.3
-          },
-          {
-            "as_of": "2023-09-21",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 28.6,
-            "forward_3m_move": 92.7,
-            "level": -165.09999999999997,
-            "prior_1m_move": 3.3
-          },
-          {
-            "as_of": "2026-04-07",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -11.3,
-            "forward_3m_move": -4.8,
-            "level": 116.5,
-            "prior_1m_move": 3.2
-          }
-        ],
-        "pctile_1y": 85.91269841269842,
-        "pctile_5y": 97.11850649350649,
-        "z_1y": 0.9530221309769851,
-        "z_5y": 1.6455200598121336
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "AU-NZ_5Y": {
-        "as_of": "2026-10-28",
-        "bps": 53.59999999999996,
-        "chg_1d_bps": 13.400000000000034,
-        "chg_1m_bps": 6.899999999999906,
-        "chg_1y_bps": 16.199999999999946,
-        "chg_3m_bps": 12.199999999999896,
-        "chg_5d_bps": 14.399999999999928,
-        "chg_6m_bps": 0.4999999999999005,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-02-09",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 2.8,
-            "forward_3m_move": 35.3,
-            "level": -76.6,
-            "prior_1m_move": 6.9
-          },
-          {
-            "as_of": "2024-09-19",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 8.9,
-            "forward_3m_move": 14.8,
-            "level": -16.300000000000026,
-            "prior_1m_move": 6.9
-          },
-          {
-            "as_of": "2021-12-06",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 4.3,
-            "forward_3m_move": 15.2,
-            "level": -89.5,
-            "prior_1m_move": 6.8
-          },
-          {
-            "as_of": "2022-06-22",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -14.3,
-            "forward_3m_move": -24.3,
-            "level": -23.20000000000002,
-            "prior_1m_move": 7.0
-          }
-        ],
-        "pctile_1y": 76.19047619047619,
-        "pctile_5y": 95.1651893634166,
-        "z_1y": 0.8211206041821708,
-        "z_5y": 1.6604719549914606
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "AU-US_10Y": {
         "as_of": "2026-10-28",
@@ -12321,110 +12260,110 @@
         "z_5y": -1.3503092332864317
       },
       "CA-EA_10Y": {
-        "as_of": "2026-10-30",
-        "bps": 43.99999999999999,
-        "chg_1d_bps": -4.000000000000007,
-        "chg_1m_bps": 7.9999999999999645,
-        "chg_1y_bps": -7.000000000000028,
-        "chg_3m_bps": -1.0000000000000213,
-        "chg_5d_bps": -6.000000000000007,
-        "chg_6m_bps": -0.9999999999999787,
+        "as_of": "2026-11-02",
+        "bps": 43.000000000000014,
+        "chg_1d_bps": -0.9999999999999787,
+        "chg_1m_bps": 9.000000000000028,
+        "chg_1y_bps": -8.999999999999986,
+        "chg_3m_bps": 2.0000000000000426,
+        "chg_5d_bps": -3.9999999999999574,
+        "chg_6m_bps": -8.999999999999986,
         "historical_move_analogs": [
           {
-            "as_of": "2026-01-07",
+            "as_of": "2022-01-20",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -3.0,
-            "forward_3m_move": -9.0,
-            "level": 56.00000000000001,
-            "prior_1m_move": 8.0
+            "forward_1m_move": -21.0,
+            "forward_3m_move": 5.0,
+            "level": 187.0,
+            "prior_1m_move": 9.0
           },
           {
-            "as_of": "2022-03-08",
+            "as_of": "2023-05-15",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 11.0,
-            "forward_3m_move": 10.0,
-            "level": 178.0,
-            "prior_1m_move": 8.0
+            "forward_1m_move": 31.0,
+            "forward_3m_move": 38.0,
+            "level": 66.00000000000001,
+            "prior_1m_move": 9.0
           },
           {
-            "as_of": "2022-07-19",
+            "as_of": "2023-07-24",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -12.0,
-            "forward_3m_move": -62.0,
-            "level": 185.0,
-            "prior_1m_move": 8.0
+            "forward_1m_move": -0.0,
+            "forward_3m_move": 18.0,
+            "level": 109.00000000000003,
+            "prior_1m_move": 9.0
           },
           {
-            "as_of": "2024-04-26",
+            "as_of": "2023-09-22",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -9.0,
-            "forward_3m_move": -30.0,
-            "level": 121.99999999999997,
-            "prior_1m_move": 8.0
+            "forward_1m_move": 9.0,
+            "forward_3m_move": -5.0,
+            "level": 118.00000000000001,
+            "prior_1m_move": 9.0
           }
         ],
-        "pctile_1y": 21.825396825396826,
-        "pctile_5y": 6.653225806451613,
-        "z_1y": -0.7411639632514119,
-        "z_5y": -1.1087294989745802
+        "pctile_1y": 17.857142857142858,
+        "pctile_5y": 5.801772763900081,
+        "z_1y": -0.9027580065659759,
+        "z_5y": -1.1287061131148144
       },
       "CA-EA_2Y": {
-        "as_of": "2026-10-30",
-        "bps": 20.999999999999996,
-        "chg_1d_bps": -6.0000000000000036,
-        "chg_1m_bps": 13.999999999999968,
+        "as_of": "2026-11-02",
+        "bps": 21.999999999999975,
+        "chg_1d_bps": 0.9999999999999787,
+        "chg_1m_bps": 14.999999999999991,
         "chg_1y_bps": -26.000000000000025,
-        "chg_3m_bps": 12.99999999999999,
-        "chg_5d_bps": -9.000000000000032,
-        "chg_6m_bps": -4.999999999999982,
+        "chg_3m_bps": 16.99999999999995,
+        "chg_5d_bps": -6.00000000000005,
+        "chg_6m_bps": -12.99999999999999,
         "historical_move_analogs": [
           {
-            "as_of": "2026-04-29",
+            "as_of": "2024-11-12",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -13.0,
-            "forward_3m_move": -30.0,
-            "level": 34.999999999999964,
-            "prior_1m_move": 14.0
+            "forward_1m_move": -7.0,
+            "forward_3m_move": -42.0,
+            "level": 106.0,
+            "prior_1m_move": 15.0
           },
           {
-            "as_of": "2023-07-19",
+            "as_of": "2022-02-10",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 8.0,
-            "forward_3m_move": -2.0,
-            "level": 165.0,
-            "prior_1m_move": 14.0
+            "forward_1m_move": 27.0,
+            "forward_3m_move": 75.0,
+            "level": 185.0,
+            "prior_1m_move": 15.0
           },
           {
-            "as_of": "2023-08-24",
+            "as_of": "2025-07-22",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -12.0,
-            "forward_3m_move": -47.0,
-            "level": 180.99999999999997,
-            "prior_1m_move": 14.0
+            "forward_1m_move": -18.0,
+            "forward_3m_move": -48.0,
+            "level": 94.99999999999997,
+            "prior_1m_move": 15.0
           },
           {
-            "as_of": "2022-02-22",
+            "as_of": "2024-02-16",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 34.0,
-            "forward_3m_move": 20.0,
-            "level": 199.0,
-            "prior_1m_move": 14.0
+            "forward_1m_move": -27.0,
+            "forward_3m_move": -34.0,
+            "level": 153.00000000000003,
+            "prior_1m_move": 15.0
           }
         ],
-        "pctile_1y": 34.72222222222222,
-        "pctile_5y": 7.056451612903226,
-        "z_1y": -0.5277882641233597,
-        "z_5y": -1.376292700473664
+        "pctile_1y": 37.1031746031746,
+        "pctile_5y": 7.534246575342466,
+        "z_1y": -0.4513596904768211,
+        "z_5y": -1.3602538881502104
       },
       "CA-EA_5Y": {
-        "as_of": "2026-10-30",
-        "bps": 34.999999999999964,
-        "chg_1d_bps": -5.000000000000028,
+        "as_of": "2026-11-02",
+        "bps": 33.999999999999986,
+        "chg_1d_bps": -0.9999999999999787,
         "chg_1m_bps": 8.999999999999986,
-        "chg_1y_bps": -13.000000000000036,
-        "chg_3m_bps": 3.9999999999999574,
-        "chg_5d_bps": -7.000000000000028,
-        "chg_6m_bps": -4.00000000000005,
+        "chg_1y_bps": -15.000000000000036,
+        "chg_3m_bps": 6.999999999999986,
+        "chg_5d_bps": -4.0,
+        "chg_6m_bps": -12.999999999999986,
         "historical_move_analogs": [
           {
             "as_of": "2023-03-02",
@@ -12459,10 +12398,10 @@
             "prior_1m_move": 9.0
           }
         ],
-        "pctile_1y": 23.015873015873016,
-        "pctile_5y": 6.491935483870968,
-        "z_1y": -0.7569531016784954,
-        "z_5y": -1.2186876131626854
+        "pctile_1y": 20.833333333333332,
+        "pctile_5y": 6.003223207091056,
+        "z_1y": -0.8766218316409587,
+        "z_5y": -1.2351522960284482
       },
       "CA-JP_10Y": {
         "as_of": "2026-10-30",
@@ -12609,292 +12548,190 @@
         "z_5y": -1.2711488762482446
       },
       "CA-NZ_10Y": {
-        "as_of": "2026-10-30",
-        "bps": -112.00000000000006,
-        "chg_1d_bps": -9.000000000000028,
-        "chg_1m_bps": 4.999999999999943,
-        "chg_1y_bps": -20.000000000000057,
-        "chg_3m_bps": 6.999999999999943,
-        "chg_5d_bps": 8.0,
-        "chg_6m_bps": 11.999999999999915,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-04-01",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 34.0,
-            "forward_3m_move": 54.0,
-            "level": -166.0,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2025-05-23",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 13.0,
-            "forward_3m_move": 39.0,
-            "level": -132.00000000000003,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2025-09-03",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 7.0,
-            "forward_3m_move": 6.0,
-            "level": -109.00000000000003,
-            "prior_1m_move": 5.0
-          },
-          {
-            "as_of": "2026-07-14",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 6.0,
-            "forward_3m_move": -2.0,
-            "level": -109.00000000000003,
-            "prior_1m_move": 5.0
-          }
-        ],
-        "pctile_1y": 45.03968253968254,
-        "pctile_5y": 54.67596390484003,
-        "z_1y": -0.18785443139162042,
-        "z_5y": 0.04619098352299604
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "CA-NZ_2Y": {
-        "as_of": "2026-10-30",
-        "bps": -68.00000000000001,
-        "chg_1d_bps": -27.0,
-        "chg_1m_bps": -10.000000000000007,
-        "chg_1y_bps": -53.00000000000002,
-        "chg_3m_bps": 16.000000000000014,
-        "chg_5d_bps": 0.9999999999999858,
-        "chg_6m_bps": 6.999999999999986,
-        "historical_move_analogs": [
-          {
-            "as_of": "2024-10-01",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 15.0,
-            "forward_3m_move": 24.0,
-            "level": -87.99999999999999,
-            "prior_1m_move": -10.0
-          },
-          {
-            "as_of": "2025-05-28",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 5.0,
-            "forward_3m_move": 44.0,
-            "level": -77.0,
-            "prior_1m_move": -10.0
-          },
-          {
-            "as_of": "2022-12-12",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -17.0,
-            "forward_3m_move": -46.0,
-            "level": -75.0,
-            "prior_1m_move": -10.0
-          },
-          {
-            "as_of": "2023-10-05",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 31.0,
-            "forward_3m_move": 33.0,
-            "level": -95.00000000000001,
-            "prior_1m_move": -10.0
-          }
-        ],
-        "pctile_1y": 33.13492063492063,
-        "pctile_5y": 51.36363636363637,
-        "z_1y": -0.47262428396204603,
-        "z_5y": -0.04026794918964022
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "CA-NZ_5Y": {
-        "as_of": "2026-10-30",
-        "bps": -77.00000000000004,
-        "chg_1d_bps": -8.526512829121202e-14,
-        "chg_1m_bps": 14.9999999999999,
-        "chg_1y_bps": -24.000000000000014,
-        "chg_3m_bps": 27.999999999999943,
-        "chg_5d_bps": 19.99999999999993,
-        "chg_6m_bps": 32.99999999999997,
-        "historical_move_analogs": [
-          {
-            "as_of": "2023-08-02",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -26.0,
-            "forward_3m_move": -38.0,
-            "level": -77.0,
-            "prior_1m_move": 15.0
-          },
-          {
-            "as_of": "2022-01-26",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -23.0,
-            "forward_3m_move": 0.0,
-            "level": -78.00000000000003,
-            "prior_1m_move": 15.0
-          },
-          {
-            "as_of": "2022-05-13",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -5.0,
-            "forward_3m_move": 35.0,
-            "level": -67.0,
-            "prior_1m_move": 15.0
-          },
-          {
-            "as_of": "2024-01-22",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -12.0,
-            "forward_3m_move": 4.0,
-            "level": -94.0,
-            "prior_1m_move": 15.0
-          }
-        ],
-        "pctile_1y": 86.5079365079365,
-        "pctile_5y": 80.51681706316653,
-        "z_1y": 1.001376000690849,
-        "z_5y": 0.756160097675181
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "CA-US_10Y": {
-        "as_of": "2026-10-30",
-        "bps": -116.00000000000006,
-        "chg_1d_bps": -2.0,
-        "chg_1m_bps": 10.9999999999999,
-        "chg_1y_bps": -21.000000000000043,
-        "chg_3m_bps": -7.000000000000071,
-        "chg_5d_bps": 0.9999999999999432,
-        "chg_6m_bps": -31.000000000000085,
+        "as_of": "2026-11-02",
+        "bps": -117.0,
+        "chg_1d_bps": -0.9999999999999432,
+        "chg_1m_bps": 13.000000000000028,
+        "chg_1y_bps": -27.000000000000014,
+        "chg_3m_bps": -8.000000000000014,
+        "chg_5d_bps": -0.9999999999999858,
+        "chg_6m_bps": -32.00000000000003,
         "historical_move_analogs": [
           {
-            "as_of": "2025-04-02",
+            "as_of": "2023-04-05",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 11.0,
-            "forward_3m_move": 27.0,
-            "level": -126.00000000000003,
-            "prior_1m_move": 11.0
+            "forward_1m_move": -2.0,
+            "forward_3m_move": 6.0,
+            "level": -52.0,
+            "prior_1m_move": 13.0
           },
           {
-            "as_of": "2025-12-24",
+            "as_of": "2024-01-11",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -9.0,
-            "forward_3m_move": -9.0,
-            "level": -75.00000000000004,
-            "prior_1m_move": 11.0
+            "forward_1m_move": 13.0,
+            "forward_3m_move": -13.0,
+            "level": -73.0,
+            "prior_1m_move": 13.0
           },
           {
-            "as_of": "2026-03-06",
+            "as_of": "2024-08-28",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -9.0,
-            "forward_3m_move": -28.0,
-            "level": -75.00000000000004,
-            "prior_1m_move": 11.0
+            "forward_1m_move": -4.0,
+            "forward_3m_move": -37.0,
+            "level": -75.99999999999997,
+            "prior_1m_move": 13.0
           },
           {
-            "as_of": "2021-11-17",
+            "as_of": "2021-11-22",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -19.0,
+            "forward_1m_move": -17.0,
             "forward_3m_move": -12.0,
-            "level": 9.999999999999986,
-            "prior_1m_move": 11.0
+            "level": 13.00000000000001,
+            "prior_1m_move": 13.0
           }
         ],
-        "pctile_1y": 8.531746031746032,
-        "pctile_5y": 10.528455284552846,
-        "z_1y": -1.4202774787540693,
-        "z_5y": -1.1593611770916663
+        "pctile_1y": 8.333333333333334,
+        "pctile_5y": 10.316815597075548,
+        "z_1y": -1.4734281517510857,
+        "z_5y": -1.1831013765434153
       },
       "CA-US_2Y": {
-        "as_of": "2026-10-30",
-        "bps": -127.99999999999999,
-        "chg_1d_bps": -2.999999999999943,
-        "chg_1m_bps": 23.999999999999957,
-        "chg_1y_bps": -17.99999999999997,
-        "chg_3m_bps": 8.999999999999986,
-        "chg_5d_bps": 8.000000000000043,
-        "chg_6m_bps": -31.999999999999986,
+        "as_of": "2026-11-02",
+        "bps": -133.0,
+        "chg_1d_bps": -5.000000000000014,
+        "chg_1m_bps": 18.00000000000003,
+        "chg_1y_bps": -27.0,
+        "chg_3m_bps": 5.000000000000028,
+        "chg_5d_bps": -2.0000000000000284,
+        "chg_6m_bps": -38.00000000000003,
         "historical_move_analogs": [
           {
-            "as_of": "2025-12-22",
+            "as_of": "2025-05-02",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -15.0,
-            "forward_3m_move": -14.0,
-            "level": -83.99999999999999,
-            "prior_1m_move": 24.0
+            "forward_1m_move": 1.0,
+            "forward_3m_move": 26.0,
+            "level": -129.0,
+            "prior_1m_move": 18.0
           },
           {
-            "as_of": "2025-05-01",
+            "as_of": "2022-09-08",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": -15.0,
-            "forward_3m_move": 20.0,
-            "level": -120.00000000000001,
-            "prior_1m_move": 24.0
+            "forward_1m_move": -38.0,
+            "forward_3m_move": -70.0,
+            "level": 18.000000000000014,
+            "prior_1m_move": 18.0
           },
           {
-            "as_of": "2022-05-31",
+            "as_of": "2023-03-17",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 4.0,
-            "forward_3m_move": 1.0,
-            "level": 14.000000000000012,
-            "prior_1m_move": 24.0
+            "forward_1m_move": -6.0,
+            "forward_3m_move": 17.0,
+            "level": -27.0,
+            "prior_1m_move": 18.0
           },
           {
-            "as_of": "2023-05-24",
+            "as_of": "2024-07-16",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 11.0,
-            "forward_3m_move": -5.0,
-            "level": -14.999999999999947,
-            "prior_1m_move": 24.0
+            "forward_1m_move": -11.0,
+            "forward_3m_move": -29.0,
+            "level": -65.99999999999997,
+            "prior_1m_move": 18.0
           }
         ],
-        "pctile_1y": 30.357142857142858,
-        "pctile_5y": 13.78048780487805,
-        "z_1y": -0.6569040437446512,
-        "z_5y": -1.210430358840083
+        "pctile_1y": 23.015873015873016,
+        "pctile_5y": 10.073111291632818,
+        "z_1y": -0.8986617247676622,
+        "z_5y": -1.302969491026625
       },
       "CA-US_5Y": {
-        "as_of": "2026-10-30",
-        "bps": -120.00000000000001,
-        "chg_1d_bps": 0.0,
-        "chg_1m_bps": 16.999999999999957,
-        "chg_1y_bps": -24.000000000000014,
-        "chg_3m_bps": -2.0,
-        "chg_5d_bps": 6.000000000000014,
-        "chg_6m_bps": -35.0,
+        "as_of": "2026-11-02",
+        "bps": -124.00000000000003,
+        "chg_1d_bps": -4.000000000000014,
+        "chg_1m_bps": 14.999999999999943,
+        "chg_1y_bps": -33.000000000000014,
+        "chg_3m_bps": -5.000000000000028,
+        "chg_5d_bps": 1.9999999999999432,
+        "chg_6m_bps": -41.00000000000003,
         "historical_move_analogs": [
           {
-            "as_of": "2025-04-21",
+            "as_of": "2023-04-04",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 0.0,
-            "forward_3m_move": 30.0,
-            "level": -118.00000000000001,
-            "prior_1m_move": 17.0
+            "forward_1m_move": 13.0,
+            "forward_3m_move": 20.0,
+            "level": -54.0,
+            "prior_1m_move": 15.0
           },
           {
-            "as_of": "2022-12-02",
+            "as_of": "2024-02-02",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 9.0,
-            "forward_3m_move": -17.0,
-            "level": -67.0,
-            "prior_1m_move": 17.0
+            "forward_1m_move": -19.0,
+            "forward_3m_move": -30.0,
+            "level": -51.00000000000002,
+            "prior_1m_move": 15.0
           },
           {
-            "as_of": "2025-03-17",
+            "as_of": "2025-04-17",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 16.0,
-            "forward_3m_move": 39.0,
-            "level": -142.00000000000003,
-            "prior_1m_move": 17.0
+            "forward_1m_move": 3.0,
+            "forward_3m_move": 38.0,
+            "level": -122.00000000000001,
+            "prior_1m_move": 15.0
           },
           {
-            "as_of": "2025-07-11",
+            "as_of": "2025-07-17",
             "distance_from_current_move": 0.0,
-            "forward_1m_move": 9.0,
-            "forward_3m_move": 7.0,
-            "level": -96.00000000000004,
-            "prior_1m_move": 17.0
+            "forward_1m_move": 6.0,
+            "forward_3m_move": -5.0,
+            "level": -90.99999999999997,
+            "prior_1m_move": 15.0
           }
         ],
-        "pctile_1y": 13.69047619047619,
-        "pctile_5y": 10.65040650406504,
-        "z_1y": -1.0708198716654647,
-        "z_5y": -1.1974020626813648
+        "pctile_1y": 10.714285714285714,
+        "pctile_5y": 9.0982940698619,
+        "z_1y": -1.2708757424861246,
+        "z_5y": -1.2893007963078789
       },
       "EA-JP_10Y": {
         "as_of": "2026-10-30",
@@ -13329,436 +13166,130 @@
         "z_5y": 0.7269091472750292
       },
       "NZ-EA_10Y": {
-        "as_of": "2026-11-02",
-        "bps": 160.0,
-        "chg_1d_bps": 3.999999999999943,
-        "chg_1m_bps": 10.000000000000057,
-        "chg_1y_bps": 20.0,
-        "chg_3m_bps": 2.9999999999999716,
-        "chg_5d_bps": -1.0000000000000284,
-        "chg_6m_bps": 0.9999999999999716,
-        "historical_move_analogs": [
-          {
-            "as_of": "2023-05-10",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 28.0,
-            "forward_3m_move": 49.0,
-            "level": 182.00000000000003,
-            "prior_1m_move": 10.0
-          },
-          {
-            "as_of": "2024-04-15",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -27.0,
-            "forward_3m_move": -45.0,
-            "level": 243.00000000000003,
-            "prior_1m_move": 10.0
-          },
-          {
-            "as_of": "2024-12-05",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -29.0,
-            "forward_3m_move": -62.0,
-            "level": 238.00000000000003,
-            "prior_1m_move": 10.0
-          },
-          {
-            "as_of": "2025-12-29",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 8.0,
-            "forward_3m_move": -2.0,
-            "level": 168.00000000000003,
-            "prior_1m_move": 10.0
-          }
-        ],
-        "pctile_1y": 50.595238095238095,
-        "pctile_5y": 12.52,
-        "z_1y": 0.10920625329997981,
-        "z_5y": -1.2832956753604277
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-EA_2Y": {
-        "as_of": "2026-11-02",
-        "bps": 93.00000000000001,
-        "chg_1d_bps": 4.0,
-        "chg_1m_bps": 24.000000000000014,
-        "chg_1y_bps": 32.00000000000003,
-        "chg_3m_bps": 8.0,
-        "chg_5d_bps": 6.999999999999986,
-        "chg_6m_bps": 1.0000000000000142,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-11-17",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 20.0,
-            "forward_3m_move": 17.0,
-            "level": 88.00000000000003,
-            "prior_1m_move": 24.0
-          },
-          {
-            "as_of": "2022-03-01",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -7.0,
-            "forward_3m_move": -15.0,
-            "level": 298.0,
-            "prior_1m_move": 24.0
-          },
-          {
-            "as_of": "2023-12-05",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -31.0,
-            "forward_3m_move": -35.0,
-            "level": 229.0,
-            "prior_1m_move": 24.0
-          },
-          {
-            "as_of": "2024-04-26",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -10.0,
-            "forward_3m_move": -25.0,
-            "level": 199.00000000000003,
-            "prior_1m_move": 24.0
-          }
-        ],
-        "pctile_1y": 55.15873015873016,
-        "pctile_5y": 13.456889605157132,
-        "z_1y": 0.14554322495519764,
-        "z_5y": -1.3020417071729018
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-EA_5Y": {
-        "as_of": "2026-11-02",
-        "bps": 117.0,
-        "chg_1d_bps": 4.999999999999986,
-        "chg_1m_bps": -0.9999999999999716,
-        "chg_1y_bps": 19.0,
-        "chg_3m_bps": -13.000000000000028,
-        "chg_5d_bps": -13.000000000000028,
-        "chg_6m_bps": -19.0,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-10-11",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -2.0,
-            "forward_3m_move": -35.0,
-            "level": 228.00000000000003,
-            "prior_1m_move": -1.0
-          },
-          {
-            "as_of": "2023-02-21",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 14.0,
-            "forward_3m_move": 3.0,
-            "level": 178.00000000000003,
-            "prior_1m_move": -1.0
-          },
-          {
-            "as_of": "2023-09-15",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 33.0,
-            "forward_3m_move": 9.0,
-            "level": 231.0,
-            "prior_1m_move": -1.0
-          },
-          {
-            "as_of": "2024-05-03",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -5.0,
-            "forward_3m_move": -25.0,
-            "level": 205.00000000000003,
-            "prior_1m_move": -1.0
-          }
-        ],
-        "pctile_1y": 15.079365079365079,
-        "pctile_5y": 5.12,
-        "z_1y": -1.0479692813282437,
-        "z_5y": -1.558908941156951
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-JP_10Y": {
-        "as_of": "2026-10-30",
-        "bps": 208.3,
-        "chg_1d_bps": 8.899999999999977,
-        "chg_1m_bps": 4.5,
-        "chg_1y_bps": -47.39999999999995,
-        "chg_3m_bps": 15.100000000000023,
-        "chg_5d_bps": 1.6999999999999886,
-        "chg_6m_bps": -16.899999999999977,
-        "historical_move_analogs": [
-          {
-            "as_of": "2024-01-31",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": 17.3,
-            "forward_3m_move": -8.9,
-            "level": 386.29999999999995,
-            "prior_1m_move": 4.7
-          },
-          {
-            "as_of": "2025-12-24",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": -14.3,
-            "forward_3m_move": -25.0,
-            "level": 250.59999999999997,
-            "prior_1m_move": 4.7
-          },
-          {
-            "as_of": "2022-01-07",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": 14.1,
-            "forward_3m_move": 82.7,
-            "level": 239.7,
-            "prior_1m_move": 4.3
-          },
-          {
-            "as_of": "2023-05-10",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": 33.4,
-            "forward_3m_move": 45.4,
-            "level": 373.50000000000006,
-            "prior_1m_move": 4.7
-          }
-        ],
-        "pctile_1y": 42.26190476190476,
-        "pctile_5y": 8.994932432432432,
-        "z_1y": -0.2956919801457533,
-        "z_5y": -1.5136131373179162
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-JP_2Y": {
-        "as_of": "2026-10-30",
-        "bps": 208.5,
-        "chg_1d_bps": 21.599999999999994,
-        "chg_1m_bps": 12.099999999999994,
-        "chg_1y_bps": 31.899999999999977,
-        "chg_3m_bps": -7.199999999999989,
-        "chg_5d_bps": 8.899999999999977,
-        "chg_6m_bps": -3.30000000000004,
-        "historical_move_analogs": [
-          {
-            "as_of": "2022-01-28",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 22.0,
-            "forward_3m_move": 111.6,
-            "level": 218.5,
-            "prior_1m_move": 12.2
-          },
-          {
-            "as_of": "2022-06-09",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": -5.5,
-            "forward_3m_move": 30.6,
-            "level": 354.50000000000006,
-            "prior_1m_move": 11.9
-          },
-          {
-            "as_of": "2022-08-15",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": 24.1,
-            "forward_3m_move": 74.4,
-            "level": 356.5,
-            "prior_1m_move": 11.9
-          },
-          {
-            "as_of": "2025-12-19",
-            "distance_from_current_move": 0.2,
-            "forward_1m_move": -3.3,
-            "forward_3m_move": 1.2,
-            "level": 206.9,
-            "prior_1m_move": 12.3
-          }
-        ],
-        "pctile_1y": 65.07936507936508,
-        "pctile_5y": 16.93617021276596,
-        "z_1y": 0.4770980483802965,
-        "z_5y": -1.1063706643371716
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-JP_5Y": {
-        "as_of": "2026-10-30",
-        "bps": 204.3,
-        "chg_1d_bps": -2.199999999999932,
-        "chg_1m_bps": -12.199999999999989,
-        "chg_1y_bps": -7.899999999999977,
-        "chg_3m_bps": -12.5,
-        "chg_5d_bps": -12.299999999999983,
-        "chg_6m_bps": -27.400000000000006,
-        "historical_move_analogs": [
-          {
-            "as_of": "2025-05-23",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 1.7,
-            "forward_3m_move": -44.2,
-            "level": 289.59999999999997,
-            "prior_1m_move": -12.2
-          },
-          {
-            "as_of": "2025-02-26",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -18.5,
-            "forward_3m_move": -22.8,
-            "level": 307.79999999999995,
-            "prior_1m_move": -12.2
-          },
-          {
-            "as_of": "2025-07-01",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": -11.1,
-            "forward_3m_move": -73.1,
-            "level": 283.4,
-            "prior_1m_move": -12.3
-          },
-          {
-            "as_of": "2021-12-15",
-            "distance_from_current_move": 0.1,
-            "forward_1m_move": 9.2,
-            "forward_3m_move": 79.3,
-            "level": 231.0,
-            "prior_1m_move": -12.3
-          }
-        ],
-        "pctile_1y": 24.404761904761905,
-        "pctile_5y": 5.447635135135135,
-        "z_1y": -0.8191236239346129,
-        "z_5y": -1.4458021936412713
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-US_10Y": {
-        "as_of": "2026-11-02",
-        "bps": 0.0,
-        "chg_1d_bps": 4.0000000000000036,
-        "chg_1m_bps": 25.0,
-        "chg_1y_bps": 0.9999999999999787,
-        "chg_3m_bps": 8.000000000000007,
-        "chg_5d_bps": 5.999999999999961,
-        "chg_6m_bps": -37.999999999999986,
-        "historical_move_analogs": [
-          {
-            "as_of": "2021-11-22",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -11.0,
-            "forward_3m_move": -9.0,
-            "level": 97.00000000000001,
-            "prior_1m_move": 25.0
-          },
-          {
-            "as_of": "2022-05-19",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 21.0,
-            "forward_3m_move": -4.0,
-            "level": 79.0,
-            "prior_1m_move": 25.0
-          },
-          {
-            "as_of": "2025-02-28",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 10.0,
-            "forward_3m_move": -8.0,
-            "level": 25.99999999999998,
-            "prior_1m_move": 25.0
-          },
-          {
-            "as_of": "2025-12-18",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -6.0,
-            "forward_3m_move": -10.0,
-            "level": 41.000000000000014,
-            "prior_1m_move": 25.0
-          }
-        ],
-        "pctile_1y": 28.373015873015873,
-        "pctile_5y": 7.20164609053498,
-        "z_1y": -0.7938259072275096,
-        "z_5y": -1.4869002239530882
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-US_2Y": {
-        "as_of": "2026-11-02",
-        "bps": -61.999999999999964,
-        "chg_1d_bps": -2.0,
-        "chg_1m_bps": 41.00000000000002,
-        "chg_1y_bps": 31.00000000000005,
-        "chg_3m_bps": 5.000000000000078,
-        "chg_5d_bps": 18.000000000000064,
-        "chg_6m_bps": -42.99999999999997,
-        "historical_move_analogs": [
-          {
-            "as_of": "2023-05-23",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -39.0,
-            "forward_3m_move": -33.0,
-            "level": 85.00000000000006,
-            "prior_1m_move": 41.0
-          },
-          {
-            "as_of": "2024-09-17",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -38.0,
-            "forward_3m_move": -88.0,
-            "level": 26.00000000000002,
-            "prior_1m_move": 41.0
-          },
-          {
-            "as_of": "2025-11-25",
-            "distance_from_current_move": 1.0,
-            "forward_1m_move": 29.0,
-            "forward_3m_move": 14.0,
-            "level": -53.00000000000003,
-            "prior_1m_move": 42.0
-          },
-          {
-            "as_of": "2022-12-28",
-            "distance_from_current_move": 1.0,
-            "forward_1m_move": -35.0,
-            "forward_3m_move": -1.0,
-            "level": 64.00000000000006,
-            "prior_1m_move": 40.0
-          }
-        ],
-        "pctile_1y": 42.857142857142854,
-        "pctile_5y": 15.17412935323383,
-        "z_1y": -0.3265530480322636,
-        "z_5y": -1.134138954528133
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       },
       "NZ-US_5Y": {
-        "as_of": "2026-11-02",
-        "bps": -41.000000000000014,
-        "chg_1d_bps": 1.9999999999999574,
-        "chg_1m_bps": 17.99999999999997,
-        "chg_1y_bps": -4.263256414560601e-14,
-        "chg_3m_bps": -11.000000000000032,
-        "chg_5d_bps": -3.0000000000000284,
-        "chg_6m_bps": -65.99999999999997,
-        "historical_move_analogs": [
-          {
-            "as_of": "2023-12-06",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -21.0,
-            "forward_3m_move": -36.0,
-            "level": 59.999999999999964,
-            "prior_1m_move": 18.0
-          },
-          {
-            "as_of": "2024-02-07",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -11.0,
-            "forward_3m_move": -43.0,
-            "level": 49.00000000000002,
-            "prior_1m_move": 18.0
-          },
-          {
-            "as_of": "2025-02-05",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": 39.0,
-            "forward_3m_move": 8.0,
-            "level": -30.00000000000003,
-            "prior_1m_move": 18.0
-          },
-          {
-            "as_of": "2025-06-12",
-            "distance_from_current_move": 0.0,
-            "forward_1m_move": -8.0,
-            "forward_3m_move": 0.0,
-            "level": -4.0000000000000036,
-            "prior_1m_move": 18.0
-          }
-        ],
-        "pctile_1y": 15.674603174603174,
-        "pctile_5y": 4.320987654320987,
-        "z_1y": -1.1816897334267276,
-        "z_5y": -1.7035888627193174
+        "as_of": null,
+        "bps": null,
+        "chg_1d_bps": null,
+        "chg_1m_bps": null,
+        "chg_3m_bps": null,
+        "chg_5d_bps": null,
+        "pctile_1y": null,
+        "pctile_5y": null,
+        "reason": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+        "status": "unavailable",
+        "z_1y": null,
+        "z_5y": null
       }
     },
     "rates": {
@@ -13776,15 +13307,15 @@
       },
       "CA": {
         "curves": {
-          "2s10s": 50.0,
-          "5s10s": 27.0
+          "2s10s": 48.00000000000004,
+          "5s10s": 28.000000000000025
         },
-        "latest_observation": "2026-10-30",
+        "latest_observation": "2026-11-02",
         "tenors": {
-          "10Y": 3.78,
-          "2Y": 3.28,
-          "5Y": 3.51,
-          "LONG": 4.11
+          "10Y": 3.74,
+          "2Y": 3.26,
+          "5Y": 3.46,
+          "LONG": 4.06
         }
       },
       "EA": {
@@ -13814,15 +13345,12 @@
         }
       },
       "NZ": {
-        "curves": {
-          "2s10s": 94.0,
-          "5s10s": 62.000000000000014
-        },
-        "latest_observation": "2026-11-02",
+        "curves": {},
+        "latest_observation": null,
         "tenors": {
-          "10Y": 4.91,
-          "2Y": 3.97,
-          "5Y": 4.29
+          "10Y": null,
+          "2Y": null,
+          "5Y": null
         }
       },
       "US": {
@@ -14050,86 +13578,76 @@
         },
         "CORRA": {
           "benchmark": {
-            "as_of": "2026-10-30",
+            "as_of": "2026-11-02",
             "name": "CORRA",
-            "rate": 2.55
+            "rate": 2.54
           },
           "contract_period_months": 3,
           "contracts": [
             {
-              "change_from_overnight_bps": -13.25,
+              "change_from_overnight_bps": -12.5,
               "code": "CRAU26",
               "expiry": "2026-09",
-              "implied_rate": 2.4175,
+              "implied_rate": 2.415,
               "open_interest": null,
-              "price": 97.5825,
+              "price": 97.585,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 17.0,
+              "change_from_overnight_bps": 19.5,
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.72,
+              "implied_rate": 2.735,
               "open_interest": null,
-              "price": 97.28,
+              "price": 97.265,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 37.5,
+              "change_from_overnight_bps": 42.0,
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 2.925,
+              "implied_rate": 2.96,
               "open_interest": null,
-              "price": 97.075,
+              "price": 97.04,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 52.5,
+              "change_from_overnight_bps": 58.0,
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.075,
+              "implied_rate": 3.12,
               "open_interest": null,
-              "price": 96.925,
+              "price": 96.88,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 64.0,
+              "change_from_overnight_bps": 69.5,
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.19,
+              "implied_rate": 3.235,
               "open_interest": null,
-              "price": 96.81,
+              "price": 96.765,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 73.0,
+              "change_from_overnight_bps": 78.5,
               "code": "CRAZ27",
               "expiry": "2027-12",
-              "implied_rate": 3.28,
+              "implied_rate": 3.325,
               "open_interest": null,
-              "price": 96.72,
+              "price": 96.675,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 80.0,
+              "change_from_overnight_bps": 86.0,
               "code": "CRAH28",
               "expiry": "2028-03",
-              "implied_rate": 3.35,
-              "open_interest": null,
-              "price": 96.65,
-              "source": "MX_CORRA_FUTURES",
-              "volume": null
-            },
-            {
-              "change_from_overnight_bps": 85.0,
-              "code": "CRAM28",
-              "expiry": "2028-06",
               "implied_rate": 3.4,
               "open_interest": null,
               "price": 96.6,
@@ -14137,37 +13655,47 @@
               "volume": null
             },
             {
-              "change_from_overnight_bps": 88.0,
+              "change_from_overnight_bps": 90.5,
+              "code": "CRAM28",
+              "expiry": "2028-06",
+              "implied_rate": 3.445,
+              "open_interest": null,
+              "price": 96.555,
+              "source": "MX_CORRA_FUTURES",
+              "volume": null
+            },
+            {
+              "change_from_overnight_bps": 93.0,
               "code": "CRAU28",
               "expiry": "2028-09",
-              "implied_rate": 3.43,
+              "implied_rate": 3.47,
               "open_interest": null,
-              "price": 96.57,
+              "price": 96.53,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 89.0,
+              "change_from_overnight_bps": 94.0,
               "code": "CRAZ28",
               "expiry": "2028-12",
-              "implied_rate": 3.44,
+              "implied_rate": 3.48,
               "open_interest": null,
-              "price": 96.56,
+              "price": 96.52,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 90.5,
+              "change_from_overnight_bps": 93.0,
               "code": "CRAH29",
               "expiry": "2029-03",
-              "implied_rate": 3.455,
+              "implied_rate": 3.47,
               "open_interest": null,
-              "price": 96.545,
+              "price": 96.53,
               "source": "MX_CORRA_FUTURES",
               "volume": null
             },
             {
-              "change_from_overnight_bps": 92.5,
+              "change_from_overnight_bps": 93.5,
               "code": "CRAM29",
               "expiry": "2029-06",
               "implied_rate": 3.475,
@@ -14762,505 +14290,505 @@
           "contract_period_months": 3,
           "contracts": [
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 19.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 19.5,
               "code": "SR3Z6",
               "expiry": "2026-12",
-              "implied_rate": 4.14,
-              "observation_date": "2026-11-02",
-              "open_interest": 1664964.0,
-              "price": 95.86,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 408333.0
+              "implied_rate": 4.145,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.855,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 39.5,
               "code": "SR3H7",
               "expiry": "2027-03",
               "implied_rate": 4.345,
-              "observation_date": "2026-11-02",
-              "open_interest": 1286000.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.655,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 366307.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 52.0,
               "code": "SR3M7",
               "expiry": "2027-06",
               "implied_rate": 4.47,
-              "observation_date": "2026-11-02",
-              "open_interest": 1227041.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.53,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 392414.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 55.5,
               "code": "SR3U7",
               "expiry": "2027-09",
               "implied_rate": 4.505,
-              "observation_date": "2026-11-02",
-              "open_interest": 1085660.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.495,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 316222.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 52.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 53.0,
               "code": "SR3Z7",
               "expiry": "2027-12",
-              "implied_rate": 4.475,
-              "observation_date": "2026-11-02",
-              "open_interest": 1557291.0,
-              "price": 95.525,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 340148.0
+              "implied_rate": 4.48,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.52,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 49.5,
               "code": "SR3H8",
               "expiry": "2028-03",
               "implied_rate": 4.445,
-              "observation_date": "2026-11-02",
-              "open_interest": 858210.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.555,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 221521.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 47.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 48.0,
               "code": "SR3M8",
               "expiry": "2028-06",
-              "implied_rate": 4.425,
-              "observation_date": "2026-11-02",
-              "open_interest": 643819.0,
-              "price": 95.575,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 230274.0
+              "implied_rate": 4.43,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.57,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 46.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 47.0,
               "code": "SR3U8",
               "expiry": "2028-09",
-              "implied_rate": 4.41,
-              "observation_date": "2026-11-02",
-              "open_interest": 672494.0,
-              "price": 95.59,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 189838.0
+              "implied_rate": 4.42,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.58,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 44.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 45.5,
               "code": "SR3Z8",
               "expiry": "2028-12",
-              "implied_rate": 4.39,
-              "observation_date": "2026-11-02",
-              "open_interest": 547688.0,
-              "price": 95.61,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 125384.0
+              "implied_rate": 4.405,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.595,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 42.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 44.0,
               "code": "SR3H9",
               "expiry": "2029-03",
-              "implied_rate": 4.375,
-              "observation_date": "2026-11-02",
-              "open_interest": 394018.0,
-              "price": 95.625,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 89071.0
+              "implied_rate": 4.39,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.61,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 41.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 43.0,
               "code": "SR3M9",
               "expiry": "2029-06",
-              "implied_rate": 4.365,
-              "observation_date": "2026-11-02",
-              "open_interest": 392029.0,
-              "price": 95.635,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 83556.0
+              "implied_rate": 4.38,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.62,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 41.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 42.5,
               "code": "SR3U9",
               "expiry": "2029-09",
-              "implied_rate": 4.36,
-              "observation_date": "2026-11-02",
-              "open_interest": 305956.0,
-              "price": 95.64,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 81439.0
+              "implied_rate": 4.375,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.625,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 41.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 42.5,
               "code": "SR3Z9",
               "expiry": "2029-12",
-              "implied_rate": 4.36,
-              "observation_date": "2026-11-02",
-              "open_interest": 252234.0,
-              "price": 95.64,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 52374.0
+              "implied_rate": 4.375,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.625,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 41.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 43.5,
               "code": "SR3H0",
               "expiry": "2030-03",
-              "implied_rate": 4.365,
-              "observation_date": "2026-11-02",
-              "open_interest": 186847.0,
-              "price": 95.635,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 35658.0
+              "implied_rate": 4.385,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.615,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 42.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 44.5,
               "code": "SR3M0",
               "expiry": "2030-06",
-              "implied_rate": 4.375,
-              "observation_date": "2026-11-02",
-              "open_interest": 156940.0,
-              "price": 95.625,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 33761.0
+              "implied_rate": 4.395,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.605,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 44.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 46.0,
               "code": "SR3U0",
               "expiry": "2030-09",
-              "implied_rate": 4.39,
-              "observation_date": "2026-11-02",
-              "open_interest": 149803.0,
-              "price": 95.61,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 35899.0
+              "implied_rate": 4.41,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.59,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 46.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 48.0,
               "code": "SR3Z0",
               "expiry": "2030-12",
-              "implied_rate": 4.41,
-              "observation_date": "2026-11-02",
-              "open_interest": 115420.0,
-              "price": 95.59,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 25498.0
+              "implied_rate": 4.43,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.57,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 49.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 51.0,
               "code": "SR3H1",
               "expiry": "2031-03",
-              "implied_rate": 4.44,
-              "observation_date": "2026-11-02",
-              "open_interest": 85687.0,
-              "price": 95.56,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 23337.0
+              "implied_rate": 4.46,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.54,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 52.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 54.0,
               "code": "SR3M1",
               "expiry": "2031-06",
-              "implied_rate": 4.47,
-              "observation_date": "2026-11-02",
-              "open_interest": 71206.0,
-              "price": 95.53,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 23901.0
+              "implied_rate": 4.49,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.51,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 55.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 58.0,
               "code": "SR3U1",
               "expiry": "2031-09",
-              "implied_rate": 4.505,
-              "observation_date": "2026-11-02",
-              "open_interest": 41466.0,
-              "price": 95.495,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 22348.0
+              "implied_rate": 4.53,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.47,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 59.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 63.0,
               "code": "SR3Z1",
               "expiry": "2031-12",
-              "implied_rate": 4.54,
-              "observation_date": "2026-11-02",
-              "open_interest": 9113.0,
-              "price": 95.46,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 194.0
+              "implied_rate": 4.58,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.42,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 63.0,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 67.5,
               "code": "SR3H2",
               "expiry": "2032-03",
-              "implied_rate": 4.58,
-              "observation_date": "2026-11-02",
-              "open_interest": 4836.0,
-              "price": 95.42,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 76.0
+              "implied_rate": 4.625,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.375,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
-              "change_from_overnight_bps": 66.5,
+              "as_of": "2026-11-03",
+              "change_from_overnight_bps": 71.0,
               "code": "SR3M2",
               "expiry": "2032-06",
-              "implied_rate": 4.615,
-              "observation_date": "2026-11-02",
-              "open_interest": 1419.0,
-              "price": 95.385,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 217.0
+              "implied_rate": 4.66,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
+              "price": 95.34,
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 70.0,
               "code": "SR3U2",
               "expiry": "2032-09",
               "implied_rate": 4.65,
-              "observation_date": "2026-11-02",
-              "open_interest": 756.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.35,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 118.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 73.0,
               "code": "SR3Z2",
               "expiry": "2032-12",
               "implied_rate": 4.68,
-              "observation_date": "2026-11-02",
-              "open_interest": 161.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.32,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 4.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 76.0,
               "code": "SR3H3",
               "expiry": "2033-03",
               "implied_rate": 4.71,
-              "observation_date": "2026-11-02",
-              "open_interest": 36.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.29,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 79.0,
               "code": "SR3M3",
               "expiry": "2033-06",
               "implied_rate": 4.74,
-              "observation_date": "2026-11-02",
-              "open_interest": 3.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.26,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 82.0,
               "code": "SR3U3",
               "expiry": "2033-09",
               "implied_rate": 4.77,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.23,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 84.5,
               "code": "SR3Z3",
               "expiry": "2033-12",
               "implied_rate": 4.795,
-              "observation_date": "2026-11-02",
-              "open_interest": 11.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.205,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 86.5,
               "code": "SR3H4",
               "expiry": "2034-03",
               "implied_rate": 4.815,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.185,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 89.5,
               "code": "SR3M4",
               "expiry": "2034-06",
               "implied_rate": 4.845,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.155,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 90.5,
               "code": "SR3U4",
               "expiry": "2034-09",
               "implied_rate": 4.855,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.145,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 95.0,
               "code": "SR3Z4",
               "expiry": "2034-12",
               "implied_rate": 4.9,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.1,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 96.0,
               "code": "SR3H5",
               "expiry": "2035-03",
               "implied_rate": 4.91,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.09,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 98.5,
               "code": "SR3M5",
               "expiry": "2035-06",
               "implied_rate": 4.935,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.065,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 101.0,
               "code": "SR3U5",
               "expiry": "2035-09",
               "implied_rate": 4.96,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 95.04,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 105.5,
               "code": "SR3Z5",
               "expiry": "2035-12",
               "implied_rate": 5.005,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 94.995,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             },
             {
-              "as_of": "2026-11-02",
+              "as_of": "2026-11-03",
               "change_from_overnight_bps": 106.5,
               "code": "SR3H6",
               "expiry": "2036-03",
               "implied_rate": 5.015,
-              "observation_date": "2026-11-02",
-              "open_interest": 0.0,
+              "observation_date": "2026-11-03",
+              "open_interest": null,
               "price": 94.985,
-              "source": "CME_SR3_SETTLEMENT",
-              "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
-              "volume": 0.0
+              "source": "ESIGNAL_CME_SR3_DELAYED",
+              "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
+              "volume": null
             }
           ],
           "country": "US",
           "instrument": "CME Three-Month SOFR futures",
           "mark_convention": "implied_rate = 100 - futures price",
           "product_code": "SR3",
-          "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/02/2026&strategy=DEFAULT&pageSize=500",
+          "source_url": "https://quotes.esignal.com/esignalprod/quote.action?symbol=SR3-CME",
           "status": "ok"
         },
         "TONA": {
@@ -15584,7 +15112,7 @@
         "competitive_pressure"
       ],
       "raw_pnl_rank": 2,
-      "spread_to_leader_pm_usd": -118463.97,
+      "spread_to_leader_pm_usd": -352382.44,
       "status": "ok",
       "total_pnl_usd": 737500.0
     },
@@ -15596,7 +15124,7 @@
       "repeated_error_escalations": []
     },
     "learning_obligations": [],
-    "memory_context_sha256": "a9c9910af82dcd5c962940b165538d0a67782074b589aed3fd289afdfe95abbd",
+    "memory_context_sha256": "acac7e4082df2c8cd9f88d03dd18b034a67b2467080050e8c911cb28e43c22cf",
     "open_positions": [
       {
         "asset_class": "rates",
@@ -15614,7 +15142,7 @@
           "framing": null,
           "full_size_hold_requires_reunderwrite": false,
           "giveback_usd": 0.0,
-          "holding_seconds": 3838805,
+          "holding_seconds": 3839075,
           "horizon_elapsed_fraction": null,
           "horizon_status": "unspecified",
           "instrument": "CORRA_2027H-Z",
@@ -15668,7 +15196,7 @@
     "recent_performance_reflections": [],
     "reflections_due": []
   },
-  "memory_context_sha256": "a9c9910af82dcd5c962940b165538d0a67782074b589aed3fd289afdfe95abbd",
+  "memory_context_sha256": "acac7e4082df2c8cd9f88d03dd18b034a67b2467080050e8c911cb28e43c22cf",
   "opportunity_instruction": "Scan the full frozen market evidence in this packet. Trader Room decisions are an input and a challenge set. The permitted opportunity universe is that frozen evidence. Originate independent trades when the packet can mark and risk them. Emit a small opportunity_scan of the best ideas you independently considered.",
   "overnight_books": {
     "as_of": "2026-11-03T08:22:57.179127-05:00",
@@ -18229,7 +17757,7 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-chatgpt-overnight-20261103-review-001",
-  "review_packet_sha256": "ca3d2b7f70ccab3eafbe55873827d9579b044352c406f3b272a872a65a95e26a",
+  "review_packet_sha256": "079e728c510cfa8736b80c24d40ae394fededae278ba2c9b67ed5c5cf5a387f5",
   "risk_capital_limit_usd": 100000000,
   "risk_capital_remaining_usd": 95000000.0,
   "risk_capital_usd": 5000000.0,
