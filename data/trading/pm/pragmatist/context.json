@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-03T18:36:08.662945-05:00",
+  "as_of": "2026-11-04T05:35:22.541505-05:00",
   "calibration": {
     "average_holding_seconds": 1736823,
     "average_realized_pnl_usd": 184000.0,
@@ -59,16 +59,19 @@
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
-    "competition_rank": 1,
-    "competitive_rank": 1,
+    "competition_rank": 2,
+    "competitive_rank": 2,
     "drawdown_usd": 9011.31,
     "gap_to_best_trader_usd": 906901.62,
     "high_water_nav_usd": 1001091893.75,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1082882.44,
-    "pressure_flags": [],
-    "raw_pnl_rank": 1,
-    "spread_to_leader_pm_usd": 0.0,
+    "pressure_flags": [
+      "behind_leading_pm",
+      "competitive_pressure"
+    ],
+    "raw_pnl_rank": 2,
+    "spread_to_leader_pm_usd": -92562.0,
     "status": "ok",
     "total_pnl_usd": 1106500.0
   },
@@ -89,7 +92,7 @@
       "source_run_id": "overnight-20261103"
     }
   ],
-  "memory_context_sha256": "b062a57caf3aea4637bd916e47eb938d6b8316a8d64359db32deb268b2b0d630",
+  "memory_context_sha256": "fdc06e633b243e17a8923198de106f195e09204a64bc5bbc49611861a9987b3b",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -107,7 +110,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 157500.0,
-        "holding_seconds": 3872604,
+        "holding_seconds": 3912158,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -156,8 +159,8 @@
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 32709,
-        "horizon_elapsed_fraction": 0.0126,
+        "holding_seconds": 72263,
+        "horizon_elapsed_fraction": 0.0279,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 30,

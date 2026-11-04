@@ -84,7 +84,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-03T08:22:57.179127-05:00",
+  "as_of": "2026-11-04T05:35:22.541505-05:00",
   "calibration": {
     "average_holding_seconds": 3142820,
     "average_realized_pnl_usd": 157206.2,
@@ -122,23 +122,23 @@
   "consequence": {
     "competition_cohort_size": 14,
     "competition_eligible": true,
-    "competition_rank": 5,
-    "competitive_rank": 5,
-    "drawdown_usd": 899693.43,
-    "giveback_usd": 899693.43,
+    "competition_rank": 3,
+    "competitive_rank": 3,
+    "drawdown_usd": 817573.94,
+    "giveback_usd": 817573.94,
     "high_water_nav_usd": 100952555.22,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100052861.79,
-    "net_pnl_usd": 52861.79,
+    "nav_usd": 100134981.28,
+    "net_pnl_usd": 134981.28,
     "pressure_flags": [],
     "prior_competition_rank": 3,
-    "rank_change": 2,
-    "raw_pnl_rank": 5,
+    "rank_change": 0,
+    "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": -82119.49,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -149,7 +149,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "ad3e7e58c9278f9aeb82e236bf9ff0448f99002b0fa1dcc9fe07be0eb950e46a",
+  "memory_context_sha256": "1fdbd0e0910b72b697bb9ff4b1591c70629694188f6511e1d88f9ea864ec1d9b",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -160,15 +160,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The hold is already printed; the leftover is persistence of the US-Japan policy gap versus an unowned mid-range USDJPY book, exhausted if Japan hikes or the United States cash rate converges.",
-        "current_mark": 157.25026852846403,
+        "current_mark": 157.89942938659058,
         "current_notional_usd": 20000000.0,
         "entry_mark": 158.05929919137466,
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 352191,
-        "horizon_elapsed_fraction": 0.0906,
+        "holding_seconds": 428537,
+        "horizon_elapsed_fraction": 0.1102,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 45,
@@ -189,9 +189,9 @@
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": -102370.52,
+        "total_pnl_usd": -20229.09,
         "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c",
-        "unrealized_pnl_usd": -102370.52
+        "unrealized_pnl_usd": -20229.09
       },
       "instrument": "USDJPY",
       "opened_at": "2026-10-30T06:33:05.373685-04:00",
