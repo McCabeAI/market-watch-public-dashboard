@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -35,6 +36,9 @@ from scripts.pm.review_packets import (
 from scripts.pm.store import PMStore
 
 DECISION_TYPE = "PM_DECISION"
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+_RECEIPT_DIRNAME = "chatgpt"
+BOOK_SHA_FILENAME = "book_sha256.txt"
 
 
 def _walk_forbidden(value: Any, *, path: str = "$", allow_action_prices: bool = False) -> list[str]:
@@ -68,6 +72,94 @@ def load_receipt(store: PMStore, review_packet_id: str) -> dict[str, Any] | None
     if not path.is_file():
         return None
     return store.read_json(path)
+
+
+def chatgpt_book_sha256(books: dict[str, Any]) -> str:
+    """Canonical version of the ChatGPT book.
+
+    This is the SHA-256 of the pretty JSON encoding used by the store
+    (sorted keys, indent 2, trailing newline). Tickets copy it; they do not
+    invent it.
+    """
+    book = (books.get("pms") or {}).get(CHATGPT_PM_ID)
+    if not isinstance(book, dict):
+        raise SchemaError("ChatGPT book is missing")
+    return sha256_json(book)
+
+
+def write_chatgpt_book_pointer(store: PMStore, books: dict[str, Any]) -> str:
+    digest = chatgpt_book_sha256(books)
+    path = store.packet_path(CHATGPT_PM_ID, BOOK_SHA_FILENAME)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(digest + "\n", encoding="utf-8")
+    return digest
+
+
+def fingerprint_receipt_path(store: PMStore, fingerprint: str) -> Path:
+    if not isinstance(fingerprint, str) or not _SHA256_RE.fullmatch(fingerprint):
+        raise SchemaError("decision fingerprint is not a sha256")
+    return store.decisions_dir() / _RECEIPT_DIRNAME / f"{fingerprint}.json"
+
+
+def _read_receipt_record(store: PMStore, path: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    payload = store.read_json(path)
+    if not isinstance(payload, dict) or not isinstance(payload.get("receipt"), dict):
+        return None
+    return payload
+
+
+def stored_chatgpt_book_sha256(store: PMStore) -> str:
+    """Hash the ChatGPT book as persisted, before mark refresh mutates a copy."""
+    if not store.books_path().is_file():
+        raise SchemaError("ChatGPT books are not persisted")
+    return chatgpt_book_sha256(store.read_books())
+
+
+def _assert_book_binding(
+    payload: dict[str, Any],
+    *,
+    actual: str,
+    required: bool,
+) -> str | None:
+    expected = payload.get("expected_book_sha256")
+    if expected is None:
+        if required:
+            raise SchemaError("expected_book_sha256 is required")
+        return None
+    if not isinstance(expected, str) or not _SHA256_RE.fullmatch(expected):
+        raise SchemaError("expected_book_sha256 must be a sha256 hex digest")
+    if not isinstance(actual, str) or not _SHA256_RE.fullmatch(actual) or expected != actual:
+        raise FreshnessError(
+            "expected_book_sha256 does not match the current ChatGPT book; "
+            "re-base this ticket on the current book"
+        )
+    return actual
+
+
+def _reject_same_freeze(store: PMStore, payload: dict[str, Any], fingerprint: str) -> None:
+    """Refuse a second distinct decision bound to a freeze that already has one."""
+    packet_sha = payload.get("review_packet_sha256")
+    pre_book = payload.get("expected_book_sha256")
+    directory = store.decisions_dir() / _RECEIPT_DIRNAME
+    if not directory.is_dir():
+        return
+    for path in sorted(directory.glob("*.json")):
+        stored = _read_receipt_record(store, path)
+        if stored is None:
+            continue
+        receipt = stored["receipt"]
+        if receipt.get("decision_fingerprint") == fingerprint:
+            continue
+        if receipt.get("review_packet_sha256") != packet_sha:
+            continue
+        recorded_book = receipt.get("pre_book_sha256")
+        if pre_book is None or recorded_book in (None, pre_book):
+            raise SchemaError(
+                "a different ChatGPT decision was already applied for this review packet state; "
+                "refusing to mutate again"
+            )
 
 
 def validate_chatgpt_decision(
@@ -170,24 +262,58 @@ def load_or_empty_registry(store: PMStore) -> dict[str, Any]:
 
 
 def _matching_receipt(store: PMStore, payload: dict[str, Any]) -> dict[str, Any] | None:
+    """Return an existing receipt for this exact decision.
+
+    A different decision for the same packet id is allowed only after trusted
+    code has refreshed the packet hash. The original receipt file is never
+    replaced. A different decision for the same packet hash still fails closed.
+    """
+    if not isinstance(payload, dict):
+        return None
     packet_id = payload.get("review_packet_id")
     if not isinstance(packet_id, str) or not packet_id:
         return None
-    stored = load_receipt(store, packet_id)
-    if not stored:
-        return None
-    receipt = stored.get("receipt") if isinstance(stored, dict) else None
-    if not isinstance(receipt, dict):
-        return None
-    if receipt.get("review_packet_id") != packet_id:
-        return None
-    if receipt.get("review_packet_sha256") != payload.get("review_packet_sha256"):
-        return None
-    if receipt.get("decision_fingerprint") != decision_fingerprint(payload):
-        raise SchemaError(
-            "a different ChatGPT decision was already applied for this review packet; refusing to mutate again"
-        )
-    return stored
+    fingerprint = decision_fingerprint(payload)
+    stored = _read_receipt_record(store, fingerprint_receipt_path(store, fingerprint))
+    if stored is not None:
+        receipt = stored["receipt"]
+        if receipt.get("decision_fingerprint") != fingerprint:
+            raise SchemaError("stored ChatGPT receipt fingerprint does not match its path")
+        if receipt.get("review_packet_sha256") != payload.get("review_packet_sha256"):
+            raise FreshnessError("replay review_packet_sha256 does not match the stored receipt")
+        return stored
+    legacy = load_receipt(store, packet_id)
+    if isinstance(legacy, dict) and isinstance(legacy.get("receipt"), dict):
+        receipt = legacy["receipt"]
+        same_freeze = receipt.get("review_packet_sha256") == payload.get("review_packet_sha256")
+        if same_freeze and receipt.get("decision_fingerprint") == fingerprint:
+            return legacy
+        if same_freeze and receipt.get("decision_fingerprint") != fingerprint:
+            raise SchemaError(
+                "a different ChatGPT decision was already applied for this review packet; "
+                "refusing to mutate again"
+            )
+    _reject_same_freeze(store, payload, fingerprint)
+    return None
+
+
+def _write_decision_receipt(
+    store: PMStore,
+    *,
+    packet_id: str,
+    fingerprint: str,
+    record: dict[str, Any],
+) -> str:
+    """Persist an immutable receipt. Never replace an earlier decision."""
+    path = fingerprint_receipt_path(store, fingerprint)
+    if path.is_file():
+        raise SchemaError("refusing to overwrite an existing ChatGPT decision receipt")
+    store.write_json(path, record)
+    legacy = receipt_path(store, packet_id)
+    if not legacy.is_file():
+        store.write_json(legacy, record)
+    relative = path.relative_to(store.state_root).as_posix()
+    return relative
 
 
 def apply_chatgpt_decision(
@@ -195,7 +321,13 @@ def apply_chatgpt_decision(
     payload: dict[str, Any],
     *,
     write: bool = True,
+    require_book_binding: bool = False,
+    issue_number: int | None = None,
 ) -> dict[str, Any]:
+    if not isinstance(payload, dict):
+        raise SchemaError("ChatGPT decision must be a JSON object")
+    if issue_number is not None and (isinstance(issue_number, bool) or not isinstance(issue_number, int) or issue_number <= 0):
+        raise SchemaError("issue_number must be a positive integer")
     existing = _matching_receipt(store, payload)
     if existing is not None:
         books = store.read_books() if store.books_path().is_file() else existing.get("books")
@@ -218,6 +350,8 @@ def apply_chatgpt_decision(
     )
     registry = load_or_empty_registry(store)
     packet = frozen_chatgpt_packet(store, source)
+    pre_book_sha256 = stored_chatgpt_book_sha256(store)
+    _assert_book_binding(payload, actual=pre_book_sha256, required=require_book_binding)
     payload = validate_chatgpt_decision(payload, packet=packet)
     market_state = market_state_from_source(source)
     run_id = source.overnight_run_id or source.trader_room_run_id
@@ -264,8 +398,15 @@ def apply_chatgpt_decision(
         "decision_fingerprint": decision_fingerprint(payload),
         "decision_status": updated["pms"][CHATGPT_PM_ID]["decision_status"],
         "gross_utilization_usd": updated["pms"][CHATGPT_PM_ID]["gross_utilization_usd"],
+        "pre_book_sha256": pre_book_sha256,
+        "post_book_sha256": chatgpt_book_sha256(updated),
         "already_applied": False,
     }
+    if issue_number is not None:
+        receipt["submission"] = {"channel": "github_issue", "issue_number": issue_number}
+    receipt["receipt_path"] = fingerprint_receipt_path(
+        store, receipt["decision_fingerprint"]
+    ).relative_to(store.state_root).as_posix()
     record = {
         "decision": {k: v for k, v in payload.items() if k not in FORBIDDEN_MODEL_STATE_KEYS},
         "receipt": receipt,
@@ -278,7 +419,13 @@ def apply_chatgpt_decision(
         from scripts.pm.public import write_public_state
 
         write_public_state(store, updated, registry)
-        store.write_json(receipt_path(store, packet["review_packet_id"]), record)
+        _write_decision_receipt(
+            store,
+            packet_id=packet["review_packet_id"],
+            fingerprint=receipt["decision_fingerprint"],
+            record=record,
+        )
+        write_chatgpt_book_pointer(store, updated)
     return {
         "books": updated,
         "registry": registry,
@@ -311,11 +458,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--input", required=True, type=Path)
     ap.add_argument("--root", type=Path, default=None)
     ap.add_argument("--state-root", type=Path, default=None)
+    ap.add_argument(
+        "--require-book-binding",
+        action="store_true",
+        help="Require expected_book_sha256 to match the current ChatGPT book",
+    )
     args = ap.parse_args(argv)
     payload = json.loads(args.input.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise SchemaError("ChatGPT decision must be a JSON object")
     store = PMStore(root=args.root, state_root=args.state_root)
     if args.command == "validate":
-        existing = _matching_receipt(store, payload)
+        existing = _matching_receipt(store, payload) if isinstance(payload, dict) else None
         if existing is not None:
             print(
                 json.dumps(
@@ -329,13 +483,12 @@ def main(argv: list[str] | None = None) -> int:
             )
             return 0
         source = select_daily_pm_source(store.root, store.state_root, allow_trader_room_fallback=True)
-        books = load_or_empty_books(
-            store,
-            trader_room_run_id=source.trader_room_run_id,
-            overnight_run_id=source.overnight_run_id,
-        )
-        registry = load_or_empty_registry(store)
         packet = frozen_chatgpt_packet(store, source)
+        _assert_book_binding(
+            payload,
+            actual=stored_chatgpt_book_sha256(store),
+            required=args.require_book_binding,
+        )
         validate_chatgpt_decision(payload, packet=packet)
         print(
             json.dumps(

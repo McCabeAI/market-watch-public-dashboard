@@ -67,6 +67,8 @@ PYTHONPATH=. python scripts/pm/chatgpt_ingest.py apply --input data/pm/inbox/cha
 
 Trusted code hydrates marks, checks packet id/hash/freshness, enforces instruments/cap/curve lock and the learning/rationale gate, mutates only the ChatGPT book, applies ledger/journal/memory updates, persists provenance/history, refreshes marks, and updates public state.
 
+The daily submission is a GitHub issue titled exactly `[chatgpt-pm-decision]`. Trusted code on `main` verifies the human author, binds the ticket to the frozen packet and `data/pm/review_packets/chatgpt/book_sha256.txt`, commits the generated ChatGPT state, and dispatches the existing production Pages workflow. Several decisions can land on the same day. Each one needs the packet and book published by the previous commit, and each keeps its own receipt. The inbox pull request remains a fallback. See [`docs/CHATGPT_PM_DECISION_INGEST.md`](CHATGPT_PM_DECISION_INGEST.md).
+
 ## Future data requests
 
 `data/pm/data_requests/latest.json` is the consolidated Git artifact. Entries carry originating PM, request, reason, decision impact, priority `low|medium|high`, suggested source, first/last requested, repeat count, and `status=requested`. Repeated text is deduped with attribution preserved. Requests are for future runs only; they never break the current evidence freeze and never launch collectors. The Trader Book tab surfaces them to Kevin.

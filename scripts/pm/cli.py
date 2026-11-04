@@ -8,7 +8,11 @@ import json
 from pathlib import Path
 
 from scripts.pm.books import empty_books, mark_stale_if_packet_changed, validate_books
-from scripts.pm.chatgpt_ingest import load_or_empty_books, load_or_empty_registry
+from scripts.pm.chatgpt_ingest import (
+    load_or_empty_books,
+    load_or_empty_registry,
+    write_chatgpt_book_pointer,
+)
 from scripts.pm.data_requests import empty_registry
 from scripts.pm.launch import build_pm_launch_plan
 from scripts.pm.public import emit_pm_json, write_public_state
@@ -32,6 +36,7 @@ def _persist_packets(store: PMStore, books: dict, registry: dict, packets: dict)
     for pm_id, packet in packets.items():
         store.write_packet(pm_id, packet)
     write_public_state(store, books, registry)
+    write_chatgpt_book_pointer(store, books)
     return books
 
 

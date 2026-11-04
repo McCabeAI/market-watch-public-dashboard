@@ -1,0 +1,195 @@
+name: Apply ChatGPT PM issue decision
+
+# One GitHub issue is the daily ChatGPT PM submission. Trusted code on main
+# applies it and dispatches the existing production Pages workflow.
+# Opening the issue is not a trade. Dispatching Pages is not publication.
+
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.event.issue.title == '[chatgpt-pm-decision]' && 'chatgpt-pm-canonical' || format('chatgpt-pm-other-{0}', github.run_id) }}
+  cancel-in-progress: false
+
+jobs:
+  authorize:
+    name: Authorize ChatGPT PM issue
+    if: github.event.issue.title == '[chatgpt-pm-decision]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    outputs:
+      authorized: ${{ steps.auth.outputs.authorized }}
+      reason: ${{ steps.auth.outputs.reason }}
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify sender permission
+        id: auth
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_AUTHOR_LOGIN: ${{ github.event.issue.user.login }}
+          ISSUE_AUTHOR_TYPE: ${{ github.event.issue.user.type }}
+          ISSUE_SENDER_LOGIN: ${{ github.event.sender.login }}
+          ISSUE_SENDER_TYPE: ${{ github.event.sender.type }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.pm.chatgpt_issue authorize --result /tmp/mw-chatgpt-auth.json
+
+      - name: Comment when authorization fails
+        if: steps.auth.outputs.authorized != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          AUTH_REASON: ${{ steps.auth.outputs.reason }}
+        run: |
+          set -euo pipefail
+          case "$ISSUE_NUMBER" in
+            ''|*[!0-9]*) echo "refusing non-numeric issue number" >&2; exit 1 ;;
+          esac
+          case "$AUTH_REASON" in
+            ''|*[!a-z_]*) AUTH_REASON="rejected" ;;
+          esac
+          PYTHONPATH=. python3 -c 'import os; from scripts.pm.chatgpt_issue import render_rejection_comment; open("/tmp/mw-chatgpt-auth.md","w",encoding="utf-8").write(render_rejection_comment(os.environ["AUTH_REASON"]))'
+          gh issue comment "$ISSUE_NUMBER" --body-file /tmp/mw-chatgpt-auth.md
+          exit 1
+
+  apply:
+    name: Apply ticket and dispatch Pages
+    needs: authorize
+    if: needs.authorize.outputs.authorized == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      issues: write
+      actions: write
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Record canonical base
+        id: base
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          sha="$(git rev-parse HEAD)"
+          case "$sha" in
+            ''|*[!0-9a-f]*) echo "refusing unexpected base sha" >&2; exit 1 ;;
+          esac
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Apply trusted ticket
+        id: apply
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.pm.chatgpt_issue apply-from-env \
+            --result /tmp/mw-chatgpt/result.json \
+            --generated /tmp/mw-chatgpt-generated
+
+      - name: Commit canonical state
+        id: commit
+        if: steps.apply.outputs.status == 'applied'
+        env:
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+          APPLY_STATUS: applied
+          GENERATED_DIR: /tmp/mw-chatgpt-generated
+          COMMIT_JSON: /tmp/mw-chatgpt/commit.json
+        run: |
+          set +e
+          bash scripts/pm/commit_chatgpt_state.sh
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ] && [ ! -f /tmp/mw-chatgpt/commit.json ]; then
+            echo '{"status":"rejected","commit_sha":"","head_sha":""}' > /tmp/mw-chatgpt/commit.json
+          fi
+          exit 0
+
+      - name: Note replay head
+        if: steps.apply.outputs.status == 'already_applied'
+        env:
+          COMMIT_JSON: /tmp/mw-chatgpt/commit.json
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          COMMIT_STATUS=skipped COMMIT_SHA="" HEAD_SHA="$sha" python3 -c 'import json,os; json.dump({"status": os.environ["COMMIT_STATUS"], "commit_sha": "", "head_sha": os.environ["HEAD_SHA"]}, open(os.environ["COMMIT_JSON"], "w"), sort_keys=True)'
+
+      - name: Dispatch existing production Pages workflow
+        if: steps.apply.outputs.status == 'applied' || steps.apply.outputs.status == 'already_applied'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          COMMIT_JSON: /tmp/mw-chatgpt/commit.json
+        run: |
+          set -euo pipefail
+          sha="$(PYTHONPATH=. python3 - <<'PY'
+          import json, re
+          from pathlib import Path
+          payload = json.loads(Path("/tmp/mw-chatgpt/commit.json").read_text(encoding="utf-8"))
+          status = payload.get("status")
+          sha = ""
+          if status == "applied":
+              sha = str(payload.get("commit_sha") or "")
+          elif status == "skipped":
+              sha = str(payload.get("head_sha") or "")
+          if re.fullmatch(r"[0-9a-f]{40}", sha) is None:
+              sha = ""
+          print(sha)
+          PY
+          )"
+          if [ -z "$sha" ]; then
+            echo '{"publication_status":"not_committed","needs_attention":true,"book_committed":false,"run_observed":false,"reason":"no_commit_sha"}' > /tmp/mw-chatgpt/pages.json
+            exit 0
+          fi
+          PYTHONPATH=. python3 -m scripts.pm.chatgpt_issue dispatch-and-observe \
+            --commit-sha "$sha" \
+            --public data/pm/public/latest.json \
+            --result /tmp/mw-chatgpt/pages.json
+
+      - name: Comment with receipt and publication status
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          case "$ISSUE_NUMBER" in
+            ''|*[!0-9]*) echo "refusing non-numeric issue number" >&2; exit 1 ;;
+          esac
+          if [ ! -f /tmp/mw-chatgpt/result.json ]; then
+            echo '{"status":"rejected","reason":"apply_failed","book_committed":false,"receipt":null}' > /tmp/mw-chatgpt/result.json
+          fi
+          PYTHONPATH=. python3 -m scripts.pm.chatgpt_issue finalize \
+            --apply /tmp/mw-chatgpt/result.json \
+            --commit /tmp/mw-chatgpt/commit.json \
+            --pages /tmp/mw-chatgpt/pages.json \
+            --comment-file /tmp/mw-chatgpt/comment.md \
+            --code-file /tmp/mw-chatgpt/exit-code
+          gh issue comment "$ISSUE_NUMBER" --body-file /tmp/mw-chatgpt/comment.md
+          exit "$(tr -d '[:space:]' < /tmp/mw-chatgpt/exit-code)"
