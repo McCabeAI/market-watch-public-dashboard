@@ -11,7 +11,7 @@
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
-    "scoring_cutoff": "Latest calendar month the LEVEL engine may read from history.",
+    "scoring_cutoff": "Latest calendar month present in history that a replay cutoff may include; not the reference period every dimension card is current through.",
     "score_inputs_latest_reference_period": "Latest reference period among scored components.",
     "score_inputs_last_ingested_at": "Latest retrieved_at among observations used in the current score.",
     "last_refresh_date": "UTC date of score_inputs_last_ingested_at, or the calibration anchor if none."
@@ -26,7 +26,7 @@
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-10",
+        "as_of": "2026-07",
         "latest_reference_period": "2026-07",
         "components": {
           "core_pce": 1.0
@@ -54,7 +54,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -166,7 +166,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-08",
         "latest_reference_period": "2026-08",
         "components": {
           "retail": 0.25,
@@ -238,7 +238,7 @@
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
@@ -280,7 +280,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -336,7 +336,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -378,7 +378,7 @@
         "direction": "warming",
         "coverage": 0.75,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-08",
         "latest_reference_period": "2026-08",
         "components": {
           "retail": 0.25,
@@ -450,7 +450,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
@@ -492,7 +492,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -548,7 +548,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-08",
         "latest_reference_period": "2026-08",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -590,7 +590,7 @@
         "direction": "cooling",
         "coverage": 0.75,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "retail": 0.25,
@@ -662,7 +662,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-10",
+        "as_of": "2026-Q2",
         "latest_reference_period": "2026-Q2",
         "components": {
           "underlying": 0.6,
@@ -704,7 +704,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "cool",
-        "as_of": "2026-10",
+        "as_of": "2026-Q2",
         "latest_reference_period": "2026-Q2",
         "components": {
           "unemployment": 0.7,
@@ -760,7 +760,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-08",
         "latest_reference_period": "2026-08",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -802,7 +802,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-08",
         "latest_reference_period": "2026-08",
         "components": {
           "retail": 0.25,
@@ -916,7 +916,7 @@
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -972,7 +972,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-Q3",
         "latest_reference_period": "2026-Q3",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -1086,7 +1086,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
@@ -1128,7 +1128,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -1184,7 +1184,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
+        "as_of": "2026-08",
         "latest_reference_period": "2026-08",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -1226,7 +1226,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "cool",
-        "as_of": "2026-10",
+        "as_of": "2026-09",
         "latest_reference_period": "2026-09",
         "components": {
           "retail": 0.25,

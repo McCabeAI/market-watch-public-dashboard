@@ -71,20 +71,25 @@ def format_ingestion_day(value: object) -> str:
 def score_dates_summary(scores: Mapping[str, Any], *, prefix: str = "Scores") -> str:
     anchor = scores.get("calibration_anchor_date") or scores.get("as_of")
     ingested = scores.get("score_inputs_last_ingested_at")
-    cutoff = scores.get("scoring_cutoff") or scores.get("score_inputs_latest_reference_period")
+    latest = scores.get("score_inputs_latest_reference_period")
     parts: list[str] = []
-    if ingested:
-        parts.append(f"inputs last ingested {format_ingestion_day(ingested)}")
-    if cutoff:
-        parts.append(f"reference periods through {format_reference_period_through(str(cutoff))}")
     if anchor:
         parts.append(f"calibration anchor {format_calibration_anchor(anchor)}")
+    if ingested:
+        parts.append(f"inputs last ingested {format_ingestion_day(ingested)}")
+    if latest:
+        parts.append(
+            f"latest scored component period {format_reference_period_through(str(latest))}"
+        )
     if not parts:
         if anchor:
             return f"Calibration anchor {format_calibration_anchor(anchor)}"
         return "Score dates not published in this build"
     head = f"{prefix}: " if prefix else ""
-    return head + " · ".join(parts)
+    coverage_note = (
+        "Coverage counts scored components only and is not a freshness claim."
+    )
+    return head + " · ".join(parts) + f" · {coverage_note}"
 
 
 def scoreboard_asof_line(scores: Mapping[str, Any]) -> str:

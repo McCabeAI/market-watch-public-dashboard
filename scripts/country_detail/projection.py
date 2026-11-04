@@ -1181,6 +1181,87 @@ def _observations_from_ca_energy_fixture(
     return out
 
 
+CA_GDP_COMBINED_MACRO_SERIES = "monthly_v65201210;quarterly_v1594571783"
+_CA_MONTHLY_REFERENCE_PERIOD_RE = re.compile(r"^\d{4}-\d{2}$")
+
+
+def _ca_monthly_industry_gdp_context_observations(
+    *,
+    root: Path,
+    catalog_by_id: dict[str, dict[str, Any]],
+    calibration_sources: Mapping[str, str],
+    existing_ids: set[tuple[str, str]],
+) -> list[dict[str, Any]]:
+    """Surface latest monthly industry GDP from macro ingestion as Activity context only."""
+    catalog_id = "CA.Activity.gdp_domestic_demand"
+    catalog_row = catalog_by_id.get(catalog_id)
+    if catalog_row is None:
+        return []
+
+    store_path = root / "data/macro_ingestion/observations/ca.json"
+    if not store_path.is_file():
+        return []
+
+    store = _read_json(store_path)
+    rows = list(store.get("observations") or [])
+    monthly_rows = [
+        row
+        for row in rows
+        if str(row.get("series_id") or "") == CA_GDP_COMBINED_MACRO_SERIES
+        and _CA_MONTHLY_REFERENCE_PERIOD_RE.fullmatch(str(row.get("period") or ""))
+    ]
+    if not monthly_rows:
+        return []
+
+    latest_row = max(monthly_rows, key=lambda row: str(row["period"]))
+    transformation = str(latest_row.get("transformation") or catalog_row.get("transform") or "")
+    if (catalog_id, transformation) in existing_ids:
+        return []
+
+    history = [
+        {
+            "reference_period": str(latest_row["period"]),
+            "value": latest_row.get("value"),
+            "transformation": transformation,
+            "source_url": latest_row.get("source_url"),
+            "retrieved_at": latest_row.get("retrieved_at"),
+            "revision_status": latest_row.get("revision_status"),
+            "vintage": latest_row.get("vintage"),
+            "release_date": latest_row.get("release_date"),
+            "series_id": latest_row.get("series_id"),
+            "units": latest_row.get("units") or catalog_row.get("units"),
+            "publisher": catalog_row.get("publisher"),
+        }
+    ]
+    component_stub = {
+        "publisher": catalog_row.get("publisher"),
+        "cadence": catalog_row.get("cadence"),
+        "sa": catalog_row.get("seasonal_adjustment"),
+        "methodology_breaks": [],
+    }
+    return [
+        _build_identity_observation(
+            country="CA",
+            catalog_row=catalog_row,
+            component=component_stub,
+            transformation=transformation,
+            history=history,
+            latest=history[0],
+            catalog_id=catalog_id,
+            calibration_sources=calibration_sources,
+            score_role_override=("context", 0.0),
+            label_override=(
+                "Monthly industry GDP (m/m SA); quarterly expenditure GDP remains the scored Activity input"
+            ),
+            retrieved_at_override=latest_row.get("retrieved_at"),
+            source_url_override=latest_row.get("source_url"),
+            publisher_override=str(catalog_row.get("publisher") or ""),
+            vintage_override=latest_row.get("vintage"),
+            series_id_override=str(latest_row.get("series_id") or ""),
+        )
+    ]
+
+
 def _max_timestamp(values: list[str | None]) -> str | None:
     parsed: list[str] = []
     for value in values:
@@ -1300,6 +1381,16 @@ def build_projection(
             from scripts.prima_pressure.presentation import build_presentation
 
             country_payload["prima_pressure"] = build_presentation(root)
+            for obs in _ca_monthly_industry_gdp_context_observations(
+                root=root,
+                catalog_by_id=catalog_by_id,
+                calibration_sources=calibration_sources,
+                existing_ids=existing_ids,
+            ):
+                key = (obs["catalog_id"], obs["transformation"])
+                if key not in existing_ids:
+                    observations.append(obs)
+                    existing_ids.add(key)
         countries_out[country] = country_payload
 
     if as_of is None:

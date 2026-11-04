@@ -19,6 +19,8 @@ if str(ROOT) not in sys.path:
 
 from scripts.macro_ingestion.adapters.au import (
     clear_workbook_cache,
+    choose_newest_abs_registry_workbook_url,
+    discover_abs_registry_workbook_urls,
     fetch_series,
     parse_abs_time_series_workbook,
     _national_accounts_workbook_url,
@@ -263,6 +265,105 @@ class TestAustraliaAdapter(unittest.TestCase):
             self.assertEqual(payload["points"][0]["period"], "2026-08")
             self.assertAlmostEqual(payload["points"][0]["value"], aug_val)
 
+    def test_mhsi_registry_discovery_prefers_sep_over_jul(self) -> None:
+        landing = (FIXTURES / "mhsi_registry_landing_sep_2026.html").read_text(encoding="utf-8")
+        urls = discover_abs_registry_workbook_urls(landing, workbook_name="5682001.xlsx")
+        self.assertTrue(urls[0].endswith("/sep-2026/5682001.xlsx"))
+        static = (
+            "https://www.abs.gov.au/statistics/economy/finance/"
+            "monthly-household-spending-indicator/jul-2026/5682001.xlsx"
+        )
+        chosen = choose_newest_abs_registry_workbook_url(static, urls)
+        self.assertIn("/sep-2026/5682001.xlsx", chosen)
+
+    def test_spending_fetch_uses_sep_workbook_for_due_september_period(self) -> None:
+        spec = self._spec("AU.Consumer.spending")
+        spec["release_rule"] = {
+            "kind": "explicit_timestamp",
+            "timezone": "Australia/Sydney",
+            "dates": ["2026-10-31T11:30:00+11:00"],
+            "expected_periods": {"2026-10-31T11:30:00+11:00": "2026-09"},
+        }
+        landing = (FIXTURES / "mhsi_registry_landing_sep_2026.html").read_bytes()
+        body = _build_abs_workbook(
+            "A130200586W",
+            [(datetime(2026, 8, 1), 0.0), (datetime(2026, 9, 1), 0.4)],
+        )
+        seen: list[str] = []
+
+        def opener(url: str, *, timeout: float = 20) -> dict:
+            seen.append(url)
+            if url.rstrip("/").endswith("monthly-household-spending-indicator"):
+                return {
+                    "ok": True,
+                    "url": url,
+                    "http_status": 200,
+                    "body": landing,
+                    "error": None,
+                }
+            return {
+                "ok": True,
+                "url": url,
+                "http_status": 200,
+                "body": body,
+                "error": None,
+            }
+
+        payload = fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 10, 31, 2, 0, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload.get("ok"), payload)
+        self.assertTrue(any("/sep-2026/5682001.xlsx" in url for url in seen), seen)
+        point = payload["points"][0]
+        self.assertEqual(point["period"], "2026-09")
+        self.assertAlmostEqual(point["value"], 0.4)
+        self.assertEqual(point["transformation"], "mom_pct")
+
+    def test_spending_scores_newer_workbook_month_without_schedule_edit(self) -> None:
+        """September can score while the catalog still lists the August release."""
+        spec = self._spec("AU.Consumer.spending")
+        self.assertEqual(
+            (spec.get("release_rule") or {}).get("expected_periods", {}).get(
+                "2026-09-30T11:30:00+10:00"
+            ),
+            "2026-08",
+        )
+        landing = (FIXTURES / "mhsi_registry_landing_sep_2026.html").read_bytes()
+        body = _build_abs_workbook(
+            "A130200586W",
+            [(datetime(2026, 8, 1), 0.0), (datetime(2026, 9, 1), 0.4)],
+        )
+
+        def opener(url: str, *, timeout: float = 20) -> dict:
+            if url.rstrip("/").endswith("monthly-household-spending-indicator"):
+                return {
+                    "ok": True,
+                    "url": url,
+                    "http_status": 200,
+                    "body": landing,
+                    "error": None,
+                }
+            return {
+                "ok": True,
+                "url": url,
+                "http_status": 200,
+                "body": body,
+                "error": None,
+            }
+
+        payload = fetch_series(
+            spec,
+            opener=opener,
+            now=datetime(2026, 11, 4, 15, 0, tzinfo=timezone.utc),
+        )
+        self.assertTrue(payload.get("ok"), payload)
+        point = payload["points"][0]
+        self.assertEqual(point["period"], "2026-09")
+        self.assertEqual(point["transformation"], "mom_pct")
+        self.assertAlmostEqual(point["value"], 0.4)
+
     def test_stale_july_workbook_on_aug_url_fails_closed(self) -> None:
         spec = self._spec("AU.Inflation.headline")
         july_only = _build_abs_workbook(
@@ -370,8 +471,8 @@ class TestAustraliaAdapter(unittest.TestCase):
         payload = fetch_series(spec, opener=opener, now=DUE_AFTER_AUG_CPI)
         self.assertFalse(payload.get("ok"))
         self.assertEqual(payload.get("status"), "source_failed")
-        self.assertTrue(all("/jul-2026/" not in url for url in seen))
-        self.assertEqual(len(seen), 1)
+        self.assertTrue(any("/aug-2026/" in url for url in seen), seen)
+        self.assertTrue(all("/jul-2026/" not in url for url in seen), seen)
 
     def test_headline_not_due_uses_static_july_workbook(self) -> None:
         spec = self._spec("AU.Inflation.headline")

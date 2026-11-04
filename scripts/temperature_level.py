@@ -513,12 +513,20 @@ def compute_state(
                     "release_date_status": lineage["release_date_status"],
                 }
             agg = aggregate_dimension(weights, comp_results, cal)
+            comp_periods = [
+                str(state["as_of"])
+                for state in component_state.values()
+                if isinstance(state, dict) and state.get("as_of")
+            ]
+            dimension_as_of = (
+                max(comp_periods, key=period_sort_key) if comp_periods else None
+            )
             countries[country][dimension] = {
                 **agg,
                 "level": _r(agg["level"]),
                 "impulse": _r(agg["impulse"]),
                 "coverage": _r(agg["coverage"], 4),
-                "as_of": cutoff,
+                "as_of": dimension_as_of,
                 "components": weights,
                 "component_state": component_state,
             }
@@ -629,7 +637,10 @@ def build_score_state(
         "date_semantics": {
             "as_of": "Immutable calibration anchor for the 1–100 LEVEL engine (not the latest scored input).",
             "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
-            "scoring_cutoff": "Latest calendar month the LEVEL engine may read from history.",
+            "scoring_cutoff": (
+                "Latest calendar month present in history that a replay cutoff may include; "
+                "not the reference period every dimension card is current through."
+            ),
             "score_inputs_latest_reference_period": "Latest reference period among scored components.",
             "score_inputs_last_ingested_at": "Latest retrieved_at among observations used in the current score.",
             "last_refresh_date": "UTC date of score_inputs_last_ingested_at, or the calibration anchor if none.",

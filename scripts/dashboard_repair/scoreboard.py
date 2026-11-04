@@ -10,6 +10,7 @@ from typing import Any
 
 from scripts.country_registry import dashboard_headings
 from scripts.dashboard_repair.htmlutil import esc
+from scripts.dashboard_repair.score_dates import format_reference_period_through
 from scripts.temperature_level import DIMENSIONS, display_score, temperature_class
 
 _CLASS_WORD = {
@@ -117,6 +118,13 @@ def _coverage_chip(coverage: float | None) -> str:
     return f'<span class="mw-chip mw-chip--warn">Coverage {coverage:.0%}</span>'
 
 
+def _component_period_label(as_of: str) -> str:
+    text = str(as_of or "").strip()
+    if not text:
+        return ""
+    return f"Latest component {format_reference_period_through(text)}"
+
+
 def _level_face(row: dict[str, Any]) -> str:
     width = 0.0 if row["level"] is None else max(0.0, min(100.0, float(row["level"])))
     if row["level"] is None:
@@ -125,6 +133,10 @@ def _level_face(row: dict[str, Any]) -> str:
     else:
         number = f'{row["level_text"]} {_CLASS_WORD.get(row["klass"], row["klass"])}'
         klass_word = str(row["klass"])
+    period_label = _component_period_label(str(row.get("as_of") or ""))
+    period_html = (
+        f'<span class="mw-asof">{esc(period_label)}</span>' if period_label else ""
+    )
     return (
         '<div class="lvl">'
         '<span class="mw-label">Level</span>'
@@ -134,6 +146,7 @@ def _level_face(row: dict[str, Any]) -> str:
         "</div>"
         '<div class="imp-line"><span class="mw-label">Impulse</span>'
         f"{_impulse_face(row)}</div>"
+        f"{period_html}"
     )
 
 
