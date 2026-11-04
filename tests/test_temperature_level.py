@@ -18,6 +18,7 @@ from scripts.temperature_level import (
     load_calibration,
     load_history,
     load_state,
+    period_sort_key,
     raw_values_by_period,
     score_component,
     scoring_cutoff,
@@ -45,6 +46,29 @@ def _component_state_slice(component_state: dict) -> dict:
         name: {k: comp.get(k) for k in _COMPONENT_STATE_KEYS}
         for name, comp in component_state.items()
     }
+
+
+def _histories_through(histories: dict, cutoff: str) -> dict:
+    """Copy histories with reference periods after ``cutoff`` removed."""
+    work = copy.deepcopy(histories)
+    limit = period_sort_key(cutoff)
+    for history in work.values():
+        for comp in (history.get("components") or {}).values():
+            kept = []
+            for obs in comp.get("observations") or []:
+                period = obs.get("reference_period")
+                if not isinstance(period, str):
+                    kept.append(obs)
+                    continue
+                try:
+                    key = period_sort_key(period)
+                except ValueError:
+                    kept.append(obs)
+                    continue
+                if key <= limit:
+                    kept.append(obs)
+            comp["observations"] = kept
+    return work
 
 
 def _dimension_scores_from_state(state: dict) -> dict:
@@ -122,23 +146,39 @@ class TemperatureLevelEngineTest(unittest.TestCase):
         self.assertEqual(engine_paths["paths"], disk_paths["paths"])
         self.assertEqual(engine_paths["pathology"], disk_paths["pathology"])
 
-    def test_september_cutoff_does_not_match_october_disk(self) -> None:
-        """The 2026-11-04 Pages deploy scored the live disk at a fixed 2026-09 cutoff.
+    def test_fixed_september_cutoff_differs_from_october_fixture(self) -> None:
+        """A fixed September cutoff must not match a state scored through October.
 
-        That comparison reported US Activity impulse -3.75 against the committed
-        October impulse -3.62 and stopped before artifact deployment.
+        The history copy stops at 2026-10, so a later live month does not change
+        this regression. The live disk still has to use the history-derived cutoff
+        and the full component state, not the September engine.
         """
-        live_cutoff = scoring_cutoff(self.cal, self.histories)
-        self.assertEqual(live_cutoff, "2026-10")
+        fixture = _histories_through(self.histories, "2026-10")
+        self.assertEqual(scoring_cutoff(self.cal, fixture), "2026-10")
         september = build_score_state(
             self.cal,
-            compute_state(self.cal, self.histories, cutoff="2026-09"),
+            compute_state(self.cal, fixture, cutoff="2026-09"),
         )
-        disk = load_state()
+        october = build_score_state(
+            self.cal,
+            compute_state(self.cal, fixture, cutoff="2026-10"),
+        )
         self.assertEqual(september["scoring_cutoff"], "2026-09")
-        self.assertNotEqual(september["scoring_cutoff"], disk["scoring_cutoff"])
-        self.assertEqual(september["countries"]["US"]["Activity"]["impulse"], -3.75)
-        self.assertEqual(disk["countries"]["US"]["Activity"]["impulse"], -3.62)
+        self.assertEqual(october["scoring_cutoff"], "2026-10")
+        self.assertNotEqual(
+            _dimension_scores_from_state(september),
+            _dimension_scores_from_state(october),
+        )
+        self.assertNotEqual(
+            september["countries"]["US"]["Activity"]["impulse"],
+            october["countries"]["US"]["Activity"]["impulse"],
+        )
+
+        live_cutoff = scoring_cutoff(self.cal, self.histories)
+        disk = load_state()
+        self.assertGreaterEqual(live_cutoff, "2026-10")
+        self.assertEqual(disk["scoring_cutoff"], live_cutoff)
+        self.assertNotEqual(disk["scoring_cutoff"], september["scoring_cutoff"])
         self.assertNotEqual(
             _dimension_scores_from_state(september),
             _dimension_scores_from_state(disk),
@@ -151,17 +191,17 @@ class TemperatureLevelEngineTest(unittest.TestCase):
             compute_state(self.cal, self.histories, cutoff=cutoff),
         )
         stale = copy.deepcopy(engine_doc)
-        stale["scoring_cutoff"] = "2026-09"
-        stale["countries"]["US"]["Activity"]["impulse"] = -3.75
+        stale["scoring_cutoff"] = "1970-01"
+        stale["countries"]["US"]["Activity"]["impulse"] = 12345.67
         self.assertNotEqual(stale["scoring_cutoff"], cutoff)
         self.assertNotEqual(
             _dimension_scores_from_state(engine_doc),
             _dimension_scores_from_state(stale),
         )
 
-    def test_production_write_matches_october_score_artifacts(self) -> None:
-        """deploy-pages.yml write_state/write_paths path against the 2026-10 dataset."""
-        self.assertEqual(scoring_cutoff(self.cal, self.histories), "2026-10")
+    def test_production_write_matches_committed_score_artifacts(self) -> None:
+        """deploy-pages.yml write_state/write_paths path against the live history cutoff."""
+        cutoff = scoring_cutoff(self.cal, self.histories)
         with tempfile.TemporaryDirectory() as tmp:
             scores_path = Path(tmp) / "temperature_scores.json"
             paths_path = Path(tmp) / "score_paths.json"
@@ -174,8 +214,10 @@ class TemperatureLevelEngineTest(unittest.TestCase):
             self.assertEqual(paths_path.read_bytes(), PATHS_PATH.read_bytes())
             generated = json.loads(scores_path.read_text(encoding="utf-8"))
             generated_paths = json.loads(paths_path.read_text(encoding="utf-8"))
-        self.assertEqual(generated["scoring_cutoff"], "2026-10")
-        self.assertEqual(generated_paths["window"]["end"], "2026-09")
+            committed_paths = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(generated["scoring_cutoff"], cutoff)
+        self.assertEqual(generated["scoring_cutoff"], load_state()["scoring_cutoff"])
+        self.assertEqual(generated_paths["window"], committed_paths["window"])
 
     def test_ca_underlying_equal_mean_trim_median(self) -> None:
         spec = self.cal["components"]["CA.Inflation.underlying"]
