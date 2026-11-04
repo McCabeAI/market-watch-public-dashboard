@@ -68,6 +68,50 @@ class ChatGPTResearchColdStartTests(unittest.TestCase):
         self.assertIn("weak labor and near-target core inflation", claim)
         self.assertNotIn("late-October hike", claim)
 
+    def test_authorize_from_env_cli_without_root_argument(self) -> None:
+        # Exercise the exact GitHub Actions CLI entrypoint, not just its helper.
+        # The untrusted bot sender should be rejected cleanly; the historical
+        # bug crashed on args.root before any authorization result was written.
+        import tempfile
+
+        with tempfile.TemporaryDirectory() as tmp:
+            result_path = Path(tmp) / "auth.json"
+            github_output = Path(tmp) / "github_output.txt"
+            env = _child_env()
+            env.update(
+                {
+                    "ISSUE_TITLE": "[chatgpt-research-memory]",
+                    "ISSUE_AUTHOR_LOGIN": "fixture-bot",
+                    "ISSUE_AUTHOR_TYPE": "Bot",
+                    "ISSUE_SENDER_LOGIN": "fixture-bot",
+                    "ISSUE_SENDER_TYPE": "Bot",
+                    "GITHUB_REPOSITORY": "McCabeAI/market-watch-public-dashboard",
+                    "GITHUB_OUTPUT": str(github_output),
+                }
+            )
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "scripts.pm.chatgpt_research",
+                    "authorize-from-env",
+                    "--result",
+                    str(result_path),
+                ],
+                cwd=REPO,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            result = json.loads(result_path.read_text(encoding="utf-8"))
+            self.assertEqual(result, {"authorized": False, "reason": "not_human"})
+            self.assertEqual(
+                github_output.read_text(encoding="utf-8").splitlines(),
+                ["authorized=false", "reason=not_human"],
+            )
+
+
 
 if __name__ == "__main__":
     unittest.main()
