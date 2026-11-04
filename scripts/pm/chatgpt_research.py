@@ -1625,6 +1625,15 @@ def _copy_research_tree(source_root: Path, dest_root: Path) -> None:
     if dst.exists():
         shutil.rmtree(dst)
     shutil.copytree(src, dst)
+    # Edge provenance checks read canonical own-PM lessons and retrospectives.
+    # They are read-only validation inputs: copy them into the temporary root
+    # without ever including them in the generated research-only commit.
+    for relative in (LESSONS_RELPATH, POSTMORTEMS_RELPATH, REFLECTIONS_RELPATH):
+        source = source_root / relative
+        if source.is_file():
+            target = dest_root / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
 
 
 def apply_from_env(root: Path, *, result_path: Path, generated_dir: Path) -> dict[str, Any]:
