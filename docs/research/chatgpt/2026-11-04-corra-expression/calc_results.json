@@ -1,0 +1,385 @@
+{
+  "inputs_path": "/agent/repos/market-watch-public-dashboard/docs/research/chatgpt/2026-11-04-corra-expression/frozen_inputs.json",
+  "pinned_commit": "612666a21e621e6bb437802cb48ace011f181b7b",
+  "section_1_identity": {
+    "corra_2027_rates": {
+      "2027-03": 2.97,
+      "2027-06": 3.115,
+      "2027-09": 3.225,
+      "2027-12": 3.31
+    },
+    "corra_equal_weight_mean": 3.1550000000000002,
+    "corra_H_to_Z_bp": 33.999999999999986,
+    "sofr_2027_rates": {
+      "2027-03": 4.365,
+      "2027-06": 4.495,
+      "2027-09": 4.535,
+      "2027-12": 4.515
+    },
+    "sofr_equal_weight_mean": 4.4775,
+    "sofr_H_to_Z_bp": 14.999999999999947,
+    "us_minus_ca_spread_bp_by_expiry": {
+      "2027-03": 139.5,
+      "2027-06": 138.0,
+      "2027-09": 131.0,
+      "2027-12": 120.49999999999996
+    },
+    "ca_minus_us_H_to_Z_steepener_diff_bp": 19.00000000000004,
+    "cash_fixings": {
+      "CORRA": 2.54,
+      "SOFR": 3.95,
+      "AONIA": 4.6
+    },
+    "aonia_labeled_quarterly_proxy_rates": {
+      "Mar_Apr_May": 4.908333333333334,
+      "Jun_Jul_Aug": 4.855,
+      "Sep_Oct_Nov": 4.773333333333333,
+      "Dec27_Jan28_Feb28": 4.6866666666666665,
+      "note": "Simple average of listed months; not a compounded IMM quarter."
+    },
+    "aonia_single_contract_month_rates_2027": {
+      "2027-03": 4.915,
+      "2027-06": 4.885,
+      "2027-09": 4.8,
+      "2027-12": 4.71
+    },
+    "premium_vs_own_cash_bp": {
+      "CORRA_by_leg": {
+        "2027-03": 43.000000000000014,
+        "2027-06": 57.500000000000014,
+        "2027-09": 68.5,
+        "2027-12": 77.0
+      },
+      "SOFR_by_leg": {
+        "2027-03": 41.5,
+        "2027-06": 54.49999999999999,
+        "2027-09": 58.5,
+        "2027-12": 56.49999999999995
+      },
+      "AONIA": {
+        "Q1_labeled_proxy": 30.833333333333446,
+        "Q2_labeled_proxy": 25.500000000000078,
+        "Q3_labeled_proxy": 17.33333333333338,
+        "Q4_Dec_window_proxy": 8.66666666666669,
+        "2027-03": 31.50000000000004,
+        "2027-06": 28.500000000000014,
+        "2027-09": 20.000000000000018,
+        "2027-12": 11.000000000000032
+      }
+    },
+    "corra_1m_nov2026_feb2027_vs_cash": {
+      "2026-11": {
+        "rate": 2.515,
+        "premium_vs_cash_bp": -2.499999999999991
+      },
+      "2026-12": {
+        "rate": 2.605,
+        "premium_vs_cash_bp": 6.499999999999995
+      },
+      "2027-01": {
+        "rate": 2.655,
+        "premium_vs_cash_bp": 11.499999999999977
+      },
+      "2027-02": {
+        "rate": 2.785,
+        "premium_vs_cash_bp": 24.50000000000001
+      }
+    },
+    "nov3_journal_mids": {
+      "2027-03": 2.96,
+      "2027-06": 3.12,
+      "2027-09": 3.235,
+      "2027-12": 3.325
+    },
+    "nov3_journal_average_recomputed": 3.16,
+    "nov3_journal_average_claimed": 3.16,
+    "nov4_snapshot_bp_change_vs_journal_by_leg": {
+      "2027-03": 1.000000000000023,
+      "2027-06": -0.49999999999998934,
+      "2027-09": -0.9999999999999787,
+      "2027-12": -1.5000000000000124
+    },
+    "identity_check_failures": []
+  },
+  "section_2_paper_engine": {
+    "unrealized_formula": "notional_usd * (entry_mark - book_mark) / 100",
+    "unrealized_inputs": {
+      "notional_usd": 250000000.0,
+      "entry_mark": 3.4,
+      "book_mark": 3.16
+    },
+    "unrealized_recomputed_usd": 599999.9999999994,
+    "unrealized_stored_usd": 600000.0,
+    "unrealized_match": true,
+    "half_notional_realized_formula": "(notional_usd/2) * (entry_mark - book_mark) / 100",
+    "half_notional_realized_recomputed_usd": 299999.9999999997,
+    "realized_stored_usd": 600000.0,
+    "half_realized_match": false,
+    "paper_dv01_usd_per_bp_average": 25000.0,
+    "risk_capital_100bp_usd": 2500000.0,
+    "stored_funding_cost_usd_unchanged": 24555.56,
+    "stored_net_after_funding_usd_unchanged": 1175444.44,
+    "forward_paper_funding_on_risk_capital_act360": {
+      "risk_capital_usd": 2500000.0,
+      "rate_pct": 3.95,
+      "days_91_usd": 24961.81,
+      "days_182_usd": 49923.61
+    }
+  },
+  "section_3_fx_and_dv01": {
+    "USDCAD_spot": 1.3975310850702212,
+    "AUDUSD_spot": 0.6983819578934215,
+    "usd_per_cad": 0.7155475900915316,
+    "usd_per_aud": 0.6983819578934215,
+    "usd_per_cad_matches_analytics_row": true,
+    "analytics_expected_usd_per_cad": 0.7155475900915316,
+    "CRA_dv01_usd_per_contract": 17.88868975228829,
+    "SR3_dv01_usd_per_contract": 25.0,
+    "IB_dv01_usd_per_contract_published_basis": 17.222099081651773,
+    "IB_unrounded_3m_face_30_365_not_for_valuation": 24.65753424657534
+  },
+  "section_4_equal_lot_cra_receive_sizing": {
+    "target_parallel_dv01_usd_per_bp": 25000.0,
+    "unrounded_lots_per_leg": 349.3827712675553,
+    "floored_lots_per_leg": 349,
+    "achieved_parallel_dv01_usd_per_bp": 24972.61089419445,
+    "residual_shortfall_usd_per_bp": 27.389105805548752,
+    "face_cad_per_leg": 349000000,
+    "face_usd_per_leg": 249726108.9419445,
+    "gross_face_cad_four_legs": 1396000000,
+    "gross_face_usd_four_legs": 998904435.767778,
+    "paper_notional_mismatch_note": "Paper 250m USD is duration-one risk notional (~one year of 90/360 risk), approximately 250m USD face per leg, not 250m total gross face."
+  },
+  "section_5_expression_B_flattener": {
+    "primary_leg_dv01_25000": {
+      "structure": "pay_CRAH27_receive_CRAZ27_equal_local_dv01",
+      "target_leg_usd_dv01": 25000.0,
+      "unrounded_lots_per_leg": 1397.5310850702213,
+      "floored_lots_per_leg": 1397,
+      "achieved_leg_usd_dv01": 24990.49958394674,
+      "pnl_formula": "achieved_leg_usd_dv01 * (dH_bp - dZ_bp)",
+      "verify_1bp_flatten_dH0_dZ_neg1_usd": 24990.5,
+      "verify_1bp_parallel_dH1_dZ1_usd": 0.0
+    },
+    "half_gross_leg_dv01_12500": {
+      "structure": "pay_CRAH27_receive_CRAZ27_equal_local_dv01",
+      "target_leg_usd_dv01": 12500.0,
+      "unrounded_lots_per_leg": 698.7655425351106,
+      "floored_lots_per_leg": 698,
+      "achieved_leg_usd_dv01": 12486.305447097226,
+      "pnl_formula": "achieved_leg_usd_dv01 * (dH_bp - dZ_bp)",
+      "verify_1bp_flatten_dH0_dZ_neg1_usd": 12486.31,
+      "verify_1bp_parallel_dH1_dZ1_usd": 0.0
+    }
+  },
+  "section_6_expression_C": {
+    "four_leg_receive_CORRA_pay_SOFR_parallel_dv01_25000": {
+      "CRA_unrounded_lots_per_leg": 349.3827712675553,
+      "CRA_floored_lots_per_leg": 349,
+      "CRA_achieved_book_parallel_dv01_usd": 24972.61089419445,
+      "SR3_unrounded_lots_per_leg": 250.0,
+      "SR3_floored_lots_per_leg": 250,
+      "SR3_achieved_book_parallel_dv01_usd": 25000.0
+    },
+    "single_quarter_CRAZ27_receive_vs_SR3Z7_pay": {
+      "CRA_unrounded_lots": 1397.5310850702213,
+      "CRA_floored_lots": 1397,
+      "CRA_achieved_leg_dv01_usd": 24990.49958394674,
+      "SR3_unrounded_lots": 1000.0,
+      "SR3_floored_lots": 1000,
+      "SR3_achieved_leg_dv01_usd": 25000.0
+    },
+    "AONIA_pay_Dec_window_proxy_three_months": {
+      "months": {
+        "2027-12": {
+          "target_leg_usd_dv01_one_third": 8333.333333333334,
+          "unrounded_lots": 483.8744274913371,
+          "floored_lots": 483,
+          "achieved_leg_usd_dv01": 8318.273856437807,
+          "open_interest": null,
+          "volume": null
+        },
+        "2028-01": {
+          "target_leg_usd_dv01_one_third": 8333.333333333334,
+          "unrounded_lots": 483.8744274913371,
+          "floored_lots": 483,
+          "achieved_leg_usd_dv01": 8318.273856437807,
+          "open_interest": null,
+          "volume": null
+        },
+        "2028-02": {
+          "target_leg_usd_dv01_one_third": 8333.333333333334,
+          "unrounded_lots": 483.8744274913371,
+          "floored_lots": 483,
+          "achieved_leg_usd_dv01": 8318.273856437807,
+          "open_interest": null,
+          "volume": null
+        }
+      },
+      "executable_evidence": "markable_from_inputs; OI/volume null on some months means not evidenced as executable"
+    },
+    "AONIA_pay_March_2027_only_contrast_25000_dv01": {
+      "unrounded_lots": 1451.6232824740111,
+      "floored_lots": 1451,
+      "achieved_leg_usd_dv01": 24989.26576747672,
+      "open_interest": 400.0,
+      "volume": null
+    }
+  },
+  "section_7_one_quarter_roll": {
+    "assumption": "unchanged_tenor_roll_not_forecast",
+    "CORRA_mapping": {
+      "H": "CRAZ26",
+      "M": "CRAH27",
+      "U": "CRAM27",
+      "Z": "CRAU27"
+    },
+    "SOFR_mapping": {
+      "H": "SR3Z6",
+      "M": "SR3H7",
+      "U": "SR3M7",
+      "Z": "SR3U7"
+    },
+    "CORRA": {
+      "old_rates": {
+        "H": 2.97,
+        "M": 3.115,
+        "U": 3.225,
+        "Z": 3.31
+      },
+      "slide_source_rates": {
+        "H": 2.75,
+        "M": 2.97,
+        "U": 3.115,
+        "Z": 3.225
+      },
+      "slide_bp_by_leg": {
+        "H": -22.00000000000002,
+        "M": -14.500000000000002,
+        "U": -10.999999999999988,
+        "Z": -8.499999999999996
+      },
+      "equal_weight_average_slide_bp": -14.000000000000002
+    },
+    "SOFR": {
+      "old_rates": {
+        "H": 4.365,
+        "M": 4.495,
+        "U": 4.535,
+        "Z": 4.515
+      },
+      "slide_source_rates": {
+        "H": 4.16,
+        "M": 4.365,
+        "U": 4.495,
+        "Z": 4.535
+      },
+      "slide_bp_by_leg": {
+        "H": -20.500000000000007,
+        "M": -12.99999999999999,
+        "U": -4.0000000000000036,
+        "Z": 2.000000000000046
+      },
+      "equal_weight_average_slide_bp": -8.87499999999999
+    },
+    "flattener_pnl_bp_per_leg_dv01": 13.500000000000025,
+    "cross_strip_receive_CA_roll_plus_pay_US_roll": {
+      "CRA_floored_lots_per_leg": 349,
+      "SR3_floored_lots_per_leg": 250,
+      "net_usd_matched_books": 127741.55,
+      "bp_per_matched_dv01_usd_25000": 5.109662,
+      "usd_at_25000_per_bp": 127741.55
+    }
+  },
+  "section_8_scenarios_usd": {
+    "S_parallel_selloff_25": {
+      "a_paper_long_receive_usd": -625000.0,
+      "b_floored_equal_cra_receive_usd": -624315.27,
+      "c_primary_flattener_usd": 0.0,
+      "d_ca_strip_vs_sofr_strip_usd": 684.73,
+      "e_CRAZ27_vs_aonia_dec_window_usd": -891.95,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": 25.0
+    },
+    "S_parallel_rally_25": {
+      "a_paper_long_receive_usd": 625000.0,
+      "b_floored_equal_cra_receive_usd": 624315.27,
+      "c_primary_flattener_usd": 0.0,
+      "d_ca_strip_vs_sofr_strip_usd": -684.73,
+      "e_CRAZ27_vs_aonia_dec_window_usd": 891.95,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": -25.0
+    },
+    "S_bull_flatten": {
+      "a_paper_long_receive_usd": 125000.0,
+      "b_floored_equal_cra_receive_usd": 124863.05,
+      "c_primary_flattener_usd": 749714.99,
+      "d_ca_strip_vs_sofr_strip_usd": 124863.05,
+      "e_CRAZ27_vs_aonia_dec_window_usd": 499809.99,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": -5.0
+    },
+    "S_bear_steepen": {
+      "a_paper_long_receive_usd": -156250.0,
+      "b_floored_equal_cra_receive_usd": -156078.82,
+      "c_primary_flattener_usd": -749714.99,
+      "d_ca_strip_vs_sofr_strip_usd": -156078.82,
+      "e_CRAZ27_vs_aonia_dec_window_usd": -499809.99,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": 6.25
+    },
+    "S_common_selloff_20": {
+      "a_paper_long_receive_usd": -500000.0,
+      "b_floored_equal_cra_receive_usd": -499452.22,
+      "c_primary_flattener_usd": 0.0,
+      "d_ca_strip_vs_sofr_strip_usd": 547.78,
+      "e_CRAZ27_vs_aonia_dec_window_usd": -713.56,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": 20.0
+    },
+    "S_canada_only_25": {
+      "a_paper_long_receive_usd": -625000.0,
+      "b_floored_equal_cra_receive_usd": -624315.27,
+      "c_primary_flattener_usd": 0.0,
+      "d_ca_strip_vs_sofr_strip_usd": -499315.27,
+      "e_CRAZ27_vs_aonia_dec_window_usd": -499988.38,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": 25.0
+    },
+    "S_deescalation": {
+      "a_paper_long_receive_usd": 750000.0,
+      "b_floored_equal_cra_receive_usd": 749178.33,
+      "c_primary_flattener_usd": 0.0,
+      "d_ca_strip_vs_sofr_strip_usd": 374178.33,
+      "e_CRAZ27_vs_aonia_dec_window_usd": 375392.66,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": -30.0
+    },
+    "S_roll_1q": {
+      "a_paper_long_receive_usd": 350000.0,
+      "b_floored_equal_cra_receive_usd": 349616.55,
+      "c_primary_flattener_usd": -337371.74,
+      "d_ca_strip_vs_sofr_strip_usd": 127741.55,
+      "e_CRAZ27_vs_aonia_dec_window_usd": 212419.25,
+      "paper_forward_funding_91d_usd_separate_line": 24961.81,
+      "paper_forward_funding_182d_usd_separate_line": 49923.61,
+      "ca_avg_bp_for_paper": -14.000000000000002
+    }
+  },
+  "section_9_factor_line_floored_equal_receive": {
+    "plus_1bp_single_leg_usd": {
+      "H": -6243.15,
+      "M": -6243.15,
+      "U": -6243.15,
+      "Z": -6243.15
+    },
+    "plus_1bp_parallel_all_legs_usd": -24972.6
+  }
+}
