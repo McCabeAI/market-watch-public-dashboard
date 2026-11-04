@@ -15,6 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.macro_freshness import values_close
 from scripts.macro_ingestion.ca_score_identity import expand_equal_mean_points, prepare_ca_score_point
 from scripts.run_state.identity import normalize_score_point
 from scripts.macro_ingestion.canonical_bridge import merge_scored_points
@@ -147,14 +148,46 @@ def _assert_exact_promoted_cpi_removed(test: unittest.TestCase, removed: list[di
         test.assertAlmostEqual(float(row["value"]), float(expected["value"]))
 
 
-def _write_pre_promotion_history_dir(dest: Path, histories: dict) -> None:
+# Oct 15/20/28 confidence revisions now also live beside the September cohort.
+_EA_CONFIDENCE_PROMOTED = (
+    ("EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-09", "index_level", -13.4),
+    ("EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-10", "index_level", -12.6),
+    ("EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-06", "index_level", -17.7),
+)
+
+
+def _without_promoted_ea_confidence(histories: dict) -> tuple[dict, list[dict]]:
+    """Drop promoted EA confidence rows from a copy. Does not touch disk."""
+    work = copy.deepcopy(histories)
+    obs = work["EA"]["components"]["Consumer.confidence"]["observations"]
+    removed: list[dict] = []
+    for series_id, period, transformation, value in _EA_CONFIDENCE_PROMOTED:
+        matches = [
+            row
+            for row in obs
+            if row.get("series_id") == series_id
+            and row.get("reference_period") == period
+            and row.get("transformation") == transformation
+            and values_close(float(row.get("value")), float(value))
+        ]
+        if len(matches) != 1:
+            raise AssertionError(f"expected one {period} EA confidence row at {value}, found {len(matches)}")
+        target = matches[0]
+        obs = [row for row in obs if row is not target]
+        removed.append(target)
+    work["EA"]["components"]["Consumer.confidence"]["observations"] = obs
+    return work, removed
+
+
+def _write_pre_promotion_history_dir(dest: Path, histories: dict, countries: tuple[str, ...] = ("CA",)) -> None:
     dest.mkdir(parents=True, exist_ok=True)
     for src in HISTORY_DIR.glob("*.json"):
         shutil.copy2(src, dest / src.name)
-    (dest / "ca.json").write_text(
-        json.dumps(histories["CA"], indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+    for country in countries:
+        (dest / f"{country.lower()}.json").write_text(
+            json.dumps(histories[country], indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
 
 
 class CaScoreLineageTests(unittest.TestCase):
@@ -227,13 +260,18 @@ class CaScoreLineageTests(unittest.TestCase):
         self.assertAlmostEqual(float(wages["value"]), 2.338227297444262)
 
     def test_oct15_observation_store_lineage_replay(self) -> None:
+        ea_sha = _sha256_file(HISTORY_DIR / "ea.json")
         with tempfile.TemporaryDirectory() as tmp:
             launch_dir = Path(tmp) / "launch"
             launch_dir.mkdir()
+            history_dir = Path(tmp) / "history"
+            stripped, removed = _without_promoted_ea_confidence(load_history(HISTORY_DIR))
+            self.assertEqual(len(removed), 3)
+            _write_pre_promotion_history_dir(history_dir, stripped, countries=("EA",))
             result = stage_verified_lineage(
                 launch_dir=launch_dir,
                 checked_at=CHECKED_AT,
-                canonical_history_dir=HISTORY_DIR,
+                canonical_history_dir=history_dir,
                 calibration_path=CALIBRATION_PATH,
                 observations_dir=OBS_DIR,
                 mode="live",
@@ -305,7 +343,28 @@ class CaScoreLineageTests(unittest.TestCase):
 
             self.assertEqual(_sha256_file(CALIBRATION_PATH), self.cal_sha)
             self.assertEqual(_sha256_file(HISTORY_DIR / "ca.json"), self.ca_hist_sha)
+            self.assertEqual(_sha256_file(HISTORY_DIR / "ea.json"), ea_sha)
             self.assertEqual(_sha256_file(SCORES_PATH), self.scores_sha)
+
+            idempotent_dir = Path(tmp) / "canonical_launch"
+            idempotent_dir.mkdir()
+            idempotent = stage_verified_lineage(
+                launch_dir=idempotent_dir,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=HISTORY_DIR,
+                calibration_path=CALIBRATION_PATH,
+                observations_dir=OBS_DIR,
+                mode="live",
+            )
+            self.assertTrue(idempotent["ok"], msg=idempotent.get("error"))
+            promoted_periods = {period for _sid, period, _tf, _value in _EA_CONFIDENCE_PROMOTED}
+            reappended = {
+                row.get("period")
+                for row in idempotent.get("appended_points") or []
+                if row.get("catalog_id") == "EA.Consumer.confidence"
+            }
+            self.assertTrue(reappended.isdisjoint(promoted_periods))
+            self.assertEqual(_sha256_file(HISTORY_DIR / "ea.json"), ea_sha)
 
     def test_second_pass_labor_idempotent(self) -> None:
         from scripts.macro_ingestion.score_bridge import points_from_observation_stores
@@ -597,6 +656,7 @@ class CaInflationOct20LineageTests(unittest.TestCase):
         self.assertEqual(u_merge["skipped"][0]["reason"], "partial_series_mismatch")
 
     def test_oct20_stage_verified_lineage_succeeds(self) -> None:
+        ea_sha = _sha256_file(HISTORY_DIR / "ea.json")
         with tempfile.TemporaryDirectory() as tmp:
             tmp_root = Path(tmp)
             canonical_histories = load_history(HISTORY_DIR)
@@ -606,6 +666,8 @@ class CaInflationOct20LineageTests(unittest.TestCase):
             }
             stripped_histories, removed = _pre_promotion_ca_histories(canonical_histories)
             _assert_exact_promoted_cpi_removed(self, removed)
+            stripped_histories, ea_removed = _without_promoted_ea_confidence(stripped_histories)
+            self.assertEqual(len(ea_removed), 3)
             after_counts = {
                 key: len(stripped_histories["CA"]["components"][key]["observations"])
                 for key in stripped_histories["CA"]["components"]
@@ -619,7 +681,11 @@ class CaInflationOct20LineageTests(unittest.TestCase):
                     self.assertEqual(count, after_counts[key])
 
             canonical_history_dir = tmp_root / "canonical_history"
-            _write_pre_promotion_history_dir(canonical_history_dir, stripped_histories)
+            _write_pre_promotion_history_dir(
+                canonical_history_dir,
+                stripped_histories,
+                countries=("CA", "EA"),
+            )
             written_ca = json.loads(
                 (canonical_history_dir / "ca.json").read_text(encoding="utf-8")
             )
@@ -633,7 +699,19 @@ class CaInflationOct20LineageTests(unittest.TestCase):
                     and o.get("transformation") == expected["transformation"]
                 ]
                 self.assertEqual(matches, [], msg=expected)
-            for name in ("us.json", "au.json", "nz.json", "ea.json", "jp.json"):
+            written_ea = json.loads((canonical_history_dir / "ea.json").read_text(encoding="utf-8"))
+            ea_obs = written_ea["components"]["Consumer.confidence"]["observations"]
+            for series_id, period, transformation, value in _EA_CONFIDENCE_PROMOTED:
+                matches = [
+                    row
+                    for row in ea_obs
+                    if row.get("series_id") == series_id
+                    and row.get("reference_period") == period
+                    and row.get("transformation") == transformation
+                    and values_close(float(row.get("value")), float(value))
+                ]
+                self.assertEqual(matches, [], msg=period)
+            for name in ("us.json", "au.json", "nz.json", "jp.json"):
                 self.assertEqual(
                     (canonical_history_dir / name).read_bytes(),
                     (HISTORY_DIR / name).read_bytes(),
@@ -765,8 +843,31 @@ class CaInflationOct20LineageTests(unittest.TestCase):
                 self.assertEqual(row["source_transformation"], "yoy_pct")
                 self.assertEqual(row["transformation"], "yoy_pct")
 
+            idempotent_dir = tmp_root / "canonical_launch"
+            idempotent_dir.mkdir()
+            idempotent = stage_verified_lineage(
+                launch_dir=idempotent_dir,
+                checked_at=CHECKED_AT_OCT20,
+                canonical_history_dir=HISTORY_DIR,
+                calibration_path=CALIBRATION_PATH,
+                observations_dir=OBS_DIR_OCT20,
+                mode="live",
+            )
+            self.assertTrue(idempotent["ok"], msg=idempotent.get("error"))
+            reappended = idempotent.get("appended_points") or []
+            self.assertFalse(any(row.get("catalog_id", "").startswith("CA.Inflation.") for row in reappended))
+            promoted_periods = {period for _sid, period, _tf, _value in _EA_CONFIDENCE_PROMOTED}
+            self.assertTrue(
+                {
+                    row.get("period")
+                    for row in reappended
+                    if row.get("catalog_id") == "EA.Consumer.confidence"
+                }.isdisjoint(promoted_periods)
+            )
+
             self.assertEqual(_sha256_file(CALIBRATION_PATH), self.cal_sha)
             self.assertEqual(_sha256_file(HISTORY_DIR / "ca.json"), self.ca_hist_sha)
+            self.assertEqual(_sha256_file(HISTORY_DIR / "ea.json"), ea_sha)
             self.assertEqual(_sha256_file(SCORES_PATH), self.scores_sha)
 
     def test_oct20_inflation_adversarial_fail_closed(self) -> None:

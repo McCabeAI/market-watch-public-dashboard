@@ -10,7 +10,7 @@ from pathlib import Path
 
 from scripts.dashboard_repair.apply import load_scores
 from scripts.dashboard_repair.brief import _print_score_class, _prints, render_brief
-from scripts.dashboard_repair.score_dates import format_ingestion_day
+from scripts.dashboard_repair.score_dates import format_ingestion_day, format_reference_period_through
 from scripts.dashboard_repair.scoreboard import render_scoreboard
 from scripts.temperature_level import (
     build_score_state,
@@ -19,6 +19,7 @@ from scripts.temperature_level import (
     load_history,
     period_sort_key,
     reference_period_end,
+    scoring_cutoff,
     _lineage_for_scored_period,
     _component_spec,
 )
@@ -45,7 +46,7 @@ class ScoreDatesMetadataTests(unittest.TestCase):
     def test_committed_state_metadata_and_levels(self) -> None:
         state = load_scores()
         self.assertEqual(state.get("calibration_anchor_date"), "2026-09-21")
-        self.assertEqual(state.get("scoring_cutoff"), "2026-09")
+        self.assertEqual(state.get("scoring_cutoff"), scoring_cutoff(load_calibration(), load_history()))
         self.assertGreater(str(state.get("last_refresh_date")), "2026-09-21")
         head = json.loads(
             subprocess.check_output(
@@ -193,10 +194,11 @@ class ScoreDatesPresentationTests(unittest.TestCase):
         board = render_scoreboard(scores)
         header = _score_header(scores)
         ingested = format_ingestion_day(scores.get("score_inputs_last_ingested_at"))
+        through = format_reference_period_through(str(scores.get("scoring_cutoff")))
         for blob in (board, header):
             self.assertIn("calibration anchor 21 Sep 2026", blob)
             self.assertIn(f"inputs last ingested {ingested}", blob)
-            self.assertIn("reference periods through Sep 2026", blob)
+            self.assertIn(f"reference periods through {through}", blob)
             lowered = blob.lower()
             self.assertNotIn("score freeze", lowered)
             self.assertNotIn("scores frozen", lowered)

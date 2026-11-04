@@ -18,9 +18,12 @@ from scripts.temperature_level import (
     load_calibration,
     load_history,
     load_state,
+    period_sort_key,
     raw_values_by_period,
     score_component,
+    scoring_cutoff,
     transform_at_period,
+    write_paths,
     write_state,
 )
 from scripts.validate_score_sources import validate_registry
@@ -43,6 +46,29 @@ def _component_state_slice(component_state: dict) -> dict:
         name: {k: comp.get(k) for k in _COMPONENT_STATE_KEYS}
         for name, comp in component_state.items()
     }
+
+
+def _histories_through(histories: dict, cutoff: str) -> dict:
+    """Copy histories with reference periods after ``cutoff`` removed."""
+    work = copy.deepcopy(histories)
+    limit = period_sort_key(cutoff)
+    for history in work.values():
+        for comp in (history.get("components") or {}).values():
+            kept = []
+            for obs in comp.get("observations") or []:
+                period = obs.get("reference_period")
+                if not isinstance(period, str):
+                    kept.append(obs)
+                    continue
+                try:
+                    key = period_sort_key(period)
+                except ValueError:
+                    kept.append(obs)
+                    continue
+                if key <= limit:
+                    kept.append(obs)
+            comp["observations"] = kept
+    return work
 
 
 def _dimension_scores_from_state(state: dict) -> dict:
@@ -98,17 +124,100 @@ class TemperatureLevelEngineTest(unittest.TestCase):
         self.assertIsNotNone(core["level"])
 
     def test_state_on_disk_matches_engine(self) -> None:
-        computed = compute_state(self.cal, self.histories, cutoff="2026-09")
+        """Live disk matches the engine at the history-derived scoring cutoff.
+
+        The committed score-path series still ends at the September window.
+        That historical end is not the live scoring cutoff.
+        """
+        cutoff = scoring_cutoff(self.cal, self.histories)
+        computed = compute_state(self.cal, self.histories, cutoff=cutoff)
         engine_doc = build_score_state(self.cal, computed)
         disk = load_state()
+        self.assertEqual(engine_doc["scoring_cutoff"], cutoff)
+        self.assertEqual(disk["scoring_cutoff"], cutoff)
         self.assertEqual(
             _dimension_scores_from_state(engine_doc),
             _dimension_scores_from_state(disk),
         )
         engine_paths = build_paths(self.cal, self.histories)
         disk_paths = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(engine_paths["window"], {"start": "2025-09", "end": "2026-09"})
+        self.assertEqual(disk_paths["window"], engine_paths["window"])
         self.assertEqual(engine_paths["paths"], disk_paths["paths"])
         self.assertEqual(engine_paths["pathology"], disk_paths["pathology"])
+
+    def test_fixed_september_cutoff_differs_from_october_fixture(self) -> None:
+        """A fixed September cutoff must not match a state scored through October.
+
+        The history copy stops at 2026-10, so a later live month does not change
+        this regression. The live disk still has to use the history-derived cutoff
+        and the full component state, not the September engine.
+        """
+        fixture = _histories_through(self.histories, "2026-10")
+        self.assertEqual(scoring_cutoff(self.cal, fixture), "2026-10")
+        september = build_score_state(
+            self.cal,
+            compute_state(self.cal, fixture, cutoff="2026-09"),
+        )
+        october = build_score_state(
+            self.cal,
+            compute_state(self.cal, fixture, cutoff="2026-10"),
+        )
+        self.assertEqual(september["scoring_cutoff"], "2026-09")
+        self.assertEqual(october["scoring_cutoff"], "2026-10")
+        self.assertNotEqual(
+            _dimension_scores_from_state(september),
+            _dimension_scores_from_state(october),
+        )
+        self.assertNotEqual(
+            september["countries"]["US"]["Activity"]["impulse"],
+            october["countries"]["US"]["Activity"]["impulse"],
+        )
+
+        live_cutoff = scoring_cutoff(self.cal, self.histories)
+        disk = load_state()
+        self.assertGreaterEqual(live_cutoff, "2026-10")
+        self.assertEqual(disk["scoring_cutoff"], live_cutoff)
+        self.assertNotEqual(disk["scoring_cutoff"], september["scoring_cutoff"])
+        self.assertNotEqual(
+            _dimension_scores_from_state(september),
+            _dimension_scores_from_state(disk),
+        )
+
+    def test_mismatched_disk_state_fails_full_comparison(self) -> None:
+        cutoff = scoring_cutoff(self.cal, self.histories)
+        engine_doc = build_score_state(
+            self.cal,
+            compute_state(self.cal, self.histories, cutoff=cutoff),
+        )
+        stale = copy.deepcopy(engine_doc)
+        stale["scoring_cutoff"] = "1970-01"
+        stale["countries"]["US"]["Activity"]["impulse"] = 12345.67
+        self.assertNotEqual(stale["scoring_cutoff"], cutoff)
+        self.assertNotEqual(
+            _dimension_scores_from_state(engine_doc),
+            _dimension_scores_from_state(stale),
+        )
+
+    def test_production_write_matches_committed_score_artifacts(self) -> None:
+        """deploy-pages.yml write_state/write_paths path against the live history cutoff."""
+        cutoff = scoring_cutoff(self.cal, self.histories)
+        with tempfile.TemporaryDirectory() as tmp:
+            scores_path = Path(tmp) / "temperature_scores.json"
+            paths_path = Path(tmp) / "score_paths.json"
+            write_state(scores_path)
+            write_paths(paths_path)
+            self.assertEqual(
+                scores_path.read_bytes(),
+                (REPO / "data" / "temperature_scores.json").read_bytes(),
+            )
+            self.assertEqual(paths_path.read_bytes(), PATHS_PATH.read_bytes())
+            generated = json.loads(scores_path.read_text(encoding="utf-8"))
+            generated_paths = json.loads(paths_path.read_text(encoding="utf-8"))
+            committed_paths = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(generated["scoring_cutoff"], cutoff)
+        self.assertEqual(generated["scoring_cutoff"], load_state()["scoring_cutoff"])
+        self.assertEqual(generated_paths["window"], committed_paths["window"])
 
     def test_ca_underlying_equal_mean_trim_median(self) -> None:
         spec = self.cal["components"]["CA.Inflation.underlying"]

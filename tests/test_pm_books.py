@@ -3,6 +3,11 @@ from __future__ import annotations
 import unittest
 from copy import deepcopy
 
+from scripts.funding.accounting import (
+    FUNDING_REGIME_ZERO_BENCHMARK,
+    competition_net_pnl,
+    net_financing_pnl,
+)
 from scripts.pm.books import (
     apply_action,
     apply_decision,
@@ -45,6 +50,37 @@ def _open(instrument="USDCAD", notional=100_000_000, asset_class="spot_fx", **ex
     }
     action.update(extra)
     return action
+
+
+def _zero_benchmark_identity(book: dict) -> bool:
+    """Cash yield cancels the SOFR benchmark; net P&L still subtracts risk-capital funding."""
+    if book.get("funding_regime") != FUNDING_REGIME_ZERO_BENCHMARK:
+        return False
+    try:
+        cash_yield = float(book["cash_yield_usd"])
+        benchmark = float(book["benchmark_cost_usd"])
+        funding_cost = float(book["funding_cost_usd"])
+        financing = float(book["net_financing_pnl_usd"])
+        total = book.get("total_pnl_usd")
+        net = book.get("net_after_funding_pnl_usd")
+    except (TypeError, ValueError, KeyError):
+        return False
+    if cash_yield != benchmark:
+        return False
+    if financing != net_financing_pnl(
+        funding_cost_usd=funding_cost,
+        cash_yield_usd=cash_yield,
+        benchmark_cost_usd=benchmark,
+    ):
+        return False
+    if total is None or net is None or book.get("pnl_unavailable"):
+        return net is None
+    return net == competition_net_pnl(
+        float(total),
+        funding_cost_usd=funding_cost,
+        cash_yield_usd=cash_yield,
+        benchmark_cost_usd=benchmark,
+    )
 
 
 class PMBookTests(unittest.TestCase):
@@ -542,20 +578,53 @@ class PMBookTests(unittest.TestCase):
         self.assertFalse(view["gross_notional_limit_enforced"])
         public_with_pos = next(row for row in view["pms"] if row["positions"])
         self.assertIn("risk_capital_usd", public_with_pos["positions"][0])
-        self.assertEqual(validated["pms"]["grinder"]["net_after_funding_pnl_usd"], 0.0)
-        self.assertEqual(validated["pms"]["grinder"]["net_financing_pnl_usd"], 0.0)
-        self.assertEqual(validated["pms"]["grinder"]["funding_regime"], "sofr_zero_benchmark")
-        self.assertEqual(validated["pms"]["grinder"]["realized_pnl_usd"], before["pms"]["grinder"]["realized_pnl_usd"])
-        self.assertEqual(validated["pms"]["grinder"]["unrealized_pnl_usd"], before["pms"]["grinder"]["unrealized_pnl_usd"])
-        self.assertEqual(validated["pms"]["grinder"]["total_pnl_usd"], before["pms"]["grinder"]["total_pnl_usd"])
         for pm_id, item in validated["pms"].items():
             orig = before["pms"][pm_id]
             self.assertEqual(item["realized_pnl_usd"], orig["realized_pnl_usd"])
             self.assertEqual(item["unrealized_pnl_usd"], orig["unrealized_pnl_usd"])
             self.assertEqual(item["total_pnl_usd"], orig["total_pnl_usd"])
+            self.assertEqual(item["funding_cost_usd"], orig["funding_cost_usd"])
+            self.assertEqual(item["cash_yield_usd"], orig["cash_yield_usd"])
+            self.assertEqual(item["benchmark_cost_usd"], orig["benchmark_cost_usd"])
+            self.assertEqual(item["net_financing_pnl_usd"], orig["net_financing_pnl_usd"])
+            self.assertEqual(item["net_after_funding_pnl_usd"], orig["net_after_funding_pnl_usd"])
+            self.assertTrue(_zero_benchmark_identity(item), pm_id)
             for pos, old in zip(item["positions"], orig["positions"]):
                 self.assertEqual(pos["entry_price"], old["entry_price"])
                 self.assertEqual(pos["mark_price"], old["mark_price"])
+                self.assertEqual(pos["position_id"], old["position_id"])
+                self.assertEqual(pos["notional_usd"], old["notional_usd"])
+        grinder = validated["pms"]["grinder"]
+        # sofr_zero_benchmark cancels cash yield against the benchmark. It does
+        # not mean financing P&L is zero: SOFR still charges shocked risk capital.
+        self.assertEqual(grinder["funding_regime"], FUNDING_REGIME_ZERO_BENCHMARK)
+        self.assertGreater(grinder["funding_cost_usd"], 0.0)
+        self.assertLess(grinder["net_financing_pnl_usd"], 0.0)
+        self.assertNotEqual(grinder["net_after_funding_pnl_usd"], 0.0)
+        self.assertNotEqual(grinder["net_after_funding_pnl_usd"], grinder["total_pnl_usd"])
+        public_grinder = next(row for row in view["pms"] if row["pm_id"] == "grinder")
+        self.assertEqual(public_grinder["net_after_funding_pnl_usd"], grinder["net_after_funding_pnl_usd"])
+        self.assertEqual(public_grinder["net_financing_pnl_usd"], grinder["net_financing_pnl_usd"])
+
+        zeroed = deepcopy(grinder)
+        zeroed["net_after_funding_pnl_usd"] = 0.0
+        self.assertFalse(_zero_benchmark_identity(zeroed))
+        zeroed = deepcopy(grinder)
+        zeroed["net_financing_pnl_usd"] = 0.0
+        self.assertFalse(_zero_benchmark_identity(zeroed))
+
+        moved = deepcopy(raw)
+        moved_position = moved["pms"]["grinder"]["positions"][0]
+        moved_position["mark_price"] = moved_position["entry_price"]
+        remarked = validate_books(moved)["pms"]["grinder"]
+        self.assertEqual(remarked["positions"][0]["position_id"], grinder["positions"][0]["position_id"])
+        self.assertEqual(remarked["positions"][0]["notional_usd"], grinder["positions"][0]["notional_usd"])
+        self.assertEqual(remarked["positions"][0]["entry_price"], grinder["positions"][0]["entry_price"])
+        self.assertNotEqual(remarked["total_pnl_usd"], grinder["total_pnl_usd"])
+        self.assertEqual(remarked["net_financing_pnl_usd"], grinder["net_financing_pnl_usd"])
+        self.assertTrue(_zero_benchmark_identity(remarked))
+        self.assertNotEqual(remarked["net_after_funding_pnl_usd"], grinder["net_after_funding_pnl_usd"])
+        self.assertNotEqual(remarked["net_after_funding_pnl_usd"], 0.0)
 
 
 if __name__ == "__main__":
