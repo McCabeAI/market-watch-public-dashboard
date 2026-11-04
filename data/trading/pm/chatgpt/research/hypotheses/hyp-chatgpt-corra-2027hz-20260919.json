@@ -1,0 +1,86 @@
+{
+  "as_of": "2026-11-03T18:36:08.042362-05:00",
+  "calculations": [
+    {
+      "as_of": "2026-11-03T08:22:57.179127-05:00",
+      "description": "Quoted from the decision journal. Not recomputed by this migration.",
+      "quote": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move.",
+      "reproducible_ref": "data/trading/pm/chatgpt/journal.json#jde-2c433e94a5934e8c"
+    }
+  ],
+  "claim": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move.",
+  "competing_explanations": [
+    {
+      "source_event_id": "jde-2c433e94a5934e8c",
+      "source_field": "thesis",
+      "statement": "the energy shock is the strongest challenge to the earlier Canadian receive."
+    }
+  ],
+  "current_revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-04",
+  "evidence": [
+    {
+      "as_of": "2026-11-03T18:36:08.042362-05:00",
+      "event_id": "jde-2c433e94a5934e8c",
+      "evidence_cutoff": "2026-11-03T08:22:57.179127-05:00",
+      "evidence_hash": "079e728c510cfa8736b80c24d40ae394fededae278ba2c9b67ed5c5cf5a387f5",
+      "ref": "data/trading/pm/chatgpt/journal.json",
+      "review_packet_id": "prp-chatgpt-overnight-20261103-review-001",
+      "source_kind": "journal"
+    }
+  ],
+  "falsifiers": [
+    {
+      "statement": "Do not retain the residual merely because the original thesis was right. Close or reduce further if core inflation, wages, employment and BoC communication substantiate additional hikes, especially if the exact 2027 H/M/U/Z strip backs up toward its 3.35-3.40 entry zone."
+    }
+  ],
+  "forecast": {
+    "expectation": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move.",
+    "forecast_kind": "migrated_historical_observation",
+    "horizon": null,
+    "metric": null,
+    "persistence": "journal_migration",
+    "quantitative": null,
+    "stated_at": "2026-11-03T18:36:08.042362-05:00"
+  },
+  "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+  "linked_position_ids": [
+    "pm-chatgpt-595561a1b90f"
+  ],
+  "linked_trade_ids": [
+    "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+  ],
+  "persisted_at": null,
+  "review_due": null,
+  "schema_version": 1,
+  "source_event_id": "jde-2c433e94a5934e8c",
+  "status": "open",
+  "status_history": [
+    {
+      "at": "2026-09-19T23:10:54.130509-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-01",
+      "status": "open"
+    },
+    {
+      "at": "2026-09-28T08:55:41.642445-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-02",
+      "status": "open"
+    },
+    {
+      "at": "2026-10-02T14:30:12.373594-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-03",
+      "status": "open"
+    },
+    {
+      "at": "2026-11-03T18:36:08.042362-05:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-04",
+      "status": "open"
+    }
+  ],
+  "title": "CORRA_2027H-Z receive",
+  "type": "CHATGPT_RESEARCH_HYPOTHESIS",
+  "updated_at": "2026-11-03T18:36:08.042362-05:00"
+}

@@ -69,6 +69,8 @@ Trusted code hydrates marks, checks packet id/hash/freshness, enforces instrumen
 
 The daily submission is a GitHub issue titled exactly `[chatgpt-pm-decision]`. Trusted code on `main` verifies the human author, binds the ticket to the frozen packet and `data/pm/review_packets/chatgpt/book_sha256.txt`, commits the generated ChatGPT state, and dispatches the existing production Pages workflow. Several decisions can land on the same day. Each one needs the packet and book published by the previous commit, and each keeps its own receipt. The inbox pull request remains a fallback. See [`docs/CHATGPT_PM_DECISION_INGEST.md`](CHATGPT_PM_DECISION_INGEST.md).
 
+Separate from decision ingest: ChatGPT PM research memory (hypotheses, trading-edge profile, append-only revisions under `data/trading/pm/chatgpt/research/`). It does not mutate books or authorize trades. Cold-start and save procedure: [`docs/CHATGPT_RESEARCH_MEMORY_V1.md`](CHATGPT_RESEARCH_MEMORY_V1.md). GitHub issue title `[chatgpt-research-memory]` (not `[chatgpt-pm-decision]`).
+
 ## Future data requests
 
 `data/pm/data_requests/latest.json` is the consolidated Git artifact. Entries carry originating PM, request, reason, decision impact, priority `low|medium|high`, suggested source, first/last requested, repeat count, and `status=requested`. Repeated text is deduped with attribution preserved. Requests are for future runs only; they never break the current evidence freeze and never launch collectors. The Trader Book tab surfaces them to Kevin.

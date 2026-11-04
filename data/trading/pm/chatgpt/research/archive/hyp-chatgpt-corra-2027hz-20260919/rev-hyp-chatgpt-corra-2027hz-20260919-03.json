@@ -1,0 +1,74 @@
+{
+  "as_of": "2026-10-02T14:30:12.373594-04:00",
+  "calculations": [],
+  "claim": "Maintain the existing 500mm receive in the 2027 CORRA H/M/U/Z strip. The position-level expression has moved from 3.40 at entry to about 3.22, so part of the original mispricing has normalized, but the strip still embeds substantial tightening relative to 2.31 cash while Canadian underlying inflation remains near 2% and domestic labor evidence is weak. Oil and LNG Canada reduce the asymmetry enough to rule out an add, not enough to reverse or close the trade without domestic confirmation.",
+  "competing_explanations": [
+    {
+      "source_event_id": "jde-f8d178e55a6644dd",
+      "source_field": "thesis",
+      "statement": "Oil and LNG Canada reduce the asymmetry enough to rule out an add, not enough to reverse or close the trade without domestic confirmation."
+    }
+  ],
+  "current_revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-03",
+  "evidence": [
+    {
+      "as_of": "2026-10-02T14:30:12.373594-04:00",
+      "event_id": "jde-f8d178e55a6644dd",
+      "evidence_cutoff": "2026-10-02T05:40:56.963171-04:00",
+      "evidence_hash": "ea582a2d7479b018836f4340f175c21874d68a32cbef21d825e6d6b1e319cdc2",
+      "ref": "data/trading/pm/chatgpt/journal.json",
+      "review_packet_id": "prp-chatgpt-overnight-20261002-review-001",
+      "source_kind": "journal"
+    }
+  ],
+  "falsifiers": [
+    {
+      "statement": "De-risk on a sustained reversal of the exact strip back toward or through 3.35-3.40, particularly with March above about 3.20 and Canadian core inflation, labor/wages, or BoC communication validating a materially tighter 2027 path. A headline-energy move without domestic pass-through is not enough."
+    }
+  ],
+  "forecast": {
+    "expectation": "Maintain the existing 500mm receive in the 2027 CORRA H/M/U/Z strip. The position-level expression has moved from 3.40 at entry to about 3.22, so part of the original mispricing has normalized, but the strip still embeds substantial tightening relative to 2.31 cash while Canadian underlying inflation remains near 2% and domestic labor evidence is weak. Oil and LNG Canada reduce the asymmetry enough to rule out an add, not enough to reverse or close the trade without domestic confirmation.",
+    "forecast_kind": "migrated_historical_observation",
+    "horizon": null,
+    "metric": null,
+    "persistence": "journal_migration",
+    "quantitative": null,
+    "stated_at": "2026-10-02T14:30:12.373594-04:00"
+  },
+  "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+  "linked_position_ids": [
+    "pm-chatgpt-595561a1b90f"
+  ],
+  "linked_trade_ids": [
+    "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+  ],
+  "persisted_at": null,
+  "review_due": null,
+  "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-03",
+  "schema_version": 1,
+  "source_event_id": "jde-f8d178e55a6644dd",
+  "status": "open",
+  "status_history": [
+    {
+      "at": "2026-09-19T23:10:54.130509-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-01",
+      "status": "open"
+    },
+    {
+      "at": "2026-09-28T08:55:41.642445-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-02",
+      "status": "open"
+    },
+    {
+      "at": "2026-10-02T14:30:12.373594-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-03",
+      "status": "open"
+    }
+  ],
+  "title": "CORRA_2027H-Z receive",
+  "type": "CHATGPT_RESEARCH_HYPOTHESIS_REVISION",
+  "updated_at": "2026-10-02T14:30:12.373594-04:00"
+}
