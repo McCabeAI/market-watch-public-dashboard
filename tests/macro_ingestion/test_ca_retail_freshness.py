@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.macro_freshness import values_close
 from scripts.macro_ingestion.adapters import ca
 from scripts.macro_ingestion.canonical_bridge import _append_row, _methodology_blocks, merge_scored_points
 from scripts.macro_ingestion.contract import load_catalog
@@ -38,6 +39,35 @@ HISTORY_DIR = ROOT / "data/temperature_history"
 SCORES_PATH = ROOT / "data/temperature_scores.json"
 LAUNCH_OBS = ROOT / "data/market_watch_launches/mwl-20261028T092641Z-4c970004/ingestion/observations"
 CHECKED_AT = "2026-10-28T09:26:41Z"
+# Later vintages now sit in canonical history and hide the Oct 28 confidence revisions.
+_EA_CONFIDENCE_PROMOTED = (
+    ("EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-09", "index_level", -13.4),
+    ("EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-10", "index_level", -12.6),
+    ("EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-06", "index_level", -17.7),
+)
+
+
+def _without_promoted_ea_confidence(histories: dict) -> tuple[dict, list[dict]]:
+    """Drop the promoted EA confidence rows from a copy. Does not touch disk."""
+    work = copy.deepcopy(histories)
+    obs = work["EA"]["components"]["Consumer.confidence"]["observations"]
+    removed: list[dict] = []
+    for series_id, period, transformation, value in _EA_CONFIDENCE_PROMOTED:
+        matches = [
+            row
+            for row in obs
+            if row.get("series_id") == series_id
+            and row.get("reference_period") == period
+            and row.get("transformation") == transformation
+            and values_close(float(row.get("value")), float(value))
+        ]
+        if len(matches) != 1:
+            raise AssertionError(f"expected one {period} EA confidence row at {value}, found {len(matches)}")
+        target = matches[0]
+        obs = [row for row in obs if row is not target]
+        removed.append(target)
+    work["EA"]["components"]["Consumer.confidence"]["observations"] = obs
+    return work, removed
 
 
 def _sha(path: Path) -> str:
@@ -190,10 +220,11 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
     def test_july_and_august_merge_and_only_ca_consumer_moves(self) -> None:
         cal = load_calibration(CALIBRATION_PATH)
         base = load_history(HISTORY_DIR)
-        before_sha = (_sha(HISTORY_DIR / "ca.json"), _sha(SCORES_PATH))
+        before_sha = (_sha(HISTORY_DIR / "ca.json"), _sha(HISTORY_DIR / "ea.json"), _sha(SCORES_PATH))
         with tempfile.TemporaryDirectory() as tmp:
             points = points_from_observation_stores(observations_dir=self._store_dir(Path(tmp)), checked_at=CHECKED_AT)
-        histories = copy.deepcopy(base)
+        histories, removed = _without_promoted_ea_confidence(base)
+        self.assertEqual(len(removed), 3)
         result = merge_scored_points(histories, cal, points, checked_at=CHECKED_AT)
         retail_appended = [a for a in result["appended"] if a["id"] == "CA.Consumer.retail"]
         self.assertEqual(retail_appended, [])
@@ -237,7 +268,10 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
         retail = after["CA"]["Consumer"]["component_state"]["retail"]
         self.assertEqual(retail["as_of"], "2026-08")
         self.assertEqual(before["CA"]["Consumer"], after["CA"]["Consumer"])
-        self.assertEqual(before_sha, (_sha(HISTORY_DIR / "ca.json"), _sha(SCORES_PATH)))
+        self.assertEqual(
+            before_sha,
+            (_sha(HISTORY_DIR / "ca.json"), _sha(HISTORY_DIR / "ea.json"), _sha(SCORES_PATH)),
+        )
 
     def test_august_listed_before_july_still_includes_both(self) -> None:
         cal = load_calibration(CALIBRATION_PATH)
@@ -247,7 +281,8 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
                 observations_dir=self._store_dir(Path(tmp), reverse_retail=True),
                 checked_at=CHECKED_AT,
             )
-        histories = copy.deepcopy(base)
+        histories, removed = _without_promoted_ea_confidence(base)
+        self.assertEqual(len(removed), 3)
         result = merge_scored_points(histories, cal, points, checked_at=CHECKED_AT)
         retail_appended = [a for a in result["appended"] if a["id"] == "CA.Consumer.retail"]
         self.assertEqual(retail_appended, [])
@@ -263,6 +298,37 @@ class RetailReachesConsumerScoreTests(unittest.TestCase):
         self.assertEqual(rows["2026-08"]["release_date"], "2026-10-23")
         self.assertEqual(rows["2026-06"]["value"], 0.6)
         self.assertEqual(rows["2026-06"]["release_date"], "2026-08-21")
+
+    def test_canonical_replay_does_not_reappend_promoted_ea_confidence(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        before = (_sha(HISTORY_DIR / "ca.json"), _sha(HISTORY_DIR / "ea.json"), _sha(SCORES_PATH))
+        with tempfile.TemporaryDirectory() as tmp:
+            points = points_from_observation_stores(
+                observations_dir=self._store_dir(Path(tmp)),
+                checked_at=CHECKED_AT,
+            )
+        result = merge_scored_points(
+            copy.deepcopy(load_history(HISTORY_DIR)),
+            cal,
+            points,
+            checked_at=CHECKED_AT,
+        )
+        appended_periods = {
+            row["reference_period"]
+            for row in result["appended"]
+            if row["id"] == "EA.Consumer.confidence"
+        }
+        self.assertTrue(appended_periods.isdisjoint({"2025-09", "2025-10", "2026-06"}))
+        duplicate_reasons = {
+            row["reason"]
+            for row in result["skipped"]
+            if row["id"] == "EA.Consumer.confidence"
+        }
+        self.assertIn("duplicate_value", duplicate_reasons)
+        self.assertEqual(
+            before,
+            (_sha(HISTORY_DIR / "ca.json"), _sha(HISTORY_DIR / "ea.json"), _sha(SCORES_PATH)),
+        )
 
     def test_pre_break_print_does_not_rewrite_stored_history(self) -> None:
         cal = load_calibration(CALIBRATION_PATH)

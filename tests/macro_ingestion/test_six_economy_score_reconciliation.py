@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from scripts.macro_freshness import values_close
 from scripts.country_detail.projection import build_projection
 from scripts.country_detail.render import render_country_detail
 from scripts.macro_ingestion.adapters.us import fetch_series
@@ -51,6 +52,57 @@ ISM_DATE_FIXTURE = (
 FRED_GDP_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=A191RL1Q225SBEA"
 
 
+# Identities promoted from the Nov 3 launch into canonical history on Nov 4.
+_NOV3_PROMOTED = (
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-09", "index_level", -13.4),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-10", "index_level", -12.6),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2025-12", "index_level", -13.2),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-02", "index_level", -12.3),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-06", "index_level", -17.7),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-08", "index_level", -15.6),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-09", "index_level", -16.8),
+    ("EA", "Consumer.confidence", "EI_BSCO_M.M.SA.BS-CSMCI.BAL.EA21", "2026-10", "index_level", -17.9),
+    ("US", "Activity.manufacturing_surveys", "NAPM", "2026-09", "diffusion_index", 54.5),
+    ("US", "Activity.manufacturing_surveys", "NAPM", "2026-10", "diffusion_index", 55.5),
+    ("US", "Activity.services_surveys", "NMFBAI", "2026-09", "diffusion_index", 54.9),
+)
+
+
+def _without_promoted_identities(histories: dict, identities: tuple) -> tuple[dict, list[dict]]:
+    """Remove one matching observation per identity from a copy. Does not touch disk."""
+    work = copy.deepcopy(histories)
+    removed: list[dict] = []
+    for country, component, series_id, period, transformation, value in identities:
+        obs = work[country]["components"][component]["observations"]
+        matches = [
+            row
+            for row in obs
+            if row.get("series_id") == series_id
+            and row.get("reference_period") == period
+            and row.get("transformation") == transformation
+            and values_close(float(row.get("value")), float(value))
+        ]
+        if len(matches) != 1:
+            raise AssertionError(
+                f"expected one {country} {component} {period} {series_id} at {value}, found {len(matches)}"
+            )
+        target = matches[0]
+        work[country]["components"][component]["observations"] = [row for row in obs if row is not target]
+        removed.append(target)
+    return work, removed
+
+
+def _write_history_countries(dest: Path, histories: dict, countries: tuple[str, ...]) -> None:
+    dest.mkdir(parents=True, exist_ok=True)
+    for src in HISTORY_DIR.glob("*.json"):
+        shutil.copy2(src, dest / src.name)
+    for country in countries:
+        (dest / f"{country.lower()}.json").write_text(
+            json.dumps(histories[country], indent=2, ensure_ascii=False) + "\n",
+            encoding="utf-8",
+        )
+
+
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -63,73 +115,105 @@ def _canonical_hashes() -> dict[str, str]:
 
 
 class FrozenNov3LaunchLineageTests(unittest.TestCase):
+    def _assert_nov3_scores(self, launch_dir: Path) -> None:
+        scores = json.loads(
+            (launch_dir / "lineage/temperature_scores.json").read_text(encoding="utf-8")
+        )
+        cal = load_calibration(CALIBRATION_PATH)
+        self.assertEqual(str(cal.get("as_of")), "2026-09-21")
+
+        us_act = scores["countries"]["US"]["Activity"]["component_state"]
+        mfg = us_act["manufacturing_surveys"]
+        svc = us_act["services_surveys"]
+        self.assertEqual(mfg["as_of"], "2026-10")
+        self.assertAlmostEqual(mfg["transform_value"], 54.8667, places=4)
+        self.assertAlmostEqual(mfg["level"], 54.87, places=2)
+        self.assertAlmostEqual(mfg["impulse"], 1.0, places=4)
+        self.assertEqual(svc["as_of"], "2026-09")
+        self.assertAlmostEqual(svc["transform_value"], 54.8, places=4)
+        self.assertAlmostEqual(svc["level"], 54.8, places=4)
+        self.assertAlmostEqual(svc["impulse"], -0.5, places=4)
+
+        ea_conf = scores["countries"]["EA"]["Consumer"]["component_state"]["confidence"]
+        self.assertEqual(ea_conf["as_of"], "2026-10")
+        self.assertAlmostEqual(ea_conf["transform_value"], -17.9, places=4)
+        self.assertAlmostEqual(ea_conf["level"], 42.1, places=4)
+        self.assertAlmostEqual(ea_conf["impulse"], -1.1, places=4)
+
+        staged_us = load_history(launch_dir / "lineage/history")["US"]
+        mfg_rows = {
+            o["reference_period"]: o
+            for o in staged_us["components"]["Activity.manufacturing_surveys"]["observations"]
+        }
+        self.assertEqual(mfg_rows["2026-09"]["release_date"], "2026-10-01")
+        self.assertEqual(mfg_rows["2026-10"]["release_date"], "2026-11-02")
+        svc_rows = {
+            o["reference_period"]: o
+            for o in staged_us["components"]["Activity.services_surveys"]["observations"]
+        }
+        self.assertEqual(svc_rows["2026-09"]["release_date"], "2026-10-05")
+
     def test_stage_verified_lineage_scores_ism_and_ea_confidence(self) -> None:
         before = _canonical_hashes()
         launch_sha = _sha256_file(LAUNCH / "launch.json")
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
-            work_history = tmp_path / "history"
-            shutil.copytree(HISTORY_DIR, work_history)
-            launch_dir = tmp_path / "launch"
-            launch_dir.mkdir()
-            bridge = recompute_scores_after_observation(
+            current_history = tmp_path / "current_history"
+            shutil.copytree(HISTORY_DIR, current_history)
+            current_launch = tmp_path / "current_launch"
+            current_launch.mkdir()
+            current_bridge = recompute_scores_after_observation(
                 persist_history=False,
                 persist_scores=False,
                 calibration_path=CALIBRATION_PATH,
-                history_dir=work_history,
+                history_dir=current_history,
                 observations_dir=OBS_DIR,
                 checked_at=CHECKED_AT,
             )
-            self.assertTrue(bridge.ok)
-            merge = bridge.merge or {}
-            self.assertGreater(len(merge.get("appended") or []), 0)
-
-            result = stage_verified_lineage(
-                launch_dir=launch_dir,
+            self.assertTrue(current_bridge.ok)
+            self.assertEqual(len((current_bridge.merge or {}).get("appended") or []), 0)
+            current = stage_verified_lineage(
+                launch_dir=current_launch,
                 checked_at=CHECKED_AT,
-                canonical_history_dir=work_history,
+                canonical_history_dir=current_history,
                 calibration_path=CALIBRATION_PATH,
                 observations_dir=OBS_DIR,
             )
-            self.assertTrue(result["ok"], msg=result.get("rejections") or result.get("error"))
-            self.assertGreater(result["appended_count"], 0)
+            self.assertTrue(current["ok"], msg=current.get("rejections") or current.get("error"))
+            self.assertEqual(current["appended_count"], 0)
+            self._assert_nov3_scores(current_launch)
 
-            scores = json.loads(
-                (launch_dir / "lineage/temperature_scores.json").read_text(encoding="utf-8")
+            stripped, removed = _without_promoted_identities(load_history(HISTORY_DIR), _NOV3_PROMOTED)
+            self.assertEqual(len(removed), len(_NOV3_PROMOTED))
+            fresh_history = tmp_path / "fresh_history"
+            _write_history_countries(fresh_history, stripped, ("US", "EA"))
+            fresh_launch = tmp_path / "fresh_launch"
+            fresh_launch.mkdir()
+            fresh_bridge = recompute_scores_after_observation(
+                persist_history=False,
+                persist_scores=False,
+                calibration_path=CALIBRATION_PATH,
+                history_dir=fresh_history,
+                observations_dir=OBS_DIR,
+                checked_at=CHECKED_AT,
             )
-            cal = load_calibration(CALIBRATION_PATH)
-            self.assertEqual(str(cal.get("as_of")), "2026-09-21")
-
-            us_act = scores["countries"]["US"]["Activity"]["component_state"]
-            mfg = us_act["manufacturing_surveys"]
-            svc = us_act["services_surveys"]
-            self.assertEqual(mfg["as_of"], "2026-10")
-            self.assertAlmostEqual(mfg["transform_value"], 54.8667, places=4)
-            self.assertAlmostEqual(mfg["level"], 54.87, places=2)
-            self.assertAlmostEqual(mfg["impulse"], 1.0, places=4)
-            self.assertEqual(svc["as_of"], "2026-09")
-            self.assertAlmostEqual(svc["transform_value"], 54.8, places=4)
-            self.assertAlmostEqual(svc["level"], 54.8, places=4)
-            self.assertAlmostEqual(svc["impulse"], -0.5, places=4)
-
-            ea_conf = scores["countries"]["EA"]["Consumer"]["component_state"]["confidence"]
-            self.assertEqual(ea_conf["as_of"], "2026-10")
-            self.assertAlmostEqual(ea_conf["transform_value"], -17.9, places=4)
-            self.assertAlmostEqual(ea_conf["level"], 42.1, places=4)
-            self.assertAlmostEqual(ea_conf["impulse"], -1.1, places=4)
-
-            staged_us = load_history(launch_dir / "lineage/history")["US"]
-            mfg_rows = {
-                o["reference_period"]: o
-                for o in staged_us["components"]["Activity.manufacturing_surveys"]["observations"]
-            }
-            self.assertEqual(mfg_rows["2026-09"]["release_date"], "2026-10-01")
-            self.assertEqual(mfg_rows["2026-10"]["release_date"], "2026-11-02")
-            svc_rows = {
-                o["reference_period"]: o
-                for o in staged_us["components"]["Activity.services_surveys"]["observations"]
-            }
-            self.assertEqual(svc_rows["2026-09"]["release_date"], "2026-10-05")
+            self.assertTrue(fresh_bridge.ok)
+            fresh_appended = (fresh_bridge.merge or {}).get("appended") or []
+            self.assertGreater(len(fresh_appended), 0)
+            appended_ids = {row["id"] for row in fresh_appended}
+            self.assertIn("US.Activity.manufacturing_surveys", appended_ids)
+            self.assertIn("US.Activity.services_surveys", appended_ids)
+            self.assertIn("EA.Consumer.confidence", appended_ids)
+            fresh = stage_verified_lineage(
+                launch_dir=fresh_launch,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=fresh_history,
+                calibration_path=CALIBRATION_PATH,
+                observations_dir=OBS_DIR,
+            )
+            self.assertTrue(fresh["ok"], msg=fresh.get("rejections") or fresh.get("error"))
+            self.assertGreater(fresh["appended_count"], 0)
+            self._assert_nov3_scores(fresh_launch)
 
         after = _canonical_hashes()
         self.assertEqual(before, after)
