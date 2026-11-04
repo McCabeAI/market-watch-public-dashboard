@@ -614,6 +614,11 @@ class NovemberReplayTests(unittest.TestCase):
         when = datetime.fromisoformat(self.CUTOFF)
         cnbc = self._cnbc(
             self._cnbc_item(election_yields, "us-election-yields-fall.html", "2026-11-04T11:10:00Z")
+            + self._cnbc_item(
+                "Democrats could win control of Congress",
+                "democrats-could-win-congress.html",
+                "2026-11-04T11:05:00Z",
+            )
             + self._cnbc_item(self.FED, "fed-inflation-yields.html", "2026-11-04T10:30:00Z")
             + self._cnbc_item(
                 fresh_hormuz,
@@ -631,6 +636,12 @@ class NovemberReplayTests(unittest.TestCase):
         self.assertIn(election_yields, headlines)
         self.assertIn(self.FED, headlines)
         self.assertIn(fresh_hormuz, headlines)
+
+        forecast_headline = "Democrats could win control of Congress"
+        forecast_tx = score_transmission(forecast_headline, "")
+        self.assertNotIn(forecast_headline, headlines)
+        self.assertNotEqual(forecast_tx.get("reason_code"), "political_risk_transmission")
+        self.assertNotEqual(forecast_tx.get("disposition"), "show")
 
         stale_oil = {
             "headline": "Oil rebounds as Hormuz tensions keep crude bid",
@@ -696,6 +707,7 @@ class NovemberReplayTests(unittest.TestCase):
         self.assertEqual(panel["status"], "available")
         panel_headlines = [row["headline"] for row in panel["items"]]
         self.assertIn(election_yields, panel_headlines)
+        self.assertNotIn(forecast_headline, panel_headlines)
         self.assertNotIn(stale_oil["headline"], panel_headlines)
         self.assertNotIn(stale_boe["headline"], panel_headlines)
         overlap = [row["headline"] for row in merged["items"] if row["headline"] in panel_headlines]

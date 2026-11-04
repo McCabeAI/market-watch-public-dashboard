@@ -660,9 +660,312 @@ _SPEECH_FRAMING_VERBS = frozenset(
     }
 )
 
+_CLAUSE_BARRIER = frozenset({".", ";"})
+
+_MODAL_FORECAST = frozenset(
+    {
+        "could",
+        "would",
+        "might",
+        "may",
+        "will",
+        "wont",
+        "won't",
+        "expected",
+        "expects",
+        "expect",
+        "expectation",
+        "likely",
+        "unlikely",
+        "forecast",
+        "forecasts",
+        "forecasted",
+        "predict",
+        "predicts",
+        "predicted",
+        "prediction",
+        "poll",
+        "polls",
+        "polling",
+        "hope",
+        "hopes",
+        "hoped",
+        "if",
+        "unless",
+        "think",
+        "thinks",
+        "thought",
+        "says",
+        "said",
+        "tells",
+        "told",
+        "claims",
+        "claimed",
+        "vows",
+        "vowed",
+    }
+)
+
+_NEGATION_TOKENS = frozenset(
+    {"not", "no", "never", "without", "didnt", "didn't", "dont", "don't"}
+)
+
+_OUTCOME_WORDS = frozenset(
+    {
+        "win",
+        "wins",
+        "won",
+        "winner",
+        "loses",
+        "lost",
+        "flips",
+        "flipped",
+        "flip",
+    }
+)
+
+_ELECTION_CONTEXT = frozenset(
+    {
+        "election",
+        "elections",
+        "midterm",
+        "midterms",
+        "results",
+        "result",
+        "congress",
+        "congressional",
+        "house",
+        "senate",
+        "parliament",
+    }
+)
+
+_RACE_CALL_VERBS = frozenset({"calls", "called", "call"})
+
+_RACE_CALL_OBJECTS = frozenset({"house", "senate", "congress", "race"})
+
+_CONTROL_PHRASE_PARTS: tuple[tuple[str, ...], ...] = (
+    ("control", "of", "congress"),
+    ("congressional", "control"),
+    ("control", "of", "the", "house"),
+    ("control", "of", "the", "senate"),
+    ("house", "majority"),
+    ("senate", "majority"),
+    ("parliamentary", "majority"),
+    ("control", "of", "parliament"),
+    ("change", "of", "government"),
+    ("government", "collapses"),
+    ("government", "collapsed"),
+    ("no", "confidence"),
+    ("no-confidence",),
+    ("takes", "the", "house"),
+    ("take", "the", "house"),
+    ("took", "the", "house"),
+    ("takes", "control"),
+    ("take", "control"),
+    ("took", "control"),
+    ("declared", "winner"),
+    ("changes", "control"),
+    ("change", "control"),
+)
+
+_CONTROL_PHRASES_NEEDING_ELECTION_CONTEXT = frozenset(
+    {("changes", "control"), ("change", "control")}
+)
+
+_NO_CONFIDENCE_GOVERNMENT_CONTEXT = frozenset(
+    {
+        "government",
+        "parliament",
+        "vote",
+        "cabinet",
+        "minister",
+        "prime",
+        "coalition",
+    }
+)
+
+_CONTROL_PHRASES_NEEDING_NO_CONFIDENCE_GOVERNMENT_CONTEXT = frozenset(
+    {("no", "confidence"), ("no-confidence",)}
+)
+
+
+def _clause_tokens(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9']+|[.;]", text.lower())
+
 
 def _price_tokens(text: str) -> list[str]:
-    return re.findall(r"[a-z0-9']+", text.lower())
+    return _clause_tokens(text)
+
+
+def _clause_start(tokens: list[str], index: int) -> int:
+    start = 0
+    for i in range(index):
+        if tokens[i] in _CLAUSE_BARRIER:
+            start = i + 1
+    return start
+
+
+def _clause_slice(tokens: list[str], index: int) -> list[str]:
+    start = _clause_start(tokens, index)
+    end = index + 1
+    while end < len(tokens) and tokens[end] not in _CLAUSE_BARRIER:
+        end += 1
+    return tokens[start:end]
+
+
+def _scan_window(tokens: list[str], index: int, max_back: int) -> list[str]:
+    clause_start = _clause_start(tokens, index)
+    start = max(clause_start, index - max_back)
+    return [t for t in tokens[start:index] if t not in _CLAUSE_BARRIER]
+
+
+def _modal_in_window(window: list[str]) -> bool:
+    for tok in window:
+        if tok in _MODAL_FORECAST:
+            return True
+        if tok == "won't":
+            return True
+    return False
+
+
+def _token_unrealized(tokens: list[str], index: int) -> bool:
+    return _modal_in_window(_scan_window(tokens, index, 6))
+
+
+def _token_negated(tokens: list[str], index: int) -> bool:
+    window = _scan_window(tokens, index, 3)
+    if "not" in window and "only" in window:
+        return False
+    for tok in window:
+        if tok in _NEGATION_TOKENS:
+            return True
+        if tok.endswith("n't"):
+            return True
+    return False
+
+
+def _token_unresolved(tokens: list[str], index: int) -> bool:
+    window = _scan_window(tokens, index, 4)
+    return any(t in ("pending", "unresolved", "uncalled") for t in window)
+
+
+def _phrase_starts(tokens: list[str], parts: tuple[str, ...]) -> list[int]:
+    if not parts:
+        return []
+    n = len(parts)
+    hits: list[int] = []
+    for i in range(len(tokens)):
+        if tokens[i] in _CLAUSE_BARRIER:
+            continue
+        if i + n > len(tokens):
+            continue
+        ok = True
+        for j in range(n):
+            t = tokens[i + j]
+            if t in _CLAUSE_BARRIER or t != parts[j]:
+                ok = False
+                break
+        if ok:
+            hits.append(i)
+    return hits
+
+
+def _tokens_near(tokens: list[str], index: int, pool: frozenset[str], radius: int = 4) -> bool:
+    lo = max(0, index - radius)
+    hi = min(len(tokens), index + radius + 1)
+    for j in range(lo, hi):
+        if tokens[j] in _CLAUSE_BARRIER:
+            continue
+        if tokens[j] in pool:
+            return True
+    return False
+
+
+def _clause_has_election_context(tokens: list[str], index: int) -> bool:
+    clause = _clause_slice(tokens, index)
+    return any(t in _ELECTION_CONTEXT for t in clause if t not in _CLAUSE_BARRIER)
+
+
+def _clause_has_no_confidence_government_context(tokens: list[str], index: int) -> bool:
+    clause = _clause_slice(tokens, index)
+    return any(
+        t in _NO_CONFIDENCE_GOVERNMENT_CONTEXT for t in clause if t not in _CLAUSE_BARRIER
+    )
+
+
+def _political_anchor_indices(tokens: list[str]) -> list[int]:
+    anchors: list[int] = []
+    for parts in _CONTROL_PHRASE_PARTS:
+        if parts in _CONTROL_PHRASES_NEEDING_ELECTION_CONTEXT:
+            for idx in _phrase_starts(tokens, parts):
+                if _clause_has_election_context(tokens, idx):
+                    anchors.append(idx)
+        elif parts in _CONTROL_PHRASES_NEEDING_NO_CONFIDENCE_GOVERNMENT_CONTEXT:
+            for idx in _phrase_starts(tokens, parts):
+                if _clause_has_no_confidence_government_context(tokens, idx):
+                    anchors.append(idx)
+        else:
+            anchors.extend(_phrase_starts(tokens, parts))
+    for idx, tok in enumerate(tokens):
+        if tok in _CLAUSE_BARRIER:
+            continue
+        if tok in _OUTCOME_WORDS and _clause_has_election_context(tokens, idx):
+            anchors.append(idx)
+    for idx, tok in enumerate(tokens):
+        if tok in _CLAUSE_BARRIER:
+            continue
+        if tok in _RACE_CALL_VERBS and _tokens_near(tokens, idx, _RACE_CALL_OBJECTS, 4):
+            anchors.append(idx)
+    # de-dupe while preserving order
+    seen: set[int] = set()
+    ordered: list[int] = []
+    for idx in anchors:
+        if idx not in seen:
+            seen.add(idx)
+            ordered.append(idx)
+    return ordered
+
+
+def _anchor_realized(tokens: list[str], index: int) -> bool:
+    if _token_unrealized(tokens, index):
+        return False
+    if _token_unresolved(tokens, index):
+        return False
+    return True
+
+
+def _race_call_polity(text: str) -> str | None:
+    tokens = _clause_tokens(text)
+    for idx in _political_anchor_indices(tokens):
+        if tokens[idx] not in _RACE_CALL_VERBS:
+            continue
+        if not _anchor_realized(tokens, idx):
+            continue
+        if _tokens_near(tokens, idx, frozenset({"house", "senate", "congress"}), 4):
+            return "US"
+    return None
+
+
+def _effective_g10_polity(text: str) -> str | None:
+    return _g10_polity(text) or _race_call_polity(text)
+
+
+def _realized_political_anchors(text: str) -> bool:
+    tokens = _clause_tokens(text)
+    return any(_anchor_realized(tokens, idx) for idx in _political_anchor_indices(tokens))
+
+
+def _pending_election_assess(text: str) -> bool:
+    if not (
+        _g10_polity(text)
+        or _word(text, "election")
+        or _any_word(text, ("midterm", "midterms", "results", "result"))
+    ):
+        return False
+    if not _any_word(text, ("pending", "unresolved", "uncalled")):
+        return False
+    return not _realized_political_anchors(text)
 
 
 def _move_token_at(tokens: list[str], index: int) -> bool:
@@ -683,6 +986,16 @@ def _speech_framed_move(tokens: list[str], move_index: int) -> bool:
     return False
 
 
+def _move_realized(tokens: list[str], move_index: int) -> bool:
+    if _token_unrealized(tokens, move_index):
+        return False
+    if _token_negated(tokens, move_index):
+        return False
+    if _speech_framed_move(tokens, move_index):
+        return False
+    return True
+
+
 def _recorded_price_move(text: str, *, objects: tuple[str, ...] | None = None) -> bool:
     """True when the source text records a price move (object within 4 tokens of a move word)."""
     allowed = frozenset(objects if objects is not None else _PRICE_MOVE_OBJECTS)
@@ -690,7 +1003,7 @@ def _recorded_price_move(text: str, *, objects: tuple[str, ...] | None = None) -
     move_indices = [
         i
         for i in range(len(tokens))
-        if _move_token_at(tokens, i) and not _speech_framed_move(tokens, i)
+        if _move_token_at(tokens, i) and _move_realized(tokens, i)
     ]
     price_indices = [i for i, tok in enumerate(tokens) if tok in allowed]
     for move_index in move_indices:
@@ -751,45 +1064,17 @@ def _acute_central_bank_shock(text: str) -> bool:
 
 def _control_event(text: str) -> bool:
     """A result or a break in government, not a campaign calendar."""
-    outcome_controls = tuple(
-        phrase
-        for phrase in _CONTROL_EVENT
-        if phrase not in {"general election", "presidential election", "national election", "snap election", "midterms", "midterm election"}
-    )
-    if _any_phrase(text, outcome_controls):
-        return True
-    snap_called = _any_phrase(
-        text,
-        ("calls a snap", "called a snap", "calls snap", "announces a snap", "announced a snap"),
-    )
-    if _phrase(text, "snap election") and (_outcome_language(text) or snap_called):
-        return True
-    if _any_phrase(text, ("general election", "presidential election", "national election", "midterm election", "midterms")) and _outcome_language(text):
-        return True
-    return False
+    return _realized_political_anchors(text)
 
 
 def _outcome_language(text: str) -> bool:
-    return _any_word(
+    tokens = _clause_tokens(text)
+    for idx, tok in enumerate(tokens):
+        if tok in _OUTCOME_WORDS and _clause_has_election_context(tokens, idx):
+            return True
+    return _any_phrase(
         text,
-        (
-            "result",
-            "results",
-            "win",
-            "wins",
-            "won",
-            "winner",
-            "loses",
-            "lost",
-            "flips",
-            "flipped",
-            "projected",
-            "declared",
-            "outcome",
-        ),
-    ) or _any_phrase(
-        text,
-        ("takes control", "secures control", "loses control", "changes control"),
+        ("takes control", "secures control", "loses control", "changes control", "declared winner"),
     )
 
 
@@ -806,12 +1091,19 @@ def _material_political_event(text: str) -> bool:
         text, ("government collapses", "government collapsed", "no-confidence", "no confidence")
     ):
         return False
-    event = _control_event(text) or (_word(text, "election") and _outcome_language(text))
-    if not event:
-        return False
-    if _g10_polity(text):
+    if _realized_political_anchors(text):
+        if _effective_g10_polity(text):
+            return True
+        return _market_evidence(text)
+    if _pending_election_assess(text):
         return True
-    return _market_evidence(text)
+    if (
+        _word(text, "election")
+        and _market_evidence(text)
+        and not _g10_polity(text)
+    ):
+        return True
+    return False
 
 
 def _acute_geopolitics(text: str) -> bool:
@@ -841,7 +1133,7 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
     """Possible G10 channels unless the source itself states a market move."""
     if _material_political_event(text):
         comps = _empty_components()
-        polity = _g10_polity(text)
+        polity = _effective_g10_polity(text)
         evidenced = _market_evidence(text)
         assets = list(_POLITY_ASSETS.get(polity or "", []))
         if _recorded_fx_move(text) and "USD" not in assets:
@@ -869,7 +1161,7 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
                 ),
                 claim,
             )
-        if _political_neutral(text):
+        if _political_neutral(text) or _pending_election_assess(text):
             _set_channel(comps, "geopolitics_haven")
             comps["asset_named"] = 2
             comps["shock"] = 2
