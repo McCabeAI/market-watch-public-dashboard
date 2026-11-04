@@ -605,20 +605,15 @@ class NovemberReplayTests(unittest.TestCase):
         from scripts.overnight.news_diagnostics import build_report
         from scripts.overnight.news_sources import CNBC_HEADLINE_ONLY
 
-        election_yields = (
-            "US national election results change control of Congress; Treasury yields fall"
-        )
+        election_yields = "Democrats win control of Congress; Treasury yields fell"
+        expected_change = "Control of Congress is expected to change"
         fresh_hormuz = (
             "Iran says it will not soften demands after Trump rejects a Hormuz offer"
         )
         when = datetime.fromisoformat(self.CUTOFF)
         cnbc = self._cnbc(
-            self._cnbc_item(election_yields, "us-election-yields-fall.html", "2026-11-04T11:10:00Z")
-            + self._cnbc_item(
-                "Democrats could win control of Congress",
-                "democrats-could-win-congress.html",
-                "2026-11-04T11:05:00Z",
-            )
+            self._cnbc_item(election_yields, "democrats-win-congress-yields.html", "2026-11-04T11:10:00Z")
+            + self._cnbc_item(expected_change, "congress-expected-change.html", "2026-11-04T11:08:00Z")
             + self._cnbc_item(self.FED, "fed-inflation-yields.html", "2026-11-04T10:30:00Z")
             + self._cnbc_item(
                 fresh_hormuz,
@@ -634,14 +629,13 @@ class NovemberReplayTests(unittest.TestCase):
         self.assertEqual(acquisition["recovery"], "fallback")
         headlines = [row["headline"] for row in acquisition["candidates"]]
         self.assertIn(election_yields, headlines)
+        self.assertIn(expected_change, headlines)
         self.assertIn(self.FED, headlines)
         self.assertIn(fresh_hormuz, headlines)
 
-        forecast_headline = "Democrats could win control of Congress"
-        forecast_tx = score_transmission(forecast_headline, "")
-        self.assertNotIn(forecast_headline, headlines)
-        self.assertNotEqual(forecast_tx.get("reason_code"), "political_risk_transmission")
-        self.assertNotEqual(forecast_tx.get("disposition"), "show")
+        expected_tx = score_transmission(expected_change, "")
+        self.assertNotEqual(expected_tx.get("reason_code"), "political_risk_transmission")
+        self.assertNotEqual(expected_tx.get("disposition"), "show")
 
         stale_oil = {
             "headline": "Oil rebounds as Hormuz tensions keep crude bid",
@@ -676,13 +670,16 @@ class NovemberReplayTests(unittest.TestCase):
         election = next(row for row in merged["items"] if row["headline"] == election_yields)
         self.assertEqual(election["currency"], "current")
         self.assertEqual(election["transmission"]["claim"], "evidenced")
+        self.assertEqual(election["transmission"]["disposition"], "show")
         self.assertEqual(election["transmission"]["reason_code"], "political_risk_transmission")
         self.assertEqual(election["transmission"]["channel"], "geopolitics_haven")
         self.assertEqual(election["summary"], CNBC_HEADLINE_ONLY)
+        self.assertNotIn(expected_change, [row["headline"] for row in merged["items"]])
 
         report = build_report(acquisition, merged)
         shown = {row["headline"] for row in report["stories"] if row["stage"] == "shown"}
         self.assertIn(election_yields, shown)
+        self.assertNotIn(expected_change, shown)
 
         family = {
             "status": "fresh",
@@ -707,7 +704,7 @@ class NovemberReplayTests(unittest.TestCase):
         self.assertEqual(panel["status"], "available")
         panel_headlines = [row["headline"] for row in panel["items"]]
         self.assertIn(election_yields, panel_headlines)
-        self.assertNotIn(forecast_headline, panel_headlines)
+        self.assertNotIn(expected_change, panel_headlines)
         self.assertNotIn(stale_oil["headline"], panel_headlines)
         self.assertNotIn(stale_boe["headline"], panel_headlines)
         overlap = [row["headline"] for row in merged["items"] if row["headline"] in panel_headlines]

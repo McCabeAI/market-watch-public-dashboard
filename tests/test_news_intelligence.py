@@ -862,8 +862,14 @@ class PoliticalTransmissionTests(unittest.TestCase):
             "Republicans win control of Congress",
             "US national election results change control of Congress",
             "AP calls the House for Democrats",
+            "Reuters calls the Senate for Republicans",
+            "AP projects the House for Democrats",
             "French government collapses after a no-confidence vote",
+            "French government collapses after a no-confidence vote as yields fall",
             "Democrats win control of Congress; analysts expected a closer race",
+            "Democrats win control of Congress; analysts expect yields to fall",
+            "Democrats win control of Congress; analysts expected Republicans to win",
+            "Democrats could win control, but Republicans secured control of Congress",
             self.ELECTION_YIELDS,
             self.ELECTION_DOLLAR_STOCKS,
         ]
@@ -872,14 +878,34 @@ class PoliticalTransmissionTests(unittest.TestCase):
             claim = "evidenced" if _market_evidence_headline(headline) else "possible"
             assert_show(row, claim=claim)
 
+        for party in ("Democrats", "Republicans"):
+            assert_show(pol(f"{party} win control of Congress"), claim="possible")
+
         pending = score_transmission("US national election results still pending", "")
         self.assertEqual(pending["disposition"], "assess")
         self.assertEqual(pending["reason_code"], "political_risk_transmission")
         self.assertEqual(pending["score"], 8)
 
+        for assess_headline in (
+            "Control of Congress remains unchanged",
+            "Control of the House remains unchanged",
+            "US national election count continues with congressional control unchanged",
+        ):
+            row = score_transmission(assess_headline, "")
+            self.assertEqual(row["disposition"], "assess")
+            self.assertEqual(row["reason_code"], "political_risk_transmission")
+            self.assertEqual(row["score"], 8)
+            self.assertEqual(row["claim"], "possible")
+
         forecasts = [
             "Democrats could win control of Congress",
+            "Republicans could win control of Congress",
             "US national election results may change control of Congress",
+            "Control of Congress is expected to change",
+            "Congressional control might change",
+            "Democrats did not win control of Congress",
+            "Democrats didn't win control of Congress",
+            "Senate majority might flip",
             "party expected to take the House",
             "candidate says they will win the election",
             "poll forecasts Congress will flip",
@@ -889,6 +915,9 @@ class PoliticalTransmissionTests(unittest.TestCase):
             "could change control of Congress",
             "expected to flip the House",
             "polls project a flip in Congress",
+            "polls project Democrats could win the House",
+            "a poll projects Democrats could win the House",
+            "If Democrats win control of Congress, markets will watch",
         ]
         for headline in forecasts:
             assert_not_political_show(headline)
@@ -902,6 +931,26 @@ class PoliticalTransmissionTests(unittest.TestCase):
         self.assertNotEqual(mixed_rates["reason_code"], "political_risk_transmission")
         self.assertIn(mixed_rates["reason_code"], {"usd_rates_repricing", "g10_policy_path"})
 
+        rates_after_election = score_transmission("Treasury yields fell after the election", "")
+        self.assertNotEqual(rates_after_election["reason_code"], "political_risk_transmission")
+        self.assertEqual(rates_after_election["reason_code"], "usd_rates_repricing")
+        self.assertTrue(_market_evidence_headline("Treasury yields fell after the election"))
+
+        brazil = score_transmission("Brazil election result sends the dollar higher", "")
+        self.assertEqual(brazil["disposition"], "show")
+        self.assertEqual(brazil["reason_code"], "political_risk_transmission")
+        self.assertEqual(brazil["claim"], "evidenced")
+
+        realized_election_yields = score_transmission(
+            "Democrats win control of Congress as Treasury yields fell after the election",
+            "",
+        )
+        self.assertEqual(realized_election_yields["disposition"], "show")
+        self.assertEqual(realized_election_yields["reason_code"], "political_risk_transmission")
+        self.assertEqual(realized_election_yields["score"], 13)
+        self.assertEqual(realized_election_yields["claim"], "evidenced")
+        self.assertIn("usd_rates", realized_election_yields["channels"])
+
         prospective_only = score_transmission(
             "US national election results change control of Congress; "
             "Treasury yields are expected to fall",
@@ -912,6 +961,7 @@ class PoliticalTransmissionTests(unittest.TestCase):
 
         for neg in (
             "Treasury yields are expected to fall",
+            "Treasury yields are expected to fall after election",
             "stocks could rally",
             "the dollar may weaken",
             "strategists predict bonds will rise",

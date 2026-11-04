@@ -476,7 +476,41 @@ _NEUTRAL_POLITICAL = (
     "retains control",
     "holds control",
     "no change in control",
+    "remains unchanged",
 )
+
+_STATUS_ASSESS_WORDS = frozenset(
+    {
+        "unchanged",
+        "uncertain",
+        "pending",
+        "unresolved",
+        "uncalled",
+        "unclear",
+        "undecided",
+    }
+)
+
+_FORWARD_MODAL_FORECAST = frozenset(
+    {
+        "might",
+        "could",
+        "may",
+        "will",
+        "wont",
+        "won't",
+        "expected",
+        "expects",
+        "likely",
+        "forecast",
+        "predict",
+        "if",
+    }
+)
+
+_FORWARD_DENIAL = frozenset({"not", "never", "didnt", "didn't", "dont", "don't"})
+
+_NON_G10_ELECTION_RESULT = frozenset({"result", "results", "winner", "won", "wins", "win"})
 
 _POLITY_ASSETS = {
     "US": ["USD", "UST"],
@@ -660,7 +694,7 @@ _SPEECH_FRAMING_VERBS = frozenset(
     }
 )
 
-_CLAUSE_BARRIER = frozenset({".", ";"})
+_CLAUSE_BARRIER = frozenset({".", ";", ",", "but"})
 
 _MODAL_FORECAST = frozenset(
     {
@@ -741,6 +775,8 @@ _ELECTION_CONTEXT = frozenset(
 )
 
 _RACE_CALL_VERBS = frozenset({"calls", "called", "call"})
+_RACE_CALL_PROJECT_VERBS = frozenset({"projects", "projected", "project"})
+_RACE_CALL_ATTRIBUTION = frozenset({"ap", "reuters"})
 
 _RACE_CALL_OBJECTS = frozenset({"house", "senate", "congress", "race"})
 
@@ -767,6 +803,8 @@ _CONTROL_PHRASE_PARTS: tuple[tuple[str, ...], ...] = (
     ("declared", "winner"),
     ("changes", "control"),
     ("change", "control"),
+    ("secures", "control"),
+    ("secured", "control"),
 )
 
 _CONTROL_PHRASES_NEEDING_ELECTION_CONTEXT = frozenset(
@@ -791,7 +829,7 @@ _CONTROL_PHRASES_NEEDING_NO_CONFIDENCE_GOVERNMENT_CONTEXT = frozenset(
 
 
 def _clause_tokens(text: str) -> list[str]:
-    return re.findall(r"[a-z0-9']+|[.;]", text.lower())
+    return re.findall(r"[a-z0-9']+|[.;,]", text.lower())
 
 
 def _price_tokens(text: str) -> list[str]:
@@ -834,20 +872,63 @@ def _token_unrealized(tokens: list[str], index: int) -> bool:
 
 
 def _token_negated(tokens: list[str], index: int) -> bool:
-    window = _scan_window(tokens, index, 3)
-    if "not" in window and "only" in window:
+    clause_start = _clause_start(tokens, index)
+    start = max(clause_start, index - 5)
+    window_tokens = tokens[start:index]
+    if "not" in window_tokens and "only" in window_tokens:
         return False
-    for tok in window:
-        if tok in _NEGATION_TOKENS:
+    for i in range(start, index):
+        tok = tokens[i]
+        if tok == "no":
+            if i + 1 < len(tokens) and tokens[i + 1] == "confidence":
+                continue
+            return True
+        if tok in _FORWARD_DENIAL or tok in ("never", "without"):
             return True
         if tok.endswith("n't"):
             return True
     return False
 
 
-def _token_unresolved(tokens: list[str], index: int) -> bool:
-    window = _scan_window(tokens, index, 4)
-    return any(t in ("pending", "unresolved", "uncalled") for t in window)
+def _forward_scan_end(tokens: list[str], index: int, *, max_forward: int = 8) -> int:
+    end = min(len(tokens), index + 1 + max_forward)
+    for j in range(index + 1, end):
+        if tokens[j] in _CLAUSE_BARRIER:
+            return j
+    return end
+
+
+def _anchor_forward_veto(tokens: list[str], index: int) -> bool:
+    outcome_only = tokens[index] in _OUTCOME_WORDS
+    for j in range(index + 1, _forward_scan_end(tokens, index)):
+        tok = tokens[j]
+        if tok in _FORWARD_MODAL_FORECAST:
+            return True
+        if tok in _FORWARD_DENIAL or tok.endswith("n't"):
+            return True
+        if not outcome_only and tok in _STATUS_ASSESS_WORDS:
+            return True
+    return False
+
+
+def _race_call_project_attributed(tokens: list[str], index: int) -> bool:
+    if tokens[index] not in _RACE_CALL_PROJECT_VERBS:
+        return False
+    before = tokens[max(0, index - 3) : index]
+    if not any(t in _RACE_CALL_ATTRIBUTION for t in before):
+        return False
+    if any(t in ("poll", "polls", "polling") for t in before):
+        return False
+    return _tokens_near(tokens, index, _RACE_CALL_OBJECTS, 4)
+
+
+def _race_call_anchor(tokens: list[str], index: int) -> bool:
+    tok = tokens[index]
+    if tok in _RACE_CALL_VERBS:
+        return _tokens_near(tokens, index, _RACE_CALL_OBJECTS, 4)
+    if tok in _RACE_CALL_PROJECT_VERBS:
+        return _race_call_project_attributed(tokens, index)
+    return False
 
 
 def _phrase_starts(tokens: list[str], parts: tuple[str, ...]) -> list[int]:
@@ -915,7 +996,7 @@ def _political_anchor_indices(tokens: list[str]) -> list[int]:
     for idx, tok in enumerate(tokens):
         if tok in _CLAUSE_BARRIER:
             continue
-        if tok in _RACE_CALL_VERBS and _tokens_near(tokens, idx, _RACE_CALL_OBJECTS, 4):
+        if _race_call_anchor(tokens, idx):
             anchors.append(idx)
     # de-dupe while preserving order
     seen: set[int] = set()
@@ -930,7 +1011,9 @@ def _political_anchor_indices(tokens: list[str]) -> list[int]:
 def _anchor_realized(tokens: list[str], index: int) -> bool:
     if _token_unrealized(tokens, index):
         return False
-    if _token_unresolved(tokens, index):
+    if _token_negated(tokens, index):
+        return False
+    if _anchor_forward_veto(tokens, index):
         return False
     return True
 
@@ -938,7 +1021,7 @@ def _anchor_realized(tokens: list[str], index: int) -> bool:
 def _race_call_polity(text: str) -> str | None:
     tokens = _clause_tokens(text)
     for idx in _political_anchor_indices(tokens):
-        if tokens[idx] not in _RACE_CALL_VERBS:
+        if not _race_call_anchor(tokens, idx):
             continue
         if not _anchor_realized(tokens, idx):
             continue
@@ -966,6 +1049,51 @@ def _pending_election_assess(text: str) -> bool:
     if not _any_word(text, ("pending", "unresolved", "uncalled")):
         return False
     return not _realized_political_anchors(text)
+
+
+def _control_phrase_present(text: str) -> bool:
+    tokens = _clause_tokens(text)
+    return bool(_political_anchor_indices(tokens)) or _any_phrase(text, _CONTROL_EVENT)
+
+
+def _political_status_assess(text: str) -> bool:
+    if _realized_political_anchors(text):
+        return False
+    if _political_neutral(text):
+        return True
+    if not (
+        _effective_g10_polity(text)
+        or _word(text, "election")
+        or _any_word(text, ("midterm", "midterms", "congress", "congressional"))
+    ):
+        return False
+    if not _control_phrase_present(text):
+        return False
+    if _any_word(text, _STATUS_ASSESS_WORDS):
+        return True
+    tokens = _clause_tokens(text)
+    for idx in _political_anchor_indices(tokens):
+        for j in range(idx + 1, _forward_scan_end(tokens, idx)):
+            if tokens[j] in _STATUS_ASSESS_WORDS:
+                return True
+    return False
+
+
+def _non_g10_election_result_realized(text: str) -> bool:
+    tokens = _clause_tokens(text)
+    for idx, tok in enumerate(tokens):
+        if tok not in _NON_G10_ELECTION_RESULT:
+            continue
+        if tok in ("win", "wins", "won") and not _clause_has_election_context(tokens, idx):
+            continue
+        if _token_unrealized(tokens, idx):
+            continue
+        if _token_negated(tokens, idx):
+            continue
+        if _anchor_forward_veto(tokens, idx):
+            continue
+        return True
+    return False
 
 
 def _move_token_at(tokens: list[str], index: int) -> bool:
@@ -1082,11 +1210,12 @@ def _political_neutral(text: str) -> bool:
     return _any_phrase(text, _NEUTRAL_POLITICAL)
 
 
-def _material_political_event(text: str) -> bool:
+def _material_political_event(text: str, *, market_text: str | None = None) -> bool:
     """National political information with a G10 transmission, or an explicit market link.
 
     Routine campaign color and local races are not material. Party names are not an input.
     """
+    market = market_text or text
     if _routine_politics(text) and not _any_phrase(
         text, ("government collapses", "government collapsed", "no-confidence", "no confidence")
     ):
@@ -1094,13 +1223,16 @@ def _material_political_event(text: str) -> bool:
     if _realized_political_anchors(text):
         if _effective_g10_polity(text):
             return True
-        return _market_evidence(text)
+        return _market_evidence(market)
     if _pending_election_assess(text):
+        return True
+    if _political_status_assess(text):
         return True
     if (
         _word(text, "election")
-        and _market_evidence(text)
+        and _market_evidence(market)
         and not _g10_polity(text)
+        and _non_g10_election_result_realized(text)
     ):
         return True
     return False
@@ -1129,11 +1261,12 @@ def _with_claim(transmission: dict[str, Any], claim: str) -> dict[str, Any]:
     return out
 
 
-def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
+def _score_political_or_geopolitics(text: str, *, political_text: str | None = None) -> dict[str, Any] | None:
     """Possible G10 channels unless the source itself states a market move."""
-    if _material_political_event(text):
+    pol = political_text or text
+    if _material_political_event(pol, market_text=text):
         comps = _empty_components()
-        polity = _effective_g10_polity(text)
+        polity = _effective_g10_polity(pol)
         evidenced = _market_evidence(text)
         assets = list(_POLITY_ASSETS.get(polity or "", []))
         if _recorded_fx_move(text) and "USD" not in assets:
@@ -1161,7 +1294,7 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
                 ),
                 claim,
             )
-        if _political_neutral(text) or _pending_election_assess(text):
+        if _political_neutral(pol) or _pending_election_assess(pol) or _political_status_assess(pol):
             _set_channel(comps, "geopolitics_haven")
             comps["asset_named"] = 2
             comps["shock"] = 2
@@ -1312,6 +1445,7 @@ def _hold_review() -> dict[str, Any]:
 
 
 def score_transmission(headline: str, summary: str) -> dict[str, Any]:
+    headline_text = (headline or "").lower()
     text = _blob(headline, summary)
     subject = _subject_rule(text)
     if subject is not None:
@@ -1388,11 +1522,11 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
                 score=score,
                 components=comps,
             )
-        if not (_material_political_event(text) or _acute_geopolitics(text)):
+        if not (_material_political_event(headline_text, market_text=text) or _acute_geopolitics(text)):
             return _hold_review()
 
     if not _acute_central_bank_shock(text):
-        political = _score_political_or_geopolitics(text)
+        political = _score_political_or_geopolitics(text, political_text=headline_text)
         if political is not None:
             return political
 
@@ -1622,9 +1756,13 @@ def _recall_positive_classes(text: str) -> bool:
 
 def recall_candidate(headline: str, summary: str) -> bool:
     text = _blob(headline, summary)
+    headline_text = (headline or "").lower()
     if _noise_would_suppress(text):
         return False
     if _recall_positive_classes(text):
+        return True
+    headline_tokens = _clause_tokens(headline_text)
+    if _effective_g10_polity(headline_text) and _political_anchor_indices(headline_tokens):
         return True
     sole_macro = _any_word(text, ("gdp", "recession", "unemployment"))
     if sole_macro:
