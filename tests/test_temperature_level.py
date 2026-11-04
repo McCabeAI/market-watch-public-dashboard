@@ -20,7 +20,9 @@ from scripts.temperature_level import (
     load_state,
     raw_values_by_period,
     score_component,
+    scoring_cutoff,
     transform_at_period,
+    write_paths,
     write_state,
 )
 from scripts.validate_score_sources import validate_registry
@@ -98,17 +100,82 @@ class TemperatureLevelEngineTest(unittest.TestCase):
         self.assertIsNotNone(core["level"])
 
     def test_state_on_disk_matches_engine(self) -> None:
-        computed = compute_state(self.cal, self.histories, cutoff="2026-09")
+        """Live disk matches the engine at the history-derived scoring cutoff.
+
+        The committed score-path series still ends at the September window.
+        That historical end is not the live scoring cutoff.
+        """
+        cutoff = scoring_cutoff(self.cal, self.histories)
+        computed = compute_state(self.cal, self.histories, cutoff=cutoff)
         engine_doc = build_score_state(self.cal, computed)
         disk = load_state()
+        self.assertEqual(engine_doc["scoring_cutoff"], cutoff)
+        self.assertEqual(disk["scoring_cutoff"], cutoff)
         self.assertEqual(
             _dimension_scores_from_state(engine_doc),
             _dimension_scores_from_state(disk),
         )
         engine_paths = build_paths(self.cal, self.histories)
         disk_paths = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(engine_paths["window"], {"start": "2025-09", "end": "2026-09"})
+        self.assertEqual(disk_paths["window"], engine_paths["window"])
         self.assertEqual(engine_paths["paths"], disk_paths["paths"])
         self.assertEqual(engine_paths["pathology"], disk_paths["pathology"])
+
+    def test_september_cutoff_does_not_match_october_disk(self) -> None:
+        """The 2026-11-04 Pages deploy scored the live disk at a fixed 2026-09 cutoff.
+
+        That comparison reported US Activity impulse -3.75 against the committed
+        October impulse -3.62 and stopped before artifact deployment.
+        """
+        live_cutoff = scoring_cutoff(self.cal, self.histories)
+        self.assertEqual(live_cutoff, "2026-10")
+        september = build_score_state(
+            self.cal,
+            compute_state(self.cal, self.histories, cutoff="2026-09"),
+        )
+        disk = load_state()
+        self.assertEqual(september["scoring_cutoff"], "2026-09")
+        self.assertNotEqual(september["scoring_cutoff"], disk["scoring_cutoff"])
+        self.assertEqual(september["countries"]["US"]["Activity"]["impulse"], -3.75)
+        self.assertEqual(disk["countries"]["US"]["Activity"]["impulse"], -3.62)
+        self.assertNotEqual(
+            _dimension_scores_from_state(september),
+            _dimension_scores_from_state(disk),
+        )
+
+    def test_mismatched_disk_state_fails_full_comparison(self) -> None:
+        cutoff = scoring_cutoff(self.cal, self.histories)
+        engine_doc = build_score_state(
+            self.cal,
+            compute_state(self.cal, self.histories, cutoff=cutoff),
+        )
+        stale = copy.deepcopy(engine_doc)
+        stale["scoring_cutoff"] = "2026-09"
+        stale["countries"]["US"]["Activity"]["impulse"] = -3.75
+        self.assertNotEqual(stale["scoring_cutoff"], cutoff)
+        self.assertNotEqual(
+            _dimension_scores_from_state(engine_doc),
+            _dimension_scores_from_state(stale),
+        )
+
+    def test_production_write_matches_october_score_artifacts(self) -> None:
+        """deploy-pages.yml write_state/write_paths path against the 2026-10 dataset."""
+        self.assertEqual(scoring_cutoff(self.cal, self.histories), "2026-10")
+        with tempfile.TemporaryDirectory() as tmp:
+            scores_path = Path(tmp) / "temperature_scores.json"
+            paths_path = Path(tmp) / "score_paths.json"
+            write_state(scores_path)
+            write_paths(paths_path)
+            self.assertEqual(
+                scores_path.read_bytes(),
+                (REPO / "data" / "temperature_scores.json").read_bytes(),
+            )
+            self.assertEqual(paths_path.read_bytes(), PATHS_PATH.read_bytes())
+            generated = json.loads(scores_path.read_text(encoding="utf-8"))
+            generated_paths = json.loads(paths_path.read_text(encoding="utf-8"))
+        self.assertEqual(generated["scoring_cutoff"], "2026-10")
+        self.assertEqual(generated_paths["window"]["end"], "2026-09")
 
     def test_ca_underlying_equal_mean_trim_median(self) -> None:
         spec = self.cal["components"]["CA.Inflation.underlying"]
