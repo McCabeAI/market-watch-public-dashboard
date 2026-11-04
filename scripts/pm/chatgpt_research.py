@@ -1706,6 +1706,17 @@ def main(argv: list[str] | None = None) -> int:
     apply_env.add_argument("--root", type=Path, default=Path.cwd())
 
     args = parser.parse_args(argv)
+
+    if args.command == "authorize-from-env":
+        result = authorize_research_from_environment()
+        args.result.parent.mkdir(parents=True, exist_ok=True)
+        args.result.write_text(json.dumps(result, sort_keys=True) + "\n", encoding="utf-8")
+        _write_github_output("authorized", "true" if result.get("authorized") else "false")
+        reason = str(result.get("reason") or "rejected")
+        if not _REASON_TOKEN_RE.fullmatch(reason):
+            reason = "rejected"
+        _write_github_output("reason", reason)
+        return 0
     root = args.root.resolve()
 
     if args.command == "retrieve":
@@ -1746,16 +1757,6 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "seed":
         materialize_established_seed(root)
-        return 0
-    if args.command == "authorize-from-env":
-        result = authorize_research_from_environment()
-        args.result.parent.mkdir(parents=True, exist_ok=True)
-        args.result.write_text(json.dumps(result, sort_keys=True) + "\n", encoding="utf-8")
-        _write_github_output("authorized", "true" if result.get("authorized") else "false")
-        reason = str(result.get("reason") or "rejected")
-        if not _REASON_TOKEN_RE.fullmatch(reason):
-            reason = "rejected"
-        _write_github_output("reason", reason)
         return 0
     if args.command == "apply-from-env":
         result = apply_from_env(root, result_path=args.result, generated_dir=args.generated)
