@@ -1,0 +1,254 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-04T10:54:09+00:00",
+      "release_sha256": "5a5e8630466ad67878a4c7fb9fbb856b76d6b550dccb4080852df4b0d7d52256",
+      "run_attempt": "1",
+      "run_id": "41815102722",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/41815102722",
+      "site_sha256": "e2aa66d0e84856d6f34c3a81e981132eb877024816a7f867e5c976db84d8cb1d"
+    }
+  ],
+  "launch_id": "mwl-20261104T103522Z-e0850a77",
+  "launch_terminal": false,
+  "packet_sha256": "d1a793edb498fd7c866b54038d6db9cc1139c91301f5b2c8fc20729d8933430f",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-03T09:35:29.404564-05:00",
+      "as_of": "2026-11-03T08:22:57.179127-05:00",
+      "books_run_id": "overnight-20261103",
+      "overnight_run_id": "overnight-20261103",
+      "packet_sha256": "eeb9bf76660f9239bbd428f128975fa17cc914652df8fd08511cb6f22f826469"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-04T05:35:22.541505-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 14,
+        "partial": true
+      },
+      "as_of": "2026-11-04T05:35:22.541505-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 2,
+        "rejected": {
+          "unattributed": 3,
+          "unverified_source": 19
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields fall as investors crowd into bonds for safety amid election stock sell-off",
+          "id": "news:2781b15c74e39a97",
+          "published_at": "2026-11-04T04:02:00-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/03/treasury-yields-fall-as-democrats-win-big-in-us-midterm-elections.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "discovery_source": "cnbc",
+          "headline": "Meta seeks to raise up to $25 billion in debt sale as AI spending jumps",
+          "id": "news:a0cab67a6e6a7079",
+          "published_at": "2026-11-03T12:33:49-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/03/meta-bond-sale-ai-funding.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-04T05:35:22.541505-05:00",
+      "news_family_digest": "d95aa7d59c4bf5aec223fe0a179b74db29ae17c7d0e01e6d4875c9e608238bf0",
+      "packet_sha256": "d1a793edb498fd7c866b54038d6db9cc1139c91301f5b2c8fc20729d8933430f",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-04T05:35:22.541505-05:00",
+        "start": "2026-11-03T08:22:57.179127-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/freeze_binding.json",
+        "sha256": "aabaf58728e5cffcc4f19e5473d1890718721a442386f4641906884da5075c34"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/remote_freeze.json",
+        "sha256": "cbe901ad92406f3d2c8ee6d3d832f62118a9bb7917bc2ce22f28637cacb2f470"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/artifacts/00_authenticate.json",
+        "sha256": "aa02b55821751baec5b4d4b1e5056159cb633405e301391c804ab58c463f48f1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/artifacts/01_ingest.json",
+        "sha256": "d58433809cc83111a05252b78fccd38234af093cd8abd62187854a579e7cdb60"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/artifacts/02_acquire.json",
+        "sha256": "4093f103119d3f9ac5de06c09699bd54ced38e0ba2d8249fd98fbc403a682abc"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/artifacts/03_quality_gate.json",
+        "sha256": "9d6830daa561d8d820c3bf59f38447721926a9aff0b5d8628acd2203c3d43d1b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/artifacts/04_freeze.json",
+        "sha256": "21bec5c75467b77a59980d623742cabf6c3ca2bee1389cd6bd72d183a0e42565"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/temperature_scores.json",
+        "sha256": "13ee1b5651732ca39e418307ce4d21bab1a2d001df6edf16181c0147e926a0d6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/history/ca.json",
+        "sha256": "c63b14632a5cbb92bed673009ad43ed5ad27ad52c487203d831a6dbaaee2a64c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/history/ea.json",
+        "sha256": "52086070646b97a20899de275fd8db7e88665113a44549e6a8489b2fd51b99bc"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/history/jp.json",
+        "sha256": "9ee23b32ee992020ac34fdab2a62fbf7b603264e89b9d1cc11ffaf6cfbbc19bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261104T103522Z-e0850a77/lineage/history/us.json",
+        "sha256": "36254156814139ced9aa43a538a82d3b9aa6f6e7719768ae2b2a19eb5da5f7a4"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261104/reviews/review-001/evidence_snapshot.json",
+        "sha256": "f4dad4a2657be919f6b6e991761bc260ee93a5527a004b5c7f9f9af8f3041241"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "67dbdbda18eb1ef0eaf2e8549550c3b6eb238ca24be9fab7989992b82b947830"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261103/assembled_dataset.json",
+        "sha256": "9cdd1b2b2f184e94d51f4980de509803d147893880ec0bfb882181059a330332"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "67e8352d123c84145c8ccc427c3503e8ede2dc42b6816fc43fa1370b15ce4f15"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "2b5531717f27614b5462c7ef43f3cf66dcd516609322aac3b7f5af59fc38397e"
+      }
+    ],
+    "launch_id": "mwl-20261104T103522Z-e0850a77",
+    "market_state": {
+      "as_of": "2026-11-04T10:52:31Z",
+      "digest": "a4a28373c5db64e71f860f73ba0267502bcba92bf32fe09f32ca300068ce2ae9",
+      "generated_at": "2026-11-04T10:52:31Z"
+    },
+    "news": {
+      "age_label": "21 h before this freeze",
+      "as_of": "2026-11-03T08:22:57.179127-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261103",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261104",
+    "packet_sha256": "d1a793edb498fd7c866b54038d6db9cc1139c91301f5b2c8fc20729d8933430f",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Consumer.income",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "7a2e351253f2a92dbfa9b1204016b05d78c91147",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 13,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-04T10:35:22Z",
+      "inputs_last_ingested_at": "2026-11-04T10:35:22Z",
+      "score_state_sha256": "13ee1b5651732ca39e418307ce4d21bab1a2d001df6edf16181c0147e926a0d6"
+    },
+    "session_date": "2026-11-04",
+    "site_sha256": "e2aa66d0e84856d6f34c3a81e981132eb877024816a7f867e5c976db84d8cb1d",
+    "source_commit": "c84e89c4141a5ad8c3d1969950375a4f909596c8",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261104",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "5a5e8630466ad67878a4c7fb9fbb856b76d6b550dccb4080852df4b0d7d52256",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-04",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
