@@ -4,11 +4,11 @@ import hashlib
 import shutil
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from scripts.overnight.store import read_json, sha256_json
+from scripts.overnight.store import read_json, sha256_json, write_json
 from scripts.pm.chatgpt_issue import authorize_issue
 from scripts.pm.chatgpt_research import (
     CORRA_HYPOTHESIS_ID,
@@ -17,6 +17,7 @@ from scripts.pm.chatgpt_research import (
     authorize_research_issue,
     materialize_established_seed,
     render_research_comment,
+    research_index_sha256,
     retrieve_current,
     show_hypothesis,
     show_edge,
@@ -27,6 +28,8 @@ REPO = Path(__file__).resolve().parents[1]
 _NY = ZoneInfo("America/New_York")
 _APPLIED_AT = datetime(2026, 11, 4, 12, 0, 0, tzinfo=_NY)
 _APPLIED_ISO = _APPLIED_AT.isoformat()
+_APPLIED_AT_2 = datetime(2026, 11, 5, 12, 0, 0, tzinfo=_NY)
+_APPLIED_ISO_2 = _APPLIED_AT_2.isoformat()
 
 _CORRA_REV01 = "rev-hyp-chatgpt-corra-2027hz-20260919-01"
 _EDGE_REV01 = "rev-edge-portfolio-pass-20260920-01"
@@ -174,6 +177,13 @@ class ChatGPTResearchSeedFactsTests(unittest.TestCase):
             self.assertFalse(method["accept_as_method"])
             corra = show_hypothesis(root, CORRA_HYPOTHESIS_ID)
             self.assertIsNone(corra["forecast"]["quantitative"])
+            rev01 = show_hypothesis(root, CORRA_HYPOTHESIS_ID, _CORRA_REV01)
+            fc = rev01["forecast"]
+            self.assertEqual(fc["forecast_kind"], "migrated_historical_observation")
+            self.assertIsNone(fc["quantitative"])
+            self.assertEqual(fc["stated_at"], "2026-09-19T23:10:54.130509-04:00")
+            self.assertIsNone(rev01.get("persisted_at"))
+            self.assertEqual(method.get("provenance_label"), "seeded_from_existing_lesson")
 
 
 class ChatGPTResearchAuthorizationTests(unittest.TestCase):
@@ -476,6 +486,272 @@ class ChatGPTResearchCloseInvalidateTests(unittest.TestCase):
             for name, payload in prior_bytes.items():
                 path = archive_dir / name
                 self.assertEqual(path.read_bytes(), payload)
+
+
+class ChatGPTResearchDueReviewTests(unittest.TestCase):
+    def test_overdue_uses_review_date_not_index_as_of(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _build_seeded_root(tmp)
+            index_path = root / "data/trading/pm/chatgpt/research/index.json"
+            index = read_json(index_path)
+            for row in index["hypotheses"]:
+                if row["hypothesis_id"] == CORRA_HYPOTHESIS_ID:
+                    row["review_due"] = "2026-11-12"
+            index["as_of"] = "2026-11-04T12:00:00-05:00"
+            index["research_sha256"] = research_index_sha256(index)
+            write_json(index_path, index)
+            index_bytes_after_edit = index_path.read_bytes()
+
+            on_13 = retrieve_current(root, today=date(2026, 11, 13))
+            self.assertEqual(on_13["review_date"], "2026-11-13")
+            self.assertEqual(on_13["historical_as_of"], "2026-11-04T12:00:00-05:00")
+            due_ids = {row["hypothesis_id"] for row in on_13["due_reviews"]}
+            self.assertIn(CORRA_HYPOTHESIS_ID, due_ids)
+            corra_due = next(r for r in on_13["due_reviews"] if r["hypothesis_id"] == CORRA_HYPOTHESIS_ID)
+            self.assertTrue(corra_due["overdue"])
+            retrieve_current(root, today=date(2026, 11, 13))
+            self.assertEqual(index_path.read_bytes(), index_bytes_after_edit)
+
+            on_04 = retrieve_current(root, today=date(2026, 11, 4))
+            self.assertNotIn(CORRA_HYPOTHESIS_ID, {r["hypothesis_id"] for r in on_04["due_reviews"]})
+
+            on_12 = retrieve_current(root, today=date(2026, 11, 12))
+            corra_12 = next(r for r in on_12["due_reviews"] if r["hypothesis_id"] == CORRA_HYPOTHESIS_ID)
+            self.assertFalse(corra_12["overdue"])
+
+
+class ChatGPTResearchForecastProvenanceTests(unittest.TestCase):
+    def test_backdated_create_rejected_and_omit_stated_at(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _build_seeded_root(tmp)
+            backdated = {
+                **_ticket_base(root),
+                "action": "create",
+                "hypothesis": {
+                    "as_of": _APPLIED_ISO,
+                    "claim": "Backdated create must not persist.",
+                    "title": "Backdate guard",
+                    "evidence": [
+                        {"as_of": _APPLIED_ISO, "kind": "url", "ref": "https://example.test/x"}
+                    ],
+                    "falsifiers": [{"statement": "Fails if stored."}],
+                    "forecast": {
+                        "expectation": "Backdated create must not persist.",
+                        "horizon": None,
+                        "metric": None,
+                        "quantitative": None,
+                        "stated_at": "2020-01-01T00:00:00-05:00",
+                    },
+                },
+            }
+            hyp_glob = list((root / "data/trading/pm/chatgpt/research/hypotheses").glob("hyp-chatgpt-*.json"))
+            count_before = len(hyp_glob)
+            with self.assertRaises(SchemaError):
+                apply_ticket(root, backdated, author="test-user", issue_number=801, applied_at=_APPLIED_AT)
+            self.assertEqual(
+                len(list((root / "data/trading/pm/chatgpt/research/hypotheses").glob("hyp-chatgpt-*.json"))),
+                count_before,
+            )
+
+            omit = {
+                **_ticket_base(root),
+                "action": "create",
+                "hypothesis": {
+                    "as_of": _APPLIED_ISO,
+                    "claim": "Trusted stated_at on create.",
+                    "title": "Omit stated_at",
+                    "evidence": [
+                        {"as_of": _APPLIED_ISO, "kind": "url", "ref": "https://example.test/y"}
+                    ],
+                    "falsifiers": [{"statement": "Fails if wrong time."}],
+                    "forecast": {
+                        "expectation": "Trusted stated_at on create.",
+                        "horizon": None,
+                        "metric": None,
+                        "quantitative": None,
+                    },
+                },
+            }
+            created = apply_ticket(root, omit, author="test-user", issue_number=802, applied_at=_APPLIED_AT)
+            self.assertEqual(created["status"], "applied")
+            body = show_hypothesis(root, created["hypothesis_id"])
+            self.assertEqual(body["forecast"]["stated_at"], _APPLIED_ISO)
+            self.assertEqual(body["forecast"]["forecast_kind"], "prospective")
+            self.assertEqual(body["persisted_at"], _APPLIED_ISO)
+
+    def test_revision_preserves_previous_forecast_and_blocks_backdate(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _build_seeded_root(tmp)
+            claim_a = "Expectation A for revision preservation."
+            create_ticket = {
+                **_ticket_base(root),
+                "action": "create",
+                "hypothesis": {
+                    "as_of": _APPLIED_ISO,
+                    "claim": claim_a,
+                    "title": "Rev preserve",
+                    "evidence": [
+                        {"as_of": _APPLIED_ISO, "kind": "url", "ref": "https://example.test/a"}
+                    ],
+                    "falsifiers": [{"statement": "A falsifier."}],
+                    "forecast": {
+                        "expectation": claim_a,
+                        "horizon": None,
+                        "metric": None,
+                        "quantitative": None,
+                    },
+                },
+            }
+            created = apply_ticket(root, create_ticket, author="test-user", issue_number=803, applied_at=_APPLIED_AT)
+            hyp_id = created["hypothesis_id"]
+            rev01_id = created["revision_id"]
+            archive_rev01 = root / "data/trading/pm/chatgpt/research/archive" / hyp_id / f"{rev01_id}.json"
+            rev01_bytes = archive_rev01.read_bytes()
+
+            claim_b = claim_a + " Expectation B."
+            revise_ticket = {
+                **_ticket_base(root),
+                "action": "revise",
+                "hypothesis_id": hyp_id,
+                "expected_revision_id": rev01_id,
+                "hypothesis": {
+                    "as_of": _APPLIED_ISO_2,
+                    "claim": claim_b,
+                    "title": "Rev preserve",
+                    "evidence": create_ticket["hypothesis"]["evidence"],
+                    "falsifiers": create_ticket["hypothesis"]["falsifiers"],
+                    "forecast": {
+                        "expectation": claim_b,
+                        "horizon": None,
+                        "metric": None,
+                        "quantitative": None,
+                    },
+                },
+            }
+            revised = apply_ticket(
+                root, revise_ticket, author="test-user", issue_number=804, applied_at=_APPLIED_AT_2
+            )
+            self.assertEqual(revised["status"], "applied")
+            self.assertEqual(archive_rev01.read_bytes(), rev01_bytes)
+            rev02 = show_hypothesis(root, hyp_id, revised["revision_id"])
+            self.assertEqual(rev02["previous_forecast"]["expectation"], claim_a)
+            self.assertEqual(rev02["previous_forecast"]["stated_at"], _APPLIED_ISO)
+            self.assertEqual(rev02["forecast"]["expectation"], claim_b)
+            self.assertEqual(rev02["forecast"]["forecast_kind"], "prospective")
+            self.assertEqual(rev02["forecast"]["stated_at"], _APPLIED_ISO_2)
+
+            bad_revise = dict(revise_ticket)
+            bad_revise["expected_research_sha256"] = _research_sha256(root)
+            bad_revise["expected_revision_id"] = revised["revision_id"]
+            bad_revise["hypothesis"] = dict(revise_ticket["hypothesis"])
+            bad_revise["hypothesis"]["claim"] = claim_b + " C."
+            bad_revise["hypothesis"]["forecast"] = {
+                "expectation": claim_b + " C.",
+                "horizon": None,
+                "metric": None,
+                "quantitative": None,
+                "stated_at": _APPLIED_ISO,
+            }
+            archive_count = len(list((root / "data/trading/pm/chatgpt/research/archive" / hyp_id).glob("*.json")))
+            with self.assertRaises(SchemaError):
+                apply_ticket(root, bad_revise, author="test-user", issue_number=805, applied_at=_APPLIED_AT_2)
+            self.assertEqual(
+                len(list((root / "data/trading/pm/chatgpt/research/archive" / hyp_id).glob("*.json"))),
+                archive_count,
+            )
+
+
+class ChatGPTResearchEdgeSourceIdTests(unittest.TestCase):
+    def _edge_ticket(self, root: Path, *, source_id: str, basis_kind: str = "lesson") -> dict:
+        profile = show_edge(root)
+        return {
+            **_ticket_base(root),
+            "action": "edge_update",
+            "expected_revision_id": profile["current_revision_id"],
+            "accept_as_method": True,
+            "promotion_basis": {
+                "basis_kind": basis_kind,
+                "source_id": source_id,
+                "rationale": "Fixture promotion basis with enough characters to pass validation.",
+            },
+            "edge_method": {
+                "method_id": "edge-fixture-source-id-20261104",
+                "statement": "Fixture edge method for source_id validation.",
+                "method_status": "candidate",
+                "confidence": "low",
+            },
+        }
+
+    def test_promotion_source_ids_must_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = _build_seeded_root(tmp)
+            archive_dir = root / "data/trading/pm/chatgpt/research/edge/archive"
+            archive_count = len(list(archive_dir.glob("*.json")))
+
+            ok = apply_ticket(
+                root,
+                self._edge_ticket(root, source_id="les-portfolio-pass-20260920"),
+                author="test-user",
+                issue_number=810,
+                applied_at=_APPLIED_AT,
+            )
+            self.assertEqual(ok["status"], "applied")
+
+            profile = show_edge(root)
+            bad_lesson = self._edge_ticket(root, source_id="les-does-not-exist")
+            bad_lesson["expected_revision_id"] = profile["current_revision_id"]
+            bad_lesson["expected_research_sha256"] = _research_sha256(root)
+            with self.assertRaises(SchemaError):
+                apply_ticket(root, bad_lesson, author="test-user", issue_number=811, applied_at=_APPLIED_AT)
+            self.assertEqual(len(list(archive_dir.glob("*.json"))), archive_count + 1)
+
+            hyp_ok = self._edge_ticket(root, source_id=CORRA_HYPOTHESIS_ID, basis_kind="hypothesis")
+            hyp_ok["expected_revision_id"] = profile["current_revision_id"]
+            hyp_ok["expected_research_sha256"] = _research_sha256(root)
+            hyp_ok["edge_method"] = dict(hyp_ok["edge_method"])
+            hyp_ok["edge_method"]["method_id"] = "edge-fixture-hyp-basis-20261104"
+            applied_hyp = apply_ticket(root, hyp_ok, author="test-user", issue_number=812, applied_at=_APPLIED_AT)
+            self.assertEqual(applied_hyp["status"], "applied")
+
+            profile = show_edge(root)
+            bad_hyp = self._edge_ticket(root, source_id="hyp-chatgpt-missing-00000000", basis_kind="hypothesis")
+            bad_hyp["expected_revision_id"] = profile["current_revision_id"]
+            bad_hyp["expected_research_sha256"] = _research_sha256(root)
+            with self.assertRaises(SchemaError):
+                apply_ticket(root, bad_hyp, author="test-user", issue_number=813, applied_at=_APPLIED_AT)
+
+            pm_path = root / "data/trading/pm/chatgpt/postmortems.json"
+            pm_path.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(REPO / "data/trading/pm/chatgpt/postmortems.json", pm_path)
+            pm_payload = read_json(pm_path)
+            pm_payload["items"] = [{"postmortem_id": "pm-fixture-test-20261104"}]
+            write_json(pm_path, pm_payload)
+
+            refl_path = root / "data/trading/pm/chatgpt/reflections.json"
+            shutil.copy2(REPO / "data/trading/pm/chatgpt/reflections.json", refl_path)
+            refl_payload = read_json(refl_path)
+            refl_payload["items"] = [{"reflection_id": "rfl-fixture-test-20261104"}]
+            write_json(refl_path, refl_payload)
+
+            profile = show_edge(root)
+            pm_ticket = self._edge_ticket(root, source_id="pm-fixture-test-20261104", basis_kind="postmortem")
+            pm_ticket["expected_revision_id"] = profile["current_revision_id"]
+            pm_ticket["expected_research_sha256"] = _research_sha256(root)
+            pm_ticket["edge_method"] = dict(pm_ticket["edge_method"])
+            pm_ticket["edge_method"]["method_id"] = "edge-fixture-pm-basis-20261104"
+            self.assertEqual(
+                apply_ticket(root, pm_ticket, author="test-user", issue_number=814, applied_at=_APPLIED_AT)["status"],
+                "applied",
+            )
+
+            profile = show_edge(root)
+            bad_pm = self._edge_ticket(root, source_id="pm-missing-00000000", basis_kind="postmortem")
+            bad_pm["expected_revision_id"] = profile["current_revision_id"]
+            bad_pm["expected_research_sha256"] = _research_sha256(root)
+            count_now = len(list(archive_dir.glob("*.json")))
+            with self.assertRaises(SchemaError):
+                apply_ticket(root, bad_pm, author="test-user", issue_number=815, applied_at=_APPLIED_AT)
+            self.assertEqual(len(list(archive_dir.glob("*.json"))), count_now)
 
 
 if __name__ == "__main__":

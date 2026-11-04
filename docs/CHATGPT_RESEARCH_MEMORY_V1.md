@@ -17,6 +17,7 @@ There is **no** runtime hook that loads these files into a ChatGPT conversation.
 
 ```bash
 PYTHONPATH=. python -m scripts.pm.chatgpt_research retrieve
+PYTHONPATH=. python -m scripts.pm.chatgpt_research retrieve --today 2026-11-13
 PYTHONPATH=. python -m scripts.pm.chatgpt_research show --hypothesis HYP_ID
 PYTHONPATH=. python -m scripts.pm.chatgpt_research show --hypothesis HYP_ID --revision REV_ID
 PYTHONPATH=. python -m scripts.pm.chatgpt_research show-edge
@@ -24,6 +25,10 @@ PYTHONPATH=. python -m scripts.pm.chatgpt_research show-edge --revision REV_ID
 ```
 
 Archive files under `archive/` and `edge/archive/` are historical judgments. Do not treat a later revision as what was believed on an earlier date.
+
+### Due reviews (`retrieve`)
+
+`retrieve` compares each open hypothesis `review_due` (YYYY-MM-DD) to a **review date**, not to `index.as_of`. By default the review date is the current calendar day in `America/New_York`. Override with `--today YYYY-MM-DD`. The response includes `review_date`, `historical_as_of` (the stored index `as_of`), and `due_reviews` rows with `overdue` when `review_due` is strictly before the review date. `retrieve` is read-only and does not rewrite `index.json`.
 
 ### `research_sha256`
 
@@ -35,14 +40,14 @@ That value is obsolete after the first applied update.
 
 ## Seeded records (migration, not new forecasts)
 
-One-time seed from journal and lessons (`migration.json`). These are migrated journal facts, not new market forecasts.
+One-time seed from journal and lessons (`migration.json`). These are migrated journal facts, not new market forecasts. Seeded hypothesis forecasts use `forecast_kind`: `migrated_historical_observation`, `persistence`: `journal_migration`, journal-cited `stated_at`, and `persisted_at`: null on the revision. New tickets use `forecast_kind`: `prospective` with trusted `stated_at` and `persisted_at` equal to apply time.
 
 | Record | Description |
 | --- | --- |
 | `hyp-chatgpt-corra-2027hz-20260919` | Open hypothesis **CORRA_2027H-Z receive**. Revisions `rev-hyp-chatgpt-corra-2027hz-20260919-01` through `-04` tied to journal events `jde-bae95770371d4083`, `jde-69e33ef1bd1e4bcf`, `jde-f8d178e55a6644dd`, `jde-2c433e94a5934e8c`. Quantitative forecast field is null. |
 | `hyp-chatgpt-rejected-cad-fx-20261002` | Rejected 2026-10-02 from the portfolio pass in journal event `jde-f8d178e55a6644dd`. Not executed. |
 | `hyp-chatgpt-rejected-duration-beta-20261002` | Same rejection pass and event. Not executed. |
-| `edge-portfolio-pass-20260920` | Seeded from lesson `les-portfolio-pass-20260920`. `conditions_worked` is empty. Not promoted from P&L. Confidence `not_assessed`. Maturity `candidate`. Current edge revision: `rev-edge-portfolio-pass-20260920-01`. |
+| `edge-portfolio-pass-20260920` | Seeded from lesson `les-portfolio-pass-20260920`. `provenance_label`: `seeded_from_existing_lesson`. `conditions_worked` is empty. Not promoted from P&L. Confidence `not_assessed`. Maturity `candidate`. Current edge revision: `rev-edge-portfolio-pass-20260920-01`. |
 
 ## Saving updates
 
@@ -105,7 +110,7 @@ Editing an old issue does nothing: the workflow listens to `issues` **`opened`**
 Require a `hypothesis` object:
 
 - `title`, `claim`, `as_of`
-- `forecast`: `expectation`, `horizon`, `metric`, `quantitative`, `stated_at`
+- `forecast`: `expectation`, optional `horizon`, `metric`, `quantitative`. Omit `stated_at` on new predictions — trusted apply sets it to the apply timestamp. Do not backdate `stated_at`; it must match apply time when supplied. `forecast_kind` is assigned by trusted code (`prospective` for new tickets), not by the ticket.
 - `evidence`: list of `{ ref, as_of, note, kind }` with `kind` one of `git`, `drive`, `notion`, `journal`, `packet`, `url`
 - `falsifiers`, `competing_explanations`
 - `calculations`: `{ description, reproducible_ref, as_of, optional quote }`
@@ -114,11 +119,11 @@ Require a `hypothesis` object:
 
 ### `revise` / `close` / `invalidate`
 
-Require `hypothesis_id` and `expected_revision_id` of the **current** revision. `revise` should include the new `hypothesis` body. Optional `evidence_assessment`: `supports`, `contradicts`, `mixed`, or `inconclusive`. Optional `contradicts_revision_id` pointing to an earlier revision of the same hypothesis. `close` and `invalidate` preserve prior archive files.
+Require `hypothesis_id` and `expected_revision_id` of the **current** revision. `revise` should include the new `hypothesis` body. Optional `evidence_assessment`: `supports`, `contradicts`, `mixed`, or `inconclusive`. Optional `contradicts_revision_id` pointing to an earlier revision of the same hypothesis. `close` and `invalidate` preserve prior archive files. On `revise`, the prior current forecast is copied to `previous_forecast`. If the forecast expectation, horizon, metric, and quantitative are unchanged (or the action is `close` / `invalidate`), the stored forecast is kept unchanged — do not redate it. A changed forecast is a new prospective prediction with `stated_at` at apply time.
 
 ### `edge_update`
 
-Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, `promotion_basis` with `basis_kind` (`lesson`, `postmortem`, `reflection`, or `hypothesis` — **not** `profitable_outcome`), `source_id`, and `rationale` (at least 40 characters), plus `edge_method`. A profitable outcome is not automatically a lesson or an edge. `edge_method.method_status`: `candidate`, `active`, or `retired`. Omit `method_status` on a new method and it stays `candidate`.
+Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, `promotion_basis` with `basis_kind` (`lesson`, `postmortem`, `reflection`, or `hypothesis` — **not** `profitable_outcome`), `source_id`, and `rationale` (at least 40 characters), plus `edge_method`. The `source_id` must exist for this PM: a `lesson_id` in `lessons.json`, a `postmortem_id` in `postmortems.json`, a `reflection_id` in `reflections.json`, or a hypothesis file under `research/hypotheses/`. Unknown ids are rejected with no edge archive write. A profitable outcome is not automatically a lesson or an edge. `edge_method.method_status`: `candidate`, `active`, or `retired`. Omit `method_status` on a new method and it stays `candidate`.
 
 ### Examples (placeholders — copy live values from the repo)
 
@@ -139,8 +144,7 @@ Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, 
       "expectation": "Fixture expectation for documentation only.",
       "horizon": null,
       "metric": null,
-      "quantitative": null,
-      "stated_at": "2026-11-04T12:00:00-05:00"
+      "quantitative": null
     },
     "evidence": [
       {
@@ -183,8 +187,7 @@ Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, 
       "expectation": "Fixture expectation; score evidence against stored forecast.",
       "horizon": null,
       "metric": null,
-      "quantitative": null,
-      "stated_at": "2026-09-19T23:10:54.130509-04:00"
+      "quantitative": null
     },
     "evidence": [],
     "falsifiers": [],
@@ -202,6 +205,13 @@ Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, 
 4. **Trade, hold, or reduce** only through the existing `[chatgpt-pm-decision]` path in [`docs/CHATGPT_PM_DECISION_INGEST.md`](CHATGPT_PM_DECISION_INGEST.md), bound to the current review packet and book hash. Research memory does **not** authorize a trade. Learning lessons still go through the existing `postmortems` and `memory_updates` fields on that decision path. Do not promote a research outcome into a lesson from P&L alone.
 
 ## Provenance
+
+| Field | Meaning |
+| --- | --- |
+| `forecast.stated_at` | When the prediction was stated. Trusted apply sets this for new `prospective` forecasts; seeded rows keep the cited journal timestamp. |
+| `forecast.forecast_kind` | `migrated_historical_observation` (seed) or `prospective` (ticket create/revise with a new forecast). |
+| `persisted_at` | When the revision was written to research memory (`null` on seeded hypothesis/edge revisions). |
+| `previous_forecast` | On revise/close/invalidate, the forecast that was current before this revision. |
 
 | Path | Role |
 | --- | --- |

@@ -90,7 +90,7 @@
         },
         "forecast": {
           "type": "object",
-          "required": ["expectation", "stated_at"],
+          "required": ["expectation"],
           "properties": {
             "expectation": { "type": "string" },
             "horizon": { "type": ["string", "null"] },

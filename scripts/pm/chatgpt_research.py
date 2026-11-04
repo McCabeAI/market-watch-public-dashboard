@@ -8,6 +8,7 @@ Untrusted issue JSON is validated here. Writes are confined to
 from __future__ import annotations
 
 import argparse
+import copy
 import json
 import os
 import re
@@ -30,6 +31,8 @@ RESEARCH_TITLE = "[chatgpt-research-memory]"
 RESEARCH_RELPATH = Path("data/trading/pm/chatgpt/research")
 JOURNAL_RELPATH = Path("data/trading/pm/chatgpt/journal.json")
 LESSONS_RELPATH = Path("data/trading/pm/chatgpt/lessons.json")
+POSTMORTEMS_RELPATH = Path("data/trading/pm/chatgpt/postmortems.json")
+REFLECTIONS_RELPATH = Path("data/trading/pm/chatgpt/reflections.json")
 ENTRYPOINT_DOC = "docs/CHATGPT_RESEARCH_MEMORY_V1.md"
 
 ALLOWED_PERMISSIONS = frozenset({"admin", "maintain", "write"})
@@ -169,8 +172,10 @@ def _journal_evidence(event: dict[str, Any], *, as_of: str) -> dict[str, Any]:
 def _forecast_from_event(event: dict[str, Any], *, as_of: str) -> dict[str, Any]:
     return {
         "expectation": str(event.get("thesis") or ""),
+        "forecast_kind": "migrated_historical_observation",
         "horizon": None,
         "metric": None,
+        "persistence": "journal_migration",
         "quantitative": None,
         "stated_at": as_of,
     }
@@ -218,6 +223,7 @@ def _build_corra_revision(
         "falsifiers": [{"statement": invalidation}],
         "forecast": _forecast_from_event(event, as_of=as_of),
         "hypothesis_id": CORRA_HYPOTHESIS_ID,
+        "persisted_at": None,
         "linked_position_ids": [POSITION_ID],
         "linked_trade_ids": [TRADE_ID],
         "revision_id": revision_id,
@@ -258,12 +264,15 @@ def _build_rejected_hypothesis(
         "falsifiers": [],
         "forecast": {
             "expectation": claim_fragment,
+            "forecast_kind": "migrated_historical_observation",
             "horizon": None,
             "metric": None,
+            "persistence": "journal_migration",
             "quantitative": None,
             "stated_at": as_of,
         },
         "hypothesis_id": hypothesis_id,
+        "persisted_at": None,
         "linked_position_ids": [],
         "linked_trade_ids": [],
         "rejected_reason": claim_fragment,
@@ -314,6 +323,7 @@ def _edge_seed(lessons: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
         "source_lesson_ids": ["les-portfolio-pass-20260920"],
         "source_trade_ids": [TRADE_ID],
         "source_trade_ids_note": "scope citation only; profitability is not evidence",
+        "provenance_label": "seeded_from_existing_lesson",
         "statement": str(lesson.get("text") or ""),
         "status": str(lesson.get("status") or "active"),
     }
@@ -329,6 +339,7 @@ def _edge_seed(lessons: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
         "audit": audit,
         "current_revision_id": revision_id,
         "methods": [method],
+        "persisted_at": None,
         "revision_id": revision_id,
         "schema_version": 1,
         "type": "CHATGPT_RESEARCH_EDGE_REVISION",
@@ -338,6 +349,7 @@ def _edge_seed(lessons: dict[str, Any]) -> tuple[dict[str, Any], dict[str, Any]]
         "audit": audit,
         "current_revision_id": revision_id,
         "methods": [method],
+        "persisted_at": None,
         "schema_version": 1,
         "type": "CHATGPT_RESEARCH_EDGE_PROFILE",
         "updated_at": created_at,
@@ -562,27 +574,21 @@ def _parse_date(value: str | None) -> date | None:
         return None
 
 
-def _parse_as_of_date(value: str | None) -> date | None:
-    if not value:
-        return None
-    try:
-        return datetime.fromisoformat(str(value)).date()
-    except ValueError:
-        return None
-
-
-def retrieve_current(root: Path) -> dict[str, Any]:
+def retrieve_current(root: Path, *, today: date | None = None) -> dict[str, Any]:
     index = _load_index(root)
-    as_of_date = _parse_as_of_date(index.get("as_of"))
+    historical_as_of = index.get("as_of")
+    review_date = today if today is not None else datetime.now(tz=_NY).date()
     due: list[dict[str, Any]] = []
     for row in index.get("hypotheses") or []:
         if not isinstance(row, dict):
             continue
         review_due = _parse_date(row.get("review_due") if isinstance(row.get("review_due"), str) else None)
-        if review_due is None or as_of_date is None:
+        if review_due is None:
             continue
-        if review_due <= as_of_date:
-            due.append(dict(row))
+        if review_due <= review_date:
+            entry = dict(row)
+            entry["overdue"] = review_due < review_date
+            due.append(entry)
     statuses: dict[str, int] = {}
     for row in index.get("hypotheses") or []:
         if isinstance(row, dict):
@@ -596,6 +602,8 @@ def retrieve_current(root: Path) -> dict[str, Any]:
             "receipts": len(list((research_dir(root) / "receipts").glob("*.json"))),
         },
         "due_reviews": sorted(due, key=lambda item: str(item.get("hypothesis_id") or "")),
+        "historical_as_of": historical_as_of,
+        "review_date": review_date.isoformat(),
     }
 
 
@@ -701,8 +709,9 @@ def _validate_hypothesis_body(body: Any, *, require_forecast: bool = True) -> di
             "horizon": forecast_raw.get("horizon") if forecast_raw.get("horizon") is None else str(forecast_raw["horizon"]),
             "metric": forecast_raw.get("metric") if forecast_raw.get("metric") is None else str(forecast_raw["metric"]),
             "quantitative": quantitative,
-            "stated_at": _require_str(forecast_raw.get("stated_at"), field="forecast.stated_at"),
         }
+        if forecast_raw.get("stated_at") is not None:
+            forecast["stated_at"] = _require_str(forecast_raw.get("stated_at"), field="forecast.stated_at")
     falsifiers = []
     for item in body.get("falsifiers") or []:
         if not isinstance(item, dict):
@@ -815,6 +824,160 @@ def validate_ticket(payload: dict[str, Any]) -> dict[str, Any]:
         _validate_string_list(method.get("counterexamples"), field="counterexamples", max_items=8, max_len=500)
 
     return {"valid": True, "action": action}
+
+
+def _iso_instant_equal(a: str, b: str) -> bool:
+    try:
+        return datetime.fromisoformat(a) == datetime.fromisoformat(b)
+    except (TypeError, ValueError):
+        return False
+
+
+def _forecast_signature(forecast: dict[str, Any] | None) -> tuple[Any, Any, Any, Any]:
+    if not isinstance(forecast, dict):
+        return (None, None, None, None)
+    return (
+        forecast.get("expectation"),
+        forecast.get("horizon"),
+        forecast.get("metric"),
+        forecast.get("quantitative"),
+    )
+
+
+def _prospective_forecast(
+    *,
+    expectation: str,
+    horizon: Any,
+    metric: Any,
+    quantitative: Any,
+    applied_iso: str,
+) -> dict[str, Any]:
+    return {
+        "expectation": expectation,
+        "forecast_kind": "prospective",
+        "horizon": horizon,
+        "metric": metric,
+        "quantitative": quantitative,
+        "stated_at": applied_iso,
+    }
+
+
+def _forecast_from_ticket_body(body: dict[str, Any], *, applied_iso: str, require_match: bool) -> dict[str, Any]:
+    raw = body.get("forecast")
+    if isinstance(raw, dict):
+        expectation = _require_str(raw.get("expectation"), field="forecast.expectation")
+        horizon = raw.get("horizon") if raw.get("horizon") is None else str(raw["horizon"])
+        metric = raw.get("metric") if raw.get("metric") is None else str(raw["metric"])
+        quantitative = raw.get("quantitative")
+        if quantitative is not None and not isinstance(quantitative, str):
+            raise SchemaError("forecast.quantitative must be string or null")
+        ticket_stated = raw.get("stated_at")
+    else:
+        expectation = body["claim"]
+        horizon = None
+        metric = None
+        quantitative = None
+        ticket_stated = None
+    if ticket_stated is not None:
+        if not _iso_instant_equal(str(ticket_stated), applied_iso):
+            raise SchemaError("forecast.stated_at must match applied time")
+    elif require_match:
+        pass
+    return _prospective_forecast(
+        expectation=expectation,
+        horizon=horizon,
+        metric=metric,
+        quantitative=quantitative,
+        applied_iso=applied_iso,
+    )
+
+
+def _resolve_revision_forecast(
+    *,
+    action: str,
+    body: dict[str, Any],
+    current: dict[str, Any],
+    applied_iso: str,
+) -> dict[str, Any]:
+    previous = current.get("forecast")
+    if not isinstance(previous, dict):
+        previous = None
+    if action in {"close", "invalidate"}:
+        if previous is None:
+            return _prospective_forecast(
+                expectation=body["claim"],
+                horizon=None,
+                metric=None,
+                quantitative=None,
+                applied_iso=applied_iso,
+            )
+        return copy.deepcopy(previous)
+    ticket_sig = _forecast_signature(body.get("forecast") or _default_ticket_forecast_fields(body))
+    prior_sig = _forecast_signature(previous)
+    if ticket_sig == prior_sig:
+        if previous is None:
+            return _forecast_from_ticket_body(body, applied_iso=applied_iso, require_match=False)
+        return copy.deepcopy(previous)
+    raw = body.get("forecast")
+    if isinstance(raw, dict) and raw.get("stated_at") is not None:
+        if not _iso_instant_equal(str(raw["stated_at"]), applied_iso):
+            raise SchemaError("forecast.stated_at must match applied time")
+    return _forecast_from_ticket_body(body, applied_iso=applied_iso, require_match=False)
+
+
+def _default_ticket_forecast_fields(body: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "expectation": body["claim"],
+        "horizon": None,
+        "metric": None,
+        "quantitative": None,
+    }
+
+
+def _lesson_ids(root: Path) -> set[str]:
+    payload = read_json(root / LESSONS_RELPATH)
+    rows = payload.get("lessons") if isinstance(payload, dict) else None
+    return {str(item.get("lesson_id")) for item in rows or [] if isinstance(item, dict) and item.get("lesson_id")}
+
+
+def _postmortem_ids(root: Path) -> set[str]:
+    path = root / POSTMORTEMS_RELPATH
+    if not path.is_file():
+        return set()
+    payload = read_json(path)
+    rows = payload.get("items") if isinstance(payload, dict) else None
+    return {str(item.get("postmortem_id")) for item in rows or [] if isinstance(item, dict) and item.get("postmortem_id")}
+
+
+def _reflection_ids(root: Path) -> set[str]:
+    path = root / REFLECTIONS_RELPATH
+    if not path.is_file():
+        return set()
+    payload = read_json(path)
+    rows = payload.get("items") if isinstance(payload, dict) else None
+    return {str(item.get("reflection_id")) for item in rows or [] if isinstance(item, dict) and item.get("reflection_id")}
+
+
+def _validate_promotion_source_id(root: Path, basis: dict[str, Any]) -> None:
+    kind = basis.get("basis_kind")
+    source_id = str(basis.get("source_id") or "")
+    if kind == "lesson":
+        if source_id not in _lesson_ids(root):
+            raise SchemaError("promotion_basis.source_id not found")
+    elif kind == "postmortem":
+        if source_id not in _postmortem_ids(root):
+            raise SchemaError("promotion_basis.source_id not found")
+    elif kind == "reflection":
+        if source_id not in _reflection_ids(root):
+            raise SchemaError("promotion_basis.source_id not found")
+    elif kind == "hypothesis":
+        if _HYP_ID_RE.fullmatch(source_id) is None:
+            raise SchemaError("promotion_basis.source_id not found")
+        path = research_dir(root) / "hypotheses" / f"{source_id}.json"
+        if not path.is_file():
+            raise SchemaError("promotion_basis.source_id not found")
+    else:
+        raise SchemaError("promotion_basis.basis_kind invalid")
 
 
 def _ticket_fingerprint(ticket: dict[str, Any]) -> str:
@@ -1005,6 +1168,9 @@ def _build_revision_from_ticket(
     body: dict[str, Any],
     current: dict[str, Any] | None,
     status_reason: str,
+    forecast: dict[str, Any],
+    persisted_at: str,
+    previous_forecast: dict[str, Any] | None = None,
     disposition: str | None = None,
     rejected_reason: str | None = None,
     evidence_assessment: str | None = None,
@@ -1019,13 +1185,6 @@ def _build_revision_from_ticket(
             "status": status,
         }
     )
-    forecast = body.get("forecast") or {
-        "expectation": body["claim"],
-        "horizon": None,
-        "metric": None,
-        "quantitative": None,
-        "stated_at": body["as_of"],
-    }
     revision: dict[str, Any] = {
         "as_of": body["as_of"],
         "calculations": body.get("calculations") or [],
@@ -1040,6 +1199,7 @@ def _build_revision_from_ticket(
         "hypothesis_id": hypothesis_id,
         "linked_position_ids": list(current.get("linked_position_ids") or []) if current else [],
         "linked_trade_ids": list(current.get("linked_trade_ids") or []) if current else [],
+        "persisted_at": persisted_at,
         "review_due": body.get("review_due"),
         "revision_id": revision_id,
         "schema_version": 1,
@@ -1049,6 +1209,8 @@ def _build_revision_from_ticket(
         "type": "CHATGPT_RESEARCH_HYPOTHESIS_REVISION",
         "updated_at": body["as_of"],
     }
+    if previous_forecast is not None:
+        revision["previous_forecast"] = copy.deepcopy(previous_forecast)
     if disposition:
         revision["disposition"] = disposition
     if rejected_reason:
@@ -1117,6 +1279,7 @@ def apply_ticket(
             raise SchemaError("edge method_id required")
         existing = next((item for item in methods if str(item.get("method_id") or "") == method_id), None)
         basis = ticket["promotion_basis"]
+        _validate_promotion_source_id(root, basis)
         updated_method = _merge_edge_method(existing, method_body, method_id=method_id, basis=basis)
         merged_methods = _upsert_edge_methods(methods, updated_method)
         audit_entry = {
@@ -1134,6 +1297,7 @@ def apply_ticket(
             "audit": audit,
             "current_revision_id": new_revision_id,
             "methods": merged_methods,
+            "persisted_at": applied_iso,
             "revision_id": new_revision_id,
             "schema_version": 1,
             "type": "CHATGPT_RESEARCH_EDGE_REVISION",
@@ -1147,6 +1311,7 @@ def apply_ticket(
             "audit": audit,
             "current_revision_id": new_revision_id,
             "methods": merged_methods,
+            "persisted_at": applied_iso,
             "schema_version": 1,
             "type": "CHATGPT_RESEARCH_EDGE_PROFILE",
             "updated_at": applied_iso,
@@ -1213,6 +1378,14 @@ def apply_ticket(
         contradicts = ticket.get("contradicts_revision_id")
         if contradicts is not None and contradicts not in _prior_revision_ids(root, hypothesis_id):
             raise SchemaError("contradicts_revision_id not found")
+        prior_forecast = current.get("forecast") if isinstance(current.get("forecast"), dict) else None
+        previous_forecast = copy.deepcopy(prior_forecast) if prior_forecast is not None else None
+        resolved_forecast = _resolve_revision_forecast(
+            action=action,
+            body=body,
+            current=current,
+            applied_iso=applied_iso,
+        )
         revision = _build_revision_from_ticket(
             hypothesis_id=hypothesis_id,
             revision_id=revision_id,
@@ -1220,6 +1393,9 @@ def apply_ticket(
             body=body,
             current=current,
             status_reason="ticket",
+            forecast=resolved_forecast,
+            persisted_at=applied_iso,
+            previous_forecast=previous_forecast,
             evidence_assessment=ticket.get("evidence_assessment"),
             contradicts_revision_id=str(contradicts) if contradicts else None,
         )
@@ -1262,6 +1438,7 @@ def apply_ticket(
         status = "rejected" if action == "reject" else "open"
         disposition = ticket.get("disposition") if action == "reject" else None
         rejected_reason = ticket.get("rejected_reason") if action == "reject" else None
+        resolved_forecast = _forecast_from_ticket_body(body, applied_iso=applied_iso, require_match=False)
         revision = _build_revision_from_ticket(
             hypothesis_id=hypothesis_id,
             revision_id=revision_id,
@@ -1269,6 +1446,8 @@ def apply_ticket(
             body=body,
             current=None,
             status_reason="ticket",
+            forecast=resolved_forecast,
+            persisted_at=applied_iso,
             disposition=str(disposition) if disposition else None,
             rejected_reason=str(rejected_reason) if rejected_reason else None,
         )
@@ -1325,6 +1504,7 @@ def dry_run_ticket(root: Path, ticket: dict[str, Any]) -> dict[str, Any]:
         profile = show_edge(root)
         if ticket.get("expected_revision_id") != profile.get("current_revision_id"):
             return {"fingerprint": fingerprint, "status": "conflict"}
+        _validate_promotion_source_id(root, ticket["promotion_basis"])
     return {"fingerprint": fingerprint, "status": "applied"}
 
 
@@ -1493,6 +1673,7 @@ def main(argv: list[str] | None = None) -> int:
 
     retrieve = sub.add_parser("retrieve")
     retrieve.add_argument("--root", type=Path, default=Path.cwd())
+    retrieve.add_argument("--today", default=None, help="Review date YYYY-MM-DD (default: America/New_York today)")
 
     show = sub.add_parser("show")
     show.add_argument("--hypothesis", required=True)
@@ -1528,7 +1709,13 @@ def main(argv: list[str] | None = None) -> int:
     root = args.root.resolve()
 
     if args.command == "retrieve":
-        print(json.dumps(retrieve_current(root), indent=2, sort_keys=True))
+        review_today: date | None = None
+        if args.today is not None:
+            try:
+                review_today = date.fromisoformat(str(args.today))
+            except ValueError as exc:
+                raise SystemExit(f"invalid --today: {args.today}") from exc
+        print(json.dumps(retrieve_current(root, today=review_today), indent=2, sort_keys=True))
         return 0
     if args.command == "show":
         print(json.dumps(show_hypothesis(root, args.hypothesis, args.revision), indent=2, sort_keys=True))
