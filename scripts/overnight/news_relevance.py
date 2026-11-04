@@ -533,28 +533,219 @@ def _g10_polity(text: str) -> str | None:
     return None
 
 
+_PRICE_MOVE_OBJECTS = (
+    "yield",
+    "yields",
+    "treasury",
+    "treasuries",
+    "gilt",
+    "gilts",
+    "dollar",
+    "fx",
+    "euro",
+    "yen",
+    "pound",
+    "sterling",
+    "bond",
+    "bonds",
+    "stock",
+    "stocks",
+    "equities",
+    "equity",
+    "share",
+    "shares",
+    "crude",
+    "oil",
+    "brent",
+    "wti",
+    "gold",
+    "spread",
+    "spreads",
+    "prices",
+)
+
+_RATES_MOVE_OBJECTS = (
+    "yield",
+    "yields",
+    "treasury",
+    "treasuries",
+    "gilt",
+    "gilts",
+    "bond",
+    "bonds",
+)
+
+_STOCK_MOVE_OBJECTS = ("stock", "stocks", "equities", "equity", "share", "shares")
+
+_FX_MOVE_OBJECTS = ("dollar", "fx", "euro", "yen", "pound", "sterling")
+
+_PRICE_MOVE_WORDS = frozenset(
+    {
+        "rise",
+        "rises",
+        "rose",
+        "rising",
+        "fall",
+        "falls",
+        "fell",
+        "falling",
+        "drop",
+        "drops",
+        "dropped",
+        "jump",
+        "jumps",
+        "jumped",
+        "slide",
+        "slides",
+        "slid",
+        "rally",
+        "rallies",
+        "rallied",
+        "strengthen",
+        "strengthens",
+        "strengthened",
+        "weaken",
+        "weakens",
+        "weakened",
+        "surge",
+        "surges",
+        "surged",
+        "tumble",
+        "tumbles",
+        "tumbled",
+        "climb",
+        "climbs",
+        "climbed",
+        "gain",
+        "gains",
+        "gained",
+        "higher",
+        "lower",
+        "rebound",
+        "rebounds",
+        "rebounded",
+        "plunge",
+        "plunges",
+        "plunged",
+        "soar",
+        "soars",
+        "soared",
+        "slump",
+        "slumps",
+        "slumped",
+        "advance",
+        "advances",
+        "advanced",
+        "decline",
+        "declines",
+        "declined",
+        "move",
+        "moves",
+        "moved",
+        "selloff",
+    }
+)
+
+_SPEECH_FRAMING_VERBS = frozenset(
+    {
+        "says",
+        "said",
+        "tells",
+        "told",
+        "debates",
+        "debated",
+        "discussed",
+        "discusses",
+        "discuss",
+    }
+)
+
+
+def _price_tokens(text: str) -> list[str]:
+    return re.findall(r"[a-z0-9']+", text.lower())
+
+
+def _move_token_at(tokens: list[str], index: int) -> bool:
+    tok = tokens[index]
+    if tok in _PRICE_MOVE_WORDS:
+        return True
+    if tok == "off" and index > 0 and tokens[index - 1] in ("sold", "sell"):
+        return True
+    return False
+
+
+def _speech_framed_move(tokens: list[str], move_index: int) -> bool:
+    for verb_index, tok in enumerate(tokens):
+        if tok not in _SPEECH_FRAMING_VERBS:
+            continue
+        if verb_index < move_index <= verb_index + 6:
+            return True
+    return False
+
+
+def _recorded_price_move(text: str, *, objects: tuple[str, ...] | None = None) -> bool:
+    """True when the source text records a price move (object within 4 tokens of a move word)."""
+    allowed = frozenset(objects if objects is not None else _PRICE_MOVE_OBJECTS)
+    tokens = _price_tokens(text)
+    move_indices = [
+        i
+        for i in range(len(tokens))
+        if _move_token_at(tokens, i) and not _speech_framed_move(tokens, i)
+    ]
+    price_indices = [i for i, tok in enumerate(tokens) if tok in allowed]
+    for move_index in move_indices:
+        for price_index in price_indices:
+            if abs(move_index - price_index) <= 4:
+                return True
+    return False
+
+
+def _recorded_rates_move(text: str) -> bool:
+    return _recorded_price_move(text, objects=_RATES_MOVE_OBJECTS)
+
+
+def _recorded_stock_move(text: str) -> bool:
+    return _recorded_price_move(text, objects=_STOCK_MOVE_OBJECTS)
+
+
+def _recorded_fx_move(text: str) -> bool:
+    return _recorded_price_move(text, objects=_FX_MOVE_OBJECTS)
+
+
 def _market_evidence(text: str) -> bool:
-    """A source sentence that states a price or risk move, not an inferred one."""
-    return (
-        _any_word(
-            text,
-            (
-                "yield",
-                "yields",
-                "treasury",
-                "treasuries",
-                "dollar",
-                "fx",
-                "bond",
-                "bonds",
-                "stocks",
-                "equities",
-                "haven",
-            ),
-        )
-        or _phrase(text, "risk appetite")
-        or _phrase(text, "risk-off")
-        or _energy_context(text)
+    """True only when the source records an actual price move."""
+    return _recorded_price_move(text)
+
+
+def _acute_central_bank_shock(text: str) -> bool:
+    if not (_g10_policy_fires(text) or _official_policy_phrase(text)):
+        return False
+    if _any_word(
+        text,
+        (
+            "hike",
+            "hikes",
+            "cut",
+            "cuts",
+            "surprise",
+            "surprises",
+            "emergency",
+            "unexpected",
+            "unexpectedly",
+            "decision",
+            "decides",
+            "raises",
+            "raise",
+            "raised",
+            "lowers",
+            "lower",
+            "lowered",
+        ),
+    ):
+        return True
+    return _any_phrase(
+        text,
+        ("rate cut", "rate hike", "policy rate", "bank rate", "official cash rate"),
     )
 
 
@@ -653,12 +844,12 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
         polity = _g10_polity(text)
         evidenced = _market_evidence(text)
         assets = list(_POLITY_ASSETS.get(polity or "", []))
-        if evidenced and _word(text, "dollar") and "USD" not in assets:
+        if _recorded_fx_move(text) and "USD" not in assets:
             assets.append("USD")
-        if evidenced and (
-            _any_word(text, ("yield", "yields", "treasury", "treasuries")) and "UST" not in assets
-        ):
+        if _recorded_rates_move(text) and "UST" not in assets:
             assets.append("UST")
+        if _recorded_stock_move(text) and "SPX" not in assets:
+            assets.append("SPX")
         if _energy_context(text) and "Brent" not in assets:
             assets.append("Brent")
         claim = "evidenced" if evidenced else "possible"
@@ -696,6 +887,10 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
             )
         _set_channel(comps, "geopolitics_haven")
         _set_channel(comps, "global_risk")
+        channels = ["geopolitics_haven", "global_risk"]
+        if _recorded_rates_move(text):
+            _set_channel(comps, "usd_rates")
+            channels.append("usd_rates")
         comps["asset_named"] = 3 if evidenced else 2
         comps["shock"] = 2
         score = 13 if evidenced else 12
@@ -704,7 +899,7 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
                 disposition="show",
                 affected_assets=assets,
                 channel="geopolitics_haven",
-                channels=["geopolitics_haven", "global_risk"],
+                channels=channels,
                 reason_code="political_risk_transmission",
                 score=score,
                 components=comps,
@@ -726,7 +921,7 @@ def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
             score = 14
             assets = ["Brent", "USD"]
             channel = "oil_energy_tot"
-            claim = "evidenced"
+            claim = "evidenced" if _recorded_price_move(text) else "possible"
         elif evidenced:
             _set_channel(comps, "global_risk")
             channels = ["geopolitics_haven", "global_risk"]
@@ -904,6 +1099,11 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
         if not (_material_political_event(text) or _acute_geopolitics(text)):
             return _hold_review()
 
+    if not _acute_central_bank_shock(text):
+        political = _score_political_or_geopolitics(text)
+        if political is not None:
+            return political
+
     if _g10_trigger(text) or _g10_policy_fires(text) or _official_policy_phrase(text):
         g10 = _g10_policy_fires(text) or _official_policy_phrase(text)
         usd = _usd_rates_fires(text)
@@ -979,10 +1179,6 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
             score=9,
             components=comps,
         )
-
-    political = _score_political_or_geopolitics(text)
-    if political is not None:
-        return political
 
     if _bare_oil(text):
         _set_channel(comps, "oil_energy_tot")

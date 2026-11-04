@@ -597,6 +597,123 @@ class NovemberReplayTests(unittest.TestCase):
         ))
         self.assertEqual(isoformat(when), acquisition["cutoff"])
 
+    def test_election_yields_fall_fallback_ranks_in_panel(self) -> None:
+        from datetime import datetime
+
+        from scripts.overnight.clock import isoformat
+        from scripts.overnight.live_news import acquire_current_news, merge_live_news
+        from scripts.overnight.news_diagnostics import build_report
+        from scripts.overnight.news_sources import CNBC_HEADLINE_ONLY
+
+        election_yields = (
+            "US national election results change control of Congress; Treasury yields fall"
+        )
+        fresh_hormuz = (
+            "Iran says it will not soften demands after Trump rejects a Hormuz offer"
+        )
+        when = datetime.fromisoformat(self.CUTOFF)
+        cnbc = self._cnbc(
+            self._cnbc_item(election_yields, "us-election-yields-fall.html", "2026-11-04T11:10:00Z")
+            + self._cnbc_item(self.FED, "fed-inflation-yields.html", "2026-11-04T10:30:00Z")
+            + self._cnbc_item(
+                fresh_hormuz,
+                "hormuz-demands.html",
+                "2026-11-04T11:00:00Z",
+            )
+        )
+        acquisition = acquire_current_news(
+            when=when,
+            offline=False,
+            fetcher=lambda url: self._fetcher(url, cnbc=cnbc),
+        )
+        self.assertEqual(acquisition["recovery"], "fallback")
+        headlines = [row["headline"] for row in acquisition["candidates"]]
+        self.assertIn(election_yields, headlines)
+        self.assertIn(self.FED, headlines)
+        self.assertIn(fresh_hormuz, headlines)
+
+        stale_oil = {
+            "headline": "Oil rebounds as Hormuz tensions keep crude bid",
+            "summary": "Brent rose.",
+            "url": "https://www.reuters.com/world/hormuz-stale-2026-10-28/",
+            "published_at": "2026-10-28T06:00:00-04:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_boe = {
+            "headline": "Bank rate maintained at 3.75%",
+            "summary": "The Bank of England left policy unchanged.",
+            "url": "https://www.bankofengland.co.uk/news/2026/october/bank-rate-maintained",
+            "published_at": "2026-10-28T07:00:00-04:00",
+            "source_name": "Bank of England",
+            "verification_status": "official",
+            "primary_category": "monetary_policy",
+            "country_codes": [],
+        }
+        merged = merge_live_news(
+            baseline=[stale_oil, stale_boe],
+            live_candidates=acquisition["candidates"],
+            when=when,
+        )
+        order = [row["headline"] for row in merged["items"]]
+        self.assertLess(order.index(self.FED), order.index(election_yields))
+        self.assertLess(order.index(fresh_hormuz), order.index(election_yields))
+        self.assertLess(order.index(election_yields), order.index(stale_oil["headline"]))
+        self.assertLess(order.index(election_yields), order.index(stale_boe["headline"]))
+        election = next(row for row in merged["items"] if row["headline"] == election_yields)
+        self.assertEqual(election["currency"], "current")
+        self.assertEqual(election["transmission"]["claim"], "evidenced")
+        self.assertEqual(election["transmission"]["reason_code"], "political_risk_transmission")
+        self.assertEqual(election["transmission"]["channel"], "geopolitics_haven")
+        self.assertEqual(election["summary"], CNBC_HEADLINE_ONLY)
+
+        report = build_report(acquisition, merged)
+        shown = {row["headline"] for row in report["stories"] if row["stage"] == "shown"}
+        self.assertIn(election_yields, shown)
+
+        family = {
+            "status": "fresh",
+            "digest": "nov4-replay-yields",
+            "as_of": self.CUTOFF,
+            "acquisition": {
+                "mode": "live",
+                "partial": acquisition["partial"],
+                "recovery": acquisition["recovery"],
+                "cutoff": acquisition["cutoff"],
+                "receipts": acquisition["receipts"],
+            },
+            "items": merged["items"],
+        }
+        panel = rh.select_current_headlines(
+            family,
+            frozen_at=self.FROZEN,
+            previous_accepted_as_of=None,
+            previous_accepted_items=[],
+            packet_sha256="abc123",
+        )
+        self.assertEqual(panel["status"], "available")
+        panel_headlines = [row["headline"] for row in panel["items"]]
+        self.assertIn(election_yields, panel_headlines)
+        self.assertNotIn(stale_oil["headline"], panel_headlines)
+        self.assertNotIn(stale_boe["headline"], panel_headlines)
+        overlap = [row["headline"] for row in merged["items"] if row["headline"] in panel_headlines]
+        self.assertEqual(panel_headlines, overlap)
+        rendered = rh.render_headlines_panel(
+            panel,
+            previous_news={
+                "as_of": "2026-10-28T07:00:00-04:00",
+                "age_label": "prior cycle",
+                "overnight_run_id": "overnight-20261028",
+            },
+            panel="front",
+            limit=rh.FRONT_HEADLINES,
+        )
+        self.assertIn(election_yields, rendered)
+        self.assertNotIn("Geopolitics (possible)", rendered)
+        self.assertEqual(isoformat(when), acquisition["cutoff"])
+
     def test_unavailable_recovery_is_explicit_and_does_not_refresh_baseline(self) -> None:
         import tempfile
         from datetime import datetime
