@@ -19,6 +19,8 @@ on:
       - "tests/test_pm_launch.py"
       - "tests/test_pm_dashboard.py"
       - "tests/test_pm_portfolio.py"
+      - "tests/test_chatgpt_research_cold_start.py"
+      - "tests/test_chatgpt_research_memory.py"
       - ".github/workflows/validate-pm-layer.yml"
   pull_request:
     paths:
@@ -38,6 +40,8 @@ on:
       - "tests/test_pm_launch.py"
       - "tests/test_pm_dashboard.py"
       - "tests/test_pm_portfolio.py"
+      - "tests/test_chatgpt_research_cold_start.py"
+      - "tests/test_chatgpt_research_memory.py"
       - ".github/workflows/validate-pm-layer.yml"
 
 jobs:
@@ -49,4 +53,4 @@ jobs:
         with:
           python-version: "3.12"
       - run: PYTHONPATH=. python scripts/validate_pm_layer.py
-      - run: PYTHONPATH=. python -m unittest tests.test_pm_launch tests.test_pm_dashboard tests.test_pm_portfolio tests.test_pm_scheduled_output tests.test_pm_overnight_packets -v
+      - run: PYTHONPATH=. python -m unittest tests.test_pm_launch tests.test_pm_dashboard tests.test_pm_portfolio tests.test_pm_scheduled_output tests.test_pm_overnight_packets tests.test_chatgpt_research_cold_start tests.test_chatgpt_research_memory -v
