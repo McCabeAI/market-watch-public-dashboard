@@ -1,41 +1,41 @@
 {
-  "as_of": "2026-11-03T09:35:29.404564-05:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20261103/assembled_dataset.json",
+  "as_of": "2026-11-04T07:12:27.759870-05:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20261104/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20261103",
+  "overnight_run_id": "overnight-20261104",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-11-03T08:22:57.179127-05:00",
+        "as_of": "2026-11-04T05:35:22.541505-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "d0716d726a82069128dadbd6ee25cf5665c141abe4d1031854e12214b158c2f8",
+        "digest": "afece30c61553683a9ad5f2c87f04c0f91ea641c1dc2b4fffeb05defe88c5980",
         "notes": [
           "accepted current-cycle ACP central-bank research supplement"
         ],
         "status": "fresh"
       },
       "macro_hard": {
-        "as_of": null,
+        "as_of": "2026-11-04T05:35:22-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "11b9ae1481cad807d38061c4b36c763aaff9e0bea64d8283456a0ad124b6710b",
+        "digest": "7acba0372f1260135af4c9d1e7aeb452d2673ac2dd1996177db840dcf48272ba",
         "notes": [
           "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
-          "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=due_missing, AU.Consumer.confidence=due_missing, AU.Consumer.income=due_missing, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+57 more)",
+          "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=due_missing, AU.Consumer.confidence=due_missing, AU.Consumer.income=due_missing, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+54 more)",
           "country-specific macro research coverage gaps: CA, AU, NZ, EA, JP",
           "source-health carry-forward (not-due, prior vintage kept): US"
         ],
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-11-03T14:35:29Z",
+        "as_of": "2026-11-04T12:12:27Z",
         "blocking": false,
         "catastrophic": false,
-        "digest": "a2d25dc10036d94842bd05bde6302ec4677ca6ef4b4dcc59d28ad737cb8f0725",
+        "digest": "29e5efd39d33770fe7934ae993170533818333c176f5140634f4afe6e8e67d74",
         "notes": [
           "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates",
           "source-isolated unavailable feeds: CME_positioning, NZ_rates"
@@ -43,18 +43,18 @@
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-11-03T08:22:57.179127-05:00",
+        "as_of": "2026-11-04T05:35:22.541505-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "e9e5ed4034cdf4ba34b339dd559b4caba70f96d2c8382240c35f08788e96b930",
+        "digest": "2dc071fd2bed84b65d1462a11c8b9a8767579243062df3be7816c00c8ca8adaa",
         "notes": [
           "accepted current-cycle ACP research supplement"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20261103",
-    "last_successful_review_run_id": "overnight-20261103",
+    "last_successful_pm_run_id": "overnight-20261104",
+    "last_successful_review_run_id": "overnight-20261104",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",

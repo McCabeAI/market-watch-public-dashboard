@@ -4,10 +4,10 @@
   "calibration": "data/temperature_calibration.json",
   "as_of": "2026-09-21",
   "calibration_anchor_date": "2026-09-21",
-  "scoring_cutoff": "2026-09",
-  "score_inputs_latest_reference_period": "2026-09",
-  "score_inputs_last_ingested_at": "2026-10-30T10:33:05Z",
-  "last_refresh_date": "2026-10-30",
+  "scoring_cutoff": "2026-10",
+  "score_inputs_latest_reference_period": "2026-10",
+  "score_inputs_last_ingested_at": "2026-11-04T10:35:22Z",
+  "last_refresh_date": "2026-11-04",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -26,7 +26,7 @@
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-07",
         "components": {
           "core_pce": 1.0
@@ -54,7 +54,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -105,13 +105,13 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Activity": {
-        "level": 50.6,
-        "impulse": -3.36,
+        "level": 50.73,
+        "impulse": -3.62,
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
-        "latest_reference_period": "2026-08",
+        "as_of": "2026-10",
+        "latest_reference_period": "2026-10",
         "components": {
           "gdp_domestic_demand": 0.6,
           "services_surveys": 0.28,
@@ -133,29 +133,29 @@
           },
           "services_surveys": {
             "observed": true,
-            "as_of": "2026-08",
-            "transform_value": 54.5,
-            "level": 54.5,
-            "impulse": 1.3,
+            "as_of": "2026-09",
+            "transform_value": 54.8,
+            "level": 54.8,
+            "impulse": -0.5,
             "weight": 0.28,
             "coverage_contribution": 0.28,
             "short_window": false,
-            "retrieved_at": "2026-09-21T16:30:00Z",
-            "release_date": null,
-            "release_date_status": "not_recorded"
+            "retrieved_at": "2026-11-04T10:35:22Z",
+            "release_date": "2026-10-05",
+            "release_date_status": "recorded"
           },
           "manufacturing_surveys": {
             "observed": true,
-            "as_of": "2026-08",
-            "transform_value": 54.5,
-            "level": 54.5,
-            "impulse": -1.0,
+            "as_of": "2026-10",
+            "transform_value": 54.8667,
+            "level": 54.87,
+            "impulse": 1.0,
             "weight": 0.12,
             "coverage_contribution": 0.12,
             "short_window": false,
-            "retrieved_at": "2026-09-21T16:30:00Z",
-            "release_date": null,
-            "release_date_status": "not_recorded"
+            "retrieved_at": "2026-11-04T10:35:22Z",
+            "release_date": "2026-11-02",
+            "release_date_status": "recorded"
           }
         },
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
@@ -166,7 +166,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-08",
         "components": {
           "retail": 0.25,
@@ -238,7 +238,7 @@
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
@@ -280,7 +280,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -336,7 +336,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -378,7 +378,7 @@
         "direction": "warming",
         "coverage": 0.75,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-08",
         "components": {
           "retail": 0.25,
@@ -450,7 +450,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
@@ -492,7 +492,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -548,7 +548,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-08",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -590,7 +590,7 @@
         "direction": "cooling",
         "coverage": 0.75,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "retail": 0.25,
@@ -662,7 +662,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-Q2",
         "components": {
           "underlying": 0.6,
@@ -704,7 +704,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "cool",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-Q2",
         "components": {
           "unemployment": 0.7,
@@ -760,7 +760,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-08",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -802,7 +802,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-08",
         "components": {
           "retail": 0.25,
@@ -869,13 +869,13 @@
     },
     "EA": {
       "Inflation": {
-        "level": 62.75,
-        "impulse": 3.75,
+        "level": 64.5,
+        "impulse": 1.75,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-09",
-        "latest_reference_period": "2026-09",
+        "as_of": "2026-10",
+        "latest_reference_period": "2026-10",
         "components": {
           "underlying": 0.6,
           "headline": 0.4
@@ -883,27 +883,27 @@
         "component_state": {
           "underlying": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": 2.5,
-            "level": 56.25,
+            "as_of": "2026-10",
+            "transform_value": 2.6,
+            "level": 57.5,
             "impulse": 1.25,
             "weight": 0.6,
             "coverage_contribution": 0.6,
             "short_window": false,
-            "retrieved_at": "2026-10-02T09:40:56Z",
+            "retrieved_at": "2026-11-04T10:35:22Z",
             "release_date": null,
             "release_date_status": "not_recorded"
           },
           "headline": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": 3.8,
-            "level": 72.5,
-            "impulse": 7.5,
+            "as_of": "2026-10",
+            "transform_value": 4.0,
+            "level": 75.0,
+            "impulse": 2.5,
             "weight": 0.4,
             "coverage_contribution": 0.4,
             "short_window": false,
-            "retrieved_at": "2026-10-02T09:40:56Z",
+            "retrieved_at": "2026-11-04T10:35:22Z",
             "release_date": null,
             "release_date_status": "not_recorded"
           }
@@ -916,7 +916,7 @@
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -972,7 +972,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-Q3",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -1009,13 +1009,13 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Consumer": {
-        "level": 44.19,
-        "impulse": -0.01,
+        "level": 43.59,
+        "impulse": -0.38,
         "direction": "static",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
-        "latest_reference_period": "2026-08",
+        "as_of": "2026-10",
+        "latest_reference_period": "2026-10",
         "components": {
           "retail": 0.25,
           "income": 0.25,
@@ -1064,14 +1064,14 @@
           },
           "confidence": {
             "observed": true,
-            "as_of": "2026-08",
-            "transform_value": -15.5,
-            "level": 44.5,
-            "impulse": 0.4,
+            "as_of": "2026-10",
+            "transform_value": -17.9,
+            "level": 42.1,
+            "impulse": -1.1,
             "weight": 0.25,
             "coverage_contribution": 0.25,
             "short_window": false,
-            "retrieved_at": "2026-09-21T20:24:59Z",
+            "retrieved_at": "2026-11-04T10:35:22Z",
             "release_date": null,
             "release_date_status": "not_recorded"
           }
@@ -1086,7 +1086,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "underlying": 0.6,
@@ -1128,7 +1128,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "unemployment": 0.7,
@@ -1184,7 +1184,7 @@
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-08",
         "components": {
           "gdp_domestic_demand": 0.6,
@@ -1226,7 +1226,7 @@
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "cool",
-        "as_of": "2026-09",
+        "as_of": "2026-10",
         "latest_reference_period": "2026-09",
         "components": {
           "retail": 0.25,
