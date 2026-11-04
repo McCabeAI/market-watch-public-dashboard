@@ -10,7 +10,7 @@ from urllib.parse import urlparse
 from scripts.market_watch_launch.publication_release import _esc, format_et
 from scripts.overnight.clock import parse_iso
 from scripts.overnight.news_cluster import _same_event, _stable_id
-from scripts.overnight.news_relevance import score_transmission
+from scripts.overnight.news_relevance import presentation_rank_tuple, score_transmission, story_currency
 from scripts.overnight.news_sources import discovery_surfaces
 
 HEADLINES_TYPE = "MARKET_WATCH_CURRENT_HEADLINES"
@@ -267,6 +267,8 @@ def select_current_headlines(
     acquisition = news_family.get("acquisition")
     if not isinstance(acquisition, dict) or acquisition.get("mode") != "live":
         return _unavailable("news_acquisition_not_live", packet_sha256=packet_sha256)
+    if acquisition.get("recovery") == "unavailable":
+        return _unavailable("discovery_recovery_unavailable", packet_sha256=packet_sha256)
     cutoff_raw = acquisition.get("cutoff")
     cutoff = _parse_aware(cutoff_raw if isinstance(cutoff_raw, str) else None)
     if cutoff is None:
@@ -383,27 +385,35 @@ def select_current_headlines(
         surface = str(edge.get("discovery_surface") or "")
         discovery_source = surfaces.get(surface, {}).get("source")
         transmission = score_transmission(str(headline or ""), str(raw.get("summary") or ""))
+        published_at = edge.get("published_at")
         candidates.append(
             {
                 "id": item_id,
                 "headline": chosen_headline,
                 "source_name": edge.get("source_name"),
                 "url": url,
-                "published_at": edge.get("published_at"),
+                "published_at": published_at,
                 "verification_status": raw.get("verification_status"),
                 "channel": transmission.get("channel"),
                 "affected_assets": list(transmission.get("affected_assets") or []),
                 "discovery_source": discovery_source,
-                "_published": _parse_aware(edge.get("published_at")),
+                **({"claim": transmission.get("claim")} if transmission.get("claim") else {}),
+                "currency": story_currency(
+                    published_at if isinstance(published_at, str) else None,
+                    cutoff,
+                ),
+                "_rank": presentation_rank_tuple(
+                    int(transmission.get("score") or 0),
+                    published_at if isinstance(published_at, str) else None,
+                    cutoff,
+                ),
             }
         )
 
-    def _candidate_key(row: dict[str, Any]) -> tuple[float, str]:
-        dt = row.get("_published")
-        ts = dt.timestamp() if dt is not None else float("-inf")
-        return (-ts, str(row.get("url") or ""))
+    def _candidate_key(row: dict[str, Any]) -> tuple:
+        return row.get("_rank") or (0, 0, "")
 
-    candidates.sort(key=_candidate_key)
+    candidates.sort(key=_candidate_key, reverse=True)
     kept: list[dict[str, Any]] = []
     kept_ids: set[str] = set()
     kept_urls: set[str] = set()
@@ -459,9 +469,12 @@ HEADLINES_CSS = """
 """.strip()
 
 
-def _channel_label(channel: Any) -> str:
+def _channel_label(channel: Any, claim: Any = None) -> str:
     key = str(channel or "")
-    return CHANNEL_LABELS.get(key, key or "channel not recorded")
+    label = CHANNEL_LABELS.get(key, key or "channel not recorded")
+    if claim == "possible":
+        return f"{label} (possible)"
+    return label
 
 
 def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str, Any], panel: str, limit: int) -> str:
@@ -510,7 +523,7 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
             f'<li data-headline-id="{_esc(row.get("id"))}">'
             f'<a href="{_esc(row.get("url"))}" rel="noopener noreferrer" target="_blank">{_esc(row.get("headline"))}</a> '
             f'<span class="mw-headlines-meta">{_esc(row.get("source_name"))} · '
-            f"{_esc(format_et(row.get('published_at')))} · {_esc(_channel_label(row.get('channel')))}</span></li>"
+            f"{_esc(format_et(row.get('published_at')))} · {_esc(_channel_label(row.get('channel'), row.get('claim')))}</span></li>"
         )
     more = ""
     total = len(headlines.get("items") or [])

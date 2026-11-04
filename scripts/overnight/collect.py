@@ -304,10 +304,19 @@ def collect_inputs(
             "mode": acquisition["mode"],
             "partial": acquisition["partial"],
             "cutoff": acquisition["cutoff"],
+            "recovery": acquisition.get("recovery"),
+            "optional_source_gaps": list(acquisition.get("optional_source_gaps") or []),
             "receipts": acquisition["receipts"],
         }
         any_ok = any(r.get("status") == "ok" for r in acquisition["receipts"])
-        if any_ok:
+        if acquisition.get("recovery") == "unavailable":
+            # Empty public fallbacks are not a fresh package of last cycle's baseline.
+            news_notes.append(
+                "live news recovery unavailable after the Reuters sitemap failed and "
+                "Bloomberg wires were empty; baseline rows were not refreshed"
+            )
+            research_supplement = None
+        elif any_ok:
             news_items = merged["items"]
             news_as_of = isoformat(stamp)
             news_status = age_status(news_as_of, when=stamp)
@@ -318,6 +327,11 @@ def collect_inputs(
             ]
             news_notes.append("accepted news kept as baseline; live discovery merged into the current window")
             news_notes.append("live news acquisition completed")
+            if acquisition.get("recovery") == "fallback":
+                news_notes.append(
+                    "live news recovered from public fallback feeds after the Reuters sitemap failed "
+                    "and Bloomberg wires were empty"
+                )
             if acquisition["partial"]:
                 for receipt in acquisition["receipts"]:
                     if receipt.get("status") == "failed":

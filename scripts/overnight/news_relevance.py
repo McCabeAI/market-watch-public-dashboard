@@ -6,6 +6,8 @@ import copy
 import re
 from typing import Any
 
+from scripts.overnight.clock import now_ny, parse_iso
+
 CHANNEL_WEIGHTS = {
     "usd_rates": 5,
     "g10_policy": 5,
@@ -432,6 +434,383 @@ def _ai_financing_recall(text: str) -> bool:
     return ai_side and fin_side
 
 
+_ROUTINE_POLITICS = (
+    "city council",
+    "mayoral",
+    "mayor race",
+    "local election",
+    "campaign rally",
+    "town hall",
+    "primary debate",
+    "endorses",
+    "endorsement",
+)
+
+_CONTROL_EVENT = (
+    "control of congress",
+    "congressional control",
+    "control of the house",
+    "control of the senate",
+    "house majority",
+    "senate majority",
+    "parliamentary majority",
+    "control of parliament",
+    "change of government",
+    "government collapses",
+    "government collapsed",
+    "no-confidence",
+    "no confidence",
+    "snap election",
+    "general election",
+    "presidential election",
+    "national election",
+    "midterm election",
+    "midterms",
+)
+
+_NEUTRAL_POLITICAL = (
+    "control unchanged",
+    "too close to call",
+    "results pending",
+    "count continues",
+    "retains control",
+    "holds control",
+    "no change in control",
+)
+
+_POLITY_ASSETS = {
+    "US": ["USD", "UST"],
+    "GB": ["GBP"],
+    "JP": ["JPY"],
+    "CA": ["CAD"],
+    "AU": ["AUD"],
+    "NZ": ["NZD"],
+    "EA": ["EUR"],
+}
+
+# Full weight through 18 hours, then a linear fade to an archival floor at 7 days.
+_FRESH_FULL_HOURS = 18
+_ARCHIVE_HOURS = 24 * 7
+_FRESH_FULL_WEIGHT = 1000
+_FRESH_FLOOR_WEIGHT = 200
+
+
+def _routine_politics(text: str) -> bool:
+    return _any_phrase(text, _ROUTINE_POLITICS)
+
+
+def _g10_polity(text: str) -> str | None:
+    """Named G10 polity. Party labels are ignored; only the institution or country counts."""
+    if (
+        _any_word(text, ("congress", "congressional", "senate"))
+        or _phrase(text, "house of representatives")
+        or _phrase(text, "control of the house")
+        or _phrase(text, "white house")
+        or _phrase(text, "united states")
+        or _phrase(text, "u.s.")
+        or _phrase(text, "the us")
+        or _phrase(text, "us national")
+        or _phrase(text, "us election")
+        or _phrase(text, "us presidential")
+        or _phrase(text, "us congress")
+    ):
+        return "US"
+    if _any_word(text, ("uk", "britain", "british")) or _phrase(text, "united kingdom"):
+        return "GB"
+    if _any_word(text, ("japan", "japanese")):
+        return "JP"
+    if _any_word(text, ("canada", "canadian")):
+        return "CA"
+    if _any_word(text, ("australia", "australian")):
+        return "AU"
+    if _phrase(text, "new zealand"):
+        return "NZ"
+    if (
+        _any_word(text, ("germany", "german", "france", "french", "italy", "italian", "eurozone"))
+        or _phrase(text, "euro area")
+    ):
+        return "EA"
+    return None
+
+
+def _market_evidence(text: str) -> bool:
+    """A source sentence that states a price or risk move, not an inferred one."""
+    return (
+        _any_word(
+            text,
+            (
+                "yield",
+                "yields",
+                "treasury",
+                "treasuries",
+                "dollar",
+                "fx",
+                "bond",
+                "bonds",
+                "stocks",
+                "equities",
+                "haven",
+            ),
+        )
+        or _phrase(text, "risk appetite")
+        or _phrase(text, "risk-off")
+        or _energy_context(text)
+    )
+
+
+def _control_event(text: str) -> bool:
+    """A result or a break in government, not a campaign calendar."""
+    outcome_controls = tuple(
+        phrase
+        for phrase in _CONTROL_EVENT
+        if phrase not in {"general election", "presidential election", "national election", "snap election", "midterms", "midterm election"}
+    )
+    if _any_phrase(text, outcome_controls):
+        return True
+    snap_called = _any_phrase(
+        text,
+        ("calls a snap", "called a snap", "calls snap", "announces a snap", "announced a snap"),
+    )
+    if _phrase(text, "snap election") and (_outcome_language(text) or snap_called):
+        return True
+    if _any_phrase(text, ("general election", "presidential election", "national election", "midterm election", "midterms")) and _outcome_language(text):
+        return True
+    return False
+
+
+def _outcome_language(text: str) -> bool:
+    return _any_word(
+        text,
+        (
+            "result",
+            "results",
+            "win",
+            "wins",
+            "won",
+            "winner",
+            "loses",
+            "lost",
+            "flips",
+            "flipped",
+            "projected",
+            "declared",
+            "outcome",
+        ),
+    ) or _any_phrase(
+        text,
+        ("takes control", "secures control", "loses control", "changes control"),
+    )
+
+
+def _political_neutral(text: str) -> bool:
+    return _any_phrase(text, _NEUTRAL_POLITICAL)
+
+
+def _material_political_event(text: str) -> bool:
+    """National political information with a G10 transmission, or an explicit market link.
+
+    Routine campaign color and local races are not material. Party names are not an input.
+    """
+    if _routine_politics(text) and not _any_phrase(
+        text, ("government collapses", "government collapsed", "no-confidence", "no confidence")
+    ):
+        return False
+    event = _control_event(text) or (_word(text, "election") and _outcome_language(text))
+    if not event:
+        return False
+    if _g10_polity(text):
+        return True
+    return _market_evidence(text)
+
+
+def _acute_geopolitics(text: str) -> bool:
+    if _routine_politics(text):
+        return False
+    conflict = (
+        _any_word(text, ("invasion", "invades", "coup", "missile", "airstrike", "blockade", "ceasefire"))
+        or _phrase(text, "martial law")
+        or _phrase(text, "declares war")
+        or _phrase(text, "air strike")
+    )
+    if not conflict:
+        return False
+    theater = _g10_polity(text) or _any_word(
+        text, ("russia", "ukraine", "taiwan", "iran", "israel")
+    ) or _phrase(text, "middle east")
+    return bool(theater or _market_evidence(text) or _energy_context(text))
+
+
+def _with_claim(transmission: dict[str, Any], claim: str) -> dict[str, Any]:
+    out = dict(transmission)
+    out["claim"] = claim
+    return out
+
+
+def _score_political_or_geopolitics(text: str) -> dict[str, Any] | None:
+    """Possible G10 channels unless the source itself states a market move."""
+    if _material_political_event(text):
+        comps = _empty_components()
+        polity = _g10_polity(text)
+        evidenced = _market_evidence(text)
+        assets = list(_POLITY_ASSETS.get(polity or "", []))
+        if evidenced and _word(text, "dollar") and "USD" not in assets:
+            assets.append("USD")
+        if evidenced and (
+            _any_word(text, ("yield", "yields", "treasury", "treasuries")) and "UST" not in assets
+        ):
+            assets.append("UST")
+        if _energy_context(text) and "Brent" not in assets:
+            assets.append("Brent")
+        claim = "evidenced" if evidenced else "possible"
+        if polity is None:
+            _set_channel(comps, "global_risk")
+            comps["asset_named"] = 3
+            comps["shock"] = 3
+            return _with_claim(
+                _transmission_from_parts(
+                    disposition="show",
+                    affected_assets=assets or ["USD"],
+                    channel="global_risk",
+                    channels=["global_risk"],
+                    reason_code="political_risk_transmission",
+                    score=10,
+                    components=comps,
+                ),
+                claim,
+            )
+        if _political_neutral(text):
+            _set_channel(comps, "geopolitics_haven")
+            comps["asset_named"] = 2
+            comps["shock"] = 2
+            return _with_claim(
+                _transmission_from_parts(
+                    disposition="assess",
+                    affected_assets=assets,
+                    channel="geopolitics_haven",
+                    channels=["geopolitics_haven"],
+                    reason_code="political_risk_transmission",
+                    score=8,
+                    components=comps,
+                ),
+                claim,
+            )
+        _set_channel(comps, "geopolitics_haven")
+        _set_channel(comps, "global_risk")
+        comps["asset_named"] = 3 if evidenced else 2
+        comps["shock"] = 2
+        score = 13 if evidenced else 12
+        return _with_claim(
+            _transmission_from_parts(
+                disposition="show",
+                affected_assets=assets,
+                channel="geopolitics_haven",
+                channels=["geopolitics_haven", "global_risk"],
+                reason_code="political_risk_transmission",
+                score=score,
+                components=comps,
+            ),
+            claim,
+        )
+
+    if _acute_geopolitics(text):
+        comps = _empty_components()
+        energy = _energy_context(text)
+        evidenced = _market_evidence(text)
+        _set_channel(comps, "geopolitics_haven")
+        channels = ["geopolitics_haven"]
+        if energy:
+            _set_channel(comps, "oil_energy_tot")
+            channels = ["oil_energy_tot", "geopolitics_haven"]
+            comps["asset_named"] = 3
+            comps["shock"] = 2
+            score = 14
+            assets = ["Brent", "USD"]
+            channel = "oil_energy_tot"
+            claim = "evidenced"
+        elif evidenced:
+            _set_channel(comps, "global_risk")
+            channels = ["geopolitics_haven", "global_risk"]
+            comps["asset_named"] = 2
+            comps["shock"] = 1
+            score = 11
+            assets = ["USD"]
+            channel = "geopolitics_haven"
+            claim = "evidenced"
+        else:
+            comps["asset_named"] = 3
+            comps["shock"] = 3
+            score = 10
+            assets = ["USD"]
+            channel = "geopolitics_haven"
+            claim = "possible"
+        return _with_claim(
+            _transmission_from_parts(
+                disposition="show",
+                affected_assets=assets,
+                channel=channel,
+                channels=channels,
+                reason_code="geopolitics_haven_or_oil",
+                score=score,
+                components=comps,
+            ),
+            claim,
+        )
+    return None
+
+
+def _hours_since(published_at: str | None, when) -> float | None:
+    if not published_at:
+        return None
+    try:
+        published = parse_iso(str(published_at))
+    except ValueError:
+        return None
+    cutoff = now_ny(when)
+    if published > cutoff:
+        return None
+    return (cutoff - published).total_seconds() / 3600.0
+
+
+def freshness_weight(published_at: str | None, when) -> int:
+    """Integer freshness weight. Recent evidence keeps full weight; week-old copy fades."""
+    hours = _hours_since(published_at, when)
+    if hours is None:
+        return _FRESH_FLOOR_WEIGHT
+    if hours <= _FRESH_FULL_HOURS:
+        return _FRESH_FULL_WEIGHT
+    if hours >= _ARCHIVE_HOURS:
+        return _FRESH_FLOOR_WEIGHT
+    span = _ARCHIVE_HOURS - _FRESH_FULL_HOURS
+    drop = 800.0 * (hours - _FRESH_FULL_HOURS) / span
+    return int(round(_FRESH_FULL_WEIGHT - drop))
+
+
+def prominence_score(transmission_score: int, published_at: str | None, when) -> int:
+    """Market significance scaled by freshness. Does not change disposition."""
+    return max(0, int(transmission_score)) * freshness_weight(published_at, when) // _FRESH_FULL_WEIGHT
+
+
+def story_currency(published_at: str | None, when) -> str:
+    hours = _hours_since(published_at, when)
+    if hours is None or hours > 24:
+        return "archival"
+    return "current"
+
+
+def presentation_rank_tuple(
+    transmission_score: int,
+    published_at: str | None,
+    when,
+) -> tuple[int, int, str]:
+    """Shared order for the saved supplement and the current-headlines panel."""
+    score = max(0, int(transmission_score))
+    return (
+        prominence_score(score, published_at, when),
+        score,
+        str(published_at or ""),
+    )
+
+
 def _hold_review() -> dict[str, Any]:
     comps = _empty_components()
     return _transmission_from_parts(
@@ -522,7 +901,8 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
                 score=score,
                 components=comps,
             )
-        return _hold_review()
+        if not (_material_political_event(text) or _acute_geopolitics(text)):
+            return _hold_review()
 
     if _g10_trigger(text) or _g10_policy_fires(text) or _official_policy_phrase(text):
         g10 = _g10_policy_fires(text) or _official_policy_phrase(text)
@@ -599,6 +979,10 @@ def score_transmission(headline: str, summary: str) -> dict[str, Any]:
             score=9,
             components=comps,
         )
+
+    political = _score_political_or_geopolitics(text)
+    if political is not None:
+        return political
 
     if _bare_oil(text):
         _set_channel(comps, "oil_energy_tot")
@@ -742,6 +1126,8 @@ def _recall_positive_classes(text: str) -> bool:
     ) or _phrase(text, "bank stock")
     macro_link = _any_word(text, ("fed", "yield", "dollar", "treasury"))
     if equity and macro_link:
+        return True
+    if _material_political_event(text) or _acute_geopolitics(text):
         return True
     return False
 

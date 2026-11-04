@@ -249,6 +249,8 @@ def build_report(
         "schema_version": SCHEMA_VERSION,
         "cutoff": acquisition.get("cutoff"),
         "partial": acquisition.get("partial"),
+        "recovery": acquisition.get("recovery"),
+        "optional_source_gaps": list(acquisition.get("optional_source_gaps") or []),
         "receipts": receipts,
         "counts": _count_by_stage(stories),
         "stories": story_dicts,
