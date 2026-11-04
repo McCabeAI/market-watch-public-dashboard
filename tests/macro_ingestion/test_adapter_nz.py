@@ -328,6 +328,46 @@ class TestAdapterNz(unittest.TestCase):
         payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
         self.assertEqual(payload.get("status"), "source_failed")
 
+    def test_anz_confidence_sentence_binding_verified(self) -> None:
+        html = (
+            "<p>The ANZ-Roy Morgan Consumer Confidence Index rose to 100.1 in October 2026.</p>"
+        )
+        points = nz_adapter._parse_anz_confidence(html)
+        self.assertEqual(len(points), 1)
+        self.assertEqual(points[0]["period"], "2026-10")
+        self.assertAlmostEqual(points[0]["value"], 100.1)
+        self.assertEqual(points[0]["period_binding"], "verified")
+
+    def test_anz_confidence_nav_month_without_sentence_is_ambiguous(self) -> None:
+        spec = {
+            "id": "NZ.Consumer.confidence",
+            "role": "scored",
+            "endpoint": "https://www.anz.co.nz/about-us/economic-markets-research/consumer-confidence/",
+            "retrieval_method": "official_web_page_text",
+            "transform": "index_level",
+        }
+        self.mapping[spec["endpoint"]] = (
+            FIXTURES / "anz_consumer_confidence_nav_ambiguous.html"
+        ).read_bytes()
+        payload = nz_adapter.fetch_series(spec, opener=self._opener, now=self.now)
+        self.assertFalse(payload.get("ok"))
+        self.assertEqual(payload.get("status"), "source_failed")
+        self.assertEqual(payload.get("error"), "anz_confidence_ambiguous")
+        self.assertEqual(payload.get("points"), [])
+
+    def test_discover_stats_nz_labour_release_hrefs_q3_newest(self) -> None:
+        html = (FIXTURES / "stats_nz_topic_labour_listing.html").read_text(encoding="utf-8")
+        spec = {
+            "id": "NZ.Labor.unemployment",
+            "endpoint": "https://www.stats.govt.nz/topics/labour-market",
+            "registry_urls": ["https://www.stats.govt.nz/topics/labour-market"],
+        }
+        family = nz_adapter._infer_stats_release_family(spec)
+        rows = nz_adapter.discover_stats_nz_release_hrefs(html, family=family)
+        self.assertEqual(rows[0][1], "2026-Q3")
+        self.assertIn("september-2026-quarter", rows[0][0])
+        self.assertIn("june-2026-quarter", rows[1][0])
+
     def test_hlfs_employment_qoq_oct1_workbook(self) -> None:
         body = OCT1_HLFS_RAW.read_bytes()
         points = nz_adapter._parse_hlfs_xlsx(

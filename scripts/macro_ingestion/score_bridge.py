@@ -69,6 +69,42 @@ def _filter_semantically_valid_points(points: list[dict[str, Any]]) -> list[dict
     return [pt for pt in points if _scoring_point_semantically_valid(pt)]
 
 
+def _catalog_row_for_observation(
+    country: str,
+    obs: dict[str, Any],
+    lookup: dict[tuple[str, str, str], dict[str, Any]],
+    by_id: dict[str, dict[str, Any]],
+) -> dict[str, Any] | None:
+    series_id = obs.get("series_id")
+    transformation = obs.get("transformation")
+    if not isinstance(series_id, str) or not isinstance(transformation, str):
+        return None
+    row = lookup.get((country, series_id, transformation))
+    if row is not None:
+        return row
+
+    catalog_row = by_id.get(series_id)
+    if catalog_row is None:
+        return None
+    if str(catalog_row.get("series_id") or "").strip():
+        return None
+    if str(catalog_row.get("country") or "") != country:
+        return None
+    if str(catalog_row.get("transform") or "") != transformation:
+        return None
+    obs_source = obs.get("source_url")
+    catalog_endpoint = catalog_row.get("endpoint")
+    if not isinstance(obs_source, str) or not obs_source:
+        return None
+    if obs_source != catalog_endpoint:
+        return None
+    catalog_id = str(catalog_row["id"])
+    if catalog_id == "NZ.Consumer.confidence":
+        if str(obs.get("period_binding") or "") != "verified":
+            return None
+    return catalog_row
+
+
 def points_from_observation_stores(
     *,
     observations_dir: Path,
@@ -87,7 +123,7 @@ def points_from_observation_stores(
             transformation = obs.get("transformation")
             if not isinstance(series_id, str) or not isinstance(transformation, str):
                 continue
-            row = lookup.get((country, series_id, transformation))
+            row = _catalog_row_for_observation(country, obs, lookup, by_id)
             if row is None:
                 continue
             catalog_id = str(row["id"])
@@ -108,6 +144,9 @@ def points_from_observation_stores(
                 "latest_release_vintage": obs.get("latest_release_vintage"),
                 "retrieved_at": obs.get("retrieved_at") or checked_at,
             }
+            binding = obs.get("period_binding")
+            if isinstance(binding, str) and binding:
+                candidate["period_binding"] = binding
             if _scoring_point_semantically_valid(candidate):
                 points.append(candidate)
     enrich_points_release_dates(points)

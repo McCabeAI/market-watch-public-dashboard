@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[2]
 import sys
@@ -289,6 +290,74 @@ class TestUSAdapter(unittest.TestCase):
         acq = (payload.get("ledger_extra") or {}).get("acquisition") or {}
         self.assertEqual(acq.get("accepted_source"), "bls_primary")
         self.assertEqual((acq.get("validation_or_fallback") or {}).get("result"), "skipped")
+
+    def test_gdp_fred_timeout_bea_fixture_accepted_source(self) -> None:
+        gdp_spec = copy.deepcopy(
+            next(r for r in self.catalog["series"] if r["id"] == "US.Activity.gdp_domestic_demand")
+        )
+        bea_body = json.dumps(
+            {
+                "BEAAPI": {
+                    "Results": {
+                        "Data": [
+                            {
+                                "LineNumber": "1",
+                                "SeriesCode": "A191RL",
+                                "LineDescription": "Gross domestic product",
+                                "TimePeriod": "2026Q3",
+                                "DataValue": "1.25",
+                            }
+                        ]
+                    }
+                }
+            }
+        ).encode("utf-8")
+
+        def opener(url: str, *, timeout: float = 20, **kwargs):
+            if "fred.stlouisfed.org" in url:
+                raise TimeoutError("The read operation timed out")
+            if "apps.bea.gov" in url:
+                return {"ok": True, "http_status": 200, "body": bea_body, "error": None}
+            raise AssertionError(url)
+
+        with mock.patch.dict(os.environ, {"BEA_API_KEY": "unit-test-bea-key"}, clear=False):
+            payload = fetch_series(
+                gdp_spec,
+                opener=opener,
+                now=datetime(2026, 11, 3, tzinfo=timezone.utc),
+            )
+        self.assertTrue(payload.get("ok"))
+        points = payload.get("points") or []
+        scored = next(p for p in points if p.get("transformation") == gdp_spec["transform"])
+        self.assertEqual(scored["period"], "2026-Q3")
+        self.assertAlmostEqual(float(scored["value"]), 1.25)
+        self.assertEqual(payload.get("accepted_source"), "bea_official_fallback")
+
+    def test_gdp_fred_timeout_without_bea_key_fails_no_points(self) -> None:
+        gdp_spec = copy.deepcopy(
+            next(r for r in self.catalog["series"] if r["id"] == "US.Activity.gdp_domestic_demand")
+        )
+
+        def opener(url: str, *, timeout: float = 20, **kwargs):
+            if "fred.stlouisfed.org" in url:
+                raise TimeoutError("The read operation timed out")
+            raise AssertionError("BEA must not be called without API key")
+
+        with mock.patch.dict(os.environ, {}, clear=True):
+            os.environ.pop("BEA_API_KEY", None)
+            payload = fetch_series(
+                gdp_spec,
+                opener=opener,
+                now=datetime(2026, 11, 3, tzinfo=timezone.utc),
+            )
+        self.assertFalse(payload.get("ok"))
+        self.assertEqual(payload.get("status"), "source_failed")
+        err = str(payload.get("error") or "").lower()
+        self.assertTrue("timeout" in err or "timed out" in err, err)
+        self.assertFalse(payload.get("points"))
+        blob = f"{payload.get('error')} {payload.get('status')} {payload.get('ledger_extra')}"
+        self.assertNotIn("old_but_current", blob)
+        self.assertNotIn("checked_unchanged", blob)
 
 
 if __name__ == "__main__":

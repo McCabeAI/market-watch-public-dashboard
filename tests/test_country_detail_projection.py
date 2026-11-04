@@ -8,9 +8,13 @@ from pathlib import Path
 from scripts.country_detail import policy
 
 try:
-    from scripts.country_detail.projection import build_projection
+    from scripts.country_detail.projection import (
+        build_projection,
+        _ca_monthly_industry_gdp_context_observations,
+    )
 except ImportError:  # pragma: no cover
     build_projection = None
+    _ca_monthly_industry_gdp_context_observations = None
 
 try:
     from scripts.country_detail.render import render_country_detail
@@ -174,6 +178,35 @@ class CountryDetailProjectionTest(unittest.TestCase):
         ]
         if zew_rows:
             self.assertIn("ZEW", html)
+
+    def test_ca_monthly_industry_gdp_is_context_not_score_input(self) -> None:
+        if _ca_monthly_industry_gdp_context_observations is None:
+            self.skipTest("projection helper unavailable")
+        projection = build_projection()
+        observations = projection["countries"]["CA"].get("observations") or []
+        monthly_context = [
+            row
+            for row in observations
+            if row.get("catalog_id") == "CA.Activity.gdp_domestic_demand"
+            and row.get("reference_period") == "2026-08"
+            and row.get("score_role") == "context"
+        ]
+        self.assertTrue(monthly_context, observations)
+        row = monthly_context[0]
+        self.assertFalse(row.get("score_input"))
+        self.assertEqual(row.get("weight"), 0.0)
+        self.assertAlmostEqual(
+            float(row["value"]),
+            -0.006450829500781463,
+        )
+        scored_2026_08 = [
+            row
+            for row in observations
+            if row.get("catalog_id") == "CA.Activity.gdp_domestic_demand"
+            and row.get("reference_period") == "2026-08"
+            and row.get("score_input")
+        ]
+        self.assertEqual(scored_2026_08, [])
 
 
 if __name__ == "__main__":

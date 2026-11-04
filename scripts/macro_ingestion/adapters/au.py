@@ -111,7 +111,84 @@ _DATED_WORKBOOK_SLUG_RE = re.compile(
     r"/(" + "|".join(_ENGLISH_MONTH_SLUGS) + r")-(\d{4})/",
     re.IGNORECASE,
 )
+_ABS_REGISTRY_WORKBOOK_HREF_RE = re.compile(
+    r'href="(?P<path>[^"]*/(?P<mon>' + "|".join(_ENGLISH_MONTH_SLUGS) + r")-(?P<year>\d{4})/(?P<file>[^\"/]+\.xlsx))\"",
+    re.IGNORECASE,
+)
 _MONTHLY_PERIOD_RE = re.compile(r"(20\d{2})-(\d{2})")
+
+
+def _month_slug_sort_key(mon_slug: str, year: int) -> tuple[int, int] | None:
+    mon = mon_slug.lower()[:3]
+    try:
+        month_idx = _ENGLISH_MONTH_SLUGS.index(mon) + 1
+    except ValueError:
+        return None
+    return year, month_idx
+
+
+def _workbook_url_month_key(url: str) -> tuple[int, int] | None:
+    match = _DATED_WORKBOOK_SLUG_RE.search(url or "")
+    if not match:
+        return None
+    return _month_slug_sort_key(match.group(1), int(match.group(2)))
+
+
+def discover_abs_registry_workbook_urls(html: str, *, workbook_name: str) -> list[str]:
+    """Return absolute workbook URLs from a registry landing page, newest month first."""
+    target = workbook_name.lower()
+    found: dict[tuple[int, int], str] = {}
+    for match in _ABS_REGISTRY_WORKBOOK_HREF_RE.finditer(html):
+        if match.group("file").lower() != target:
+            continue
+        key = _month_slug_sort_key(match.group("mon"), int(match.group("year")))
+        if key is None:
+            continue
+        path = match.group("path")
+        url = path if path.startswith("http") else f"https://www.abs.gov.au{path}"
+        found[key] = url
+    return [found[key] for key in sorted(found.keys(), reverse=True)]
+
+
+def choose_newest_abs_registry_workbook_url(
+    static_url: str,
+    discovered_urls: list[str],
+) -> str:
+    """Prefer the newest registry-linked workbook when it is later than the static endpoint."""
+    if not static_url or not discovered_urls:
+        return static_url
+    static_key = _workbook_url_month_key(static_url)
+    newest = discovered_urls[0]
+    newest_key = _workbook_url_month_key(newest)
+    if static_key is None or newest_key is None:
+        return static_url
+    if newest_key > static_key:
+        return newest
+    return static_url
+
+
+def _resolve_workbook_url_from_registry(
+    spec: dict[str, Any],
+    url: str,
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+) -> str:
+    registry_urls = list(spec.get("registry_urls") or [])
+    if not registry_urls or not url:
+        return url
+    listing_url = str(registry_urls[0])
+    try:
+        page = opener(listing_url, timeout=timeout)
+    except Exception:
+        # The pinned workbook remains the source when the landing page is down.
+        return url
+    if not isinstance(page, dict) or not page.get("ok"):
+        return url
+    html = (page.get("body") or b"").decode("utf-8", errors="replace")
+    workbook_name = url.rsplit("/", 1)[-1]
+    discovered = discover_abs_registry_workbook_urls(html, workbook_name=workbook_name)
+    return choose_newest_abs_registry_workbook_url(url, discovered)
 
 
 def _sha256(data: bytes) -> str:
@@ -508,7 +585,20 @@ def _fetch_abs_workbook_series(
             error="missing_series_or_endpoint",
         )
 
+    if str(spec.get("id") or "") == "AU.Consumer.spending":
+        url = _resolve_workbook_url_from_registry(spec, url, opener=opener, timeout=timeout)
     url = _national_accounts_workbook_url(url, series_id)
+    # A landing page can name a later dated workbook than the last catalogued
+    # expected period. Score that workbook's month instead of the older schedule.
+    workbook_key = _workbook_url_month_key(url)
+    if (
+        expected_period
+        and workbook_key
+        and _MONTHLY_PERIOD_RE.fullmatch(expected_period)
+    ):
+        workbook_period = f"{workbook_key[0]}-{workbook_key[1]:02d}"
+        if workbook_period > expected_period:
+            expected_period = workbook_period
 
     fetched = _fetch_workbook_bytes(url, opener=opener, timeout=timeout)
     if not fetched.get("ok"):

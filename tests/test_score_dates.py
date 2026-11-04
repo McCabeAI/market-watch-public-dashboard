@@ -194,15 +194,20 @@ class ScoreDatesPresentationTests(unittest.TestCase):
         board = render_scoreboard(scores)
         header = _score_header(scores)
         ingested = format_ingestion_day(scores.get("score_inputs_last_ingested_at"))
-        through = format_reference_period_through(str(scores.get("scoring_cutoff")))
+        latest = format_reference_period_through(
+            str(scores.get("score_inputs_latest_reference_period"))
+        )
         for blob in (board, header):
             self.assertIn("calibration anchor 21 Sep 2026", blob)
             self.assertIn(f"inputs last ingested {ingested}", blob)
-            self.assertIn(f"reference periods through {through}", blob)
+            self.assertIn(f"latest scored component period {latest}", blob)
+            self.assertIn("Coverage counts scored components only", blob)
+            self.assertNotIn("reference periods through", blob)
             lowered = blob.lower()
             self.assertNotIn("score freeze", lowered)
             self.assertNotIn("scores frozen", lowered)
         self.assertIn('data-score-dates', header)
+        self.assertIn("Latest component", board)
 
     def test_scoreboard_cells_carry_their_dimension_for_stacked_mobile_rows(self) -> None:
         board = render_scoreboard(load_scores())

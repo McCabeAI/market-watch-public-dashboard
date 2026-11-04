@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import calendar
+import copy
 import json
 import math
 import re
@@ -513,12 +514,20 @@ def compute_state(
                     "release_date_status": lineage["release_date_status"],
                 }
             agg = aggregate_dimension(weights, comp_results, cal)
+            comp_periods = [
+                str(state["as_of"])
+                for state in component_state.values()
+                if isinstance(state, dict) and state.get("as_of")
+            ]
+            dimension_as_of = (
+                max(comp_periods, key=period_sort_key) if comp_periods else None
+            )
             countries[country][dimension] = {
                 **agg,
                 "level": _r(agg["level"]),
                 "impulse": _r(agg["impulse"]),
                 "coverage": _r(agg["coverage"], 4),
-                "as_of": cutoff,
+                "as_of": dimension_as_of,
                 "components": weights,
                 "component_state": component_state,
             }
@@ -629,15 +638,105 @@ def build_score_state(
         "date_semantics": {
             "as_of": "Immutable calibration anchor for the 1–100 LEVEL engine (not the latest scored input).",
             "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
-            "scoring_cutoff": "Latest calendar month the LEVEL engine may read from history.",
+            "scoring_cutoff": (
+                "Latest calendar month present in history that a replay cutoff may include; "
+                "not the reference period every dimension card is current through."
+            ),
             "score_inputs_latest_reference_period": "Latest reference period among scored components.",
             "score_inputs_last_ingested_at": "Latest retrieved_at among observations used in the current score.",
             "last_refresh_date": "UTC date of score_inputs_last_ingested_at, or the calibration anchor if none.",
+            "as_of_representation": (
+                "component_period: each dimension as_of is the latest scored component reference period "
+                "for that dimension; not the global scoring_cutoff month."
+            ),
         },
+        "as_of_representation": "component_period",
         "baseline_score": float(cal["neutral_score"]),
         "baseline_meaning": "structural_policy_neutral_not_reindex_date",
         "countries": countries_out,
     }
+
+
+def _score_state_first_mismatch(left: Any, right: Any, path: str = "") -> str | None:
+    if type(left) is not type(right):
+        return f"{path or '$'}: type {type(left).__name__} != {type(right).__name__}"
+    if isinstance(left, dict):
+        left_keys = set(left)
+        right_keys = set(right)
+        for key in sorted(left_keys | right_keys):
+            sub = f"{path}.{key}" if path else str(key)
+            if key not in left:
+                return f"{sub}: missing in staged"
+            if key not in right:
+                return f"{sub}: missing in recomputed"
+            found = _score_state_first_mismatch(left[key], right[key], sub)
+            if found:
+                return found
+        return None
+    if isinstance(left, list):
+        if len(left) != len(right):
+            return f"{path or '$'}: list length {len(left)} != {len(right)}"
+        for idx, (a, b) in enumerate(zip(left, right)):
+            found = _score_state_first_mismatch(a, b, f"{path}[{idx}]")
+            if found:
+                return found
+        return None
+    if left != right:
+        return f"{path or '$'}: {left!r} != {right!r}"
+    return None
+
+
+def _legacy_global_cutoff_dimension_as_ofs(staged: dict[str, Any]) -> bool:
+    cutoff = staged.get("scoring_cutoff")
+    countries = staged.get("countries") or {}
+    for country, dims in countries.items():
+        if not isinstance(dims, dict):
+            return False
+        for dim_name, dim in dims.items():
+            if not isinstance(dim, dict):
+                return False
+            as_of = dim.get("as_of")
+            if as_of is None:
+                continue
+            if str(as_of) != str(cutoff):
+                return False
+    return True
+
+
+def _normalize_legacy_global_cutoff_staged(staged: dict[str, Any], recomputed: dict[str, Any]) -> dict[str, Any]:
+    normalized = copy.deepcopy(staged)
+    countries = normalized.get("countries") or {}
+    for _country, dims in countries.items():
+        if not isinstance(dims, dict):
+            continue
+        for _dim_name, dim in dims.items():
+            if not isinstance(dim, dict):
+                continue
+            dim["as_of"] = dim.get("latest_reference_period")
+    semantics = normalized.setdefault("date_semantics", {})
+    recomputed_semantics = recomputed.get("date_semantics") or {}
+    if isinstance(recomputed_semantics.get("scoring_cutoff"), str):
+        semantics["scoring_cutoff"] = recomputed_semantics["scoring_cutoff"]
+    if isinstance(recomputed_semantics.get("as_of_representation"), str):
+        semantics["as_of_representation"] = recomputed_semantics["as_of_representation"]
+    normalized["as_of_representation"] = "component_period"
+    return normalized
+
+
+def scores_match_staged(staged: dict[str, Any], recomputed: dict[str, Any]) -> str | None:
+    """Return None when staged and recomputed match under versioned as_of rules."""
+    representation = staged.get("as_of_representation")
+    if representation == "component_period":
+        return _score_state_first_mismatch(staged, recomputed)
+
+    if representation not in (None, ""):
+        return f"as_of_representation: unsupported {representation!r}"
+
+    if not _legacy_global_cutoff_dimension_as_ofs(staged):
+        return "legacy staged scores: dimension as_of is not global scoring_cutoff"
+
+    normalized = _normalize_legacy_global_cutoff_staged(staged, recomputed)
+    return _score_state_first_mismatch(normalized, recomputed)
 
 
 def validate_state(state: dict[str, Any]) -> None:

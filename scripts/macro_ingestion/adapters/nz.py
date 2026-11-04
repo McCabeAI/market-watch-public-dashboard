@@ -924,41 +924,68 @@ def _fetch_pci(
     return payload
 
 
-def _parse_anz_confidence(html: str) -> list[dict[str, Any]]:
+_ANZ_CONFIDENCE_PHRASE_RE = re.compile(
+    r"(?:anz[-\s]*roy\s*morgan|roy\s*morgan).{0,80}consumer\s+confidence|"
+    r"consumer\s+confidence.{0,80}(?:anz[-\s]*roy\s*morgan|roy\s*morgan)",
+    re.IGNORECASE,
+)
+_ANZ_INDEX_VALUE_RE = re.compile(r"\b(\d{2,3}\.\d)\b")
+_ANZ_MONTH_YEAR_RE = re.compile(
+    r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b",
+    re.IGNORECASE,
+)
+
+
+def _anz_confidence_plain_text(html: str) -> str:
     text = re.sub(r"<[^>]+>", " ", html)
-    text = html_lib.unescape(re.sub(r"\s+", " ", text))
-    patterns = [
-        re.compile(
-            r"consumer confidence(?: index)?[^0-9]{0,40}(\d{2,3}\.\d)\b",
-            re.IGNORECASE,
-        ),
-        re.compile(r"confidence (?:index )?(?:at|to|of) (\d{2,3}\.\d)", re.IGNORECASE),
-        re.compile(r"ANZ-Roy Morgan Consumer Confidence[^0-9]{0,20}(\d{2,3}\.\d)", re.IGNORECASE),
-    ]
-    for pat in patterns:
-        match = pat.search(text)
-        if match:
-            value = float(match.group(1))
-            month_match = re.search(
-                r"\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d{4})\b",
-                text,
-                re.I,
-            )
-            period = "2026-08"
-            if month_match:
-                month_name = month_match.group(1).title()
-                year = int(month_match.group(2))
-                month_num = datetime.strptime(month_name[:3], "%b").month
-                period = f"{year}-{month_num:02d}"
-            return [
-                {
-                    "period": period,
-                    "value": value,
-                    "transformation": "index_level",
-                    "revision_status": "final",
-                }
-            ]
+    return html_lib.unescape(re.sub(r"\s+", " ", text)).strip()
+
+
+def _anz_confidence_binding_in_span(span: str) -> dict[str, Any] | None:
+    if not _ANZ_CONFIDENCE_PHRASE_RE.search(span):
+        return None
+    value_hits = list(_ANZ_INDEX_VALUE_RE.finditer(span))
+    month_hits = list(_ANZ_MONTH_YEAR_RE.finditer(span))
+    if len(value_hits) != 1 or len(month_hits) != 1:
+        return None
+    month_name = month_hits[0].group(1).title()
+    year = int(month_hits[0].group(2))
+    month_num = datetime.strptime(month_name[:3], "%b").month
+    return {
+        "period": f"{year}-{month_num:02d}",
+        "value": float(value_hits[0].group(1)),
+        "transformation": "index_level",
+        "revision_status": "final",
+        "period_binding": "verified",
+    }
+
+
+def _parse_anz_confidence(html: str) -> list[dict[str, Any]]:
+    text = _anz_confidence_plain_text(html)
+    if not text:
+        return []
+    bindings: list[dict[str, Any]] = []
+    for sentence in re.split(r"(?<=[.!?])\s+", text):
+        bound = _anz_confidence_binding_in_span(sentence)
+        if bound is not None:
+            bindings.append(bound)
+    if len(bindings) == 1:
+        return [bindings[0]]
     return []
+
+
+def _anz_confidence_page_state(html: str) -> str:
+    """Return ok, ambiguous, missing, or empty for ANZ consumer-confidence HTML."""
+    text = _anz_confidence_plain_text(html)
+    if not text:
+        return "empty"
+    if _parse_anz_confidence(html):
+        return "ok"
+    if _ANZ_CONFIDENCE_PHRASE_RE.search(text):
+        return "ambiguous"
+    if _ANZ_INDEX_VALUE_RE.search(text) or _ANZ_MONTH_YEAR_RE.search(text):
+        return "ambiguous"
+    return "missing"
 
 
 def _fetch_anz_confidence(
@@ -972,8 +999,16 @@ def _fetch_anz_confidence(
     if not resp.get("ok"):
         return _fail(resp.get("error") or "anz_fetch_failed", http_status=resp.get("http_status"))
     body = resp.get("body") or b""
-    points = _parse_anz_confidence(_decode_html(body))
+    html = _decode_html(body)
+    state = _anz_confidence_page_state(html)
+    points = _parse_anz_confidence(html)
     if not points:
+        if state == "ambiguous":
+            return _fail(
+                "anz_confidence_ambiguous",
+                status="source_failed",
+                http_status=resp.get("http_status"),
+            )
         return _fail("anz_index_not_parseable", status="source_failed", http_status=resp.get("http_status"))
     for pt in points:
         pt["source_url"] = endpoint

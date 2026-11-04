@@ -99,6 +99,70 @@ def _matching_rows(
     ]
 
 
+def _observation_matches_series(
+    obs: dict[str, Any], *, transformation: str, point_series_id: str, spec: dict[str, Any]
+) -> bool:
+    if obs.get("transformation") != transformation:
+        return False
+    if "series_ids" in spec:
+        return obs.get("series_id") in spec["series_ids"]
+    expected = spec.get("series_id")
+    if expected is not None:
+        return obs.get("series_id") == expected
+    obs_sid = obs.get("series_id")
+    return obs_sid in (None, "") or obs_sid == point_series_id
+
+
+def _matching_rows_for_point(
+    observations: list[dict[str, Any]],
+    *,
+    transformation: str,
+    point_series_id: str,
+    spec: dict[str, Any],
+) -> list[dict[str, Any]]:
+    return [
+        obs
+        for obs in observations
+        if _observation_matches_series(
+            obs, transformation=transformation, point_series_id=point_series_id, spec=spec
+        )
+    ]
+
+
+def _latest_template_for_point(
+    observations: list[dict[str, Any]],
+    *,
+    transformation: str,
+    point_series_id: str,
+    spec: dict[str, Any],
+) -> dict[str, Any] | None:
+    template: dict[str, Any] | None = None
+    for obs in observations:
+        if _observation_matches_series(
+            obs, transformation=transformation, point_series_id=point_series_id, spec=spec
+        ):
+            template = obs
+    return template
+
+
+def _latest_period_for_point(
+    observations: list[dict[str, Any]],
+    *,
+    transformation: str,
+    point_series_id: str,
+    spec: dict[str, Any],
+) -> str | None:
+    rows = _matching_rows_for_point(
+        observations,
+        transformation=transformation,
+        point_series_id=point_series_id,
+        spec=spec,
+    )
+    if not rows:
+        return None
+    return max((str(r["reference_period"]) for r in rows), key=period_sort_key)
+
+
 def _latest_template(
     observations: list[dict[str, Any]], *, transformation: str, series_id: str
 ) -> dict[str, Any] | None:
@@ -303,8 +367,18 @@ def merge_scored_points(
             skipped.append({"id": point_id, "reason": "partial_series_mismatch"})
             continue
 
+        if catalog_id == "NZ.Consumer.confidence":
+            if str(point.get("period_binding") or "") != "verified":
+                skipped.append({"id": point_id, "reason": "ambiguous_confidence_period"})
+                continue
+
         observations = comp.setdefault("observations", [])
-        matching = _matching_rows(observations, transformation=transformation, series_id=series_id)
+        matching = _matching_rows_for_point(
+            observations,
+            transformation=transformation,
+            point_series_id=series_id,
+            spec=spec,
+        )
         same_period = [r for r in matching if r.get("reference_period") == period]
 
         if same_period:
@@ -320,8 +394,11 @@ def merge_scored_points(
                 ):
                     skipped.append({"id": point_id, "reason": "final_not_superseded_by_flash"})
                 else:
-                    template = _latest_template(
-                        observations, transformation=transformation, series_id=series_id
+                    template = _latest_template_for_point(
+                        observations,
+                        transformation=transformation,
+                        point_series_id=series_id,
+                        spec=spec,
                     )
                     if template is None:
                         skipped.append({"id": point_id, "reason": "partial_malformed"})
@@ -349,8 +426,11 @@ def merge_scored_points(
                         countries_changed.add(country)
             continue
 
-        latest = _latest_period(
-            observations, transformation=transformation, series_id=series_id
+        latest = _latest_period_for_point(
+            observations,
+            transformation=transformation,
+            point_series_id=series_id,
+            spec=spec,
         )
         if latest is None:
             skipped.append({"id": point_id, "reason": "partial_malformed"})
@@ -366,8 +446,11 @@ def merge_scored_points(
                 skipped.append({"id": point_id, "reason": "not_a_forward_observation"})
                 continue
 
-        template = _latest_template(
-            observations, transformation=transformation, series_id=series_id
+        template = _latest_template_for_point(
+            observations,
+            transformation=transformation,
+            point_series_id=series_id,
+            spec=spec,
         )
         if template is None:
             skipped.append({"id": point_id, "reason": "partial_malformed"})
