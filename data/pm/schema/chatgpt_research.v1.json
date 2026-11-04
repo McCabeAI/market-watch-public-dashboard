@@ -1,0 +1,153 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mccabeai.github.io/market-watch-public-dashboard/pm/chatgpt_research.v1.json",
+  "title": "ChatGPT PM research memory ticket",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "pm_id",
+    "action",
+    "expected_research_sha256"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": 1 },
+    "type": { "const": "RESEARCH_MEMORY" },
+    "pm_id": { "const": "chatgpt" },
+    "action": {
+      "enum": ["create", "revise", "close", "invalidate", "reject", "edge_update"]
+    },
+    "expected_research_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "expected_revision_id": { "type": "string", "minLength": 1 },
+    "hypothesis_id": {
+      "type": "string",
+      "pattern": "^hyp-chatgpt-[a-z0-9-]{8,80}$"
+    },
+    "hypothesis": {
+      "type": "object",
+      "required": ["claim", "title", "as_of"],
+      "properties": {
+        "hypothesis_id": {
+          "type": "string",
+          "pattern": "^hyp-chatgpt-[a-z0-9-]{8,80}$"
+        },
+        "claim": { "type": "string", "minLength": 1, "maxLength": 4000 },
+        "title": { "type": "string", "minLength": 1, "maxLength": 160 },
+        "as_of": { "type": "string", "minLength": 1 },
+        "review_due": { "type": ["string", "null"], "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+        "evidence": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "object",
+            "required": ["ref", "as_of", "kind"],
+            "properties": {
+              "ref": { "type": "string" },
+              "as_of": { "type": "string" },
+              "note": { "type": "string" },
+              "kind": {
+                "enum": ["git", "drive", "notion", "journal", "packet", "url"]
+              }
+            }
+          }
+        },
+        "falsifiers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["statement"],
+            "properties": {
+              "statement": { "type": "string" }
+            }
+          }
+        },
+        "competing_explanations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["statement"],
+            "properties": {
+              "statement": { "type": "string" }
+            }
+          }
+        },
+        "calculations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["description", "reproducible_ref", "as_of"],
+            "properties": {
+              "description": { "type": "string" },
+              "reproducible_ref": { "type": "string" },
+              "as_of": { "type": "string" },
+              "quote": { "type": "string" }
+            }
+          }
+        },
+        "forecast": {
+          "type": "object",
+          "required": ["expectation", "stated_at"],
+          "properties": {
+            "expectation": { "type": "string" },
+            "horizon": { "type": ["string", "null"] },
+            "metric": { "type": ["string", "null"] },
+            "quantitative": { "type": ["string", "null"] },
+            "stated_at": { "type": "string" }
+          }
+        }
+      }
+    },
+    "evidence_assessment": {
+      "enum": ["supports", "contradicts", "mixed", "inconclusive"]
+    },
+    "contradicts_revision_id": { "type": "string" },
+    "disposition": { "enum": ["rejected", "missed"] },
+    "rejected_reason": { "type": "string", "minLength": 1, "maxLength": 2000 },
+    "edge_method": {
+      "type": "object",
+      "properties": {
+        "method_id": {
+          "type": "string",
+          "pattern": "^edge-[a-z0-9-]{8,80}$"
+        },
+        "statement": { "type": "string" },
+        "method_status": { "enum": ["active", "retired"] },
+        "confidence": {
+          "enum": ["not_assessed", "low", "medium", "high"]
+        },
+        "conditions_worked": {
+          "type": "array",
+          "maxItems": 8,
+          "items": { "type": "string", "maxLength": 500 }
+        },
+        "conditions_failed": {
+          "type": "array",
+          "maxItems": 8,
+          "items": { "type": "string", "maxLength": 500 }
+        },
+        "counterexamples": {
+          "type": "array",
+          "maxItems": 8,
+          "items": { "type": "string", "maxLength": 500 }
+        },
+        "scope": { "type": "object" }
+      }
+    },
+    "accept_as_method": { "type": "boolean" },
+    "promotion_basis": {
+      "type": "object",
+      "required": ["basis_kind", "source_id", "rationale"],
+      "properties": {
+        "basis_kind": {
+          "enum": ["lesson", "postmortem", "reflection", "hypothesis"]
+        },
+        "source_id": { "type": "string", "minLength": 1 },
+        "rationale": { "type": "string", "minLength": 40 }
+      }
+    }
+  }
+}

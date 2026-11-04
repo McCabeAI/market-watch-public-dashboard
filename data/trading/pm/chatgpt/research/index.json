@@ -1,0 +1,65 @@
+{
+  "as_of": "2026-11-03T18:36:08.042362-05:00",
+  "boundaries": {
+    "does_not_mutate_books": true,
+    "not_a_trade": true,
+    "not_frozen_evidence": true,
+    "runtime_autoload": false
+  },
+  "edge": {
+    "current_revision_id": "rev-edge-portfolio-pass-20260920-01",
+    "method_ids": [
+      "edge-portfolio-pass-20260920"
+    ],
+    "updated_at": "2026-09-20T20:35:23-04:00"
+  },
+  "hypotheses": [
+    {
+      "as_of": "2026-11-03T18:36:08.042362-05:00",
+      "current_revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-04",
+      "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+      "review_due": null,
+      "status": "open",
+      "summary": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/D",
+      "title": "CORRA_2027H-Z receive",
+      "updated_at": "2026-11-03T18:36:08.042362-05:00"
+    },
+    {
+      "as_of": "2026-10-02T14:30:12.373594-04:00",
+      "current_revision_id": "rev-hyp-chatgpt-rejected-cad-fx-20261002-01",
+      "hypothesis_id": "hyp-chatgpt-rejected-cad-fx-20261002",
+      "review_due": null,
+      "status": "rejected",
+      "summary": "long CADJPY or short USDCAD could offset a Canada-energy/hawk shock, but both add separate FX and yen/USD regime risk and are weaker independent edges",
+      "title": "Rejected complement: long CADJPY or short USDCAD",
+      "updated_at": "2026-10-02T14:30:12.373594-04:00"
+    },
+    {
+      "as_of": "2026-10-02T14:30:12.373594-04:00",
+      "current_revision_id": "rev-hyp-chatgpt-rejected-duration-beta-20261002-01",
+      "hypothesis_id": "hyp-chatgpt-rejected-duration-beta-20261002",
+      "review_due": null,
+      "status": "rejected",
+      "summary": "long US 10Y and receiving AONIA add overlapping duration/disinflation beta rather than diversification",
+      "title": "Rejected complement: long US 10Y or receive AONIA",
+      "updated_at": "2026-10-02T14:30:12.373594-04:00"
+    }
+  ],
+  "owner_id": "chatgpt",
+  "owner_type": "pm",
+  "research_sha256": "f5a3ad3eaef5c67edda962afa4e27d531dfe66131529ed07ffc835af369670ea",
+  "retrieval": {
+    "entrypoint_doc": "docs/CHATGPT_RESEARCH_MEMORY_V1.md",
+    "paths": {
+      "archive_hypothesis_revision": "data/trading/pm/chatgpt/research/archive/<hypothesis_id>/<revision_id>.json",
+      "edge_archive_revision": "data/trading/pm/chatgpt/research/edge/archive/<revision_id>.json",
+      "edge_profile": "data/trading/pm/chatgpt/research/edge/profile.json",
+      "hypothesis_current": "data/trading/pm/chatgpt/research/hypotheses/<hypothesis_id>.json",
+      "index": "data/trading/pm/chatgpt/research/index.json",
+      "migration": "data/trading/pm/chatgpt/research/migration.json",
+      "receipts": "data/trading/pm/chatgpt/research/receipts/<fingerprint>.json"
+    }
+  },
+  "schema_version": 1,
+  "type": "CHATGPT_RESEARCH_INDEX"
+}
