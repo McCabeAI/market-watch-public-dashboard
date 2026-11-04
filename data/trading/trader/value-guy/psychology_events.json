@@ -1023,6 +1023,59 @@
       "subject": {
         "session_pnl_change_usd": 49192.17
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          800000.0,
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "event_id": "pse-000044",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261104",
+      "seq": 44,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0003,
+        "complacency": 0.0144,
+        "defensiveness": -0.001,
+        "external_pressure": -0.0005,
+        "frustration": -0.001,
+        "revenge_pressure": -0.0003,
+        "self_trust": 0.0032
+      },
+      "event_id": "pse-000045",
+      "kind": "session_gain",
+      "magnitude": 0.16733414000000002,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261104",
+      "scale": 1.0,
+      "seq": 45,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 83667.07
+      }
     }
   ],
   "owner_id": "value-guy",

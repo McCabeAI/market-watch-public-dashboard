@@ -1676,6 +1676,62 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "The residual March SOFR receive is still the live fade of leftover hike premium: cash 3.95 versus implied 4.345 leaves 39.5 basis points after 23.5 basis points of reversion from the 4.58 entry. Australian dollar-New Zealand at 1.2456 is a 99.6 five-year percentile, but a new spot fade from this seat would leave the already-working rates residual for a second ticket that does not improve the cash-to-March compression. Hold the five million receive; do not add, and do not open the cross."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 5000000.0,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Keep the residual five million March receive. Cash 3.95 versus 4.365 still leaves 41.5bp after the move from 4.58; the 2bp backup from 4.345 is not a new initiation. Do not add and do not open a second fade in Australian dollar-New Zealand.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "dd5449558a58a4581b6f2e80ef530dcb56acd3451dbe01f90f4be5b7b628d923",
+      "event_id": "jde-979bb490b27947a7",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if March implied reverses higher toward the 4.58 entry, or if official cash re-prices up toward 4.365 in a way that validates the hike path instead of strip-to-cash compression.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "453d97c40fafaa12d834ecc135c4dd4f5ac380bb5c0667f54ec6fcada0feaea0",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9228551cdcf2f82e4189c49b71fa825bf62b0def2706a7258f378fd2b6dde2da"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "official cash SOFR is 3.95 against March 2027 implied 4.365, so 41.5bp of unused hike premium remains versus the overnight anchor; the live book is already long pos-1477172adb86 at 5,000,000 from 4.58, with the prior mark 4.345. The strip still prices December 4.16, June 4.495 and a September peak 4.535. the 2bp backup from 4.345 is noise, not a completed re-anchor, and the residual receive is still the fade of crowded hike extrapolation into a cash rate that has not followed. US 10-year 4.95 sits at the 97th five-year percentile but has already fallen 33bp over one month, so that is a move in progress rather than a fresh stretch to duplicate. AUDNZD 1.2417 is a 94th one-year and 99th five-year print, and NZDUSD 0.5624 is a 7th one-year print, but NZ sovereign tenors are unavailable and the cross already fell 0.31 percent on the day, so a new spot fade would leave the working cash-to-March compression. whether the 41.5 to 58.5bp path is actually delivered. Hold the residual March receive; do not add; do not open the cross.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "official cash SOFR is 3.95 against March 2027 implied 4.365, so 41.5bp of unused hike premium remains versus the overnight anchor; the live book is already long pos-1477172adb86 at 5,000,000 from 4.58, with the prior mark 4.345. The strip still prices December 4.16, June 4.495 and a September peak 4.535. the 2bp backup from 4.345 is noise, not a completed re-anchor, and the residual receive is still the fade of crowded hike extrapolation into a cash rate that has not followed. US 10-year 4.95 sits at the 97th five-year percentile but has already fallen 33bp over one month, so that is a move in progress rather than a fresh stretch to duplicate. AUDNZD 1.2417 is a 94th one-year and 99th five-year print, and NZDUSD 0.5624 is a 7th one-year print, but NZ sovereign tenors are unavailable and the cross already fell 0.31 percent on the day, so a new spot fade would leave the working cash-to-March compression. whether the 41.5 to 58.5bp path is actually delivered. Hold the residual March receive; do not add; do not open the cross."
     }
   ],
   "schema_version": 1,

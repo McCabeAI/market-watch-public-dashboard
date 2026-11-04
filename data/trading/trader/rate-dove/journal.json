@@ -1672,6 +1672,62 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "Cash Canada is 2.55 against a 2027 path of March 2.925, June 3.075, September 3.19 and December 3.28, so the strip still prices hikes rather than cuts. The live 2027 Canada strip receive remains the cleanest underpriced-easing expression: entry 3.4 is already through the book mark near 3.18, but that average is still far above cash and still embeds 2027 tightening. Restrictive policy and Brent at 104.77 can bite demand before those hikes land. Cash SOFR 3.95 versus March 4.345 rhymes but does not replace the existing Canada strip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000.0,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Keep the existing 42.5 million 2027 Canada strip receive. Cash 2.54 versus a still-hiking 2027 path at a 3.155 average leaves unused tightening; the 3.4 entry is through that average, not a completed trade.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 65,
+      "decision_fingerprint": "162fdaf3a063bfd3e72d8d9e5a69b51b6d449629189eae4d7271c93ef6002812",
+      "event_id": "jde-1dededd401c74780",
+      "funding_view": null,
+      "invalidation": "Stop holding if the 2027 Canada strip mark revisits the 3.4 entry on a hike-validating reprice, or if cash Canada rises toward the 2.97 March contract in a way that confirms the 2027 tightening path. Oil alone is not invalidation.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "de2958f47036edf69f544dec53eba62fbd4a5d9ff383b1c8f875b21efacfff6f",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b163c571c987e2634849c2929f89a91fa1aa8d77ca7bdb8fb21ba26c53efa994"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash Canada is 2.54 against a 2027 path of March 2.97, June 3.115, September 3.225 and December 3.31, so the four-contract average at 3.155 still prices 61.5 basis points of tightening rather than cuts. Keep receiving the live 2027 Canada strip: the 3.4 entry is already through 3.155, but that average remains far above cash and still embeds 2027 hikes. Restrictive policy, cooling Canada labor, and Brent at 103.60 can bite demand before those hikes land. Cash SOFR 3.95 versus March 4.365 rhymes but does not replace the existing Canada strip. Dollar-Canada near 1.3975 mixes oil into a path residual already owned.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "Cash Canada is 2.54 against a 2027 path of March 2.97, June 3.115, September 3.225 and December 3.31, so the four-contract average at 3.155 still prices 61.5 basis points of tightening rather than cuts. Keep receiving the live 2027 Canada strip: the 3.4 entry is already through 3.155, but that average remains far above cash and still embeds 2027 hikes. Restrictive policy, cooling Canada labor, and Brent at 103.60 can bite demand before those hikes land. Cash SOFR 3.95 versus March 4.365 rhymes but does not replace the existing Canada strip. Dollar-Canada near 1.3975 mixes oil into a path residual already owned."
     }
   ],
   "schema_version": 1,

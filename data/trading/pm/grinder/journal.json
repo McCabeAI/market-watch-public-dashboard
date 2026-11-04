@@ -1692,6 +1692,73 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "AUDNZD at 1.2456 is a 99.6 five-year extreme while kiwi is independently cheap versus the dollar at a 3.5 five-year percentile. Shorting the cross is the cleaner kiwi mean-reversion expression: it fades rich Aussie versus cheap kiwi without a naked long in a high-beta commodity currency while Hormuz remains the swing factor. Australian tightening into March is a real headwind and carry is mildly against the short, so the ticket is half the merchant size, short-dated, and cut quickly if the cross extends rather than mean-reverts. Even a half-percent fade covers the official overnight charge on a two-to-three percent adverse path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 10000000,
+          "position_id": "pm-grinder-9366bc9ee048",
+          "rationale": "The cross remains at the 94th percentile after 1.2456 to 1.2417, invalidation through 1.255 is intact, and shocked capital on this ticket stays 0.1 million. Hold the original ten million; do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-04T07:08:42.270612-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "07e36da5a1d9f810431ef61a86ee0af27588c1809c3c8769f236f519ddbbf452",
+      "event_id": "jde-ad152ee0ed034fae",
+      "funding_view": null,
+      "invalidation": "Cut if AUDNZD extends through 1.255 or stays pinned at the extreme without drifting toward the recent distribution. A kiwi-specific shock that lifts the cross while oil and risk appetite stay firm would also void the mean-reversion case.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-grinder-9366bc9ee048"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ce1c8000f526b87202ac89b9c315f9150f6bce1b601121590c162b2afd1c69bd",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "The live swing already avoids sitting in pure cash at the overnight benchmark. Expanding now would be rank-chasing rather than a cleaner hurdle clearance.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "variance",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "104681ee362cb2845607bcfb0345850bdd680d202c9d7aaebc2d9c56f00f88ad"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "56da2a89ceeb761ace70a92ecae2d103204f91c67c7ceb8b00cac103cfb6ac34",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261104-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AUDNZD is still near the top of its one-year range at 1.2417 after drifting from 1.2456, so the existing short retains a swing path if the cross leaves that extreme toward the recent distribution. Fresh tickets in NZDUSD, AUDCAD, USDJPY, or March leftovers would expand risk into a mid-range oil cross, a stretched yen, or a two-way 41 to 44 basis-point cash-versus-March strip that still sits against Brent near 103.60. Official overnight on shocked capital is the hurdle those new ideas fail; the working ten-million cross does not need to be enlarged.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "AUDNZD is still near the top of its one-year range at 1.2417 after drifting from 1.2456, so the existing short retains a swing path if the cross leaves that extreme toward the recent distribution. Fresh tickets in NZDUSD, AUDCAD, USDJPY, or March leftovers would expand risk into a mid-range oil cross, a stretched yen, or a two-way 41 to 44 basis-point cash-versus-March strip that still sits against Brent near 103.60. Official overnight on shocked capital is the hurdle those new ideas fail; the working ten-million cross does not need to be enlarged."
     }
   ],
   "schema_version": 1,

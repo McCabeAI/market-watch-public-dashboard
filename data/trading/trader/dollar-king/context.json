@@ -138,7 +138,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -49128.19,
     "status": "ok"
   },
   "learning": {
@@ -149,7 +149,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "1fdbd0e0910b72b697bb9ff4b1591c70629694188f6511e1d88f9ea864ec1d9b",
+  "memory_context_sha256": "2e92a70b213e632a2a7cc0071ba0ae190a67187c463b0e0a42820af7ee3fc220",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -166,7 +166,7 @@
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 49150.13,
         "holding_seconds": 428537,
         "horizon_elapsed_fraction": 0.1102,
         "horizon_status": "within",
@@ -174,15 +174,15 @@
         "intended_horizon_days": 45,
         "mae_usd": -102370.52,
         "mechanical_order": false,
-        "mfe_usd": 0.0,
+        "mfe_usd": 28921.04,
         "move_versus_entry_intent": "against_intent",
         "order_policy": "review_only",
         "position_id": "pos-012b8f0c252c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Dollar-yen grinds higher as the 271 basis-point SOFR-TONA cash gap and the March 2027 4.39 versus 1.67 path gap keep paying after a hold, not as a one-day devaluation spike.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 28921.04,
+        "retained_mfe_fraction": -0.6995,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 200000.0,
@@ -219,7 +219,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -229,17 +229,17 @@
       "defensiveness": {
         "band": "calm",
         "trend": "down",
-        "value": 0.26
+        "value": 0.25
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.24
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -248,7 +248,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.55
       },
       "thesis_attachment": {
@@ -267,11 +267,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.20487238,
-        "run_id": "overnight-20261102"
-      },
-      {
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261102"
@@ -280,15 +275,20 @@
         "kind": "session_gain",
         "magnitude": 0.16423898,
         "run_id": "overnight-20261103"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.09825638,
+        "run_id": "overnight-20261104"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ddbc93ac6350a9c3f6a101cb3b1b4f699dc461cb227bf2c16b20b7257bea6f18",
+    "state_sha256": "009fb7020f10214c71c70c241da7c7160dee715c409771992ad6b5c093780016",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 1
+      "session_win": 2
     }
   },
   "recent_closed_trades": [

@@ -1676,6 +1676,62 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "The dollar still belongs versus yen: official SOFR is 3.95 against cash TONA 1.227 and March 2027 TONA 1.665, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 157.90 versus 158.06 at entry, a cheaper dollar print after a one-day rise from the prior book mark, not a closed United States-Japan rate gap and not a chase. Dollar-Canada at 1.3974 is the worse dollar pair while Brent is 104.77, so the live twenty million dollar-yen long is the expression that stays on."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 20000000,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": "Keep the live twenty million dollar-yen long. SOFR 3.95 versus cash TONA 1.227 and March TONA 1.6625 still pays the United States-Japan gap, and 158.29 is a grind higher from 157.90 through 158.06, not a thesis break. Dollar-Canada at 1.3975 with Brent 103.60 is the inferior dollar pair and is not opened.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 72,
+      "decision_fingerprint": "719226b4fd33676661dc42ea291157f89bfc07937de786056b4e862bf35cb02d",
+      "event_id": "jde-757ab049b5ee4f67",
+      "funding_view": null,
+      "invalidation": "The long is wrong if a later freeze shows Japan hiking and TONA catching the March contract from the Japan side, or if official SOFR converges toward TONA from the United States side. A Ministry of Finance intervention print that reverses the leftover also kills it. Three-digit oil is why dollar-Canada stays flat, not why this dollar-yen line is cut.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1fdbd0e0910b72b697bb9ff4b1591c70629694188f6511e1d88f9ea864ec1d9b",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ddbc93ac6350a9c3f6a101cb3b1b4f699dc461cb227bf2c16b20b7257bea6f18"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar still belongs versus yen. Official SOFR is 3.95 against cash TONA 1.227 and March 2027 TONA 1.6625, while March SOFR is 4.365, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 158.29 versus 158.06 at entry and 157.90 at the prior mark: a grind through entry from the cheaper leftover print, not a closed United States-Japan rate gap and not a reason to add. Dollar-Canada at 1.3975 with Brent 103.60 and cash Canada 2.54 is the worse dollar pair while oil is still three-digit, so the live twenty million dollar-yen long is the expression that stays on.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "The dollar still belongs versus yen. Official SOFR is 3.95 against cash TONA 1.227 and March 2027 TONA 1.6625, while March SOFR is 4.365, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 158.29 versus 158.06 at entry and 157.90 at the prior mark: a grind through entry from the cheaper leftover print, not a closed United States-Japan rate gap and not a reason to add. Dollar-Canada at 1.3975 with Brent 103.60 and cash Canada 2.54 is the worse dollar pair while oil is still three-digit, so the live twenty million dollar-yen long is the expression that stays on."
     }
   ],
   "schema_version": 1,

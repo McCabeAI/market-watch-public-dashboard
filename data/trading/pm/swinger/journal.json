@@ -1713,6 +1713,71 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "AUDNZD at 1.2456 is a five-year extreme while NZDUSD still sits in the cheap tail at 0.5627. That cross has stretched far beyond a 30-basis-point Australia versus New Zealand 10-year gap, and it is the only concentrated, asymmetric swing on a firm tape. Short the cross as a real swing; oil remaining bid is the accepted tax, not a reason to stay flat. CORRA March stays closed: 2.55 cash versus 2.925 is the same leftover path already booked into the event-implied print, not a new dislocation versus cash or the Bank of Canada."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 300000000,
+          "position_id": "pm-swinger-f8f9feb515d2",
+          "rationale": "Thesis intact: 1.2417 remains a 94th-percentile print, kiwi is still cheap, and the 1.20-1.22 zone is not in. The overnight fade from 1.2456 confirms direction without completing the swing, so size stays 300m and is not added after a working 39-pip move.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-04T07:08:41.754869-05:00",
+      "conviction": 70,
+      "decision_fingerprint": "0bbfc31188a35bc2fef54b5b91687d5908202d21553cfd38f4332705b516e09d",
+      "event_id": "jde-a7a814e7af2247e0",
+      "funding_view": null,
+      "invalidation": "AUDNZD reclaims and holds back through 1.2456-1.2500, or a genuine RBA hawkish shock / kiwi-specific deterioration that sends NZDUSD to a new low while AUD rips with oil.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-f8f9feb515d2"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5df59a1799b350d8b85edd2dcbf6cc208483a74bcec49251e5989b4c3372bda9",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "not_applicable",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "Rank 3 with unused rates inventory would look like a reason to pay or receive the March leftovers. Those leftovers are already the room's consensus two-way, and a just-compressed Canada receive is not a new mispricing. The only markable concentrated idea in the freeze remains the high-percentile AUDNZD short, which does not need a size chase to stay valid.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "not_behind",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "c2a4a5f3db09c31367d23d033cc3c1d835060796b3b64d66932b7c0964ee8018"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "f0b16d83797f3f9edcd838a3f8a70f3ba8bcfafe91f7f423a3fee46cb0126eb6",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261104-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AUD/NZD is still a crowded high-percentile cross after a modest overnight fade, with kiwi washed out on the dollar and no fresh Australian policy shock to justify the spread. The swing still has room toward 1.20-1.22 on a multi-week horizon; a small oil dip does not reverse Australia's terms-of-trade premium enough to close that gap. Cash-versus-March leftovers in SOFR, CORRA, and TONA are already in the tape and do not clear a new rates book versus sitting in the existing cross. Being behind on the scoreboard is not a reason to layer correlated receive risk or to cut a working short that has not reached the realization zone.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "AUD/NZD is still a crowded high-percentile cross after a modest overnight fade, with kiwi washed out on the dollar and no fresh Australian policy shock to justify the spread. The swing still has room toward 1.20-1.22 on a multi-week horizon; a small oil dip does not reverse Australia's terms-of-trade premium enough to close that gap. Cash-versus-March leftovers in SOFR, CORRA, and TONA are already in the tape and do not clear a new rates book versus sitting in the existing cross. Being behind on the scoreboard is not a reason to layer correlated receive risk or to cut a working short that has not reached the realization zone."
     }
   ],
   "schema_version": 1,

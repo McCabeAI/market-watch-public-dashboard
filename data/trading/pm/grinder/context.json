@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-04T05:35:22.541505-05:00",
+  "as_of": "2026-11-04T07:08:42.965667-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,8 +30,8 @@
     "wins": 0
   },
   "capital_owner": {
-    "allocator_pressure": 17,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 18,
+    "credible_opportunities": "none",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -46,16 +46,16 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 175980.82,
-    "best_trader_outearn_streak": 0,
-    "best_trader_seat": "positioning-cynic",
+    "best_trader_net_pnl_usd": 243249.34,
+    "best_trader_outearn_streak": null,
+    "best_trader_seat": "value-guy",
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 0.0,
-    "gap_to_best_trader_usd": -175980.82,
+    "gap_to_best_trader_usd": -243249.34,
     "high_water_nav_usd": 1000000000.0,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 0.0,
@@ -77,7 +77,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "ce1c8000f526b87202ac89b9c315f9150f6bce1b601121590c162b2afd1c69bd",
+  "memory_context_sha256": "aef156d5ddbfd14014bc34c7c2b96a050a8eb3ac11f3639c222b512c6b766271",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -94,23 +94,23 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
-        "holding_seconds": 72262,
-        "horizon_elapsed_fraction": 0.0209,
+        "giveback_usd": 30964.74,
+        "holding_seconds": 77863,
+        "horizon_elapsed_fraction": 0.0225,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 40,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 30964.74,
         "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pm-grinder-9366bc9ee048",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Profit if AUDNZD leaves the 99.6 extreme and trades lower toward the recent distribution; cut if the stretch persists or extends through 1.255.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 30964.74,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -210,17 +210,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261030"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261102"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261103"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261104"
       }
     ],
     "required_checks": {
@@ -230,7 +230,7 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "104681ee362cb2845607bcfb0345850bdd680d202c9d7aaebc2d9c56f00f88ad",
+    "state_sha256": "7ca1ac2d09cdb450bb4690bbab8008b59e6edc6fbf0b502e1520dc5bb6b4db1a",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

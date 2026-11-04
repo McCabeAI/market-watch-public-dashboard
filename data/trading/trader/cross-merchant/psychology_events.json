@@ -880,6 +880,59 @@
       "run_id": "overnight-20261103",
       "seq": 37,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0,
+          200000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "event_id": "pse-000038",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261104",
+      "seq": 38,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0005,
+        "complacency": 0.0065,
+        "defensiveness": -0.0007,
+        "external_pressure": -0.0004,
+        "frustration": -0.001,
+        "revenge_pressure": -0.0003,
+        "self_trust": 0.0024
+      },
+      "event_id": "pse-000039",
+      "kind": "session_gain",
+      "magnitude": 0.12381510000000001,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261104",
+      "scale": 1.0,
+      "seq": 39,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 61907.55
+      }
     }
   ],
   "owner_id": "cross-merchant",

@@ -2019,6 +2019,92 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "Cash SOFR at 3.95 still sits 39.5 basis points below March 4.345 and 55.5 below September 4.505, so the 2027 strip continues to price hikes after the late-October hold rather than a growth scare. Equities remain elevated with vol at 19.42, and Brent at 104.77 is an impulse that faded from older Gulf highs, not a demand-destruction break. Canadian cash 2.55 versus March 2.925 and Australian cash 4.60 versus March 4.935 still price tightening, so the existing front-end pays stay the growth-into-policy expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Sixteen basis points against from 3.13 to 2.97, but improved from 2.925, and cash 2.54 versus March 2.97 still prices 43bp of tightening. Three-digit Brent remains a Canada growth impulse rather than a reason to cover, and the implied path has not retraced, so size is held rather than added.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Still working: cash 4.60 versus March 4.915, up from 4.765 entry even after a 2bp giveback from 4.935. The energy impulse keeps the Australian hike path from being faded. Do not harvest a working pay and do not add size.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Fifteen and a half basis points against from 4.52 to 4.365, improved from 4.345, and cash 3.95 versus March 4.365 still prices 41.5bp of hikes, with September at 4.535. Do not add into an unretracted path and do not cover a still-priced tightening strip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "c5060faa0da2900af3f5712cd861d41945dc4158f9550444d9abf239458fecb6",
+      "event_id": "jde-9206505942154c3a",
+      "funding_view": null,
+      "invalidation": "Cover if March 2027 Canadian, US or Australian overnight funds reprice onto a cut versus cash, if Brent and WTI lose the three-digit handle as demand destruction, or if equity vol and risk assets sell off as a growth break rather than a one-day vol pop.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4519525adf09721ab2ad21c9412a659213d31da9a2d680020e67e4cffd0cd5a0",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "acb07bc07761a62936ed4279ece9c845e949f7b0e6a6147ed307af1cafe59566"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash CORRA at 2.54 still sits 43 basis points below March 2.97, and cash SOFR at 3.95 still sits 41.5 below March 4.365, so the 2027 strips continue to price hikes rather than a growth scare. Brent at 103.60 and WTI at 96.09 remain three-digit income impulses into Canada, equities stay elevated, and copper at 6.38 keeps the cyclical tape intact even with vol at 21.15. Australian cash 4.60 versus March 4.915 still prices tightening, so the existing front-end pays stay the growth-into-policy expression, with the Canadian contract the cleanest oil channel.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "Cash CORRA at 2.54 still sits 43 basis points below March 2.97, and cash SOFR at 3.95 still sits 41.5 below March 4.365, so the 2027 strips continue to price hikes rather than a growth scare. Brent at 103.60 and WTI at 96.09 remain three-digit income impulses into Canada, equities stay elevated, and copper at 6.38 keeps the cyclical tape intact even with vol at 21.15. Australian cash 4.60 versus March 4.915 still prices tightening, so the existing front-end pays stay the growth-into-policy expression, with the Canadian contract the cleanest oil channel."
     }
   ],
   "schema_version": 1,

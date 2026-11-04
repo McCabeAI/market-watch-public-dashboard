@@ -1608,6 +1608,60 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "The book is flat. Cash SOFR is 3.95 with March implied at 4.345 after a hold, so the front end is two-way rather than a one-sided policy path, and dollar-yen at 157.90 is the wrong expression of that timing risk. This freeze has no paper-markable listed-option premium, implied volatility, or strike, so an options ticket cannot be compared with March SOFR or with dollar-yen. Stay flat rather than inventing a surface or substituting a directional rates or yen ticket."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat and there is no paper-markable listed-option premium, implied volatility, or strike. Do not invent an options surface or substitute a directional dollar-yen or Australian-kiwi ticket.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 67,
+      "decision_fingerprint": "f1916140bce06dfd0ea8424336da210e4ed0e3c636003bd7126710e658374170",
+      "event_id": "jde-ce221f585d9a499c",
+      "funding_view": null,
+      "invalidation": "Revisit if a later freeze supplies paper-markable listed-option premium, implied volatility, and strike mids for a yen or Australian-kiwi event structure that can be compared with dollar-yen 158.29 and Australian dollar-kiwi 1.2417. Also revisit if those spot prints cease to be markable.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4419ec4874777f94ff95ee7cf2964081175846dd9d63dd3098f0a1db847a6135",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d47a41a6ae8381bda39d3c8ce14ac7ab36fa728f3569921adc82b2f7c2cb6531"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat. Observed prints are VIX 21.15, Brent 103.60, Australian dollar-kiwi 1.2417, and dollar-yen 158.29. There is no paper-markable listed-option premium, implied volatility, or strike in this freeze, so VIX 21.15 is an index reading rather than an executable surface. Dollar-yen and Australian dollar-kiwi are markable linear tickets; they are the wrong instruments for timing and event risk because they pay unbounded spot path without a vol comparison. Brent 103.60 is an oil print, not a bounded-risk options structure. A rates ticket is not available from this freeze because no listed rates mid was supplied. Stay flat rather than inventing a surface or substituting a directional yen or Australian-kiwi ticket.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "The book is flat. Observed prints are VIX 21.15, Brent 103.60, Australian dollar-kiwi 1.2417, and dollar-yen 158.29. There is no paper-markable listed-option premium, implied volatility, or strike in this freeze, so VIX 21.15 is an index reading rather than an executable surface. Dollar-yen and Australian dollar-kiwi are markable linear tickets; they are the wrong instruments for timing and event risk because they pay unbounded spot path without a vol comparison. Brent 103.60 is an oil print, not a bounded-risk options structure. A rates ticket is not available from this freeze because no listed rates mid was supplied. Stay flat rather than inventing a surface or substituting a directional yen or Australian-kiwi ticket."
     }
   ],
   "schema_version": 1,

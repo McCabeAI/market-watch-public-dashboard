@@ -1696,6 +1696,62 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "The book is long 25 million March SOFR at 4.325, now 4.345, two basis points against, with cash SOFR 3.95. United States coupons are still below the prior-month highs: two-year 4.59 is down 19 basis points over one month, five-year 4.70 is down 31, and ten-year 4.91 is down 33, even after a one-day two-year bounce. A one-day-old receive does not become a fade because March cheapened two basis points while five-years and tens kept making lower yields. Hold the existing March receive; dollar-yen at 157.90 is not cleaner."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-96a63a1df145",
+          "rationale": "Keep the existing 25 million March receive. One-month coupons are still lower, two-year 4.61 has not reclaimed 4.67, and four basis points of March cheapening with a one-day coupon bounce is not a coupon-trend break.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "92182c731c94095617ce1166c328ca595a504aee396c7d85336e656b4705f5b4",
+      "event_id": "jde-c5d06ebd559d4a98",
+      "funding_view": null,
+      "invalidation": "Cut if the US two-year reclaims and holds 4.67, or if March implied continues higher while two-year, five-year, and ten-year yields reverse higher together on a five-day and one-month basis.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c3c41b630ecc800961653a81898ec591d828d86e5f1676a733f7a0e2429e765e",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3225b4891fd58fbc7f25d66afa956429b59d8a04431a89029bf82f9099ff2741"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays long 25 million March SOFR, received at 4.325 and now 4.365, four basis points against, with cash SOFR 3.95. United States coupons are still lower over one month: two-year 4.61 is down 22 basis points, five-year 4.74 is down 32, and ten-year 4.95 is down 33, even after a one-day bounce of two, four, and four basis points. Five-day coupon changes remain lower, and two-year 4.61 has not reclaimed 4.67. Four basis points of March cheapening into a one-day coupon bounce is not a trend break and is not a reason to fade the receive. Hold the existing March receive; dollar-yen at 158.29 is mixed across one day, five days, and one month and does not isolate the coupon downtrend.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "The book stays long 25 million March SOFR, received at 4.325 and now 4.365, four basis points against, with cash SOFR 3.95. United States coupons are still lower over one month: two-year 4.61 is down 22 basis points, five-year 4.74 is down 32, and ten-year 4.95 is down 33, even after a one-day bounce of two, four, and four basis points. Five-day coupon changes remain lower, and two-year 4.61 has not reclaimed 4.67. Four basis points of March cheapening into a one-day coupon bounce is not a trend break and is not a reason to fade the receive. Hold the existing March receive; dollar-yen at 158.29 is mixed across one day, five days, and one month and does not isolate the coupon downtrend."
     }
   ],
   "schema_version": 1,

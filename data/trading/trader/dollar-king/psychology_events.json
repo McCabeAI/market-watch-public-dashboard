@@ -1130,6 +1130,58 @@
       "subject": {
         "session_pnl_change_usd": 82119.49
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          200000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "event_id": "pse-000048",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261104",
+      "seq": 48,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0003,
+        "complacency": 0.0078,
+        "defensiveness": -0.0006,
+        "external_pressure": -0.0004,
+        "frustration": -0.0009,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.0018
+      },
+      "event_id": "pse-000049",
+      "kind": "session_gain",
+      "magnitude": 0.09825638,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261104",
+      "scale": 1.0,
+      "seq": 49,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 49128.19
+      }
     }
   ],
   "owner_id": "dollar-king",

@@ -1642,6 +1642,60 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "The Federal Reserve hold is already printed, and the leftover 2027 hike path still shows official SOFR at 3.95 against March 4.345 and September 4.505. Hormuz and Iran headlines persist, but Brent at 104.77 and WTI at 96.46 are not a new spike, the Bank of Japan hold and the New Zealand surprise are already behind us, and midterm talk sits inside the same oil copy rather than as a dated rates event. AI credit is a financing story, not a timed path to reprice those contracts. The flat book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Book is flat. A new March SOFR receive of the 41.5 basis-point leftover was considered and rejected: the Federal Reserve hold is printed, Hormuz is already in Brent 103.60 rather than a new spike, and a new position would need a dated catalyst window the tape does not supply. Stay flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 34,
+      "decision_fingerprint": "11d487f76768244f85bd68608f194b3867dee3a7f117bcc4e4bf9b5c90b3c3ca",
+      "event_id": "jde-6a3028e03fd94420",
+      "funding_view": null,
+      "invalidation": "Stay-flat is wrong if a dated United States data release or policy meeting, or a fresh oil-shock print away from Brent 103.60, can reprice March SOFR independently of leftover hike premium after the hold.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "40370eb191c415ae9d10b225d1e45a698d77a3df5f7d6b01f02bdcc288696ff5",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "19ccf9b0e1a9de7e48cfbcec1a215675cc3312e939bc3517e59d73f591a7268c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Federal Reserve hold is already printed. Official SOFR is 3.95 against March 4.365, a 41.5 basis-point leftover hike path that can sit there without an unused dated print to force a reprice. Hormuz copy is still on the tape, but Brent at 103.60 is not a new oil spike. Canada cash 2.54 versus March 2.97 and Tokyo overnight 1.227 versus 1.6625 are the same leftover-path shape without an unused dated meeting. Australian dollar-New Zealand at 1.2417 is a rich cross, not a timed policy event. A new March SOFR receive was considered and rejected because it has no dated window. The book is already flat and stays flat.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "The Federal Reserve hold is already printed. Official SOFR is 3.95 against March 4.365, a 41.5 basis-point leftover hike path that can sit there without an unused dated print to force a reprice. Hormuz copy is still on the tape, but Brent at 103.60 is not a new oil spike. Canada cash 2.54 versus March 2.97 and Tokyo overnight 1.227 versus 1.6625 are the same leftover-path shape without an unused dated meeting. Australian dollar-New Zealand at 1.2417 is a rich cross, not a timed policy event. A new March SOFR receive was considered and rejected because it has no dated window. The book is already flat and stays flat."
     }
   ],
   "schema_version": 1,

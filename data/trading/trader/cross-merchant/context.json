@@ -145,14 +145,14 @@
     "nav_usd": 100068079.93,
     "net_pnl_usd": 68079.93,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 4,
+    "rank_change": 1,
     "raw_pnl_rank": 5,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -61907.55,
     "status": "ok"
   },
   "learning": {
@@ -163,7 +163,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "fe34feed2e1dc2a52d751688b13e2d04625124b63ac8e8b0570a2cf82cfe7eac",
+  "memory_context_sha256": "bd6e96b700ae7ab21daa6fce335fbb9de2d7b73633ed3590be7d319d62d9e7a8",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -180,7 +180,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 61929.49,
         "holding_seconds": 76345,
         "horizon_elapsed_fraction": 0.0196,
         "horizon_status": "within",
@@ -188,15 +188,15 @@
         "intended_horizon_days": 45,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 61929.49,
         "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-525ff12dcad9",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 61929.49,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 200000.0,
@@ -233,7 +233,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.21
+        "value": 0.19
       },
       "complacency": {
         "band": "calm",
@@ -253,7 +253,7 @@
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -283,21 +283,21 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261030"
+        "run_id": "overnight-20261102"
       },
       {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261102"
+        "kind": "session_gain",
+        "magnitude": 0.12381510000000001,
+        "run_id": "overnight-20261104"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "9bd93c455568c719e1d7ba047dfda4c5a1ba673ef7e924368f51eac4bb00d2a6",
+    "state_sha256": "7755089724d6e3fcf5837d89eff5b342c0c0ab6a05a842e30f88ab1030cd38f2",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
-      "session_win": 0
+      "session_loss": 0,
+      "session_win": 1
     }
   },
   "recent_closed_trades": [

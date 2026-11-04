@@ -1642,6 +1642,62 @@
       "run_id": "overnight-20261103",
       "schema_version": 1,
       "thesis": "The book stays short 25 million Australian dollar-Canada at 0.9793, still the 90th five-year percentile versus 0.9879 entry, while Brent at 104.77 and WTI at 96.46 keep paying Canada versus Australia on oil terms of trade. Cash Australia 4.60 versus Canada 2.55 leaves Australia 205 basis points ahead, and March Canada implied 2.925 still sits 37.5 basis points over cash, so leftover Canada policy tightness is already in the front end. The March United States-Canada pack versus cash is only a 2 basis point residual, so leftover Canadian dollar value stays in the existing cross rather than a new coupon or pack."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": 25000000.0,
+          "position_id": "pos-63923b5f6571",
+          "rationale": "Keep the existing 25 million Australian dollar-Canada short at 0.9760. Oil is still 96 and 104, and March implied 2.97 versus cash 2.54 still prices leftover tightening, so leftover value is not a new rates ticket.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-04T05:35:22.541505-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "9a314a504ce8b68c2377d5d15fa2d66e9b717c895a0f6e9719d27918c8469684",
+      "event_id": "jde-681ac72c87384690",
+      "funding_view": null,
+      "invalidation": "Cover if Australian dollar-Canada prints a new extreme while Brent remains near 103.60. Also cover if March implied falls toward cash 2.54 with crude unchanged, which would mean Canada is easing into the oil impulse instead of the cross paying the terms of trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-63923b5f6571"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1109a740b871d6cbc097081878ccc1f07495986cae6add80a4f7454f38b40062",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3d9d2fb15fd2548907e0486035e43a9ba894f2e5703bd57958e69a00e43732ee"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+        "evidence_hash": "a524f07cbfdfafdb44d016a2fd9c6abd31aeae6ab261bda0b8beab172ab571a2",
+        "overnight_run_id": "overnight-20261104",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays short 25 million Australian dollar-Canada at 0.9760, a 42nd one-year percentile versus the 0.9879 entry. Brent at 103.60 and WTI at 96.09 keep paying Canada versus Australia on oil terms of trade. Cash Australia 4.60 versus Canada 2.54 leaves Australia 206 basis points ahead, and March Canada implied 2.97 still sits 43 basis points over cash, so leftover Canada policy tightness is already in the front end. Leftover Canadian dollar value stays in the existing cross rather than a new coupon or pack.",
+      "run_id": "overnight-20261104",
+      "schema_version": 1,
+      "thesis": "The book stays short 25 million Australian dollar-Canada at 0.9760, a 42nd one-year percentile versus the 0.9879 entry. Brent at 103.60 and WTI at 96.09 keep paying Canada versus Australia on oil terms of trade. Cash Australia 4.60 versus Canada 2.54 leaves Australia 206 basis points ahead, and March Canada implied 2.97 still sits 43 basis points over cash, so leftover Canada policy tightness is already in the front end. Leftover Canadian dollar value stays in the existing cross rather than a new coupon or pack."
     }
   ],
   "schema_version": 1,

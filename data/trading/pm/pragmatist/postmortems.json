@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-04T07:08:41.997999-05:00",
+      "causal": {
+        "assumptions_right": "The -23bp print was a residual, not a regime; mean-reversion to the zero anchor was the realization, and flattening there matched the stated reaction function instead of hunting a new NZ policy shock.",
+        "assumptions_wrong_or_underweighted": "Underweighted that permission would flip to research-only at the same moment the residual completed, removing any option to fade an overshoot in NZ sovereign space, and underweighted that a zero print can be both thesis-complete and the floor of the old residual.",
+        "causal_divergence": "The result came from residual closure, not from a dated RBNZ or U.S. coupon catalyst. The research-only constraint is a mandate change, not evidence that NZ-US 10s are fairly valued from here.",
+        "decision_quality_attribution": "thesis",
+        "future_implication": "Do not reopen NZ_10Y or NZ-US_10Y. If kiwi cheapness reappears, express it in markable FX such as AUDNZD or NZDUSD, not in frozen NZ rates-RV.",
+        "observed_reality": "Over about 20 days the residual closed to zero and the short was flattened at that anchor; the sleeve was then frozen to research-only, so the same rates-RV ticket cannot be reopened even if the spread later overshoots.",
+        "original_belief": "The NZ-US 10-year residual at -23bp was NZ rich to the United States, a transitory cross-market dislocation that would mean-revert toward a zero differential rather than mark a new fair-value NZ premium.",
+        "same_information_counterfactual": "Knowing the residual would retrace to zero and that new NZ sovereign tickets would be research-only, the close at the zero anchor is still the correct trade; holding past zero for a NZ-cheapening overshoot would have been a new, unpermitted ticket."
+      },
+      "expression_assessment": "The rates-RV sleeve was the correct expression until it became research-only; remaining kiwi cheapness belongs in markable FX.",
+      "facts": {
+        "asset_class": "rates_rv",
+        "closed_at": "2026-11-03T09:30:59.388258-05:00",
+        "conviction": 64,
+        "entry_mark": -23.0,
+        "exit_mark": 0.0,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 1736823,
+        "instrument": "NZ-US_10Y",
+        "invalidation": "Cover the CORRA receive if Bank of Canada 2027 hikes are delivered or the strip reprices back through the 3.13 entry, especially on a sticky oil-and-goods inflation impulse. Cover the NZ-US short if the 10-year spread cheapens further from minus 23 basis points toward richer New Zealand, including on an RBNZ easing surprise or a Treasury-led selloff that leaves New Zealand yields stuck.",
+        "opened_at": "2026-10-14T07:03:55.974585-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 184000.0,
+        "side": "short",
+        "thesis": null
+      },
+      "future_rule": "When an RV residual completes at its stated anchor in a sleeve that is becoming research-only, flatten and migrate any remaining country view into a still-tradable FX expression rather than inventing a new rates ticket in the frozen sleeve.",
+      "lesson": "When an RV residual completes at its stated anchor in a sleeve that is becoming research-only, flatten and migrate any remaining country view into a still-tradable FX expression rather than inventing a new rates ticket in the frozen sleeve.",
+      "no_new_lesson": null,
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-12902ca9aa76",
+      "run_id": "overnight-20261104",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "The original thesis that the residual was transitory and would close toward zero was realized; the result came from residual closure, not a dated catalyst.",
+      "timing_assessment": null,
+      "trade_id": "trd-pm-pragmatist-pm-pragmatist-3afafe53c6d7",
+      "what_failed": "The research-only mandate flip arriving at the same moment the residual completed was underweighted, so there was no option to fade a later overshoot in New Zealand sovereign space.",
+      "what_worked": "The minus-23 basis-point residual mean-reverted to the stated zero anchor, and flattening there matched the reaction function instead of hunting a new New Zealand policy shock."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }
