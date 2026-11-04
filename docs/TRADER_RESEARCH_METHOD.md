@@ -45,3 +45,7 @@ When data availability permits, an advocate should be able to identify: causal m
 ## Guardrails
 
 Do not data-mine transformations until one confirms the desired conclusion. Do not treat statistical extremes as guaranteed mean reversion. Do not use historical analogs without identifying structural differences. Do not infer causality from correlation alone. Preserve data vintages when they affect what was knowable. Missing evidence lowers confidence; it is never permission to guess.
+
+## ChatGPT PM research memory
+
+The ChatGPT PM seat persists hypotheses, evidence assessments, and a trading-edge profile in Git (`data/trading/pm/chatgpt/research/`). That store follows the context-before-screen discipline here but is **not** a substitute for frozen Trader Room packets or for booking trades. Cold-start retrieval, ticket schema, and the split from `[chatgpt-pm-decision]` are in [`docs/CHATGPT_RESEARCH_MEMORY_V1.md`](CHATGPT_RESEARCH_MEMORY_V1.md).

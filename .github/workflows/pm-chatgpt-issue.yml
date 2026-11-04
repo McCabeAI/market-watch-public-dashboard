@@ -3,6 +3,10 @@ name: Apply ChatGPT PM issue decision
 # One GitHub issue is the daily ChatGPT PM submission. Trusted code on main
 # applies it and dispatches the existing production Pages workflow.
 # Opening the issue is not a trade. Dispatching Pages is not publication.
+#
+# A second exact title, [chatgpt-research-memory], updates only
+# data/trading/pm/chatgpt/research/. That path does not book a trade,
+# does not edit canonical books or P&L, and does not dispatch Pages.
 
 on:
   issues:
@@ -12,7 +16,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.event.issue.title == '[chatgpt-pm-decision]' && 'chatgpt-pm-canonical' || format('chatgpt-pm-other-{0}', github.run_id) }}
+  group: ${{ github.event.issue.title == '[chatgpt-pm-decision]' && 'chatgpt-pm-canonical' || github.event.issue.title == '[chatgpt-research-memory]' && 'chatgpt-research-canonical' || format('chatgpt-pm-other-{0}', github.run_id) }}
   cancel-in-progress: false
 
 jobs:
@@ -193,3 +197,165 @@ jobs:
             --code-file /tmp/mw-chatgpt/exit-code
           gh issue comment "$ISSUE_NUMBER" --body-file /tmp/mw-chatgpt/comment.md
           exit "$(tr -d '[:space:]' < /tmp/mw-chatgpt/exit-code)"
+
+  authorize-research:
+    name: Authorize ChatGPT research memory issue
+    if: github.event.issue.title == '[chatgpt-research-memory]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      issues: write
+    outputs:
+      authorized: ${{ steps.auth.outputs.authorized }}
+      reason: ${{ steps.auth.outputs.reason }}
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Verify sender permission
+        id: auth
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          ISSUE_AUTHOR_LOGIN: ${{ github.event.issue.user.login }}
+          ISSUE_AUTHOR_TYPE: ${{ github.event.issue.user.type }}
+          ISSUE_SENDER_LOGIN: ${{ github.event.sender.login }}
+          ISSUE_SENDER_TYPE: ${{ github.event.sender.type }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.pm.chatgpt_research authorize-from-env --result /tmp/mw-chatgpt-research-auth.json
+
+      - name: Comment when authorization fails
+        if: steps.auth.outputs.authorized != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          AUTH_REASON: ${{ steps.auth.outputs.reason }}
+        run: |
+          set -euo pipefail
+          case "$ISSUE_NUMBER" in
+            ''|*[!0-9]*) echo "refusing non-numeric issue number" >&2; exit 1 ;;
+          esac
+          case "$AUTH_REASON" in
+            ''|*[!a-z0-9_]*) AUTH_REASON="rejected" ;;
+          esac
+          PYTHONPATH=. python3 -c 'import os; from scripts.pm.chatgpt_research import render_research_auth_comment; open("/tmp/mw-chatgpt-research-auth.md","w",encoding="utf-8").write(render_research_auth_comment(os.environ["AUTH_REASON"]))'
+          gh issue comment "$ISSUE_NUMBER" --body-file /tmp/mw-chatgpt-research-auth.md
+          exit 1
+
+  apply-research:
+    name: Apply research memory only
+    needs: authorize-research
+    if: needs.authorize-research.outputs.authorized == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+      issues: write
+    steps:
+      - name: Checkout trusted main
+        uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Record canonical base
+        id: base
+        run: |
+          set -euo pipefail
+          git fetch origin main
+          git reset --hard origin/main
+          sha="$(git rev-parse HEAD)"
+          case "$sha" in
+            ''|*[!0-9a-f]*) echo "refusing unexpected base sha" >&2; exit 1 ;;
+          esac
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+
+      - name: Apply trusted research ticket
+        id: apply
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_AUTHOR_LOGIN: ${{ github.event.issue.user.login }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.pm.chatgpt_research apply-from-env \
+            --result /tmp/mw-chatgpt-research/result.json \
+            --generated /tmp/mw-chatgpt-research-generated
+
+      - name: Commit research memory only
+        id: commit
+        if: steps.apply.outputs.status == 'applied'
+        env:
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+          APPLY_STATUS: applied
+          GENERATED_DIR: /tmp/mw-chatgpt-research-generated
+          COMMIT_JSON: /tmp/mw-chatgpt-research/commit.json
+        run: |
+          set +e
+          bash scripts/pm/commit_chatgpt_research.sh
+          code=$?
+          set -e
+          if [ "$code" -ne 0 ] && [ ! -f /tmp/mw-chatgpt-research/commit.json ]; then
+            echo '{"status":"rejected","commit_sha":"","head_sha":""}' > /tmp/mw-chatgpt-research/commit.json
+          fi
+          exit 0
+
+      - name: Comment with research receipt
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+        run: |
+          set -euo pipefail
+          case "$ISSUE_NUMBER" in
+            ''|*[!0-9]*) echo "refusing non-numeric issue number" >&2; exit 1 ;;
+          esac
+          if [ ! -f /tmp/mw-chatgpt-research/result.json ]; then
+            echo '{"status":"rejected","reason":"apply_failed","books_mutated":false}' > /tmp/mw-chatgpt-research/result.json
+          fi
+          PYTHONPATH=. python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.pm.chatgpt_research import render_research_comment
+
+          result_path = Path("/tmp/mw-chatgpt-research/result.json")
+          payload = json.loads(result_path.read_text(encoding="utf-8"))
+          commit_path = Path("/tmp/mw-chatgpt-research/commit.json")
+          if payload.get("status") == "applied":
+              commit_status = ""
+              if commit_path.is_file():
+                  commit = json.loads(commit_path.read_text(encoding="utf-8"))
+                  commit_status = str(commit.get("status") or "")
+                  sha = str(commit.get("commit_sha") or "")
+                  if len(sha) == 40 and commit_status == "applied":
+                      payload["commit_sha"] = sha
+              if commit_status != "applied":
+                  payload["status"] = "conflict"
+                  payload["reason"] = "commit_not_landed"
+          Path("/tmp/mw-chatgpt-research/comment.md").write_text(
+              render_research_comment(payload), encoding="utf-8"
+          )
+          Path("/tmp/mw-chatgpt-research/final-status").write_text(
+              str(payload.get("status") or "rejected"), encoding="utf-8"
+          )
+          PY
+          gh issue comment "$ISSUE_NUMBER" --body-file /tmp/mw-chatgpt-research/comment.md
+          status="$(tr -d '[:space:]' < /tmp/mw-chatgpt-research/final-status)"
+          case "$status" in
+            applied|already_applied) exit 0 ;;
+            *) exit 1 ;;
+          esac

@@ -26,6 +26,10 @@ Title, exact:
 
 Body: one JSON object, or one fenced `json` block and nothing else. The connector's GitHub user and the issue sender must be that same human `User`. Bots, a sender that is not the author, a failed permission lookup, and any other title are rejected. Fields inside the JSON such as `signature`, `authorization`, `token`, `command`, or `shell` are rejected and are never trusted.
 
+## Research memory (different issue title)
+
+Hypotheses and the ChatGPT trading-edge profile use a **different** GitHub issue title: `[chatgpt-research-memory]`. That path updates only `data/trading/pm/chatgpt/research/`. It does **not** book trades, mutate canonical books, or dispatch Pages. Full procedure: [`docs/CHATGPT_RESEARCH_MEMORY_V1.md`](CHATGPT_RESEARCH_MEMORY_V1.md).
+
 Trusted code on `main` checks the collaborators API, checks the frozen packet and the current ChatGPT book, runs the existing deterministic apply, and commits only generated portfolio state. A second distinct decision on the same day is valid after that commit, and only if its ticket copies the refreshed packet hash and the new `book_sha256.txt`. A replay of the same ticket does not book the trade again. Two different tickets for the same book hash are a conflict: the first commit stands and the other ticket must be re-based. The workflow does not rebase onto a `main` that moved.
 
 Copy these fields from the repository, do not calculate them:
