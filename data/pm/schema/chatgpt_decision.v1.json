@@ -62,6 +62,11 @@
     "rationale": { "type": ["string", "null"] },
     "synthesis": { "type": ["string", "null"] },
     "memory_context_sha256": { "type": ["string", "null"], "minLength": 32 },
+    "expected_book_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$",
+      "description": "SHA-256 of the canonical pms.chatgpt book. Required on the GitHub issue path. Copy data/pm/review_packets/chatgpt/book_sha256.txt."
+    },
     "harvest_reviews": {
       "type": "array",
       "description": "Required only to keep a triggered position at full size. Not an order.",

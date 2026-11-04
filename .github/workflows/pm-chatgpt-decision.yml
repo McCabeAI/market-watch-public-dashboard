@@ -8,6 +8,9 @@ on:
       - "docs/CHATGPT_PM_DECISION_INGEST.md"
       - "data/pm/schema/chatgpt_decision.v1.json"
       - ".github/workflows/pm-chatgpt-decision.yml"
+      - ".github/workflows/pm-chatgpt-issue.yml"
+      - "scripts/pm/commit_chatgpt_state.sh"
+      - "tests/test_pm_chatgpt_issue.py"
   pull_request_target:
     types: [opened, synchronize, reopened]
     paths:
@@ -29,7 +32,7 @@ jobs:
       - name: Validate contracts and inbox decision when present
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_books tests.test_pm_overnight_packets -v
+          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_chatgpt_issue tests.test_pm_books tests.test_pm_overnight_packets -v
           if [ -f data/pm/inbox/chatgpt_decision.json ]; then
             PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input data/pm/inbox/chatgpt_decision.json
           else
@@ -84,7 +87,7 @@ jobs:
       - name: Validate against current trusted packet
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_books tests.test_pm_overnight_packets -v
+          PYTHONPATH=. python -m unittest tests.test_pm_ingest tests.test_pm_chatgpt_issue tests.test_pm_books tests.test_pm_overnight_packets -v
           PYTHONPATH=. python scripts/pm/chatgpt_ingest.py validate --input /tmp/mw-chatgpt/chatgpt_decision.json
 
       - name: Apply trusted ingest and persist generated state
