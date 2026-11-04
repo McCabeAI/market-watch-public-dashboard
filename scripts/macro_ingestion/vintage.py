@@ -165,6 +165,16 @@ class AppendResult:
     appended: bool
     duplicate: bool
     observation: dict[str, Any] | None = None
+    provenance_updated: bool = False
+
+
+def _upgrade_period_binding(row: dict[str, Any], period_binding: str | None) -> bool:
+    if period_binding != "verified":
+        return False
+    if str(row.get("period_binding") or "") == "verified":
+        return False
+    row["period_binding"] = "verified"
+    return True
 
 
 def append_observation(
@@ -184,18 +194,32 @@ def append_observation(
     units: str | None = None,
     derivation: dict[str, Any] | None = None,
     latest_release_vintage: str | None = None,
+    period_binding: str | None = None,
 ) -> AppendResult:
     key = ObservationKey(series_id, period, transformation, raw_sha256)
     if find_observation(store, key):
         prior_row = latest_for_period(store, series_id, period, transformation)
+        provenance_updated = False
         if prior_row is not None:
             _record_sha_alias(prior_row, raw_sha256)
-        return AppendResult(appended=False, duplicate=True, observation=prior_row)
+            provenance_updated = _upgrade_period_binding(prior_row, period_binding)
+        return AppendResult(
+            appended=False,
+            duplicate=True,
+            observation=prior_row,
+            provenance_updated=provenance_updated,
+        )
 
     prior_row = latest_for_period(store, series_id, period, transformation)
     if prior_row is not None and values_close(float(prior_row["value"]), value):
         _record_sha_alias(prior_row, raw_sha256)
-        return AppendResult(appended=False, duplicate=True, observation=prior_row)
+        provenance_updated = _upgrade_period_binding(prior_row, period_binding)
+        return AppendResult(
+            appended=False,
+            duplicate=True,
+            observation=prior_row,
+            provenance_updated=provenance_updated,
+        )
 
     explicit_latest = latest_release_vintage.strip()[:10] if isinstance(latest_release_vintage, str) and latest_release_vintage.strip() else None
     earliest_release = release_date
@@ -229,5 +253,7 @@ def append_observation(
         row["units"] = units
     if derivation is not None:
         row["derivation"] = dict(derivation)
+    if isinstance(period_binding, str) and period_binding:
+        row["period_binding"] = period_binding
     store.setdefault("observations", []).append(row)
     return AppendResult(appended=True, duplicate=False, observation=row)

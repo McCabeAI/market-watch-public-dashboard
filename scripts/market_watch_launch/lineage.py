@@ -21,6 +21,14 @@ from scripts.macro_ingestion.score_bridge import (
     points_from_observation_stores,
     recompute_scores_after_observation,
 )
+from scripts.macro_ingestion.score_reconciliation import (
+    NZ_CONFIDENCE_CATALOG_ID,
+    _newer_mapped_points,
+    _point_eligible_for_scoring_merge,
+    _store_points_by_catalog,
+    reconcile_weighted_components,
+)
+from scripts.macro_ingestion.vintage import load_store
 from scripts.run_state.identity import _period_is_future
 from scripts.temperature_level import period_sort_key
 from scripts.temperature_level import (
@@ -43,6 +51,9 @@ _NON_BLOCKING_SKIP_REASONS = frozenset(
         "not_a_forward_observation",
         "final_not_superseded_by_flash",
         "retired_unobserved",
+        "ambiguous_confidence_period",
+        "frequency_split_context",
+        "source_not_in_store",
     }
 )
 
@@ -236,7 +247,157 @@ def _point_is_eligible_for_reconciliation(
     src_tf = str(spec.get("source_transformation") or "")
     if str(point.get("transformation") or "") != src_tf:
         return False
+    catalog_id = str(point.get("catalog_id") or point.get("id") or "")
+    if catalog_id == NZ_CONFIDENCE_CATALOG_ID:
+        if str(point.get("period_binding") or "") != "verified":
+            return False
     return _series_allowed(spec, series_id)
+
+
+def _observations_by_country_from_points(
+    points: list[dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for point in points:
+        country = str(point.get("country") or "")
+        if not country:
+            catalog_id = str(point.get("catalog_id") or point.get("id") or "")
+            country = catalog_id.split(".", 1)[0] if catalog_id else ""
+        if country not in _SCORE_RECONCILE_COUNTRIES:
+            continue
+        obs: dict[str, Any] = {}
+        for key in (
+            "series_id",
+            "period",
+            "transformation",
+            "value",
+            "role",
+            "period_binding",
+            "source_url",
+            "revision_status",
+            "release_date",
+            "vintage",
+            "raw_sha256",
+        ):
+            if key in point:
+                obs[key] = point[key]
+        bucket = out.setdefault(country, {"country": country, "observations": []})
+        bucket["observations"].append(obs)
+    return out
+
+
+def _observations_for_reconciliation(
+    *,
+    observations_dir: Path | None,
+    points: list[dict[str, Any]],
+) -> dict[str, dict[str, Any]] | None:
+    if observations_dir is not None:
+        return {
+            country: load_store(country, observations_dir)
+            for country in _SCORE_RECONCILE_COUNTRIES
+        }
+    if points:
+        return _observations_by_country_from_points(points)
+    return None
+
+
+def _rejection_for_newer_source_not_scored(
+    *,
+    catalog_id: str,
+    calibration: dict[str, Any],
+    row: dict[str, Any],
+    store_points: list[dict[str, Any]],
+) -> dict[str, Any]:
+    spec = calibration.get("components", {}).get(catalog_id) or {}
+    weight = float(row.get("weight") or 0.0)
+    scored_period = row.get("scored_period")
+    if scored_period is not None:
+        scored_period = str(scored_period)
+    newer = _newer_mapped_points(store_points, scored_period)
+    eligible = [
+        point
+        for point in newer
+        if _point_eligible_for_scoring_merge(
+            point,
+            catalog_id=catalog_id,
+            spec=spec,
+            weight=weight,
+            scored_period=scored_period,
+        )
+    ]
+    pick = max(eligible, key=lambda pt: period_sort_key(str(pt["period"])))
+    return {
+        "id": catalog_id,
+        "reason": "newer_source_not_scored",
+        "series_id": str(pick.get("series_id") or ""),
+        "transformation": str(pick.get("transformation") or ""),
+        "period": str(pick.get("period") or ""),
+    }
+
+
+def _weighted_reconciliation_issues(
+    *,
+    calibration: dict[str, Any],
+    staging_history: Path,
+    score_state: dict[str, Any],
+    observations_dir: Path | None,
+    points: list[dict[str, Any]],
+    merge: dict[str, Any],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Fail closed on newer_source_not_scored; surface source_not_in_store as warnings."""
+    observations_by_country = _observations_for_reconciliation(
+        observations_dir=observations_dir,
+        points=points,
+    )
+    if observations_by_country is None:
+        return [], []
+
+    skip_by_key = _merge_skip_reason_by_point(points, merge)
+    merged_histories = load_history(staging_history)
+    catalog = load_catalog()
+    rows = reconcile_weighted_components(
+        calibration,
+        merged_histories,
+        score_state,
+        observations_by_country,
+    )
+    by_catalog = _store_points_by_catalog(
+        calibration,
+        observations_by_country,
+        catalog=catalog,
+    )
+    rejections: list[dict[str, Any]] = []
+    availability_warnings: list[dict[str, Any]] = []
+    for row in rows:
+        gap = str(row.get("gap_reason") or "")
+        catalog_id = str(row.get("catalog_id") or "")
+        if gap == "newer_source_not_scored":
+            rejection = _rejection_for_newer_source_not_scored(
+                catalog_id=catalog_id,
+                calibration=calibration,
+                row=row,
+                store_points=by_catalog.get(catalog_id, []),
+            )
+            skip_key = (
+                catalog_id,
+                rejection["period"],
+                rejection["series_id"],
+                rejection["transformation"],
+            )
+            if skip_by_key.get(skip_key) == "methodology_break_guard":
+                continue
+            rejections.append(rejection)
+        elif gap == "source_not_in_store":
+            availability_warnings.append(
+                {
+                    "catalog_id": catalog_id,
+                    "reason": gap,
+                    "scored_period": row.get("scored_period"),
+                    "history_period": row.get("history_period"),
+                    "source_period": row.get("source_period"),
+                }
+            )
+    return rejections, availability_warnings
 
 
 def _merge_skip_reason_by_point(
@@ -555,6 +716,7 @@ def stage_verified_lineage(
             "appended_points": [],
             "appended_count": 0,
             "rejections": [],
+            "availability_warnings": [],
             "component_deltas": [],
             "lineage_dir": str(lineage_root),
             "mode": mode,
@@ -569,6 +731,18 @@ def stage_verified_lineage(
         histories_before_merge=histories_before_merge,
         calibration=calibration,
     )
+    availability_warnings: list[dict[str, Any]] = []
+    if not rejections and bridge.state is not None:
+        recon_rejections, availability_warnings = _weighted_reconciliation_issues(
+            calibration=calibration,
+            staging_history=staging_history,
+            score_state=bridge.state,
+            observations_dir=observations_dir,
+            points=verified_points,
+            merge=merge,
+        )
+        if recon_rejections:
+            rejections = recon_rejections
     if not rejections and bridge.state is not None:
         rejections = _scored_component_stale_rejections(
             points=verified_points,
@@ -589,6 +763,7 @@ def stage_verified_lineage(
             "appended_points": [],
             "appended_count": 0,
             "rejections": rejections,
+            "availability_warnings": availability_warnings,
             "component_deltas": [],
             "lineage_dir": str(lineage_root),
             "mode": mode,
@@ -667,6 +842,7 @@ def stage_verified_lineage(
         "appended_points": appended_points,
         "appended_count": len(appended_points),
         "rejections": [],
+        "availability_warnings": availability_warnings,
         "component_deltas": component_deltas,
         "lineage_dir": str(lineage_root),
         "mode": mode,

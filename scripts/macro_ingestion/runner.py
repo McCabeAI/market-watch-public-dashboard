@@ -382,6 +382,8 @@ def _classify_points(
             else:
                 continue
         else:
+            binding = point.get("period_binding")
+            period_binding = binding if isinstance(binding, str) and binding else None
             result = append_observation(
                 store,
                 series_id=series_id,
@@ -398,7 +400,10 @@ def _classify_points(
                 units=point.get("units"),
                 derivation=derivation or None,
                 latest_release_vintage=point.get("latest_release_vintage"),
+                period_binding=period_binding,
             )
+            if result.provenance_updated:
+                persist_provenance = True
             if result.duplicate:
                 continue
             had_new = True

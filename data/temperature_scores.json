@@ -14,8 +14,10 @@
     "scoring_cutoff": "Latest calendar month present in history that a replay cutoff may include; not the reference period every dimension card is current through.",
     "score_inputs_latest_reference_period": "Latest reference period among scored components.",
     "score_inputs_last_ingested_at": "Latest retrieved_at among observations used in the current score.",
-    "last_refresh_date": "UTC date of score_inputs_last_ingested_at, or the calibration anchor if none."
+    "last_refresh_date": "UTC date of score_inputs_last_ingested_at, or the calibration anchor if none.",
+    "as_of_representation": "component_period: each dimension as_of is the latest scored component reference period for that dimension; not the global scoring_cutoff month."
   },
+  "as_of_representation": "component_period",
   "baseline_score": 50.0,
   "baseline_meaning": "structural_policy_neutral_not_reindex_date",
   "countries": {

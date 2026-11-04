@@ -692,14 +692,15 @@ def _run(work: Path, args: list[str], *, label: str) -> str:
 _SCORES_CHECK = """
 import json, sys
 from pathlib import Path
-from scripts.temperature_level import write_state, write_paths
+from scripts.temperature_level import write_state, write_paths, scores_match_staged
 tmp = Path(sys.argv[1])
 write_state(tmp)
 write_paths(Path("data/temperature_history/score_paths.json"))
 staged = json.loads(Path("data/temperature_scores.json").read_text(encoding="utf-8"))
 recomputed = json.loads(tmp.read_text(encoding="utf-8"))
-if staged != recomputed:
-    raise SystemExit("staged lineage scores are not reproducible from the staged histories")
+mismatch = scores_match_staged(staged, recomputed)
+if mismatch:
+    raise SystemExit(mismatch)
 """
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import json
 import shutil
 import tempfile
 import unittest
@@ -11,7 +12,9 @@ from pathlib import Path
 from scripts.macro_ingestion.canonical_bridge import merge_scored_points
 from scripts.macro_ingestion.score_bridge import recompute_scores_after_observation
 from scripts.macro_ingestion.score_reconciliation import reconcile_weighted_components
+from scripts.market_watch_launch.lineage import stage_verified_lineage
 from scripts.temperature_level import (
+    CALIBRATION_PATH,
     HISTORY_DIR,
     build_score_state,
     compute_state,
@@ -131,6 +134,99 @@ class ScoreReconciliationSameCycleTests(unittest.TestCase):
             after["countries"]["NZ"]["Consumer"]["component_state"]["confidence"]["as_of"],
             "2026-09",
         )
+
+
+class StageVerifiedLineageReconciliationTests(unittest.TestCase):
+    def test_non_blocking_gaps_from_committed_store(self) -> None:
+        cal = load_calibration()
+        histories = load_history()
+        state = load_state()
+        rows = reconcile_weighted_components(cal, histories, state)
+        by_id = {row["catalog_id"]: row for row in rows}
+        self.assertEqual(by_id["AU.Consumer.retail"]["gap_reason"], "retired_unobserved")
+        self.assertEqual(by_id["CA.Activity.gdp_domestic_demand"]["gap_reason"], "frequency_split_context")
+
+    def test_dropped_store_print_fails_through_stage_verified_lineage(self) -> None:
+        cal = load_calibration(CALIBRATION_PATH)
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            hist_dir = work / "history"
+            shutil.copytree(HISTORY_DIR, hist_dir)
+            obs_root = work / "observations"
+            obs_root.mkdir()
+            us_store = {
+                "country": "US",
+                "observations": [
+                    {
+                        "series_id": "UNRATE",
+                        "period": "2026-10",
+                        "transformation": "percent",
+                        "value": 9.87,
+                        "revision_status": "final",
+                        "period_binding": "verified",
+                        "source_url": "https://fred.stlouisfed.org/series/UNRATE",
+                        "retrieved_at": CHECKED_AT,
+                    }
+                ],
+            }
+            (obs_root / "us.json").write_text(json.dumps(us_store, indent=2) + "\n", encoding="utf-8")
+            for country in ("ca", "au", "nz", "ea", "jp"):
+                shutil.copy2(
+                    ROOT / f"data/macro_ingestion/observations/{country}.json",
+                    obs_root / f"{country}.json",
+                )
+            launch_dir = work / "launch_drop"
+            launch_dir.mkdir()
+            dropped = stage_verified_lineage(
+                launch_dir=launch_dir,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=hist_dir,
+                calibration_path=CALIBRATION_PATH,
+                points=[],
+                observations_dir=obs_root,
+            )
+            self.assertFalse(dropped["ok"])
+            matched = [
+                row
+                for row in dropped.get("rejections") or []
+                if row.get("id") == "US.Labor.unemployment"
+            ]
+            self.assertEqual(len(matched), 1)
+            self.assertEqual(matched[0]["period"], "2026-10")
+            self.assertEqual(matched[0]["reason"], "newer_source_not_scored")
+
+            launch_ok = work / "launch_ok"
+            launch_ok.mkdir()
+            point = {
+                "country": "US",
+                "catalog_id": "US.Labor.unemployment",
+                "role": "scored",
+                "series_id": "UNRATE",
+                "period": "2026-10",
+                "transformation": "percent",
+                "value": 9.87,
+                "period_binding": "verified",
+                "revision_status": "final",
+                "source_url": "https://fred.stlouisfed.org/series/UNRATE",
+            }
+            ok = stage_verified_lineage(
+                launch_dir=launch_ok,
+                checked_at=CHECKED_AT,
+                canonical_history_dir=hist_dir,
+                calibration_path=CALIBRATION_PATH,
+                observations_dir=obs_root,
+                points=[point],
+            )
+            self.assertTrue(ok["ok"], msg=ok.get("rejections") or ok.get("error"))
+            self.assertGreater(ok["appended_count"], 0)
+            scores = json.loads((launch_ok / "lineage/temperature_scores.json").read_text(encoding="utf-8"))
+            labor = scores["countries"]["US"]["Labor"]
+            unemp_as_of = labor["component_state"]["unemployment"]["as_of"]
+            self.assertEqual(unemp_as_of, "2026-10")
+            self.assertEqual(
+                period_sort_key(str(labor["as_of"])),
+                period_sort_key(unemp_as_of),
+            )
 
 
 if __name__ == "__main__":

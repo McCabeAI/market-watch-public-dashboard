@@ -69,11 +69,24 @@ def _store_points_by_catalog(
             row = lookup.get((country, series_id, transformation))
             if row is None and series_id in by_id:
                 candidate = by_id[series_id]
+                catalog_id = str(candidate.get("id") or "")
                 if (
-                    str(candidate.get("country") or "") == country
+                    catalog_id == series_id
+                    and str(candidate.get("country") or "") == country
                     and str(candidate.get("transform") or "") == transformation
                 ):
-                    row = candidate
+                    if catalog_id == NZ_CONFIDENCE_CATALOG_ID:
+                        period_binding = str(obs.get("period_binding") or "")
+                        endpoint = str(candidate.get("endpoint") or "")
+                        if period_binding == "verified":
+                            if str(obs.get("source_url") or "") != endpoint:
+                                row = None
+                            else:
+                                row = candidate
+                        else:
+                            row = candidate
+                    else:
+                        row = candidate
             if row is None:
                 continue
             cid = str(row["id"])
