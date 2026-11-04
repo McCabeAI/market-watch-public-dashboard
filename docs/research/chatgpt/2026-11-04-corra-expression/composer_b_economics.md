@@ -51,7 +51,7 @@ Alternatives under test:
 - Average implied rate: **(2.97 + 3.115 + 3.225 + 3.31) / 4 = 3.155%**
 - Versus cash 2.54%: **+61.5 bp** average “futures minus overnight” on the held strip  
 - Intra-strip slope (Z minus H): **3.31 − 2.97 = +34 bp** across Mar→Dec 2027 quarters  
-- Book/journal average **3.16%** (Nov 2 mids 2.96/3.12/3.235/3.325) is **1 bp** above snapshot arithmetic — within rounding / mark timing
+- Book/journal average **3.16%** (Nov 2 mids 2.96/3.12/3.235/3.325) is **0.5 bp** above the Nov 4 snapshot mean **3.155%**. Leg changes versus those journal mids are **+1 / −0.5 / −1 / −1.5 bp**. That is a small move in the mids, not rounding of an identical strip. Parent corrected an earlier “1 bp” label after the verifier.
 
 **JUDGMENT (required):** **3m futures minus cash is not a meeting path and not guaranteed carry.** Each CRA settles to a **quarter-average** CORRA, not a single policy decision. The **1m CORRA chain** in the freeze runs only through **Feb 2027**:
 
@@ -150,7 +150,7 @@ The strip embeds **~62 bp** average premium of **2027 quarter-average CORRA** ov
 **Mechanism (JUDGMENT):** Wins if **front 2027 quarter average reprices up** (pay leg hurts less than receive leg helps on flattening) **or** **back eases faster** than front — i.e. **H–Z segment flattens**. Loses on **steepening** (more hikes priced in the back, or front cuts faster than back).
 
 **For flattener:** Macro mix of **soft trim/median + weak jobs mean** but **headline/energy risk** supports **near-term hawkish repricing in Mar 2027** while **later quarters** could still embed **easing** — a **story** the slope partially prices (+34 bp).  
-**Against flattener (strongest):** If the **receive thesis is right** because **the whole strip is too high**, the **best expression is outright receive**, not **giving up 34 bp** of slope carry to the market. Flattener **caps** participation in **parallel** strip rally (all contracts rally ≈ flattener bleeds). Overnight **parallel_upward_repricing** is specifically **bad** for a new flattener entered **after** the shock.
+**Against flattener (strongest):** If the **receive thesis is right** because **the whole strip is too high**, the outright keeps that **level** exposure and the flattener sets it to about zero. The **34 bp** figure is the **level of the H–Z spread**, not a carry credit. Under an unchanged tenor curve the pay-H/receive-Z book **loses** about **13.5 bp** of leg DV01 over one quarter (parent/verifier sign). A parallel rally does **not** make the flattener bleed; parallel P&L is about zero. The flattener loses on **steepening** and on that **negative roll**. Overnight **parallel_upward_repricing** does not by itself pick the flattener over the outright.
 
 **Edge given up vs outright:** **Parallel receive** on the full strip; **simplest** expression of “Canada overpriced vs path.”
 
@@ -171,7 +171,7 @@ The strip embeds **~62 bp** average premium of **2027 quarter-average CORRA** ov
 **Mechanism (JUDGMENT):** A **CAD receive + USD pay** (or AUD pay) is a **curve-differential** bet: Canada **eases relatively** vs US/AU **or** Canada **was relatively too tight** in futures. It is **not** diversification if the driver is **global energy/inflation repricing** — one shock moves **all** front ends.
 
 **SOFR pay hedge — for:** SOFR **OI large** (e.g. SR3Z7 OI ~1.54m); executable hedge **if** the book could trade it; **SOFR cash 3.95** vs **CORRA 2.54** = **141 bp** cash differential — freeze shows **US front already high** vs CA.  
-**SOFR pay hedge — against (strongest):** **Overlapping global inflation beta** (PRiMA parallel shock); if BoC **must hike further on energy**, **US may stay higher for longer** too — **pay SOFR** adds **loss on adverse hawkish global path** while **receive CORRA** also loses → **double hit**. PM memory already **rejected** overlapping US duration for **portfolio pass** reasons; that rejection **does not** prove a **DV01-matched SOFR pay** is wrong — but it flags **correlation risk**.
+**SOFR pay hedge — against (strongest):** A DV01-matched SOFR pay **offsets** a common rate rise; it does **not** double the loss. The loss that remains is the **Canada-specific excess** (Canada up more than the US). What the overlay **does** give up is the outright’s gain when **both** curves rally, plus most of the Canada roll. US inflation evidence in this freeze is a **stale** 3-month annualized core PCE through July 2026, so the pay is not a clean positive US view. The October memory rejection of **long** US duration does **not** answer this **pay**. Parent corrected an earlier “double hit” sentence that had the hedge sign backwards.
 
 **AONIA pay hedge — against (strongest):** **AU underlying 3.6** vs **2.5** midpoint — **warm** inflation; deferred IB **OI thin** (Mar 2027 **400** lots, many months **null** OI); **different country ticker is not diversification** under **global repricing**. **Edge given up:** Simplicity of **single-country** policy view; **liquidity** and **basis risk** on ASX vs MX.
 
@@ -184,7 +184,7 @@ The strip embeds **~62 bp** average premium of **2027 quarter-average CORRA** ov
 | Alternative | Strongest case AGAINST | Edge given up if you abandon it |
 |-------------|------------------------|----------------------------------|
 | **Outright H–Z receive** | **Energy + headline CPI + IPPI/RMPI energy jumps** + **parallel upward repricing** already moving against you; **missing BoC decision record** weakens “ hikes done” narrative; **null CORRA OI** | N/A (baseline) |
-| **H/Z flattener** | If strip **richness is parallel**, flattener **underperforms** outright receive; **34 bp** slope is **payment** to express a **narrower** view | Full **strip receive** on **mean reversion** of **all** quarters |
+| **H/Z flattener** | If strip richness is parallel, the flattener earns about zero on that move and gives up the level edge. The 34 bp gap is the spread level. One-quarter unchanged-curve roll is a loss of about 13.5 bp of leg DV01, not a 34 bp carry credit. | Full strip receive if every quarter is too high |
 | **SOFR pay overlay** | **Global inflation shock** correlation; **SOFR already elevated** — pay leg **negative carry vs path** if US stays firm | **Uncorrelated** Canada-only easing if US diverges down |
 | **AONIA pay overlay** | **Thin OI**, **AU inflation warm**, same **global shock** | **Clean CAD** expression |
 
@@ -233,7 +233,7 @@ No fair value model, no probabilities, no confidence intervals, no backtest. SOF
 
 | Field | Content |
 |-------|---------|
-| **Mechanism** | Deferred **2027 quarter-average CORRA** still **~62 bp** above **2.54%** cash on equal-weight strip — **overpriced path** vs **soft underlying inflation (1.85)** and **weak employment mean**, **if** no further BoC tightening is **substantiated** |
+| **Mechanism** | Deferred **2027 quarter-average CORRA** still **61.5 bp** above **2.54%** cash on the equal-weight strip — a candidate overpriced path versus **soft underlying inflation (1.85)** and a **weak employment mean**, **if** no further BoC tightening is substantiated |
 | **Market-implied path** | **Upward-sloping H–Z (+34 bp)** with **front 1m chain** rising to **2.785%** by Feb 2027 — mixes **near-term firmness** with **later averages higher still** |
 | **Horizon** | **6–18 months** to **reference quarters**; **1–3 month** P&L is **repricing**, not accrual realization |
 | **Falsifier** | **Close or reduce further** if **core inflation, wages, employment, BoC communication** substantiate **additional hikes**, especially strip **back toward 3.35–3.40** average (hypothesis rev 04) |

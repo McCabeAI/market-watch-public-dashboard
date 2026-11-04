@@ -111,10 +111,11 @@
     "unrealized_recomputed_usd": 599999.9999999994,
     "unrealized_stored_usd": 600000.0,
     "unrealized_match": true,
-    "half_notional_realized_formula": "(notional_usd/2) * (entry_mark - book_mark) / 100",
-    "half_notional_realized_recomputed_usd": 299999.9999999997,
+    "reduced_slice_realized_formula": "(initial_notional_usd - notional_usd) * (entry_mark - book_mark) / 100",
+    "reduced_slice_notional_usd": 250000000.0,
+    "reduced_slice_realized_recomputed_usd": 599999.9999999994,
     "realized_stored_usd": 600000.0,
-    "half_realized_match": false,
+    "reduced_slice_realized_match": true,
     "paper_dv01_usd_per_bp_average": 25000.0,
     "risk_capital_100bp_usd": 2500000.0,
     "stored_funding_cost_usd_unchanged": 24555.56,
@@ -282,7 +283,9 @@
       },
       "equal_weight_average_slide_bp": -8.87499999999999
     },
-    "flattener_pnl_bp_per_leg_dv01": 13.500000000000025,
+    "flattener_pnl_bp_per_leg_dv01": -13.500000000000025,
+    "flattener_spread_widen_bp": 13.500000000000025,
+    "flattener_pnl_sign_note": "PnL bp = slide_H - slide_Z = dH - dZ. A positive spread-widen is a loss for pay-H/receive-Z.",
     "cross_strip_receive_CA_roll_plus_pay_US_roll": {
       "CRA_floored_lots_per_leg": 349,
       "SR3_floored_lots_per_leg": 250,
@@ -381,5 +384,39 @@
       "Z": -6243.15
     },
     "plus_1bp_parallel_all_legs_usd": -24972.6
+  },
+  "section_10_uz_only_receive": {
+    "same_per_leg_lots_as_current_strip_half_parallel_dv01": {
+      "label": "Drop H and M; keep 349 lots of U and of Z",
+      "lots_per_kept_leg": 349,
+      "usd_dv01_per_kept_leg": 6243.152723548613,
+      "parallel_dv01_usd_per_bp": 12486.305447097226,
+      "scenarios_usd": {
+        "S_parallel_selloff_25": -312157.64,
+        "S_parallel_rally_25": 312157.64,
+        "S_bull_flatten": 187294.58,
+        "S_bear_steepen": -187294.58,
+        "S_common_selloff_20": -249726.11,
+        "S_canada_only_25": -312157.64,
+        "S_deescalation": 374589.16,
+        "S_roll_1q": 121741.48
+      }
+    },
+    "parallel_dv01_retargeted_to_25000_on_U_and_Z_only": {
+      "label": "Drop H and M; size U and Z so parallel DV01 targets 25000",
+      "lots_per_kept_leg": 698,
+      "usd_dv01_per_kept_leg": 12486.305447097226,
+      "parallel_dv01_usd_per_bp": 24972.61089419445,
+      "scenarios_usd": {
+        "S_parallel_selloff_25": -624315.27,
+        "S_parallel_rally_25": 624315.27,
+        "S_bull_flatten": 374589.16,
+        "S_bear_steepen": -374589.16,
+        "S_common_selloff_20": -499452.22,
+        "S_canada_only_25": -624315.27,
+        "S_deescalation": 749178.33,
+        "S_roll_1q": 243482.96
+      }
+    }
   }
 }

@@ -357,17 +357,22 @@ def recompute_all(frozen: dict, calc: dict) -> Tuple[List[Check], dict]:
             )
         )
 
-    md_sofr_rounded = {"H": -21.0, "M": -13.0, "U": -4.0, "Z": -2.0}
-    md_avg = -10.0
+    md_path = SCRIPT_DIR / "composer_a_contract_math.md"
+    md_text = md_path.read_text(encoding="utf-8")
     json_avg = mean(list(sofr_slide.values()))
-    table_matches_json = all(
-        abs(sofr_slide[k] - md_sofr_rounded[k]) < 0.51 for k in LEG_KEYS
-    ) and abs(json_avg - md_avg) < 0.51
+    table_matches_json = (
+        "−20.5 / −13 / −4 / +2" in md_text
+        and "−8.875" in md_text
+        and "−13.5 bp" in md_text
+        and abs(sofr_slide["H"] + 20.5) < 1e-6
+        and abs(sofr_slide["Z"] - 2.0) < 1e-6
+        and abs(json_avg + 8.875) < 1e-6
+    )
     checks.append(
         Check(
             "composer_a_markdown_sofr_slide_table_matches_json",
             table_matches_json,
-            "rounded table −21/−13/−4/−2 avg −10",
+            "markdown shows −20.5/−13/−4/+2 and avg −8.875",
             f"exact legs {sofr_slide} avg {json_avg}",
         )
     )
@@ -393,7 +398,7 @@ def recompute_all(frozen: dict, calc: dict) -> Tuple[List[Check], dict]:
             (economic_bp_per_dv01 > 0) == (section7_field > 0),
             "same sign as legDV01*(dH-dZ)",
             f"section7={section7_field} economic={economic_bp_per_dv01}",
-            note="section7 uses -(dH)+dZ; economic uses dH-dZ",
+            note="section7 field is slide_H - slide_Z",
         )
     )
     checks.append(compare_usd("roll_flattener_usd_vs_recompute", economic_usd, roll_flattener_usd))
@@ -445,13 +450,14 @@ def recompute_all(frozen: dict, calc: dict) -> Tuple[List[Check], dict]:
         ]
     )
     journal_vs_snapshot_bp = (journal_avg - corra_mean) * 100.0
+    b_text = (SCRIPT_DIR / "composer_b_economics.md").read_text(encoding="utf-8")
     checks.append(
         Check(
-            "composer_B_journal_1bp_above_snapshot",
-            abs(journal_vs_snapshot_bp - 1.0) < 0.25,
-            1.0,
+            "composer_B_journal_gap_is_half_bp",
+            abs(journal_vs_snapshot_bp - 0.5) < 0.05 and "0.5 bp" in b_text and "is **1 bp** above" not in b_text,
+            0.5,
             journal_vs_snapshot_bp,
-            note="B text claims 1 bp; recomputed 3.16 vs 3.155",
+            note="journal 3.16 vs snapshot 3.155",
         )
     )
 
@@ -468,6 +474,32 @@ def recompute_all(frozen: dict, calc: dict) -> Tuple[List[Check], dict]:
     avg_prem = mean([premium_bp(r, corra_cash) for r in corra_rates])
     checks.append(compare_float("composer_B_avg_premium_61_5", avg_prem, 61.5, TOL_BP))
     checks.append(compare_float("composer_B_HZ_slope_34bp", bp_diff(corra_rates[3], corra_rates[0]), 34.0, TOL_BP))
+
+    s10 = calc["section_10_uz_only_receive"]["same_per_leg_lots_as_current_strip_half_parallel_dv01"]
+    uz_parallel = s10["parallel_dv01_usd_per_bp"]
+    checks.append(
+        compare_usd(
+            "uz_only_parallel_selloff_25",
+            s10["scenarios_usd"]["S_parallel_selloff_25"],
+            money_cents(-uz_parallel * 25.0),
+        )
+    )
+    uz_leg = s10["usd_dv01_per_kept_leg"]
+    checks.append(
+        compare_usd(
+            "uz_only_roll",
+            s10["scenarios_usd"]["S_roll_1q"],
+            money_cents(-uz_leg * (corra_slide["U"] + corra_slide["Z"])),
+        )
+    )
+    checks.append(
+        Check(
+            "reduced_slice_realized_matches_book",
+            calc["section_2_paper_engine"]["reduced_slice_realized_match"] is True,
+            True,
+            calc["section_2_paper_engine"].get("reduced_slice_realized_recomputed_usd"),
+        )
+    )
 
     verify_frozen_vs_snapshot(frozen, checks)
 
@@ -512,17 +544,14 @@ def format_notes(checks: List[Check], summary: dict) -> str:
             "## Flattener roll sign (item 5)",
             "",
             "- Economic: pay H / receive Z, `PnL = legDV01 × (dH − dZ)` with dH≈−22 bp, dZ≈−8.5 bp → **−13.5 bp per leg DV01 (loss)**.",
-            "- `calc_results` `section_8` `S_roll_1q` `c_primary_flattener_usd` is **negative** → matches economic sign.",
-            "- `section_7` `flattener_pnl_bp_per_leg_dv01` **+13.5** uses `−(slide_H)+slide_Z`; **opposite sign** to `dH−dZ` (magnitude only).",
+            "- First Composer V run (before parent label fixes) found three documentation fails: SOFR markdown rounded the Z slide to −2 and the average to −10; `section_7` stored +13.5 with the opposite sign of `dH−dZ`; Composer B called the 3.16 versus 3.155 gap 1 bp.",
+            "- Parent corrected those labels in the calculator, Composer A note, and Composer B note. This file is the re-run. Scenario USD for the flattener roll was already the economic loss and did not change.",
+            "- A separate calculator bug treated realized P&L as half of the residual 250m. The closed slice was 250m of the original 500m. That identity now matches the stored 600,000.",
             "",
-            "## Composer A markdown SOFR slides (item 6)",
+            "## Composer B arithmetic",
             "",
-            "- Table **−21 / −13 / −4 / −2**, avg **−10** is rounded; JSON exact slides are **−20.5 / −13 / −4 / +2**, avg **≈ −8.875**.",
-            "",
-            "## Composer B arithmetic (item 9)",
-            "",
-            "- Journal **3.16%** vs snapshot mean **3.155%** → **+0.5 bp**, not **+1 bp** as stated.",
-            "- Stated premia **+43/+57.5/+68.5/+77**, avg **+61.5**, H→Z **+34 bp** match frozen inputs.",
+            "- Journal **3.16%** versus snapshot mean **3.155%** is **+0.5 bp**.",
+            "- Premia **+43/+57.5/+68.5/+77**, average **+61.5**, H→Z **+34 bp** match the frozen inputs.",
             "",
             "No trade recommendation.",
         ]

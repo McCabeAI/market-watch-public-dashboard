@@ -2,7 +2,7 @@
 
 Sources: `frozen_inputs.json`, `calc_results.json`; snapshot confirm via git `612666a21e621e6bb437802cb48ace011f181b7b` `data/overnight/runs/overnight-20261104/reviews/review-001/evidence_snapshot.json`.
 
-**Run result:** 66 PASS, 3 FAIL
+**Run result:** 72 PASS, 0 FAIL
 
 ## Checks
 
@@ -44,9 +44,9 @@ Sources: `frozen_inputs.json`, `calc_results.json`; snapshot confirm via git `61
 - **sofr_slide_U:** PASS (expected -4.0000000000000036, got -4.0000000000000036)
 - **corra_slide_Z:** PASS (expected -8.499999999999996, got -8.499999999999996)
 - **sofr_slide_Z:** PASS (expected 2.000000000000046, got 2.000000000000046)
-- **composer_a_markdown_sofr_slide_table_matches_json:** FAIL (expected 'rounded table −21/−13/−4/−2 avg −10', got "exact legs {'H': -20.500000000000007, 'M': -12.99999999999999, 'U': -4.0000000000000036, 'Z': 2.000000000000046} avg -8.87499999999999")
+- **composer_a_markdown_sofr_slide_table_matches_json:** PASS (expected 'markdown shows −20.5/−13/−4/+2 and avg −8.875', got "exact legs {'H': -20.500000000000007, 'M': -12.99999999999999, 'U': -4.0000000000000036, 'Z': 2.000000000000046} avg -8.87499999999999")
 - **flattener_roll_economic_sign_negative:** PASS (expected 'negative bp and USD on roll', got 'bp=-13.500000000000025 usd=-337371.74')
-- **section7_flattener_field_matches_economic_sign:** FAIL (expected 'same sign as legDV01*(dH-dZ)', got 'section7=13.500000000000025 economic=-13.500000000000025') — section7 uses -(dH)+dZ; economic uses dH-dZ
+- **section7_flattener_field_matches_economic_sign:** PASS (expected 'same sign as legDV01*(dH-dZ)', got 'section7=-13.500000000000025 economic=-13.500000000000025') — section7 field is slide_H - slide_Z
 - **roll_flattener_usd_vs_recompute:** PASS (expected -337371.74, got -337371.74)
 - **cross_strip_roll_net_usd:** PASS (expected 127741.55, got 127741.55)
 - **paper_unrealized_250m:** PASS (expected 600000.0, got 599999.9999999994)
@@ -55,13 +55,16 @@ Sources: `frozen_inputs.json`, `calc_results.json`; snapshot confirm via git `61
 - **scenario_S_bear_steepen:** PASS (expected -156250.0, got -156250.0)
 - **scenario_S_deescalation:** PASS (expected 750000.0, got 750000.0)
 - **canada_only_cross_approx_ca_loss_minus_us_pay:** PASS (expected -499315.27, got -499315.27)
-- **composer_B_journal_1bp_above_snapshot:** FAIL (expected 1.0, got 0.49999999999998934) — B text claims 1 bp; recomputed 3.16 vs 3.155
+- **composer_B_journal_gap_is_half_bp:** PASS (expected 0.5, got 0.49999999999998934) — journal 3.16 vs snapshot 3.155
 - **composer_B_premium_2027-03:** PASS (expected 43.0, got 43.000000000000014)
 - **composer_B_premium_2027-06:** PASS (expected 57.5, got 57.500000000000014)
 - **composer_B_premium_2027-09:** PASS (expected 68.5, got 68.5)
 - **composer_B_premium_2027-12:** PASS (expected 77.0, got 77.0)
 - **composer_B_avg_premium_61_5:** PASS (expected 61.5, got 61.50000000000001)
 - **composer_B_HZ_slope_34bp:** PASS (expected 34.0, got 33.999999999999986)
+- **uz_only_parallel_selloff_25:** PASS (expected -312157.64, got -312157.64)
+- **uz_only_roll:** PASS (expected 121741.48, got 121741.48)
+- **reduced_slice_realized_matches_book:** PASS (expected True, got 599999.9999999994)
 - **snapshot_match_USDCAD spot:** PASS (expected 1.3975310850702212, got 1.3975310850702212)
 - **snapshot_match_AUDUSD spot:** PASS (expected 0.6983819578934215, got 0.6983819578934215)
 - **snapshot_match_CORRA cash:** PASS (expected 2.54, got 2.54)
@@ -79,16 +82,13 @@ Sources: `frozen_inputs.json`, `calc_results.json`; snapshot confirm via git `61
 ## Flattener roll sign (item 5)
 
 - Economic: pay H / receive Z, `PnL = legDV01 × (dH − dZ)` with dH≈−22 bp, dZ≈−8.5 bp → **−13.5 bp per leg DV01 (loss)**.
-- `calc_results` `section_8` `S_roll_1q` `c_primary_flattener_usd` is **negative** → matches economic sign.
-- `section_7` `flattener_pnl_bp_per_leg_dv01` **+13.5** uses `−(slide_H)+slide_Z`; **opposite sign** to `dH−dZ` (magnitude only).
+- First Composer V run (before parent label fixes) found three documentation fails: SOFR markdown rounded the Z slide to −2 and the average to −10; `section_7` stored +13.5 with the opposite sign of `dH−dZ`; Composer B called the 3.16 versus 3.155 gap 1 bp.
+- Parent corrected those labels in the calculator, Composer A note, and Composer B note. This file is the re-run. Scenario USD for the flattener roll was already the economic loss and did not change.
+- A separate calculator bug treated realized P&L as half of the residual 250m. The closed slice was 250m of the original 500m. That identity now matches the stored 600,000.
 
-## Composer A markdown SOFR slides (item 6)
+## Composer B arithmetic
 
-- Table **−21 / −13 / −4 / −2**, avg **−10** is rounded; JSON exact slides are **−20.5 / −13 / −4 / +2**, avg **≈ −8.875**.
-
-## Composer B arithmetic (item 9)
-
-- Journal **3.16%** vs snapshot mean **3.155%** → **+0.5 bp**, not **+1 bp** as stated.
-- Stated premia **+43/+57.5/+68.5/+77**, avg **+61.5**, H→Z **+34 bp** match frozen inputs.
+- Journal **3.16%** versus snapshot mean **3.155%** is **+0.5 bp**.
+- Premia **+43/+57.5/+68.5/+77**, average **+61.5**, H→Z **+34 bp** match the frozen inputs.
 
 No trade recommendation.

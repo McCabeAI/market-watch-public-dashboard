@@ -211,8 +211,10 @@ def paper_engine(data: dict) -> dict:
     entry = pe["entry_mark"]
     book = pe["book_mark"]
     unrealized_calc = notional * (entry - book) / 100.0
-    half_notional = notional / 2.0
-    half_realized_calc = half_notional * (entry - book) / 100.0
+    # The Nov 3 reduce closed half of the original 500m, i.e. 250m, which equals
+    # the residual notional. Realized P&L uses that closed slice, not half of the residual.
+    reduced_notional = float(pe["initial_notional_usd"]) - notional
+    reduced_realized_calc = reduced_notional * (entry - book) / 100.0
     paper_dv01 = notional * 0.0001
     risk_capital = pe["risk_capital_usd"]
     rate = pe["funding_percent_rate"] / 100.0
@@ -227,10 +229,11 @@ def paper_engine(data: dict) -> dict:
         "unrealized_recomputed_usd": unrealized_calc,
         "unrealized_stored_usd": pe["unrealized_pnl_usd"],
         "unrealized_match": abs(unrealized_calc - pe["unrealized_pnl_usd"]) < 0.01,
-        "half_notional_realized_formula": "(notional_usd/2) * (entry_mark - book_mark) / 100",
-        "half_notional_realized_recomputed_usd": half_realized_calc,
+        "reduced_slice_realized_formula": "(initial_notional_usd - notional_usd) * (entry_mark - book_mark) / 100",
+        "reduced_slice_notional_usd": reduced_notional,
+        "reduced_slice_realized_recomputed_usd": reduced_realized_calc,
         "realized_stored_usd": pe["realized_pnl_usd"],
-        "half_realized_match": abs(half_realized_calc - pe["realized_pnl_usd"]) < 0.01,
+        "reduced_slice_realized_match": abs(reduced_realized_calc - pe["realized_pnl_usd"]) < 0.01,
         "paper_dv01_usd_per_bp_average": paper_dv01,
         "risk_capital_100bp_usd": risk_capital,
         "stored_funding_cost_usd_unchanged": pe["funding_cost_usd"],
@@ -331,7 +334,10 @@ def roll_one_quarter(data: dict) -> dict:
 
     h_slide_ca = corra_roll["slide_bp_by_leg"]["H"]
     z_slide_ca = corra_roll["slide_bp_by_leg"]["Z"]
-    flattener_bp_dv01 = -(h_slide_ca) + z_slide_ca
+    # Pay H / receive Z. PnL per USD of leg DV01 = dH - dZ. Negative is a loss.
+    # The H-Z spread itself widens by z_slide - h_slide under this roll.
+    flattener_bp_dv01 = h_slide_ca - z_slide_ca
+    flattener_spread_widen_bp = z_slide_ca - h_slide_ca
 
     # Matched parallel DV01 books (25k USD/bp) with floored equal-lot sizing from section 6.
     cra_dv01_usd = 25.0 * (1.0 / data["fx"]["USDCAD"]["spot"])
@@ -354,6 +360,8 @@ def roll_one_quarter(data: dict) -> dict:
         "CORRA": corra_roll,
         "SOFR": sofr_roll,
         "flattener_pnl_bp_per_leg_dv01": flattener_bp_dv01,
+        "flattener_spread_widen_bp": flattener_spread_widen_bp,
+        "flattener_pnl_sign_note": "PnL bp = slide_H - slide_Z = dH - dZ. A positive spread-widen is a loss for pay-H/receive-Z.",
         "cross_strip_receive_CA_roll_plus_pay_US_roll": {
             "CRA_floored_lots_per_leg": cra_lots_roll,
             "SR3_floored_lots_per_leg": sr3_lots_roll,
@@ -525,6 +533,22 @@ def expression_c_sizing(data: dict, fx: dict) -> dict:
     }
 
 
+def reshape_uz_receive(lots_per_leg: int, dv01_per_lot: float, shocks: dict, label: str) -> dict:
+    """Receive U and Z only. H and M are flat. Same shock set as the strip."""
+    leg_dv01 = lots_per_leg * dv01_per_lot
+    rows = {}
+    for name, shock in shocks.items():
+        ca = shock["CA"]
+        rows[name] = money_cents(-leg_dv01 * (ca["U"] + ca["Z"]))
+    return {
+        "label": label,
+        "lots_per_kept_leg": lots_per_leg,
+        "usd_dv01_per_kept_leg": leg_dv01,
+        "parallel_dv01_usd_per_bp": 2.0 * leg_dv01,
+        "scenarios_usd": rows,
+    }
+
+
 def factor_line(lots: int, dv01_per_lot: float) -> dict:
     per_leg = {}
     for k in LEG_KEYS:
@@ -604,6 +628,20 @@ def run_all(inputs_path: Path) -> dict:
         "section_7_one_quarter_roll": roll,
         "section_8_scenarios_usd": scenario_rows,
         "section_9_factor_line_floored_equal_receive": factor_line(cra_lots, cra_dv01),
+        "section_10_uz_only_receive": {
+            "same_per_leg_lots_as_current_strip_half_parallel_dv01": reshape_uz_receive(
+                cra_lots,
+                cra_dv01,
+                shocks,
+                "Drop H and M; keep 349 lots of U and of Z",
+            ),
+            "parallel_dv01_retargeted_to_25000_on_U_and_Z_only": reshape_uz_receive(
+                floor_toward_zero(25_000.0 / (2.0 * cra_dv01)),
+                cra_dv01,
+                shocks,
+                "Drop H and M; size U and Z so parallel DV01 targets 25000",
+            ),
+        },
     }
 
 
