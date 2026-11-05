@@ -347,6 +347,77 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Reduce CORRA receive toUSD100m and initiate USD5m-equivalent EURUSD long. Hold risk supported by current forward judgment, not by old entry profits or a requirement for certainty. EUR owns a broad-dollar relief thesis; Canada owns a modest policy-path discrepancy."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pm-chatgpt-595561a1b90f",
+          "rationale": "Kevin requested saving the full November5 learning after approving the CORRA reduction and EURUSD starter. This follow-on decision preserves both resulting positions and records process lessons; it is not another investment reassessment.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pm-chatgpt-aef5bacd43d3",
+          "rationale": "Kevin requested saving the full November5 learning after approving the CORRA reduction and EURUSD starter. This follow-on decision preserves both resulting positions and records process lessons; it is not another investment reassessment.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-05T09:03:13.403398-05:00",
+      "conviction": 50,
+      "decision_fingerprint": "6712412b043fefeb44c110839a5a8d9b6e426b0d087ce2d3403a77cc0851aa10",
+      "event_id": "jde-810455bbdb724978",
+      "funding_view": null,
+      "invalidation": "Exit/review on a daily close at or below1.1179; reconsider if renewed energy disruption and renewed dollar demand invalidate the relief thesis. A gap toward1.113 would exceed the planned exit loss. No stop guarantees a loss cap.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-chatgpt-595561a1b90f",
+        "pm-chatgpt-aef5bacd43d3"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c6b9b84380f1acaf7476c3695ed4f60d6a8b1fdbcda4e8eaa56eb2431d880e99",
+      "outcome_links": [],
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": null
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "cf1ea3836ec6f3e61676d4144517febc96371c3667bf5f0b6fb100dcc2373838",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": null,
+        "review_packet_id": "prp-chatgpt-overnight-20261105-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Kevin explicitly requested listing and durably saving today's learning. The authorized REDUCE/OPEN are already canonical from issue300; this ticket adds no new risk. Reinforce the portfolio-component lesson and add eleven coherent lesson records covering all November5 coaching, evidence/quantification corrections and workflow preferences. Owned CORRA trade references are context citations, not proof from profits. These are adopted process rules or bounded empirical observations, not validated trading performance. The existing research-edge profile and current hypotheses are updated separately through research memory.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Initial USD5m-equivalent EURUSD long on a discretionary view that post-election unwinding of geopolitical/political dollar demand can continue and cheaper energy can improve Europe's outlook. The trade expresses broad dollar weakness; EUR need not outperform all European peers. This is a conditional judgment, not a proven factor model or a request from Kevin to buy EUR."
     }
   ],
   "schema_version": 1,
