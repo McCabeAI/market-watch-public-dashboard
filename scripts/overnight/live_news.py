@@ -87,6 +87,9 @@ _COUNTRY_ALIASES: tuple[tuple[str, str, int], ...] = (
     ("US", r"\bFOMC\b", re.IGNORECASE),
     ("US", r"\bFed\b", 0),
     ("US", r"\bFED\b", 0),
+    ("US", r"\bCongress\b", re.IGNORECASE),
+    ("US", r"\bcongressional\b", re.IGNORECASE),
+    ("US", r"\bSenate\b", re.IGNORECASE),
     ("US", r"\bUnited States\b", re.IGNORECASE),
     ("US", r"\bU\.S\.A\.?(?!\w)", re.IGNORECASE),
     ("US", r"\bU\.S\.(?!\w)", re.IGNORECASE),
@@ -384,15 +387,59 @@ def acquire_current_news(
     partial = (
         statuses.get("bloomberg") == "failed" and statuses.get("reuters") == "ok"
     ) or (statuses.get("reuters") == "failed" and statuses.get("bloomberg") == "ok")
+    recovery = _wire_recovery(receipts)
+    optional_source_gaps = [
+        {"source": receipt["source"], "failure": receipt.get("failure")}
+        for receipt in receipts
+        if receipt.get("source") not in REQUIRED_SOURCES and receipt.get("status") == "failed"
+    ]
 
     return {
         "mode": "live",
         "cutoff": cutoff_iso,
         "partial": partial,
+        "recovery": recovery,
+        "optional_source_gaps": optional_source_gaps,
         "receipts": receipts,
         "candidates": deduped,
         "story_drops": story_drops,
     }
+
+
+_BLOOMBERG_BING_SOURCES = ("bloomberg", "bloomberg_credit", "bloomberg_equity", "bloomberg_politics")
+_RECOVERY_SOURCES = (
+    "cnbc",
+    "cnbc_investing",
+    "fed_monetary",
+    "boc_press",
+    "rba_media",
+    "ecb_press",
+    "boj_whatsnew",
+    "boe_news",
+    "rbnz_news",
+)
+
+
+def _wire_recovery(receipts: list[dict[str, Any]]) -> str:
+    """primary, fallback, or unavailable.
+
+    Fallback is a public non-Bing feed that still returned in-window candidates
+    after the Reuters sitemap failed and every Bloomberg Bing surface was empty.
+    """
+    by_source = {str(row.get("source") or ""): row for row in receipts}
+    reuters_failed = (by_source.get("reuters") or {}).get("status") == "failed"
+    bloomberg_results = sum(
+        int((by_source.get(source) or {}).get("result_count") or 0)
+        for source in _BLOOMBERG_BING_SOURCES
+    )
+    if not (reuters_failed and bloomberg_results == 0):
+        return "primary"
+    recovered = sum(
+        int((by_source.get(source) or {}).get("result_count") or 0) for source in _RECOVERY_SOURCES
+    )
+    if recovered > 0:
+        return "fallback"
+    return "unavailable"
 
 
 __all__ = [

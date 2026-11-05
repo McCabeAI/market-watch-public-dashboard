@@ -23,20 +23,21 @@ PACKET_SHA = "74b06c13f1215b6521678c764356cae8ae2788e19bad038dad0a79f7e35f2109"
 FROZEN_AT = "2026-10-27T05:32:12.602790-04:00"
 PREV_AS_OF = "2026-10-26T07:37:10.682323-04:00"
 
+# Same eligible set as the Oct 27 packet. Order is prominence (transmission score,
+# then timestamp), so a same-window AI-credit story leads a lower-score oil headline.
 PINNED_ITEMS = [
-    ("news:3f5406490f809d1a", "CNBC", "2026-10-27T05:09:01-04:00", "Oil prices seesaw amid renewed diplomatic efforts to end Mideast conflict"),
+    (
+        "news:8e25112a3bbfefef",
+        "Bloomberg",
+        "2026-10-26T15:00:00-04:00",
+        "BlackRock’s Rieder Spent Weekend Doing Deals in AI Debt Rush",
+    ),
     ("news:de75f7dc279048ff", "Bank of Japan", "2026-10-27T01:00:00-04:00", "Indicators for Core CPI"),
     (
         "news:0ea2c447c7cee9bf",
         "CNBC",
         "2026-10-26T20:17:44-04:00",
         "Bank of Japan is expected to hold rates this week — but stay hawkish: CNBC survey",
-    ),
-    (
-        "news:8e25112a3bbfefef",
-        "Bloomberg",
-        "2026-10-26T15:00:00-04:00",
-        "BlackRock’s Rieder Spent Weekend Doing Deals in AI Debt Rush",
     ),
     (
         "news:5de8c9d374ec450e",
@@ -50,6 +51,7 @@ PINNED_ITEMS = [
         "2026-10-26T13:00:00-04:00",
         "Bond market is a buy right now, JP Morgan Asset Management's fixed income head says",
     ),
+    ("news:3f5406490f809d1a", "CNBC", "2026-10-27T05:09:01-04:00", "Oil prices seesaw amid renewed diplomatic efforts to end Mideast conflict"),
 ]
 PINNED_REJECTED = {"out_of_window": 5, "unattributed": 13}
 
@@ -105,11 +107,13 @@ def _chosen_fields(family: dict, template: dict, *, accepted=()) -> dict:
 
 
 def _eligible_template(family: dict, accepted: list) -> dict:
+    """CNBC oil row: market tokens live in the headline, and the host matches CNBC edits."""
     out = _select(family, accepted)
     self_assert = out["status"] == "available" and out["items"]
     if not self_assert:
         raise unittest.SkipTest("no eligible template in fixture")
-    item_id = out["items"][0]["id"]
+    preferred = "news:3f5406490f809d1a"
+    item_id = preferred if any(row.get("id") == preferred for row in out["items"]) else out["items"][0]["id"]
     for raw in family["items"]:
         if raw.get("id") == item_id:
             return copy.deepcopy(raw)
@@ -433,6 +437,335 @@ class RenderTests(unittest.TestCase):
         note = rh.render_previous_analysis_note(news)
         self.assertIn("Previous accepted analysis", note)
         self.assertIn("overnight-20261026", note)
+
+
+class NovemberReplayTests(unittest.TestCase):
+    """Hermetic 2026-11-04 replay. Fixture headlines only; no live political facts."""
+
+    ELECTION = "US national election result changes control of Congress"
+    FED = "Fed officials see inflation progress stalling as Treasury yields rise"
+    CUTOFF = "2026-11-04T08:00:00-05:00"
+    FROZEN = "2026-11-04T08:30:00-05:00"
+
+    def _fetcher(self, url: str, *, cnbc: bytes) -> bytes:
+        from tests.test_news_intelligence import _rss
+
+        lower = url.lower()
+        if "reuters.com" in lower and "news-sitemap" in lower:
+            raise RuntimeError("reuters sitemap failed")
+        if "bing.com" in lower and "cnbc.com" in lower:
+            raise RuntimeError("cnbc credit query failed")
+        if "bing.com" in lower:
+            return _rss("")
+        if "sitemap_news.xml" in lower:
+            return cnbc
+        return _rss("")
+
+    def _cnbc(self, items: str) -> bytes:
+        xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+{items}
+</urlset>"""
+        return xml.encode("utf-8")
+
+    def _cnbc_item(self, title: str, slug: str, published: str) -> str:
+        return f"""  <url>
+    <loc>https://www.cnbc.com/2026/11/04/{slug}</loc>
+    <news:news>
+      <news:publication><news:name>CNBC</news:name></news:publication>
+      <news:publication_date>{published}</news:publication_date>
+      <news:title>{title}</news:title>
+    </news:news>
+  </url>"""
+
+    def test_fallback_discovery_ranks_in_package_and_current_panel(self) -> None:
+        from datetime import datetime
+
+        from scripts.overnight.clock import isoformat
+        from scripts.overnight.live_news import acquire_current_news, merge_live_news
+        from scripts.overnight.news_diagnostics import build_report
+        from scripts.overnight.news_sources import CNBC_HEADLINE_ONLY
+
+        when = datetime.fromisoformat(self.CUTOFF)
+        cnbc = self._cnbc(
+            self._cnbc_item(self.ELECTION, "us-election-congress-control.html", "2026-11-04T11:10:00Z")
+            + self._cnbc_item(self.FED, "fed-inflation-yields.html", "2026-11-04T10:30:00Z")
+            + self._cnbc_item(
+                "City council election result is declared after a long count",
+                "city-council-election.html",
+                "2026-11-04T10:00:00Z",
+            )
+        )
+        acquisition = acquire_current_news(
+            when=when,
+            offline=False,
+            fetcher=lambda url: self._fetcher(url, cnbc=cnbc),
+        )
+        self.assertEqual(acquisition["recovery"], "fallback")
+        self.assertTrue(acquisition["partial"])
+        gaps = {row["source"] for row in acquisition["optional_source_gaps"]}
+        self.assertIn("cnbc_credit", gaps)
+        self.assertTrue(any(row["source"] == "reuters" and row["status"] == "failed" for row in acquisition["receipts"]))
+        headlines = [row["headline"] for row in acquisition["candidates"]]
+        self.assertIn(self.ELECTION, headlines)
+        self.assertIn(self.FED, headlines)
+        self.assertNotIn("City council election result is declared after a long count", headlines)
+
+        stale_oil = {
+            "headline": "Oil rebounds as Hormuz tensions keep crude bid",
+            "summary": "Brent rose.",
+            "url": "https://www.reuters.com/world/hormuz-stale-2026-10-28/",
+            "published_at": "2026-10-28T06:00:00-04:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_boe = {
+            "headline": "Bank rate maintained at 3.75%",
+            "summary": "The Bank of England left policy unchanged.",
+            "url": "https://www.bankofengland.co.uk/news/2026/october/bank-rate-maintained",
+            "published_at": "2026-10-28T07:00:00-04:00",
+            "source_name": "Bank of England",
+            "verification_status": "official",
+            "primary_category": "monetary_policy",
+            "country_codes": [],
+        }
+        merged = merge_live_news(
+            baseline=[stale_oil, stale_boe],
+            live_candidates=acquisition["candidates"],
+            when=when,
+        )
+        order = [row["headline"] for row in merged["items"]]
+        self.assertLess(order.index(self.FED), order.index(self.ELECTION))
+        self.assertLess(order.index(self.ELECTION), order.index(stale_oil["headline"]))
+        self.assertLess(order.index(self.ELECTION), order.index(stale_boe["headline"]))
+        election = next(row for row in merged["items"] if row["headline"] == self.ELECTION)
+        self.assertEqual(election["currency"], "current")
+        self.assertEqual(election["transmission"]["claim"], "possible")
+        self.assertEqual(election["summary"], CNBC_HEADLINE_ONLY)
+        self.assertEqual(next(row for row in merged["items"] if row["headline"] == stale_oil["headline"])["currency"], "archival")
+
+        report = build_report(acquisition, merged)
+        self.assertEqual(report["recovery"], "fallback")
+        self.assertTrue(any(row["source"] == "cnbc_credit" for row in report["optional_source_gaps"]))
+        shown = {row["headline"] for row in report["stories"] if row["stage"] == "shown"}
+        self.assertIn(self.ELECTION, shown)
+        self.assertTrue(
+            any(row["reason"] == "stage1_recall" and "City council" in (row["headline"] or "") for row in report["stories"])
+        )
+
+        family = {
+            "status": "fresh",
+            "digest": "nov4-replay",
+            "as_of": self.CUTOFF,
+            "acquisition": {
+                "mode": "live",
+                "partial": acquisition["partial"],
+                "recovery": acquisition["recovery"],
+                "cutoff": acquisition["cutoff"],
+                "receipts": acquisition["receipts"],
+            },
+            "items": merged["items"],
+        }
+        panel = rh.select_current_headlines(
+            family,
+            frozen_at=self.FROZEN,
+            previous_accepted_as_of=None,
+            previous_accepted_items=[],
+            packet_sha256="abc123",
+        )
+        self.assertEqual(panel["status"], "available")
+        panel_headlines = [row["headline"] for row in panel["items"]]
+        self.assertEqual(panel_headlines[:2], [self.FED, self.ELECTION])
+        self.assertNotIn(stale_oil["headline"], panel_headlines)
+        self.assertNotIn(stale_boe["headline"], panel_headlines)
+        overlap = [row["headline"] for row in merged["items"] if row["headline"] in panel_headlines]
+        self.assertEqual(panel_headlines, overlap)
+        rendered = rh.render_headlines_panel(
+            panel,
+            previous_news={"as_of": "2026-10-28T07:00:00-04:00", "age_label": "prior cycle", "overnight_run_id": "overnight-20261028"},
+            panel="front",
+            limit=rh.FRONT_HEADLINES,
+        )
+        self.assertIn("Geopolitics (possible)", rendered)
+        self.assertIn(self.ELECTION, rendered)
+        self.assertNotIn("yields jumped", rendered.lower())
+        self.assertIn("Previous accepted analysis", rh.render_previous_analysis_note(
+            {"as_of": "2026-10-28T07:00:00-04:00", "age_label": "prior cycle", "overnight_run_id": "overnight-20261028"}
+        ))
+        self.assertEqual(isoformat(when), acquisition["cutoff"])
+
+    def test_election_yields_fall_fallback_ranks_in_panel(self) -> None:
+        from datetime import datetime
+
+        from scripts.overnight.clock import isoformat
+        from scripts.overnight.live_news import acquire_current_news, merge_live_news
+        from scripts.overnight.news_diagnostics import build_report
+        from scripts.overnight.news_sources import CNBC_HEADLINE_ONLY
+
+        election_yields = "Democrats win control of Congress; Treasury yields fell"
+        expected_change = "Control of Congress is expected to change"
+        fresh_hormuz = (
+            "Iran says it will not soften demands after Trump rejects a Hormuz offer"
+        )
+        when = datetime.fromisoformat(self.CUTOFF)
+        cnbc = self._cnbc(
+            self._cnbc_item(election_yields, "democrats-win-congress-yields.html", "2026-11-04T11:10:00Z")
+            + self._cnbc_item(expected_change, "congress-expected-change.html", "2026-11-04T11:08:00Z")
+            + self._cnbc_item(self.FED, "fed-inflation-yields.html", "2026-11-04T10:30:00Z")
+            + self._cnbc_item(
+                fresh_hormuz,
+                "hormuz-demands.html",
+                "2026-11-04T11:00:00Z",
+            )
+        )
+        acquisition = acquire_current_news(
+            when=when,
+            offline=False,
+            fetcher=lambda url: self._fetcher(url, cnbc=cnbc),
+        )
+        self.assertEqual(acquisition["recovery"], "fallback")
+        headlines = [row["headline"] for row in acquisition["candidates"]]
+        self.assertIn(election_yields, headlines)
+        self.assertIn(expected_change, headlines)
+        self.assertIn(self.FED, headlines)
+        self.assertIn(fresh_hormuz, headlines)
+
+        expected_tx = score_transmission(expected_change, "")
+        self.assertNotEqual(expected_tx.get("reason_code"), "political_risk_transmission")
+        self.assertNotEqual(expected_tx.get("disposition"), "show")
+
+        stale_oil = {
+            "headline": "Oil rebounds as Hormuz tensions keep crude bid",
+            "summary": "Brent rose.",
+            "url": "https://www.reuters.com/world/hormuz-stale-2026-10-28/",
+            "published_at": "2026-10-28T06:00:00-04:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_boe = {
+            "headline": "Bank rate maintained at 3.75%",
+            "summary": "The Bank of England left policy unchanged.",
+            "url": "https://www.bankofengland.co.uk/news/2026/october/bank-rate-maintained",
+            "published_at": "2026-10-28T07:00:00-04:00",
+            "source_name": "Bank of England",
+            "verification_status": "official",
+            "primary_category": "monetary_policy",
+            "country_codes": [],
+        }
+        merged = merge_live_news(
+            baseline=[stale_oil, stale_boe],
+            live_candidates=acquisition["candidates"],
+            when=when,
+        )
+        order = [row["headline"] for row in merged["items"]]
+        self.assertLess(order.index(self.FED), order.index(election_yields))
+        self.assertLess(order.index(fresh_hormuz), order.index(election_yields))
+        self.assertLess(order.index(election_yields), order.index(stale_oil["headline"]))
+        self.assertLess(order.index(election_yields), order.index(stale_boe["headline"]))
+        election = next(row for row in merged["items"] if row["headline"] == election_yields)
+        self.assertEqual(election["currency"], "current")
+        self.assertEqual(election["transmission"]["claim"], "evidenced")
+        self.assertEqual(election["transmission"]["disposition"], "show")
+        self.assertEqual(election["transmission"]["reason_code"], "political_risk_transmission")
+        self.assertEqual(election["transmission"]["channel"], "geopolitics_haven")
+        self.assertEqual(election["summary"], CNBC_HEADLINE_ONLY)
+        self.assertNotIn(expected_change, [row["headline"] for row in merged["items"]])
+
+        report = build_report(acquisition, merged)
+        shown = {row["headline"] for row in report["stories"] if row["stage"] == "shown"}
+        self.assertIn(election_yields, shown)
+        self.assertNotIn(expected_change, shown)
+
+        family = {
+            "status": "fresh",
+            "digest": "nov4-replay-yields",
+            "as_of": self.CUTOFF,
+            "acquisition": {
+                "mode": "live",
+                "partial": acquisition["partial"],
+                "recovery": acquisition["recovery"],
+                "cutoff": acquisition["cutoff"],
+                "receipts": acquisition["receipts"],
+            },
+            "items": merged["items"],
+        }
+        panel = rh.select_current_headlines(
+            family,
+            frozen_at=self.FROZEN,
+            previous_accepted_as_of=None,
+            previous_accepted_items=[],
+            packet_sha256="abc123",
+        )
+        self.assertEqual(panel["status"], "available")
+        panel_headlines = [row["headline"] for row in panel["items"]]
+        self.assertIn(election_yields, panel_headlines)
+        self.assertNotIn(expected_change, panel_headlines)
+        self.assertNotIn(stale_oil["headline"], panel_headlines)
+        self.assertNotIn(stale_boe["headline"], panel_headlines)
+        overlap = [row["headline"] for row in merged["items"] if row["headline"] in panel_headlines]
+        self.assertEqual(panel_headlines, overlap)
+        rendered = rh.render_headlines_panel(
+            panel,
+            previous_news={
+                "as_of": "2026-10-28T07:00:00-04:00",
+                "age_label": "prior cycle",
+                "overnight_run_id": "overnight-20261028",
+            },
+            panel="front",
+            limit=rh.FRONT_HEADLINES,
+        )
+        self.assertIn(election_yields, rendered)
+        self.assertNotIn("Geopolitics (possible)", rendered)
+        self.assertEqual(isoformat(when), acquisition["cutoff"])
+
+    def test_unavailable_recovery_is_explicit_and_does_not_refresh_baseline(self) -> None:
+        import tempfile
+        from datetime import datetime
+        from pathlib import Path
+
+        from scripts.overnight.clock import isoformat
+        from scripts.overnight.collect import collect_inputs
+        from scripts.overnight.constants import ROOT
+        from scripts.overnight.live_news import acquire_current_news
+        from scripts.overnight.store import OvernightStore
+
+        when = datetime.fromisoformat(self.CUTOFF)
+        empty = self._cnbc("")
+        acquisition = acquire_current_news(
+            when=when,
+            offline=False,
+            fetcher=lambda url: self._fetcher(url, cnbc=empty),
+        )
+        self.assertEqual(acquisition["recovery"], "unavailable")
+        self.assertEqual(acquisition["candidates"], [])
+        with tempfile.TemporaryDirectory() as temp:
+            snapshot = collect_inputs(
+                OvernightStore(root=ROOT, state_root=Path(temp)),
+                when=when,
+                run_id="overnight-20261104-recovery-unavailable",
+                offline=False,
+                market_state_path=ROOT / "data" / "overnight" / "fixtures" / "market_state.json",
+                news_fetcher=lambda url: self._fetcher(url, cnbc=empty),
+            )
+        family = snapshot["families"]["news"]
+        self.assertEqual(family["acquisition"]["recovery"], "unavailable")
+        self.assertNotEqual(family["as_of"], isoformat(when))
+        self.assertNotIn("research_supplement", family)
+        self.assertTrue(any("recovery unavailable" in note for note in family["notes"]))
+        panel = rh.select_current_headlines(
+            {**family, "status": "fresh", "digest": family.get("digest") or "digest"},
+            frozen_at=self.FROZEN,
+            previous_accepted_as_of=None,
+            previous_accepted_items=[],
+            packet_sha256="abc123",
+        )
+        self.assertEqual(panel["status"], "unavailable")
+        self.assertEqual(panel["reason"], "discovery_recovery_unavailable")
 
 
 if __name__ == "__main__":

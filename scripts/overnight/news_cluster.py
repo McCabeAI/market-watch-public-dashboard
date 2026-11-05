@@ -18,6 +18,8 @@ from scripts.overnight.news_relevance import (
     _vietnam_named,
     _word,
     apply_transmission,
+    presentation_rank_tuple,
+    story_currency,
 )
 
 OFFICIAL_SOURCES = frozenset(
@@ -248,10 +250,13 @@ def _reason_code(item: dict) -> str:
     return str(transmission.get("reason_code") or "")
 
 
-def _rank_key(item: dict) -> tuple:
-    score = (item.get("market_salience") or {}).get("score", 0)
-    published = item.get("published_at") or ""
-    return (score, published)
+def _rank_key(item: dict, when) -> tuple:
+    transmission = item.get("transmission") or {}
+    return presentation_rank_tuple(
+        int(transmission.get("score") or 0),
+        item.get("published_at"),
+        when,
+    )
 
 
 def _diagnostics_row(item: dict, stage: str, reason: str) -> dict:
@@ -300,10 +305,11 @@ def cluster_and_rank(baseline: list, live: list, when) -> dict:
         merged, from_live = _merge_cluster(cluster["baseline"], cluster["live"])
         item = apply_transmission(merged)
         _apply_tie_break(item, item.get("source_edges") or [], when, from_live)
+        item["currency"] = story_currency(item.get("published_at"), when)
         assessed.append(item)
 
     eligible = [i for i in assessed if _disposition(i) in {"show", "assess"}]
-    eligible.sort(key=_rank_key, reverse=True)
+    eligible.sort(key=lambda row: _rank_key(row, when), reverse=True)
     shown_items = eligible[:_PRESENTATION_CAP]
     shown_ids = {i.get("id") for i in shown_items}
 

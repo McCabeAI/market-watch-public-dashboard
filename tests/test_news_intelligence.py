@@ -499,5 +499,596 @@ class DiagnosticsReportTests(unittest.TestCase):
         self.assertEqual(report["type"], "NEWS_INTELLIGENCE_SHADOW_REPORT")
 
 
+class PoliticalTransmissionTests(unittest.TestCase):
+    """General political and geopolitical transmission. No party boost and no date special case."""
+
+    ELECTION = "US national election result changes control of Congress"
+    ELECTION_YIELDS = (
+        "US national election results change control of Congress; Treasury yields fall"
+    )
+    ELECTION_DOLLAR_STOCKS = (
+        "US national election results change control of Congress; "
+        "dollar rises and stocks fall"
+    )
+    FED = "Fed officials see inflation progress stalling as Treasury yields rise"
+
+    def test_election_outcome_does_not_need_treasury_language(self) -> None:
+        self.assertNotIn("treasury", self.ELECTION.lower())
+        scored = score_transmission(self.ELECTION, "")
+        self.assertEqual(scored["disposition"], "show")
+        self.assertEqual(scored["reason_code"], "political_risk_transmission")
+        self.assertGreaterEqual(scored["score"], 12)
+        self.assertEqual(scored["claim"], "possible")
+        self.assertEqual(scored["affected_assets"], ["USD", "UST"])
+        self.assertTrue(recall_candidate(self.ELECTION, ""))
+        evidenced = score_transmission(
+            self.ELECTION,
+            "The dollar moved after the result.",
+        )
+        self.assertEqual(evidenced["claim"], "evidenced")
+        self.assertGreaterEqual(evidenced["score"], scored["score"])
+
+    def test_party_labels_score_the_same(self) -> None:
+        republicans = score_transmission(
+            "Republicans win control of Congress in the US national election",
+            "",
+        )
+        democrats = score_transmission(
+            "Democrats win control of Congress in the US national election",
+            "",
+        )
+        self.assertEqual(republicans["score"], democrats["score"])
+        self.assertEqual(republicans["disposition"], democrats["disposition"])
+        self.assertEqual(republicans["channel"], democrats["channel"])
+        self.assertEqual(republicans["reason_code"], democrats["reason_code"])
+        self.assertEqual(republicans["affected_assets"], democrats["affected_assets"])
+
+    def test_neutral_routine_and_non_us_events(self) -> None:
+        neutral = score_transmission(
+            "US national election count continues with congressional control unchanged",
+            "",
+        )
+        shock = score_transmission(self.ELECTION, "")
+        self.assertEqual(neutral["disposition"], "assess")
+        self.assertEqual(neutral["reason_code"], "political_risk_transmission")
+        self.assertLess(neutral["score"], shock["score"])
+
+        routine = "City council election result is declared after a long count"
+        routine_score = score_transmission(routine, "")
+        self.assertIn(routine_score["disposition"], {"hold-for-review", "suppress"})
+        self.assertFalse(recall_candidate(routine, ""))
+        self.assertFalse(recall_candidate("Senator endorsement draws a campaign rally crowd", ""))
+        scheduled = score_transmission("Britain's general election is set for next year", "")
+        self.assertNotEqual(scheduled["disposition"], "show")
+        snap_calendar = score_transmission("UK snap election is set for December", "")
+        self.assertNotEqual(snap_calendar["disposition"], "show")
+        self.assertFalse(recall_candidate("Congressional midterms are next week", ""))
+        mixed = score_transmission(
+            "Republicans win control of Congress while Senate margin unchanged",
+            "",
+        )
+        self.assertEqual(mixed["disposition"], "show")
+        self.assertGreaterEqual(mixed["score"], shock["score"])
+
+        japan = score_transmission("Japan snap election result changes control of parliament", "")
+        self.assertEqual(japan["disposition"], "show")
+        self.assertEqual(japan["reason_code"], "political_risk_transmission")
+        self.assertIn("JPY", japan["affected_assets"])
+        france = score_transmission("French government collapses after a no-confidence vote", "")
+        self.assertEqual(france["disposition"], "show")
+        self.assertIn("EUR", france["affected_assets"])
+        brazil = score_transmission("Brazil mayoral election result is declared", "")
+        self.assertNotEqual(brazil["disposition"], "show")
+        linked = score_transmission("Brazil election result sends the dollar higher", "")
+        self.assertEqual(linked["disposition"], "show")
+        self.assertEqual(linked["claim"], "evidenced")
+        missile = score_transmission("Russia missile strike hits a shipping lane", "")
+        self.assertEqual(missile["disposition"], "show")
+        self.assertEqual(missile["reason_code"], "geopolitics_haven_or_oil")
+        self.assertEqual(missile["claim"], "possible")
+
+        self.assertEqual(score_transmission(COREWEAVE_HEADLINE, "")["reason_code"], "ai_capex_credit")
+        self.assertEqual(score_transmission("Fed holds the policy rate", "")["reason_code"], "g10_policy_path")
+        cpi = score_transmission("CPI rises more than expected", "")
+        self.assertEqual(cpi["reason_code"], "usd_rates_repricing")
+        self.assertIn(cpi["disposition"], {"show", "assess"})
+        self.assertEqual(score_transmission(CHINA_HEADLINE, CHINA_SUMMARY)["reason_code"], "china_commodity_spillover")
+        self.assertEqual(score_transmission(VIETNAM_HEADLINE, "Parliament growth target.")["disposition"], "suppress")
+
+    def test_fresh_election_leads_stale_boe_and_oil_but_not_a_fresh_fed_or_hormuz(self) -> None:
+        from datetime import datetime
+
+        from scripts.overnight.live_news import merge_live_news
+
+        when = datetime.fromisoformat("2026-11-04T08:00:00-05:00")
+        election = {
+            "headline": self.ELECTION,
+            "summary": "Headline-only public metadata; article body was not retrieved.",
+            "url": "https://www.cnbc.com/2026/11/04/us-election-congress-control.html",
+            "published_at": "2026-11-04T06:10:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "geopolitics",
+            "country_codes": ["US"],
+        }
+        fed = {
+            "headline": self.FED,
+            "summary": "Officials said inflation progress may stall.",
+            "url": "https://www.cnbc.com/2026/11/04/fed-inflation-yields.html",
+            "published_at": "2026-11-04T05:30:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "monetary_policy",
+            "country_codes": ["US"],
+        }
+        fresh_hormuz = {
+            "headline": "Iran says it will not soften demands after Trump rejects a Hormuz offer",
+            "summary": "Crude bounced.",
+            "url": "https://www.reuters.com/world/hormuz-fresh-2026-11-04/",
+            "published_at": "2026-11-04T07:00:00-05:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_oil = {
+            "headline": "Oil rebounds as Hormuz tensions keep crude bid",
+            "summary": "Brent rose.",
+            "url": "https://www.reuters.com/world/hormuz-stale-2026-10-28/",
+            "published_at": "2026-10-28T06:00:00-04:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_boe = {
+            "headline": "Bank rate maintained at 3.75%",
+            "summary": "The Bank of England left policy unchanged.",
+            "url": "https://www.bankofengland.co.uk/news/2026/october/bank-rate-maintained",
+            "published_at": "2026-10-28T07:00:00-04:00",
+            "source_name": "Bank of England",
+            "verification_status": "official",
+            "primary_category": "monetary_policy",
+            "country_codes": [],
+        }
+        merged = merge_live_news(
+            baseline=[stale_oil, stale_boe],
+            live_candidates=[election, fed],
+            when=when,
+        )
+        headlines = [row["headline"] for row in merged["items"]]
+        self.assertLess(headlines.index(self.FED), headlines.index(self.ELECTION))
+        self.assertLess(headlines.index(self.ELECTION), headlines.index(stale_oil["headline"]))
+        self.assertLess(headlines.index(self.ELECTION), headlines.index(stale_boe["headline"]))
+        by_headline = {row["headline"]: row for row in merged["items"]}
+        self.assertEqual(by_headline[self.ELECTION]["currency"], "current")
+        self.assertEqual(by_headline[self.ELECTION]["transmission"]["claim"], "possible")
+        self.assertEqual(
+            by_headline[self.ELECTION]["summary"],
+            "Headline-only public metadata; article body was not retrieved.",
+        )
+        self.assertEqual(by_headline[stale_oil["headline"]]["currency"], "archival")
+        self.assertEqual(by_headline[stale_boe["headline"]]["currency"], "archival")
+        drivers = merged["research_supplement"]["top_market_driver_candidates"]
+        election_id = by_headline[self.ELECTION]["id"]
+        stale_oil_id = by_headline[stale_oil["headline"]]["id"]
+        self.assertIn(election_id, drivers)
+        self.assertEqual(drivers[0], by_headline[self.FED]["id"])
+        if stale_oil_id in drivers:
+            self.assertLess(drivers.index(election_id), drivers.index(stale_oil_id))
+
+        with_shock = merge_live_news(
+            baseline=[stale_oil],
+            live_candidates=[election, fresh_hormuz],
+            when=when,
+        )
+        shock_order = [row["headline"] for row in with_shock["items"]]
+        self.assertLess(shock_order.index(fresh_hormuz["headline"]), shock_order.index(self.ELECTION))
+
+    def test_recorded_moves_and_political_precedence(self) -> None:
+        from datetime import datetime
+
+        from scripts.overnight.live_news import merge_live_news
+
+        yields_fall = score_transmission(self.ELECTION_YIELDS, "")
+        self.assertEqual(yields_fall["reason_code"], "political_risk_transmission")
+        self.assertEqual(yields_fall["disposition"], "show")
+        self.assertGreaterEqual(yields_fall["score"], 12)
+        self.assertEqual(yields_fall["claim"], "evidenced")
+        self.assertEqual(yields_fall["channel"], "geopolitics_haven")
+        self.assertIn("usd_rates", yields_fall["channels"])
+        self.assertIn("USD", yields_fall["affected_assets"])
+        self.assertIn("UST", yields_fall["affected_assets"])
+
+        dollar_stocks = score_transmission(self.ELECTION_DOLLAR_STOCKS, "")
+        self.assertEqual(dollar_stocks["reason_code"], "political_risk_transmission")
+        self.assertEqual(dollar_stocks["disposition"], "show")
+        self.assertEqual(dollar_stocks["claim"], "evidenced")
+        self.assertIn("USD", dollar_stocks["affected_assets"])
+        self.assertIn("SPX", dollar_stocks["affected_assets"])
+
+        approaches = score_transmission(
+            "US election approaches; Treasury yields rise on Fed signal",
+            "",
+        )
+        self.assertNotEqual(approaches["reason_code"], "political_risk_transmission")
+        self.assertIn(
+            approaches["reason_code"],
+            {"usd_rates_repricing", "g10_policy_path"},
+        )
+
+        debate = score_transmission("Congress debates Treasury borrowing", "")
+        self.assertNotEqual(debate["reason_code"], "political_risk_transmission")
+
+        keyword_only = score_transmission(
+            self.ELECTION,
+            "Treasury yields and the dollar were mentioned",
+        )
+        self.assertEqual(keyword_only["claim"], "possible")
+
+        secretary_says = score_transmission(
+            self.ELECTION,
+            "Treasury secretary says yields will fall",
+        )
+        self.assertEqual(secretary_says["claim"], "possible")
+
+        auction = score_transmission(
+            self.ELECTION,
+            "scheduled Treasury auction",
+        )
+        self.assertEqual(auction["claim"], "possible")
+
+        rep = score_transmission(
+            "US national election results change control of Congress for Republicans; Treasury yields fall",
+            "",
+        )
+        dem = score_transmission(
+            "US national election results change control of Congress for Democrats; Treasury yields fall",
+            "",
+        )
+        self.assertEqual(rep["score"], dem["score"])
+        self.assertEqual(rep["disposition"], dem["disposition"])
+        self.assertEqual(rep["reason_code"], dem["reason_code"])
+        self.assertEqual(rep["channel"], dem["channel"])
+
+        france = score_transmission(
+            "French government collapses after a no-confidence vote as yields fall",
+            "",
+        )
+        self.assertEqual(france["reason_code"], "political_risk_transmission")
+        self.assertEqual(france["disposition"], "show")
+        self.assertEqual(france["claim"], "evidenced")
+
+        fed_election = score_transmission(
+            "Fed surprises with an emergency rate cut as the US national election result "
+            "changes control of Congress",
+            "",
+        )
+        self.assertEqual(fed_election["reason_code"], "g10_policy_path")
+        self.assertNotEqual(fed_election["reason_code"], "political_risk_transmission")
+
+        when = datetime.fromisoformat("2026-11-04T08:00:00-05:00")
+        election_row = {
+            "headline": self.ELECTION_YIELDS,
+            "summary": "Headline-only public metadata; article body was not retrieved.",
+            "url": "https://www.cnbc.com/2026/11/04/us-election-yields.html",
+            "published_at": "2026-11-04T06:10:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "geopolitics",
+            "country_codes": ["US"],
+        }
+        fed_row = {
+            "headline": self.FED,
+            "summary": "Officials said inflation progress may stall.",
+            "url": "https://www.cnbc.com/2026/11/04/fed-inflation-yields.html",
+            "published_at": "2026-11-04T05:30:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "monetary_policy",
+            "country_codes": ["US"],
+        }
+        fresh_hormuz = {
+            "headline": "Iran says it will not soften demands after Trump rejects a Hormuz offer",
+            "summary": "Crude bounced.",
+            "url": "https://www.reuters.com/world/hormuz-fresh-2026-11-04/",
+            "published_at": "2026-11-04T07:00:00-05:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_oil = {
+            "headline": "Oil rebounds as Hormuz tensions keep crude bid",
+            "summary": "Brent rose.",
+            "url": "https://www.reuters.com/world/hormuz-stale-2026-10-28/",
+            "published_at": "2026-10-28T06:00:00-04:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_boe = {
+            "headline": "Bank rate maintained at 3.75%",
+            "summary": "The Bank of England left policy unchanged.",
+            "url": "https://www.bankofengland.co.uk/news/2026/october/bank-rate-maintained",
+            "published_at": "2026-10-28T07:00:00-04:00",
+            "source_name": "Bank of England",
+            "verification_status": "official",
+            "primary_category": "monetary_policy",
+            "country_codes": [],
+        }
+        merged = merge_live_news(
+            baseline=[stale_oil, stale_boe],
+            live_candidates=[election_row, fed_row, fresh_hormuz],
+            when=when,
+        )
+        order = [row["headline"] for row in merged["items"]]
+        self.assertLess(order.index(self.FED), order.index(self.ELECTION_YIELDS))
+        self.assertLess(order.index(fresh_hormuz["headline"]), order.index(self.ELECTION_YIELDS))
+        self.assertLess(order.index(self.ELECTION_YIELDS), order.index(stale_oil["headline"]))
+        self.assertLess(order.index(self.ELECTION_YIELDS), order.index(stale_boe["headline"]))
+        election = next(row for row in merged["items"] if row["headline"] == self.ELECTION_YIELDS)
+        self.assertEqual(election["currency"], "current")
+        self.assertEqual(election["transmission"]["claim"], "evidenced")
+        self.assertEqual(election["transmission"]["reason_code"], "political_risk_transmission")
+        self.assertEqual(election["transmission"]["channel"], "geopolitics_haven")
+
+    def test_political_modality_matrix(self) -> None:
+        from datetime import datetime
+
+        from scripts.overnight.live_news import merge_live_news
+        from scripts.overnight.news_relevance import presentation_rank_tuple
+
+        def pol(headline: str, summary: str = "") -> dict[str, object]:
+            scored = score_transmission(headline, summary)
+            return scored
+
+        def assert_show(row: dict[str, object], *, claim: str, score_min: int = 12) -> None:
+            self.assertEqual(row["disposition"], "show")
+            self.assertEqual(row["reason_code"], "political_risk_transmission")
+            self.assertGreaterEqual(int(row["score"]), score_min)
+            self.assertEqual(row["claim"], claim)
+
+        def assert_not_political_show(headline: str, summary: str = "") -> None:
+            scored = score_transmission(headline, summary)
+            if scored["reason_code"] == "political_risk_transmission":
+                self.assertNotEqual(scored["disposition"], "show")
+            else:
+                self.assertNotEqual(scored["reason_code"], "political_risk_transmission")
+
+        realized = [
+            "Democrats win control of Congress",
+            "Republicans win control of Congress",
+            "US national election results change control of Congress",
+            "AP calls the House for Democrats",
+            "Reuters calls the Senate for Republicans",
+            "AP projects the House for Democrats",
+            "French government collapses after a no-confidence vote",
+            "French government collapses after a no-confidence vote as yields fall",
+            "Democrats win control of Congress; analysts expected a closer race",
+            "Democrats win control of Congress; analysts expect yields to fall",
+            "Democrats win control of Congress; analysts expected Republicans to win",
+            "Democrats could win control, but Republicans secured control of Congress",
+            self.ELECTION_YIELDS,
+            self.ELECTION_DOLLAR_STOCKS,
+        ]
+        for headline in realized:
+            row = pol(headline)
+            claim = "evidenced" if _market_evidence_headline(headline) else "possible"
+            assert_show(row, claim=claim)
+
+        for party in ("Democrats", "Republicans"):
+            assert_show(pol(f"{party} win control of Congress"), claim="possible")
+
+        pending = score_transmission("US national election results still pending", "")
+        self.assertEqual(pending["disposition"], "assess")
+        self.assertEqual(pending["reason_code"], "political_risk_transmission")
+        self.assertEqual(pending["score"], 8)
+
+        for assess_headline in (
+            "Control of Congress remains unchanged",
+            "Control of the House remains unchanged",
+            "US national election count continues with congressional control unchanged",
+        ):
+            row = score_transmission(assess_headline, "")
+            self.assertEqual(row["disposition"], "assess")
+            self.assertEqual(row["reason_code"], "political_risk_transmission")
+            self.assertEqual(row["score"], 8)
+            self.assertEqual(row["claim"], "possible")
+
+        forecasts = [
+            "Democrats could win control of Congress",
+            "Republicans could win control of Congress",
+            "US national election results may change control of Congress",
+            "Control of Congress is expected to change",
+            "Congressional control might change",
+            "Democrats did not win control of Congress",
+            "Democrats didn't win control of Congress",
+            "Senate majority might flip",
+            "party expected to take the House",
+            "candidate says they will win the election",
+            "poll forecasts Congress will flip",
+            "would win control of Congress in a tight race",
+            "likely to win the Senate",
+            "may flip the House",
+            "could change control of Congress",
+            "expected to flip the House",
+            "polls project a flip in Congress",
+            "polls project Democrats could win the House",
+            "a poll projects Democrats could win the House",
+            "If Democrats win control of Congress, markets will watch",
+        ]
+        for headline in forecasts:
+            assert_not_political_show(headline)
+
+        assert_not_political_show("I have no confidence Congress will act")
+
+        mixed_rates = score_transmission(
+            "Democrats could win control of Congress as Treasury yields fell",
+            "",
+        )
+        self.assertNotEqual(mixed_rates["reason_code"], "political_risk_transmission")
+        self.assertIn(mixed_rates["reason_code"], {"usd_rates_repricing", "g10_policy_path"})
+
+        rates_after_election = score_transmission("Treasury yields fell after the election", "")
+        self.assertNotEqual(rates_after_election["reason_code"], "political_risk_transmission")
+        self.assertEqual(rates_after_election["reason_code"], "usd_rates_repricing")
+        self.assertTrue(_market_evidence_headline("Treasury yields fell after the election"))
+
+        brazil = score_transmission("Brazil election result sends the dollar higher", "")
+        self.assertEqual(brazil["disposition"], "show")
+        self.assertEqual(brazil["reason_code"], "political_risk_transmission")
+        self.assertEqual(brazil["claim"], "evidenced")
+
+        realized_election_yields = score_transmission(
+            "Democrats win control of Congress as Treasury yields fell after the election",
+            "",
+        )
+        self.assertEqual(realized_election_yields["disposition"], "show")
+        self.assertEqual(realized_election_yields["reason_code"], "political_risk_transmission")
+        self.assertEqual(realized_election_yields["score"], 13)
+        self.assertEqual(realized_election_yields["claim"], "evidenced")
+        self.assertIn("usd_rates", realized_election_yields["channels"])
+
+        prospective_only = score_transmission(
+            "US national election results change control of Congress; "
+            "Treasury yields are expected to fall",
+            "",
+        )
+        assert_show(prospective_only, claim="possible")
+        self.assertNotIn("usd_rates", prospective_only["channels"])
+
+        for neg in (
+            "Treasury yields are expected to fall",
+            "Treasury yields are expected to fall after election",
+            "stocks could rally",
+            "the dollar may weaken",
+            "strategists predict bonds will rise",
+            "yields did not fall",
+        ):
+            self.assertFalse(_market_evidence_headline(neg))
+
+        for pos in (
+            "Treasury yields fell",
+            "stocks tumble",
+            "dollar strengthens",
+            "Treasury yields fell, and analysts think they will fall further",
+        ):
+            self.assertTrue(_market_evidence_headline(pos))
+
+        secretary = score_transmission(
+            self.ELECTION,
+            "Treasury secretary says yields will fall",
+        )
+        self.assertEqual(secretary["claim"], "possible")
+
+        rep = pol(
+            "US national election results change control of Congress for Republicans; "
+            "Treasury yields fall"
+        )
+        dem = pol(
+            "US national election results change control of Congress for Democrats; "
+            "Treasury yields fall"
+        )
+        self.assertEqual(rep["score"], dem["score"])
+        self.assertEqual(rep["disposition"], dem["disposition"])
+        self.assertEqual(rep["reason_code"], dem["reason_code"])
+        self.assertEqual(rep["channel"], dem["channel"])
+
+        when = datetime.fromisoformat("2026-11-04T08:00:00-05:00")
+        election_row = {
+            "headline": self.ELECTION_YIELDS,
+            "summary": "",
+            "url": "https://example.test/election-yields",
+            "published_at": "2026-11-04T06:10:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "geopolitics",
+            "country_codes": ["US"],
+        }
+        forecast_row = {
+            "headline": "Democrats could win control of Congress",
+            "summary": "",
+            "url": "https://example.test/election-forecast",
+            "published_at": "2026-11-04T06:05:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "geopolitics",
+            "country_codes": ["US"],
+        }
+        fed_row = {
+            "headline": self.FED,
+            "summary": "",
+            "url": "https://example.test/fed",
+            "published_at": "2026-11-04T05:30:00-05:00",
+            "source_name": "CNBC",
+            "verification_status": "single_source",
+            "primary_category": "monetary_policy",
+            "country_codes": ["US"],
+        }
+        fresh_hormuz = {
+            "headline": "Iran says it will not soften demands after Trump rejects a Hormuz offer",
+            "summary": "Crude bounced.",
+            "url": "https://example.test/hormuz-fresh",
+            "published_at": "2026-11-04T07:00:00-05:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_oil = {
+            "headline": "Oil rebounds as Hormuz tensions keep crude bid",
+            "summary": "",
+            "url": "https://example.test/hormuz-stale",
+            "published_at": "2026-10-28T06:00:00-04:00",
+            "source_name": "Reuters",
+            "verification_status": "single_source",
+            "primary_category": "energy",
+            "country_codes": [],
+        }
+        stale_boe = {
+            "headline": "Bank rate maintained at 3.75%",
+            "summary": "",
+            "url": "https://example.test/boe",
+            "published_at": "2026-10-28T07:00:00-04:00",
+            "source_name": "Bank of England",
+            "verification_status": "official",
+            "primary_category": "monetary_policy",
+            "country_codes": [],
+        }
+        merged = merge_live_news(
+            baseline=[stale_oil, stale_boe],
+            live_candidates=[election_row, forecast_row, fed_row, fresh_hormuz],
+            when=when,
+        )
+        order = [row["headline"] for row in merged["items"]]
+        self.assertLess(order.index(self.FED), order.index(self.ELECTION_YIELDS))
+        self.assertLess(order.index(fresh_hormuz["headline"]), order.index(self.ELECTION_YIELDS))
+        self.assertLess(order.index(self.ELECTION_YIELDS), order.index(stale_oil["headline"]))
+        self.assertLess(order.index(self.ELECTION_YIELDS), order.index(stale_boe["headline"]))
+        forecast_scored = score_transmission(forecast_row["headline"], forecast_row["summary"])
+        self.assertNotEqual(forecast_scored.get("reason_code"), "political_risk_transmission")
+        self.assertNotEqual(forecast_scored.get("disposition"), "show")
+        by_headline = {row["headline"]: row for row in merged["items"]}
+        election_rank = presentation_rank_tuple(
+            int(by_headline[self.ELECTION_YIELDS]["transmission"]["score"]),
+            by_headline[self.ELECTION_YIELDS]["published_at"],
+            when,
+        )
+        forecast_rank = presentation_rank_tuple(
+            int(forecast_scored["score"]),
+            forecast_row["published_at"],
+            when,
+        )
+        self.assertGreater(election_rank, forecast_rank)
+
+
+def _market_evidence_headline(headline: str) -> bool:
+    from scripts.overnight.news_relevance import _market_evidence
+
+    return _market_evidence(headline)
+
+
 if __name__ == "__main__":
     unittest.main()

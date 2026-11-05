@@ -37,6 +37,14 @@ REUTERS_CREDIT_QUERY = (
     'OR CoreWeave OR CDS OR "credit default")'
 )
 
+# Optional public Bing query. It does not require a Fed, oil, or Treasury token:
+# a national election or legislative-control headline has to be discoverable on its own.
+BLOOMBERG_POLITICS_QUERY = (
+    "site:bloomberg.com (\"national election\" OR \"general election\" OR \"presidential election\" "
+    "OR \"snap election\" OR congress OR congressional OR parliament OR parliamentary "
+    "OR \"no-confidence\" OR \"government collapses\" OR invasion OR coup OR blockade)"
+)
+
 REUTERS_SURFACE = "https://www.reuters.com/arc/outboundfeeds/news-sitemap/?outputType=xml"
 
 REUTERS_HEADLINE_ONLY = "Headline-only public metadata; article body was not retrieved."
@@ -92,6 +100,13 @@ def discovery_surfaces() -> list[dict[str, Any]]:
         {
             "source": "bloomberg_equity",
             "surface": _bing_surface(BLOOMBERG_EQUITY_QUERY),
+            "kind": "bing_rss",
+            "source_name": "Bloomberg",
+            "distribution_weight": "high",
+        },
+        {
+            "source": "bloomberg_politics",
+            "surface": _bing_surface(BLOOMBERG_POLITICS_QUERY),
             "kind": "bing_rss",
             "source_name": "Bloomberg",
             "distribution_weight": "high",
@@ -279,6 +294,11 @@ def _primary_category(headline: str, snippet: str) -> str:
     if any(_contains_market_token(blob, t) for t in ("dollar", "fx", "forex", "currency")):
         return "fx"
     if any(_contains_market_token(blob, t) for t in ("iran", "hormuz", "sanction", "tariff")):
+        return "geopolitics"
+    if any(
+        _contains_market_token(blob, t)
+        for t in ("election", "congress", "congressional", "parliament", "invasion", "coup", "missile")
+    ):
         return "geopolitics"
     return "macro"
 
