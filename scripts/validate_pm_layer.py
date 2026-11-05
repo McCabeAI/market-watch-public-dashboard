@@ -32,7 +32,8 @@ def main() -> None:
     command = COMMAND.read_text(encoding="utf-8")
     assert "cursor_custom_agent" in command or "custom agent" in command.lower()
     assert "Do not" in command and "Task" in command
-    assert "grok-4.6[]" in command
+    assert PM_AGENT_FRONTMATTER_MODEL in command
+    assert "grok-4.6[]" not in command
     assert "portfolio_construction" in command
     assert "full frozen market" in command
     assert "challenge set" in command
@@ -113,7 +114,7 @@ def main() -> None:
         Path(transcript).unlink(missing_ok=True)
 
     print(
-        "PM layer validated: grok-4.6[] custom agents for swinger/pragmatist/grinder, "
+        f"PM layer validated: {PM_AGENT_FRONTMATTER_MODEL} custom agents for swinger/pragmatist/grinder, "
         "cursor_custom_agent launch plan, and PM publication structural gate."
     )
 

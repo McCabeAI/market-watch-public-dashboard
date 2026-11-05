@@ -78,7 +78,7 @@ Weekday schedule `market-watch-weekday-0205` remains disabled. No bot `[agent-ru
     "total_model_cap": 20,
     "grok_cap": 18,
     "composer_cap": 2,
-    "parent_model": "grok-4.6",
+    "parent_model": "grok-4.7",
     "frozen_command": ".cursor/commands/overnight-scheduled.md",
     "launch_command": ".cursor/commands/manual-market-watch-review.md",
     "current_graph": {

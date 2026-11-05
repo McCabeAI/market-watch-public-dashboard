@@ -31,6 +31,7 @@ def _fallback_dry_run_pm_decisions(
     memory_hashes: dict[str, str] | None = None,
 ) -> dict[str, Any]:
     from scripts.pm.constants import AUTOMATED_PM_IDS
+    from scripts.pm.models import PM_PRINCIPAL_MODEL
     from scripts.pm.portfolio import synthetic_portfolio_construction
 
     memory_hashes = memory_hashes or {}
@@ -41,7 +42,7 @@ def _fallback_dry_run_pm_decisions(
             "overnight_run_id": overnight_run_id,
             "packet_sha256": packet_sha256,
             "evidence_cutoff": evidence_cutoff,
-            "principal_model": "grok-4.6",
+            "principal_model": PM_PRINCIPAL_MODEL,
             "subagent_count": 0,
             "subagent_models": [],
             "actions": [{"action": "HOLD"}],

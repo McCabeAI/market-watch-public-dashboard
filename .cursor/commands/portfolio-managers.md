@@ -1,6 +1,6 @@
 Run the automated Portfolio Manager review for **Swinger**, **Pragmatist**, and **Grinder** after review packets exist. ChatGPT PM decisions use Git ingest only — do **not** launch ChatGPT here.
 
-Read `docs/PM_LAYER_V1.md` first. Each automated PM is independent: own packet, own prior book, own memory; no mutual current-cycle visibility. ChatGPT may still see committed PM outputs per the existing hierarchy — do not change that.
+Emit the active-profile PM policy line below before any PM child. Then read `docs/PM_LAYER_V1.md`. Each automated PM is independent: own packet, own prior book, own memory; no mutual current-cycle visibility. ChatGPT may still see committed PM outputs per the existing hierarchy — do not change that.
 
 Deterministic packet refresh (when needed):
 
@@ -16,7 +16,7 @@ PYTHONPATH=. python scripts/pm_layer.py launch-plan --run-id <trader_room_run_id
 
 ## Principal routing (required)
 
-Launch each automated PM by invoking its **Cursor custom agent** (same mechanism as the 14 Trader Room advocates):
+Launch each automated PM by invoking its **Cursor custom agent** (same mechanism as the pinned Trader Room advocates; the current roster has 14):
 
 | PM | Custom agent |
 | --- | --- |
@@ -24,9 +24,9 @@ Launch each automated PM by invoking its **Cursor custom agent** (same mechanism
 | `pragmatist` | `.cursor/agents/pragmatist.md` |
 | `grinder` | `.cursor/agents/grinder.md` |
 
-Each custom agent frontmatter pins exact **`grok-4.6[]`**, which routes to runtime model **`grok-4.6`** and passes `enforce-subagent-models.sh`.
+Each custom agent frontmatter pins exact **`grok-4.7[]`**, which routes to runtime model **`grok-4.7`** and passes `enforce-subagent-models.sh`. That frontmatter is rendered from the active profile `pm_principal`. Do not edit it by hand.
 
-**Do not** launch PM principals with Task / `subagent_type` and `model: grok-4.6`, `inherit`, or any `cursor-grok-4.6-*` slug. That path emits forbidden runtime slugs (`cursor-grok-4.6-high-fast`, etc.) and will fail closed or fall back incorrectly.
+**Do not** launch PM principals with Task / `subagent_type` and `model: grok-4.7`, `inherit`, or any `cursor-grok-4.7-*` slug. That path emits forbidden runtime slugs (`cursor-grok-4.7-high-fast`, etc.) and will fail closed or fall back incorrectly.
 
 Run all three automated PM principals concurrently when packets are ready.
 
@@ -44,10 +44,10 @@ For every PM rates/curve/rates-RV action, use the same canonical book-side conve
 
 ## Subagents
 
-Each PM principal may use **0–3** children total. Allowed child models: **`composer-2.5`** and **`grok-4.6`** only.
+Each PM principal may use **0–3** children total. Allowed child models are the active profile's `pm_subagent_models`: **`composer-2.5`** and **`grok-4.7`** only.
 
 - Prefer **`composer-2.5`** Task subagents for internal research passes.
-- If a **`grok-4.6`** child is truly required, launch another locked custom agent with `grok-4.6[]` frontmatter — never a Task `model` slug.
+- If a **`grok-4.7`** child is truly required, launch another locked custom agent with `grok-4.7[]` frontmatter — never a Task `model` slug.
 
 No grandchildren. No web/search/new evidence after freeze.
 
@@ -73,7 +73,7 @@ Persist provenance under `data/pm/decisions/` and refresh public state via trust
 
 Include in the parent transcript for hook enforcement:
 
-`PM_MODEL_POLICY={"version":1,"principal_model":"grok-4.6","principal_launch":"cursor_custom_agent","subagent_models":["grok-4.6", "composer-2.5"],"max_subagents_per_pm":3}`
+`PM_MODEL_POLICY={"version":1,"principal_model":"grok-4.7","principal_launch":"cursor_custom_agent","subagent_models":["grok-4.7", "composer-2.5"],"max_subagents_per_pm":3}`
 
 On Market Watch daily runs, each PM child task must include `MW_ROLE=pm:<pm_id>` (`swinger`, `pragmatist`, `grinder`) alone on its own line and use the model from the pinned roster. Do not mention `MW_ROLE` a second time.
 
