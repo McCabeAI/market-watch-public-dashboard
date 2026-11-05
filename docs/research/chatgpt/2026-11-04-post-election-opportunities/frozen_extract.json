@@ -1,0 +1,3075 @@
+{
+  "article_context": {
+    "cache_time": "2026-11-04T18:01:00Z",
+    "narrative": {
+      "brent": 94,
+      "ust10": 4.898,
+      "ust2": 4.573,
+      "ust30": 5.293,
+      "wti": 88
+    },
+    "quote_table": {
+      "ust2": 4.577,
+      "ust30": 5.29
+    },
+    "receipt": "later in the Nov 4 Work conversation after the freeze; minute not captured",
+    "source_updated": "2026-11-04T17:11:00Z",
+    "stated_moves": {
+      "brent": "about -8% toward 94",
+      "ust10": "down >5bp",
+      "ust2": "down >4bp",
+      "ust30": "down >3bp",
+      "wti": "about -8% toward 88"
+    }
+  },
+  "article_context_gaps": {
+    "narrative_vs_quote_table": {
+      "ust2": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 4.577,
+        "gap_absolute": -0.0039999999999995595,
+        "gap_bp_where_rate": -0.39999999999995595,
+        "label": "narrative_vs_quote_2Y",
+        "unsynchronized": 4.573
+      },
+      "ust30": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 5.29,
+        "gap_absolute": 0.0030000000000001137,
+        "gap_bp_where_rate": 0.30000000000001137,
+        "label": "narrative_vs_quote_30Y",
+        "unsynchronized": 5.293
+      }
+    },
+    "oil_percent_vs_frozen_compact": {
+      "brent": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 103.5999984741211,
+        "ratio_minus_one": -0.09266407930034037,
+        "unsynchronized_narrative": 94
+      },
+      "wti": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 96.08999633789062,
+        "ratio_minus_one": -0.0841918685212869,
+        "unsynchronized_narrative": 88
+      }
+    },
+    "versus_frozen_cash_yields": {
+      "ust10_narrative_vs_US_10Y": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 4.95,
+        "gap_absolute": -0.05200000000000049,
+        "gap_bp_where_rate": -5.200000000000049,
+        "label": "UST10Y",
+        "unsynchronized": 4.898
+      },
+      "ust2_narrative_vs_US_2Y": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 4.61,
+        "gap_absolute": -0.03699999999999992,
+        "gap_bp_where_rate": -3.699999999999992,
+        "label": "UST2Y",
+        "unsynchronized": 4.573
+      },
+      "ust30_narrative_vs_US_30Y": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 5.32,
+        "gap_absolute": -0.027000000000000135,
+        "gap_bp_where_rate": -2.7000000000000135,
+        "label": "UST30Y",
+        "unsynchronized": 5.293
+      }
+    }
+  },
+  "benchmarks": {
+    "AONIA": {
+      "as_of": "03-Nov-2026",
+      "rate": 4.6,
+      "source": null,
+      "source_url": null
+    },
+    "CORRA": {
+      "as_of": "2026-11-02",
+      "rate": 2.54,
+      "source": null,
+      "source_url": null
+    },
+    "ESTR": {
+      "as_of": null,
+      "error": "No credential-free machine-readable FST3 settlement feed responded reliably (tried: https://www.eurex.com/ex-en/markets/int/fixing/3-month-estr-futures-FST3, https://www.eurex.com/ex-en/data/trading-files/product-and-price-report, https://www.eurex.com/ex-en/data/market-statistics/settlement-prices/FST3, https://www.eurex.com/api/v1/marketdata/settlement/FST3, https://www.eurex.com/api/v2/marketdata/statistics/FST3/settlement)",
+      "rate": null,
+      "status": "unavailable"
+    },
+    "SOFR": {
+      "as_of": "2026-11-02",
+      "history_span": {
+        "count": 90,
+        "first_effective_date": "2026-06-25",
+        "last_effective_date": "2026-11-02",
+        "note": "Embedded fixing history in snapshot; not a backtest."
+      },
+      "rate": 3.95,
+      "source": "NY_FED",
+      "source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr"
+    },
+    "TONA": {
+      "as_of": "2026-10-30",
+      "rate": 1.227,
+      "source": "BOJ_STAT_SEARCH_FM01",
+      "source_url": "https://www.stat-search.boj.or.jp/ssi/mtshtml/fm01_d_1_en.html"
+    }
+  },
+  "breakeven_tips_real_search": {
+    "key_paths": "ABSENT",
+    "market_level_breakeven_series": [
+      "families.market_state.data.cross_assets.series.US_BE10",
+      "families.market_state.data.cross_assets.series.US_REAL10",
+      "families.market_state.data.opportunities.series (labels US 10Y breakeven / real yield)"
+    ],
+    "string_value_paths": [
+      {
+        "path": "families.macro_hard.components[5].series_id",
+        "sample": "US.Labor.breakeven_employment",
+        "term": "breakeven"
+      },
+      {
+        "path": "families.macro_hard.components[34].series_id",
+        "sample": "US.Labor.payroll_vs_breakeven",
+        "term": "breakeven"
+      },
+      {
+        "path": "families.market_state.data.cross_assets.series.US_BE10.label",
+        "sample": "US 10Y breakeven",
+        "term": "breakeven"
+      },
+      {
+        "path": "families.market_state.data.opportunities.series[110].label",
+        "sample": "US 10Y breakeven",
+        "term": "breakeven"
+      }
+    ],
+    "tips_dedicated_series": "ABSENT"
+  },
+  "canada_prima_pressure": {
+    "brent_forward_levels_found": "ABSENT except prose",
+    "brent_prose_vs_70": {
+      "brent_end_2027_vs_prose_usd_per_bbl": 14.88,
+      "conditioning_date_in_text": "2026-07-09",
+      "prose_assumption_usd_per_bbl": 70.0,
+      "source": "change_since_last_mpr prose"
+    },
+    "change_since_last_mpr": "Versus the July 2026 MPR conditioning assumptions as of 2026-07-09, brent_end_2027_vs_prose is +14.88 USD per barrel versus 70.0. Observable monitoring only; not a reproduction of the Bank of Canada's Prima model.",
+    "conditioning_date": "2026-07-09",
+    "confidence": "high",
+    "direction": "STABLE",
+    "front_shock_classification": "parallel_upward_repricing",
+    "largest_drivers": [
+      "Brent last-day 2027-12 1m change +3.6 percent",
+      "Brent last-day 2028-12 1m change +2.7 percent",
+      "IPPI ex-energy mom +0.28 percent"
+    ],
+    "strength": "low",
+    "subcomponent_directions": {
+      "consumer_price_breadth": "RISING",
+      "demand_pass_through_constraint": "STABLE",
+      "imported_pressure": "FALLING",
+      "production_network_pressure": "STABLE",
+      "shock_persistence": "RISING"
+    }
+  },
+  "cash_yields": {
+    "AU": {
+      "curves": {
+        "2s10s": {
+          "as_of": "2026-10-28",
+          "bp_changes": {
+            "chg_1d_bps": -1.1999999999999567,
+            "chg_1m_bps": -9.899999999999931,
+            "chg_1y_bps": -41.89999999999996,
+            "chg_3m_bps": -19.49999999999994,
+            "chg_5d_bps": -10.299999999999972,
+            "chg_6m_bps": -4.099999999999948
+          },
+          "bps": 25.700000000000056,
+          "pctile_1y": 0.5952380952380952,
+          "pctile_5y": 9.166666666666666,
+          "z_1y": -1.3370728071556792,
+          "z_5y": -0.9694231628801507
+        },
+        "5s10s": {
+          "as_of": "2026-10-28",
+          "bp_changes": {
+            "chg_1d_bps": -0.8000000000000007,
+            "chg_1m_bps": -5.90000000000002,
+            "chg_1y_bps": -24.199999999999953,
+            "chg_3m_bps": -13.199999999999967,
+            "chg_5d_bps": -5.399999999999938,
+            "chg_6m_bps": -1.9000000000000128
+          },
+          "bps": 26.200000000000045,
+          "pctile_1y": 1.7857142857142858,
+          "pctile_5y": 16.944444444444443,
+          "z_1y": -1.5335890326213124,
+          "z_5y": -0.7441481847975548
+        }
+      },
+      "latest_observation": "2026-10-28",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-10-28",
+          "bp_changes": {
+            "bp_1d": 5.600000000000005,
+            "bp_1m": -20.500000000000007,
+            "bp_1y": 99.2,
+            "bp_3m": 19.700000000000006,
+            "bp_5d": -6.899999999999995,
+            "bp_6m": 18.599999999999994
+          },
+          "pctile_1y": 87.5,
+          "pctile_5y": 97.5,
+          "tenor": "10Y",
+          "value": 5.208,
+          "z_1y": 1.266339849495005,
+          "z_5y": 1.4705161622339684
+        },
+        "2Y": {
+          "as_of": "2026-10-28",
+          "bp_changes": {
+            "bp_1d": 6.799999999999962,
+            "bp_1m": -10.600000000000076,
+            "bp_1y": 141.09999999999997,
+            "bp_3m": 39.199999999999946,
+            "bp_5d": 3.399999999999981,
+            "bp_6m": 22.699999999999942
+          },
+          "pctile_1y": 95.03968253968254,
+          "pctile_5y": 99.0079365079365,
+          "tenor": "2Y",
+          "value": 4.951,
+          "z_1y": 1.3975578543103861,
+          "z_5y": 1.4857503281488569
+        },
+        "30Y": {
+          "as_of": null,
+          "bp_changes": {
+            "bp_1d": null,
+            "bp_1m": null,
+            "bp_1y": null,
+            "bp_3m": null,
+            "bp_5d": null,
+            "bp_6m": null
+          },
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "tenor": "30Y",
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "5Y": {
+          "as_of": "2026-10-28",
+          "bp_changes": {
+            "bp_1d": 6.400000000000006,
+            "bp_1m": -14.59999999999999,
+            "bp_1y": 123.39999999999995,
+            "bp_3m": 32.89999999999998,
+            "bp_5d": -1.5000000000000568,
+            "bp_6m": 20.500000000000007
+          },
+          "pctile_1y": 90.27777777777777,
+          "pctile_5y": 98.05555555555556,
+          "tenor": "5Y",
+          "value": 4.946,
+          "z_1y": 1.4047849031365012,
+          "z_5y": 1.640242249065175
+        }
+      }
+    },
+    "CA": {
+      "curves": {
+        "2s10s": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "chg_1d_bps": -1.9999999999999574,
+            "chg_1m_bps": -18.999999999999957,
+            "chg_1y_bps": -19.99999999999997,
+            "chg_3m_bps": -25.99999999999993,
+            "chg_5d_bps": 1.000000000000071,
+            "chg_6m_bps": -11.999999999999964
+          },
+          "bps": 48.00000000000004,
+          "pctile_1y": 1.7857142857142858,
+          "pctile_5y": 63.05732484076433,
+          "z_1y": -2.421757788644084,
+          "z_5y": 0.7331369336013903
+        },
+        "5s10s": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "chg_1d_bps": 1.0000000000000249,
+            "chg_1m_bps": -3.999999999999961,
+            "chg_1y_bps": -13.999999999999968,
+            "chg_3m_bps": -11.999999999999968,
+            "chg_5d_bps": 2.000000000000046,
+            "chg_6m_bps": -7.999999999999961
+          },
+          "bps": 28.000000000000025,
+          "pctile_1y": 5.753968253968254,
+          "pctile_5y": 65.00796178343948,
+          "z_1y": -1.8964786109687166,
+          "z_5y": 0.6327684246164986
+        }
+      },
+      "latest_observation": "2026-11-02",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": -3.999999999999959,
+            "bp_1m": -19.99999999999997,
+            "bp_1y": 70.00000000000001,
+            "bp_3m": 15.000000000000036,
+            "bp_5d": -9.999999999999964,
+            "bp_6m": 18.000000000000014
+          },
+          "pctile_1y": 82.73809523809524,
+          "pctile_5y": 92.31687898089172,
+          "tenor": "10Y",
+          "value": 3.74,
+          "z_1y": 1.0780873975369083,
+          "z_5y": 1.056244057339121
+        },
+        "2Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": -2.0000000000000018,
+            "bp_1m": -1.000000000000023,
+            "bp_1y": 89.99999999999999,
+            "bp_3m": 40.99999999999997,
+            "bp_5d": -11.000000000000032,
+            "bp_6m": 29.999999999999982
+          },
+          "pctile_1y": 90.47619047619048,
+          "pctile_5y": 56.72770700636943,
+          "tenor": "2Y",
+          "value": 3.26,
+          "z_1y": 1.6559943643296735,
+          "z_5y": 0.08356621648014295
+        },
+        "30Y": {
+          "as_of": null,
+          "bp_changes": {
+            "bp_1d": null,
+            "bp_1m": null,
+            "bp_1y": null,
+            "bp_3m": null,
+            "bp_5d": null,
+            "bp_6m": null
+          },
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "tenor": "30Y",
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "5Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": -4.999999999999982,
+            "bp_1m": -16.000000000000014,
+            "bp_1y": 83.99999999999999,
+            "bp_3m": 27.0,
+            "bp_5d": -12.00000000000001,
+            "bp_6m": 25.99999999999998
+          },
+          "pctile_1y": 85.51587301587301,
+          "pctile_5y": 75.63694267515923,
+          "tenor": "5Y",
+          "value": 3.46,
+          "z_1y": 1.3157506565473454,
+          "z_5y": 0.6685194689166039
+        }
+      }
+    },
+    "EA": {
+      "curves": {
+        "2s10s": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "chg_1d_bps": -0.9999999999999787,
+            "chg_1m_bps": -16.999999999999993,
+            "chg_1y_bps": -38.99999999999999,
+            "chg_3m_bps": -10.999999999999943,
+            "chg_5d_bps": -0.9999999999999787,
+            "chg_6m_bps": -12.999999999999993
+          },
+          "bps": 26.00000000000002,
+          "pctile_1y": 2.5793650793650795,
+          "pctile_5y": 44.92063492063492,
+          "z_1y": -1.3926562924775625,
+          "z_5y": 0.17450025390333818
+        },
+        "5s10s": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "chg_1d_bps": 0.0,
+            "chg_1m_bps": -6.000000000000007,
+            "chg_1y_bps": -21.0,
+            "chg_3m_bps": -6.999999999999986,
+            "chg_5d_bps": 0.9999999999999787,
+            "chg_6m_bps": -10.00000000000001
+          },
+          "bps": 18.999999999999993,
+          "pctile_1y": 6.349206349206349,
+          "pctile_5y": 48.45238095238095,
+          "z_1y": -1.5972154893091535,
+          "z_5y": 0.02571977720552541
+        }
+      },
+      "latest_observation": "2026-11-03",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 0.0,
+            "bp_1m": -14.000000000000012,
+            "bp_1y": 67.0,
+            "bp_3m": 20.000000000000018,
+            "bp_5d": -4.0000000000000036,
+            "bp_6m": 29.000000000000004
+          },
+          "pctile_1y": 81.94444444444444,
+          "pctile_5y": 96.38888888888889,
+          "tenor": "10Y",
+          "value": 3.31,
+          "z_1y": 1.118785455163223,
+          "z_5y": 1.2768351397131514
+        },
+        "2Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 0.9999999999999787,
+            "bp_1m": 2.9999999999999805,
+            "bp_1y": 105.99999999999999,
+            "bp_3m": 30.99999999999996,
+            "bp_5d": -3.000000000000025,
+            "bp_6m": 41.99999999999999
+          },
+          "pctile_1y": 86.30952380952381,
+          "pctile_5y": 89.88095238095238,
+          "tenor": "2Y",
+          "value": 3.05,
+          "z_1y": 1.308164385605181,
+          "z_5y": 0.9549622694944057
+        },
+        "30Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 1.000000000000023,
+            "bp_1m": -14.999999999999991,
+            "bp_1y": 45.000000000000014,
+            "bp_3m": 6.000000000000005,
+            "bp_5d": -0.9999999999999787,
+            "bp_6m": 12.00000000000001
+          },
+          "pctile_1y": 76.58730158730158,
+          "pctile_5y": 95.31746031746032,
+          "tenor": "30Y",
+          "value": 3.68,
+          "z_1y": 0.6897826844982089,
+          "z_5y": 1.2628592517099666
+        },
+        "5Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 0.0,
+            "bp_1m": -8.000000000000007,
+            "bp_1y": 87.99999999999999,
+            "bp_3m": 27.0,
+            "bp_5d": -4.999999999999982,
+            "bp_6m": 39.000000000000014
+          },
+          "pctile_1y": 83.73015873015873,
+          "pctile_5y": 96.74603174603175,
+          "tenor": "5Y",
+          "value": 3.12,
+          "z_1y": 1.263732255456107,
+          "z_5y": 1.2464828233782623
+        }
+      }
+    },
+    "JP": {
+      "curves": {
+        "2s10s": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "chg_1d_bps": -0.4999999999999858,
+            "chg_1m_bps": -21.599999999999966,
+            "chg_1y_bps": 20.80000000000004,
+            "chg_3m_bps": -33.199999999999974,
+            "chg_5d_bps": 0.10000000000003695,
+            "chg_6m_bps": -14.299999999999969
+          },
+          "bps": 93.70000000000003,
+          "pctile_1y": 26.785714285714285,
+          "pctile_5y": 85.02435064935065,
+          "z_1y": -0.6915419993422112,
+          "z_5y": 1.119511258142857
+        },
+        "5s10s": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "chg_1d_bps": -0.5999999999999801,
+            "chg_1m_bps": -11.099999999999973,
+            "chg_1y_bps": 13.500000000000043,
+            "chg_3m_bps": -18.29999999999999,
+            "chg_5d_bps": -0.8999999999999488,
+            "chg_6m_bps": -2.6999999999999673
+          },
+          "bps": 57.40000000000003,
+          "pctile_1y": 42.26190476190476,
+          "pctile_5y": 88.18993506493507,
+          "z_1y": -0.3590466335943563,
+          "z_5y": 1.1972781640686216
+        }
+      },
+      "latest_observation": "2026-11-02",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": 0.0,
+            "bp_1m": -27.499999999999993,
+            "bp_1y": 117.90000000000003,
+            "bp_3m": 6.000000000000005,
+            "bp_5d": -0.6999999999999673,
+            "bp_6m": 37.40000000000001
+          },
+          "pctile_1y": 76.19047619047619,
+          "pctile_5y": 95.12987012987013,
+          "tenor": "10Y",
+          "value": 2.817,
+          "z_1y": 0.8887908028131396,
+          "z_5y": 2.087348237211272
+        },
+        "2Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": 0.49999999999998934,
+            "bp_1m": -5.900000000000016,
+            "bp_1y": 97.09999999999998,
+            "bp_3m": 39.19999999999999,
+            "bp_5d": -0.8000000000000007,
+            "bp_6m": 51.69999999999999
+          },
+          "pctile_1y": 90.27777777777777,
+          "pctile_5y": 98.01136363636364,
+          "tenor": "2Y",
+          "value": 1.88,
+          "z_1y": 1.6864620499905756,
+          "z_5y": 2.4764506003069755
+        },
+        "30Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": 3.200000000000003,
+            "bp_1m": -18.199999999999996,
+            "bp_1y": 80.60000000000001,
+            "bp_3m": -0.09999999999998899,
+            "bp_5d": 5.600000000000005,
+            "bp_6m": 27.99999999999998
+          },
+          "pctile_1y": 73.01587301587301,
+          "pctile_5y": 94.48051948051948,
+          "tenor": "30Y",
+          "value": 3.94,
+          "z_1y": 0.8732401977311343,
+          "z_5y": 1.8263837755627002
+        },
+        "5Y": {
+          "as_of": "2026-11-02",
+          "bp_changes": {
+            "bp_1d": 0.5999999999999783,
+            "bp_1m": -16.400000000000013,
+            "bp_1y": 104.39999999999998,
+            "bp_3m": 24.29999999999999,
+            "bp_5d": 0.19999999999997797,
+            "bp_6m": 40.09999999999998
+          },
+          "pctile_1y": 85.31746031746032,
+          "pctile_5y": 96.99675324675324,
+          "tenor": "5Y",
+          "value": 2.243,
+          "z_1y": 1.2333299574584646,
+          "z_5y": 2.246320059612234
+        }
+      }
+    },
+    "NZ": {
+      "curves": {
+        "2s10s": {
+          "as_of": null,
+          "bp_changes": {
+            "chg_1d_bps": null,
+            "chg_1m_bps": null,
+            "chg_1y_bps": null,
+            "chg_3m_bps": null,
+            "chg_5d_bps": null,
+            "chg_6m_bps": null
+          },
+          "bps": null,
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "5s10s": {
+          "as_of": null,
+          "bp_changes": {
+            "chg_1d_bps": null,
+            "chg_1m_bps": null,
+            "chg_1y_bps": null,
+            "chg_3m_bps": null,
+            "chg_5d_bps": null,
+            "chg_6m_bps": null
+          },
+          "bps": null,
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "z_1y": null,
+          "z_5y": null
+        }
+      },
+      "error": "RBNZ official B2 workbook was blocked or unusable (browser-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; default-ua: RBNZ official B2 workbook returned HTTP 403 from https://www.rbnz.govt.nz/-/media/project/sites/rbnz/files/statistics/series/b/b2/hb2-daily-close.xlsx. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 workbook still blocked). Refusing to substitute a third-party or vendor feed.; official RBNZ HTML fallback also failed: RBNZ official B2 HTML table was blocked or unusable (urllib: RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/wholesale-interest-rates. Refusing to substitute a third-party or vendor feed.; curl_cffi: official B2 page still blocked). Refusing to substitute a third-party or vendor feed. No preselected distributor was verified to republish the same RBNZ B2 government-bond closing yields (2Y/5Y/10Y); packet NZ rates stay unavailable.",
+      "latest_observation": null,
+      "status": "unavailable",
+      "tenors": {
+        "10Y": {
+          "as_of": null,
+          "bp_changes": {
+            "bp_1d": null,
+            "bp_1m": null,
+            "bp_1y": null,
+            "bp_3m": null,
+            "bp_5d": null,
+            "bp_6m": null
+          },
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "tenor": "10Y",
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "2Y": {
+          "as_of": null,
+          "bp_changes": {
+            "bp_1d": null,
+            "bp_1m": null,
+            "bp_1y": null,
+            "bp_3m": null,
+            "bp_5d": null,
+            "bp_6m": null
+          },
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "tenor": "2Y",
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "30Y": {
+          "as_of": null,
+          "bp_changes": {
+            "bp_1d": null,
+            "bp_1m": null,
+            "bp_1y": null,
+            "bp_3m": null,
+            "bp_5d": null,
+            "bp_6m": null
+          },
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "tenor": "30Y",
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        },
+        "5Y": {
+          "as_of": null,
+          "bp_changes": {
+            "bp_1d": null,
+            "bp_1m": null,
+            "bp_1y": null,
+            "bp_3m": null,
+            "bp_5d": null,
+            "bp_6m": null
+          },
+          "pctile_1y": null,
+          "pctile_5y": null,
+          "tenor": "5Y",
+          "value": null,
+          "z_1y": null,
+          "z_5y": null
+        }
+      }
+    },
+    "US": {
+      "curves": {
+        "2s10s": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "chg_1d_bps": 1.9999999999999574,
+            "chg_1m_bps": -11.000000000000028,
+            "chg_1y_bps": -16.000000000000057,
+            "chg_3m_bps": -8.999999999999986,
+            "chg_5d_bps": 4.999999999999982,
+            "chg_6m_bps": -16.000000000000014
+          },
+          "bps": 33.999999999999986,
+          "pctile_1y": 11.706349206349206,
+          "pctile_5y": 61.46825396825397,
+          "z_1y": -1.2744697031870684,
+          "z_5y": 0.5630439676863508
+        },
+        "5s10s": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "chg_1d_bps": 0.0,
+            "chg_1m_bps": -1.0000000000000675,
+            "chg_1y_bps": -18.000000000000018,
+            "chg_3m_bps": -8.999999999999986,
+            "chg_5d_bps": 4.0000000000000036,
+            "chg_6m_bps": -16.000000000000018
+          },
+          "bps": 20.999999999999996,
+          "pctile_1y": 11.11111111111111,
+          "pctile_5y": 61.86507936507937,
+          "z_1y": -1.3794768253111933,
+          "z_5y": 0.38411129045205367
+        }
+      },
+      "latest_observation": "2026-11-03",
+      "status": "ok",
+      "tenors": {
+        "10Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 4.0000000000000036,
+            "bp_1m": -33.00000000000001,
+            "bp_1y": 83.99999999999999,
+            "bp_3m": 32.00000000000003,
+            "bp_5d": -4.0000000000000036,
+            "bp_6m": 50.0
+          },
+          "pctile_1y": 86.5079365079365,
+          "pctile_5y": 97.18253968253968,
+          "tenor": "10Y",
+          "value": 4.95,
+          "z_1y": 1.4360093041856599,
+          "z_5y": 1.2907848514310625
+        },
+        "2Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 2.000000000000046,
+            "bp_1m": -21.999999999999975,
+            "bp_1y": 100.00000000000004,
+            "bp_3m": 41.000000000000014,
+            "bp_5d": -8.999999999999986,
+            "bp_6m": 66.00000000000001
+          },
+          "pctile_1y": 86.5079365079365,
+          "pctile_5y": 79.36507936507937,
+          "tenor": "2Y",
+          "value": 4.61,
+          "z_1y": 1.4823262926059266,
+          "z_5y": 0.7524752292150234
+        },
+        "30Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 4.0000000000000036,
+            "bp_1m": -30.99999999999996,
+            "bp_1y": 67.0,
+            "bp_3m": 14.000000000000057,
+            "bp_5d": 2.000000000000046,
+            "bp_6m": 30.00000000000007
+          },
+          "pctile_1y": 88.4920634920635,
+          "pctile_5y": 97.6984126984127,
+          "tenor": "30Y",
+          "value": 5.32,
+          "z_1y": 1.2807392782581368,
+          "z_5y": 1.3071373226288885
+        },
+        "5Y": {
+          "as_of": "2026-11-03",
+          "bp_changes": {
+            "bp_1d": 4.0000000000000036,
+            "bp_1m": -31.99999999999994,
+            "bp_1y": 102.0,
+            "bp_3m": 41.000000000000014,
+            "bp_5d": -8.000000000000007,
+            "bp_6m": 66.00000000000001
+          },
+          "pctile_1y": 85.91269841269842,
+          "pctile_5y": 96.15079365079364,
+          "tenor": "5Y",
+          "value": 4.74,
+          "z_1y": 1.4502944209643616,
+          "z_5y": 1.197138830130398
+        }
+      }
+    }
+  },
+  "chatgpt_position_economics": {
+    "entry": 3.4,
+    "funding_convention": "ACT/360",
+    "funding_cost_usd": 24555.56,
+    "funding_day_count": 360,
+    "funding_percent_rate": 3.95,
+    "funding_rate_annual": 0.0395,
+    "identity_check_unrealized_usd": 599999.9999999994,
+    "instrument": "CORRA_2027H-Z",
+    "mark": 3.16,
+    "mark_price_as_of": "2026-11-03T14:35:29Z",
+    "nav_usd": 1001175444.44,
+    "notional_usd": 250000000.0,
+    "realized_pnl_usd": 600000.0,
+    "risk_capital_usd": 2500000.0,
+    "side": "long",
+    "unrealized_pnl_usd": 600000.0
+  },
+  "competition_funding": {
+    "convention": "ACT/360",
+    "day_count": 360,
+    "funding_rate_annual": 0.0395,
+    "observation_date": "2026-11-02",
+    "source": "NY_FED"
+  },
+  "cross_assets_compact": {
+    "generated_at": null,
+    "marks": [
+      {
+        "as_of": "2026-11-03",
+        "id": "WTI",
+        "label": "WTI futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "CL=F",
+        "unit": "USD/bbl",
+        "value": 96.08999633789062
+      },
+      {
+        "as_of": "2026-11-03",
+        "id": "BRENT",
+        "label": "Brent futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "BZ=F",
+        "unit": "USD/bbl",
+        "value": 103.5999984741211
+      },
+      {
+        "as_of": "2026-11-03",
+        "id": "GOLD",
+        "label": "Gold futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "GC=F",
+        "unit": "USD/oz",
+        "value": 3940.39990234375
+      },
+      {
+        "as_of": "2026-11-02",
+        "id": "SP500",
+        "label": "S&P 500",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "SP500",
+        "unit": "index",
+        "value": 7541.4
+      },
+      {
+        "as_of": "2026-11-03",
+        "id": "NASDAQ",
+        "label": "Nasdaq Composite",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "NASDAQCOM",
+        "unit": "index",
+        "value": 25372.01
+      },
+      {
+        "as_of": "2026-11-03",
+        "id": "DOW",
+        "label": "Dow Jones",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "DJIA",
+        "unit": "index",
+        "value": 51786.72
+      },
+      {
+        "as_of": "2026-11-03",
+        "id": "RUSSELL",
+        "label": "Russell 2000",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "^RUT",
+        "unit": "index",
+        "value": 2812.449951171875
+      },
+      {
+        "as_of": "2026-11-03",
+        "id": "COPPER",
+        "label": "Copper futures",
+        "source": "Yahoo Finance",
+        "status": "ok",
+        "symbol": "HG=F",
+        "unit": "USD/lb",
+        "value": 6.378499984741211
+      },
+      {
+        "as_of": "2026-11-02",
+        "id": "VIX",
+        "label": "VIX",
+        "source": "FRED / original series publisher",
+        "status": "ok",
+        "symbol": "VIXCLS",
+        "unit": "points",
+        "value": 21.15
+      }
+    ],
+    "provenance": "frozen_market_state",
+    "status": "ok"
+  },
+  "futures_contracts": {
+    "AONIA_1M": [
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 22.0,
+        "code": null,
+        "expiry": "2026-11",
+        "implied_rate": 4.82,
+        "observation_date": null,
+        "open_interest": 25654.0,
+        "price": 95.18,
+        "source": "ASX_30D_AONIA",
+        "volume": 14536.0
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 25.0,
+        "code": null,
+        "expiry": "2026-12",
+        "implied_rate": 4.85,
+        "observation_date": null,
+        "open_interest": 4332.0,
+        "price": 95.15,
+        "source": "ASX_30D_AONIA",
+        "volume": 1750.0
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 25.5,
+        "code": null,
+        "expiry": "2027-01",
+        "implied_rate": 4.855,
+        "observation_date": null,
+        "open_interest": 1100.0,
+        "price": 95.145,
+        "source": "ASX_30D_AONIA",
+        "volume": 552.0
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 29.5,
+        "code": null,
+        "expiry": "2027-02",
+        "implied_rate": 4.895,
+        "observation_date": null,
+        "open_interest": 476.0,
+        "price": 95.105,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 31.5,
+        "code": null,
+        "expiry": "2027-03",
+        "implied_rate": 4.915,
+        "observation_date": null,
+        "open_interest": 400.0,
+        "price": 95.085,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 31.0,
+        "code": null,
+        "expiry": "2027-04",
+        "implied_rate": 4.91,
+        "observation_date": null,
+        "open_interest": 550.0,
+        "price": 95.09,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 30.0,
+        "code": null,
+        "expiry": "2027-05",
+        "implied_rate": 4.9,
+        "observation_date": null,
+        "open_interest": 350.0,
+        "price": 95.1,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 28.5,
+        "code": null,
+        "expiry": "2027-06",
+        "implied_rate": 4.885,
+        "observation_date": null,
+        "open_interest": 200.0,
+        "price": 95.115,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 25.5,
+        "code": null,
+        "expiry": "2027-07",
+        "implied_rate": 4.855,
+        "observation_date": null,
+        "open_interest": 200.0,
+        "price": 95.145,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 22.5,
+        "code": null,
+        "expiry": "2027-08",
+        "implied_rate": 4.825,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.175,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 20.0,
+        "code": null,
+        "expiry": "2027-09",
+        "implied_rate": 4.8,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.2,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 18.5,
+        "code": null,
+        "expiry": "2027-10",
+        "implied_rate": 4.785,
+        "observation_date": null,
+        "open_interest": 1.0,
+        "price": 95.215,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 13.5,
+        "code": null,
+        "expiry": "2027-11",
+        "implied_rate": 4.735,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.265,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 11.0,
+        "code": null,
+        "expiry": "2027-12",
+        "implied_rate": 4.71,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.29,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 10.0,
+        "code": null,
+        "expiry": "2028-01",
+        "implied_rate": 4.7,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.3,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 5.0,
+        "code": null,
+        "expiry": "2028-02",
+        "implied_rate": 4.65,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.35,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 4.5,
+        "code": null,
+        "expiry": "2028-03",
+        "implied_rate": 4.645,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.355,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 0.5,
+        "code": null,
+        "expiry": "2028-04",
+        "implied_rate": 4.605,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 95.395,
+        "source": "ASX_30D_AONIA",
+        "volume": null
+      }
+    ],
+    "CORRA_1M_policy_paths_CA": [
+      {
+        "as_of": null,
+        "change_from_overnight_bps": -2.5,
+        "code": "COAX26",
+        "expiry": "2026-11",
+        "implied_rate": 2.515,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.485,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 6.5,
+        "code": "COAZ26",
+        "expiry": "2026-12",
+        "implied_rate": 2.605,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.395,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 11.5,
+        "code": "COAF27",
+        "expiry": "2027-01",
+        "implied_rate": 2.655,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.345,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 24.5,
+        "code": "COAG27",
+        "expiry": "2027-02",
+        "implied_rate": 2.785,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.215,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      }
+    ],
+    "CORRA_3M": [
+      {
+        "as_of": null,
+        "change_from_overnight_bps": -12.25,
+        "code": "CRAU26",
+        "expiry": "2026-09",
+        "implied_rate": 2.4175,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.5825,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 21.0,
+        "code": "CRAZ26",
+        "expiry": "2026-12",
+        "implied_rate": 2.75,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.25,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 43.0,
+        "code": "CRAH27",
+        "expiry": "2027-03",
+        "implied_rate": 2.97,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.03,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 57.5,
+        "code": "CRAM27",
+        "expiry": "2027-06",
+        "implied_rate": 3.115,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.885,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 68.5,
+        "code": "CRAU27",
+        "expiry": "2027-09",
+        "implied_rate": 3.225,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.775,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 77.0,
+        "code": "CRAZ27",
+        "expiry": "2027-12",
+        "implied_rate": 3.31,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.69,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 84.5,
+        "code": "CRAH28",
+        "expiry": "2028-03",
+        "implied_rate": 3.385,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.615,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 89.0,
+        "code": "CRAM28",
+        "expiry": "2028-06",
+        "implied_rate": 3.43,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.57,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 92.5,
+        "code": "CRAU28",
+        "expiry": "2028-09",
+        "implied_rate": 3.465,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.535,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 93.5,
+        "code": "CRAZ28",
+        "expiry": "2028-12",
+        "implied_rate": 3.475,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.525,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 91.5,
+        "code": "CRAH29",
+        "expiry": "2029-03",
+        "implied_rate": 3.455,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.545,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 92.5,
+        "code": "CRAM29",
+        "expiry": "2029-06",
+        "implied_rate": 3.465,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 96.535,
+        "source": "MX_CORRA_FUTURES",
+        "volume": null
+      }
+    ],
+    "ESTR_3M": {
+      "contracts": [],
+      "error": "No credential-free machine-readable FST3 settlement feed responded reliably (tried: https://www.eurex.com/ex-en/markets/int/fixing/3-month-estr-futures-FST3, https://www.eurex.com/ex-en/data/trading-files/product-and-price-report, https://www.eurex.com/ex-en/data/market-statistics/settlement-prices/FST3, https://www.eurex.com/api/v1/marketdata/settlement/FST3, https://www.eurex.com/api/v2/marketdata/statistics/FST3/settlement)",
+      "status": "unavailable"
+    },
+    "SOFR_3M": [
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 21.0,
+        "code": "SR3Z6",
+        "expiry": "2026-12",
+        "implied_rate": 4.16,
+        "observation_date": "2026-11-03",
+        "open_interest": 1665171.0,
+        "price": 95.84,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 294236.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 41.5,
+        "code": "SR3H7",
+        "expiry": "2027-03",
+        "implied_rate": 4.365,
+        "observation_date": "2026-11-03",
+        "open_interest": 1278682.0,
+        "price": 95.635,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 277666.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 54.5,
+        "code": "SR3M7",
+        "expiry": "2027-06",
+        "implied_rate": 4.495,
+        "observation_date": "2026-11-03",
+        "open_interest": 1238073.0,
+        "price": 95.505,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 265249.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 58.5,
+        "code": "SR3U7",
+        "expiry": "2027-09",
+        "implied_rate": 4.535,
+        "observation_date": "2026-11-03",
+        "open_interest": 1097110.0,
+        "price": 95.465,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 247673.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 56.5,
+        "code": "SR3Z7",
+        "expiry": "2027-12",
+        "implied_rate": 4.515,
+        "observation_date": "2026-11-03",
+        "open_interest": 1536682.0,
+        "price": 95.485,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 282573.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 53.5,
+        "code": "SR3H8",
+        "expiry": "2028-03",
+        "implied_rate": 4.485,
+        "observation_date": "2026-11-03",
+        "open_interest": 848433.0,
+        "price": 95.515,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 189279.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 51.5,
+        "code": "SR3M8",
+        "expiry": "2028-06",
+        "implied_rate": 4.465,
+        "observation_date": "2026-11-03",
+        "open_interest": 658919.0,
+        "price": 95.535,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 177501.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 50.0,
+        "code": "SR3U8",
+        "expiry": "2028-09",
+        "implied_rate": 4.45,
+        "observation_date": "2026-11-03",
+        "open_interest": 682518.0,
+        "price": 95.55,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 178667.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 49.0,
+        "code": "SR3Z8",
+        "expiry": "2028-12",
+        "implied_rate": 4.44,
+        "observation_date": "2026-11-03",
+        "open_interest": 552715.0,
+        "price": 95.56,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 122975.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 48.0,
+        "code": "SR3H9",
+        "expiry": "2029-03",
+        "implied_rate": 4.43,
+        "observation_date": "2026-11-03",
+        "open_interest": 394943.0,
+        "price": 95.57,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 84743.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 47.0,
+        "code": "SR3M9",
+        "expiry": "2029-06",
+        "implied_rate": 4.42,
+        "observation_date": "2026-11-03",
+        "open_interest": 393949.0,
+        "price": 95.58,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 78454.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 46.5,
+        "code": "SR3U9",
+        "expiry": "2029-09",
+        "implied_rate": 4.415,
+        "observation_date": "2026-11-03",
+        "open_interest": 305296.0,
+        "price": 95.585,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 75823.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 46.5,
+        "code": "SR3Z9",
+        "expiry": "2029-12",
+        "implied_rate": 4.415,
+        "observation_date": "2026-11-03",
+        "open_interest": 251999.0,
+        "price": 95.585,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 44812.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 47.5,
+        "code": "SR3H0",
+        "expiry": "2030-03",
+        "implied_rate": 4.425,
+        "observation_date": "2026-11-03",
+        "open_interest": 185658.0,
+        "price": 95.575,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 31940.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 48.5,
+        "code": "SR3M0",
+        "expiry": "2030-06",
+        "implied_rate": 4.435,
+        "observation_date": "2026-11-03",
+        "open_interest": 156356.0,
+        "price": 95.565,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 27350.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 50.0,
+        "code": "SR3U0",
+        "expiry": "2030-09",
+        "implied_rate": 4.45,
+        "observation_date": "2026-11-03",
+        "open_interest": 149877.0,
+        "price": 95.55,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 36182.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 52.0,
+        "code": "SR3Z0",
+        "expiry": "2030-12",
+        "implied_rate": 4.47,
+        "observation_date": "2026-11-03",
+        "open_interest": 116696.0,
+        "price": 95.53,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 25406.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 55.0,
+        "code": "SR3H1",
+        "expiry": "2031-03",
+        "implied_rate": 4.5,
+        "observation_date": "2026-11-03",
+        "open_interest": 85453.0,
+        "price": 95.5,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 19804.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 58.0,
+        "code": "SR3M1",
+        "expiry": "2031-06",
+        "implied_rate": 4.53,
+        "observation_date": "2026-11-03",
+        "open_interest": 71628.0,
+        "price": 95.47,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 21749.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 62.0,
+        "code": "SR3U1",
+        "expiry": "2031-09",
+        "implied_rate": 4.57,
+        "observation_date": "2026-11-03",
+        "open_interest": 42407.0,
+        "price": 95.43,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 21928.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 65.5,
+        "code": "SR3Z1",
+        "expiry": "2031-12",
+        "implied_rate": 4.605,
+        "observation_date": "2026-11-03",
+        "open_interest": 9277.0,
+        "price": 95.395,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 232.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 69.5,
+        "code": "SR3H2",
+        "expiry": "2032-03",
+        "implied_rate": 4.645,
+        "observation_date": "2026-11-03",
+        "open_interest": 4833.0,
+        "price": 95.355,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 48.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 73.0,
+        "code": "SR3M2",
+        "expiry": "2032-06",
+        "implied_rate": 4.68,
+        "observation_date": "2026-11-03",
+        "open_interest": 1553.0,
+        "price": 95.32,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 59.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 76.5,
+        "code": "SR3U2",
+        "expiry": "2032-09",
+        "implied_rate": 4.715,
+        "observation_date": "2026-11-03",
+        "open_interest": 849.0,
+        "price": 95.285,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 79.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 79.5,
+        "code": "SR3Z2",
+        "expiry": "2032-12",
+        "implied_rate": 4.745,
+        "observation_date": "2026-11-03",
+        "open_interest": 165.0,
+        "price": 95.255,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 5.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 82.5,
+        "code": "SR3H3",
+        "expiry": "2033-03",
+        "implied_rate": 4.775,
+        "observation_date": "2026-11-03",
+        "open_interest": 36.0,
+        "price": 95.225,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 85.5,
+        "code": "SR3M3",
+        "expiry": "2033-06",
+        "implied_rate": 4.805,
+        "observation_date": "2026-11-03",
+        "open_interest": 3.0,
+        "price": 95.195,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 88.5,
+        "code": "SR3U3",
+        "expiry": "2033-09",
+        "implied_rate": 4.835,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.165,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 91.0,
+        "code": "SR3Z3",
+        "expiry": "2033-12",
+        "implied_rate": 4.86,
+        "observation_date": "2026-11-03",
+        "open_interest": 11.0,
+        "price": 95.14,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 93.0,
+        "code": "SR3H4",
+        "expiry": "2034-03",
+        "implied_rate": 4.88,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.12,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 96.0,
+        "code": "SR3M4",
+        "expiry": "2034-06",
+        "implied_rate": 4.91,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.09,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 97.0,
+        "code": "SR3U4",
+        "expiry": "2034-09",
+        "implied_rate": 4.92,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.08,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 101.5,
+        "code": "SR3Z4",
+        "expiry": "2034-12",
+        "implied_rate": 4.965,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.035,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 102.5,
+        "code": "SR3H5",
+        "expiry": "2035-03",
+        "implied_rate": 4.975,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.025,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 105.0,
+        "code": "SR3M5",
+        "expiry": "2035-06",
+        "implied_rate": 5.0,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 95.0,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 107.5,
+        "code": "SR3U5",
+        "expiry": "2035-09",
+        "implied_rate": 5.025,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 94.975,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 112.0,
+        "code": "SR3Z5",
+        "expiry": "2035-12",
+        "implied_rate": 5.07,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 94.93,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      },
+      {
+        "as_of": "2026-11-03",
+        "change_from_overnight_bps": 113.0,
+        "code": "SR3H6",
+        "expiry": "2036-03",
+        "implied_rate": 5.08,
+        "observation_date": "2026-11-03",
+        "open_interest": 0.0,
+        "price": 94.92,
+        "source": "CME_SR3_SETTLEMENT",
+        "volume": 0.0
+      }
+    ],
+    "TONA_3M": [
+      {
+        "as_of": null,
+        "change_from_overnight_bps": -2.2,
+        "code": "261215",
+        "expiry": "2026-09",
+        "implied_rate": 1.205,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 98.795,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 22.3,
+        "code": "270316",
+        "expiry": "2026-12",
+        "implied_rate": 1.45,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 98.55,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 43.55,
+        "code": "270615",
+        "expiry": "2027-03",
+        "implied_rate": 1.6625,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 98.3375,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 61.3,
+        "code": "270914",
+        "expiry": "2027-06",
+        "implied_rate": 1.84,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 98.16,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 71.8,
+        "code": "271214",
+        "expiry": "2027-09",
+        "implied_rate": 1.945,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 98.055,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 82.3,
+        "code": "280314",
+        "expiry": "2027-12",
+        "implied_rate": 2.05,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.95,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 86.3,
+        "code": "280620",
+        "expiry": "2028-03",
+        "implied_rate": 2.09,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.91,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 92.3,
+        "code": "280919",
+        "expiry": "2028-06",
+        "implied_rate": 2.15,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.85,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 96.3,
+        "code": "281219",
+        "expiry": "2028-09",
+        "implied_rate": 2.19,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.81,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 100.3,
+        "code": "290319",
+        "expiry": "2028-12",
+        "implied_rate": 2.23,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.77,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 104.8,
+        "code": "290619",
+        "expiry": "2029-03",
+        "implied_rate": 2.275,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.725,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 109.05,
+        "code": "290918",
+        "expiry": "2029-06",
+        "implied_rate": 2.3175,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.6825,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 113.05,
+        "code": "291218",
+        "expiry": "2029-09",
+        "implied_rate": 2.3575,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.6425,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 117.05,
+        "code": "300319",
+        "expiry": "2029-12",
+        "implied_rate": 2.3975,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.6025,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 121.3,
+        "code": "300618",
+        "expiry": "2030-03",
+        "implied_rate": 2.44,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.56,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 125.55,
+        "code": "300917",
+        "expiry": "2030-06",
+        "implied_rate": 2.4825,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.5175,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 129.8,
+        "code": "301217",
+        "expiry": "2030-09",
+        "implied_rate": 2.525,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.475,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 134.3,
+        "code": "310318",
+        "expiry": "2030-12",
+        "implied_rate": 2.57,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.43,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 138.55,
+        "code": "310617",
+        "expiry": "2031-03",
+        "implied_rate": 2.6125,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.3875,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      },
+      {
+        "as_of": null,
+        "change_from_overnight_bps": 142.8,
+        "code": "310916",
+        "expiry": "2031-06",
+        "implied_rate": 2.655,
+        "observation_date": null,
+        "open_interest": null,
+        "price": 97.345,
+        "source": "JPX_OSE_TOA3M_SETTLEMENT",
+        "volume": null
+      }
+    ]
+  },
+  "fx": {
+    "meta": {
+      "age_days": 1,
+      "source_observation": "2026-11-03",
+      "status": "ok"
+    },
+    "pairs": {
+      "AUDCAD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 42.26190476190476,
+        "pctile_5y": 88.45238095238095,
+        "ret_1d": -0.33770198102611726,
+        "ret_1m": -1.6166263098081113,
+        "ret_3m": -0.9853180258642902,
+        "ret_5d": -1.025694453867032,
+        "rv_20d": 6.924259123889303,
+        "rv_60d": 5.63996908863378,
+        "spot": 0.9760104954082589,
+        "z_1y": 0.3161921197882378,
+        "z_5y": 1.8675996080190491
+      },
+      "AUDCHF": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 76.78571428571429,
+        "pctile_5y": 40.833333333333336,
+        "ret_1d": -0.31238848504704375,
+        "ret_1m": -1.0037997754137606,
+        "ret_3m": 0.4206631137503525,
+        "ret_5d": -1.7260125121279724,
+        "rv_20d": 8.92539053053007,
+        "rv_60d": 7.608815756844225,
+        "spot": 0.5726244767914037,
+        "z_1y": 0.859485585069791,
+        "z_5y": -0.36091063431256154
+      },
+      "AUDJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 41.07142857142857,
+        "pctile_5y": 88.21428571428571,
+        "ret_1d": -0.10342383733373817,
+        "ret_1m": 0.37506118994869997,
+        "ret_3m": -0.541313993045367,
+        "ret_5d": -0.39167774878738904,
+        "rv_20d": 8.930600367704859,
+        "rv_60d": 8.550782553838527,
+        "spot": 110.54538639345286,
+        "z_1y": 0.11121313396811296,
+        "z_5y": 1.625719037726643
+      },
+      "AUDNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 4.801587301587301,
+        "ret_1d": -0.5871729480192767,
+        "ret_1m": -3.5415646718934157,
+        "ret_3m": -3.9536096388009256,
+        "ret_5d": -1.6108028903307536,
+        "rv_20d": 5.002582262457316,
+        "rv_60d": 4.89286248034033,
+        "spot": 6.44624226900731,
+        "z_1y": -3.481010213433236,
+        "z_5y": -1.5990923460013116
+      },
+      "AUDNZD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 93.84920634920636,
+        "pctile_5y": 98.76984126984127,
+        "ret_1d": -0.30964743784430704,
+        "ret_1m": -0.2507555255185645,
+        "ret_3m": 3.7340011545550444,
+        "ret_5d": 0.6981499603743391,
+        "rv_20d": 7.973315308289912,
+        "rv_60d": 6.336824663243905,
+        "spot": 1.2417067532954333,
+        "z_1y": 1.4303523605074049,
+        "z_5y": 2.690485435999512
+      },
+      "AUDSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 81.15079365079364,
+        "pctile_5y": 39.72222222222222,
+        "ret_1d": 0.017789374034005156,
+        "ret_1m": -2.127747182147477,
+        "ret_3m": 2.6504658560103866,
+        "ret_5d": -2.0877258297513746,
+        "rv_20d": 7.295824246837995,
+        "rv_60d": 5.864780530360581,
+        "spot": 6.841694258761791,
+        "z_1y": 0.9677869698814373,
+        "z_5y": 0.11857890593382026
+      },
+      "AUDUSD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 39.48412698412698,
+        "pctile_5y": 76.23015873015873,
+        "ret_1d": -0.3485658512275336,
+        "ret_1m": 0.33786483586579763,
+        "ret_3m": -0.8275836954324989,
+        "ret_5d": -0.6857011268332713,
+        "rv_20d": 7.245877545663726,
+        "rv_60d": 6.261511985303092,
+        "spot": 0.6983819578934215,
+        "z_1y": 0.09023069622015352,
+        "z_5y": 0.8535997336873133
+      },
+      "CADCHF": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 93.05555555555556,
+        "pctile_5y": 25.753968253968253,
+        "ret_1d": 0.02539926981641738,
+        "ret_1m": 0.6228964421611805,
+        "ret_3m": 1.4199723834712907,
+        "ret_5d": -0.7075756221744944,
+        "rv_20d": 4.857127922375478,
+        "rv_60d": 4.89861367046729,
+        "spot": 0.586699097484478,
+        "z_1y": 1.6417769810753642,
+        "z_5y": -1.015151857088721
+      },
+      "CADJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 35.11904761904762,
+        "pctile_5y": 82.5,
+        "ret_1d": 0.23507198644745486,
+        "ret_1m": 2.0244147207521213,
+        "ret_3m": 0.44842241975275865,
+        "ret_5d": 0.6405871721768319,
+        "rv_20d": 4.453361890655421,
+        "rv_60d": 6.579054218565561,
+        "spot": 113.26249759969275,
+        "z_1y": -0.3115310027094124,
+        "z_5y": 0.9887215665339398
+      },
+      "CADNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 0.03968253968253968,
+        "ret_1d": -0.25031629006353473,
+        "ret_1m": -1.9565687675510368,
+        "ret_3m": -2.9978297700456236,
+        "ret_5d": -0.5911720554492961,
+        "rv_20d": 4.100385821114103,
+        "rv_60d": 4.429474086768065,
+        "spot": 6.604685399731165,
+        "z_1y": -1.51729156354443,
+        "z_5y": -2.1503642603163757
+      },
+      "CADSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 88.69047619047619,
+        "pctile_5y": 27.976190476190474,
+        "ret_1d": 0.35669592426257335,
+        "ret_1m": -0.5195195622675897,
+        "ret_3m": 3.671964409100892,
+        "ret_5d": -1.0730374616160554,
+        "rv_20d": 5.9150554133023325,
+        "rv_60d": 4.931761539872525,
+        "spot": 7.0098572617295005,
+        "z_1y": 1.5802832724856204,
+        "z_5y": -0.9102617215218614
+      },
+      "CHFJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 18.452380952380953,
+        "pctile_5y": 83.69047619047619,
+        "ret_1d": 0.20961947481505927,
+        "ret_1m": 1.392842313375997,
+        "ret_3m": -0.9579473755376933,
+        "ret_5d": 1.3577700441892215,
+        "rv_20d": 4.941906950336632,
+        "rv_60d": 7.403369401270092,
+        "spot": 193.05040366572115,
+        "z_1y": -1.1005883386471653,
+        "z_5y": 1.1598093298147287
+      },
+      "CHFNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 1.7857142857142858,
+        "pctile_5y": 26.23015873015873,
+        "ret_1d": -0.2756455479234865,
+        "ret_1m": -2.56349727638272,
+        "ret_3m": -4.355948882349403,
+        "ret_5d": 0.11723307941629013,
+        "rv_20d": 5.975827199648254,
+        "rv_60d": 6.279693741390697,
+        "spot": 11.257364171939779,
+        "z_1y": -1.7927899708382176,
+        "z_5y": -0.4060968040104521
+      },
+      "CHFSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 81.15079365079364,
+        "pctile_5y": 70.43650793650794,
+        "ret_1d": 0.33121252888228536,
+        "ret_1m": -1.135343987126658,
+        "ret_3m": 2.2204620773458528,
+        "ret_5d": -0.36806618604748875,
+        "rv_20d": 5.212500032856733,
+        "rv_60d": 5.889763639296457,
+        "spot": 11.947959851625573,
+        "z_1y": 0.938801887031797,
+        "z_5y": 0.580512825361848
+      },
+      "EURAUD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 4.166666666666667,
+        "pctile_5y": 27.42063492063492,
+        "ret_1d": 0.018745313671586494,
+        "ret_1m": -0.5591103932409691,
+        "ret_3m": -2.3367907260524734,
+        "ret_5d": 0.9523208879919309,
+        "rv_20d": 7.4712973959372,
+        "rv_60d": 5.653657769612224,
+        "spot": 1.6007,
+        "z_1y": -1.133016710433778,
+        "z_5y": -0.4028813567160719
+      },
+      "EURCAD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.9920634920634921,
+        "pctile_5y": 68.37301587301587,
+        "ret_1d": -0.3190199706501584,
+        "ret_1m": -2.166697977331078,
+        "ret_3m": -3.299083931666247,
+        "ret_5d": -0.08314146840624481,
+        "rv_20d": 5.073410470696944,
+        "rv_60d": 4.352602313671842,
+        "spot": 1.5623,
+        "z_1y": -3.0896966211152925,
+        "z_5y": 0.7533090373326919
+      },
+      "EURCHF": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 22.023809523809526,
+        "pctile_5y": 4.404761904761905,
+        "ret_1d": -0.29370172957685625,
+        "ret_1m": -1.5572978197830545,
+        "ret_3m": -1.9259576289321623,
+        "ret_5d": -0.7901288018183905,
+        "rv_20d": 3.622170093672408,
+        "rv_60d": 5.2472840977945525,
+        "spot": 0.9166,
+        "z_1y": -0.8463627537893031,
+        "z_5y": -1.2649625417568306
+      },
+      "EURGBP": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 7.182539682539683,
+        "ret_1d": -0.2656137832017236,
+        "ret_1m": -1.6076487252124627,
+        "ret_3m": -2.7384633335277964,
+        "ret_5d": -0.3586028831671806,
+        "rv_20d": 2.8834138893997237,
+        "rv_60d": 2.734951504289558,
+        "spot": 0.83358,
+        "z_1y": -2.9121208065688244,
+        "z_5y": -1.5624930895017157
+      },
+      "EURJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 3.7698412698412698,
+        "pctile_5y": 79.96031746031746,
+        "ret_1d": -0.08469791078486999,
+        "ret_1m": -0.18614620938628423,
+        "ret_3m": -2.86545534390954,
+        "ret_5d": 0.5569131101892388,
+        "rv_20d": 5.554576687310841,
+        "rv_60d": 6.984001375137,
+        "spot": 176.95,
+        "z_1y": -2.071490976383648,
+        "z_5y": 1.028019113244013
+      },
+      "EURNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.5952380952380952,
+        "pctile_5y": 16.706349206349206,
+        "ret_1d": -0.5685377017586091,
+        "ret_1m": -4.080873808970487,
+        "ret_3m": -6.198012781469586,
+        "ret_5d": -0.6738220147278318,
+        "rv_20d": 5.204824703170153,
+        "rv_60d": 4.867201021042033,
+        "spot": 10.3185,
+        "z_1y": -2.0835404268309334,
+        "z_5y": -1.2801439493917086
+      },
+      "EURNZD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 48.01587301587302,
+        "pctile_5y": 85.95238095238095,
+        "ret_1d": -0.2909601685562424,
+        "ret_1m": -0.8084639185547471,
+        "ret_3m": 1.3099546358122272,
+        "ret_5d": 1.6571194762684094,
+        "rv_20d": 7.230100744473783,
+        "rv_60d": 5.876543692257133,
+        "spot": 1.9876,
+        "z_1y": -0.17145025128351962,
+        "z_5y": 1.327903959458514
+      },
+      "EURSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 52.976190476190474,
+        "pctile_5y": 35.07936507936508,
+        "ret_1d": 0.036538022379528634,
+        "ret_1m": -2.6749611197511625,
+        "ret_3m": 0.25173928963748704,
+        "ret_5d": -1.1552867909201736,
+        "rv_20d": 3.600368070953402,
+        "rv_60d": 3.93296763224917,
+        "spot": 10.9515,
+        "z_1y": 0.1377010319859003,
+        "z_5y": -0.3670169328414222
+      },
+      "EURUSD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 2.1825396825396823,
+        "pctile_5y": 63.611111111111114,
+        "ret_1d": -0.3298858773181257,
+        "ret_1m": -0.22313459478758846,
+        "ret_3m": -3.1450355224397875,
+        "ret_5d": 0.26008968609865235,
+        "rv_20d": 4.537769889456226,
+        "rv_60d": 4.565405679871087,
+        "spot": 1.1179,
+        "z_1y": -2.2353938500096597,
+        "z_5y": 0.37230225603581585
+      },
+      "GBPAUD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 64.08730158730158,
+        "pctile_5y": 56.30952380952381,
+        "ret_1d": 0.2851164053440547,
+        "ret_1m": 1.0656705713263825,
+        "ret_3m": 0.4129819672217705,
+        "ret_5d": 1.3156417002282872,
+        "rv_20d": 6.33287096106359,
+        "rv_60d": 5.391144181005755,
+        "spot": 1.9202715996065165,
+        "z_1y": -0.1257737976390621,
+        "z_5y": 0.12651311524182332
+      },
+      "GBPCAD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 67.65873015873017,
+        "pctile_5y": 92.18253968253968,
+        "ret_1d": -0.053548419431126426,
+        "ret_1m": -0.5681836493136694,
+        "ret_3m": -0.5764052444091283,
+        "ret_5d": 0.2764527824092422,
+        "rv_20d": 4.4988486612243115,
+        "rv_60d": 4.237831258138693,
+        "spot": 1.874205235250366,
+        "z_1y": 0.6397557596511253,
+        "z_5y": 1.252614457736169
+      },
+      "GBPCHF": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 89.08730158730158,
+        "pctile_5y": 30.91269841269841,
+        "ret_1d": -0.0281627505222537,
+        "ret_1m": 0.05117359711099834,
+        "ret_3m": 0.8353823437746488,
+        "ret_5d": -0.4330789522604128,
+        "rv_20d": 3.794800394249578,
+        "rv_60d": 5.279835753276889,
+        "spot": 1.0995945200220734,
+        "z_1y": 1.4738511425641023,
+        "z_5y": -0.45452343621473007
+      },
+      "GBPJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 51.785714285714285,
+        "pctile_5y": 90.35714285714286,
+        "ret_1d": 0.18139768968306047,
+        "ret_1m": 1.4447286780008284,
+        "ret_3m": -0.13056755500092665,
+        "ret_5d": 0.9188108756473357,
+        "rv_20d": 5.417398659013398,
+        "rv_60d": 7.192357852409308,
+        "spot": 212.27716595887617,
+        "z_1y": 0.09495561235498766,
+        "z_5y": 1.3486661174347634
+      },
+      "GBPNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 1.3888888888888888,
+        "pctile_5y": 24.96031746031746,
+        "ret_1d": -0.3037306690777619,
+        "ret_1m": -2.5136355130399024,
+        "ret_3m": -3.5569553664417386,
+        "ret_5d": -0.31635358463615315,
+        "rv_20d": 3.9601512788516264,
+        "rv_60d": 4.306194983548526,
+        "spot": 12.378535953357806,
+        "z_1y": -1.4881981816564698,
+        "z_5y": -0.8327887389997608
+      },
+      "GBPNZD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 99.4047619047619,
+        "pctile_5y": 99.88095238095238,
+        "ret_1d": -0.025413888144265595,
+        "ret_1m": 0.812242817966391,
+        "ret_3m": 4.162403873200993,
+        "ret_5d": 2.0229768126114323,
+        "rv_20d": 5.8503957147198715,
+        "rv_60d": 5.448922015616656,
+        "spot": 2.384414213392836,
+        "z_1y": 2.630366244531019,
+        "z_5y": 1.8155387209162892
+      },
+      "GBPSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 87.89682539682539,
+        "pctile_5y": 64.64285714285714,
+        "ret_1d": 0.3029564998018319,
+        "ret_1m": -1.0847513863734615,
+        "ret_3m": 3.0743937692648604,
+        "ret_5d": -0.7995511211257522,
+        "rv_20d": 4.401094848762612,
+        "rv_60d": 4.244030860528145,
+        "spot": 13.137911178291224,
+        "z_1y": 1.4922421701170674,
+        "z_5y": 0.3735802733451611
+      },
+      "GBPUSD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 50.198412698412696,
+        "pctile_5y": 79.72222222222223,
+        "ret_1d": -0.06444326430874447,
+        "ret_1m": 1.4071359333188926,
+        "ret_3m": -0.41801949963653495,
+        "ret_5d": 0.6209192034314581,
+        "rv_20d": 4.46333923354573,
+        "rv_60d": 4.461675733429906,
+        "spot": 1.3410830394203315,
+        "z_1y": 0.00704114144057093,
+        "z_5y": 0.9908056304468202
+      },
+      "NOKJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 92.65873015873017,
+        "pctile_5y": 98.53174603174604,
+        "ret_1d": 0.4866063314270308,
+        "ret_1m": 4.06042856544333,
+        "ret_3m": 3.552757821426744,
+        "ret_5d": 1.2390843480351466,
+        "rv_20d": 5.76823988528303,
+        "rv_60d": 7.801611122487722,
+        "spot": 17.14881038910694,
+        "z_1y": 1.2165389610180162,
+        "z_5y": 2.3137932756200956
+      },
+      "NOKSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 97.42063492063492,
+        "pctile_5y": 93.05555555555556,
+        "ret_1d": 0.6085354777577656,
+        "ret_1m": 1.465727165215558,
+        "ret_3m": 6.8759226348596325,
+        "ret_5d": -0.4847310003851524,
+        "rv_20d": 5.854185623483805,
+        "rv_60d": 5.257678978188416,
+        "spot": 1.061346125890391,
+        "z_1y": 1.7891981376366204,
+        "z_5y": 1.5237987797258032
+      },
+      "NZDCAD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 1.9444444444444444,
+        "ret_1d": -0.028141683182747457,
+        "ret_1m": -1.369304390710413,
+        "ret_3m": -4.549442928927361,
+        "ret_5d": -1.7118928350915108,
+        "rv_20d": 6.591159692600472,
+        "rv_60d": 5.5754006242961465,
+        "spot": 0.7860233447373717,
+        "z_1y": -2.1186984218505094,
+        "z_5y": -1.781286952467234
+      },
+      "NZDCHF": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 35.11904761904762,
+        "pctile_5y": 8.531746031746032,
+        "ret_1d": -0.002749561148363,
+        "ret_1m": -0.7549372968813084,
+        "ret_3m": -3.194071378648633,
+        "ret_5d": -2.4073555208871444,
+        "rv_20d": 6.895547465558308,
+        "rv_60d": 6.11772488803507,
+        "spot": 0.4611591869591467,
+        "z_1y": -0.5115798886027303,
+        "z_5y": -1.3081346088436954
+      },
+      "NZDJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 13.293650793650794,
+        "pctile_5y": 61.86507936507937,
+        "ret_1d": 0.20686415005102265,
+        "ret_1m": 0.6273899303842478,
+        "ret_3m": -4.121421231241773,
+        "ret_5d": -1.0822718288176714,
+        "rv_20d": 8.264531745301607,
+        "rv_60d": 8.336110086823286,
+        "spot": 89.02696719661903,
+        "z_1y": -1.349709950839638,
+        "z_5y": 0.28415327874991686
+      },
+      "NZDNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 0.1984126984126984,
+        "pctile_5y": 0.03968253968253968,
+        "ret_1d": -0.2783875300289784,
+        "ret_1m": -3.299081776220081,
+        "ret_3m": -7.410888144478356,
+        "ret_5d": -2.2929446584805,
+        "rv_20d": 6.965612324300478,
+        "rv_60d": 6.468834230004751,
+        "spot": 5.191436908834776,
+        "z_1y": -2.4560295973365824,
+        "z_5y": -2.6612200271399438
+      },
+      "NZDSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 60.51587301587302,
+        "pctile_5y": 14.880952380952381,
+        "ret_1d": 0.3284538608429033,
+        "ret_1m": -1.8817101488012522,
+        "ret_3m": -1.0445324449890214,
+        "ret_5d": -2.7665610452843215,
+        "rv_20d": 7.587471416287485,
+        "rv_60d": 5.741325743254774,
+        "spot": 5.509911450996176,
+        "z_1y": 0.22736233920757246,
+        "z_5y": -1.4295469501669034
+      },
+      "NZDUSD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 7.341269841269841,
+        "pctile_5y": 3.4523809523809526,
+        "ret_1d": -0.03903929756787772,
+        "ret_1m": 0.5901000699157999,
+        "ret_3m": -4.397386391363756,
+        "ret_5d": -1.3742567144998552,
+        "rv_20d": 7.750187932844202,
+        "rv_60d": 7.459966067831577,
+        "spot": 0.5624371100825115,
+        "z_1y": -1.5995930548150736,
+        "z_5y": -1.4370075583073834
+      },
+      "SEKJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 16.46825396825397,
+        "pctile_5y": 82.57936507936508,
+        "ret_1d": -0.12119165213142491,
+        "ret_1m": 2.5572195387737473,
+        "ret_3m": -3.1093671348096485,
+        "ret_5d": 1.7322119165722905,
+        "rv_20d": 7.386875675820198,
+        "rv_60d": 8.090393953897944,
+        "spot": 16.15760398118979,
+        "z_1y": -1.2743903070259748,
+        "z_5y": 1.1872756695906257
+      },
+      "USDCAD": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 64.08730158730158,
+        "pctile_5y": 83.05555555555556,
+        "ret_1d": 0.010901870398782876,
+        "ret_1m": -1.9479098432791164,
+        "ret_3m": -0.15905060732550602,
+        "ret_5d": -0.3423407614929319,
+        "rv_20d": 3.2520743105107974,
+        "rv_60d": 4.475724215450439,
+        "spot": 1.3975310850702212,
+        "z_1y": 0.45105016919402835,
+        "z_5y": 0.8676039101537922
+      },
+      "USDCHF": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 87.10317460317461,
+        "pctile_5y": 26.38888888888889,
+        "ret_1d": 0.036303909210655405,
+        "ret_1m": -1.3371468622282112,
+        "ret_3m": 1.258663301446017,
+        "ret_5d": -1.0474940638943497,
+        "rv_20d": 4.96218741081564,
+        "rv_60d": 6.2764172664032785,
+        "spot": 0.8199302263172019,
+        "z_1y": 1.2315743802346975,
+        "z_5y": -0.9440893534169233
+      },
+      "USDJPY": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 53.76984126984127,
+        "pctile_5y": 89.24603174603175,
+        "ret_1d": 0.24599948408954297,
+        "ret_1m": 0.037071103858665744,
+        "ret_3m": 0.28865859384525905,
+        "ret_5d": 0.2960534196806419,
+        "rv_20d": 4.144966737071671,
+        "rv_60d": 7.549664473372912,
+        "spot": 158.2878611682619,
+        "z_1y": 0.09499091869385035,
+        "z_5y": 1.0789684391874579
+      },
+      "USDNOK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 2.9761904761904763,
+        "pctile_5y": 8.69047619047619,
+        "ret_1d": -0.23944170882228555,
+        "ret_1m": -3.8663664152164823,
+        "ret_3m": -3.1521123109152893,
+        "ret_5d": -0.9314889940258531,
+        "rv_20d": 4.2811245263926105,
+        "rv_60d": 5.869422929429692,
+        "spot": 9.230253153233743,
+        "z_1y": -1.3384042881726412,
+        "z_5y": -1.438112185493808
+      },
+      "USDSEK": {
+        "as_of": "2026-11-03",
+        "pctile_1y": 87.10317460317461,
+        "pctile_5y": 37.42063492063492,
+        "ret_1d": 0.36763668118873216,
+        "ret_1m": -2.457309632855531,
+        "ret_3m": 3.507073520081927,
+        "ret_5d": -1.4117047784918069,
+        "rv_20d": 6.198028268898874,
+        "rv_60d": 6.241268783736325,
+        "spot": 9.796493425172198,
+        "z_1y": 1.2472777972874751,
+        "z_5y": -0.5120616356556228
+      }
+    }
+  },
+  "macro_series": {
+    "AU.Inflation.headline": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=AU.Inflation.headline].provenance",
+        "families.macro_hard.components[series_id=AU.Inflation.headline] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 72.5,
+        "transform_value": 4.3
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 72.5,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.AU.Inflation.component_state.headline",
+        "release_date": null,
+        "transform_value": 4.3
+      },
+      "value": 4.3
+    },
+    "AU.Inflation.underlying": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=AU.Inflation.underlying].provenance",
+        "families.macro_hard.components[series_id=AU.Inflation.underlying] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 63.75,
+        "transform_value": 3.6
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 63.75,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.AU.Inflation.component_state.underlying",
+        "release_date": null,
+        "transform_value": 3.6
+      },
+      "value": 3.6
+    },
+    "CA.Inflation.headline": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=CA.Inflation.headline].provenance",
+        "families.macro_hard.components[series_id=CA.Inflation.headline] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 63.66,
+        "transform_value": 3.0928
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 63.66,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.CA.Inflation.component_state.headline",
+        "release_date": "2026-10-19",
+        "transform_value": 3.0928
+      },
+      "value": 3.0928
+    },
+    "CA.Inflation.underlying": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=CA.Inflation.underlying].provenance",
+        "families.macro_hard.components[series_id=CA.Inflation.underlying] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 48.12,
+        "transform_value": 1.85
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 48.12,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.CA.Inflation.component_state.underlying",
+        "release_date": "2026-10-19",
+        "transform_value": 1.85
+      },
+      "value": 1.85
+    },
+    "CA.Labor.employment": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=CA.Labor.employment].provenance",
+        "families.macro_hard.components[series_id=CA.Labor.employment] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 42.67,
+        "transform_value": -11.6333
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 42.67,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.CA.Labor.component_state.employment",
+        "release_date": null,
+        "transform_value": -11.6333
+      },
+      "value": -11.6333
+    },
+    "CA.Labor.unemployment": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=CA.Labor.unemployment].provenance",
+        "families.macro_hard.components[series_id=CA.Labor.unemployment] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 40.0,
+        "transform_value": 6.5
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 40.0,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.CA.Labor.component_state.unemployment",
+        "release_date": null,
+        "transform_value": 6.5
+      },
+      "value": 6.5
+    },
+    "CA.Labor.wages": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=CA.Labor.wages].provenance",
+        "families.macro_hard.components[series_id=CA.Labor.wages] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 43.38,
+        "transform_value": 2.3382
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 43.38,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.CA.Labor.component_state.wages",
+        "release_date": null,
+        "transform_value": 2.3382
+      },
+      "value": 2.3382
+    },
+    "US.Inflation.core_pce": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=US.Inflation.core_pce].provenance",
+        "families.macro_hard.components[series_id=US.Inflation.core_pce] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 63.1,
+        "transform_value": 3.0478
+      },
+      "observation_period": "2026-07",
+      "provenance_on_component": null,
+      "research_status": "previous release retained",
+      "status": "source_failed",
+      "temperature_scores_supplement": {
+        "as_of": "2026-07",
+        "level": 63.1,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.US.Inflation.component_state.core_pce",
+        "release_date": null,
+        "transform_value": 3.0478
+      },
+      "value": 3.0478
+    },
+    "US.Inflation.cpi_core": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=US.Inflation.cpi_core].provenance",
+        "families.macro_hard.components[series_id=US.Inflation.cpi_core] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {},
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": null,
+      "value": null
+    },
+    "US.Inflation.cpi_headline": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=US.Inflation.cpi_headline].provenance",
+        "families.macro_hard.components[series_id=US.Inflation.cpi_headline] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {},
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": null,
+      "value": null
+    },
+    "US.Labor.unemployment": {
+      "looked_paths": [
+        "families.macro_hard.components[series_id=US.Labor.unemployment].provenance",
+        "families.macro_hard.components[series_id=US.Labor.unemployment] (no extra field on component)",
+        "families.macro_hard.extra.score_lineage.appended"
+      ],
+      "numeric_fields": {
+        "level": 50.0,
+        "transform_value": 4.2
+      },
+      "observation_period": "2026-09",
+      "provenance_on_component": null,
+      "research_status": "current release",
+      "status": "checked_unchanged",
+      "temperature_scores_supplement": {
+        "as_of": "2026-09",
+        "level": 50.0,
+        "note": "Value from temperature score state, not component.provenance/extra.",
+        "path": "families.macro_hard.temperature_scores.countries.US.Labor.component_state.unemployment",
+        "release_date": null,
+        "transform_value": 4.2
+      },
+      "value": 4.2
+    }
+  },
+  "meta": {
+    "accepted_at": "2026-11-04T05:35:22.541505-05:00",
+    "frozen_at": "2026-11-04T05:35:22.541505-05:00",
+    "market_state_digest": "a4a28373c5db64e71f860f73ba0267502bcba92bf32fe09f32ca300068ce2ae9",
+    "market_state_generated_at": "2026-11-04T10:52:31Z",
+    "overnight_run_id": "overnight-20261104",
+    "packet_sha256": "d1a793edb498fd7c866b54038d6db9cc1139c91301f5b2c8fc20729d8933430f",
+    "pinned_commit": "612666a21e621e6bb437802cb48ace011f181b7b",
+    "review_id": "review-001",
+    "review_status": "accepted",
+    "snapshot_as_of": "2026-11-04T05:35:22.541505-05:00",
+    "snapshot_file_sha256": "f4dad4a2657be919f6b6e991761bc260ee93a5527a004b5c7f9f9af8f3041241"
+  },
+  "news_headlines": {
+    "count": 24,
+    "election_yields_headline_in_freeze": true,
+    "items": [
+      {
+        "headline": "Xi Hosts Oman\u2019s Sultan for Rare Visit to China With Hormuz Shipping in Focus",
+        "published_at": "2026-11-01T20:29:00-05:00"
+      },
+      {
+        "headline": "The Bank of England Ponders a New Normal for Interest Rates",
+        "published_at": "2026-11-01T11:01:00-05:00"
+      },
+      {
+        "headline": "BOE Agents See Little Sign of Energy Shock Feeding Into Pay",
+        "published_at": "2026-10-29T22:53:00-04:00"
+      },
+      {
+        "headline": "Japan 2-Year Bond Sale Sees Firm Demand Before BOJ Decision",
+        "published_at": "2026-10-28T16:39:00-04:00"
+      },
+      {
+        "headline": "Bessent Plays Down Concerns Over AI Financing, Fed Rate Policy",
+        "published_at": "2026-10-28T10:26:00-04:00"
+      },
+      {
+        "headline": "Bullish Treasury Bets Face Reversal Risk From Hawkish Fed",
+        "published_at": "2026-10-27T09:30:00-04:00"
+      },
+      {
+        "headline": "UK Dealers See More Treasury Bills Coming to Cut Debt Costs",
+        "published_at": "2026-10-25T20:15:00-04:00"
+      },
+      {
+        "headline": "Iran claims four tankers struck mines in Hormuz as strike fears grow after U.S. midterms",
+        "published_at": "2026-10-30T03:12:49-04:00"
+      },
+      {
+        "headline": "BOJ holds rates as underlying inflation aligns with 2% target for first time since 2013",
+        "published_at": "2026-10-30T00:19:38-04:00"
+      },
+      {
+        "headline": "10-year Treasury yield creeps higher even as Fed keeps rates the same",
+        "published_at": "2026-10-28T16:17:19-04:00"
+      },
+      {
+        "headline": "Fed holds rates steady despite concerns over inflation",
+        "published_at": "2026-10-28T15:43:48-04:00"
+      },
+      {
+        "headline": "Fed chairman talks tough on inflation \u2014 plus, what's behind Micron's big rally",
+        "published_at": "2026-10-28T15:17:35-04:00"
+      },
+      {
+        "headline": "U.S. Treasury yields tick higher as Federal Reserve's monetary policy meeting gets underway",
+        "published_at": "2026-10-27T16:03:59-04:00"
+      },
+      {
+        "headline": "Morning Bid: RBNZ throws markets a curveball",
+        "published_at": "2026-10-27T13:00:00-04:00"
+      },
+      {
+        "headline": "U.S. Treasury yields are little changed as investors look ahead to the Fed's rate decision",
+        "published_at": "2026-10-26T06:11:19-04:00"
+      },
+      {
+        "headline": "Iran Strikes More Ship Engine Rooms in Ramp-Up of Hormuz Attacks",
+        "published_at": "2026-10-20T01:31:00-04:00"
+      },
+      {
+        "headline": "Global Oil Supply Buffer Running 'Scarily Thin,' Aramco CEO Says",
+        "published_at": ""
+      },
+      {
+        "headline": "LNG Trade Through Hormuz Extends Rebound Despite Shipping Risks",
+        "published_at": ""
+      },
+      {
+        "headline": "Meta seeks to raise up to $25 billion in debt sale as AI spending jumps",
+        "published_at": "2026-11-03T12:33:49-05:00"
+      },
+      {
+        "headline": "Alphabet Tests Bond Market\u2019s AI Faith With Second Euro Sale",
+        "published_at": "2026-11-01T19:52:00-05:00"
+      },
+      {
+        "headline": "Singapore\u2019s STTGDC Eyes $2.4 Billion Loan, Adds to AI Debt Binge",
+        "published_at": "2026-11-01T11:01:00-05:00"
+      },
+      {
+        "headline": "Banks Shelve Bond Sale for Anthropic-Tied Texas Data Center",
+        "published_at": "2026-10-28T10:49:00-04:00"
+      },
+      {
+        "headline": "BlackRock\u2019s Rieder Spent Weekend Doing Deals in AI Debt Rush",
+        "published_at": "2026-10-26T15:00:00-04:00"
+      },
+      {
+        "headline": "Treasury yields fall as investors crowd into bonds for safety amid election stock sell-off",
+        "published_at": "2026-11-04T04:02:00-05:00"
+      }
+    ]
+  }
+}

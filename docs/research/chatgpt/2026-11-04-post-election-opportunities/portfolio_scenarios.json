@@ -1,0 +1,635 @@
+{
+  "written": "2026-11-05",
+  "evidence_cycle": "2026-11-04",
+  "proposed_rival_id": "R0",
+  "constants_source": "calc_results.json (verified fields; SR3 pay sign corrected in this script)",
+  "sign_correction": {
+    "receive_pnl": "-DV01 * shock_bp",
+    "pay_pnl": "+DV01 * shock_bp",
+    "calc_portfolio_math_bug": "pnl_pay_sofr_lots uses -lots*dv01*shock (same as receive)"
+  },
+  "financing_convention": {
+    "rate": 0.0395,
+    "day_count": "ACT/360",
+    "risk_capital": "100 * parallel_dv01_usd_per_bp (1% of 250m mapping)"
+  },
+  "rivals": {
+    "R0": {
+      "meta": {
+        "id": "R0",
+        "name": "Flat after closing residual; no FX",
+        "positions": [],
+        "parallel_dv01_usd_per_bp": 0.0,
+        "risk_capital_usd": 0.0,
+        "financing_30d_usd": 0.0,
+        "fx_legs": []
+      },
+      "scenarios": {
+        "common_plus_20": {
+          "label": "Common +20bp CRA and SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "common_minus_20": {
+          "label": "Common -20bp CRA and SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_plus_25_us_plus_5": {
+          "label": "Canada +25bp, US +5bp (domestic inflation / oil pass-through sketch)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_minus_15_us_minus_10": {
+          "label": "Canada -15bp, US -10bp (small de-escalation in rates)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "article_treasury_minus_5_ASSUMPTION": {
+          "label": "ASSUMPTION: article Treasury move (~4-5bp) repeated in CRA/SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "renewed_conflict": {
+          "label": "Renewed conflict: Canada +20, US +10; FX if held",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "us_fiscal_disappointment_long_end": {
+          "label": "US fiscal disappointment hits long end; no TY \u2014 STIR ~0 by construction",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "global_inflation_repricing": {
+          "label": "Global inflation repricing: Canada +15, US +15",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_domestic_surprise": {
+          "label": "Canada domestic surprise: Canada +20, US 0",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "one_quarter_unchanged_curve_roll_ASSUMPTION": {
+          "label": "One-quarter unchanged-curve roll (assumption, not accrual)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "bull_flatten_corra_ASSUMPTION": {
+          "label": "Bull flatten CORRA: H+10 M0 U-10 Z-20 (assumption)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "bear_steepen_corra_ASSUMPTION": {
+          "label": "Bear steepen CORRA: H-5 Z+15 (assumption)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        }
+      }
+    },
+    "R1": {
+      "meta": {
+        "id": "R1",
+        "name": "Retain 250m equal-weight CORRA receive (349 lots \u00d7 4)",
+        "positions": [
+          "receive_CRA_2027_HMUZ_349_each"
+        ],
+        "parallel_dv01_usd_per_bp": 24972.61,
+        "risk_capital_usd": 2497261.09,
+        "financing_30d_usd": 8220.15,
+        "sr3_pay_overlay": null,
+        "fx_legs": []
+      },
+      "scenarios": {
+        "common_plus_20": {
+          "label": "Common +20bp CRA and SR3",
+          "market_pnl_usd": -499452.22,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -507672.37,
+          "components": {
+            "cra_receive_usd": -499452.22,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "common_minus_20": {
+          "label": "Common -20bp CRA and SR3",
+          "market_pnl_usd": 499452.22,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": 491232.07,
+          "components": {
+            "cra_receive_usd": 499452.22,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "canada_plus_25_us_plus_5": {
+          "label": "Canada +25bp, US +5bp (domestic inflation / oil pass-through sketch)",
+          "market_pnl_usd": -624315.27,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -632535.42,
+          "components": {
+            "cra_receive_usd": -624315.27,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "canada_minus_15_us_minus_10": {
+          "label": "Canada -15bp, US -10bp (small de-escalation in rates)",
+          "market_pnl_usd": 374589.16,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": 366369.01,
+          "components": {
+            "cra_receive_usd": 374589.16,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "article_treasury_minus_5_ASSUMPTION": {
+          "label": "ASSUMPTION: article Treasury move (~4-5bp) repeated in CRA/SR3",
+          "market_pnl_usd": 124863.05,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": 116642.9,
+          "components": {
+            "cra_receive_usd": 124863.05,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "renewed_conflict": {
+          "label": "Renewed conflict: Canada +20, US +10; FX if held",
+          "market_pnl_usd": -499452.22,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -507672.37,
+          "components": {
+            "cra_receive_usd": -499452.22,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "us_fiscal_disappointment_long_end": {
+          "label": "US fiscal disappointment hits long end; no TY \u2014 STIR ~0 by construction",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -8220.15,
+          "components": {
+            "cra_receive_usd": 0.0,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "global_inflation_repricing": {
+          "label": "Global inflation repricing: Canada +15, US +15",
+          "market_pnl_usd": -374589.16,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -382809.31,
+          "components": {
+            "cra_receive_usd": -374589.16,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "canada_domestic_surprise": {
+          "label": "Canada domestic surprise: Canada +20, US 0",
+          "market_pnl_usd": -499452.22,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -507672.37,
+          "components": {
+            "cra_receive_usd": -499452.22,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "one_quarter_unchanged_curve_roll_ASSUMPTION": {
+          "label": "One-quarter unchanged-curve roll (assumption, not accrual)",
+          "market_pnl_usd": 349616.55,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": 341396.4,
+          "components": {
+            "cra_receive_usd": 349616.55,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "bull_flatten_corra_ASSUMPTION": {
+          "label": "Bull flatten CORRA: H+10 M0 U-10 Z-20 (assumption)",
+          "market_pnl_usd": 124863.05,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": 116642.9,
+          "components": {
+            "cra_receive_usd": 124863.05,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "bear_steepen_corra_ASSUMPTION": {
+          "label": "Bear steepen CORRA: H-5 Z+15 (assumption)",
+          "market_pnl_usd": -62431.53,
+          "financing_30d_usd": 8220.15,
+          "net_pnl_usd": -70651.68,
+          "components": {
+            "cra_receive_usd": -62431.53,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        }
+      }
+    },
+    "R2": {
+      "meta": {
+        "id": "R2",
+        "name": "Prior reshape: receive U and Z only, 349 lots each",
+        "positions": [
+          "receive_CRAU27_CRAZ27_349_each"
+        ],
+        "parallel_dv01_usd_per_bp": 12486.31,
+        "risk_capital_usd": 1248630.54,
+        "financing_30d_usd": 4110.08,
+        "sr3_pay_overlay": null,
+        "fx_legs": []
+      },
+      "scenarios": {
+        "common_plus_20": {
+          "label": "Common +20bp CRA and SR3",
+          "market_pnl_usd": -249726.11,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -253836.19,
+          "components": {
+            "cra_receive_usd": -249726.11,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "common_minus_20": {
+          "label": "Common -20bp CRA and SR3",
+          "market_pnl_usd": 249726.11,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": 245616.03,
+          "components": {
+            "cra_receive_usd": 249726.11,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "canada_plus_25_us_plus_5": {
+          "label": "Canada +25bp, US +5bp (domestic inflation / oil pass-through sketch)",
+          "market_pnl_usd": -312157.64,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -316267.72,
+          "components": {
+            "cra_receive_usd": -312157.64,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "canada_minus_15_us_minus_10": {
+          "label": "Canada -15bp, US -10bp (small de-escalation in rates)",
+          "market_pnl_usd": 187294.58,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": 183184.5,
+          "components": {
+            "cra_receive_usd": 187294.58,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "article_treasury_minus_5_ASSUMPTION": {
+          "label": "ASSUMPTION: article Treasury move (~4-5bp) repeated in CRA/SR3",
+          "market_pnl_usd": 62431.53,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": 58321.45,
+          "components": {
+            "cra_receive_usd": 62431.53,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "renewed_conflict": {
+          "label": "Renewed conflict: Canada +20, US +10; FX if held",
+          "market_pnl_usd": -249726.11,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -253836.19,
+          "components": {
+            "cra_receive_usd": -249726.11,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "us_fiscal_disappointment_long_end": {
+          "label": "US fiscal disappointment hits long end; no TY \u2014 STIR ~0 by construction",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -4110.08,
+          "components": {
+            "cra_receive_usd": 0.0,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "global_inflation_repricing": {
+          "label": "Global inflation repricing: Canada +15, US +15",
+          "market_pnl_usd": -187294.58,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -191404.66,
+          "components": {
+            "cra_receive_usd": -187294.58,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "canada_domestic_surprise": {
+          "label": "Canada domestic surprise: Canada +20, US 0",
+          "market_pnl_usd": -249726.11,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -253836.19,
+          "components": {
+            "cra_receive_usd": -249726.11,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "one_quarter_unchanged_curve_roll_ASSUMPTION": {
+          "label": "One-quarter unchanged-curve roll (assumption, not accrual)",
+          "market_pnl_usd": 121741.48,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": 117631.4,
+          "components": {
+            "cra_receive_usd": 121741.48,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "bull_flatten_corra_ASSUMPTION": {
+          "label": "Bull flatten CORRA: H+10 M0 U-10 Z-20 (assumption)",
+          "market_pnl_usd": 187294.58,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": 183184.5,
+          "components": {
+            "cra_receive_usd": 187294.58,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        },
+        "bear_steepen_corra_ASSUMPTION": {
+          "label": "Bear steepen CORRA: H-5 Z+15 (assumption)",
+          "market_pnl_usd": -93647.29,
+          "financing_30d_usd": 4110.08,
+          "net_pnl_usd": -97757.37,
+          "components": {
+            "cra_receive_usd": -93647.29,
+            "sr3_pay_usd": 0.0,
+            "fx_usd": 0.0
+          }
+        }
+      }
+    },
+    "R3": {
+      "meta": {
+        "id": "R3",
+        "name": "Close; conditionals + at most one FX \u2014 zero current risk",
+        "positions": [],
+        "parallel_dv01_usd_per_bp": 0.0,
+        "risk_capital_usd": 0.0,
+        "financing_30d_usd": 0.0,
+        "fx_legs": [],
+        "conditionals_off_book": true
+      },
+      "scenarios": {
+        "common_plus_20": {
+          "label": "Common +20bp CRA and SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "common_minus_20": {
+          "label": "Common -20bp CRA and SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_plus_25_us_plus_5": {
+          "label": "Canada +25bp, US +5bp (domestic inflation / oil pass-through sketch)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_minus_15_us_minus_10": {
+          "label": "Canada -15bp, US -10bp (small de-escalation in rates)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "article_treasury_minus_5_ASSUMPTION": {
+          "label": "ASSUMPTION: article Treasury move (~4-5bp) repeated in CRA/SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "renewed_conflict": {
+          "label": "Renewed conflict: Canada +20, US +10; FX if held",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "us_fiscal_disappointment_long_end": {
+          "label": "US fiscal disappointment hits long end; no TY \u2014 STIR ~0 by construction",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "global_inflation_repricing": {
+          "label": "Global inflation repricing: Canada +15, US +15",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_domestic_surprise": {
+          "label": "Canada domestic surprise: Canada +20, US 0",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "one_quarter_unchanged_curve_roll_ASSUMPTION": {
+          "label": "One-quarter unchanged-curve roll (assumption, not accrual)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "bull_flatten_corra_ASSUMPTION": {
+          "label": "Bull flatten CORRA: H+10 M0 U-10 Z-20 (assumption)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "bear_steepen_corra_ASSUMPTION": {
+          "label": "Bear steepen CORRA: H-5 Z+15 (assumption)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        }
+      }
+    },
+    "R4": {
+      "meta": {
+        "id": "R4",
+        "name": "Considered hold-now alternative (rejected)",
+        "positions": [],
+        "parallel_dv01_usd_per_bp": 0.0,
+        "risk_capital_usd": 0.0,
+        "financing_30d_usd": 0.0,
+        "fx_legs": [],
+        "note": "No leg clears READY; promoting CORRA conditional without marks would duplicate R3 with risk."
+      },
+      "scenarios": {
+        "common_plus_20": {
+          "label": "Common +20bp CRA and SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "common_minus_20": {
+          "label": "Common -20bp CRA and SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_plus_25_us_plus_5": {
+          "label": "Canada +25bp, US +5bp (domestic inflation / oil pass-through sketch)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_minus_15_us_minus_10": {
+          "label": "Canada -15bp, US -10bp (small de-escalation in rates)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "article_treasury_minus_5_ASSUMPTION": {
+          "label": "ASSUMPTION: article Treasury move (~4-5bp) repeated in CRA/SR3",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "renewed_conflict": {
+          "label": "Renewed conflict: Canada +20, US +10; FX if held",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "us_fiscal_disappointment_long_end": {
+          "label": "US fiscal disappointment hits long end; no TY \u2014 STIR ~0 by construction",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "global_inflation_repricing": {
+          "label": "Global inflation repricing: Canada +15, US +15",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "canada_domestic_surprise": {
+          "label": "Canada domestic surprise: Canada +20, US 0",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "one_quarter_unchanged_curve_roll_ASSUMPTION": {
+          "label": "One-quarter unchanged-curve roll (assumption, not accrual)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "bull_flatten_corra_ASSUMPTION": {
+          "label": "Bull flatten CORRA: H+10 M0 U-10 Z-20 (assumption)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        },
+        "bear_steepen_corra_ASSUMPTION": {
+          "label": "Bear steepen CORRA: H-5 Z+15 (assumption)",
+          "market_pnl_usd": 0.0,
+          "financing_30d_usd": 0.0,
+          "net_pnl_usd": 0.0,
+          "components": {}
+        }
+      }
+    }
+  },
+  "self_checks": [
+    {
+      "name": "matched_pay_receive_common_plus_20",
+      "pass": true,
+      "detail": "combined=0.0 (recv=-499452.22, pay=499452.22)"
+    },
+    {
+      "name": "financing_30d_25000_dv01",
+      "pass": true,
+      "detail": "got=8229.17 expected=8229.17"
+    },
+    {
+      "name": "calc_results_sr3_pay_sign_bug_present",
+      "pass": true,
+      "detail": "calc common_plus_20 sr3_pay=-500000.0 (should be +500000 with correct pay sign)"
+    }
+  ],
+  "audit_r1_common_plus_20": {
+    "cra_receive_usd": -499452.22,
+    "sr3_pay_overlay_correct_usd": 500000.0,
+    "overlay_net_usd": 547.78,
+    "calc_results_combined_wrong_usd": -999452.22
+  },
+  "crosscheck_strip_mean": {
+    "calc_results": 3.1550000000000002,
+    "constants_used": 3.155,
+    "match": true
+  }
+}

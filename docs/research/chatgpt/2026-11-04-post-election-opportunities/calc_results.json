@@ -1,0 +1,589 @@
+{
+  "inputs": "/agent/repos/market-watch-public-dashboard/docs/research/chatgpt/2026-11-04-post-election-opportunities/frozen_extract.json",
+  "pinned_commit": "612666a21e621e6bb437802cb48ace011f181b7b",
+  "dv01_and_fx": {
+    "USDCAD_spot_CAD_per_USD": 1.3975310850702212,
+    "AUDUSD_spot": 0.6983819578934215,
+    "usd_per_cad": 0.7155475900915316,
+    "usd_per_aud": 0.6983819578934215,
+    "CRA_usd_per_bp_per_lot_ASSUMPTION": 17.88868975228829,
+    "SR3_usd_per_bp_per_lot_ASSUMPTION": 25.0,
+    "IB_aud_per_bp_prior_research_ASSUMPTION": 24.66,
+    "IB_usd_per_bp_prior_research_ASSUMPTION": 17.222099081651773,
+    "IB_unrounded_3m_face_30_365_formula": 24.65753424657534,
+    "paper_dv01_usd_per_bp_at_250m_notional": 25000.0
+  },
+  "strip_and_book": {
+    "corra_2027_rates": {
+      "2027-03": 2.97,
+      "2027-06": 3.115,
+      "2027-09": 3.225,
+      "2027-12": 3.31
+    },
+    "corra_equal_weight_mean": 3.1550000000000002,
+    "corra_mean_vs_cash_2p54_bp": 61.50000000000002,
+    "corra_mean_vs_frozen_cash_bp": 61.50000000000002,
+    "sofr_2027_rates": {
+      "2027-03": 4.365,
+      "2027-06": 4.495,
+      "2027-09": 4.535,
+      "2027-12": 4.515
+    },
+    "sofr_equal_weight_mean": 4.4775,
+    "sofr_minus_corra_bp_by_expiry": {
+      "2027-03": 139.5,
+      "2027-06": 138.0,
+      "2027-09": 131.0,
+      "2027-12": 120.49999999999996
+    },
+    "corra_H_to_Z_bp": 33.999999999999986,
+    "sofr_H_to_Z_bp": 14.999999999999947,
+    "december_minus_march_corra_bp": 33.999999999999986,
+    "december_minus_march_sofr_bp": 14.999999999999947,
+    "cash_fixings": {
+      "CORRA": 2.54,
+      "SOFR": 3.95
+    },
+    "book_mark": 3.16,
+    "book_mark_vs_strip_mean_bp": 0.49999999999998934,
+    "book_mark_vs_strip_mean_paper_usd_at_book_dv01": -12500.0,
+    "note_book_mark_is_prior_decision_not_replaced": true
+  },
+  "prior_research_strip_mean_250bf6f": 3.1550000000000002,
+  "prior_vs_rederived_strip_mean_delta_bp": 0.0,
+  "one_quarter_roll": {
+    "assumption": "unchanged_tenor_roll: each leg rate replaced by prior-quarter contract mapping",
+    "CORRA_mapping": {
+      "H": "CRAZ26",
+      "M": "CRAH27",
+      "U": "CRAM27",
+      "Z": "CRAU27"
+    },
+    "SOFR_mapping": {
+      "H": "SR3Z6",
+      "M": "SR3H7",
+      "U": "SR3M7",
+      "Z": "SR3U7"
+    },
+    "CORRA_slide_bp_by_leg": {
+      "H": -22.00000000000002,
+      "M": -14.500000000000002,
+      "U": -10.999999999999988,
+      "Z": -8.499999999999996
+    },
+    "SOFR_slide_bp_by_leg": {
+      "H": -20.500000000000007,
+      "M": -12.99999999999999,
+      "U": -4.0000000000000036,
+      "Z": 2.000000000000046
+    },
+    "pay_H_receive_Z_pnl_bp_per_leg_dv01_dH_minus_dZ": -13.500000000000025,
+    "spread_widen_Z_minus_H_bp": 13.500000000000025,
+    "not_guaranteed_accrual": true
+  },
+  "cross_market_cash_spreads_bp": {
+    "CA-US": {
+      "2Y": {
+        "spread_bp_foreign_minus_us": -135.00000000000006,
+        "foreign_as_of": "2026-11-02",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": null
+      },
+      "10Y": {
+        "spread_bp_foreign_minus_us": -121.0,
+        "foreign_as_of": "2026-11-02",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": null
+      }
+    },
+    "AU-US": {
+      "2Y": {
+        "spread_bp_foreign_minus_us": 34.09999999999993,
+        "foreign_as_of": "2026-10-28",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": "stale_mismatched_AU_2026-10-28_vs_US_2026-11-03"
+      },
+      "10Y": {
+        "spread_bp_foreign_minus_us": 25.8,
+        "foreign_as_of": "2026-10-28",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": "stale_mismatched_AU_2026-10-28_vs_US_2026-11-03"
+      }
+    },
+    "EA-US": {
+      "2Y": {
+        "spread_bp_foreign_minus_us": -156.00000000000006,
+        "foreign_as_of": "2026-11-03",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": null
+      },
+      "10Y": {
+        "spread_bp_foreign_minus_us": -164.0,
+        "foreign_as_of": "2026-11-03",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": null
+      }
+    },
+    "JP-US": {
+      "2Y": {
+        "spread_bp_foreign_minus_us": -273.00000000000006,
+        "foreign_as_of": "2026-11-02",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": null
+      },
+      "10Y": {
+        "spread_bp_foreign_minus_us": -213.3,
+        "foreign_as_of": "2026-11-02",
+        "us_as_of": "2026-11-03",
+        "stale_mismatch_flag": null
+      }
+    }
+  },
+  "matched_futures_SR3_minus_CRA_bp": {
+    "2027-03": {
+      "SR3_minus_CRA_bp": 139.5
+    },
+    "2027-06": {
+      "SR3_minus_CRA_bp": 138.0
+    },
+    "2027-09": {
+      "SR3_minus_CRA_bp": 131.0
+    },
+    "2027-12": {
+      "SR3_minus_CRA_bp": 120.49999999999996
+    }
+  },
+  "fx_spot_sensitivities_1pct_move": {
+    "USDJPY": {
+      "spot": 158.2878611682619,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "AUDUSD": {
+      "spot": 0.6983819578934215,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "NZDUSD": {
+      "spot": 0.5624371100825115,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "AUDNZD": {
+      "spot": 1.2417067532954333,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "USDCAD": {
+      "spot": 1.3975310850702212,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "AUDCAD": {
+      "spot": 0.9760104954082589,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "NZDCAD": {
+      "spot": 0.7860233447373717,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "AUDJPY": {
+      "spot": 110.54538639345286,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    },
+    "NZDJPY": {
+      "spot": 89.02696719661903,
+      "usd_pnl_per_1pct_spot_move": {
+        "risk_capital_1pct_notional_usd_2_500_000": 2500000.0,
+        "notional_usd_10_000_000": 100000.0
+      }
+    }
+  },
+  "research_budgets_usd_per_bp": {
+    "10000": {
+      "expressions": {
+        "budget_usd_per_bp": 10000.0,
+        "receive_4leg_CORRA_2027_HMUZ": {
+          "target_parallel_dv01_usd_per_bp": 10000.0,
+          "unrounded_lots_per_leg": 139.75310850702212,
+          "floored_lots_per_leg": 139,
+          "achieved_parallel_dv01_usd_per_bp": 9946.11150227229,
+          "residual_shortfall_usd_per_bp": 53.88849772771027
+        },
+        "receive_CRAU27_CRAZ27_only_equal_risk_per_leg": {
+          "per_leg_target_dv01": 5000.0,
+          "structure": "pay_CRAH27_receive_CRAZ27_equal_local_dv01",
+          "unrounded_lots_per_leg": 279.50621701404424,
+          "floored_lots_per_leg": 279,
+          "achieved_leg_usd_dv01": 4990.944440888433
+        },
+        "pay_CRAH27_receive_CRAZ27_dv01_neutral": {
+          "structure": "pay_CRAH27_receive_CRAZ27_equal_local_dv01",
+          "unrounded_lots_per_leg": 559.0124340280885,
+          "floored_lots_per_leg": 559,
+          "achieved_leg_usd_dv01": 9999.777571529154
+        },
+        "pay_4leg_SR3_matched_dv01": {
+          "target_parallel_dv01_usd_per_bp": 10000.0,
+          "unrounded_lots_per_leg": 100.0,
+          "floored_lots_per_leg": 100,
+          "achieved_parallel_dv01_usd_per_bp": 10000.0,
+          "residual_shortfall_usd_per_bp": 0.0
+        },
+        "pay_SR3Z7_outright": {
+          "unrounded_lots": 400.0,
+          "floored_lots": 400,
+          "achieved_leg_dv01_usd": 10000.0
+        },
+        "AONIA_receive_MarMay_avg_vs_SepNov_avg_label_proxy": {
+          "Mar_May_months": [
+            "2027-03",
+            "2027-04",
+            "2027-05"
+          ],
+          "Sep_Nov_months": [
+            "2027-09",
+            "2027-10",
+            "2027-11"
+          ],
+          "Mar_May_avg_rate": 4.908333333333334,
+          "Sep_Nov_avg_rate": 4.773333333333333,
+          "avg_minus_avg_bp": -13.500000000000068,
+          "premium_vs_cash_bp_by_window": {
+            "Mar_May": 30.833333333333446,
+            "Sep_Nov": 17.33333333333338
+          },
+          "Mar_2027_contract_only_sizing": {
+            "floored_lots": 580,
+            "achieved_leg_dv01_usd": 9988.817467358029,
+            "open_interest": 400.0,
+            "volume": null
+          }
+        },
+        "halved_parallel_dv01_keep_UZ_same_lots_as_4leg": {
+          "lots_per_leg_from_4leg_sizing": 139,
+          "parallel_dv01_usd": 4973.055751136145,
+          "half_of_4leg_parallel_dv01": 5000.0,
+          "parallel_dv01_dollars": 4973.06
+        },
+        "TONA_bpv": {
+          "status": "conditional_null_no_JPY_bpv_in_snapshot",
+          "hypothesis_from_prior_research": null
+        }
+      },
+      "financing_act360_evidence_book_convention": {
+        "risk_capital_usd": 10000.0,
+        "rate_annual": 0.0395,
+        "days_30_usd": 32.92,
+        "days_90_usd": 98.75,
+        "label": "SOFR on 100bp shock loss risk capital; not exchange margin"
+      },
+      "fx_financing_same_risk_capital_1pct_unit": {
+        "risk_capital_usd": 2500000,
+        "days_30_usd": 8229.17,
+        "days_90_usd": 24687.5
+      }
+    },
+    "25000": {
+      "expressions": {
+        "budget_usd_per_bp": 25000.0,
+        "receive_4leg_CORRA_2027_HMUZ": {
+          "target_parallel_dv01_usd_per_bp": 25000.0,
+          "unrounded_lots_per_leg": 349.3827712675553,
+          "floored_lots_per_leg": 349,
+          "achieved_parallel_dv01_usd_per_bp": 24972.61089419445,
+          "residual_shortfall_usd_per_bp": 27.389105805548752
+        },
+        "receive_CRAU27_CRAZ27_only_equal_risk_per_leg": {
+          "per_leg_target_dv01": 12500.0,
+          "structure": "pay_CRAH27_receive_CRAZ27_equal_local_dv01",
+          "unrounded_lots_per_leg": 698.7655425351106,
+          "floored_lots_per_leg": 698,
+          "achieved_leg_usd_dv01": 12486.305447097226
+        },
+        "pay_CRAH27_receive_CRAZ27_dv01_neutral": {
+          "structure": "pay_CRAH27_receive_CRAZ27_equal_local_dv01",
+          "unrounded_lots_per_leg": 1397.5310850702213,
+          "floored_lots_per_leg": 1397,
+          "achieved_leg_usd_dv01": 24990.49958394674
+        },
+        "pay_4leg_SR3_matched_dv01": {
+          "target_parallel_dv01_usd_per_bp": 25000.0,
+          "unrounded_lots_per_leg": 250.0,
+          "floored_lots_per_leg": 250,
+          "achieved_parallel_dv01_usd_per_bp": 25000.0,
+          "residual_shortfall_usd_per_bp": 0.0
+        },
+        "pay_SR3Z7_outright": {
+          "unrounded_lots": 1000.0,
+          "floored_lots": 1000,
+          "achieved_leg_dv01_usd": 25000.0
+        },
+        "AONIA_receive_MarMay_avg_vs_SepNov_avg_label_proxy": {
+          "Mar_May_months": [
+            "2027-03",
+            "2027-04",
+            "2027-05"
+          ],
+          "Sep_Nov_months": [
+            "2027-09",
+            "2027-10",
+            "2027-11"
+          ],
+          "Mar_May_avg_rate": 4.908333333333334,
+          "Sep_Nov_avg_rate": 4.773333333333333,
+          "avg_minus_avg_bp": -13.500000000000068,
+          "premium_vs_cash_bp_by_window": {
+            "Mar_May": 30.833333333333446,
+            "Sep_Nov": 17.33333333333338
+          },
+          "Mar_2027_contract_only_sizing": {
+            "floored_lots": 1451,
+            "achieved_leg_dv01_usd": 24989.26576747672,
+            "open_interest": 400.0,
+            "volume": null
+          }
+        },
+        "halved_parallel_dv01_keep_UZ_same_lots_as_4leg": {
+          "lots_per_leg_from_4leg_sizing": 349,
+          "parallel_dv01_usd": 12486.305447097226,
+          "half_of_4leg_parallel_dv01": 12500.0,
+          "parallel_dv01_dollars": 12486.31
+        },
+        "TONA_bpv": {
+          "status": "conditional_null_no_JPY_bpv_in_snapshot",
+          "hypothesis_from_prior_research": null
+        }
+      },
+      "financing_act360_evidence_book_convention": {
+        "risk_capital_usd": 25000.0,
+        "rate_annual": 0.0395,
+        "days_30_usd": 82.29,
+        "days_90_usd": 246.88,
+        "label": "SOFR on 100bp shock loss risk capital; not exchange margin"
+      },
+      "fx_financing_same_risk_capital_1pct_unit": {
+        "risk_capital_usd": 2500000,
+        "days_30_usd": 8229.17,
+        "days_90_usd": 24687.5
+      }
+    }
+  },
+  "scenario_skeletons_usd_assumption_paths": {
+    "note": "Assumption paths for integrator; not forecasts.",
+    "structures": [
+      "paper_4leg_receive_25000_per_bp",
+      "uz_only_same_lots_halved_parallel_dv01",
+      "dv01_matched_sr3_pay_overlay"
+    ],
+    "scenarios": {
+      "parallel_canada_plus_25_us_unchanged": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": -625000.0,
+        "futures_receive_4leg_cra_usd": -624315.27,
+        "futures_pay_4leg_sr3_matched_usd": 0.0,
+        "combined_receive_cra_pay_sr3_usd": -624315.27,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": -312157.64,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "parallel_canada_minus_25": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": 625000.0,
+        "futures_receive_4leg_cra_usd": 624315.27,
+        "futures_pay_4leg_sr3_matched_usd": 0.0,
+        "combined_receive_cra_pay_sr3_usd": 624315.27,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": 312157.64,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "common_plus_20": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": -500000.0,
+        "futures_receive_4leg_cra_usd": -499452.22,
+        "futures_pay_4leg_sr3_matched_usd": -500000.0,
+        "combined_receive_cra_pay_sr3_usd": -999452.22,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": -249726.11,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "common_minus_20": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": 500000.0,
+        "futures_receive_4leg_cra_usd": 499452.22,
+        "futures_pay_4leg_sr3_matched_usd": 500000.0,
+        "combined_receive_cra_pay_sr3_usd": 999452.22,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": 249726.11,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "canada_plus_25_us_plus_5": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": -625000.0,
+        "futures_receive_4leg_cra_usd": -624315.27,
+        "futures_pay_4leg_sr3_matched_usd": -125000.0,
+        "combined_receive_cra_pay_sr3_usd": -749315.27,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": -312157.64,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "canada_minus_30_us_minus_15": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": 750000.0,
+        "futures_receive_4leg_cra_usd": 749178.33,
+        "futures_pay_4leg_sr3_matched_usd": 375000.0,
+        "combined_receive_cra_pay_sr3_usd": 1124178.33,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": 374589.16,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "bull_flatten_corra_ASSUMPTION": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": 125000.0,
+        "futures_receive_4leg_cra_usd": 124863.05,
+        "futures_pay_4leg_sr3_matched_usd": 0.0,
+        "combined_receive_cra_pay_sr3_usd": 124863.05,
+        "pay_H_receive_Z_flattener_usd": 749714.99,
+        "uz_only_same_lots_as_strip_usd": 187294.58,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "bear_steepen_corra_ASSUMPTION": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": -62500.0,
+        "futures_receive_4leg_cra_usd": -62431.53,
+        "futures_pay_4leg_sr3_matched_usd": 0.0,
+        "combined_receive_cra_pay_sr3_usd": -62431.53,
+        "pay_H_receive_Z_flattener_usd": -499809.99,
+        "uz_only_same_lots_as_strip_usd": -93647.29,
+        "deescalation_escalation_fx_usd_if_present": null
+      },
+      "deescalation_sketch_ASSUMPTION": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": 375000.0,
+        "futures_receive_4leg_cra_usd": 374589.16,
+        "futures_pay_4leg_sr3_matched_usd": 250000.0,
+        "combined_receive_cra_pay_sr3_usd": 624589.16,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": 187294.58,
+        "deescalation_escalation_fx_usd_if_present": 3750000.0
+      },
+      "escalation_sketch_ASSUMPTION": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": -500000.0,
+        "futures_receive_4leg_cra_usd": -499452.22,
+        "futures_pay_4leg_sr3_matched_usd": -250000.0,
+        "combined_receive_cra_pay_sr3_usd": -749452.22,
+        "pay_H_receive_Z_flattener_usd": 0.0,
+        "uz_only_same_lots_as_strip_usd": -249726.11,
+        "deescalation_escalation_fx_usd_if_present": -5750000.0
+      },
+      "one_quarter_roll_mapping": {
+        "assumption_path_not_forecast": true,
+        "paper_receive_4leg_usd": 350000.0,
+        "futures_receive_4leg_cra_usd": 349616.55,
+        "futures_pay_4leg_sr3_matched_usd": 221875.0,
+        "combined_receive_cra_pay_sr3_usd": 571491.55,
+        "pay_H_receive_Z_flattener_usd": -337371.74,
+        "uz_only_same_lots_as_strip_usd": 121741.48,
+        "deescalation_escalation_fx_usd_if_present": null
+      }
+    }
+  },
+  "article_context_gaps_from_extract": {
+    "narrative_vs_quote_table": {
+      "ust2": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 4.577,
+        "gap_absolute": -0.0039999999999995595,
+        "gap_bp_where_rate": -0.39999999999995595,
+        "label": "narrative_vs_quote_2Y",
+        "unsynchronized": 4.573
+      },
+      "ust30": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 5.29,
+        "gap_absolute": 0.0030000000000001137,
+        "gap_bp_where_rate": 0.30000000000001137,
+        "label": "narrative_vs_quote_30Y",
+        "unsynchronized": 5.293
+      }
+    },
+    "oil_percent_vs_frozen_compact": {
+      "brent": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 103.5999984741211,
+        "ratio_minus_one": -0.09266407930034037,
+        "unsynchronized_narrative": 94
+      },
+      "wti": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 96.08999633789062,
+        "ratio_minus_one": -0.0841918685212869,
+        "unsynchronized_narrative": 88
+      }
+    },
+    "versus_frozen_cash_yields": {
+      "ust10_narrative_vs_US_10Y": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 4.95,
+        "gap_absolute": -0.05200000000000049,
+        "gap_bp_where_rate": -5.200000000000049,
+        "label": "UST10Y",
+        "unsynchronized": 4.898
+      },
+      "ust2_narrative_vs_US_2Y": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 4.61,
+        "gap_absolute": -0.03699999999999992,
+        "gap_bp_where_rate": -3.699999999999992,
+        "label": "UST2Y",
+        "unsynchronized": 4.573
+      },
+      "ust30_narrative_vs_US_30Y": {
+        "classification": "UNSYNCHRONIZED",
+        "frozen": 5.32,
+        "gap_absolute": -0.027000000000000135,
+        "gap_bp_where_rate": -2.7000000000000135,
+        "label": "UST30Y",
+        "unsynchronized": 5.293
+      }
+    }
+  },
+  "chatgpt_book_pnl_identity": {
+    "entry": 3.4,
+    "funding_convention": "ACT/360",
+    "funding_cost_usd": 24555.56,
+    "funding_day_count": 360,
+    "funding_percent_rate": 3.95,
+    "funding_rate_annual": 0.0395,
+    "identity_check_unrealized_usd": 599999.9999999994,
+    "instrument": "CORRA_2027H-Z",
+    "mark": 3.16,
+    "mark_price_as_of": "2026-11-03T14:35:29Z",
+    "nav_usd": 1001175444.44,
+    "notional_usd": 250000000.0,
+    "realized_pnl_usd": 600000.0,
+    "risk_capital_usd": 2500000.0,
+    "side": "long",
+    "unrealized_pnl_usd": 600000.0
+  }
+}
