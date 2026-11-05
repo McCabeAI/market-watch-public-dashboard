@@ -1,13 +1,18 @@
 {
-  "as_of": "2026-11-05T03:06:38.903Z",
+  "as_of": "2026-11-05T10:38:24.925Z",
   "calculations": [
     {
-      "as_of": "2026-11-04T05:35:22.541505-05:00",
-      "description": "Frozen CAD/NOK reference 6.6046853997; five-year percentile about 0.0397 and z-score -2.15. These are historical screen statistics, not a post-event mark or a valuation target. No position sizing or expected-return estimate has been validated.",
+      "as_of": "2026-11-05T10:38:24.925Z",
+      "description": "Correction to revision 01: pctile_5y 0.03968253968253968 is already a percentile on a 0\u2013100 scale. It is approximately the 0.04th percentile, not 3.97% or the 4th percentile. The November 3 spot 6.604685399731165 and z-score -2.1503642603163757 were unchanged.",
       "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/612666a21e621e6bb437802cb48ace011f181b7b/data/overnight/runs/overnight-20261104/reviews/review-001/evidence_snapshot.json"
+    },
+    {
+      "as_of": "2026-11-05T10:38:24.925Z",
+      "description": "November 4 shared closes: CAD/NOK 6.621871218393733 / previous 6.604685399731165 - 1 = +0.26020647%; current five-year rank 0.357142857 on the 0\u2013100 scale, approximately the 0.36th percentile. Brent94.6200027466/103.60-1=-8.66795%; WTI88.1200027466/96.09-1=-8.29430%. These closes precede the stored forecast's 22:07 ET stated_at and cannot score it as a successful prediction.",
+      "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/16739c8f7c3b0fad85287e7fec0db95ea7241eeb/data/overnight/runs/overnight-20261105/reviews/review-001/evidence_snapshot.json"
     }
   ],
-  "claim": "November 4 opportunity review saved at the actual write time. Screen long CAD/NOK as an independent conditional trade, not an executed position or a required hedge for CORRA. The frozen cross was 6.6046854, near its five-year bottom (about 4th percentile, z-score -2.15). That identifies an extreme, not fair value. If energy-risk premia fade and exceptional NOK strength unwinds more than CAD strength, the cross could rise. The authorized election article's reported oil fall motivates checking this channel; it does not establish a post-election CAD/NOK entry or a durable change in the energy regime. Before proposing an entry, require the next common post-event FX observation and a coherent decomposition of relative oil sensitivity, domestic policy/growth, broad USD/risk beta and financing. CAD and NOK are both energy currencies; the sign is empirical and may differ by regime. Shared oil/disinflation exposure with CORRA is a portfolio sizing question. No arbitrary single-FX cap, mandatory hedge relationship, or negative-correlation veto applies. Kevin's AUDNZD example informs the method, not the choice of this trade.",
+  "claim": "November 5 stage-one review; no trader conclusions read and no trade instruction. Correct an error in revision 01: the November 3 CAD/NOK five-year percentile field was 0.03968254 on a 0\u2013100 scale, meaning approximately the 0.04th percentile, not the 4th percentile. It remains a screen, not fair value. Today's shared packet supplies November 4 CAD/NOK at 6.6218712, up 0.2602% on the previous close, while Brent is 94.62 and WTI 88.12, roughly 8\u20139% lower than the prior packet. This makes the proposed energy-reversal channel observable in one daily move, but that close predates the forecast's November 4 22:07 ET persistence. It is context newly admitted to this review, not out-of-sample forecast success. One session cannot identify relative oil beta or establish continuation. The frozen Norges headline retains another hike as an option, which challenges a simple NOK unwind thesis. Keep long CAD/NOK conditional while comparing relative policy, growth, oil and risk components; no requirement that it hedge CORRA. No historical extreme alone or raw one-day co-move establishes an entry.",
   "competing_explanations": [
     {
       "statement": "The five-year extreme may reflect a structural relative-rate, fiscal or external-balance change rather than a temporary energy premium."
@@ -17,10 +22,16 @@
     },
     {
       "statement": "Broad risk-on can support both currencies with changing relative effects. A stable historical correlation is not assumed."
+    },
+    {
+      "statement": "The observed rise may be broad risk/USD repricing or the entire tactical reversal already realized; one daily cross return does not identify oil causality."
+    },
+    {
+      "statement": "Norges' retained hike option could sustain NOK policy support despite cheaper oil. A complete relative policy comparison remains necessary."
     }
   ],
   "contradictory_evidence": [],
-  "current_revision_id": "rev-hyp-chatgpt-cadnok-energy-reversal-20261104-01",
+  "current_revision_id": "rev-hyp-chatgpt-cadnok-energy-reversal-20261104-02",
   "evidence": [
     {
       "as_of": "2026-11-04T05:35:22.541505-05:00",
@@ -45,9 +56,15 @@
       "kind": "git",
       "note": "Kevin's component-risk lesson already saved as edge revision 02. Opposite directional responses need not form a hedge; correlated positions are not automatically duplicates. AUDNZD discussion was an illustration, not an instruction to sell.",
       "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/289"
+    },
+    {
+      "as_of": "2026-11-05T04:53:53.458055-05:00",
+      "kind": "packet",
+      "note": "Stage-one shared packet only, before reading today's trader conclusions. Packet 0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10. Internal market_state generation is 10:17:36Z, later than packet's stated freeze; retain both timestamps and do not claim all fields were observable at the earlier clock. FX and oil quotes discussed are dated November 4. Headline/summary reports Norges kept rates steady with an option to hike; no article body or external retrieval.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/16739c8f7c3b0fad85287e7fec0db95ea7241eeb/data/overnight/runs/overnight-20261105/reviews/review-001/evidence_snapshot.json"
     }
   ],
-  "evidence_assessment": null,
+  "evidence_assessment": "mixed",
   "falsifiers": [
     {
       "statement": "NOK outperformance persists during sustained oil declines, contradicting the assumed relative energy transmission."
@@ -70,7 +87,15 @@
   "hypothesis_id": "hyp-chatgpt-cadnok-energy-reversal-20261104",
   "linked_position_ids": [],
   "linked_trade_ids": [],
-  "persisted_at": "2026-11-04T22:07:17.587465-05:00",
+  "persisted_at": "2026-11-05T05:39:05.070932-05:00",
+  "previous_forecast": {
+    "expectation": "Conditional prospective forecast: if subsequent shared evidence confirms fading energy premia and greater reversal of NOK's exceptional strength than CAD's, expect CAD/NOK appreciation over the following two to six weeks. Until that condition and a common reference price are available, this remains a candidate with no position, target or executable entry.",
+    "forecast_kind": "prospective",
+    "horizon": "2\u20136 weeks after evidence confirms the stated condition; review next shared session",
+    "metric": "CAD/NOK spot and relative energy, policy/growth and risk components",
+    "quantitative": null,
+    "stated_at": "2026-11-04T22:07:17.587465-05:00"
+  },
   "review_due": "2026-11-05",
   "schema_version": 1,
   "status": "open",
@@ -80,9 +105,15 @@
       "reason": "ticket",
       "revision_id": "rev-hyp-chatgpt-cadnok-energy-reversal-20261104-01",
       "status": "open"
+    },
+    {
+      "at": "2026-11-05T10:38:24.925Z",
+      "reason": "ticket",
+      "revision_id": "rev-hyp-chatgpt-cadnok-energy-reversal-20261104-02",
+      "status": "open"
     }
   ],
   "title": "Conditional long CAD/NOK: test relative energy-premium reversal",
   "type": "CHATGPT_RESEARCH_HYPOTHESIS",
-  "updated_at": "2026-11-05T03:06:38.903Z"
+  "updated_at": "2026-11-05T10:38:24.925Z"
 }
