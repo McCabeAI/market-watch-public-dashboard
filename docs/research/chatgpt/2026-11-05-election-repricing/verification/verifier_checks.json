@@ -1,0 +1,463 @@
+{
+  "overall": "PASS",
+  "failed_ids": [],
+  "checks": [
+    {
+      "id": "SRC1.packet_sha256",
+      "status": "PASS",
+      "expected": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "actual": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "note": ""
+    },
+    {
+      "id": "SRC1.raw_file_sha256",
+      "status": "PASS",
+      "expected": "recorded",
+      "actual": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+      "note": ""
+    },
+    {
+      "id": "SRC1.git_blob",
+      "status": "PASS",
+      "expected": "16a74cdf5149e3fa8a9211fa2559b9ba9fc8f2ad",
+      "actual": "16a74cdf5149e3fa8a9211fa2559b9ba9fc8f2ad",
+      "note": ""
+    },
+    {
+      "id": "SRC1.freeze_as_of",
+      "status": "PASS",
+      "expected": "2026-11-05T04:53:53.458055-05:00",
+      "actual": "2026-11-05T04:53:53.458055-05:00",
+      "note": ""
+    },
+    {
+      "id": "SRC1.market_state_generated_at",
+      "status": "PASS",
+      "expected": "2026-11-05T10:17:36Z",
+      "actual": "2026-11-05T10:17:36Z",
+      "note": ""
+    },
+    {
+      "id": "A.unrealized",
+      "status": "PASS",
+      "expected": 640625,
+      "actual": 640625.0,
+      "note": ""
+    },
+    {
+      "id": "A.book_identity",
+      "status": "PASS",
+      "expected": "long=receive; DV01 25000 USD/bp strip; yield up = loss",
+      "actual": "long",
+      "note": ""
+    },
+    {
+      "id": "B.payer_plus_20bp_1000_contracts",
+      "status": "PASS",
+      "expected": 500000,
+      "actual": 500000,
+      "note": ""
+    },
+    {
+      "id": "B.receive_plus_20bp_opposite",
+      "status": "PASS",
+      "expected": -500000,
+      "actual": -500000,
+      "note": ""
+    },
+    {
+      "id": "B.receive_3160_to_3155",
+      "status": "PASS",
+      "expected": 12500,
+      "actual": 12500.000000000844,
+      "note": ""
+    },
+    {
+      "id": "B.parallel_plus_20bp_receive",
+      "status": "PASS",
+      "expected": -500000,
+      "actual": -500000,
+      "note": ""
+    },
+    {
+      "id": "B.parallel_minus_20bp_receive",
+      "status": "PASS",
+      "expected": 500000,
+      "actual": 500000,
+      "note": ""
+    },
+    {
+      "id": "B.parallel_plus_100bp_receive",
+      "status": "PASS",
+      "expected": -2500000,
+      "actual": -2500000,
+      "note": ""
+    },
+    {
+      "id": "C.snapshot_strip",
+      "status": "PASS",
+      "expected": 3.11375,
+      "actual": 3.11375,
+      "note": ""
+    },
+    {
+      "id": "C.fixing_and_gap",
+      "status": "PASS",
+      "expected": 58.375,
+      "actual": 58.37500000000002,
+      "note": ""
+    },
+    {
+      "id": "D.scenario_A",
+      "status": "PASS",
+      "expected": 909375,
+      "actual": {
+        "computed": 909375.0,
+        "published": 909375.0
+      },
+      "note": ""
+    },
+    {
+      "id": "D.scenario_B",
+      "status": "PASS",
+      "expected": -371875,
+      "actual": {
+        "computed": -371875.0,
+        "published": -371875.0000000004
+      },
+      "note": ""
+    },
+    {
+      "id": "D.scenario_C",
+      "status": "PASS",
+      "expected": 378125,
+      "actual": {
+        "computed": 378125.0,
+        "published": 378125.0000000003
+      },
+      "note": ""
+    },
+    {
+      "id": "E.uz_under_A_mtm",
+      "status": "PASS",
+      "expected": 593750,
+      "actual": {
+        "independent_recompute": 593750,
+        "published_json": 593750.0000000001,
+        "markdown_45468750_absent": true
+      },
+      "note": "12500 * 47.5 bp (U/Z avg 3.225 vs 2.75); scenario_results.json/md updated after scenario_book.py repair"
+    },
+    {
+      "id": "E.half_dv01_plus_20bp",
+      "status": "PASS",
+      "expected": -250000,
+      "actual": -250000.0,
+      "note": ""
+    },
+    {
+      "id": "F.sofr_avg",
+      "status": "PASS",
+      "expected": 4.45375,
+      "actual": 4.453749999999999,
+      "note": ""
+    },
+    {
+      "id": "F.sofr_A_mtm",
+      "status": "PASS",
+      "expected": 634375,
+      "actual": 634374.9999999981,
+      "note": ""
+    },
+    {
+      "id": "F.sofr_C_mtm",
+      "status": "PASS",
+      "expected": 0,
+      "actual": 0.0,
+      "note": ""
+    },
+    {
+      "id": "G.lots",
+      "status": "PASS",
+      "expected": 168.96458502297918,
+      "actual": 168.96458502297918,
+      "note": ""
+    },
+    {
+      "id": "G.bucket_avg",
+      "status": "PASS",
+      "expected": 4.656666666666666,
+      "actual": 4.656666666666666,
+      "note": ""
+    },
+    {
+      "id": "G.pay_plus_20bp",
+      "status": "PASS",
+      "expected": 500000,
+      "actual": 500000.0,
+      "note": ""
+    },
+    {
+      "id": "H.S2.EURUSD",
+      "status": "PASS",
+      "expected": -0.0445,
+      "actual": -0.0445,
+      "note": "N=120 last=2026-11-04"
+    },
+    {
+      "id": "H.S3.h1.EURUSD",
+      "status": "PASS",
+      "expected": 0.2625,
+      "actual": 0.2625,
+      "note": "N=119 last=2026-11-04"
+    },
+    {
+      "id": "H.S2.AUDUSD",
+      "status": "PASS",
+      "expected": 0.0648,
+      "actual": 0.0648,
+      "note": "N=113 last=2026-10-28"
+    },
+    {
+      "id": "H.S3.h1.AUDUSD",
+      "status": "PASS",
+      "expected": 0.1803,
+      "actual": 0.1803,
+      "note": "N=112 last=2026-10-28"
+    },
+    {
+      "id": "H.S2.USDCAD",
+      "status": "PASS",
+      "expected": 0.1667,
+      "actual": 0.1667,
+      "note": "N=115 last=2026-11-03"
+    },
+    {
+      "id": "H.S3.h1.USDCAD",
+      "status": "PASS",
+      "expected": 0.5082,
+      "actual": 0.5082,
+      "note": "N=114 last=2026-11-03"
+    },
+    {
+      "id": "H.S2.AUDCAD",
+      "status": "PASS",
+      "expected": 0.2861,
+      "actual": 0.2861,
+      "note": "N=112 last=2026-10-28"
+    },
+    {
+      "id": "H.S3.h1.AUDCAD",
+      "status": "PASS",
+      "expected": 0.1021,
+      "actual": 0.1021,
+      "note": "N=111 last=2026-10-28"
+    },
+    {
+      "id": "H.S2.USDJPY",
+      "status": "PASS",
+      "expected": 0.177,
+      "actual": 0.177,
+      "note": "N=114 last=2026-11-04"
+    },
+    {
+      "id": "H.S3.h1.USDJPY",
+      "status": "PASS",
+      "expected": 0.071,
+      "actual": 0.071,
+      "note": "N=113 last=2026-11-04"
+    },
+    {
+      "id": "H.NZ_2Y_length",
+      "status": "PASS",
+      "expected": 10,
+      "actual": 10,
+      "note": ""
+    },
+    {
+      "id": "H.no_NOK_2Y",
+      "status": "PASS",
+      "expected": "none",
+      "actual": "none",
+      "note": ""
+    },
+    {
+      "id": "H.no_pooling",
+      "status": "PASS",
+      "expected": 5,
+      "actual": 5,
+      "note": ""
+    },
+    {
+      "id": "H.USDCAD_S3_h1",
+      "status": "PASS",
+      "expected": 0.5082,
+      "actual": 0.5082,
+      "note": ""
+    },
+    {
+      "id": "H.USDCAD_panel_end",
+      "status": "PASS",
+      "expected": "2026-11-03",
+      "actual": "2026-11-03",
+      "note": ""
+    },
+    {
+      "id": "I.WTI",
+      "status": "PASS",
+      "expected": "levels+simple_pct",
+      "actual": {
+        "2026-11-03": 96.08999633789062,
+        "2026-11-04": 88.12000274658203,
+        "simple_pct": -8.2943
+      },
+      "note": ""
+    },
+    {
+      "id": "I.BRENT",
+      "status": "PASS",
+      "expected": "levels+simple_pct",
+      "actual": {
+        "2026-11-03": 103.5999984741211,
+        "2026-11-04": 94.62000274658203,
+        "simple_pct": -8.6679
+      },
+      "note": ""
+    },
+    {
+      "id": "I.EURUSD",
+      "status": "PASS",
+      "expected": "levels+simple_pct",
+      "actual": {
+        "2026-11-03": 1.1179,
+        "2026-11-04": 1.1267,
+        "simple_pct": 0.7872
+      },
+      "note": ""
+    },
+    {
+      "id": "I.CADNOK",
+      "status": "PASS",
+      "expected": "levels+simple_pct",
+      "actual": {
+        "2026-11-03": 6.604685399731165,
+        "2026-11-04": 6.621871218393733,
+        "simple_pct": 0.2602
+      },
+      "note": ""
+    },
+    {
+      "id": "I.USDNOK",
+      "status": "PASS",
+      "expected": "levels+simple_pct",
+      "actual": {
+        "2026-11-03": 9.230253153233743,
+        "2026-11-04": 9.227833496050412,
+        "simple_pct": -0.0262
+      },
+      "note": ""
+    },
+    {
+      "id": "I.USDCAD",
+      "status": "PASS",
+      "expected": "levels+simple_pct",
+      "actual": {
+        "2026-11-03": 1.3975310850702212,
+        "2026-11-04": 1.3935386527025828,
+        "simple_pct": -0.2857
+      },
+      "note": ""
+    },
+    {
+      "id": "J.AU_panel_caps",
+      "status": "PASS",
+      "expected": "<=2026-10-28",
+      "actual": {
+        "AU_2Y": "2026-10-28",
+        "AUDUSD": "2026-10-28",
+        "AUDCAD": "2026-10-28"
+      },
+      "note": ""
+    },
+    {
+      "id": "J.CA_US_2Y",
+      "status": "PASS",
+      "expected": "CA 11-03 US 11-04",
+      "actual": {
+        "CA": "2026-11-03",
+        "US": "2026-11-04"
+      },
+      "note": ""
+    },
+    {
+      "id": "J.real_be_split",
+      "status": "PASS",
+      "expected": "disclaimed",
+      "actual": "ok",
+      "note": ""
+    },
+    {
+      "id": "K.58bp_not_edge",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "58.375 bp not mispricing",
+      "note": ""
+    },
+    {
+      "id": "K.36bp_not_ev",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "gaps not EV",
+      "note": ""
+    },
+    {
+      "id": "K.oil_not_cheap",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "oil mid-percentile",
+      "note": ""
+    },
+    {
+      "id": "K.no_new_fx",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "no new FX",
+      "note": ""
+    },
+    {
+      "id": "K.no_sofr_aonia_add",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "SOFR/AONIA rejected",
+      "note": ""
+    },
+    {
+      "id": "K.empirical_not_trade",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "no trade from correlation",
+      "note": ""
+    },
+    {
+      "id": "K.cadnok_not_score",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "CADNOK not forecast score",
+      "note": ""
+    },
+    {
+      "id": "K.275_assumption",
+      "status": "PASS",
+      "expected": "no leap",
+      "actual": "2.75 labeled assumption",
+      "note": ""
+    },
+    {
+      "id": "L.write_boundary",
+      "status": "PASS",
+      "expected": "only under docs/research/chatgpt/2026-11-05-election-repricing/",
+      "actual": "clean",
+      "note": ""
+    }
+  ]
+}

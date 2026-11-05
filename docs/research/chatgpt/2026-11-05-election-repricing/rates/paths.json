@@ -1,0 +1,4693 @@
+{
+  "type": "RATES_PATHS_2026_11_05",
+  "clocks": {
+    "packet_as_of": "2026-11-05T04:53:53.458055-05:00",
+    "packet_collect_as_of": "2026-11-05T04:53:53.458055-05:00",
+    "market_state_as_of": "2026-11-05T10:17:36Z",
+    "market_state_generated_at": "2026-11-05T10:17:36Z",
+    "clock_gap_repaired": false,
+    "macro_hard_family_as_of": "2026-11-04T05:35:22-05:00",
+    "temperature_last_refresh_date": "2026-11-05",
+    "temperature_scoring_cutoff": "2026-10",
+    "temperature_inputs_ingested_at": "2026-11-05T09:53:53Z"
+  },
+  "hash": {
+    "expected_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "stored_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "canonical_sha256_excluding_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "identity_match": true,
+    "canonicalization": "json.dumps(indent=2, sort_keys=True) + newline, packet_sha256 removed",
+    "file_byte_sha256": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+    "file_byte_note": "Raw file bytes include packet_sha256, so the file digest is not the identity digest."
+  },
+  "book_context_read_only": {
+    "pm_id": "chatgpt",
+    "position_id": "pm-chatgpt-595561a1b90f",
+    "instrument": "CORRA_2027H-Z",
+    "side": "long",
+    "side_meaning": "long = receive",
+    "notional_usd": 250000000.0,
+    "expiries": [
+      "2027-03",
+      "2027-06",
+      "2027-09",
+      "2027-12"
+    ],
+    "entry_price": 3.4,
+    "entry_price_as_of": "2026-09-20T02:06:32Z",
+    "entry_is_historical": true,
+    "prior_mark_price": 3.14375,
+    "prior_mark_as_of": "2026-11-04T12:12:27Z",
+    "prior_mark_is_not_this_snapshot": true,
+    "last_action": "HOLD",
+    "last_decision_at": "2026-11-04T22:08:56.041871-05:00",
+    "unrealized_pnl_is_historical_and_not_used": true
+  },
+  "hypothesis_prior": {
+    "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+    "current_revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-05",
+    "status": "open",
+    "claim": "Retrospective November 4 closeout, recorded at the actual save time, not a forecast made before the morning freeze. Retain the reduced $250m four-contract CORRA receive, with no add. I would initiate this reduced exposure from flat on the reviewed evidence: the frozen strip averaged 3.155%, 61.5bp over the 2.54% fixing, while underlying inflation was 1.85% and unemployment 6.5%. Those facts suggest the priced tightening path can outrun domestic persistence, although the realized BoC hike and expensive deferred energy are material contrary evidence. The authorized later election article strengthens the possible oil/disinflation channel, but does not prove peace, fiscal restraint, or a Canadian easing cycle. Carry and elapsed-time roll are conditional, not the edge by themselves. Higher U/Z rates alone do not justify concentrating there. Neither agent established that flat or U/Z-only has superior forward expected value. The existing position has earned no exemption from the same test used for new positions. CAD/NOK is a separate conditional opportunity; its possible shared oil exposure must be sized in aggregate, not vetoed as correlation.",
+    "falsifiers": [
+      "A sustained rise in domestic underlying inflation, wages and employment that validates further BoC tightening would undermine the domestic-persistence premise.",
+      "A persistent or renewed deferred-energy shock and hawkish policy transmission could make the priced 2027 path reasonable; distinguish this from a temporary headline oil jump.",
+      "If the next shared marks show most repricing already realized, remaining edge may no longer justify retaining $250m even if the original thesis was right. A 3.35\u20133.40% strip is a review trigger, not an automatic add or mechanical stop."
+    ],
+    "forecast": {
+      "expectation": "Over the next one to three months, expect the Canadian 2027 H/M/U/Z average implied rate to fall if domestic underlying inflation and labor remain soft and the energy impulse fades. This prospective conditional forecast starts at trusted apply time; no claim is made that the later election information was known at the original freeze. Review retained size and profit realization against each new common packet.",
+      "forecast_kind": "prospective",
+      "horizon": "1\u20133 months from actual persistence; reassess next shared session",
+      "metric": "Average implied rate of CORRA 2027 H/M/U/Z; domestic inflation/labor and deferred energy",
+      "quantitative": null,
+      "stated_at": "2026-11-04T22:06:00.182321-05:00"
+    },
+    "owned_not_obeyed": true
+  },
+  "benchmarks": {
+    "CORRA": {
+      "name": "CORRA",
+      "as_of": "2026-11-03",
+      "rate": 2.53,
+      "source": null,
+      "underlying_note": null,
+      "latest_history_point": null
+    },
+    "SOFR": {
+      "name": "SOFR",
+      "as_of": "2026-11-03",
+      "rate": 3.97,
+      "source": "NY_FED",
+      "underlying_note": null,
+      "latest_history_point": {
+        "effective_date": "2026-11-03",
+        "percent_rate": 3.97,
+        "n_history_points_not_averaged": 90
+      }
+    },
+    "AONIA": {
+      "name": "AONIA",
+      "as_of": "04-Nov-2026",
+      "rate": 4.85,
+      "source": null,
+      "underlying_note": null,
+      "latest_history_point": null
+    },
+    "TONA": {
+      "name": "TONA",
+      "as_of": "2026-11-02",
+      "rate": 1.227,
+      "source": "BOJ_STAT_SEARCH_FM01",
+      "underlying_note": "Policy block uses BOJ FM01 STRDCLUCON (uncollateralized overnight call-rate daily average). OSE 3M TONA futures settle on 3-month compounded confirmed TONA (Act/365, 100 minus rate) per JPX contract specs \u2014 not the raw overnight print.",
+      "latest_history_point": null
+    },
+    "ESTR": {
+      "name": "\u20acSTR",
+      "as_of": "2026-11-04",
+      "rate": 2.442,
+      "source": "ECB_EST",
+      "underlying_note": null,
+      "latest_history_point": null
+    },
+    "estr_policy_status": "partial",
+    "estr_futures_count": 0,
+    "nz_official_curve_present": false,
+    "nz_futures_curve_present": false
+  },
+  "curves": {
+    "CORRA": {
+      "country": "CA",
+      "instrument": "Montr\u00e9al Exchange Three-Month CORRA futures",
+      "product_code": "CRA",
+      "contract_period_months": 3,
+      "mark_convention": "implied_rate = 100 - futures price",
+      "status": "ok",
+      "source_url": "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations",
+      "error": null,
+      "benchmark": {
+        "name": "CORRA",
+        "as_of": "2026-11-03",
+        "rate": 2.53,
+        "source": null,
+        "underlying_note": null,
+        "latest_history_point": null
+      },
+      "contracts": [
+        {
+          "expiry": "2026-09",
+          "code": "CRAU26",
+          "price": "97.5825",
+          "implied_rate": "2.4175",
+          "change_from_overnight_bps": "-11.25",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2026-12",
+          "code": "CRAZ26",
+          "price": "97.275",
+          "implied_rate": "2.725",
+          "change_from_overnight_bps": "19.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-03",
+          "code": "CRAH27",
+          "price": "97.07",
+          "implied_rate": "2.93",
+          "change_from_overnight_bps": "40",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-06",
+          "code": "CRAM27",
+          "price": "96.925",
+          "implied_rate": "3.075",
+          "change_from_overnight_bps": "54.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-09",
+          "code": "CRAU27",
+          "price": "96.815",
+          "implied_rate": "3.185",
+          "change_from_overnight_bps": "65.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-12",
+          "code": "CRAZ27",
+          "price": "96.735",
+          "implied_rate": "3.265",
+          "change_from_overnight_bps": "73.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-03",
+          "code": "CRAH28",
+          "price": "96.665",
+          "implied_rate": "3.335",
+          "change_from_overnight_bps": "80.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-06",
+          "code": "CRAM28",
+          "price": "96.615",
+          "implied_rate": "3.385",
+          "change_from_overnight_bps": "85.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-09",
+          "code": "CRAU28",
+          "price": "96.585",
+          "implied_rate": "3.415",
+          "change_from_overnight_bps": "88.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-12",
+          "code": "CRAZ28",
+          "price": "96.575",
+          "implied_rate": "3.425",
+          "change_from_overnight_bps": "89.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2029-03",
+          "code": "CRAH29",
+          "price": "96.59",
+          "implied_rate": "3.41",
+          "change_from_overnight_bps": "88",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        },
+        {
+          "expiry": "2029-06",
+          "code": "CRAM29",
+          "price": "96.59",
+          "implied_rate": "3.41",
+          "change_from_overnight_bps": "88",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "MX_CORRA_FUTURES",
+          "observation_date": null
+        }
+      ]
+    },
+    "SOFR_through_2028_plus_peak": {
+      "country": "US",
+      "instrument": "CME Three-Month SOFR futures",
+      "product_code": "SR3",
+      "contract_period_months": 3,
+      "mark_convention": "implied_rate = 100 - futures price",
+      "status": "ok",
+      "source_url": "https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/8462/FUT?tradeDate=11/04/2026&strategy=DEFAULT&pageSize=500",
+      "error": null,
+      "benchmark": {
+        "name": "SOFR",
+        "as_of": "2026-11-03",
+        "rate": 3.97,
+        "source": "NY_FED",
+        "underlying_note": null,
+        "latest_history_point": {
+          "effective_date": "2026-11-03",
+          "percent_rate": 3.97,
+          "n_history_points_not_averaged": 90
+        }
+      },
+      "contracts": [
+        {
+          "expiry": "2026-12",
+          "code": "SR3Z6",
+          "price": "95.835",
+          "implied_rate": "4.165",
+          "change_from_overnight_bps": "19.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1657460.0,
+          "volume": 497192.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2027-03",
+          "code": "SR3H7",
+          "price": "95.64",
+          "implied_rate": "4.36",
+          "change_from_overnight_bps": "39",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1279849.0,
+          "volume": 487074.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2027-06",
+          "code": "SR3M7",
+          "price": "95.525",
+          "implied_rate": "4.475",
+          "change_from_overnight_bps": "50.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1250953.0,
+          "volume": 441108.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2027-09",
+          "code": "SR3U7",
+          "price": "95.495",
+          "implied_rate": "4.505",
+          "change_from_overnight_bps": "53.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1081811.0,
+          "volume": 399502.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2027-12",
+          "code": "SR3Z7",
+          "price": "95.525",
+          "implied_rate": "4.475",
+          "change_from_overnight_bps": "50.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1524239.0,
+          "volume": 496494.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2028-03",
+          "code": "SR3H8",
+          "price": "95.56",
+          "implied_rate": "4.44",
+          "change_from_overnight_bps": "47",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 845744.0,
+          "volume": 311868.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2028-06",
+          "code": "SR3M8",
+          "price": "95.585",
+          "implied_rate": "4.415",
+          "change_from_overnight_bps": "44.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 675481.0,
+          "volume": 261220.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2028-09",
+          "code": "SR3U8",
+          "price": "95.605",
+          "implied_rate": "4.395",
+          "change_from_overnight_bps": "42.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 672566.0,
+          "volume": 247692.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2028-12",
+          "code": "SR3Z8",
+          "price": "95.62",
+          "implied_rate": "4.38",
+          "change_from_overnight_bps": "41",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 557466.0,
+          "volume": 160729.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        },
+        {
+          "expiry": "2036-03",
+          "code": "SR3H6",
+          "price": "94.995",
+          "implied_rate": "5.005",
+          "change_from_overnight_bps": "103.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 0.0,
+          "volume": 0.0,
+          "source": "CME_SR3_SETTLEMENT",
+          "observation_date": "2026-11-04"
+        }
+      ],
+      "peak_in_full_curve": {
+        "expiry": "2036-03",
+        "code": "SR3H6",
+        "implied_rate": "5.005",
+        "open_interest": 0.0,
+        "volume": 0.0,
+        "note": "Curve maximum. Zero open interest. Not the liquid 2027 policy peak."
+      },
+      "liquid_peak_through_2028": {
+        "expiry": "2027-09",
+        "code": "SR3U7",
+        "implied_rate": "4.505",
+        "open_interest": 1081811.0,
+        "volume": 399502.0
+      }
+    },
+    "AONIA": {
+      "country": "AU",
+      "instrument": "ASX 30-Day Interbank Cash Rate futures",
+      "product_code": "IB",
+      "contract_period_months": 1,
+      "mark_convention": "implied_rate = 100 - futures price",
+      "status": "ok",
+      "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261104SFD.htm",
+      "error": null,
+      "benchmark": {
+        "name": "AONIA",
+        "as_of": "04-Nov-2026",
+        "rate": 4.85,
+        "source": null,
+        "underlying_note": null,
+        "latest_history_point": null
+      },
+      "contracts": [
+        {
+          "expiry": "2026-11",
+          "code": null,
+          "price": "95.18",
+          "implied_rate": "4.82",
+          "change_from_overnight_bps": "-3",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 24949.0,
+          "volume": 75.0,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2026-12",
+          "code": null,
+          "price": "95.14",
+          "implied_rate": "4.86",
+          "change_from_overnight_bps": "1",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 3845.0,
+          "volume": 224.0,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-01",
+          "code": null,
+          "price": "95.13",
+          "implied_rate": "4.87",
+          "change_from_overnight_bps": "2",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1105.0,
+          "volume": 10.0,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-02",
+          "code": null,
+          "price": "95.095",
+          "implied_rate": "4.905",
+          "change_from_overnight_bps": "5.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 476.0,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-03",
+          "code": null,
+          "price": "95.075",
+          "implied_rate": "4.925",
+          "change_from_overnight_bps": "7.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 400.0,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-04",
+          "code": null,
+          "price": "95.075",
+          "implied_rate": "4.925",
+          "change_from_overnight_bps": "7.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 550.0,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-05",
+          "code": null,
+          "price": "95.085",
+          "implied_rate": "4.915",
+          "change_from_overnight_bps": "6.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 350.0,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-06",
+          "code": null,
+          "price": "95.1",
+          "implied_rate": "4.9",
+          "change_from_overnight_bps": "5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 200.0,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-07",
+          "code": null,
+          "price": "95.135",
+          "implied_rate": "4.865",
+          "change_from_overnight_bps": "1.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 350.0,
+          "volume": 150.0,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-08",
+          "code": null,
+          "price": "95.175",
+          "implied_rate": "4.825",
+          "change_from_overnight_bps": "-2.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 150.0,
+          "volume": 150.0,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-09",
+          "code": null,
+          "price": "95.205",
+          "implied_rate": "4.795",
+          "change_from_overnight_bps": "-5.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 600.0,
+          "volume": 600.0,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-10",
+          "code": null,
+          "price": "95.225",
+          "implied_rate": "4.775",
+          "change_from_overnight_bps": "-7.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": 1.0,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-11",
+          "code": null,
+          "price": "95.28",
+          "implied_rate": "4.72",
+          "change_from_overnight_bps": "-13",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-12",
+          "code": null,
+          "price": "95.31",
+          "implied_rate": "4.69",
+          "change_from_overnight_bps": "-16",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-01",
+          "code": null,
+          "price": "95.315",
+          "implied_rate": "4.685",
+          "change_from_overnight_bps": "-16.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-02",
+          "code": null,
+          "price": "95.365",
+          "implied_rate": "4.635",
+          "change_from_overnight_bps": "-21.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-03",
+          "code": null,
+          "price": "95.375",
+          "implied_rate": "4.625",
+          "change_from_overnight_bps": "-22.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-04",
+          "code": null,
+          "price": "95.415",
+          "implied_rate": "4.585",
+          "change_from_overnight_bps": "-26.5",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "ASX_30D_AONIA",
+          "observation_date": null
+        }
+      ]
+    },
+    "TONA_through_2028": {
+      "country": "JP",
+      "instrument": "OSE 3-Month TONA Futures",
+      "product_code": "TOA3M",
+      "contract_period_months": 3,
+      "mark_convention": "implied_rate = 100 - settlement price",
+      "status": "ok",
+      "source_url": "https://www.jpx.co.jp/english/markets/derivatives/settlement-price/tvdivq00000014l6-att/rb_e20261105.csv",
+      "error": null,
+      "benchmark": {
+        "name": "TONA",
+        "as_of": "2026-11-02",
+        "rate": 1.227,
+        "source": "BOJ_STAT_SEARCH_FM01",
+        "underlying_note": "Policy block uses BOJ FM01 STRDCLUCON (uncollateralized overnight call-rate daily average). OSE 3M TONA futures settle on 3-month compounded confirmed TONA (Act/365, 100 minus rate) per JPX contract specs \u2014 not the raw overnight print.",
+        "latest_history_point": null
+      },
+      "contracts": [
+        {
+          "expiry": "2026-09",
+          "code": "261215",
+          "price": "98.795",
+          "implied_rate": "1.205",
+          "change_from_overnight_bps": "-2.2",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2026-12",
+          "code": "270316",
+          "price": "98.5525",
+          "implied_rate": "1.4475",
+          "change_from_overnight_bps": "22.05",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-03",
+          "code": "270615",
+          "price": "98.345",
+          "implied_rate": "1.655",
+          "change_from_overnight_bps": "42.8",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-06",
+          "code": "270914",
+          "price": "98.1775",
+          "implied_rate": "1.8225",
+          "change_from_overnight_bps": "59.55",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-09",
+          "code": "271214",
+          "price": "98.0825",
+          "implied_rate": "1.9175",
+          "change_from_overnight_bps": "69.05",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2027-12",
+          "code": "280314",
+          "price": "97.9875",
+          "implied_rate": "2.0125",
+          "change_from_overnight_bps": "78.55",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-03",
+          "code": "280620",
+          "price": "97.9475",
+          "implied_rate": "2.0525",
+          "change_from_overnight_bps": "82.55",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-06",
+          "code": "280919",
+          "price": "97.9025",
+          "implied_rate": "2.0975",
+          "change_from_overnight_bps": "87.05",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-09",
+          "code": "281219",
+          "price": "97.8575",
+          "implied_rate": "2.1425",
+          "change_from_overnight_bps": "91.55",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        },
+        {
+          "expiry": "2028-12",
+          "code": "290319",
+          "price": "97.81",
+          "implied_rate": "2.19",
+          "change_from_overnight_bps": "96.3",
+          "change_from_overnight_identity_bp": "0",
+          "open_interest": null,
+          "volume": null,
+          "source": "JPX_OSE_TOA3M_SETTLEMENT",
+          "observation_date": null
+        }
+      ]
+    },
+    "ESTR": {
+      "country": "EA",
+      "instrument": "Eurex Three-Month \u20acSTR futures",
+      "product_code": "FST3",
+      "contract_period_months": 3,
+      "mark_convention": "implied_rate = 100 - futures_price (Eurex STIR convention)",
+      "status": "unavailable",
+      "source_url": null,
+      "error": "No credential-free machine-readable FST3 settlement feed responded reliably (tried: https://www.eurex.com/ex-en/markets/int/fixing/3-month-estr-futures-FST3, https://www.eurex.com/ex-en/data/trading-files/product-and-price-report, https://www.eurex.com/ex-en/data/market-statistics/settlement-prices/FST3, https://www.eurex.com/api/v1/marketdata/settlement/FST3, https://www.eurex.com/api/v2/marketdata/statistics/FST3/settlement)",
+      "benchmark": {
+        "name": "\u20acSTR",
+        "as_of": "2026-11-04",
+        "rate": 2.442,
+        "source": "ECB_EST",
+        "underlying_note": null,
+        "latest_history_point": null
+      },
+      "contracts": []
+    }
+  },
+  "change_from_overnight_meaning": "Stored change_from_overnight_bps equals (implied_rate - overnight benchmark) * 100. It is futures minus the overnight print. It is not unused tightening and not a meeting probability.",
+  "corra_2027_strip": {
+    "contracts": [
+      {
+        "expiry": "2027-03",
+        "code": "CRAH27",
+        "implied_rate": "2.93",
+        "change_from_overnight_bps": "40"
+      },
+      {
+        "expiry": "2027-06",
+        "code": "CRAM27",
+        "implied_rate": "3.075",
+        "change_from_overnight_bps": "54.5"
+      },
+      {
+        "expiry": "2027-09",
+        "code": "CRAU27",
+        "implied_rate": "3.185",
+        "change_from_overnight_bps": "65.5"
+      },
+      {
+        "expiry": "2027-12",
+        "code": "CRAZ27",
+        "implied_rate": "3.265",
+        "change_from_overnight_bps": "73.5"
+      }
+    ],
+    "average_implied_rate": "3.11375",
+    "overnight_rate": "2.53",
+    "overnight_as_of": "2026-11-03",
+    "average_minus_overnight_bp": "58.375",
+    "h_to_z_period_rate_change_bp": "33.5",
+    "prima_proxy_midpoint": "2.75",
+    "prima_proxy_midpoint_source": "canada_prima_pressure demand_pass_through_constraint neutral_midpoint",
+    "fixing_to_proxy_midpoint_bp": "22",
+    "strip_average_minus_proxy_midpoint_bp": "36.375",
+    "decomposition_note": "22bp from the Nov 3 fixing to the stored 2.75 midpoint, plus 36.375bp from that midpoint to the strip average, equals the 58.375bp futures-minus-fixing gap. This is today's snapshot only. It is not a hike count."
+  },
+  "sofr_2027_strip": {
+    "contracts": [
+      {
+        "expiry": "2027-03",
+        "code": "SR3H7",
+        "implied_rate": "4.36",
+        "change_from_overnight_bps": "39",
+        "open_interest": 1279849.0
+      },
+      {
+        "expiry": "2027-06",
+        "code": "SR3M7",
+        "implied_rate": "4.475",
+        "change_from_overnight_bps": "50.5",
+        "open_interest": 1250953.0
+      },
+      {
+        "expiry": "2027-09",
+        "code": "SR3U7",
+        "implied_rate": "4.505",
+        "change_from_overnight_bps": "53.5",
+        "open_interest": 1081811.0
+      },
+      {
+        "expiry": "2027-12",
+        "code": "SR3Z7",
+        "implied_rate": "4.475",
+        "change_from_overnight_bps": "50.5",
+        "open_interest": 1524239.0
+      }
+    ],
+    "average_implied_rate": "4.45375",
+    "overnight_rate": "3.97",
+    "overnight_as_of": "2026-11-03",
+    "average_minus_overnight_bp": "48.375",
+    "sep_to_dec_2027_change_bp": "-3"
+  },
+  "shape": {
+    "CORRA_quarterly_steps_bp": [
+      {
+        "from_expiry": "2026-09",
+        "to_expiry": "2026-12",
+        "from_rate": "2.4175",
+        "to_rate": "2.725",
+        "period_rate_change_bp": "30.75",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2026-12",
+        "to_expiry": "2027-03",
+        "from_rate": "2.725",
+        "to_rate": "2.93",
+        "period_rate_change_bp": "20.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-03",
+        "to_expiry": "2027-06",
+        "from_rate": "2.93",
+        "to_rate": "3.075",
+        "period_rate_change_bp": "14.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-06",
+        "to_expiry": "2027-09",
+        "from_rate": "3.075",
+        "to_rate": "3.185",
+        "period_rate_change_bp": "11",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-09",
+        "to_expiry": "2027-12",
+        "from_rate": "3.185",
+        "to_rate": "3.265",
+        "period_rate_change_bp": "8",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-12",
+        "to_expiry": "2028-03",
+        "from_rate": "3.265",
+        "to_rate": "3.335",
+        "period_rate_change_bp": "7",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-03",
+        "to_expiry": "2028-06",
+        "from_rate": "3.335",
+        "to_rate": "3.385",
+        "period_rate_change_bp": "5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-06",
+        "to_expiry": "2028-09",
+        "from_rate": "3.385",
+        "to_rate": "3.415",
+        "period_rate_change_bp": "3",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-09",
+        "to_expiry": "2028-12",
+        "from_rate": "3.415",
+        "to_rate": "3.425",
+        "period_rate_change_bp": "1",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-12",
+        "to_expiry": "2029-03",
+        "from_rate": "3.425",
+        "to_rate": "3.41",
+        "period_rate_change_bp": "-1.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2029-03",
+        "to_expiry": "2029-06",
+        "from_rate": "3.41",
+        "to_rate": "3.41",
+        "period_rate_change_bp": "0",
+        "meaning": "difference of two period rates, not a meeting count"
+      }
+    ],
+    "SOFR_steps_through_2028_bp": [
+      {
+        "from_expiry": "2026-12",
+        "to_expiry": "2027-03",
+        "from_rate": "4.165",
+        "to_rate": "4.36",
+        "period_rate_change_bp": "19.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-03",
+        "to_expiry": "2027-06",
+        "from_rate": "4.36",
+        "to_rate": "4.475",
+        "period_rate_change_bp": "11.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-06",
+        "to_expiry": "2027-09",
+        "from_rate": "4.475",
+        "to_rate": "4.505",
+        "period_rate_change_bp": "3",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-09",
+        "to_expiry": "2027-12",
+        "from_rate": "4.505",
+        "to_rate": "4.475",
+        "period_rate_change_bp": "-3",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-12",
+        "to_expiry": "2028-03",
+        "from_rate": "4.475",
+        "to_rate": "4.44",
+        "period_rate_change_bp": "-3.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-03",
+        "to_expiry": "2028-06",
+        "from_rate": "4.44",
+        "to_rate": "4.415",
+        "period_rate_change_bp": "-2.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-06",
+        "to_expiry": "2028-09",
+        "from_rate": "4.415",
+        "to_rate": "4.395",
+        "period_rate_change_bp": "-2",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-09",
+        "to_expiry": "2028-12",
+        "from_rate": "4.395",
+        "to_rate": "4.38",
+        "period_rate_change_bp": "-1.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      }
+    ],
+    "AONIA_monthly_steps_bp": [
+      {
+        "from_expiry": "2026-11",
+        "to_expiry": "2026-12",
+        "from_rate": "4.82",
+        "to_rate": "4.86",
+        "period_rate_change_bp": "4",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2026-12",
+        "to_expiry": "2027-01",
+        "from_rate": "4.86",
+        "to_rate": "4.87",
+        "period_rate_change_bp": "1",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-01",
+        "to_expiry": "2027-02",
+        "from_rate": "4.87",
+        "to_rate": "4.905",
+        "period_rate_change_bp": "3.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-02",
+        "to_expiry": "2027-03",
+        "from_rate": "4.905",
+        "to_rate": "4.925",
+        "period_rate_change_bp": "2",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-03",
+        "to_expiry": "2027-04",
+        "from_rate": "4.925",
+        "to_rate": "4.925",
+        "period_rate_change_bp": "0",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-04",
+        "to_expiry": "2027-05",
+        "from_rate": "4.925",
+        "to_rate": "4.915",
+        "period_rate_change_bp": "-1",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-05",
+        "to_expiry": "2027-06",
+        "from_rate": "4.915",
+        "to_rate": "4.9",
+        "period_rate_change_bp": "-1.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-06",
+        "to_expiry": "2027-07",
+        "from_rate": "4.9",
+        "to_rate": "4.865",
+        "period_rate_change_bp": "-3.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-07",
+        "to_expiry": "2027-08",
+        "from_rate": "4.865",
+        "to_rate": "4.825",
+        "period_rate_change_bp": "-4",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-08",
+        "to_expiry": "2027-09",
+        "from_rate": "4.825",
+        "to_rate": "4.795",
+        "period_rate_change_bp": "-3",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-09",
+        "to_expiry": "2027-10",
+        "from_rate": "4.795",
+        "to_rate": "4.775",
+        "period_rate_change_bp": "-2",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-10",
+        "to_expiry": "2027-11",
+        "from_rate": "4.775",
+        "to_rate": "4.72",
+        "period_rate_change_bp": "-5.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-11",
+        "to_expiry": "2027-12",
+        "from_rate": "4.72",
+        "to_rate": "4.69",
+        "period_rate_change_bp": "-3",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-12",
+        "to_expiry": "2028-01",
+        "from_rate": "4.69",
+        "to_rate": "4.685",
+        "period_rate_change_bp": "-0.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-01",
+        "to_expiry": "2028-02",
+        "from_rate": "4.685",
+        "to_rate": "4.635",
+        "period_rate_change_bp": "-5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-02",
+        "to_expiry": "2028-03",
+        "from_rate": "4.635",
+        "to_rate": "4.625",
+        "period_rate_change_bp": "-1",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-03",
+        "to_expiry": "2028-04",
+        "from_rate": "4.625",
+        "to_rate": "4.585",
+        "period_rate_change_bp": "-4",
+        "meaning": "difference of two period rates, not a meeting count"
+      }
+    ],
+    "TONA_steps_through_2028_bp": [
+      {
+        "from_expiry": "2026-09",
+        "to_expiry": "2026-12",
+        "from_rate": "1.205",
+        "to_rate": "1.4475",
+        "period_rate_change_bp": "24.25",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2026-12",
+        "to_expiry": "2027-03",
+        "from_rate": "1.4475",
+        "to_rate": "1.655",
+        "period_rate_change_bp": "20.75",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-03",
+        "to_expiry": "2027-06",
+        "from_rate": "1.655",
+        "to_rate": "1.8225",
+        "period_rate_change_bp": "16.75",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-06",
+        "to_expiry": "2027-09",
+        "from_rate": "1.8225",
+        "to_rate": "1.9175",
+        "period_rate_change_bp": "9.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-09",
+        "to_expiry": "2027-12",
+        "from_rate": "1.9175",
+        "to_rate": "2.0125",
+        "period_rate_change_bp": "9.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2027-12",
+        "to_expiry": "2028-03",
+        "from_rate": "2.0125",
+        "to_rate": "2.0525",
+        "period_rate_change_bp": "4",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-03",
+        "to_expiry": "2028-06",
+        "from_rate": "2.0525",
+        "to_rate": "2.0975",
+        "period_rate_change_bp": "4.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-06",
+        "to_expiry": "2028-09",
+        "from_rate": "2.0975",
+        "to_rate": "2.1425",
+        "period_rate_change_bp": "4.5",
+        "meaning": "difference of two period rates, not a meeting count"
+      },
+      {
+        "from_expiry": "2028-09",
+        "to_expiry": "2028-12",
+        "from_rate": "2.1425",
+        "to_rate": "2.19",
+        "period_rate_change_bp": "4.75",
+        "meaning": "difference of two period rates, not a meeting count"
+      }
+    ],
+    "ten_year_minus_overnight_is_not_a_hike_count": true
+  },
+  "vintage_comparison_separate": {
+    "label": "Previous morning packet versus this snapshot. Not one decomposition.",
+    "previous_source": "hyp-chatgpt-corra-2027hz-20260919 calculation citing the 2026-11-04 morning packet",
+    "previous_implied_rates": {
+      "2027-03": "2.97",
+      "2027-06": "3.115",
+      "2027-09": "3.225",
+      "2027-12": "3.31"
+    },
+    "previous_average": "3.155",
+    "previous_fixing": "2.54",
+    "previous_average_minus_previous_fixing_bp": "61.5",
+    "this_average": "3.11375",
+    "this_fixing": "2.53",
+    "this_average_minus_this_fixing_bp": "58.375",
+    "average_change_bp": "-4.125",
+    "per_contract_change_bp": {
+      "CRAH27": "-4",
+      "CRAM27": "-4",
+      "CRAU27": "-4",
+      "CRAZ27": "-4.5"
+    },
+    "separately_computed_gap_change_bp": "-3.125",
+    "book_prior_mark": "3.14375",
+    "book_prior_mark_as_of": "2026-11-04T12:12:27Z",
+    "this_average_minus_book_prior_mark_bp": "-3"
+  },
+  "monthly_paths_separate_objects": {
+    "CA_1m_corra_through_2027_02": [
+      {
+        "expiry": "2026-11",
+        "code": "COAX26",
+        "price": "97.485",
+        "implied_rate": "2.515",
+        "change_from_overnight_bps": "-1.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "MX_CORRA_FUTURES",
+        "observation_date": null
+      },
+      {
+        "expiry": "2026-12",
+        "code": "COAZ26",
+        "price": "97.395",
+        "implied_rate": "2.605",
+        "change_from_overnight_bps": "7.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "MX_CORRA_FUTURES",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-01",
+        "code": "COAF27",
+        "price": "97.345",
+        "implied_rate": "2.655",
+        "change_from_overnight_bps": "12.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "MX_CORRA_FUTURES",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-02",
+        "code": "COAG27",
+        "price": "97.225",
+        "implied_rate": "2.775",
+        "change_from_overnight_bps": "24.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "MX_CORRA_FUTURES",
+        "observation_date": null
+      }
+    ],
+    "CA_1m_terminal_in_policy_paths": {
+      "change_from_overnight_bps": 24.5,
+      "expiry": "2027-02",
+      "implied_rate": 2.775
+    },
+    "CA_1m_does_not_cover_2027_quarters": true,
+    "feb_2027_minus_proxy_midpoint_bp": "2.5",
+    "US_1m_sofr_esignal_delayed": [
+      {
+        "expiry": "2026-11",
+        "code": "SR1X26",
+        "price": "96.1025",
+        "implied_rate": "3.8975",
+        "change_from_overnight_bps": "-7.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2026-12",
+        "code": "SR1Z26",
+        "price": "95.9525",
+        "implied_rate": "4.0475",
+        "change_from_overnight_bps": "7.75",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-01",
+        "code": "SR1F27",
+        "price": "95.8775",
+        "implied_rate": "4.1225",
+        "change_from_overnight_bps": "15.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-02",
+        "code": "SR1G27",
+        "price": "95.8325",
+        "implied_rate": "4.1675",
+        "change_from_overnight_bps": "19.75",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-03",
+        "code": "SR1H27",
+        "price": "95.7625",
+        "implied_rate": "4.2375",
+        "change_from_overnight_bps": "26.75",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-04",
+        "code": "SR1J27",
+        "price": "95.685",
+        "implied_rate": "4.315",
+        "change_from_overnight_bps": "34.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-05",
+        "code": "SR1K27",
+        "price": "95.635",
+        "implied_rate": "4.365",
+        "change_from_overnight_bps": "39.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-06",
+        "code": "SR1M27",
+        "price": "95.5775",
+        "implied_rate": "4.4225",
+        "change_from_overnight_bps": "45.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-07",
+        "code": "SR1N27",
+        "price": "95.555",
+        "implied_rate": "4.445",
+        "change_from_overnight_bps": "47.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-08",
+        "code": "SR1Q27",
+        "price": "95.54",
+        "implied_rate": "4.46",
+        "change_from_overnight_bps": "49",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-09",
+        "code": "SR1U27",
+        "price": "95.53",
+        "implied_rate": "4.47",
+        "change_from_overnight_bps": "50",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-10",
+        "code": "SR1V27",
+        "price": "95.5175",
+        "implied_rate": "4.4825",
+        "change_from_overnight_bps": "51.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-11",
+        "code": "SR1X27",
+        "price": "95.5175",
+        "implied_rate": "4.4825",
+        "change_from_overnight_bps": "51.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2027-12",
+        "code": "SR1Z27",
+        "price": "95.525",
+        "implied_rate": "4.475",
+        "change_from_overnight_bps": "50.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-01",
+        "code": "SR1F28",
+        "price": "95.5425",
+        "implied_rate": "4.4575",
+        "change_from_overnight_bps": "48.75",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-02",
+        "code": "SR1G28",
+        "price": "95.56",
+        "implied_rate": "4.44",
+        "change_from_overnight_bps": "47",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-03",
+        "code": "SR1H28",
+        "price": "95.575",
+        "implied_rate": "4.425",
+        "change_from_overnight_bps": "45.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-04",
+        "code": "SR1J28",
+        "price": "95.5825",
+        "implied_rate": "4.4175",
+        "change_from_overnight_bps": "44.75",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-05",
+        "code": "SR1K28",
+        "price": "95.59",
+        "implied_rate": "4.41",
+        "change_from_overnight_bps": "44",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-06",
+        "code": "SR1M28",
+        "price": "95.5975",
+        "implied_rate": "4.4025",
+        "change_from_overnight_bps": "43.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-07",
+        "code": "SR1N28",
+        "price": "95.605",
+        "implied_rate": "4.395",
+        "change_from_overnight_bps": "42.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-08",
+        "code": "SR1Q28",
+        "price": "95.61",
+        "implied_rate": "4.39",
+        "change_from_overnight_bps": "42",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-09",
+        "code": "SR1U28",
+        "price": "95.615",
+        "implied_rate": "4.385",
+        "change_from_overnight_bps": "41.5",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      },
+      {
+        "expiry": "2028-10",
+        "code": "SR1V28",
+        "price": "95.6175",
+        "implied_rate": "4.3825",
+        "change_from_overnight_bps": "41.25",
+        "change_from_overnight_identity_bp": "0",
+        "open_interest": null,
+        "volume": null,
+        "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
+        "observation_date": null
+      }
+    ],
+    "US_1m_source_note": "Policy context: 100 minus delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners. Tradable curve: 100 minus CME SR3 settlements API.",
+    "AU_policy_terminal_is_not_the_last_future": {
+      "change_from_overnight_bps": -5.5,
+      "expiry": "2027-09",
+      "implied_rate": 4.795
+    },
+    "sr3_versus_three_monthly_prints": [
+      {
+        "months": [
+          "2027-03",
+          "2027-04",
+          "2027-05"
+        ],
+        "rates": [
+          "4.2375",
+          "4.315",
+          "4.365"
+        ],
+        "arithmetic_average": "4.30583",
+        "first_to_last_bp": "12.75",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract",
+        "nearest_sr3_expiry": "2027-03",
+        "sr3_implied_rate": "4.36",
+        "sr3_minus_monthly_average_bp": "5.417",
+        "sources": "SR3 is CME settlement; SR1 monthly path is eSignal delayed ICE. Not a tradable basis."
+      },
+      {
+        "months": [
+          "2027-06",
+          "2027-07",
+          "2027-08"
+        ],
+        "rates": [
+          "4.4225",
+          "4.445",
+          "4.46"
+        ],
+        "arithmetic_average": "4.4425",
+        "first_to_last_bp": "3.75",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract",
+        "nearest_sr3_expiry": "2027-06",
+        "sr3_implied_rate": "4.475",
+        "sr3_minus_monthly_average_bp": "3.25",
+        "sources": "SR3 is CME settlement; SR1 monthly path is eSignal delayed ICE. Not a tradable basis."
+      },
+      {
+        "months": [
+          "2027-09",
+          "2027-10",
+          "2027-11"
+        ],
+        "rates": [
+          "4.47",
+          "4.4825",
+          "4.4825"
+        ],
+        "arithmetic_average": "4.47833",
+        "first_to_last_bp": "1.25",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract",
+        "nearest_sr3_expiry": "2027-09",
+        "sr3_implied_rate": "4.505",
+        "sr3_minus_monthly_average_bp": "2.667",
+        "sources": "SR3 is CME settlement; SR1 monthly path is eSignal delayed ICE. Not a tradable basis."
+      },
+      {
+        "months": [
+          "2027-12",
+          "2028-01",
+          "2028-02"
+        ],
+        "rates": [
+          "4.475",
+          "4.4575",
+          "4.44"
+        ],
+        "arithmetic_average": "4.4575",
+        "first_to_last_bp": "-3.5",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract",
+        "nearest_sr3_expiry": "2027-12",
+        "sr3_implied_rate": "4.475",
+        "sr3_minus_monthly_average_bp": "1.75",
+        "sources": "SR3 is CME settlement; SR1 monthly path is eSignal delayed ICE. Not a tradable basis."
+      }
+    ]
+  },
+  "aonia_versus_corra_object": {
+    "mar_dec_2027_month_average": {
+      "start": "2027-03",
+      "end": "2027-12",
+      "expiries": [
+        "2027-03",
+        "2027-04",
+        "2027-05",
+        "2027-06",
+        "2027-07",
+        "2027-08",
+        "2027-09",
+        "2027-10",
+        "2027-11",
+        "2027-12"
+      ],
+      "rates": [
+        "4.925",
+        "4.925",
+        "4.915",
+        "4.9",
+        "4.865",
+        "4.825",
+        "4.795",
+        "4.775",
+        "4.72",
+        "4.69"
+      ],
+      "n": 10,
+      "arithmetic_average": "4.8335",
+      "first_to_last_bp": "-23.5"
+    },
+    "mar_dec_average_minus_aonia_overnight_bp": "-1.65",
+    "mar_dec_average_minus_corra_2027_average_bp": "171.975",
+    "rate_spread_meaning": "Basis points of rate level between an Australian monthly average and a Canadian quarterly average. Not P&L, not DV01, and not a mispricing.",
+    "front_hump_2026_11_to_2027_04": {
+      "start": "2026-11",
+      "end": "2027-04",
+      "expiries": [
+        "2026-11",
+        "2026-12",
+        "2027-01",
+        "2027-02",
+        "2027-03",
+        "2027-04"
+      ],
+      "rates": [
+        "4.82",
+        "4.86",
+        "4.87",
+        "4.905",
+        "4.925",
+        "4.925"
+      ],
+      "n": 6,
+      "arithmetic_average": "4.88417",
+      "first_to_last_bp": "10.5"
+    },
+    "front_peak_minus_overnight_bp": "7.5",
+    "back_of_overlap_2027_08_to_2027_12": {
+      "start": "2027-08",
+      "end": "2027-12",
+      "expiries": [
+        "2027-08",
+        "2027-09",
+        "2027-10",
+        "2027-11",
+        "2027-12"
+      ],
+      "rates": [
+        "4.825",
+        "4.795",
+        "4.775",
+        "4.72",
+        "4.69"
+      ],
+      "n": 5,
+      "arithmetic_average": "4.761",
+      "first_to_last_bp": "-13.5"
+    },
+    "later_easing_2027_11_to_2028_04": {
+      "start": "2027-11",
+      "end": "2028-04",
+      "expiries": [
+        "2027-11",
+        "2027-12",
+        "2028-01",
+        "2028-02",
+        "2028-03",
+        "2028-04"
+      ],
+      "rates": [
+        "4.72",
+        "4.69",
+        "4.685",
+        "4.635",
+        "4.625",
+        "4.585"
+      ],
+      "n": 6,
+      "arithmetic_average": "4.65667",
+      "first_to_last_bp": "-13.5"
+    },
+    "later_easing_average_minus_overnight_bp": "-19.333",
+    "three_month_arithmetic_buckets": [
+      {
+        "months": [
+          "2027-03",
+          "2027-04",
+          "2027-05"
+        ],
+        "rates": [
+          "4.925",
+          "4.925",
+          "4.915"
+        ],
+        "arithmetic_average": "4.92167",
+        "first_to_last_bp": "-1",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract"
+      },
+      {
+        "months": [
+          "2027-06",
+          "2027-07",
+          "2027-08"
+        ],
+        "rates": [
+          "4.9",
+          "4.865",
+          "4.825"
+        ],
+        "arithmetic_average": "4.86333",
+        "first_to_last_bp": "-7.5",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract"
+      },
+      {
+        "months": [
+          "2027-09",
+          "2027-10",
+          "2027-11"
+        ],
+        "rates": [
+          "4.795",
+          "4.775",
+          "4.72"
+        ],
+        "arithmetic_average": "4.76333",
+        "first_to_last_bp": "-7.5",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract"
+      },
+      {
+        "months": [
+          "2027-12",
+          "2028-01",
+          "2028-02"
+        ],
+        "rates": [
+          "4.69",
+          "4.685",
+          "4.635"
+        ],
+        "arithmetic_average": "4.67",
+        "first_to_last_bp": "-5.5",
+        "object": "arithmetic mean of monthly futures, not a quarterly compounded contract"
+      }
+    ],
+    "why_not_the_same_object": [
+      "CORRA and SOFR contract_period_months are 3. AONIA contract_period_months is 1.",
+      "An average of three monthly AONIA prints is an arithmetic mean of 30-day cash-rate futures.",
+      "A CORRA quarter is one three-month futures implied rate, quoted as 100 minus price.",
+      "Matching DV01 would still leave different accrual, different fixings, and intra-quarter path risk.",
+      "Canadian one-month CORRA futures in this packet stop at February 2027, so the 2027 quarterly strip has no monthly siblings here.",
+      "The US monthly-versus-SR3 comparison uses two sources and is an illustration, not a basis."
+    ]
+  },
+  "sovereigns": {
+    "yields_in_opportunities_series_are_bp": true,
+    "tenor_value_in_rates_country_blocks_is_percent": true,
+    "do_not_subtract_stale_sovereign_from_fresh_futures": true,
+    "series": {
+      "US_2Y": {
+        "id": "US_2Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 458.0,
+        "unit": "bp",
+        "percentile": 85.71428571428571,
+        "z": 1.4127214058226916,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": -3.000000000000057,
+            "unit": "bp",
+            "z": -0.7187604990605927
+          },
+          "1M": {
+            "value": -26.0,
+            "unit": "bp",
+            "z": -1.9301228302477602
+          },
+          "3M": {
+            "value": 40.0,
+            "unit": "bp",
+            "z": 0.6122495881990669
+          },
+          "5D": {
+            "value": -9.0,
+            "unit": "bp",
+            "z": -1.2342634327141462
+          }
+        }
+      },
+      "US_10Y": {
+        "id": "US_10Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 490.00000000000006,
+        "unit": "bp",
+        "percentile": 84.92063492063492,
+        "z": 1.2875297601782811,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": -4.999999999999943,
+            "unit": "bp",
+            "z": -1.2207492331468652
+          },
+          "1M": {
+            "value": -40.99999999999994,
+            "unit": "bp",
+            "z": -2.996829500491505
+          },
+          "3M": {
+            "value": 27.000000000000057,
+            "unit": "bp",
+            "z": 0.3134926081053479
+          },
+          "5D": {
+            "value": -14.999999999999943,
+            "unit": "bp",
+            "z": -1.9529120050233686
+          }
+        }
+      },
+      "CA_2Y": {
+        "id": "CA_2Y",
+        "as_of": "2026-11-03",
+        "age_days": 2,
+        "value": 326.0,
+        "unit": "bp",
+        "percentile": 90.47619047619048,
+        "z": 1.6559943643296748,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 0.0,
+            "unit": "bp",
+            "z": -0.07357450800431155
+          },
+          "1M": {
+            "value": 1.0,
+            "unit": "bp",
+            "z": -0.3702178279053655
+          },
+          "3M": {
+            "value": 35.0,
+            "unit": "bp",
+            "z": 0.8314938461398463
+          },
+          "5D": {
+            "value": -10.0,
+            "unit": "bp",
+            "z": -1.2635939565735892
+          }
+        }
+      },
+      "CA_10Y": {
+        "id": "CA_10Y",
+        "as_of": "2026-11-03",
+        "age_days": 2,
+        "value": 377.0,
+        "unit": "bp",
+        "percentile": 84.32539682539682,
+        "z": 1.2174571089831971,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 3.0,
+            "unit": "bp",
+            "z": 0.6056772406043472
+          },
+          "1M": {
+            "value": -16.0,
+            "unit": "bp",
+            "z": -1.505266616896794
+          },
+          "3M": {
+            "value": 12.0,
+            "unit": "bp",
+            "z": -0.0659736735367505
+          },
+          "5D": {
+            "value": -6.0,
+            "unit": "bp",
+            "z": -0.8742302632492713
+          }
+        }
+      },
+      "AU_2Y": {
+        "id": "AU_2Y",
+        "as_of": "2026-10-28",
+        "age_days": 8,
+        "value": 495.09999999999997,
+        "unit": "bp",
+        "percentile": 95.23809523809524,
+        "z": 1.4020524586536727,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 6.7999999999999545,
+            "unit": "bp",
+            "z": 1.3192552518713123
+          },
+          "1M": {
+            "value": -10.60000000000008,
+            "unit": "bp",
+            "z": -1.2007091605422069
+          },
+          "3M": {
+            "value": 39.19999999999993,
+            "unit": "bp",
+            "z": 0.1355028451684242
+          },
+          "5D": {
+            "value": 3.3999999999999773,
+            "unit": "bp",
+            "z": 0.04022106575322028
+          }
+        }
+      },
+      "AU_10Y": {
+        "id": "AU_10Y",
+        "as_of": "2026-10-28",
+        "age_days": 8,
+        "value": 520.8000000000001,
+        "unit": "bp",
+        "percentile": 87.6984126984127,
+        "z": 1.2668598334566974,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 5.600000000000023,
+            "unit": "bp",
+            "z": 1.11095187706609
+          },
+          "1M": {
+            "value": -20.5,
+            "unit": "bp",
+            "z": -1.7873622218646579
+          },
+          "3M": {
+            "value": 19.700000000000045,
+            "unit": "bp",
+            "z": -0.14360422193314118
+          },
+          "5D": {
+            "value": -6.899999999999977,
+            "unit": "bp",
+            "z": -1.05527354772049
+          }
+        }
+      },
+      "JP_2Y": {
+        "id": "JP_2Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 189.1,
+        "unit": "bp",
+        "percentile": 91.26984126984127,
+        "z": 1.724632378407823,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 1.0999999999999943,
+            "unit": "bp",
+            "z": 0.39693510678881494
+          },
+          "1M": {
+            "value": -2.8000000000000114,
+            "unit": "bp",
+            "z": -1.2939142962282446
+          },
+          "3M": {
+            "value": 39.39999999999998,
+            "unit": "bp",
+            "z": 1.2315957613451651
+          },
+          "5D": {
+            "value": 0.30000000000001137,
+            "unit": "bp",
+            "z": -0.42336916964304316
+          }
+        }
+      },
+      "JP_10Y": {
+        "id": "JP_10Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 285.5,
+        "unit": "bp",
+        "percentile": 79.76190476190476,
+        "z": 0.9808669723132044,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 3.7999999999999545,
+            "unit": "bp",
+            "z": 1.0016248797959109
+          },
+          "1M": {
+            "value": -24.19999999999999,
+            "unit": "bp",
+            "z": -2.7781902810197656
+          },
+          "3M": {
+            "value": 5.399999999999977,
+            "unit": "bp",
+            "z": -2.019379095893501
+          },
+          "5D": {
+            "value": 2.599999999999966,
+            "unit": "bp",
+            "z": 0.038786897889947894
+          }
+        }
+      },
+      "EA_2Y": {
+        "id": "EA_2Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 306.0,
+        "unit": "bp",
+        "percentile": 86.7063492063492,
+        "z": 1.3341441653492516,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 1.0,
+            "unit": "bp",
+            "z": 0.13062462237640415
+          },
+          "1M": {
+            "value": -2.0,
+            "unit": "bp",
+            "z": -0.6287630950325883
+          },
+          "3M": {
+            "value": 30.0,
+            "unit": "bp",
+            "z": 0.1473946677385437
+          },
+          "5D": {
+            "value": -4.0,
+            "unit": "bp",
+            "z": -0.656000149544148
+          }
+        }
+      },
+      "EA_10Y": {
+        "id": "EA_10Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 332.0,
+        "unit": "bp",
+        "percentile": 82.53968253968254,
+        "z": 1.1597225736039272,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": 1.0,
+            "unit": "bp",
+            "z": 0.19717895969712715
+          },
+          "1M": {
+            "value": -13.0,
+            "unit": "bp",
+            "z": -1.3494766762448387
+          },
+          "3M": {
+            "value": 17.0,
+            "unit": "bp",
+            "z": -0.02902904334177617
+          },
+          "5D": {
+            "value": -5.0,
+            "unit": "bp",
+            "z": -0.8196499538980925
+          }
+        }
+      },
+      "NZ_2Y": {
+        "id": "NZ_2Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 383.0,
+        "unit": "bp",
+        "percentile": null,
+        "z": null,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": -12.0,
+            "unit": "bp",
+            "z": null
+          },
+          "1M": {
+            "value": null,
+            "unit": "bp",
+            "z": null
+          },
+          "3M": {
+            "value": null,
+            "unit": "bp",
+            "z": null
+          },
+          "5D": {
+            "value": 0.0,
+            "unit": "bp",
+            "z": null
+          }
+        }
+      },
+      "NZ_10Y": {
+        "id": "NZ_10Y",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 480.99999999999994,
+        "unit": "bp",
+        "percentile": null,
+        "z": null,
+        "status": "ok",
+        "note": "Sovereign yield history; richness requires a valuation thesis.",
+        "moves": {
+          "1D": {
+            "value": -7.000000000000057,
+            "unit": "bp",
+            "z": null
+          },
+          "1M": {
+            "value": null,
+            "unit": "bp",
+            "z": null
+          },
+          "3M": {
+            "value": null,
+            "unit": "bp",
+            "z": null
+          },
+          "5D": {
+            "value": -12.000000000000057,
+            "unit": "bp",
+            "z": null
+          }
+        }
+      },
+      "WTI": {
+        "id": "WTI",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 88.12000274658203,
+        "unit": "USD/bbl",
+        "percentile": 56.34920634920635,
+        "z": 0.43985659177115694,
+        "status": "ok",
+        "note": "Daily completed close. Futures history includes contract rolls; roll jumps can distort screens.",
+        "moves": {
+          "1D": {
+            "value": -8.65856610751337,
+            "unit": "% log",
+            "z": -2.484080621467453
+          },
+          "1M": {
+            "value": -1.4868483600571571,
+            "unit": "% log",
+            "z": -0.3645420380697899
+          },
+          "3M": {
+            "value": 13.113496013866587,
+            "unit": "% log",
+            "z": 0.1265947359040236
+          },
+          "5D": {
+            "value": -15.38912165844302,
+            "unit": "% log",
+            "z": -2.168335013452875
+          }
+        }
+      },
+      "BRENT": {
+        "id": "BRENT",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 94.62000274658203,
+        "unit": "USD/bbl",
+        "percentile": 59.12698412698413,
+        "z": 0.44944505278239866,
+        "status": "ok",
+        "note": "Daily completed close. Futures history includes contract rolls; roll jumps can distort screens.",
+        "moves": {
+          "1D": {
+            "value": -9.066841586632025,
+            "unit": "% log",
+            "z": -2.6190847773527666
+          },
+          "1M": {
+            "value": -6.108454971827526,
+            "unit": "% log",
+            "z": -0.683986743621395
+          },
+          "3M": {
+            "value": 13.719185125470313,
+            "unit": "% log",
+            "z": 0.12492221310882792
+          },
+          "5D": {
+            "value": -19.784197089336132,
+            "unit": "% log",
+            "z": -2.880894485819397
+          }
+        }
+      },
+      "US_REAL10": {
+        "id": "US_REAL10",
+        "as_of": "2026-11-03",
+        "age_days": 2,
+        "value": 265.0,
+        "unit": "bp",
+        "percentile": 90.07936507936508,
+        "z": 1.549825943334252,
+        "status": "ok",
+        "note": "Daily source observation; publication and market close times differ.",
+        "moves": {
+          "1D": {
+            "value": 3.0,
+            "unit": "bp",
+            "z": 0.7393746017468807
+          },
+          "1M": {
+            "value": -27.0,
+            "unit": "bp",
+            "z": -2.3466987455788617
+          },
+          "3M": {
+            "value": 25.0,
+            "unit": "bp",
+            "z": 0.2336246999546419
+          },
+          "5D": {
+            "value": 1.0,
+            "unit": "bp",
+            "z": -0.10141372136662752
+          }
+        }
+      },
+      "US_BE10": {
+        "id": "US_BE10",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 225.99999999999997,
+        "unit": "bp",
+        "percentile": 23.41269841269841,
+        "z": -0.8689565127277307,
+        "status": "ok",
+        "note": "Daily source observation; publication and market close times differ.",
+        "moves": {
+          "1D": {
+            "value": -4.0,
+            "unit": "bp",
+            "z": -2.035586077302098
+          },
+          "1M": {
+            "value": -10.000000000000028,
+            "unit": "bp",
+            "z": -1.3072267739563301
+          },
+          "3M": {
+            "value": 3.999999999999943,
+            "unit": "bp",
+            "z": 0.4049192357298381
+          },
+          "5D": {
+            "value": -12.000000000000028,
+            "unit": "bp",
+            "z": -3.2267745775246537
+          }
+        }
+      },
+      "HY_OAS": {
+        "id": "HY_OAS",
+        "as_of": "2026-11-03",
+        "age_days": 2,
+        "value": 340.0,
+        "unit": "bp",
+        "percentile": 98.21428571428571,
+        "z": 2.6046374638093437,
+        "status": "ok",
+        "note": "Daily source observation; publication and market close times differ.",
+        "moves": {
+          "1D": {
+            "value": -3.0,
+            "unit": "bp",
+            "z": -0.58734946574766
+          },
+          "1M": {
+            "value": 28.0,
+            "unit": "bp",
+            "z": 1.1103913983130294
+          },
+          "3M": {
+            "value": 69.0,
+            "unit": "bp",
+            "z": 2.41575610824382
+          },
+          "5D": {
+            "value": 22.0,
+            "unit": "bp",
+            "z": 1.9363589191899588
+          }
+        }
+      },
+      "VIX": {
+        "id": "VIX",
+        "as_of": "2026-11-03",
+        "age_days": 2,
+        "value": 20.83,
+        "unit": "points",
+        "percentile": 84.92063492063492,
+        "z": 0.856763547733924,
+        "status": "ok",
+        "note": "Daily source observation; publication and market close times differ.",
+        "moves": {
+          "1D": {
+            "value": -0.3200000000000003,
+            "unit": "points",
+            "z": -0.2275982122401104
+          },
+          "1M": {
+            "value": 5.309999999999999,
+            "unit": "points",
+            "z": 1.356544621632385
+          },
+          "3M": {
+            "value": 5.679999999999998,
+            "unit": "points",
+            "z": 1.1663233906470503
+          },
+          "5D": {
+            "value": 3.3099999999999987,
+            "unit": "points",
+            "z": 1.3013185106415024
+          }
+        }
+      },
+      "USDCAD": {
+        "id": "USDCAD",
+        "as_of": "2026-11-04",
+        "age_days": 1,
+        "value": 1.3935386527025828,
+        "unit": "spot",
+        "percentile": 59.523809523809526,
+        "z": 0.24125751934179132,
+        "status": "ok",
+        "note": "ECB same-fixing reference cross. A historical extreme is not proof of mispricing.",
+        "moves": {
+          "1D": {
+            "value": -0.2860863730221843,
+            "unit": "% log",
+            "z": -1.052179995785741
+          },
+          "1M": {
+            "value": -2.2305269380924195,
+            "unit": "% log",
+            "z": -1.5054018576913157
+          },
+          "3M": {
+            "value": -0.5306856055876675,
+            "unit": "% log",
+            "z": -0.39963021887195566
+          },
+          "5D": {
+            "value": -0.7943873544396401,
+            "unit": "% log",
+            "z": -1.128182606830776
+          }
+        }
+      }
+    },
+    "country_blocks": {
+      "US": {
+        "latest_observation": "2026-11-04",
+        "age_days": 1,
+        "status": "ok",
+        "levels_percent": {
+          "10Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 4.9
+          },
+          "2Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 4.58
+          },
+          "30Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 5.28
+          },
+          "5Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 4.69
+          }
+        },
+        "curve_2s10s_bp": {
+          "as_of": "2026-11-04",
+          "bps": 32.00000000000003
+        }
+      },
+      "CA": {
+        "latest_observation": "2026-11-03",
+        "age_days": 2,
+        "status": "ok",
+        "levels_percent": {
+          "10Y": {
+            "as_of": "2026-11-03",
+            "value_percent": 3.77
+          },
+          "2Y": {
+            "as_of": "2026-11-03",
+            "value_percent": 3.26
+          },
+          "5Y": {
+            "as_of": "2026-11-03",
+            "value_percent": 3.49
+          },
+          "LONG": {
+            "as_of": "2026-11-03",
+            "value_percent": 4.09
+          }
+        },
+        "curve_2s10s_bp": {
+          "as_of": "2026-11-03",
+          "bps": 51.00000000000002
+        }
+      },
+      "AU": {
+        "latest_observation": "2026-10-28",
+        "age_days": 8,
+        "status": "ok",
+        "levels_percent": {
+          "10Y": {
+            "as_of": "2026-10-28",
+            "value_percent": 5.208
+          },
+          "2Y": {
+            "as_of": "2026-10-28",
+            "value_percent": 4.951
+          },
+          "5Y": {
+            "as_of": "2026-10-28",
+            "value_percent": 4.946
+          }
+        },
+        "curve_2s10s_bp": {
+          "as_of": "2026-10-28",
+          "bps": 25.700000000000056
+        }
+      },
+      "JP": {
+        "latest_observation": "2026-11-04",
+        "age_days": 1,
+        "status": "ok",
+        "levels_percent": {
+          "10Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 2.855
+          },
+          "2Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 1.891
+          },
+          "30Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 3.979
+          },
+          "5Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 2.269
+          }
+        },
+        "curve_2s10s_bp": {
+          "as_of": "2026-11-04",
+          "bps": 96.39999999999999
+        }
+      },
+      "EA": {
+        "latest_observation": "2026-11-04",
+        "age_days": 1,
+        "status": "ok",
+        "levels_percent": {
+          "10Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 3.32
+          },
+          "2Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 3.06
+          },
+          "30Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 3.68
+          },
+          "5Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 3.14
+          }
+        },
+        "curve_2s10s_bp": {
+          "as_of": "2026-11-04",
+          "bps": 25.99999999999998
+        }
+      },
+      "NZ": {
+        "latest_observation": "2026-11-04",
+        "age_days": 1,
+        "status": "ok",
+        "levels_percent": {
+          "10Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 4.81
+          },
+          "2Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 3.83
+          },
+          "5Y": {
+            "as_of": "2026-11-04",
+            "value_percent": 4.17
+          }
+        },
+        "curve_2s10s_bp": {
+          "as_of": "2026-11-04",
+          "bps": 97.99999999999996
+        }
+      }
+    },
+    "official_curve_dates_only": {
+      "AU": {
+        "as_of": "2026-09-30",
+        "status": "ok",
+        "curve_type": "government_zero_curve_proxy",
+        "forward_rate_count": 41,
+        "note": null
+      },
+      "CA": {
+        "as_of": "2026-10-14",
+        "status": "ok",
+        "curve_type": "government_zero_curve_proxy",
+        "forward_rate_count": 0,
+        "note": null
+      },
+      "EA": {
+        "as_of": null,
+        "status": "ok",
+        "curve_type": null,
+        "forward_rate_count": 0,
+        "note": null
+      },
+      "JP": {
+        "as_of": "2026-11-04",
+        "status": "ok",
+        "curve_type": "benchmark_par_yields_only",
+        "forward_rate_count": 0,
+        "note": "No richer official zero/Svensson JP curve pinned; MOF publishes daily par yields only."
+      },
+      "US": {
+        "as_of": "2026-10-30",
+        "status": "ok",
+        "curve_type": "government_zero_curve_proxy",
+        "forward_rate_count": 30,
+        "note": null
+      }
+    },
+    "jp_official_par_yields_percent": {
+      "10Y": {
+        "as_of": "2026-11-04",
+        "value": 2.855
+      },
+      "2Y": {
+        "as_of": "2026-11-04",
+        "value": 1.891
+      },
+      "30Y": {
+        "as_of": "2026-11-04",
+        "value": 3.979
+      },
+      "5Y": {
+        "as_of": "2026-11-04",
+        "value": 2.269
+      }
+    },
+    "au_bank_bills_and_ois": {
+      "bank_bills": {
+        "1m": {
+          "as_of": "04-Nov-2026",
+          "rate": 4.79
+        },
+        "3m": {
+          "as_of": "04-Nov-2026",
+          "rate": 4.92
+        },
+        "6m": {
+          "as_of": "04-Nov-2026",
+          "rate": 5.26
+        }
+      },
+      "ois": {
+        "1m": {
+          "as_of": "01-Dec-2022",
+          "rate": 2.97
+        },
+        "3m": {
+          "as_of": "01-Dec-2022",
+          "rate": 3.04
+        },
+        "6m": {
+          "as_of": "01-Dec-2022",
+          "rate": 3.22
+        }
+      },
+      "bank_bill_minus_ois": {
+        "1m": {
+          "bank_bill_as_of": "04-Nov-2026",
+          "bank_bill_minus_ois_bps": null,
+          "ois_as_of": "01-Dec-2022",
+          "status": "unavailable_cross_vintage"
+        },
+        "3m": {
+          "bank_bill_as_of": "04-Nov-2026",
+          "bank_bill_minus_ois_bps": null,
+          "ois_as_of": "01-Dec-2022",
+          "status": "unavailable_cross_vintage"
+        },
+        "6m": {
+          "bank_bill_as_of": "04-Nov-2026",
+          "bank_bill_minus_ois_bps": null,
+          "ois_as_of": "01-Dec-2022",
+          "status": "unavailable_cross_vintage"
+        }
+      },
+      "use": "Bank bills are a credit instrument. OIS in this block is December 2022, so the bill-OIS basis is unavailable. Neither object is the AONIA futures path."
+    }
+  },
+  "macro": {
+    "known_gaps": [
+      "rolling 30-day central-bank research state is frozen below",
+      "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
+      "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=due_missing, AU.Consumer.confidence=due_missing, AU.Consumer.income=due_missing, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+54 more)",
+      "country-specific macro research coverage gaps: CA, AU, NZ, EA, JP",
+      "source-health carry-forward (not-due, prior vintage kept): US",
+      "source-isolated unavailable feeds: CME_positioning",
+      "substantive normalized news items are frozen below",
+      "accepted news kept as baseline; live discovery merged into the current window",
+      "live news acquisition completed",
+      "live news reuters check failed: HTTP Error 401: HTTP Forbidden"
+    ],
+    "macro_hard_notes": [
+      "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
+      "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=due_missing, AU.Consumer.confidence=due_missing, AU.Consumer.income=due_missing, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+54 more)",
+      "country-specific macro research coverage gaps: CA, AU, NZ, EA, JP",
+      "source-health carry-forward (not-due, prior vintage kept): US"
+    ],
+    "component_status": {
+      "CA.Inflation.headline": {
+        "series_id": "CA.Inflation.headline",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "CA.Inflation.underlying": {
+        "series_id": "CA.Inflation.underlying",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "CA.Labor.unemployment": {
+        "series_id": "CA.Labor.unemployment",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "CA.Labor.wages": {
+        "series_id": "CA.Labor.wages",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "CA.Labor.employment": {
+        "series_id": "CA.Labor.employment",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "CA.Labor.participation": {
+        "series_id": "CA.Labor.participation",
+        "status": "source_failed",
+        "observation_period": null,
+        "due_period": null,
+        "research_status": "unavailable",
+        "error": "CA.Labor.participation: vector id unpinned in catalog fragment"
+      },
+      "US.Inflation.core_pce": {
+        "series_id": "US.Inflation.core_pce",
+        "status": "source_failed",
+        "observation_period": "2026-07",
+        "due_period": null,
+        "research_status": "previous release retained",
+        "error": "The read operation timed out"
+      },
+      "US.Inflation.pce_headline": {
+        "series_id": "US.Inflation.pce_headline",
+        "status": "source_failed",
+        "observation_period": null,
+        "due_period": null,
+        "research_status": "unavailable",
+        "error": "host_deferred"
+      },
+      "US.Labor.unemployment": {
+        "series_id": "US.Labor.unemployment",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": "2026-09",
+        "research_status": "current release",
+        "error": null
+      },
+      "US.Labor.wages": {
+        "series_id": "US.Labor.wages",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": "2026-09",
+        "research_status": "current release",
+        "error": null
+      },
+      "US.Activity.manufacturing_surveys": {
+        "series_id": "US.Activity.manufacturing_surveys",
+        "status": "checked_unchanged",
+        "observation_period": "2026-10",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "US.Activity.services_surveys": {
+        "series_id": "US.Activity.services_surveys",
+        "status": "new_observation",
+        "observation_period": "2026-10",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "US.Activity.gdp_domestic_demand": {
+        "series_id": "US.Activity.gdp_domestic_demand",
+        "status": "source_failed",
+        "observation_period": "2026-Q2",
+        "due_period": null,
+        "research_status": "previous release retained",
+        "error": "The read operation timed out"
+      },
+      "AU.Inflation.headline": {
+        "series_id": "AU.Inflation.headline",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": "2026-09",
+        "research_status": "current release",
+        "error": null
+      },
+      "AU.Inflation.underlying": {
+        "series_id": "AU.Inflation.underlying",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": "2026-09",
+        "research_status": "current release",
+        "error": null
+      },
+      "AU.Labor.unemployment": {
+        "series_id": "AU.Labor.unemployment",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": "2026-09",
+        "research_status": "current release",
+        "error": null
+      },
+      "AU.Labor.wages": {
+        "series_id": "AU.Labor.wages",
+        "status": "checked_unchanged",
+        "observation_period": "2026-Q2",
+        "due_period": null,
+        "research_status": "current release",
+        "error": null
+      },
+      "AU.Labor.employment": {
+        "series_id": "AU.Labor.employment",
+        "status": "checked_unchanged",
+        "observation_period": "2026-09",
+        "due_period": "2026-09",
+        "research_status": "current release",
+        "error": null
+      }
+    },
+    "due_missing_status_count": 2,
+    "due_missing_series": [
+      "US.Labor.chicago_fed_nowcast_revision",
+      "US.Labor.chicago_fed_u3_nowcast_final"
+    ],
+    "temperature": {
+      "CA": {
+        "Inflation": {
+          "as_of": "2026-09",
+          "level": 54.34,
+          "direction": "static",
+          "impulse": -0.44,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "headline": {
+              "as_of": "2026-09",
+              "transform_value": 3.0928,
+              "level": 63.66,
+              "impulse": 0.78,
+              "observed": true,
+              "release_date": "2026-10-19",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-20T13:31:20Z"
+            },
+            "underlying": {
+              "as_of": "2026-09",
+              "transform_value": 1.85,
+              "level": 48.12,
+              "impulse": -1.25,
+              "observed": true,
+              "release_date": "2026-10-19",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-20T13:31:20Z"
+            }
+          }
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "level": 40.94,
+          "direction": "cooling",
+          "impulse": -1.22,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-09",
+              "transform_value": -11.6333,
+              "level": 42.67,
+              "impulse": -5.77,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z"
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "transform_value": 6.5,
+              "level": 40.0,
+              "impulse": -2.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z"
+            },
+            "wages": {
+              "as_of": "2026-09",
+              "transform_value": 2.3382,
+              "level": 43.38,
+              "impulse": 3.78,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z"
+            }
+          }
+        },
+        "Activity": {
+          "as_of": "2026-10",
+          "level": 49.4,
+          "direction": "warming",
+          "impulse": 16.79,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-10",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-10",
+              "transform_value": 48.2,
+              "level": 48.2,
+              "impulse": -0.6,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-11-05T09:53:53Z"
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "transform_value": 1.8196,
+              "level": 50.2,
+              "impulse": 28.38,
+              "observed": true,
+              "release_date": "2026-08-28",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:45:36Z"
+            }
+          }
+        },
+        "Consumer": {
+          "as_of": "2026-08",
+          "level": 57.03,
+          "direction": "warming",
+          "impulse": 6.61,
+          "coverage": 0.75,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-08",
+          "components": {
+            "confidence": {
+              "as_of": null,
+              "transform_value": null,
+              "level": null,
+              "impulse": null,
+              "observed": false,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": null
+            },
+            "income": {
+              "as_of": "2026-Q2",
+              "transform_value": 2.12,
+              "level": 66.8,
+              "impulse": 15.0,
+              "observed": true,
+              "release_date": "2026-08-28",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:45:36Z"
+            },
+            "retail": {
+              "as_of": "2026-08",
+              "transform_value": 0.3277,
+              "level": 49.78,
+              "impulse": 1.84,
+              "observed": true,
+              "release_date": "2026-10-23",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-29T08:24:31Z"
+            },
+            "spending": {
+              "as_of": "2026-Q2",
+              "transform_value": 0.8,
+              "level": 54.5,
+              "impulse": 3.0,
+              "observed": true,
+              "release_date": "2026-08-28",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:45:36Z"
+            }
+          }
+        }
+      },
+      "US": {
+        "Inflation": {
+          "as_of": "2026-07",
+          "level": 63.1,
+          "direction": "static",
+          "impulse": -0.81,
+          "coverage": 1.0,
+          "temperature_class": "warm",
+          "latest_reference_period": "2026-07",
+          "components": {
+            "core_pce": {
+              "as_of": "2026-07",
+              "transform_value": 3.0478,
+              "level": 63.1,
+              "impulse": -0.81,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z"
+            }
+          }
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "level": 51.26,
+          "direction": "cooling",
+          "impulse": -1.54,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "payrolls": {
+              "as_of": "2026-09",
+              "transform_value": 70.6667,
+              "level": 62.13,
+              "impulse": -0.13,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-06T08:52:57Z"
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "transform_value": 4.2,
+              "level": 50.0,
+              "impulse": -2.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-06T08:52:57Z"
+            },
+            "wages": {
+              "as_of": "2026-09",
+              "transform_value": 3.0245,
+              "level": 50.25,
+              "impulse": -0.61,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-06T08:52:57Z"
+            }
+          }
+        },
+        "Activity": {
+          "as_of": "2026-10",
+          "level": 50.77,
+          "direction": "cooling",
+          "impulse": -3.59,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-10",
+          "components": {
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "transform_value": 1.8,
+              "level": 48.0,
+              "impulse": -6.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z"
+            },
+            "manufacturing_surveys": {
+              "as_of": "2026-10",
+              "transform_value": 54.8667,
+              "level": 54.87,
+              "impulse": 1.0,
+              "observed": true,
+              "release_date": "2026-11-02",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-11-04T10:35:22Z"
+            },
+            "services_surveys": {
+              "as_of": "2026-10",
+              "transform_value": 54.9333,
+              "level": 54.93,
+              "impulse": -0.4,
+              "observed": true,
+              "release_date": "2026-11-04",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-11-05T09:53:53Z"
+            }
+          }
+        },
+        "Consumer": {
+          "as_of": "2026-08",
+          "level": 46.47,
+          "direction": "warming",
+          "impulse": 3.55,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-08",
+          "components": {
+            "confidence": {
+              "as_of": "2026-07",
+              "transform_value": 55.2,
+              "level": 25.2,
+              "impulse": 5.7,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z"
+            },
+            "income": {
+              "as_of": "2026-07",
+              "transform_value": 0.4881,
+              "level": 56.19,
+              "impulse": 6.97,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z"
+            },
+            "retail": {
+              "as_of": "2026-08",
+              "transform_value": 0.3389,
+              "level": 50.22,
+              "impulse": 4.08,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z"
+            },
+            "spending": {
+              "as_of": "2026-07",
+              "transform_value": 0.2734,
+              "level": 54.27,
+              "impulse": -2.56,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z"
+            }
+          }
+        }
+      },
+      "AU": {
+        "Inflation": {
+          "as_of": "2026-09",
+          "level": 67.25,
+          "direction": "warming",
+          "impulse": 1.5,
+          "coverage": 1.0,
+          "temperature_class": "warm",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "headline": {
+              "as_of": "2026-09",
+              "transform_value": 4.3,
+              "level": 72.5,
+              "impulse": 3.75,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-28T09:26:41Z"
+            },
+            "underlying": {
+              "as_of": "2026-09",
+              "transform_value": 3.6,
+              "level": 63.75,
+              "impulse": 0.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-28T09:26:41Z"
+            }
+          }
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "level": 45.74,
+          "direction": "cooling",
+          "impulse": -4.39,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-09",
+              "transform_value": -5.2118,
+              "level": 43.96,
+              "impulse": -7.97,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z"
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "transform_value": 4.7183,
+              "level": 45.63,
+              "impulse": -5.13,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z"
+            },
+            "wages": {
+              "as_of": "2026-Q2",
+              "transform_value": 3.2,
+              "level": 47.0,
+              "impulse": 0.0,
+              "observed": true,
+              "release_date": "2026-08-13",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:49:33Z"
+            }
+          }
+        },
+        "Activity": {
+          "as_of": "2026-08",
+          "level": 45.79,
+          "direction": "warming",
+          "impulse": 2.23,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-08",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-08",
+              "transform_value": 52.1,
+              "level": 52.1,
+              "impulse": -0.5,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T17:20:30Z"
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "transform_value": 1.4075,
+              "level": 41.58,
+              "impulse": 4.04,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:49:33Z"
+            }
+          }
+        },
+        "Consumer": {
+          "as_of": "2026-09",
+          "level": 49.1,
+          "direction": "cooling",
+          "impulse": -1.87,
+          "coverage": 0.75,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "confidence": {
+              "as_of": "2026-09",
+              "transform_value": 84.4,
+              "level": 34.4,
+              "impulse": null,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-09-21T14:49:33Z"
+            },
+            "income": {
+              "as_of": "2026-Q2",
+              "transform_value": 1.1175,
+              "level": 49.89,
+              "impulse": 12.26,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-02T09:40:56Z"
+            },
+            "retail": {
+              "as_of": null,
+              "transform_value": null,
+              "level": null,
+              "impulse": null,
+              "observed": false,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": null
+            },
+            "spending": {
+              "as_of": "2026-08",
+              "transform_value": 0.7,
+              "level": 63.0,
+              "impulse": -16.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-02T09:40:56Z"
+            }
+          }
+        }
+      },
+      "JP": {
+        "Inflation": {
+          "as_of": "2026-09",
+          "level": 52.5,
+          "direction": "warming",
+          "impulse": 4.75,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "headline": {
+              "as_of": "2026-09",
+              "transform_value": 2.2,
+              "level": 52.5,
+              "impulse": 2.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-26T11:37:10Z"
+            },
+            "underlying": {
+              "as_of": "2026-09",
+              "transform_value": 2.2,
+              "level": 52.5,
+              "impulse": 6.25,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-23T19:46:45Z"
+            }
+          }
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "level": 53.78,
+          "direction": "warming",
+          "impulse": 2.93,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-09",
+              "transform_value": 73.3333,
+              "level": 55.83,
+              "impulse": 23.33,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z"
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "transform_value": 2.4,
+              "level": 52.0,
+              "impulse": 2.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z"
+            },
+            "wages": {
+              "as_of": "2026-08",
+              "transform_value": 3.9,
+              "level": 59.0,
+              "impulse": -4.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-23T19:46:45Z"
+            }
+          }
+        },
+        "Activity": {
+          "as_of": "2026-08",
+          "level": 57.46,
+          "direction": "cooling",
+          "impulse": -2.68,
+          "coverage": 1.0,
+          "temperature_class": "neutral",
+          "latest_reference_period": "2026-08",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-08",
+              "transform_value": 52.9,
+              "level": 52.9,
+              "impulse": 0.8,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T22:23:58Z"
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "transform_value": 1.65,
+              "level": 60.5,
+              "impulse": -5.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T22:23:30Z"
+            }
+          }
+        },
+        "Consumer": {
+          "as_of": "2026-09",
+          "level": 33.74,
+          "direction": "warming",
+          "impulse": 7.29,
+          "coverage": 1.0,
+          "temperature_class": "cool",
+          "latest_reference_period": "2026-09",
+          "components": {
+            "confidence": {
+              "as_of": "2026-09",
+              "transform_value": 35.4,
+              "level": 47.3,
+              "impulse": -0.1,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-05T10:08:21Z"
+            },
+            "income": {
+              "as_of": "2026-08",
+              "transform_value": 1.1667,
+              "level": 32.08,
+              "impulse": 32.75,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-13T15:45:39Z"
+            },
+            "retail": {
+              "as_of": "2026-09",
+              "transform_value": 2.9667,
+              "level": 54.58,
+              "impulse": -7.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z"
+            },
+            "spending": {
+              "as_of": "2026-08",
+              "transform_value": -1.3333,
+              "level": 1.0,
+              "impulse": 4.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-13T15:45:39Z"
+            }
+          }
+        }
+      }
+    },
+    "au_labor_leading": {
+      "as_of": "2026-11-05",
+      "partial": true,
+      "observations": [
+        {
+          "id": "AU.Labor.anz_indeed_job_ads_sa",
+          "period": "2026-09",
+          "value": 125.29980391886193,
+          "units": "index",
+          "weight": 0.0,
+          "release_date": "2026-10-06"
+        },
+        {
+          "id": "AU.Labor.nab_employment_subindex",
+          "period": "2026-09",
+          "value": -1.0,
+          "units": "index_points",
+          "weight": 0.0,
+          "release_date": "2026-10-13"
+        }
+      ],
+      "gap_ids": [
+        "AU.Labor.jsa_ivi_national_sa",
+        "AU.Labor.jsa_reos_recruiting_share",
+        "AU.Labor.jsa_reos_recruitment_difficulty",
+        "AU.Labor.jsa_reos_hiring_intent",
+        "AU.Labor.anz_indeed_job_ads_sa",
+        "AU.Labor.nab_employment_subindex",
+        "AU.Labor.seek_job_ad_trend",
+        "AU.Labor.seek_job_ad_trend",
+        "AU.Labor.seek_job_ad_trend"
+      ]
+    },
+    "prima": {
+      "direction": "STABLE",
+      "strength": "low",
+      "confidence": "high",
+      "staleness": "producer inputs fresh; oil curve stale",
+      "front_shock_classification": "parallel_downward_repricing",
+      "change_since_last_mpr": "Versus the July 2026 MPR conditioning assumptions as of 2026-07-09, brent_end_2027_vs_prose is +9.12 USD per barrel versus 70.0. Observable monitoring only; not a reproduction of the Bank of Canada's Prima model.",
+      "mpr_status": "partial",
+      "conditioning_date": "2026-07-09",
+      "subcomponent_directions": {
+        "consumer_price_breadth": "RISING",
+        "demand_pass_through_constraint": "STABLE",
+        "imported_pressure": "FALLING",
+        "production_network_pressure": "STABLE",
+        "shock_persistence": "FALLING"
+      },
+      "neutral_midpoint": {
+        "as_of": "2026-11-03",
+        "corra_rate": 2.53,
+        "gap": -0.2200000000000002,
+        "neutral_midpoint": 2.75
+      },
+      "breadth": {
+        "direction": "RISING",
+        "share": 0.625,
+        "positive_majors": 5,
+        "majors_with_mom": 8,
+        "period": "2026-09"
+      },
+      "ippi_ex_energy_mom": 0.002795248078266921,
+      "rmpi_ex_crude_energy_mom": -0.004347826086956608,
+      "imported_pressure_note": "RMPI excluding crude energy prices raw materials purchased by Canadian manufacturers, including domestically produced materials. It is not an import-price index. No import-price series is pinned, so this channel is not imported cost pressure. The stored id imported_pressure is unchanged so earlier runs stay comparable.",
+      "shock_persistence_stale": true,
+      "brent_contracts": [
+        {
+          "change_1m_abs": 19.610000610351562,
+          "change_1m_base_date": "2026-09-30",
+          "change_1m_pct": 0.20004081255270842,
+          "contract_month": "2026-12",
+          "maturity_months": 0,
+          "observation_date": "2026-10-30",
+          "price": 117.63999938964844,
+          "symbol": "BZZ26.NYM"
+        },
+        {
+          "change_1m_abs": -3.5,
+          "change_1m_base_date": "2026-10-05",
+          "change_1m_pct": -0.04236262265368654,
+          "contract_month": "2027-12",
+          "maturity_months": 12,
+          "observation_date": "2026-11-04",
+          "price": 79.12000274658203,
+          "symbol": "BZZ27.NYM"
+        },
+        {
+          "change_1m_abs": -2.05999755859375,
+          "change_1m_base_date": "2026-10-05",
+          "change_1m_pct": -0.027148097432238096,
+          "contract_month": "2028-12",
+          "maturity_months": 24,
+          "observation_date": "2026-11-04",
+          "price": 73.81999969482422,
+          "symbol": "BZZ28.NYM"
+        }
+      ],
+      "direct_energy_mom": {
+        "ippi_energy": 0.12083780880773354,
+        "ippi_energy_period": "2026-09",
+        "rmpi_crude_energy": 0.14420062695924774,
+        "rmpi_crude_period": "2026-09",
+        "counted_in_score": false
+      }
+    }
+  },
+  "news_narrative_index": [
+    {
+      "id": "news:de94d3af30d5193c",
+      "published_at": "2026-11-04T10:59:00-05:00",
+      "headline": "Sweden\u2019s Slowing Inflation Weakens Riksbank Rate Hike Case",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:1015f48c4095cd2d",
+      "published_at": "2026-11-04T13:11:56-05:00",
+      "headline": "Gold and silver prices jump, dollar dips as Democrats take control of Congress",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:fc68b9eca782d5b1",
+      "published_at": "2026-11-04T09:35:22-05:00",
+      "headline": "Midterm Election Day recap: Democrats flip Senate and House in stunning victory",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:47266e006c2081db",
+      "published_at": "2026-11-01T20:29:00-05:00",
+      "headline": "Xi Hosts Oman\u2019s Sultan for Rare Visit to China With Hormuz Shipping in Focus",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:9ed634a52970fbf7",
+      "published_at": "2026-11-01T11:01:00-05:00",
+      "headline": "The Bank of England Ponders a New Normal for Interest Rates",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:a0cab67a6e6a7079",
+      "published_at": "2026-11-03T12:33:49-05:00",
+      "headline": "Meta seeks to raise up to $25 billion in debt sale as AI spending jumps",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:982cd01eed45b6b6",
+      "published_at": "2026-11-05T03:38:43-05:00",
+      "headline": "Treasury yields continue to fall after midterms, traders look ahead to jobs data",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:20535178ce5c2bcb",
+      "published_at": "2026-11-04T20:03:00-05:00",
+      "headline": "Norway Keeps Rate Steady With Option of Another Hike If Needed",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:6297c4f1918efcf9",
+      "published_at": "2026-11-04T19:11:26-05:00",
+      "headline": "White House panel delays hearing on Fed's Lisa Cook to Dec. 14",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:c7ba80605cd65fa6",
+      "published_at": "2026-11-04T18:50:00-05:00",
+      "headline": "Minutes of the Monetary Policy Meeting on September 17 and 18, 2026",
+      "verification_status": "official",
+      "country_codes": [],
+      "summary_status": "empty"
+    },
+    {
+      "id": "news:3a7b6ba914ee0eea",
+      "published_at": "2026-11-04T17:26:00-05:00",
+      "headline": "Yardeni Sees Inflation Cooling, Says US Yields Attractive at 5%",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:2781b15c74e39a97",
+      "published_at": "2026-11-04T15:18:44-05:00",
+      "headline": "10-year Treasury yield slides as traders mull over Democrats' midterm victories, oil prices drop",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:4ea37f62ac828ca6",
+      "published_at": "2026-11-04T14:39:00-05:00",
+      "headline": "Japan\u2019s 10-Year Bond Auction Sees Softer Demand as Yields Drop",
+      "verification_status": "single_source",
+      "country_codes": [
+        "JP"
+      ],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:2781b15c74e39a97",
+      "published_at": "2026-11-04T04:02:00-05:00",
+      "headline": "Treasury yields fall as investors crowd into bonds for safety amid election stock sell-off",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:89b059310442c3eb",
+      "published_at": "2026-11-01T19:52:00-05:00",
+      "headline": "Alphabet Tests Bond Market\u2019s AI Faith With Second Euro Sale",
+      "verification_status": "single_source",
+      "country_codes": [
+        "EA"
+      ],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:f4d922b02cd3e68a",
+      "published_at": "2026-11-04T15:16:05-05:00",
+      "headline": "Dow soars 1,500 points for best day since April 2025 on clear-cut Democratic win, falling oil: Live updates",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:db69485c92cd347c",
+      "published_at": "2026-11-04T14:14:52-05:00",
+      "headline": "Crude oil prices fall below $90 a barrel as Vance blames GOP election defeat on Iran war",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:4cd81f9499f27a53",
+      "published_at": "2026-11-01T11:01:00-05:00",
+      "headline": "Singapore\u2019s STTGDC Eyes $2.4 Billion Loan, Adds to AI Debt Binge",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:f32caa9f83e3013d",
+      "published_at": "2026-10-30T03:12:49-04:00",
+      "headline": "Iran claims four tankers struck mines in Hormuz as strike fears grow after U.S. midterms",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:6187a2baff6b10d5",
+      "published_at": "2026-10-30T00:19:38-04:00",
+      "headline": "BOJ holds rates as underlying inflation aligns with 2% target for first time since 2013",
+      "verification_status": "single_source",
+      "country_codes": [
+        "JP"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:3dc4f9f0082cd09d",
+      "published_at": "2026-10-29T22:53:00-04:00",
+      "headline": "BOE Agents See Little Sign of Energy Shock Feeding Into Pay",
+      "verification_status": "single_source",
+      "country_codes": [],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:e6bce6b93bd1b9be",
+      "published_at": "2026-10-28T16:39:00-04:00",
+      "headline": "Japan 2-Year Bond Sale Sees Firm Demand Before BOJ Decision",
+      "verification_status": "single_source",
+      "country_codes": [
+        "JP"
+      ],
+      "summary_status": "summary_present"
+    },
+    {
+      "id": "news:ea21a88ce7de1a15",
+      "published_at": "2026-10-28T16:17:19-04:00",
+      "headline": "10-year Treasury yield creeps higher even as Fed keeps rates the same",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    },
+    {
+      "id": "news:c8dc713f2b64c42b",
+      "published_at": "2026-10-28T15:43:48-04:00",
+      "headline": "Fed holds rates steady despite concerns over inflation",
+      "verification_status": "single_source",
+      "country_codes": [
+        "US"
+      ],
+      "summary_status": "headline_only_body_not_retrieved"
+    }
+  ],
+  "scenarios": {
+    "label": "conditional judgments, not probabilities",
+    "gap_sign": "gap_bp = (futures period rate - assumed period rate) * 100. Positive: futures above the assumption.",
+    "gap_is_not_expected_value": true,
+    "BoC": {
+      "instrument": "CORRA quarterly contracts CRAH27 CRAM27 CRAU27 CRAZ27",
+      "overnight": {
+        "rate": "2.53",
+        "as_of": "2026-11-03"
+      },
+      "A": {
+        "name": "Sustained cheaper oil, disinflation treated as persistent",
+        "assumption_rule": "Flat 2.75 on all four 2027 quarters. 2.75 is the packet prima proxy midpoint, used here as a stall level. It is not a Bank of Canada neutral-rate estimate.",
+        "contracts": [
+          {
+            "expiry": "CRAH27",
+            "futures_period_rate": "2.93",
+            "assumed_period_rate": "2.75",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "18"
+          },
+          {
+            "expiry": "CRAM27",
+            "futures_period_rate": "3.075",
+            "assumed_period_rate": "2.75",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "32.5"
+          },
+          {
+            "expiry": "CRAU27",
+            "futures_period_rate": "3.185",
+            "assumed_period_rate": "2.75",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "43.5"
+          },
+          {
+            "expiry": "CRAZ27",
+            "futures_period_rate": "3.265",
+            "assumed_period_rate": "2.75",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "51.5"
+          }
+        ],
+        "futures_average": "3.11375",
+        "assumed_average": "2.75",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "36.375"
+      },
+      "B": {
+        "name": "Renewed physical disruption, oil premia return",
+        "assumption_rule": "Rising quarterly period rates 3.00 / 3.20 / 3.35 / 3.50.",
+        "contracts": [
+          {
+            "expiry": "CRAH27",
+            "futures_period_rate": "2.93",
+            "assumed_period_rate": "3",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-7"
+          },
+          {
+            "expiry": "CRAM27",
+            "futures_period_rate": "3.075",
+            "assumed_period_rate": "3.2",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-12.5"
+          },
+          {
+            "expiry": "CRAU27",
+            "futures_period_rate": "3.185",
+            "assumed_period_rate": "3.35",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-16.5"
+          },
+          {
+            "expiry": "CRAZ27",
+            "futures_period_rate": "3.265",
+            "assumed_period_rate": "3.5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-23.5"
+          }
+        ],
+        "futures_average": "3.11375",
+        "assumed_average": "3.2625",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "-14.875"
+      },
+      "C": {
+        "name": "Stronger demand, oil lower because supply fear faded",
+        "assumption_rule": "Firming then stall: 2.85 / 2.95 / 3.00 / 3.05. Not an easing path and not the futures climb.",
+        "contracts": [
+          {
+            "expiry": "CRAH27",
+            "futures_period_rate": "2.93",
+            "assumed_period_rate": "2.85",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "8"
+          },
+          {
+            "expiry": "CRAM27",
+            "futures_period_rate": "3.075",
+            "assumed_period_rate": "2.95",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "12.5"
+          },
+          {
+            "expiry": "CRAU27",
+            "futures_period_rate": "3.185",
+            "assumed_period_rate": "3",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "18.5"
+          },
+          {
+            "expiry": "CRAZ27",
+            "futures_period_rate": "3.265",
+            "assumed_period_rate": "3.05",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "21.5"
+          }
+        ],
+        "futures_average": "3.11375",
+        "assumed_average": "2.9625",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "15.125"
+      }
+    },
+    "Fed": {
+      "instrument": "CME SR3 quarterly contracts SR3H7 SR3M7 SR3U7 SR3Z7",
+      "overnight": {
+        "rate": "3.97",
+        "as_of": "2026-11-03",
+        "history_not_averaged": true
+      },
+      "A": {
+        "name": "Sustained cheaper oil, disinflation treated as persistent",
+        "assumption_rule": "Flat 4.20 period rate. A stall above the 3.97 fixing, not a cut back to the fixing.",
+        "contracts": [
+          {
+            "expiry": "SR3H7",
+            "futures_period_rate": "4.36",
+            "assumed_period_rate": "4.2",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "16"
+          },
+          {
+            "expiry": "SR3M7",
+            "futures_period_rate": "4.475",
+            "assumed_period_rate": "4.2",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "27.5"
+          },
+          {
+            "expiry": "SR3U7",
+            "futures_period_rate": "4.505",
+            "assumed_period_rate": "4.2",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "30.5"
+          },
+          {
+            "expiry": "SR3Z7",
+            "futures_period_rate": "4.475",
+            "assumed_period_rate": "4.2",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "27.5"
+          }
+        ],
+        "futures_average": "4.45375",
+        "assumed_average": "4.2",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "25.375"
+      },
+      "B": {
+        "name": "Renewed physical disruption, oil premia return",
+        "assumption_rule": "Rising quarterly period rates 4.45 / 4.60 / 4.70 / 4.75.",
+        "contracts": [
+          {
+            "expiry": "SR3H7",
+            "futures_period_rate": "4.36",
+            "assumed_period_rate": "4.45",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-9"
+          },
+          {
+            "expiry": "SR3M7",
+            "futures_period_rate": "4.475",
+            "assumed_period_rate": "4.6",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-12.5"
+          },
+          {
+            "expiry": "SR3U7",
+            "futures_period_rate": "4.505",
+            "assumed_period_rate": "4.7",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-19.5"
+          },
+          {
+            "expiry": "SR3Z7",
+            "futures_period_rate": "4.475",
+            "assumed_period_rate": "4.75",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-27.5"
+          }
+        ],
+        "futures_average": "4.45375",
+        "assumed_average": "4.625",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "-17.125"
+      },
+      "C": {
+        "name": "Stronger demand, oil lower because supply fear faded",
+        "assumption_rule": "Assumed period rates are set equal to the SR3 futures. The judgment is that this conditional path does not conflict with the futures.",
+        "contracts": [
+          {
+            "expiry": "SR3H7",
+            "futures_period_rate": "4.36",
+            "assumed_period_rate": "4.36",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "0"
+          },
+          {
+            "expiry": "SR3M7",
+            "futures_period_rate": "4.475",
+            "assumed_period_rate": "4.475",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "0"
+          },
+          {
+            "expiry": "SR3U7",
+            "futures_period_rate": "4.505",
+            "assumed_period_rate": "4.505",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "0"
+          },
+          {
+            "expiry": "SR3Z7",
+            "futures_period_rate": "4.475",
+            "assumed_period_rate": "4.475",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "0"
+          }
+        ],
+        "futures_average": "4.45375",
+        "assumed_average": "4.45375",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "0"
+      }
+    },
+    "RBA": {
+      "instrument": "ASX 30-day AONIA months March 2027 through December 2027",
+      "overnight": {
+        "rate": "4.85",
+        "as_of": "04-Nov-2026"
+      },
+      "A": {
+        "name": "Sustained cheaper oil, disinflation treated as persistent",
+        "assumption_rule": "March 2027 at 4.75, then -5bp of period rate per month through December 2027 at 4.30.",
+        "contracts": [
+          {
+            "expiry": "2027-03",
+            "futures_period_rate": "4.925",
+            "assumed_period_rate": "4.75",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "17.5"
+          },
+          {
+            "expiry": "2027-04",
+            "futures_period_rate": "4.925",
+            "assumed_period_rate": "4.7",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "22.5"
+          },
+          {
+            "expiry": "2027-05",
+            "futures_period_rate": "4.915",
+            "assumed_period_rate": "4.65",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "26.5"
+          },
+          {
+            "expiry": "2027-06",
+            "futures_period_rate": "4.9",
+            "assumed_period_rate": "4.6",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "30"
+          },
+          {
+            "expiry": "2027-07",
+            "futures_period_rate": "4.865",
+            "assumed_period_rate": "4.55",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "31.5"
+          },
+          {
+            "expiry": "2027-08",
+            "futures_period_rate": "4.825",
+            "assumed_period_rate": "4.5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "32.5"
+          },
+          {
+            "expiry": "2027-09",
+            "futures_period_rate": "4.795",
+            "assumed_period_rate": "4.45",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "34.5"
+          },
+          {
+            "expiry": "2027-10",
+            "futures_period_rate": "4.775",
+            "assumed_period_rate": "4.4",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "37.5"
+          },
+          {
+            "expiry": "2027-11",
+            "futures_period_rate": "4.72",
+            "assumed_period_rate": "4.35",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "37"
+          },
+          {
+            "expiry": "2027-12",
+            "futures_period_rate": "4.69",
+            "assumed_period_rate": "4.3",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "39"
+          }
+        ],
+        "futures_average": "4.8335",
+        "assumed_average": "4.525",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "30.85",
+        "later_easing_bucket_2027_11_to_2028_04": {
+          "contracts": [
+            {
+              "expiry": "2027-11",
+              "futures_period_rate": "4.72",
+              "assumed_period_rate": "4.35",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "37"
+            },
+            {
+              "expiry": "2027-12",
+              "futures_period_rate": "4.69",
+              "assumed_period_rate": "4.3",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "39"
+            },
+            {
+              "expiry": "2028-01",
+              "futures_period_rate": "4.685",
+              "assumed_period_rate": "4.25",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "43.5"
+            },
+            {
+              "expiry": "2028-02",
+              "futures_period_rate": "4.635",
+              "assumed_period_rate": "4.2",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "43.5"
+            },
+            {
+              "expiry": "2028-03",
+              "futures_period_rate": "4.625",
+              "assumed_period_rate": "4.15",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "47.5"
+            },
+            {
+              "expiry": "2028-04",
+              "futures_period_rate": "4.585",
+              "assumed_period_rate": "4.1",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "48.5"
+            }
+          ],
+          "futures_average": "4.65667",
+          "assumed_average": "4.225",
+          "assumed_average_is_assumption": true,
+          "gap_bp_futures_minus_assumption": "43.167"
+        }
+      },
+      "B": {
+        "name": "Renewed physical disruption, oil premia return",
+        "assumption_rule": "Flat 5.00 period rate across March-December 2027. No easing.",
+        "contracts": [
+          {
+            "expiry": "2027-03",
+            "futures_period_rate": "4.925",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-7.5"
+          },
+          {
+            "expiry": "2027-04",
+            "futures_period_rate": "4.925",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-7.5"
+          },
+          {
+            "expiry": "2027-05",
+            "futures_period_rate": "4.915",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-8.5"
+          },
+          {
+            "expiry": "2027-06",
+            "futures_period_rate": "4.9",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-10"
+          },
+          {
+            "expiry": "2027-07",
+            "futures_period_rate": "4.865",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-13.5"
+          },
+          {
+            "expiry": "2027-08",
+            "futures_period_rate": "4.825",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-17.5"
+          },
+          {
+            "expiry": "2027-09",
+            "futures_period_rate": "4.795",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-20.5"
+          },
+          {
+            "expiry": "2027-10",
+            "futures_period_rate": "4.775",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-22.5"
+          },
+          {
+            "expiry": "2027-11",
+            "futures_period_rate": "4.72",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-28"
+          },
+          {
+            "expiry": "2027-12",
+            "futures_period_rate": "4.69",
+            "assumed_period_rate": "5",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-31"
+          }
+        ],
+        "futures_average": "4.8335",
+        "assumed_average": "5",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "-16.65",
+        "later_easing_bucket_2027_11_to_2028_04": {
+          "contracts": [
+            {
+              "expiry": "2027-11",
+              "futures_period_rate": "4.72",
+              "assumed_period_rate": "5",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-28"
+            },
+            {
+              "expiry": "2027-12",
+              "futures_period_rate": "4.69",
+              "assumed_period_rate": "5",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-31"
+            },
+            {
+              "expiry": "2028-01",
+              "futures_period_rate": "4.685",
+              "assumed_period_rate": "5",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-31.5"
+            },
+            {
+              "expiry": "2028-02",
+              "futures_period_rate": "4.635",
+              "assumed_period_rate": "5",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-36.5"
+            },
+            {
+              "expiry": "2028-03",
+              "futures_period_rate": "4.625",
+              "assumed_period_rate": "5",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-37.5"
+            },
+            {
+              "expiry": "2028-04",
+              "futures_period_rate": "4.585",
+              "assumed_period_rate": "5",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-41.5"
+            }
+          ],
+          "futures_average": "4.65667",
+          "assumed_average": "5",
+          "assumed_average_is_assumption": true,
+          "gap_bp_futures_minus_assumption": "-34.333"
+        }
+      },
+      "C": {
+        "name": "Stronger demand, oil lower because supply fear faded",
+        "assumption_rule": "Flat 4.90. The small front hump stays; the later easing does not.",
+        "contracts": [
+          {
+            "expiry": "2027-03",
+            "futures_period_rate": "4.925",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "2.5"
+          },
+          {
+            "expiry": "2027-04",
+            "futures_period_rate": "4.925",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "2.5"
+          },
+          {
+            "expiry": "2027-05",
+            "futures_period_rate": "4.915",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "1.5"
+          },
+          {
+            "expiry": "2027-06",
+            "futures_period_rate": "4.9",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "0"
+          },
+          {
+            "expiry": "2027-07",
+            "futures_period_rate": "4.865",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-3.5"
+          },
+          {
+            "expiry": "2027-08",
+            "futures_period_rate": "4.825",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-7.5"
+          },
+          {
+            "expiry": "2027-09",
+            "futures_period_rate": "4.795",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-10.5"
+          },
+          {
+            "expiry": "2027-10",
+            "futures_period_rate": "4.775",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-12.5"
+          },
+          {
+            "expiry": "2027-11",
+            "futures_period_rate": "4.72",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-18"
+          },
+          {
+            "expiry": "2027-12",
+            "futures_period_rate": "4.69",
+            "assumed_period_rate": "4.9",
+            "assumption": true,
+            "gap_bp_futures_minus_assumption": "-21"
+          }
+        ],
+        "futures_average": "4.8335",
+        "assumed_average": "4.9",
+        "assumed_average_is_assumption": true,
+        "gap_bp_futures_minus_assumption": "-6.65",
+        "later_easing_bucket_2027_11_to_2028_04": {
+          "contracts": [
+            {
+              "expiry": "2027-11",
+              "futures_period_rate": "4.72",
+              "assumed_period_rate": "4.9",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-18"
+            },
+            {
+              "expiry": "2027-12",
+              "futures_period_rate": "4.69",
+              "assumed_period_rate": "4.9",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-21"
+            },
+            {
+              "expiry": "2028-01",
+              "futures_period_rate": "4.685",
+              "assumed_period_rate": "4.9",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-21.5"
+            },
+            {
+              "expiry": "2028-02",
+              "futures_period_rate": "4.635",
+              "assumed_period_rate": "4.9",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-26.5"
+            },
+            {
+              "expiry": "2028-03",
+              "futures_period_rate": "4.625",
+              "assumed_period_rate": "4.9",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-27.5"
+            },
+            {
+              "expiry": "2028-04",
+              "futures_period_rate": "4.585",
+              "assumed_period_rate": "4.9",
+              "assumption": true,
+              "gap_bp_futures_minus_assumption": "-31.5"
+            }
+          ],
+          "futures_average": "4.65667",
+          "assumed_average": "4.9",
+          "assumed_average_is_assumption": true,
+          "gap_bp_futures_minus_assumption": "-24.333"
+        }
+      }
+    }
+  },
+  "expression_comparison": {
+    "keep_existing_corra_receive": {
+      "contracts": [
+        "CRAH27",
+        "CRAM27",
+        "CRAU27",
+        "CRAZ27"
+      ],
+      "side": "receive",
+      "base_scenario": "A",
+      "gap_vs_assumption_A_bp": "36.375",
+      "verdict": "keep"
+    },
+    "shorter_calendar_CRAH27_vs_CRAZ27": {
+      "pay": "CRAH27",
+      "receive": "CRAZ27",
+      "futures_spread_z_minus_h_bp": "33.5",
+      "assumption_A_spread_bp": "0",
+      "spread_gap_bp": "33.5",
+      "front_contract_gap_vs_A_bp": "18",
+      "verdict": "reject as a replacement. Paying CRAH27 is the wrong side of that contract under assumption A."
+    },
+    "uz_only_not_recommended": {
+      "contracts": [
+        "CRAU27",
+        "CRAZ27"
+      ],
+      "average": "3.225",
+      "gap_vs_assumption_A_bp": "47.5",
+      "verdict": "larger gap on fewer contracts, not a better expression of the same level claim"
+    },
+    "receive_sofr_2027": {
+      "contracts": [
+        "SR3H7",
+        "SR3M7",
+        "SR3U7",
+        "SR3Z7"
+      ],
+      "futures_minus_fixing_bp": "48.375",
+      "gap_vs_A_bp": "25.375",
+      "gap_vs_C_bp": "0",
+      "verdict": "reject. Weaker conviction was the right prior ranking. Scenario C, the better US domestic fit, has a zero gap by assumption."
+    },
+    "pay_later_aonia_and_canada_australia_rv": {
+      "au_leg": "pay ASX 30-day months 2027-11 through 2028-04",
+      "ca_leg": "receive CRAH27 CRAM27 CRAU27 CRAZ27",
+      "later_bucket_gap_A_bp": "43.167",
+      "later_bucket_gap_B_bp": "-34.333",
+      "later_bucket_gap_C_bp": "-24.333",
+      "verdict": "reject. The Australian sign flips across A, B, and C, and the CPI print is unresolved inside the packet."
+    },
+    "japan": {
+      "tona_2027_12": "2.0125",
+      "tona_call_rate": "1.227",
+      "tona_call_as_of": "2026-11-02",
+      "dec_2027_minus_call_bp": "78.55",
+      "jp_2y_par_percent": 1.891,
+      "jp_2y_as_of": "2026-11-04",
+      "verdict": "no new pay and no new receive. Normalization is already a rising path. The 2Y par yield and the TONA futures are different objects and are not subtracted."
+    }
+  },
+  "most_mispriced": {
+    "bank": "BoC",
+    "path": "CORRA quarterly period rates continue to rise through 2027 and 2028 (CRAH27 2.93, CRAZ27 3.265, CRAZ28 3.425) after the one-month curve has already reached the proxy midpoint by February 2027.",
+    "base_scenario": "A",
+    "expression": "Keep the existing equal-weight receive of CRAH27, CRAM27, CRAU27, and CRAZ27.",
+    "corra_forward_gap_under_base_scenario_bp": "36.375",
+    "futures_minus_fixing_bp_is_not_the_mispricing": "58.375",
+    "why_the_futures_path_is_wrong_under_the_base_reading": "September underlying inflation transform 1.85 is near the temperature anchor and its impulse is negative. Unemployment transform 6.5 sits in a cool labor block. Ex-energy producer prices are stable to slightly down. The Nov 4 oil drop is large in log-change space and ordinary in level-percentile space. That combination does not validate a period-rate path that keeps climbing past the stored 2.75 midpoint into the mid-3s.",
+    "what_would_make_the_futures_path_right": "Scenario B: September's energy jump and rising CPI breadth pass into underlying inflation, and deferred oil premia return. Scenario C would also support a higher path if Canadian labor and demand reaccelerate despite the current 6.5 unemployment transform. Either outcome is a falsifier, not a probability."
+  },
+  "forward_gap_versus_profit_since_entry": {
+    "entry_price_historical": 3.4,
+    "prior_mark_historical": 3.14375,
+    "current_average": "3.11375",
+    "base_gap_bp": "36.375",
+    "vintage_average_change_bp": "-4.125",
+    "election_rally_has_consumed_the_edge": false,
+    "judgment": "The strip average is 4.125bp below the previous morning vintage and 3bp below the Nov 4 12:12Z book mark. Under assumption A the remaining gap versus 2.75 is 36.375bp. The rally has not consumed that gap. This note does not size the keep."
+  },
+  "falsifiers_and_horizon": {
+    "horizon": "Into the 2027 CORRA H/M/U/Z contracts. Review on the next shared packet.",
+    "forced_hedge": false,
+    "fiscal_or_term_premium_point_estimate": null,
+    "falsifiers": [
+      "Canadian underlying inflation, wages, and employment reaccelerate enough that a period-rate path above the 2.75 stall is validated. The September headline transform 3.0928 and rising major-component breadth are the current evidence that could start that pass-through.",
+      "Deferred oil premia return. The Nov 4 Dec-2027 Brent mark is 79.12, still 9.12 dollars above the July MPR prose assumption of 70, with the shock-persistence channel marked stale.",
+      "The four-contract average cheapens back through roughly 3.35 to 3.40 with domestic confirmation. That remains a review trigger from the prior hypothesis, not a new mechanical stop.",
+      "A later packet shows the four-contract average no longer materially above the 2.75 assumption. The keep case is about the remaining forward gap."
+    ]
+  },
+  "data_gaps": [
+    "Packet freeze 2026-11-05T04:53:53.458055-05:00 and market_state generated_at 2026-11-05T10:17:36Z are both kept. The clock gap is not repaired.",
+    "ESTR futures list is empty and EA policy status is partial. Euro short-rate futures are not used. \u20acSTR overnight is 2.442 on 2026-11-04.",
+    "NZ has no official curve in this packet and no futures curve.",
+    "US core PCE component status is source_failed, previous release retained, observation 2026-07. Headline PCE is unavailable.",
+    "US source-health is a carry-forward. Several consumer series are July or August and were retrieved in September.",
+    "AU inflation transforms exist, component rows say checked_unchanged, and macro notes plus known_gaps list AU.Inflation.headline and underlying as due_missing. Release dates on the temperature block are inherited_or_inconsistent. No AU CPI number is treated as verified.",
+    "AU labor-leading packet is partial. Stored job-ads and NAB observations have weight 0.0. Several leading series failed or are discovery gaps.",
+    "AU sovereign 2Y and 10Y are 2026-10-28. AONIA futures are 4 Nov 2026. They are not subtracted.",
+    "AU official zero curve is 2026-09-30. RBA OIS in the policy block is 2022-12-01, so bank-bill minus OIS is unavailable_cross_vintage.",
+    "Canada official zero curve is 2026-10-14 and its forward curve is empty. It is not a check on the November CORRA futures.",
+    "US_REAL10 is 2026-11-03, US_BE10 is 2026-11-04, WTI and Brent are 2026-11-04. No same-day real-yield versus breakeven versus oil decomposition.",
+    "Prima shock persistence is stale. The Dec-2026 Brent input is observed 2026-10-30. Dec-2027 and Dec-2028 inputs are 2026-11-04. They are not one curve.",
+    "CME positioning is unavailable. CORRA and TONA open interest and volume are null.",
+    "BoJ minutes item has an empty summary. The BoJ-hold and Fed-hold items are headline-only. News is narrative.",
+    "No October or November Canadian CPI, and no unemployment print newer than the September transforms, is in the packet.",
+    "Oil percentiles are of a rolled futures history. The series note says roll jumps can distort the screen."
+  ]
+}

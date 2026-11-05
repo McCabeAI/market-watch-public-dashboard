@@ -1,0 +1,1324 @@
+{
+  "deviations": [
+    {
+      "actual_file_sha256": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+      "content_sha256_verified": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "expected_file_sha256_per_spec": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "note": "Proceed after content pin match; overnight packet appends packet_sha256 after content hash.",
+      "type": "file_sha256_mismatch"
+    }
+  ],
+  "excluded_notes": {
+    "nok_sek_gbp": "No NOK, SEK, or GBP 2Y yield series in snapshot.",
+    "nz_pairs": "NZ_2Y stored history too short; report NZ_2Y dates and length; no NZ pair correlations."
+  },
+  "integrity": {
+    "content_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "embedded_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "expected_content_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "file_sha256": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744"
+  },
+  "nz_2y": {
+    "dates": [
+      "2026-10-21",
+      "2026-10-22",
+      "2026-10-23",
+      "2026-10-27",
+      "2026-10-28",
+      "2026-10-29",
+      "2026-10-30",
+      "2026-11-02",
+      "2026-11-03",
+      "2026-11-04"
+    ],
+    "excluded": "All NZ pairs excluded; history too short for closed design.",
+    "first_date": "2026-10-21",
+    "id": "NZ_2Y",
+    "last_date": "2026-11-04",
+    "stored_history_length": 10
+  },
+  "pairs": [
+    {
+      "B1": {
+        "h1": {
+          "N": 119,
+          "R2": 0.002,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.002,
+            "S1_R2": 0.0211,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-11-03",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 36,
+            "N_in_sample": 83,
+            "holdout_label": "ok",
+            "r_holdout": -0.1463,
+            "r_in_sample": -0.0108,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 84
+          },
+          "pearson_r": -0.0452,
+          "sign": "-"
+        },
+        "h20": {
+          "N": 100,
+          "R2": 0.0011,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0011,
+            "S1_R2": 0.0568,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-10-06",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 17,
+            "N_in_sample": 83,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.0075,
+            "r_in_sample": -0.027,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 84
+          },
+          "pearson_r": 0.033,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 115,
+          "R2": 0.0002,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0002,
+            "S1_R2": 0.0023,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-10-28",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 32,
+            "N_in_sample": 83,
+            "holdout_label": "ok",
+            "r_holdout": -0.1225,
+            "r_in_sample": 0.004,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 84
+          },
+          "pearson_r": 0.0128,
+          "sign": "+"
+        }
+      },
+      "S1": {
+        "h1": {
+          "N": 120,
+          "R2": 0.0211,
+          "date_end": "2026-11-03",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 36,
+            "N_in_sample": 84,
+            "holdout_label": "ok",
+            "r_holdout": -0.0739,
+            "r_in_sample": 0.2424,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 84
+          },
+          "pearson_r": 0.1454,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 101,
+          "R2": 0.0568,
+          "date_end": "2026-10-06",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 17,
+            "N_in_sample": 84,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.8831,
+            "r_in_sample": -0.3614,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 84
+          },
+          "non_overlapping": {
+            "N": 6,
+            "R2": 0.4413,
+            "date_end": "2026-10-06",
+            "date_start": "2026-05-13",
+            "label": "inconclusive",
+            "pearson_r": -0.6643,
+            "sign": "-"
+          },
+          "pearson_r": -0.2384,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 116,
+          "R2": 0.0023,
+          "date_end": "2026-10-28",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 32,
+            "N_in_sample": 84,
+            "holdout_label": "ok",
+            "r_holdout": -0.3732,
+            "r_in_sample": -0.0072,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 84
+          },
+          "non_overlapping": {
+            "N": 24,
+            "R2": 0.0138,
+            "date_end": "2026-10-28",
+            "date_start": "2026-05-13",
+            "pearson_r": -0.1177,
+            "sign": "-"
+          },
+          "pearson_r": 0.0483,
+          "sign": "+"
+        }
+      },
+      "S2": {
+        "N": 120,
+        "R2": 0.002,
+        "date_end": "2026-11-04",
+        "date_start": "2026-05-14",
+        "holdout": {
+          "N_holdout": 37,
+          "N_in_sample": 83,
+          "holdout_label": "ok",
+          "r_holdout": 0.2014,
+          "r_in_sample": -0.1974,
+          "sign_holdout": "+",
+          "sign_in_sample": "-",
+          "signs_match": false,
+          "split_aligned_index": 84
+        },
+        "pearson_r": -0.0445,
+        "sign": "-"
+      },
+      "S3": {
+        "h1": {
+          "N": 119,
+          "R2": 0.0689,
+          "date_end": "2026-11-03",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 36,
+            "N_in_sample": 83,
+            "holdout_label": "ok",
+            "r_holdout": -0.0053,
+            "r_in_sample": 0.4259,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 84
+          },
+          "pearson_r": 0.2625,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 100,
+          "R2": 0.0151,
+          "date_end": "2026-10-06",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 17,
+            "N_in_sample": 83,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.0829,
+            "r_in_sample": 0.1407,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": null,
+            "split_aligned_index": 84
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.4216,
+            "date_end": "2026-09-09",
+            "date_start": "2026-05-14",
+            "label": "inconclusive",
+            "pearson_r": 0.6493,
+            "sign": "+"
+          },
+          "pearson_r": 0.1228,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 115,
+          "R2": 0.0315,
+          "date_end": "2026-10-28",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 32,
+            "N_in_sample": 83,
+            "holdout_label": "ok",
+            "r_holdout": 0.0206,
+            "r_in_sample": 0.2554,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 84
+          },
+          "non_overlapping": {
+            "N": 23,
+            "R2": 0.0817,
+            "date_end": "2026-10-22",
+            "date_start": "2026-05-14",
+            "pearson_r": 0.2859,
+            "sign": "+"
+          },
+          "pearson_r": 0.1775,
+          "sign": "+"
+        }
+      },
+      "pair": "EURUSD",
+      "panel": {
+        "first_date": "2026-05-13",
+        "last_date": "2026-11-04",
+        "max_gap_days": 4,
+        "median_gap_days": 1.0,
+        "min_gap_days": 1,
+        "usable_N_levels": 121
+      }
+    },
+    {
+      "B1": {
+        "h1": {
+          "N": 112,
+          "R2": 0.0001,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0001,
+            "S1_R2": 0.0018,
+            "S1_beats_momentum_in_sample": false
+          },
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": -0.2033,
+            "r_in_sample": 0.0965,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 79
+          },
+          "pearson_r": 0.0074,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 93,
+          "R2": 0.0005,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0005,
+            "S1_R2": 0.2847,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-09-28",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 78,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.3344,
+            "r_in_sample": 0.0038,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": null,
+            "split_aligned_index": 79
+          },
+          "pearson_r": 0.0224,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 108,
+          "R2": 0.0019,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0019,
+            "S1_R2": 0.0272,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-10-21",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": 0.067,
+            "r_in_sample": 0.0167,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "pearson_r": 0.0439,
+          "sign": "+"
+        }
+      },
+      "S1": {
+        "h1": {
+          "N": 113,
+          "R2": 0.0018,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": -0.1842,
+            "r_in_sample": -0.0847,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "pearson_r": -0.0424,
+          "sign": "-"
+        },
+        "h20": {
+          "N": 94,
+          "R2": 0.2847,
+          "date_end": "2026-09-28",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 79,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.8646,
+            "r_in_sample": -0.6941,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.2992,
+            "date_end": "2026-09-09",
+            "date_start": "2026-05-13",
+            "label": "inconclusive",
+            "pearson_r": -0.547,
+            "sign": "-"
+          },
+          "pearson_r": -0.5336,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 109,
+          "R2": 0.0272,
+          "date_end": "2026-10-21",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": -0.5407,
+            "r_in_sample": -0.2919,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0299,
+            "date_end": "2026-10-16",
+            "date_start": "2026-05-13",
+            "pearson_r": -0.1729,
+            "sign": "-"
+          },
+          "pearson_r": -0.165,
+          "sign": "-"
+        }
+      },
+      "S2": {
+        "N": 113,
+        "R2": 0.0042,
+        "date_end": "2026-10-28",
+        "date_start": "2026-05-14",
+        "holdout": {
+          "N_holdout": 35,
+          "N_in_sample": 78,
+          "holdout_label": "ok",
+          "r_holdout": 0.1459,
+          "r_in_sample": 0.0213,
+          "sign_holdout": "+",
+          "sign_in_sample": "+",
+          "signs_match": true,
+          "split_aligned_index": 79
+        },
+        "pearson_r": 0.0648,
+        "sign": "+"
+      },
+      "S3": {
+        "h1": {
+          "N": 112,
+          "R2": 0.0325,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": -0.0588,
+            "r_in_sample": 0.3102,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 79
+          },
+          "pearson_r": 0.1803,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 93,
+          "R2": 0.0145,
+          "date_end": "2026-09-28",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 78,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.0743,
+            "r_in_sample": 0.1377,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": null,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.6209,
+            "date_end": "2026-09-10",
+            "date_start": "2026-05-14",
+            "label": "inconclusive",
+            "pearson_r": 0.788,
+            "sign": "+"
+          },
+          "pearson_r": 0.1203,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 108,
+          "R2": 0.0206,
+          "date_end": "2026-10-21",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": 0.0765,
+            "r_in_sample": 0.1667,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0007,
+            "date_end": "2026-10-19",
+            "date_start": "2026-05-14",
+            "pearson_r": 0.0261,
+            "sign": "+"
+          },
+          "pearson_r": 0.1436,
+          "sign": "+"
+        }
+      },
+      "pair": "AUDUSD",
+      "panel": {
+        "first_date": "2026-05-13",
+        "last_date": "2026-10-28",
+        "max_gap_days": 4,
+        "median_gap_days": 1.0,
+        "min_gap_days": 1,
+        "usable_N_levels": 114
+      }
+    },
+    {
+      "B1": {
+        "h1": {
+          "N": 114,
+          "R2": 0.0111,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0111,
+            "S1_R2": 0.0003,
+            "S1_beats_momentum_in_sample": false
+          },
+          "date_end": "2026-11-02",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 80,
+            "holdout_label": "ok",
+            "r_holdout": 0.3732,
+            "r_in_sample": 0.0271,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 81
+          },
+          "pearson_r": 0.1056,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 95,
+          "R2": 0.0021,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0021,
+            "S1_R2": 0.4103,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-10-05",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 80,
+            "holdout_label": "inconclusive",
+            "r_holdout": 0.0803,
+            "r_in_sample": 0.0856,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": null,
+            "split_aligned_index": 81
+          },
+          "pearson_r": 0.046,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 110,
+          "R2": 0.0589,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0589,
+            "S1_R2": 0.0798,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 80,
+            "holdout_label": "ok",
+            "r_holdout": 0.569,
+            "r_in_sample": 0.131,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 81
+          },
+          "pearson_r": 0.2426,
+          "sign": "+"
+        }
+      },
+      "S1": {
+        "h1": {
+          "N": 115,
+          "R2": 0.0003,
+          "date_end": "2026-11-02",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 81,
+            "holdout_label": "ok",
+            "r_holdout": -0.0856,
+            "r_in_sample": 0.0006,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 81
+          },
+          "pearson_r": -0.0175,
+          "sign": "-"
+        },
+        "h20": {
+          "N": 96,
+          "R2": 0.4103,
+          "date_end": "2026-10-05",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 81,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.9349,
+            "r_in_sample": -0.641,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 81
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.1742,
+            "date_end": "2026-09-11",
+            "date_start": "2026-05-13",
+            "label": "inconclusive",
+            "pearson_r": -0.4174,
+            "sign": "-"
+          },
+          "pearson_r": -0.6405,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 111,
+          "R2": 0.0798,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 81,
+            "holdout_label": "ok",
+            "r_holdout": -0.5027,
+            "r_in_sample": -0.2885,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 81
+          },
+          "non_overlapping": {
+            "N": 23,
+            "R2": 0.0738,
+            "date_end": "2026-10-27",
+            "date_start": "2026-05-13",
+            "pearson_r": -0.2717,
+            "sign": "-"
+          },
+          "pearson_r": -0.2825,
+          "sign": "-"
+        }
+      },
+      "S2": {
+        "N": 115,
+        "R2": 0.0278,
+        "date_end": "2026-11-03",
+        "date_start": "2026-05-14",
+        "holdout": {
+          "N_holdout": 35,
+          "N_in_sample": 80,
+          "holdout_label": "ok",
+          "r_holdout": 0.1576,
+          "r_in_sample": 0.1756,
+          "sign_holdout": "+",
+          "sign_in_sample": "+",
+          "signs_match": true,
+          "split_aligned_index": 81
+        },
+        "pearson_r": 0.1667,
+        "sign": "+"
+      },
+      "S3": {
+        "h1": {
+          "N": 114,
+          "R2": 0.2583,
+          "date_end": "2026-11-02",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 80,
+            "holdout_label": "ok",
+            "r_holdout": 0.4174,
+            "r_in_sample": 0.5628,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 81
+          },
+          "pearson_r": 0.5082,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 95,
+          "R2": 0.0245,
+          "date_end": "2026-10-05",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 80,
+            "holdout_label": "inconclusive",
+            "r_holdout": 0.1899,
+            "r_in_sample": 0.1854,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": null,
+            "split_aligned_index": 81
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.0047,
+            "date_end": "2026-09-14",
+            "date_start": "2026-05-14",
+            "label": "inconclusive",
+            "pearson_r": 0.0689,
+            "sign": "+"
+          },
+          "pearson_r": 0.1565,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 110,
+          "R2": 0.0723,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 80,
+            "holdout_label": "ok",
+            "r_holdout": 0.2743,
+            "r_in_sample": 0.2659,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 81
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0763,
+            "date_end": "2026-10-21",
+            "date_start": "2026-05-14",
+            "pearson_r": 0.2763,
+            "sign": "+"
+          },
+          "pearson_r": 0.2689,
+          "sign": "+"
+        }
+      },
+      "pair": "USDCAD",
+      "panel": {
+        "first_date": "2026-05-13",
+        "last_date": "2026-11-03",
+        "max_gap_days": 4,
+        "median_gap_days": 1.0,
+        "min_gap_days": 1,
+        "usable_N_levels": 116
+      }
+    },
+    {
+      "B1": {
+        "h1": {
+          "N": 111,
+          "R2": 0.0001,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0001,
+            "S1_R2": 0.0186,
+            "S1_beats_momentum_in_sample": false
+          },
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 33,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": -0.3325,
+            "r_in_sample": 0.1711,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 79
+          },
+          "pearson_r": 0.0091,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 92,
+          "R2": 0.0506,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0506,
+            "S1_R2": 0.1642,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-09-25",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 14,
+            "N_in_sample": 78,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.16,
+            "r_in_sample": -0.2575,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 79
+          },
+          "pearson_r": -0.2249,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 107,
+          "R2": 0.04,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.04,
+            "S1_R2": 0.0764,
+            "S1_beats_momentum_in_sample": true
+          },
+          "date_end": "2026-10-21",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 29,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": -0.1811,
+            "r_in_sample": -0.2173,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "pearson_r": -0.2,
+          "sign": "-"
+        }
+      },
+      "S1": {
+        "h1": {
+          "N": 112,
+          "R2": 0.0186,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 33,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": -0.2479,
+            "r_in_sample": -0.1027,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "pearson_r": -0.1365,
+          "sign": "-"
+        },
+        "h20": {
+          "N": 93,
+          "R2": 0.1642,
+          "date_end": "2026-09-25",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 14,
+            "N_in_sample": 79,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.3939,
+            "r_in_sample": -0.5457,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.9159,
+            "date_end": "2026-09-09",
+            "date_start": "2026-05-13",
+            "label": "inconclusive",
+            "pearson_r": -0.957,
+            "sign": "-"
+          },
+          "pearson_r": -0.4052,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 108,
+          "R2": 0.0764,
+          "date_end": "2026-10-21",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 29,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": -0.4093,
+            "r_in_sample": -0.2839,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0748,
+            "date_end": "2026-10-19",
+            "date_start": "2026-05-13",
+            "pearson_r": -0.2734,
+            "sign": "-"
+          },
+          "pearson_r": -0.2764,
+          "sign": "-"
+        }
+      },
+      "S2": {
+        "N": 112,
+        "R2": 0.0819,
+        "date_end": "2026-10-28",
+        "date_start": "2026-05-14",
+        "holdout": {
+          "N_holdout": 34,
+          "N_in_sample": 78,
+          "holdout_label": "ok",
+          "r_holdout": 0.2972,
+          "r_in_sample": 0.2844,
+          "sign_holdout": "+",
+          "sign_in_sample": "+",
+          "signs_match": true,
+          "split_aligned_index": 79
+        },
+        "pearson_r": 0.2861,
+        "sign": "+"
+      },
+      "S3": {
+        "h1": {
+          "N": 111,
+          "R2": 0.0104,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 33,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": -0.1597,
+            "r_in_sample": 0.2787,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 79
+          },
+          "pearson_r": 0.1021,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 92,
+          "R2": 0.0055,
+          "date_end": "2026-09-25",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 14,
+            "N_in_sample": 78,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.0106,
+            "r_in_sample": -0.1024,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.0561,
+            "date_end": "2026-09-10",
+            "date_start": "2026-05-14",
+            "label": "inconclusive",
+            "pearson_r": 0.2368,
+            "sign": "+"
+          },
+          "pearson_r": -0.0743,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 107,
+          "R2": 0.0001,
+          "date_end": "2026-10-21",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 29,
+            "N_in_sample": 78,
+            "holdout_label": "ok",
+            "r_holdout": -0.012,
+            "r_in_sample": -0.0102,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 79
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0113,
+            "date_end": "2026-10-20",
+            "date_start": "2026-05-14",
+            "pearson_r": 0.1065,
+            "sign": "+"
+          },
+          "pearson_r": -0.0085,
+          "sign": "-"
+        }
+      },
+      "pair": "AUDCAD",
+      "panel": {
+        "first_date": "2026-05-13",
+        "last_date": "2026-10-28",
+        "max_gap_days": 4,
+        "median_gap_days": 1.0,
+        "min_gap_days": 1,
+        "usable_N_levels": 113
+      }
+    },
+    {
+      "B1": {
+        "h1": {
+          "N": 113,
+          "R2": 0.0434,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0434,
+            "S1_R2": 0.008,
+            "S1_beats_momentum_in_sample": false
+          },
+          "date_end": "2026-11-02",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": 0.1418,
+            "r_in_sample": 0.2136,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 80
+          },
+          "pearson_r": 0.2083,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 94,
+          "R2": 0.0209,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0209,
+            "S1_R2": 0.0002,
+            "S1_beats_momentum_in_sample": false
+          },
+          "date_end": "2026-10-05",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 79,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.1436,
+            "r_in_sample": -0.2087,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 80
+          },
+          "pearson_r": -0.1445,
+          "sign": "-"
+        },
+        "h5": {
+          "N": 109,
+          "R2": 0.0018,
+          "compare_to_S1_R2": {
+            "B1_R2": 0.0018,
+            "S1_R2": 0.0083,
+            "S1_beats_momentum_in_sample": false
+          },
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": -0.0598,
+            "r_in_sample": 0.0346,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 80
+          },
+          "pearson_r": 0.0426,
+          "sign": "+"
+        }
+      },
+      "S1": {
+        "h1": {
+          "N": 114,
+          "R2": 0.008,
+          "date_end": "2026-11-02",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 80,
+            "holdout_label": "ok",
+            "r_holdout": -0.1271,
+            "r_in_sample": 0.0646,
+            "sign_holdout": "-",
+            "sign_in_sample": "+",
+            "signs_match": false,
+            "split_aligned_index": 80
+          },
+          "pearson_r": 0.0894,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 95,
+          "R2": 0.0002,
+          "date_end": "2026-10-05",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 80,
+            "holdout_label": "inconclusive",
+            "r_holdout": -0.7588,
+            "r_in_sample": -0.1346,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": null,
+            "split_aligned_index": 80
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.0058,
+            "date_end": "2026-09-10",
+            "date_start": "2026-05-13",
+            "label": "inconclusive",
+            "pearson_r": 0.0763,
+            "sign": "+"
+          },
+          "pearson_r": 0.0135,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 110,
+          "R2": 0.0083,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-13",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 80,
+            "holdout_label": "ok",
+            "r_holdout": -0.3609,
+            "r_in_sample": -0.0117,
+            "sign_holdout": "-",
+            "sign_in_sample": "-",
+            "signs_match": true,
+            "split_aligned_index": 80
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0119,
+            "date_end": "2026-10-21",
+            "date_start": "2026-05-13",
+            "pearson_r": 0.1093,
+            "sign": "+"
+          },
+          "pearson_r": 0.091,
+          "sign": "+"
+        }
+      },
+      "S2": {
+        "N": 114,
+        "R2": 0.0313,
+        "date_end": "2026-11-04",
+        "date_start": "2026-05-14",
+        "holdout": {
+          "N_holdout": 35,
+          "N_in_sample": 79,
+          "holdout_label": "ok",
+          "r_holdout": 0.3458,
+          "r_in_sample": 0.1084,
+          "sign_holdout": "+",
+          "sign_in_sample": "+",
+          "signs_match": true,
+          "split_aligned_index": 80
+        },
+        "pearson_r": 0.177,
+        "sign": "+"
+      },
+      "S3": {
+        "h1": {
+          "N": 113,
+          "R2": 0.005,
+          "date_end": "2026-11-02",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 34,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": 0.0839,
+            "r_in_sample": 0.0643,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 80
+          },
+          "pearson_r": 0.071,
+          "sign": "+"
+        },
+        "h20": {
+          "N": 94,
+          "R2": 0.02,
+          "date_end": "2026-10-05",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 15,
+            "N_in_sample": 79,
+            "holdout_label": "inconclusive",
+            "r_holdout": 0.2381,
+            "r_in_sample": 0.0945,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": null,
+            "split_aligned_index": 80
+          },
+          "non_overlapping": {
+            "N": 5,
+            "R2": 0.8563,
+            "date_end": "2026-09-11",
+            "date_start": "2026-05-14",
+            "label": "inconclusive",
+            "pearson_r": 0.9254,
+            "sign": "+"
+          },
+          "pearson_r": 0.1415,
+          "sign": "+"
+        },
+        "h5": {
+          "N": 109,
+          "R2": 0.0091,
+          "date_end": "2026-10-27",
+          "date_start": "2026-05-14",
+          "holdout": {
+            "N_holdout": 30,
+            "N_in_sample": 79,
+            "holdout_label": "ok",
+            "r_holdout": 0.0965,
+            "r_in_sample": 0.0884,
+            "sign_holdout": "+",
+            "sign_in_sample": "+",
+            "signs_match": true,
+            "split_aligned_index": 80
+          },
+          "non_overlapping": {
+            "N": 22,
+            "R2": 0.0133,
+            "date_end": "2026-10-22",
+            "date_start": "2026-05-14",
+            "pearson_r": 0.1154,
+            "sign": "+"
+          },
+          "pearson_r": 0.0953,
+          "sign": "+"
+        }
+      },
+      "pair": "USDJPY",
+      "panel": {
+        "first_date": "2026-05-13",
+        "last_date": "2026-11-04",
+        "max_gap_days": 6,
+        "median_gap_days": 1.0,
+        "min_gap_days": 1,
+        "usable_N_levels": 115
+      }
+    }
+  ],
+  "spec_file": "/agent/repos/market-watch-public-dashboard/docs/research/chatgpt/2026-11-05-election-repricing/empirical/spec.json",
+  "status": "ok"
+}

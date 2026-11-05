@@ -1,0 +1,140 @@
+{
+  "study_id": "chatgpt-2026-11-05-election-repricing-empirical",
+  "purpose": "Test (not affirm) whether G10 2Y rate spreads align with FX spot moves; correlation only, not causation or tradable edge.",
+  "input": {
+    "path": "/agent/repos/market-watch-public-dashboard/data/overnight/runs/overnight-20261105/reviews/review-001/evidence_snapshot.json",
+    "series_path": ["families", "market_state", "data", "opportunities", "series"],
+    "expected_content_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "integrity_note": "Pinned digest is sha256_json of parsed JSON excluding packet_sha256 (overnight packet convention). Raw file bytes sha256 differs because packet_sha256 is appended after content hash."
+  },
+  "hypothesis": {
+    "statement": "Higher base-minus-quote 2Y spread (level or change) is associated with subsequent or contemporaneous appreciation of the BASE currency.",
+    "positive_r_supports": true,
+    "prior": "Kevin: link is loose at best; financing spread does not establish spot direction."
+  },
+  "yield_unit": "bp",
+  "yield_unit_note": "458 means 4.58 percent; spreads computed in bp as base_2Y minus quote_2Y.",
+  "fx_unit": "spot_level",
+  "proxy_note": "2Y yields are a policy-expectation PROXY, not forward carry and not the futures path.",
+  "pairs": [
+    {
+      "name": "EURUSD",
+      "base": "EA",
+      "quote": "US",
+      "base_yield_id": "EA_2Y",
+      "quote_yield_id": "US_2Y",
+      "spot_id": "EURUSD",
+      "positive_spot_log_return_means": "EUR appreciation"
+    },
+    {
+      "name": "AUDUSD",
+      "base": "AU",
+      "quote": "US",
+      "base_yield_id": "AU_2Y",
+      "quote_yield_id": "US_2Y",
+      "spot_id": "AUDUSD",
+      "positive_spot_log_return_means": "AUD appreciation"
+    },
+    {
+      "name": "USDCAD",
+      "base": "US",
+      "quote": "CAD",
+      "base_yield_id": "US_2Y",
+      "quote_yield_id": "CA_2Y",
+      "spot_id": "USDCAD",
+      "positive_spot_log_return_means": "USD appreciation"
+    },
+    {
+      "name": "AUDCAD",
+      "base": "AU",
+      "quote": "CAD",
+      "base_yield_id": "AU_2Y",
+      "quote_yield_id": "CA_2Y",
+      "spot_id": "AUDCAD",
+      "positive_spot_log_return_means": "AUD appreciation"
+    },
+    {
+      "name": "USDJPY",
+      "base": "US",
+      "quote": "JP",
+      "base_yield_id": "US_2Y",
+      "quote_yield_id": "JP_2Y",
+      "spot_id": "USDJPY",
+      "positive_spot_log_return_means": "USD appreciation"
+    }
+  ],
+  "excluded_coverage_only": {
+    "nok_sek_gbp": "No NOK, SEK, or GBP 2Y yield series in snapshot.",
+    "nz_pairs": "NZ_2Y stored history too short; report NZ_2Y dates and length; no NZ pair correlations."
+  },
+  "pooling": "Do not pool the five pairs into one sample.",
+  "alignment": {
+    "method": "inner_join",
+    "on": "exact dates present in base yield, quote yield, and spot series",
+    "forward_fill": false,
+    "invented_business_days": false,
+    "sort_dates": true,
+    "drop_duplicate_dates": true,
+    "observation_step": "One aligned row per shared date; calendar gap between consecutive aligned dates may exceed one day."
+  },
+  "returns": {
+    "log_return_pct": "100 * ln(S_t / S_{t-k})",
+    "k": "h aligned observation steps, not calendar days"
+  },
+  "horizons_aligned_steps": [1, 5, 20],
+  "specs": {
+    "S1": {
+      "label": "LEVEL vs subsequent return",
+      "x": "spread_level at t",
+      "y": "spot log return from t to t+h",
+      "horizons": [1, 5, 20],
+      "overlapping": true,
+      "non_overlapping_for_h_gt_1": {
+        "starts": "indices 0, h, 2h, ...",
+        "inconclusive_if_N_lt": 20
+      }
+    },
+    "S2": {
+      "label": "CHANGE contemporaneous",
+      "x": "delta_spread_t = spread_t - spread_{t-1}",
+      "y": "contemporaneous one-step spot log return (t-1 to t)",
+      "interpretation": "association not prediction"
+    },
+    "S3": {
+      "label": "CHANGE vs subsequent return",
+      "x": "delta_spread_t",
+      "y": "spot log return from t to t+h",
+      "horizons": [1, 5, 20],
+      "h1_note": "one-step predictive test",
+      "non_overlapping_for_h_gt_1": {
+        "starts": "indices 0, h, 2h, ...",
+        "inconclusive_if_N_lt": 20
+      }
+    }
+  },
+  "holdout": {
+    "method": "chronological",
+    "in_sample_fraction": 0.7,
+    "holdout_fraction": 0.3,
+    "random": false,
+    "window_search": false,
+    "inconclusive_if_holdout_N_lt": 20,
+    "report": ["sign_in_sample", "sign_holdout", "signs_match"]
+  },
+  "benchmark_B1": {
+    "label": "spot momentum",
+    "x": "lagged one-step spot log return",
+    "y": "forward h-step spot log return",
+    "compare": "R^2 vs spread specs; R^2 of no information is 0; do not claim tradable edge if differentials beat momentum in-sample only"
+  },
+  "statistics": {
+    "emit": ["N", "pearson_r_4dp", "R2", "sign", "date_start", "date_end"],
+    "p_values": "omit preferred",
+    "t_stat": "if printed label naive_independence; not evidence for overlapping returns"
+  },
+  "stability": {
+    "only_cut": "70/30 sign comparison",
+    "no_third_window": true
+  },
+  "outputs": ["spec.json", "run_empirical.py", "results.json", "results.md", "coverage.csv"]
+}

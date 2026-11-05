@@ -1,0 +1,10 @@
+pair,first_date,last_date,usable_N,min_gap_days,median_gap_days,max_gap_days,base_yield_id,quote_yield_id,spot_id
+EURUSD,2026-05-13,2026-11-04,121,1,1.0,4,EA_2Y,US_2Y,EURUSD
+AUDUSD,2026-05-13,2026-10-28,114,1,1.0,4,AU_2Y,US_2Y,AUDUSD
+USDCAD,2026-05-13,2026-11-03,116,1,1.0,4,US_2Y,CA_2Y,USDCAD
+AUDCAD,2026-05-13,2026-10-28,113,1,1.0,4,AU_2Y,CA_2Y,AUDCAD
+USDJPY,2026-05-13,2026-11-04,115,1,1.0,6,US_2Y,JP_2Y,USDJPY
+
+NZ_2Y,stored_len,10,first,2026-10-21,last,2026-11-04
+excluded,NOK/SEK/GBP crosses,no 2Y yield history
+excluded,NZ pairs,NZ_2Y history too short

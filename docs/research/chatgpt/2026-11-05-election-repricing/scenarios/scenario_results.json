@@ -1,0 +1,338 @@
+{
+  "type": "SCENARIO_BOOK_2026_11_05",
+  "hash_verification": {
+    "expected_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "stored_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "canonical_sha256_excluding_packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "raw_file_sha256": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+    "raw_file_matches_packet_sha256": false,
+    "note": "Raw file bytes include packet_sha256; mismatch is expected."
+  },
+  "unit_tests": {
+    "payer_plus_20bp_1000_contracts": true,
+    "receive_same_dv01_opposite": true,
+    "receive_3160_to_3155": true,
+    "book_usd_per_bp": true,
+    "sr3_equivalent_contracts": "Book DV01 25000 USD/bp equals 1000 SR3-equivalent contracts (USD 25/bp each), i.e. 250 contracts per leg on an equal four-leg strip.",
+    "all_pass": true
+  },
+  "book_identity": {
+    "position_id": "pm-chatgpt-595561a1b90f",
+    "side": "long",
+    "side_meaning": "long = receive (yield down = gain)",
+    "notional_usd": 250000000.0,
+    "entry_price": 3.4,
+    "mark_price": 3.14375,
+    "mark_price_note": "prior book mark; forward scenarios use snapshot average",
+    "stored_unrealized_pnl_usd": 640625.0,
+    "pnl_formula": "notional_usd * (entry_price - mark_price) / 100.0",
+    "usd_per_bp_strip_average": 25000.0,
+    "dv01_pnl_identity": "usd_per_bp * (entry_price - mark_price) * 100",
+    "receive_loses_when_average_yield_rises": true
+  },
+  "snapshot_strip": {
+    "codes": [
+      "CRAH27",
+      "CRAM27",
+      "CRAU27",
+      "CRAZ27"
+    ],
+    "legs": {
+      "CRAH27": {
+        "expiry": "2027-03",
+        "price": 97.07,
+        "implied_rate": 2.93,
+        "from_100_minus_price": 2.930000000000007
+      },
+      "CRAM27": {
+        "expiry": "2027-06",
+        "price": 96.925,
+        "implied_rate": 3.075,
+        "from_100_minus_price": 3.075000000000003
+      },
+      "CRAU27": {
+        "expiry": "2027-09",
+        "price": 96.815,
+        "implied_rate": 3.185,
+        "from_100_minus_price": 3.1850000000000023
+      },
+      "CRAZ27": {
+        "expiry": "2027-12",
+        "price": 96.735,
+        "implied_rate": 3.265,
+        "from_100_minus_price": 3.2650000000000006
+      }
+    },
+    "snapshot_average": 3.11375,
+    "corra_fixing": 2.53,
+    "corra_fixing_as_of": "2026-11-03",
+    "gap_average_vs_fixing_bp": 58.37500000000002,
+    "informational_only_not_mispricing": true,
+    "vintage_book_mark_minus_snapshot_average_bp": 2.9999999999999805,
+    "hypothetical_incremental_mtm_usd": 74999.9999999995,
+    "vintage_mtm_label": "NOT canonical P&L"
+  },
+  "scenarios_corra": {
+    "A": {
+      "assumption": true,
+      "scenario_average": 2.75,
+      "gap_bp_snapshot_minus_scenario": 36.375,
+      "receive_mtm_usd": 909375.0,
+      "per_leg": [
+        {
+          "code": "CRAH27",
+          "snapshot_rate": 2.93,
+          "assumption_rate": 2.75,
+          "gap_bp_snapshot_minus_assumption": 18.000000000000014
+        },
+        {
+          "code": "CRAM27",
+          "snapshot_rate": 3.075,
+          "assumption_rate": 2.75,
+          "gap_bp_snapshot_minus_assumption": 32.500000000000014
+        },
+        {
+          "code": "CRAU27",
+          "snapshot_rate": 3.185,
+          "assumption_rate": 2.75,
+          "gap_bp_snapshot_minus_assumption": 43.50000000000001
+        },
+        {
+          "code": "CRAZ27",
+          "snapshot_rate": 3.265,
+          "assumption_rate": 2.75,
+          "gap_bp_snapshot_minus_assumption": 51.500000000000014
+        }
+      ]
+    },
+    "B": {
+      "assumption": true,
+      "scenario_average": 3.2625,
+      "gap_bp_snapshot_minus_scenario": -14.875000000000016,
+      "receive_mtm_usd": -371875.0000000004,
+      "per_leg": [
+        {
+          "code": "CRAH27",
+          "snapshot_rate": 2.93,
+          "assumption_rate": 3.0,
+          "gap_bp_snapshot_minus_assumption": -6.999999999999984
+        },
+        {
+          "code": "CRAM27",
+          "snapshot_rate": 3.075,
+          "assumption_rate": 3.2,
+          "gap_bp_snapshot_minus_assumption": -12.5
+        },
+        {
+          "code": "CRAU27",
+          "snapshot_rate": 3.185,
+          "assumption_rate": 3.35,
+          "gap_bp_snapshot_minus_assumption": -16.500000000000004
+        },
+        {
+          "code": "CRAZ27",
+          "snapshot_rate": 3.265,
+          "assumption_rate": 3.5,
+          "gap_bp_snapshot_minus_assumption": -23.499999999999986
+        }
+      ]
+    },
+    "C": {
+      "assumption": true,
+      "scenario_average": 2.9625,
+      "gap_bp_snapshot_minus_scenario": 15.12500000000001,
+      "receive_mtm_usd": 378125.0000000003,
+      "per_leg": [
+        {
+          "code": "CRAH27",
+          "snapshot_rate": 2.93,
+          "assumption_rate": 2.85,
+          "gap_bp_snapshot_minus_assumption": 8.000000000000007
+        },
+        {
+          "code": "CRAM27",
+          "snapshot_rate": 3.075,
+          "assumption_rate": 2.95,
+          "gap_bp_snapshot_minus_assumption": 12.5
+        },
+        {
+          "code": "CRAU27",
+          "snapshot_rate": 3.185,
+          "assumption_rate": 3.0,
+          "gap_bp_snapshot_minus_assumption": 18.500000000000007
+        },
+        {
+          "code": "CRAZ27",
+          "snapshot_rate": 3.265,
+          "assumption_rate": 3.05,
+          "gap_bp_snapshot_minus_assumption": 21.50000000000003
+        }
+      ]
+    }
+  },
+  "stresses": {
+    "from": "snapshot_strip_average",
+    "parallel_plus_20bp_receive_mtm_usd": -500000.0,
+    "parallel_minus_20bp_receive_mtm_usd": 500000.0,
+    "parallel_plus_100bp_receive_mtm_usd": -2500000.0,
+    "plus_100bp_note": "Book risk-capital shock, not expected loss"
+  },
+  "alternatives": {
+    "uz_half_dv01": {
+      "rejected": true,
+      "label": "ACP387 U/Z-only trap",
+      "per_leg_dv01_usd": 6250.0,
+      "total_dv01_usd": 12500.0,
+      "unchanged_expression": "CRAU27 and CRAZ27 only; per-leg DV01 unchanged at 6250",
+      "uz_snapshot_average": 3.225,
+      "scenario_A_average": 2.75,
+      "four_leg_gap_bp_vs_2_75": 36.375,
+      "uz_average_gap_bp_vs_2_75_larger": 47.50000000000001,
+      "under_A_mtm_usd_half_dv01": 593750.0000000001,
+      "under_A_mtm_usd_full_dv01_for_comparison": 909375.0,
+      "parallel_plus_20bp_loss_usd": -250000.0,
+      "trap_note": "Lower stress loss reflects half DV01, not a better expression; U/Z average gap vs 2.75 (47.500 bp) exceeds four-leg scenario-A gap (36.375 bp) while dollar MTM under A (593750.00) is smaller than full strip (909375.00)."
+    },
+    "rejected_double_add": {
+      "rejected_add": true,
+      "doubled_usd_per_bp": 50000.0,
+      "under_A_mtm_usd": 1818750.0,
+      "under_B_mtm_usd": -743750.0000000008,
+      "parallel_plus_20bp_loss_usd": -1000000.0,
+      "note": "Unknown scenario probabilities mean doubled B loss is not compensated by a known probability weight."
+    },
+    "rejected_sofr_receive": {
+      "rejected": true,
+      "not_held": true,
+      "standalone_only": true,
+      "matched_dv01_usd_per_bp": 25000.0,
+      "snapshot_legs": {
+        "SR3H7": 4.36,
+        "SR3M7": 4.475,
+        "SR3U7": 4.505,
+        "SR3Z7": 4.475
+      },
+      "snapshot_average": 4.453749999999999,
+      "scenarios": {
+        "A": {
+          "assumption": true,
+          "scenario_average": 4.2,
+          "gap_bp_snapshot_minus_scenario": 25.374999999999925,
+          "receive_mtm_usd": 634374.9999999981
+        },
+        "B": {
+          "assumption": true,
+          "scenario_average": 4.625,
+          "gap_bp_snapshot_minus_scenario": -17.125000000000057,
+          "receive_mtm_usd": -428125.00000000146
+        },
+        "C": {
+          "assumption": true,
+          "scenario_average": 4.453749999999999,
+          "gap_bp_snapshot_minus_scenario": 0.0,
+          "receive_mtm_usd": 0.0
+        }
+      }
+    },
+    "rejected_aonia_pay": {
+      "rejected": true,
+      "side": "pay",
+      "currency": "AUD",
+      "not_added_to_corra_book": true,
+      "expiries": [
+        "2027-11",
+        "2027-12",
+        "2028-01",
+        "2028-02",
+        "2028-03",
+        "2028-04"
+      ],
+      "futures_by_month": {
+        "2027-11": 4.72,
+        "2027-12": 4.69,
+        "2028-01": 4.685,
+        "2028-02": 4.635,
+        "2028-03": 4.625,
+        "2028-04": 4.585
+      },
+      "futures_bucket_average": 4.656666666666666,
+      "dv01_per_lot_aud_per_bp": 24.66,
+      "lots_exact_for_25000_aud_per_bp": 168.96458502297918,
+      "lots_rounded_integer": 169,
+      "integer_bucket_dv01_aud_per_bp": 25005.24,
+      "parallel_stress_from_futures_average_aud": {
+        "pay_plus_20bp_parallel_mtm_aud": 500000.0,
+        "pay_minus_20bp_parallel_mtm_aud": -500000.0
+      },
+      "scenarios_later_bucket": {
+        "A": {
+          "assumption": true,
+          "scenario_average": 4.225,
+          "futures_average": 4.656666666666666,
+          "gap_bp_futures_minus_scenario": 43.166666666666664,
+          "pay_mtm_aud_repricing": -1079166.6666666665,
+          "source": "rates_memo stated -5bp/month continuation"
+        },
+        "B": {
+          "assumption": true,
+          "scenario_average": 4.999996666666666,
+          "futures_average": 4.656666666666666,
+          "gap_bp_futures_minus_scenario": -34.33299999999999,
+          "pay_mtm_aud_repricing": 858324.9999999998,
+          "source": "rates_memo later-bucket gap under scenario B"
+        },
+        "C": {
+          "assumption": true,
+          "scenario_average": 4.899996666666667,
+          "futures_average": 4.656666666666666,
+          "gap_bp_futures_minus_scenario": -24.333000000000027,
+          "pay_mtm_aud_repricing": 608325.0000000006,
+          "source": "rates_memo later-bucket gap under scenario C"
+        }
+      },
+      "memo_note": "Scenario sign flips for this bucket were argued in the rates memo; this script does not convert them into an expected value.",
+      "no_fx_conversion_to_usd": true
+    }
+  },
+  "financing": {
+    "funding_cost_usd": 24829.87,
+    "funding_rate_annual": 0.0395,
+    "funding_draw_usd": 2500000.0,
+    "pm_funded_draw_usd": 2500000.0,
+    "funding_formula": "sum over FUNDING history: funding_base_usd * funding_rate_annual * accrual_days / funding_day_count (ACT/360 per entry)",
+    "recomputed_sum_usd": 24829.86111111111,
+    "history_accrual_pieces": [
+      {
+        "accrual_days": 9,
+        "computed": 4850.0,
+        "stored": 4850.0
+      },
+      {
+        "accrual_days": 4,
+        "computed": 2150.0,
+        "stored": 2150.0
+      },
+      {
+        "accrual_days": 32,
+        "computed": 17555.555555555555,
+        "stored": 17555.56
+      },
+      {
+        "accrual_days": 1,
+        "computed": 274.30555555555554,
+        "stored": 274.31
+      }
+    ],
+    "opened_at": "2026-09-19T23:10:54.130509-04:00",
+    "last_decision_at": "2026-11-04T22:08:56.041871-05:00",
+    "scenario_mtm_excludes_funding": true
+  },
+  "instrument_disclosure": {
+    "CRA": "Montr\u00e9al Exchange Three-Month CORRA futures",
+    "CRA_dv01": "CAD 25 per 0.01 per CAD 1,000,000 face (90/360); book uses USD notional convention per stored P&L identity, not CAD face rescaling.",
+    "SR3": "USD 25 per 0.01 per USD 1,000,000",
+    "AONIA_IB": "A$24.66 per 0.01 per lot, notional A$3,000,000, 30/365",
+    "cad_aud_not_converted_to_usd": true
+  },
+  "sign_notes": "The existing position is a receive; yield up is a loss; the +20 bp payer gain of 500000 USD is the opposite sign of this book."
+}
