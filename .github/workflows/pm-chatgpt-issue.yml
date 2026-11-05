@@ -325,6 +325,7 @@ jobs:
             ''|*[!0-9]*) echo "refusing non-numeric issue number" >&2; exit 1 ;;
           esac
           if [ ! -f /tmp/mw-chatgpt-research/result.json ]; then
+            mkdir -p /tmp/mw-chatgpt-research
             echo '{"status":"rejected","reason":"apply_failed","books_mutated":false}' > /tmp/mw-chatgpt-research/result.json
           fi
           PYTHONPATH=. python3 - <<'PY'

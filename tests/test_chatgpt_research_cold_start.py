@@ -112,6 +112,82 @@ class ChatGPTResearchColdStartTests(unittest.TestCase):
             )
 
 
+    def test_apply_from_env_cli_preserves_lesson_provenance(self) -> None:
+        # Real workflow entrypoint: a lesson-backed edge_update must succeed
+        # using the temporary research sandbox and write only research output.
+        import tempfile
+
+        index_path = REPO / "data/trading/pm/chatgpt/research/index.json"
+        profile_path = REPO / "data/trading/pm/chatgpt/research/edge/profile.json"
+        source_index = json.loads(index_path.read_text(encoding="utf-8"))
+        source_profile = json.loads(profile_path.read_text(encoding="utf-8"))
+        ticket = {
+            "schema_version": 1,
+            "type": "RESEARCH_MEMORY",
+            "pm_id": "chatgpt",
+            "action": "edge_update",
+            "expected_research_sha256": source_index["research_sha256"],
+            "expected_revision_id": source_profile["current_revision_id"],
+            "accept_as_method": True,
+            "promotion_basis": {
+                "basis_kind": "lesson",
+                "source_id": "les-portfolio-pass-20260920",
+                "rationale": "Existing canonical lesson is the source for this research test.",
+            },
+            "edge_method": {
+                "method_id": "edge-portfolio-pass-20260920",
+                "statement": "Retain the existing portfolio construction research discipline.",
+                "method_status": "active",
+                "confidence": "not_assessed",
+            },
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            result_path = Path(tmp) / "result.json"
+            generated_dir = Path(tmp) / "generated"
+            github_output = Path(tmp) / "github_output.txt"
+            env = _child_env()
+            env.update(
+                {
+                    "ISSUE_BODY": json.dumps(ticket),
+                    "ISSUE_NUMBER": "289",
+                    "ISSUE_AUTHOR_LOGIN": "fixture-user",
+                    "GITHUB_OUTPUT": str(github_output),
+                }
+            )
+            completed = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "scripts.pm.chatgpt_research",
+                    "apply-from-env",
+                    "--result",
+                    str(result_path),
+                    "--generated",
+                    str(generated_dir),
+                ],
+                cwd=REPO,
+                capture_output=True,
+                text=True,
+                env=env,
+            )
+            self.assertEqual(completed.returncode, 0, completed.stderr)
+            result = json.loads(result_path.read_text(encoding="utf-8"))
+            self.assertEqual(result["status"], "applied")
+            research = generated_dir / "data/trading/pm/chatgpt/research"
+            updated = json.loads((research / "edge/profile.json").read_text(encoding="utf-8"))
+            self.assertNotEqual(updated["current_revision_id"], source_profile["current_revision_id"])
+            self.assertEqual(
+                updated["audit"][-1]["promotion_basis"]["source_id"],
+                "les-portfolio-pass-20260920",
+            )
+            self.assertIn("status=applied", github_output.read_text(encoding="utf-8"))
+            self.assertFalse((generated_dir / "data/trading/pm/chatgpt/lessons.json").exists())
+            self.assertEqual(
+                json.loads(index_path.read_text(encoding="utf-8"))["research_sha256"],
+                source_index["research_sha256"],
+            )
+
+
 
 if __name__ == "__main__":
     unittest.main()
