@@ -92,6 +92,26 @@ def _without_promoted_identities(histories: dict, identities: tuple) -> tuple[di
     return work, removed
 
 
+def _nov3_as_of_history() -> dict:
+    """Reconstruct the November 3 information set in memory, not on disk.
+
+    Canonical history advances after the original launch; replay tests must
+    not score observations released after their fixed CHECKED_AT boundary.
+    """
+    work = copy.deepcopy(load_history(HISTORY_DIR))
+    cutoff_day = CHECKED_AT[:10]
+    for country in ("US", "EA"):
+        for component in work[country]["components"].values():
+            component["observations"] = [
+                row for row in component["observations"]
+                if not (
+                    isinstance(row.get("release_date"), str)
+                    and row["release_date"][:10] > cutoff_day
+                )
+            ]
+    return work
+
+
 def _write_history_countries(dest: Path, histories: dict, countries: tuple[str, ...]) -> None:
     dest.mkdir(parents=True, exist_ok=True)
     for src in HISTORY_DIR.glob("*.json"):
@@ -159,7 +179,7 @@ class FrozenNov3LaunchLineageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             current_history = tmp_path / "current_history"
-            shutil.copytree(HISTORY_DIR, current_history)
+            _write_history_countries(current_history, _nov3_as_of_history(), ("US", "EA"))
             current_launch = tmp_path / "current_launch"
             current_launch.mkdir()
             current_bridge = recompute_scores_after_observation(
@@ -183,7 +203,7 @@ class FrozenNov3LaunchLineageTests(unittest.TestCase):
             self.assertEqual(current["appended_count"], 0)
             self._assert_nov3_scores(current_launch)
 
-            stripped, removed = _without_promoted_identities(load_history(HISTORY_DIR), _NOV3_PROMOTED)
+            stripped, removed = _without_promoted_identities(_nov3_as_of_history(), _NOV3_PROMOTED)
             self.assertEqual(len(removed), len(_NOV3_PROMOTED))
             fresh_history = tmp_path / "fresh_history"
             _write_history_countries(fresh_history, stripped, ("US", "EA"))
@@ -225,7 +245,7 @@ class CountryDetailRenderAfterStagingTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             tmp_path = Path(tmp)
             work_history = tmp_path / "history"
-            shutil.copytree(HISTORY_DIR, work_history)
+            _write_history_countries(work_history, _nov3_as_of_history(), ("US", "EA"))
             launch_dir = tmp_path / "launch"
             launch_dir.mkdir()
             stage_verified_lineage(
