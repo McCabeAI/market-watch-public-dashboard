@@ -7,22 +7,21 @@ Rules, quoted from the exchange and applied with the holiday calendars below:
 
 * Brent Last Day Financial Futures (BZ), NYMEX Rulebook Chapter 698,
   rule 698102.E (same termination day as ICE Brent):
-  "Trading shall cease on the last London business day of the second month
-  preceding the contract month, except for the London business day preceding
-  New Year's Day, where trading shall cease on the second London business day
-  preceding New Year's Day."
-  Source: https://www.cmegroup.com/content/dam/cmegroup/rulebook/NYMEX/6/698.pdf
+  "Trading shall cease at the end of the designated settlement period on the
+  last Business Day of the second month preceding the relevant contract month.
+  If the day on which trading is due to cease would be either (i) the Business
+  Day preceding Christmas Day, or (ii) the Business Day preceding New Year's
+  Day, then trading shall cease on the next preceding Business Day."
+  Sources:
+  https://www.cmegroup.com/content/dam/cmegroup/rulebook/NYMEX/6/698.pdf
+  https://www.ice.com/products/219/Brent-Crude-Futures/expiry
 
-  A London business day for this rule is a weekday on which ICE Brent trades.
-  The IFEU oil trading schedule (July 2026 edition,
-  https://www.ice.com/publicdocs/Trading_Schedule.pdf) closes Brent on
-  New Year's Day, Good Friday, and Christmas Day. UK bank holidays on which
-  that schedule still runs Brent (Easter Monday, May Day, the spring and
-  summer bank holidays, Boxing Day) remain London business days. Early-close
-  sessions, including the US Thanksgiving and Christmas Eve sessions in that
-  schedule, are business days. The New Year exception is applied only when the
-  ordinary last London business day is itself the London business day before
-  New Year's Day.
+  A Business Day here is a weekday that is not a public holiday in England
+  and Wales (New Year's Day with weekend substitute, Good Friday, Easter
+  Monday, the early-May / spring / summer bank holidays, Christmas and Boxing
+  Day with weekend substitutes). An open ICE Brent session is not a London
+  business day when the date is still an England-and-Wales bank holiday. Do
+  not infer business days from the IFEU trading schedule.
 
 * Light Sweet Crude Oil (CL), NYMEX Rulebook Chapter 200, rule 200102.F:
   "No trades in Light Sweet Crude Oil futures in the expiring contract month
@@ -72,7 +71,7 @@ CALENDAR_YEAR_MAX = 2032
 
 BRENT_RULE_ID = "nymex_698102_e_brent_last_day"
 BRENT_RULE_SOURCE = "https://www.cmegroup.com/content/dam/cmegroup/rulebook/NYMEX/6/698.pdf"
-LONDON_BUSINESS_DAY_SOURCE = "https://www.ice.com/publicdocs/Trading_Schedule.pdf"
+LONDON_BUSINESS_DAY_SOURCE = "https://www.ice.com/products/219/Brent-Crude-Futures/expiry"
 
 CL_RULE_ID = "nymex_200102_f_light_sweet_crude"
 CL_RULE_SOURCE = "https://www.cmegroup.com/content/dam/cmegroup/rulebook/NYMEX/2/200.pdf"
@@ -192,15 +191,41 @@ def nymex_full_closures(year: int) -> frozenset[date]:
     return frozenset(d for d in closures if d.year == year)
 
 
-def ice_brent_full_closures(year: int) -> frozenset[date]:
-    """Weekdays ICE Brent does not trade. Early closes remain business days."""
-    _require_year(year)
-    closures = {
+def _nominal_england_wales_holidays(year: int) -> list[date]:
+    easter = _easter_sunday(year)
+    return [
         date(year, 1, 1),
-        _easter_sunday(year) - timedelta(days=2),
+        easter - timedelta(days=2),
+        easter + timedelta(days=1),
+        _nth_weekday(year, 5, 0, 1),
+        _last_weekday(year, 5, 0),
+        _last_weekday(year, 8, 0),
         date(year, 12, 25),
-    }
-    return frozenset(closures)
+        date(year, 12, 26),
+    ]
+
+
+def england_wales_bank_holidays(year: int) -> frozenset[date]:
+    """England and Wales public holidays in ``year``, including weekend substitutes."""
+    _require_year(year)
+    nominals = sorted(_nominal_england_wales_holidays(year))
+    holidays: set[date] = set()
+    for nominal in nominals:
+        if nominal.weekday() < 5:
+            holidays.add(nominal)
+    for nominal in nominals:
+        if nominal.weekday() >= 5:
+            cursor = nominal
+            for _ in range(14):
+                cursor += timedelta(days=1)
+                if cursor.weekday() < 5 and cursor not in holidays:
+                    holidays.add(cursor)
+                    break
+            else:
+                raise ExpiryCalendarUnavailable(
+                    f"no substitute weekday for England/Wales holiday {nominal.isoformat()}"
+                )
+    return frozenset(d for d in holidays if d.year == year)
 
 
 def is_nymex_business_day(value: date) -> bool:
@@ -214,7 +239,7 @@ def is_london_business_day(value: date) -> bool:
     _require_year(value.year)
     if value.weekday() >= 5:
         return False
-    return value not in ice_brent_full_closures(value.year)
+    return value not in england_wales_bank_holidays(value.year)
 
 
 def _nth_prior(predicate, origin: date, n: int) -> date:
@@ -254,13 +279,16 @@ def brent_final_trade_date(year: int, month: int) -> date:
     if month < 1 or month > 12:
         raise InvalidContractIdentity(f"month out of range: {month}")
     expiry_year, expiry_month = add_months(year, month, -2)
-    last = _last_in_month(expiry_year, expiry_month, is_london_business_day)
+    candidate = _last_in_month(expiry_year, expiry_month, is_london_business_day)
     if expiry_month == 12:
-        new_year = date(expiry_year + 1, 1, 1)
-        preceding = _previous(is_london_business_day, new_year)
-        if last == preceding:
-            return _nth_prior(is_london_business_day, new_year, 2)
-    return last
+        christmas = date(expiry_year, 12, 25)
+        new_years = date(expiry_year + 1, 1, 1)
+        preceding_christmas = _previous(is_london_business_day, christmas)
+        preceding_new_years = _previous(is_london_business_day, new_years)
+        if candidate in (preceding_christmas, preceding_new_years):
+            candidate = _previous(is_london_business_day, candidate)
+    _require_year(candidate.year)
+    return candidate
 
 
 def wti_final_trade_date(year: int, month: int) -> date:

@@ -20,7 +20,7 @@ from scripts.prima_pressure.expiry import (
     assess_stored_shock_inputs,
     brent_final_trade_date,
     contract_is_active,
-    ice_brent_full_closures,
+    england_wales_bank_holidays,
     is_london_business_day,
     is_nymex_business_day,
     nymex_full_closures,
@@ -88,17 +88,138 @@ class ExpiryCalendarTests(unittest.TestCase):
         self.assertEqual(front["contract_month"], "2027-01")
         self.assertEqual(front["final_trade_date"], date(2026, 11, 30))
 
-    def test_weekend_and_ice_holiday_do_not_close_brent_bank_holidays(self) -> None:
-        self.assertIn(date(2026, 4, 3), ice_brent_full_closures(2026))
+    def test_england_wales_bank_holidays_are_not_london_business_days(self) -> None:
+        self.assertIn(date(2026, 4, 3), england_wales_bank_holidays(2026))
         self.assertFalse(is_london_business_day(date(2026, 4, 3)))
-        self.assertTrue(is_london_business_day(date(2026, 4, 6)))  # Easter Monday, Brent open
+        self.assertFalse(is_london_business_day(date(2026, 4, 6)))  # Easter Monday
+        self.assertFalse(is_london_business_day(date(2026, 5, 4)))  # Early May
+        self.assertFalse(is_london_business_day(date(2026, 5, 25)))  # Spring bank
+        self.assertFalse(is_london_business_day(date(2027, 5, 31)))  # Spring bank
+        self.assertFalse(is_london_business_day(date(2026, 8, 31)))  # Summer bank
+        self.assertFalse(is_london_business_day(date(2027, 8, 30)))  # Summer bank
         self.assertFalse(is_london_business_day(date(2026, 12, 25)))
-        self.assertTrue(is_london_business_day(date(2026, 12, 28)))  # Boxing Day, Brent open
+        self.assertFalse(is_london_business_day(date(2026, 12, 28)))  # Boxing substitute
         self.assertTrue(is_london_business_day(date(2026, 12, 31)))
         self.assertFalse(is_london_business_day(date(2027, 1, 1)))
 
-    def test_february_contract_uses_new_year_exception(self) -> None:
+    def test_brent_last_trade_dates_uk_bank_holiday_month_ends(self) -> None:
+        self.assertEqual(brent_final_trade_date(2026, 10), date(2026, 8, 28))
+        self.assertEqual(brent_final_trade_date(2027, 7), date(2027, 5, 28))
+        self.assertEqual(brent_final_trade_date(2026, 12), date(2026, 10, 30))
+        self.assertEqual(brent_final_trade_date(2027, 1), date(2026, 11, 30))
         self.assertEqual(brent_final_trade_date(2027, 2), date(2026, 12, 30))
+
+    def test_brent_january_and_february_2025_fail_closed(self) -> None:
+        for month in (1, 2):
+            with self.subTest(month=month):
+                with self.assertRaises(Exception) as caught:
+                    brent_final_trade_date(2025, month)
+                self.assertEqual(
+                    getattr(caught.exception, "reason", None), "expiry_calendar_unavailable"
+                )
+
+    def test_brent_final_trade_dates_match_ice_expiry_table(self) -> None:
+        ice_last_trade = {
+            (2025, 3): date(2025, 1, 31),
+            (2025, 4): date(2025, 2, 28),
+            (2025, 5): date(2025, 3, 31),
+            (2025, 6): date(2025, 4, 30),
+            (2025, 7): date(2025, 5, 30),
+            (2025, 8): date(2025, 6, 30),
+            (2025, 9): date(2025, 7, 31),
+            (2025, 10): date(2025, 8, 29),
+            (2025, 11): date(2025, 9, 30),
+            (2025, 12): date(2025, 10, 31),
+            (2026, 1): date(2025, 11, 28),
+            (2026, 2): date(2025, 12, 30),
+            (2026, 3): date(2026, 1, 30),
+            (2026, 4): date(2026, 2, 27),
+            (2026, 5): date(2026, 3, 31),
+            (2026, 6): date(2026, 4, 30),
+            (2026, 7): date(2026, 5, 29),
+            (2026, 8): date(2026, 6, 30),
+            (2026, 9): date(2026, 7, 31),
+            (2026, 10): date(2026, 8, 28),
+            (2026, 11): date(2026, 9, 30),
+            (2026, 12): date(2026, 10, 30),
+            (2027, 1): date(2026, 11, 30),
+            (2027, 2): date(2026, 12, 30),
+            (2027, 3): date(2027, 1, 29),
+            (2027, 4): date(2027, 2, 26),
+            (2027, 5): date(2027, 3, 31),
+            (2027, 6): date(2027, 4, 30),
+            (2027, 7): date(2027, 5, 28),
+            (2027, 8): date(2027, 6, 30),
+            (2027, 9): date(2027, 7, 30),
+            (2027, 10): date(2027, 8, 31),
+            (2027, 11): date(2027, 9, 30),
+            (2027, 12): date(2027, 10, 29),
+            (2028, 1): date(2027, 11, 30),
+            (2028, 2): date(2027, 12, 30),
+            (2028, 3): date(2028, 1, 31),
+            (2028, 4): date(2028, 2, 29),
+            (2028, 5): date(2028, 3, 31),
+            (2028, 6): date(2028, 4, 28),
+            (2028, 7): date(2028, 5, 31),
+            (2028, 8): date(2028, 6, 30),
+            (2028, 9): date(2028, 7, 31),
+            (2028, 10): date(2028, 8, 31),
+            (2028, 11): date(2028, 9, 29),
+            (2028, 12): date(2028, 10, 31),
+            (2029, 1): date(2028, 11, 30),
+            (2029, 2): date(2028, 12, 28),
+            (2029, 3): date(2029, 1, 31),
+            (2029, 4): date(2029, 2, 28),
+            (2029, 5): date(2029, 3, 29),
+            (2029, 6): date(2029, 4, 30),
+            (2029, 7): date(2029, 5, 31),
+            (2029, 8): date(2029, 6, 29),
+            (2029, 9): date(2029, 7, 31),
+            (2029, 10): date(2029, 8, 31),
+            (2029, 11): date(2029, 9, 28),
+            (2029, 12): date(2029, 10, 31),
+            (2030, 1): date(2029, 11, 30),
+            (2030, 2): date(2029, 12, 28),
+            (2030, 3): date(2030, 1, 31),
+            (2030, 4): date(2030, 2, 28),
+            (2030, 5): date(2030, 3, 29),
+            (2030, 6): date(2030, 4, 30),
+            (2030, 7): date(2030, 5, 31),
+            (2030, 8): date(2030, 6, 28),
+            (2030, 9): date(2030, 7, 31),
+            (2030, 10): date(2030, 8, 30),
+            (2030, 11): date(2030, 9, 30),
+            (2030, 12): date(2030, 10, 31),
+            (2031, 1): date(2030, 11, 29),
+            (2031, 2): date(2030, 12, 30),
+            (2031, 3): date(2031, 1, 31),
+            (2031, 4): date(2031, 2, 28),
+            (2031, 5): date(2031, 3, 31),
+            (2031, 6): date(2031, 4, 30),
+            (2031, 7): date(2031, 5, 30),
+            (2031, 8): date(2031, 6, 30),
+            (2031, 9): date(2031, 7, 31),
+            (2031, 10): date(2031, 8, 29),
+            (2031, 11): date(2031, 9, 30),
+            (2031, 12): date(2031, 10, 31),
+            (2032, 1): date(2031, 11, 28),
+            (2032, 2): date(2031, 12, 30),
+            (2032, 3): date(2032, 1, 30),
+            (2032, 4): date(2032, 2, 27),
+            (2032, 5): date(2032, 3, 31),
+            (2032, 6): date(2032, 4, 30),
+            (2032, 7): date(2032, 5, 28),
+            (2032, 8): date(2032, 6, 30),
+            (2032, 9): date(2032, 7, 30),
+            (2032, 10): date(2032, 8, 31),
+            (2032, 11): date(2032, 9, 30),
+            (2032, 12): date(2032, 10, 29),
+            (2033, 1): date(2032, 11, 30),
+            (2033, 2): date(2032, 12, 30),
+        }
+        for (year, month), expected in ice_last_trade.items():
+            with self.subTest(year=year, month=month):
+                self.assertEqual(brent_final_trade_date(year, month), expected)
 
     def test_nov4_brent_front_is_january_2027_not_expired_december(self) -> None:
         as_of = date(2026, 11, 4)
