@@ -5,41 +5,54 @@
       "at": "2026-09-20T20:35:23-04:00",
       "reason": "Existing lesson. Not promoted from realized P&L.",
       "revision_id": "rev-edge-portfolio-pass-20260920-01"
+    },
+    {
+      "action": "edge_update",
+      "at": "2026-11-04T20:55:48.535679-05:00",
+      "promotion_basis": {
+        "basis_kind": "lesson",
+        "rationale": "Refine the existing explicit portfolio-construction lesson following Kevin's direct correction in the ChatGPT PM Work conversation on 2026-11-04. The PM had treated positive correlation as duplication, negative correlation as requiring a direct hedge, and a worked AUDNZD/CORRA example as an invitation to select those trades. Kevin explicitly corrected the reasoning method, not the trade list. Adopt component-risk and state-dependent asymmetric-payoff analysis as the portfolio process; this is direct coaching plus the existing own-PM lesson, not demonstrated trading performance or a new market forecast.",
+        "source_id": "les-portfolio-pass-20260920"
+      },
+      "revision_id": "rev-edge-portfolio-pass-20260920-02"
     }
   ],
-  "current_revision_id": "rev-edge-portfolio-pass-20260920-01",
+  "current_revision_id": "rev-edge-portfolio-pass-20260920-02",
   "methods": [
     {
-      "accept_as_method": false,
+      "accept_as_method": true,
       "conditions_failed": [],
       "conditions_worked": [],
       "confidence": "not_assessed",
-      "counterexamples": [],
+      "counterexamples": [
+        "Unvalidated risk to test: an apparent negative-correlation offset can lose alongside the core position when component sensitivities change across regimes.",
+        "Unvalidated risk to test: positively correlated positions can be redundant at a particular size, but the label alone cannot establish that; compare priced edge, component exposure and payoff asymmetry.",
+        "No realized performance validation is claimed for this adopted decision method."
+      ],
       "maturity": "candidate",
       "method_id": "edge-portfolio-pass-20260920",
-      "promotion": "seeded_from_existing_lesson",
+      "promotion": "ticket_edge_update",
       "provenance_label": "seeded_from_existing_lesson",
       "scope": {
-        "asset_class": "rates",
-        "catalyst_type": null,
-        "countries": [
-          "CA"
+        "asset_class": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": "portfolio_construction",
+        "failure_mode": "correlation_or_overlap_used_as_veto",
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [
+          "growth",
+          "inflation",
+          "policy",
+          "energy_terms_of_trade",
+          "fiscal_term_premium",
+          "currency",
+          "liquidity",
+          "carry",
+          "horizon_and_path"
         ],
-        "currencies": [
-          "CAD"
-        ],
-        "decision_dimension": null,
-        "failure_mode": null,
-        "instrument_family": "corra",
-        "instruments": [
-          "CORRA_2027H-Z",
-          "CORRA_2027-03",
-          "CORRA_2027-06",
-          "CORRA_2027-09",
-          "CORRA_2027-12"
-        ],
-        "market_drivers": [],
-        "setup_type": "futures_strip_average"
+        "setup_type": null
       },
       "source_hypothesis_ids": [],
       "source_lesson_ids": [
@@ -49,12 +62,12 @@
         "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
       ],
       "source_trade_ids_note": "scope citation only; profitability is not evidence",
-      "statement": "As ChatGPT PM, do not stop after selecting the best individual trade. After choosing a core idea, explicitly construct the portfolio: scan independent positive-EV opportunities, identify the main adverse scenario for the existing book, test complementary or offsetting trades, avoid duplicated macro beta, and justify why each strong candidate is added or rejected. A one-position book is valid only after this portfolio pass.",
+      "statement": "Begin each review with changes in the world and the available opportunity set, then construct and manage the portfolio. Decompose every candidate and existing position into its material component risks: growth, inflation, policy reaction, energy/terms of trade, fiscal/term premium, currency/FX, liquidity, carry/financing, horizon and path dependence, as applicable. Validate the economic case and priced expectations for those components, and evaluate their joint state-dependent signed sensitivities, nonlinear/asymmetric payoffs and plausible adverse paths at proposed sizes. Negative correlation does not require a direct hedge relationship; positive correlation does not by itself imply doubling down. Shared factors may coexist when different pricing, sensitivities, timing, catalysts and realization paths improve expected portfolio returns or create justified opportunities to harvest and rebalance. Neither a correlation sign nor a low historical coefficient proves edge or diversification. Evaluate the components and aggregate exposures instead of applying a correlation/overlap veto or requiring each addition to hedge the current book. Test whether supposed offsets fail together under alternative regimes and include costs; opposite or imperfectly correlated moves alone do not guarantee profit. Maintain position-specific realization and invalidation logic. One position, multiple positions and flat are all permissible outcomes of an actual opportunity/portfolio comparison. Kevin's AUDNZD/CORRA example teaches this method and is not a trade instruction or predetermined recommendation.",
       "status": "active"
     }
   ],
-  "persisted_at": null,
+  "persisted_at": "2026-11-04T20:55:48.535679-05:00",
   "schema_version": 1,
   "type": "CHATGPT_RESEARCH_EDGE_PROFILE",
-  "updated_at": "2026-09-20T20:35:23-04:00"
+  "updated_at": "2026-11-04T20:55:48.535679-05:00"
 }
