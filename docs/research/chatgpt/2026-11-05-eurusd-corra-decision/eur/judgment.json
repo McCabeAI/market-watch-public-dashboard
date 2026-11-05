@@ -1,0 +1,71 @@
+{
+  "instrument": "EURUSD",
+  "role": "Grok 4.7 High EURUSD decision analyst",
+  "as_of_close": "2026-11-04",
+  "anchor_price": 1.1267,
+  "decision": "reject",
+  "direction": null,
+  "adopted_notional_usd": 0,
+  "confidence": "medium",
+  "confidence_sentence": "The 4 November cross-section and the 30 October to 3 November oil leg are enough to decline a long, and they leave the next broad dollar move unsigned.",
+  "owns_positive_expected_spot_return": false,
+  "owns_negative_expected_spot_return": false,
+  "mechanism_owned": null,
+  "declined_plan": {
+    "initial_notional_usd": 10000000,
+    "smaller_alternative_notional_usd": 5000000,
+    "not_proposed_notional_usd": 25000000,
+    "target_near": 1.135569,
+    "target_far": 1.14715,
+    "target_far_display": 1.1472,
+    "horizon_weeks": [8, 12],
+    "financing_horizon_days": 84,
+    "exit_price": 1.1179,
+    "exit_simple_percent": -0.781,
+    "stress_price": 1.113,
+    "stress_simple_percent": -1.216,
+    "planned_exit_loss_budget_usd": 80000,
+    "spot_pnl_usd": {
+      "notional_10000000": {
+        "near_edge": 78719,
+        "far_edge": 181504,
+        "planned_exit": -78104,
+        "stress": -121594
+      },
+      "notional_5000000": {
+        "near_edge": 39360,
+        "far_edge": 90752,
+        "planned_exit": -39052,
+        "stress": -60797
+      }
+    },
+    "indicative_carry_cost_84d_usd": {
+      "sovereign_2y_152bp": {"notional_10000000": 35467, "notional_5000000": 17733},
+      "sofr_minus_estr_152_8bp": {"notional_10000000": 35653, "notional_5000000": 17827}
+    },
+    "joint_with_corra_plus_20bp_usd": {
+      "corra_loss": -500000,
+      "notional_10000000_exit": -578104,
+      "notional_5000000_exit": -539052,
+      "notional_10000000_stress": -621594,
+      "notional_5000000_stress": -560797
+    }
+  },
+  "wait_condition": "A later shared packet that still marks EURUSD at or below 1.1267 and WTI at or below 88.12, and marks the euro higher versus CHF than the 4 November implied cross 0.9188 (1.1267 times USDCHF 0.81547883).",
+  "wait_adopted": false,
+  "foregone_opportunity_hypothesis": "From the 4 November 2026 close of 1.1267, EURUSD does not trade at 1.1356 within 12 weeks unless a daily close at or below 1.1179 prints first.",
+  "sizing_adverse_move": {
+    "price": 1.1179,
+    "simple_percent": -0.781,
+    "kind": "management_range_not_quantile"
+  },
+  "vol_yardstick_requested": [
+    "20-observation and 60-observation sample standard deviation of daily EURUSD log returns",
+    "sqrt-time scale at 10, 20, and 60 trading days, labeled as a yardstick not a probability",
+    "empirical adverse excursion over hold-length windows inside the 126 stored closes"
+  ],
+  "fx_extract_20obs_daily_log_pct_stdev": 0.288103,
+  "blocks_entry": "unidentified sign of the euro-specific residual",
+  "missing_forwards_block_entry": false,
+  "hedge_corra": false
+}
