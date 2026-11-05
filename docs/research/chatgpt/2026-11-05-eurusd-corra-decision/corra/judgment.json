@@ -1,0 +1,75 @@
+{
+  "anchor_strip_average": 3.11375,
+  "as_of_note": "Snapshot market-state 2026-11-05T10:17:36Z; packet freeze 2026-11-05T04:53:53.458055-05:00. Both clocks stand.",
+  "central_2027_average": 3.0075,
+  "central_contracts": {
+    "CRAH27": 2.9,
+    "CRAM27": 2.98,
+    "CRAU27": 3.05,
+    "CRAZ27": 3.1
+  },
+  "confidence": "low-to-medium",
+  "decision": "resize",
+  "direction": "receive",
+  "dollars_usd": {
+    "at_100m_dv01_10000": {
+      "central_10_625bp": 106250,
+      "exit_15bp": -150000,
+      "noise_8bp": -80000,
+      "slippage_25bp": -250000,
+      "stress_20bp": -200000,
+      "tradable_8bp": 80000,
+      "worse_30bp": -300000
+    },
+    "at_250m_dv01_25000": {
+      "central_10_625bp": 265625,
+      "exit_15bp": -375000,
+      "noise_8bp": -200000,
+      "slippage_25bp": -625000,
+      "stress_20bp": -500000,
+      "tradable_8bp": 200000,
+      "worse_30bp": -750000
+    }
+  },
+  "eventual_2027_average_range": [2.8, 3.2],
+  "exit_bp_adverse": 15,
+  "exit_strip_average": 3.26375,
+  "expression": "equal-weight CRAH27 CRAM27 CRAU27 CRAZ27",
+  "from_flat_notional_usd": 100000000,
+  "from_flat_dv01_usd_per_bp": 10000,
+  "funding": {
+    "act_360_rate": 0.0395,
+    "draw_usd_at_100m": 1000000,
+    "draw_usd_at_250m": 2500000,
+    "usd_8_weeks_56_over_360_at_100m": 6144,
+    "usd_12_weeks_84_over_360_at_100m": 9217,
+    "note": "Proportional to DV01. Not a direction. Full-size year is 98750 per 360 days."
+  },
+  "horizon": "8-12 weeks",
+  "insurmountable_gap": false,
+  "joint_eurusd": {
+    "hedge_required": false,
+    "corra_loss_usd_if_adverse_15bp_at_100m": 150000,
+    "corra_loss_usd_if_adverse_15bp_at_250m": 375000,
+    "note": "EURUSD decline is an additional separate loss and is not netted."
+  },
+  "now_wait_reject": "NOW",
+  "ordinary_noise_bp_adverse": 8,
+  "position_id": "pm-chatgpt-595561a1b90f",
+  "proxy_2_75": {
+    "role": "prima corra_neutral_gap input, not a path",
+    "versus_floor": "5bp below the 2.80 floor",
+    "verdict": "fails as the four-quarter average"
+  },
+  "quant_request": {
+    "adverse_bp_to_cost": [8, 15, 20, 25, 30],
+    "canada_2y": "126 stored points 2026-05-04 to 2026-11-03, last 3.26. Label sovereign 2y vol separately. Not strip vol.",
+    "strip_history": "absent"
+  },
+  "recommended_notional_usd": 100000000,
+  "slippage_bp_beyond_exit": 10,
+  "tradable_bp_from_anchor": -8,
+  "tradable_bp_range": [-10, -5],
+  "tradable_strip_at_target": 3.03375,
+  "wait_condition_rejected": "One Canadian CPI or labor print newer than September. Can forgo about 8bp, to 3.03375."
+}
