@@ -6,7 +6,7 @@ This is the production contract for the full adversarial Trader Room. It supplem
 
 1. Preflight the four required evidence families.
 2. Freeze one common evidence packet and SHA-256. No new evidence after freeze.
-3. Snapshot each advocate's own compact memory sidecar. Common evidence stays identical; seat memory is a separate immutable sidecar. Launch the locked 14 standing advocates independently on exact `grok-4.6`. Each advocate receives only its own memory sidecar/hash and must read its `open_positions` before deciding book actions. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
+3. Snapshot each advocate's own compact memory sidecar. Common evidence stays identical; seat memory is a separate immutable sidecar. Launch every live seat in the on-demand pin (14 on the current roster) independently on the pinned advocate model, `grok-4.7`. Each advocate receives only its own memory sidecar/hash and must read its `open_positions` before deciding book actions. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 4. Each initial advocate may use at most two `composer-2.5` subagents on the same frozen packet.
 5. Every advocate returns its full trade pitch plus a compact `conflict_synopsis` and an explicit non-empty final `paper_actions` list for its own competition book.
 6. **Deterministic conflict stage:** code reads only the 14 synopses and structured trades. It identifies direct instrument/currency conflicts, theoretical currency-vs-rates tensions, contextual regime tensions, and the no-trade challenge. This stage consumes zero model calls.
@@ -113,11 +113,11 @@ No majority vote, confidence ranking, winner, or house view is permitted.
 
 | Work | Exact execution |
 | --- | --- |
-| ACP parent/orchestrator | `grok-4.6` |
-| 14 standing advocates | `grok-4.6` |
-| advocate-internal subagents | `composer-2.5`, max two per initial advocate |
+| ACP parent/orchestrator | pinned `parent` (`grok-4.7`) |
+| 14 standing advocates | pinned `advocate` (`grok-4.7`) |
+| advocate-internal subagents | pinned `advocate_subagent` (`composer-2.5`), max two per initial advocate |
 | conflict map | deterministic Python, zero model calls |
-| direct-conflict rebuttals | `grok-4.6`, max one per conflicted seat |
+| direct-conflict rebuttals | pinned `rebuttal` (`grok-4.7`), max one per conflicted seat |
 | final handoff | deterministic Python, zero model calls |
 
 Cursor Auto and every Other Models route are prohibited.
@@ -126,20 +126,16 @@ Cursor Auto and every Other Models route are prohibited.
 
 The ACP parent is counted explicitly.
 
-- ACP parent = 1 Grok 4.6
-- 14 advocates = 14 Grok 4.6
+- ACP parent = 1 Grok-family call
+- 14 advocates = 14 Grok-family calls
 - conflict mapping = 0 model calls
-- rebuttals = at most 14 Grok 4.6
+- rebuttals = at most 14 Grok-family calls
 - final handoff = 0 model calls
 - **Total Grok ceiling including parent = 29**
 - **Composer ceiling = 28**
 - **Total model-invocation ceiling = 57**
 
-Every full live run carries:
-
-`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":57,"grok_cap":29,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
-
-The repository `subagentStart` hook enforces these ceilings. Only initial advocates tagged `TRADER_ROOM_ADVOCATE=1` may create Composer children.
+Every full live run emits the line from `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind ondemand` before any other transcript text. Do not paste a literal marker into this document or into a prompt. The repository `subagentStart` hook enforces these ceilings against that pin. Only initial advocates may create Composer children. Historical runs without a pin still validate against the legacy 14-seat `grok-4.6` pin.
 
 ## Paper book actions (trader-owned execution)
 

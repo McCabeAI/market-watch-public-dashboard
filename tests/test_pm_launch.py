@@ -34,8 +34,8 @@ class PMLaunchPlanTests(unittest.TestCase):
             self.assertEqual(agent["custom_agent"], pm_id)
             self.assertEqual(agent["frontmatter_model"], PM_AGENT_FRONTMATTER_MODEL)
             forbidden = agent["forbidden_principal_launch"]["task_model_parameter"]
-            self.assertIn("grok-4.6", forbidden)
-            self.assertIn("cursor-grok-4.6-high-fast", forbidden)
+            self.assertIn(PM_PRINCIPAL_MODEL, forbidden)
+            self.assertIn(f"cursor-{PM_PRINCIPAL_MODEL}-high-fast", forbidden)
 
     def test_registry_documents_pm_routing(self) -> None:
         registry = load_registry()
@@ -47,8 +47,8 @@ class PMLaunchPlanTests(unittest.TestCase):
     def test_pm_agent_frontmatter_matches_trader_room(self) -> None:
         for pm_id in ("swinger", "pragmatist", "grinder"):
             text = (ROOT / ".cursor" / "agents" / f"{pm_id}.md").read_text(encoding="utf-8")
-            self.assertIn("model: grok-4.6[]", text)
-            assert_pm_principal_model("grok-4.6[]")
+            self.assertIn(f"model: {PM_AGENT_FRONTMATTER_MODEL}", text)
+            assert_pm_principal_model(PM_AGENT_FRONTMATTER_MODEL)
 
     def test_task_runtime_slug_rejected_under_pm_policy(self) -> None:
         hook = ROOT / ".cursor" / "hooks" / "enforce-subagent-models.sh"
@@ -57,7 +57,7 @@ class PMLaunchPlanTests(unittest.TestCase):
             handle.write(policy + "\n")
             transcript = handle.name
         try:
-            for slug in ("cursor-grok-4.6-high-fast", "cursor-grok-4.6-high"):
+            for slug in (f"cursor-{PM_PRINCIPAL_MODEL}-high-fast", f"cursor-{PM_PRINCIPAL_MODEL}-high"):
                 proc = subprocess.run(
                     ["sh", str(hook), json.dumps({"subagent_model": slug, "transcript_path": transcript})],
                     capture_output=True,
@@ -66,7 +66,7 @@ class PMLaunchPlanTests(unittest.TestCase):
                 )
                 self.assertNotEqual(proc.returncode, 0, slug)
             ok = subprocess.run(
-                ["sh", str(hook), json.dumps({"subagent_model": "grok-4.6", "transcript_path": transcript})],
+                ["sh", str(hook), json.dumps({"subagent_model": PM_PRINCIPAL_MODEL, "transcript_path": transcript})],
                 capture_output=True,
                 text=True,
                 check=False,
@@ -77,7 +77,7 @@ class PMLaunchPlanTests(unittest.TestCase):
 
     def test_forbidden_task_models_include_inherit_and_grok_slug(self) -> None:
         self.assertIn("inherit", FORBIDDEN_PM_TASK_PRINCIPAL_MODELS)
-        self.assertIn("grok-4.6", FORBIDDEN_PM_TASK_PRINCIPAL_MODELS)
+        self.assertIn(PM_PRINCIPAL_MODEL, FORBIDDEN_PM_TASK_PRINCIPAL_MODELS)
 
     def test_launch_mechanism_guard(self) -> None:
         assert_pm_launch_mechanism("cursor_custom_agent")

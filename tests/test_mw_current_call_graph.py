@@ -97,8 +97,13 @@ class CurrentGraphContractTests(unittest.TestCase):
             text = path.read_text(encoding="utf-8")
             for stale in STALE_CEILINGS:
                 self.assertNotIn(stale, text, f"{path} still contains stale ceiling {stale!r}")
+        self.assertIn('"version":2', marker)
         for command in LAUNCH_TEXTS[:2]:
-            self.assertIn(marker, command.read_text(encoding="utf-8"))
+            text = command.read_text(encoding="utf-8")
+            self.assertNotIn(marker, text)
+            self.assertNotIn("MW_CURRENT_GRAPH={", text)
+            self.assertNotIn("MW_OVERNIGHT_RUN_POLICY={", text)
+            self.assertIn("markers --kind daily --snapshot", text)
         authority = (ROOT / "docs" / "ACP_ONE_SHOT_AUTHORITY.md").read_text(encoding="utf-8")
         self.assertIn("1 parent + 1 synthesis + 14 traders + 3 automated PMs + 1 learning examiner", authority)
         self.assertIn('"learning_examiner": 1', authority)

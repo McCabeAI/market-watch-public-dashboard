@@ -97,12 +97,14 @@ def _pm_block(
     packet_hash: str,
     cutoff: str,
     memory_hashes: dict[str, str] | None,
+    principal_model: str,
 ) -> dict[str, Any]:
     block = dry_run_pm_decisions(
         overnight_run_id=run_id,
         packet_sha256=packet_hash,
         evidence_cutoff=cutoff,
         memory_hashes=memory_hashes,
+        principal_model=principal_model,
     )
     for pm_id, row in block.items():
         row["thesis"] = "Voluntary stub HOLD for manual launch mock; not a data-quality substitute."
@@ -176,7 +178,13 @@ def build_stub_output(
         "decisions": {
             seat: _hold_decision(seat, run_id, packet_hash, cutoff) for seat in trader_ids
         },
-        "pm_decisions": _pm_block(run_id, packet_hash, cutoff, pm_memory or memory_hashes),
+        "pm_decisions": _pm_block(
+            run_id,
+            packet_hash,
+            cutoff,
+            pm_memory or memory_hashes,
+            pin["roles"]["pm_principal"],
+        ),
         "execution": {
             "parent_model": pin["roles"]["parent"],
             "allowed_subagent_models": allowed_subagent_models,

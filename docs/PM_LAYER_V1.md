@@ -77,7 +77,7 @@ Separate from decision ingest: ChatGPT PM research memory (hypotheses, trading-e
 
 ## Overnight automated PM decisions (required)
 
-Overnight `scheduled_output.json` **must** include `pm_decisions` for exactly `swinger`, `pragmatist`, and `grinder`. Absence is invalid, not `awaiting`. ChatGPT remains ingest-only and excluded from automated current-cycle overnight output. Each overnight automated PM principal must be exact `grok-4.6` (custom agent `.cursor/agents/<pm_id>.md`). Optional internal subagents remain 0–3 in `{grok-4.6, composer-2.5}` but are prohibited on the overnight graph (no nested children). This repository does not invoke those models on the live schedule.
+Overnight `scheduled_output.json` **must** include `pm_decisions` for exactly `swinger`, `pragmatist`, and `grinder`. Absence is invalid, not `awaiting`. ChatGPT remains ingest-only and excluded from automated current-cycle overnight output. Each overnight automated PM principal must be the pinned `pm_principal` (`grok-4.7`, custom agent `.cursor/agents/<pm_id>.md`). Optional internal subagents remain 0–3 in the pin's `pm_subagent_models` (`grok-4.7`, `composer-2.5`) but are prohibited on the overnight graph (no nested children). Already-frozen packets keep the principal recorded on their own pin, including historical `grok-4.6`. This repository does not invoke those models on the live schedule.
 
 Invalid or missing PM output is never presented as fresh. Trusted code does not fabricate automated PM trades when provider output is absent or rejected.
 

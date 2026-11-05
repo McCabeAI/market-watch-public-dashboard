@@ -37,8 +37,8 @@ def build_pm_launch_plan(
             "forbidden_principal_launch": {
                 "task_model_parameter": list(FORBIDDEN_PM_TASK_PRINCIPAL_MODELS),
                 "reason": (
-                    "Task/subagent_type with model grok-4.6 or inherit emits cursor-grok-4.6-* "
-                    "runtime slugs rejected by enforce-subagent-models.sh"
+                    f"Task/subagent_type with model {PM_PRINCIPAL_MODEL} or inherit emits "
+                    f"cursor-{PM_PRINCIPAL_MODEL}-* runtime slugs rejected by enforce-subagent-models.sh"
                 ),
             },
         }

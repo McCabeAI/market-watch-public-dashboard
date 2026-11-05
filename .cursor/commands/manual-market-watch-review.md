@@ -4,21 +4,17 @@ This command is used only after an authenticated human `[launch-market-watch]` r
 
 ## Run policy marker
 
-Emit exactly once:
+Before any tool call, child, or other transcript text, run this on the pinned trusted SHA and emit its two lines verbatim as the first lines of the parent transcript:
 
+```bash
+PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <bound evidence_snapshot.json>
 ```
-MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
-```
 
-Every direct child task must contain exactly one role tag (once, even if repeated text would be identical) from the pinned roster in the frozen snapshot `agent_roster_pin` (or the legacy 14-seat roster when no pin is present): `MW_ROLE=synthesis`, `MW_ROLE=trader:<seat>`, `MW_ROLE=pm:<pm_id>`, `MW_ROLE=learning_examiner`. Put that tag alone on its own line, copied from the agents listing, and do not mention `MW_ROLE` again in the task. A trailing period or comma, surrounding parentheses, backticks, or asterisks on that single line are accepted. A glued suffix (`.bad`, `/extra`), a second tag, an unknown role, or a mismatched seat is denied. Models come from the pin; never `Auto`. `PYTHONPATH=. python -m scripts.trader_room.agent_config agents --kind daily --snapshot <evidence_snapshot.json>` prints each child's tag, custom agent (`<seat>`, or `daily-<seat>` when the pinned profile gives daily traders their own model) and exact model.
+Use the committed evidence snapshot ACP bound (`data/overnight/runs/<run_id>/reviews/<review_id>/evidence_snapshot.json`). Do not invent, shorten, or quote an example of that JSON. The hook binds the first marker it sees to that freeze pin. A later copy is ignored. A marker for a different pin, or a version-1 marker on a non-legacy pin, is denied at the first child.
 
-The literal markers in this file are valid only for a legacy-equivalent pin (14 seats, `grok-4.6`, 20/18/2). The hook uses the first marker in the transcript, so a non-legacy pin cannot be run from this file until the literals are replaced by the output of `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <evidence_snapshot.json>` (stage 2 in `docs/AGENT_ROSTER_MODEL_PROFILES.md`). Such a run is denied at the first child.
+Every direct child task must contain exactly one role tag (once, even if repeated text would be identical) from the pinned roster in the frozen snapshot `agent_roster_pin` (or the legacy 14-seat roster when no pin is present): `MW_ROLE=synthesis`, `MW_ROLE=trader:<seat>`, `MW_ROLE=pm:<pm_id>`, `MW_ROLE=learning_examiner`. Put that tag alone on its own line, copied from the agents listing, and do not mention `MW_ROLE` again in the task. A trailing period or comma, surrounding parentheses, backticks, or asterisks on that single line are accepted. A glued suffix (`.bad`, `/extra`), a second tag, an unknown role, or a mismatched seat is denied. Models and custom agents come from the pin; never `Auto`. `PYTHONPATH=. python -m scripts.trader_room.agent_config agents --kind daily --snapshot <evidence_snapshot.json>` prints each child's tag, custom agent (`<seat>`, or `daily-<seat>` when the pinned profile gives daily traders their own model) and exact model. Custom-agent frontmatter must equal that exact model id with an empty `[]` suffix.
 
-Emit the current-graph marker exactly once. The one-shot launch ceiling is 20 calls, not 19:
-
-```
-MW_CURRENT_GRAPH={"automated_pms":3,"composer_calls":2,"grok_family_calls":18,"learning_examiner":1,"parent":1,"synthesis":1,"total_calls":20,"traders":14,"version":1}
-```
+The one-shot launch ceiling is the pin budget. On the current 14-seat roster that is 20 calls (18 Grok-family + 2 Composer), not 19.
 
 The legacy schedule id is an inactive compatibility identifier for existing hooks and validators. It is not launch authority and it does not imply a 02:05 clock. The learning examiner is a required node of this graph whenever the frozen obligation manifest is non-empty. Do not drop it to stay inside a 19-call ceiling.
 
@@ -42,13 +38,13 @@ Approved graph:
 
 | Role | Count | Model |
 | --- | ---: | --- |
-| Parent orchestrator | 1 | `grok-4.6` |
-| Frozen-packet synthesis child | 1 | `composer-2.5` |
-| Direct trader children | 14 | `grok-4.6` |
-| Direct automated PM principals | 3 | `grok-4.6` |
-| Learning-quality examiner | 1 | `composer-2.5` |
+| Parent orchestrator | 1 | pinned `parent` |
+| Frozen-packet synthesis child | 1 | pinned `synthesis` (`composer-2.5`) |
+| Direct trader children | pinned trader count (14 on the current roster) | pinned `trader` |
+| Direct automated PM principals | 3 | pinned `pm_principal` |
+| Learning-quality examiner | 1 | pinned `learning_examiner` (`composer-2.5`) |
 
-Total: 20 invocations when the learning examiner is used (18 Grok + 2 Composer). Cursor Auto and all other models are prohibited. Nested children are prohibited. If the frozen learning-obligation manifest is non-empty, declared calls must be 20 / 18 / 2 and the graph includes exactly one Composer 2.5 learning-quality examiner after the primary decisions. Declared 19 is not valid in that case. Omitting submissions does not skip the examiner. The examiner grades causal adequacy only (`adequate`, `inadequate`, or `missing` for every manifest obligation) and cannot create a second trading opinion, lesson, or canonical fact. An adequate `no_new_lesson` may clear debt without a lesson. Do not force lessons.
+Total: the pin budget. On the current roster that is 20 invocations when the learning examiner is used (18 Grok-family + 2 Composer). Cursor Auto and all other models are prohibited. Nested children are prohibited. If the frozen learning-obligation manifest is non-empty, declared calls must equal the pin caps (20 / 18 / 2 on the current roster) and the graph includes exactly one Composer 2.5 learning-quality examiner after the primary decisions. Declared 19 is not valid in that case. Omitting submissions does not skip the examiner. The examiner grades causal adequacy only (`adequate`, `inadequate`, or `missing` for every manifest obligation) and cannot create a second trading opinion, lesson, or canonical fact. An adequate `no_new_lesson` may clear debt without a lesson. Do not force lessons.
 
 ### Frozen-packet synthesis
 
@@ -88,7 +84,7 @@ The research summary and every trader/PM thesis and invalidation are displayed t
 
 ### Traders
 
-Launch exactly the locked 14 trader seats as direct Grok children. Each gets:
+Launch exactly the pinned trader seats (14 on the current roster) as direct children on the pinned trader model, through the custom agent named by `agent_config agents`. Each gets:
 - `MW_TRADER_FROZEN=1`;
 - the same agent packet and exact base packet/review identity;
 - only that seat's prior memory sidecar.
@@ -97,9 +93,9 @@ Trader children cannot use tools or fetch evidence. A valid `HOLD` is a delibera
 
 ### Automated PMs
 
-After all 14 trader decisions exist, launch exactly three direct Grok custom-agent principals: `swinger`, `pragmatist`, and `grinder`. Each gets:
+After all pinned trader decisions exist, launch exactly the three pinned automated PM principals as custom agents: `swinger`, `pragmatist`, and `grinder`. Each gets:
 - `MW_PM_FROZEN=1`;
-- the same frozen agent packet and accepted 14 trader decisions;
+- the same frozen agent packet and the accepted trader decisions for every pinned seat;
 - only its own prior book/memory.
 
 No PM sees another PM's current-cycle decision. Do not launch ChatGPT PM.

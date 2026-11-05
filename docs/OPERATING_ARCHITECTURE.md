@@ -316,7 +316,7 @@ Market Watch owns deterministic collection, snapshots, book mechanics, validatio
 
 source discovery -> fetch/normalize -> deduplicate -> classify -> corroborate/verify -> rank -> write Supabase operational state -> generate public read model -> build dashboard -> validate -> deploy
 
-The 00:07 job contains no model invocation. At 02:05 ACP launches one bounded `grok-4.6` parent. Repository hooks enforce the Grok/Composer allowlist, hard total/per-model child budgets, no grandchildren, and evidence-closed trader children. The provider writes research plus structured trader decisions only. Trusted Market Watch code validates the output and computes canonical books, P&L, and NAV.
+The 00:07 job contains no model invocation. A manual launch uses one bounded parent on the active profile's `parent` model (`grok-4.7` after the coordinated ACP cutover). Repository hooks enforce the Grok/Composer allowlist, hard total/per-model child budgets, no grandchildren, and evidence-closed trader children. The provider writes research plus structured trader decisions only. Trusted Market Watch code validates the output and computes canonical books, P&L, and NAV.
 
 Automation must preserve the same epistemic separation now enforced manually:
 

@@ -79,18 +79,35 @@ class AgentConfigTests(unittest.TestCase):
         with self.assertRaises(AgentConfigError):
             ondemand_budget(0)
 
-    def test_candidate_pin_requires_flag_and_is_stamped(self) -> None:
-        with self.assertRaises(AgentConfigError):
-            build_pin("daily", profile_id="candidate-grok-4.7")
-        pin = build_pin("daily", profile_id="candidate-grok-4.7", allow_candidate=True)
-        self.assertTrue(pin["candidate"])
+    def test_active_profile_pins_without_candidate_flag(self) -> None:
+        pin = build_pin("daily")
+        self.assertEqual(pin["profile_id"], "candidate-grok-4.7")
+        self.assertFalse(pin["candidate"])
         roles = pin["roles"]
         for role in ("parent", "trader", "advocate", "rebuttal", "pm_principal"):
             self.assertEqual(roles[role], "grok-4.7")
         for role in ("synthesis", "learning_examiner", "advocate_subagent"):
             self.assertEqual(roles[role], "composer-2.5")
+        assert_acceptable_pin(pin)
         with self.assertRaises(AgentConfigError):
-            assert_acceptable_pin(pin)
+            build_pin("daily", profile_id="current-production-grok-4.6")
+
+    def test_candidate_status_still_requires_flag_and_is_refused(self) -> None:
+        raw = _raw_config()
+        raw["profiles"]["fixture-candidate"] = json.loads(json.dumps(raw["profiles"]["candidate-grok-4.7"]))
+        raw["profiles"]["fixture-candidate"]["status"] = "candidate"
+        path = _write_tmp_config(raw)
+        try:
+            cfg = load_config(path)
+            with self.assertRaises(AgentConfigError):
+                build_pin("daily", profile_id="fixture-candidate", config=cfg)
+            pin = build_pin("daily", profile_id="fixture-candidate", config=cfg, allow_candidate=True)
+            self.assertTrue(pin["candidate"])
+            self.assertEqual(pin["roles"]["trader"], "grok-4.7")
+            with self.assertRaises(AgentConfigError):
+                assert_acceptable_pin(pin)
+        finally:
+            path.unlink(missing_ok=True)
 
     def test_env_path_stamps_config_override(self) -> None:
         cfg = load_config()
@@ -160,7 +177,7 @@ class AgentConfigTests(unittest.TestCase):
         assert_bad(lambda d: d["profiles"][pid]["roles"].update({"synthesis": "grok-4.6"}))
         assert_bad(
             lambda d: d["profiles"][pid]["roles"].update(
-                {"trader": "grok-4.6", "rebuttal": "grok-4.7"}
+                {"advocate": "grok-4.6", "rebuttal": "grok-4.7"}
             )
         )
         assert_bad(lambda d: d["profiles"][pid]["roles"].pop("parent"))
@@ -170,7 +187,7 @@ class AgentConfigTests(unittest.TestCase):
                 d["profiles"]["extra-active"].update({"status": "active"}),
             )
         )
-        assert_bad(lambda d: d.update({"active_profile": "candidate-grok-4.7"}))
+        assert_bad(lambda d: d.update({"active_profile": "current-production-grok-4.6"}))
 
     def test_pending_seat_excluded_from_head_and_pin(self) -> None:
         base = load_config()
@@ -226,21 +243,46 @@ class AgentConfigTests(unittest.TestCase):
                 text = (agents_dst / f"{entry['id']}.md").read_text(encoding="utf-8")
                 self.assertIn("model: grok-4.7[]", text)
 
-    def test_markers_legacy_bytes_match_commands(self) -> None:
-        pin = legacy_pin("daily")
-        overnight = overnight_policy_marker(pin)
-        graph = current_graph_marker_for(pin)
+    def test_legacy_markers_stay_v1_and_live_commands_do_not_embed_them(self) -> None:
+        legacy = legacy_pin("daily")
+        overnight = overnight_policy_marker(legacy)
+        graph = current_graph_marker_for(legacy)
+        self.assertIn('"version":1', overnight)
+        self.assertIn('"parent_model":"grok-4.6"', overnight)
+        self.assertIn('"version":1', graph)
+        tr_marker = trader_room_policy_marker(legacy_pin("ondemand"))
+        self.assertIn('"parent_model":"grok-4.6"', tr_marker)
+
+        active = build_pin("daily")
+        active_marker = overnight_policy_marker(active)
+        self.assertIn('"version":2', active_marker)
+        self.assertIn('"parent_model":"grok-4.7"', active_marker)
+        self.assertIn(active["roster_sha256"], active_marker)
+        bull = (ROOT / ".cursor" / "agents" / "perma-bull.md").read_text(encoding="utf-8")
+        swinger = (ROOT / ".cursor" / "agents" / "swinger.md").read_text(encoding="utf-8")
+        self.assertIn(f"model: {active['roles']['advocate']}[]", bull)
+        self.assertIn(f"model: {active['roles']['pm_principal']}[]", swinger)
+
+        live_commands = (
+            COMMANDS / "manual-market-watch-review.md",
+            COMMANDS / "overnight-scheduled.md",
+            COMMANDS / "trader-room.md",
+        )
+        for path in live_commands:
+            text = path.read_text(encoding="utf-8")
+            self.assertNotIn(overnight, text, path.name)
+            self.assertNotIn(graph, text, path.name)
+            self.assertNotIn(tr_marker, text, path.name)
+            self.assertNotIn("MW_OVERNIGHT_RUN_POLICY={", text, path.name)
+            self.assertNotIn("MW_TRADER_ROOM_RUN_POLICY={", text, path.name)
+            self.assertNotIn("MW_CURRENT_GRAPH={", text, path.name)
+            self.assertNotIn("grok-4.6", text, path.name)
         manual = (COMMANDS / "manual-market-watch-review.md").read_text(encoding="utf-8")
         overnight_cmd = (COMMANDS / "overnight-scheduled.md").read_text(encoding="utf-8")
-        self.assertIn(overnight, manual)
-        self.assertIn(overnight, overnight_cmd)
-        self.assertIn(graph, manual)
-        self.assertIn(graph, overnight_cmd)
-
-        tr_pin = legacy_pin("ondemand")
-        tr_marker = trader_room_policy_marker(tr_pin)
         trader_room = (COMMANDS / "trader-room.md").read_text(encoding="utf-8")
-        self.assertIn(tr_marker, trader_room)
+        self.assertIn("markers --kind daily --snapshot", manual)
+        self.assertIn("markers --kind daily --snapshot", overnight_cmd)
+        self.assertIn("markers --kind ondemand", trader_room)
 
     def test_v2_marker_for_fifteen(self) -> None:
         pin = build_pin("daily")
@@ -290,7 +332,10 @@ class SplitWorkflowModelTests(unittest.TestCase):
     def _split_raw(self) -> dict:
         raw = _raw_config()
         pid = raw["active_profile"]
-        raw["profiles"][pid]["roles"]["trader"] = "grok-4.7"
+        roles = raw["profiles"][pid]["roles"]
+        roles["trader"] = "grok-4.6"
+        roles["advocate"] = "grok-4.7"
+        roles["rebuttal"] = "grok-4.7"
         return raw
 
     def test_split_profile_loads_and_pins_both_models(self) -> None:
@@ -299,14 +344,14 @@ class SplitWorkflowModelTests(unittest.TestCase):
             cfg = load_config(path)
             daily = build_pin("daily", config=cfg)
             ondemand = build_pin("ondemand", config=cfg)
-            self.assertEqual(daily["roles"]["trader"], "grok-4.7")
-            self.assertEqual(ondemand["roles"]["advocate"], "grok-4.6")
+            self.assertEqual(daily["roles"]["trader"], "grok-4.6")
+            self.assertEqual(ondemand["roles"]["advocate"], "grok-4.7")
             self.assertEqual(daily["model_families"]["grok-4.7"], "grok")
             self.assertFalse(legacy_equivalent(daily))
             self.assertEqual(daily["budget"]["grok_family_calls"], 18)
             rows = {r["tag"]: r for r in launch_agents(daily) if "tag" in r}
             self.assertEqual(rows["MW_ROLE=trader:perma-bull"]["agent"], "daily-perma-bull")
-            self.assertEqual(rows["MW_ROLE=trader:perma-bull"]["model"], "grok-4.7")
+            self.assertEqual(rows["MW_ROLE=trader:perma-bull"]["model"], "grok-4.6")
             rows_od = {r["tag"]: r for r in launch_agents(ondemand) if "tag" in r}
             self.assertEqual(rows_od["MW_ROLE=advocate:perma-bull"]["agent"], "perma-bull")
             self.assertEqual(agent_for_role(daily["roles"], "pm_principal", "swinger"), "swinger")
@@ -327,8 +372,8 @@ class SplitWorkflowModelTests(unittest.TestCase):
             daily = (agents / "daily-perma-bull.md").read_text(encoding="utf-8")
             base = (agents / "perma-bull.md").read_text(encoding="utf-8")
             self.assertIn("name: daily-perma-bull", daily)
-            self.assertIn("model: grok-4.7[]", daily)
-            self.assertIn("model: grok-4.6[]", base)
+            self.assertIn("model: grok-4.6[]", daily)
+            self.assertIn("model: grok-4.7[]", base)
             self.assertEqual(daily.split("\n---\n", 1)[1], base.split("\n---\n", 1)[1])
             self.assertEqual(len(list(agents.glob("daily-*.md"))), 14)
 
@@ -349,7 +394,7 @@ class SplitWorkflowModelTests(unittest.TestCase):
     def test_advocate_rebuttal_split_rejected_with_reason(self) -> None:
         raw = _raw_config()
         pid = raw["active_profile"]
-        raw["profiles"][pid]["roles"]["rebuttal"] = "grok-4.7"
+        raw["profiles"][pid]["roles"]["rebuttal"] = "grok-4.6"
         path = _write_tmp_config(raw)
         try:
             with self.assertRaisesRegex(AgentConfigError, "one frontmatter model"):
@@ -414,9 +459,11 @@ class PinIntegrityTests(unittest.TestCase):
         pin = build_pin("daily")
         with patch("scripts.trader_room.agent_config.load_config", side_effect=AgentConfigError("boom")):
             verify_pin(pin)
-            verify_pin(legacy_pin("daily"))
-            self.assertTrue(legacy_equivalent(pin))
-            self.assertEqual(pin_model_family(pin, "grok-4.6"), "grok")
+            legacy = legacy_pin("daily")
+            verify_pin(legacy)
+            self.assertFalse(legacy_equivalent(pin))
+            self.assertEqual(pin_model_family(pin, pin["roles"]["parent"]), "grok")
+            self.assertEqual(pin_model_family(legacy, "grok-4.6"), "grok")
 
     def test_pin_family_tamper_rejected(self) -> None:
         pin = build_pin("daily")
@@ -428,16 +475,23 @@ class PinIntegrityTests(unittest.TestCase):
         with self.assertRaises(AgentConfigError):
             verify_pin(seal_pin(body))
         body = dict(pin)
-        body["model_families"] = {**pin["model_families"], "grok-4.7": "grok"}
+        body["model_families"] = {**pin["model_families"], "grok-4.8": "grok"}
         with self.assertRaises(AgentConfigError):
             verify_pin(seal_pin(body))
 
-    def test_current_production_pin_is_legacy_equivalent(self) -> None:
+    def test_active_pin_is_grok_4_7_and_legacy_pin_stays_4_6(self) -> None:
         for kind, caps in (("daily", (20, 18, 2)), ("ondemand", (57, 29, 28))):
             pin = assert_acceptable_pin(build_pin(kind))
-            self.assertTrue(legacy_equivalent(pin))
+            self.assertFalse(legacy_equivalent(pin))
+            self.assertEqual(pin["profile_id"], "candidate-grok-4.7")
+            self.assertEqual(pin["roles"]["parent"], "grok-4.7")
+            self.assertEqual(pin["roles"]["synthesis"], "composer-2.5")
+            self.assertFalse(pin["candidate"])
             budget = pin["budget"]
             self.assertEqual((budget["total_calls"], budget["grok_family_calls"], budget["composer_calls"]), caps)
+            legacy = legacy_pin(kind)
+            self.assertTrue(legacy_equivalent(legacy))
+            self.assertEqual(legacy["roles"]["parent"], "grok-4.6")
 
 
 class PinConsumerTests(unittest.TestCase):
@@ -544,19 +598,20 @@ class SetRoleTests(unittest.TestCase):
             with self.assertRaisesRegex(AgentConfigError, "ACP-owned"):
                 set_role_model("candidate-grok-4.7", "parent", "grok-4.6", config_path=path)
             with self.assertRaisesRegex(AgentConfigError, "active production profile"):
-                set_role_model("current-production-grok-4.6", "trader", "grok-4.7", config_path=path)
+                set_role_model("candidate-grok-4.7", "trader", "grok-4.6", config_path=path)
             with self.assertRaises(AgentConfigError):
-                set_role_model("candidate-grok-4.7", "trader", "composer-2.5", config_path=path)
+                set_role_model("current-production-grok-4.6", "trader", "composer-2.5", config_path=path)
             with self.assertRaises(AgentConfigError):
-                set_role_model("candidate-grok-4.7", "advocate", "grok-4.7-high", config_path=path)
+                set_role_model("current-production-grok-4.6", "advocate", "grok-4.7-high", config_path=path)
             self.assertEqual(path.read_bytes(), original)
 
-            changed = set_role_model("candidate-grok-4.7", "advocate", "grok-4.6", config_path=path)
+            changed = set_role_model("current-production-grok-4.6", "advocate", "grok-4.7", config_path=path)
             self.assertEqual(changed, ["advocate", "rebuttal"])
             cfg = load_config(path, honor_env=False)
-            roles = cfg["profiles"]["candidate-grok-4.7"]["roles"]
-            self.assertEqual((roles["trader"], roles["advocate"], roles["rebuttal"]), ("grok-4.7", "grok-4.6", "grok-4.6"))
-            self.assertEqual(cfg["profiles"]["current-production-grok-4.6"], load_config()["profiles"]["current-production-grok-4.6"])
+            roles = cfg["profiles"]["current-production-grok-4.6"]["roles"]
+            self.assertEqual((roles["trader"], roles["advocate"], roles["rebuttal"]), ("grok-4.6", "grok-4.7", "grok-4.7"))
+            self.assertEqual(cfg["profiles"]["candidate-grok-4.7"]["status"], "active")
+            self.assertEqual(cfg["active_profile"], "candidate-grok-4.7")
 
 
 if __name__ == "__main__":

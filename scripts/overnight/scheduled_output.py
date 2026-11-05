@@ -544,6 +544,7 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             packet_sha256=agent_packet["packet_sha256"],
             evidence_cutoff=agent_packet["evidence_cutoff"],
             required=True,
+            pin=pin,
             memory_hashes=(base.get("pm_memory") or {}).get("hashes") or {},
             packet={
                 "overnight_review": compact_overnight_decisions(

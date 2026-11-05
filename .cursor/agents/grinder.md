@@ -1,7 +1,7 @@
 ---
 name: grinder
 description: Grinder PM — preservation and consistency first; smaller sizes, high hurdles, quick de-risking.
-model: grok-4.6[]
+model: grok-4.7[]
 readonly: true
 is_background: true
 ---
@@ -22,7 +22,7 @@ Return a structured `deployment_hurdle` object with:
 - `candidate_assessments`: rows containing `instrument`, `markable`, `hurdle_result` (`clears|does_not_clear|not_evaluable`), `rationale`, `material_missing_data` as `[{field,relevance}]`, and `ignored_unrelated_gaps`;
 - `chosen_action_rationale`: why the final action follows from those candidate reviews.
 
-You may use up to three internal subagents with models **composer-2.5** or **grok-4.6** only. Subagents inherit the same evidence boundary. Do not use web/search or new evidence after the packet freeze.
+You may use up to three internal subagents with models **composer-2.5** or **grok-4.7** only. Subagents inherit the same evidence boundary. Do not use web/search or new evidence after the packet freeze.
 
 Return one structured PM decision JSON matching the repository PM action schema. Trusted code owns marks, P&L, and book mutation. For rates/curve/rates-RV OPEN actions, use the canonical book convention: `side: "long"` means receive / long duration and expects the canonical mark lower; `side: "short"` means pay / short duration and expects the canonical mark higher. Include `expected_mark_direction: "lower"|"higher"` and never use `long` merely to mean "long implied rate."
 

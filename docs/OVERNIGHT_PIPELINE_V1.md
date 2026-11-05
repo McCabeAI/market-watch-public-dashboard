@@ -131,25 +131,22 @@ The JSON contains:
 
 It must not contain canonical books, NAV, cash, realized/unrealized P&L, funding charges, net P&L, competition rank, or model-authored ledger/P&L facts. Structured postmortems and memory updates are allowed; trusted code validates them.
 
-**`pm_decisions` is required** (not optional). It must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model`, `subagent_count` 0–3, and `subagent_models` in `{grok-4.6, composer-2.5}`. Absence or partial roster is invalid and rejects the scheduled-output PR. ChatGPT remains ingest-only and is excluded from automated overnight current-cycle decisions. Parent orchestration contract: `.cursor/commands/overnight-scheduled.md`.
+**`pm_decisions` is required** (not optional). It must contain exactly `swinger`, `pragmatist`, and `grinder` (never ChatGPT) with `principal_model` equal to the frozen pin's `pm_principal`, `subagent_count` 0–3, and `subagent_models` inside that pin's `pm_subagent_models`. On the active profile those models are `grok-4.7` and `composer-2.5`. A packet frozen before the cutover still requires its own pin, including historical `grok-4.6`. Absence or partial roster is invalid and rejects the scheduled-output PR. ChatGPT remains ingest-only and is excluded from automated overnight current-cycle decisions. Parent orchestration contract: `.cursor/commands/overnight-scheduled.md`.
 
 ## 5. Model policy and hard budget
 
-Approved runtime models:
-
-- `grok-4.6`
-- `composer-2.5`
+Approved runtime models come from the frozen roster pin. On the active profile the Grok-family roles (`parent`, `trader`, `pm_principal`) are `grok-4.7` and the Composer roles (`synthesis`, `learning_examiner`) are `composer-2.5`. Packets with no pin still accept the legacy `grok-4.6` / `composer-2.5` pair.
 
 Prohibited:
 
 - Cursor Auto
-- every model outside those two
+- every model outside the pin's exact role ids
 - Cursor Other Models usage
 
 Run caps (**target-repo contract** enforced by `.cursor/hooks/enforce-overnight-budget.py`):
 
 - total model calls: **20**
-- Grok 4.6 calls: **18**
+- Grok-family calls: **18**
 - Composer 2.5 calls: **2**
 
 The ACP parent counts as total=1 / Grok=1 before any child starts.
@@ -323,29 +320,23 @@ ACP remains the only place where the real 02:05 schedule may be enabled. The tar
 - weekdays: Mon-Fri
 - time: `02:05`
 - provider: Cursor
-- parent model: `grok-4.6`
-- allowed subagent models: `composer-2.5`, `grok-4.6`
+- parent model: the Market Watch pin's `parent` (`grok-4.7` after ACP PR #395)
+- allowed child models: the pin's role models (`grok-4.7`, `composer-2.5`)
 - `max_attempts: 1`
 - target: `McCabeAI/market-watch-public-dashboard`
 - starting ref: `main`
 - delivery: PR
 - title prefix: `[overnight-output]`
 - provider-authored target path: only `data/overnight/inbox/<run_id>/scheduled_output.json`
-- run policy marker:
+- run policy marker: the two lines from `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind daily --snapshot <bound evidence_snapshot.json>`, emitted first. Do not paste a literal marker into this document.
 
-Target-repo ready marker (hooks/validator in this repository):
-
-```
-MW_OVERNIGHT_RUN_POLICY={"version":1,"schedule_id":"market-watch-weekday-0205","total_model_cap":20,"grok_cap":18,"composer_cap":2,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}
-```
-
-Committed ACP `market-watch-weekday-0205` is still **18 / 16 / 2** (ACP commit `f5b75df8`). That live schedule cannot launch 3 Grok-4.6 PM principals after 14 Grok traders without downgrading PM principals or independence. **This repository does not change ACP.** Minimal ACP-only delta required before the weekday job can succeed:
+**This repository does not change ACP.** The weekday job stays off. Historical notes below describe the old ACP schedule ceiling and are not a live marker:
 
 - `total_model_cap` 18 → **20**
 - `grok_cap` 16 → **18**
 - `composer_cap` remains **2**
-- job objective/constraints: after the accepted 14-trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` (`grok-4.6[]`); then, when the frozen learning-obligation manifest is non-empty, one Composer 2.5 learning-quality examiner that grades causal adequacy only and must account for every manifest obligation; ChatGPT excluded; each PM sees the frozen packet + the same 14 decisions + only its own prior book/memory; no nested children
-- emit the 20/18/2 policy marker above
+- job objective/constraints: after the accepted trader handoff, launch concurrent custom-agent PMs `swinger`, `pragmatist`, and `grinder` on the pinned `pm_principal`; then, when the frozen learning-obligation manifest is non-empty, one Composer 2.5 learning-quality examiner that grades causal adequacy only and must account for every manifest obligation; ChatGPT excluded; each PM sees the frozen packet + the same trader decisions + only its own prior book/memory; no nested children
+- emit the pin-derived 20/18/2 policy marker from `agent_config markers`
 - no Sunday clock and no second provider schedule
 
 The parent must perform research first, freeze the final packet, launch the 14 direct trader children, then launch the 3 automated PM children. Each child receives the common frozen packet plus only that child's own frozen memory sidecar. It must not update books/P&L and must not launch grandchildren.

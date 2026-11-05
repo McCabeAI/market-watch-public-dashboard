@@ -134,7 +134,7 @@ class RosterOnboardingTests(unittest.TestCase):
         agent_path = self.tmp / ".cursor" / "agents" / "synthetic-fifteenth.md"
         self.assertTrue(agent_path.is_file())
         agent_text = agent_path.read_text(encoding="utf-8")
-        self.assertIn("model: grok-4.6[]", agent_text)
+        self.assertIn("model: grok-4.7[]", agent_text)
         self.assertIn("No web, search, or new evidence acquisition.", agent_text)
         self.assertIn("only with model composer-2.5", agent_text)
         self.assertIn("one cogent actionable trade", agent_text)
@@ -608,7 +608,7 @@ class SplitProfileOnboardingTests(unittest.TestCase):
         self.tmp = _build_temp_root()
         config_path = self.tmp / "scripts" / "trader_room" / "model_registry.json"
         raw = json.loads(config_path.read_text(encoding="utf-8"))
-        raw["profiles"][raw["active_profile"]]["roles"]["trader"] = "grok-4.7"
+        raw["profiles"][raw["active_profile"]]["roles"]["trader"] = "grok-4.6"
         config_path.write_text(json.dumps(raw, indent=2) + "\n", encoding="utf-8")
         self.env = mock.patch.dict(os.environ, {"MW_AGENT_CONFIG_PATH": str(config_path)})
         self.env.start()
@@ -629,8 +629,8 @@ class SplitProfileOnboardingTests(unittest.TestCase):
         agents = self.tmp / ".cursor" / "agents"
         base = (agents / "synthetic-fifteenth.md").read_text(encoding="utf-8")
         daily = (agents / "daily-synthetic-fifteenth.md").read_text(encoding="utf-8")
-        self.assertIn("model: grok-4.6[]", base)
-        self.assertIn("model: grok-4.7[]", daily)
+        self.assertIn("model: grok-4.7[]", base)
+        self.assertIn("model: grok-4.6[]", daily)
         self.assertIn("name: daily-synthetic-fifteenth", daily)
         self.assertEqual(check_agents(self.tmp), [])
 

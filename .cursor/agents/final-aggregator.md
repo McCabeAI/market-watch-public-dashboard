@@ -1,7 +1,7 @@
 ---
 name: final-aggregator
 description: Legacy Trader Room final aggregator reference. Production handoff is deterministic Python.
-model: grok-4.6[]
+model: grok-4.7[]
 readonly: true
 is_background: true
 ---

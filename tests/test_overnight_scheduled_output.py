@@ -47,7 +47,42 @@ POLICY = {
 }
 
 
-def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
+def snapshot_pin(base: dict) -> dict:
+    return agent_config.assert_acceptable_pin(agent_config.pin_from_artifact(base, kind="daily"))
+
+
+def execution_for_pin(pin: dict, *, total: int, grok: int, composer: int) -> dict:
+    roles = pin["roles"]
+    budget = pin["budget"]
+    if agent_config.legacy_equivalent(pin):
+        allowed = ["composer-2.5", "grok-4.6"]
+    else:
+        allowed = sorted(
+            {
+                roles["trader"],
+                roles["pm_principal"],
+                roles["synthesis"],
+                roles["learning_examiner"],
+            }
+        )
+    return {
+        "parent_model": roles["parent"],
+        "allowed_subagent_models": allowed,
+        "total_model_cap": budget["total_calls"],
+        "grok_cap": budget["grok_family_calls"],
+        "composer_cap": budget["composer_calls"],
+        "declared_total_model_calls": total,
+        "declared_grok_calls": grok,
+        "declared_composer_calls": composer,
+        "other_models_calls": 0,
+        "auto_used": False,
+    }
+
+
+def _pm_block(run_id: str, packet_hash: str, cutoff: str, principal_model: str | None = None) -> dict:
+    from scripts.pm.models import PM_PRINCIPAL_MODEL
+
+    model = principal_model or PM_PRINCIPAL_MODEL
     out = {}
     for pm_id in ("swinger", "pragmatist", "grinder"):
         out[pm_id] = {
@@ -55,7 +90,7 @@ def _pm_block(run_id: str, packet_hash: str, cutoff: str) -> dict:
             "overnight_run_id": run_id,
             "packet_sha256": packet_hash,
             "evidence_cutoff": cutoff,
-            "principal_model": "grok-4.6",
+            "principal_model": model,
             "subagent_count": 0,
             "subagent_models": [],
             "actions": [{"action": "HOLD"}],
@@ -158,6 +193,7 @@ class ScheduledOutputTests(unittest.TestCase):
             },
         }
         packet["packet_sha256"] = sha256_json(packet)
+        pin = snapshot_pin(self.base)
         return {
             "schema_version": 1,
             "type": "OVERNIGHT_SCHEDULED_OUTPUT",
@@ -170,19 +206,13 @@ class ScheduledOutputTests(unittest.TestCase):
                 seat: _hold_decision(seat, self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
                 for seat in STANDING_SEATS
             },
-            "pm_decisions": _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"]),
-            "execution": {
-                "parent_model": "grok-4.6",
-                "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                "total_model_cap": 20,
-                "grok_cap": 18,
-                "composer_cap": 2,
-                "declared_total_model_calls": 19,
-                "declared_grok_calls": 18,
-                "declared_composer_calls": 1,
-                "other_models_calls": 0,
-                "auto_used": False,
-            },
+            "pm_decisions": _pm_block(
+                self.run_id,
+                packet["packet_sha256"],
+                packet["evidence_cutoff"],
+                pin["roles"]["pm_principal"],
+            ),
+            "execution": execution_for_pin(pin, total=19, grok=18, composer=1),
         }
 
     def test_valid_output_simulates_without_model_book_state(self) -> None:

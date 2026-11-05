@@ -16,13 +16,19 @@ from scripts.pm.opportunity_scan import accept_opportunity_scan, synthetic_oppor
 from scripts.pm.portfolio import synthetic_portfolio_construction, validate_portfolio_construction
 
 
-def validate_pm_execution(execution: dict[str, Any] | None, *, pm_id: str) -> dict[str, Any]:
+def validate_pm_execution(
+    execution: dict[str, Any] | None,
+    *,
+    pm_id: str,
+    allowed_models: tuple[str, ...] | list[str] | None = None,
+) -> dict[str, Any]:
     payload = execution or {}
     if not isinstance(payload, dict):
         raise SchemaError(f"{pm_id} execution must be an object")
+    allowed = tuple(allowed_models) if allowed_models is not None else ALLOWED_SUBAGENT_MODELS
     principal = payload.get("principal_model")
-    if principal not in ALLOWED_SUBAGENT_MODELS:
-        raise SchemaError(f"{pm_id} principal_model must be grok-4.6 or composer-2.5")
+    if principal not in allowed:
+        raise SchemaError(f"{pm_id} principal_model must be one of {list(allowed)}")
     raw_count = payload.get("subagent_count", 0)
     try:
         count = int(raw_count)
@@ -37,7 +43,7 @@ def validate_pm_execution(execution: dict[str, Any] | None, *, pm_id: str) -> di
         raise SchemaError(f"{pm_id} subagent_models must be a list")
     if len(models) != count:
         raise SchemaError(f"{pm_id} subagent_models length must equal subagent_count")
-    unsupported = [model for model in models if model not in ALLOWED_SUBAGENT_MODELS]
+    unsupported = [model for model in models if model not in allowed]
     if unsupported:
         raise SchemaError(f"{pm_id} unsupported subagent model(s): {unsupported}")
     return payload
@@ -52,7 +58,14 @@ def validate_pm_decisions(
     packet: dict[str, Any] | None = None,
     memory_hashes: dict[str, str] | None = None,
     required: bool = True,
+    pin: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if pin is not None:
+        expected_principal = str((pin.get("roles") or {})["pm_principal"])
+        allowed_models = tuple(pin.get("pm_subagent_models") or ())
+    else:
+        expected_principal = PM_PRINCIPAL_MODEL
+        allowed_models = ALLOWED_SUBAGENT_MODELS
     if block is None or not isinstance(block, dict):
         if required:
             raise SchemaError(
@@ -86,13 +99,17 @@ def validate_pm_decisions(
                 raise EvidenceBoundaryError(
                     f"{pm_id} recorded forbidden post-freeze acquisition: {forbidden_key}"
                 )
-        validate_pm_execution(decision.get("execution") or decision, pm_id=pm_id)
+        validate_pm_execution(
+            decision.get("execution") or decision,
+            pm_id=pm_id,
+            allowed_models=allowed_models,
+        )
         principal = (decision.get("execution") or {}).get("principal_model") or decision.get(
             "principal_model"
         )
-        if principal != PM_PRINCIPAL_MODEL:
+        if principal != expected_principal:
             raise SchemaError(
-                f"{pm_id} overnight automated principal_model must be exact {PM_PRINCIPAL_MODEL}"
+                f"{pm_id} overnight automated principal_model must be exact {expected_principal}"
             )
         validate_portfolio_construction(decision, pm_id=pm_id, required=True, packet=packet)
         validate_grinder_hurdle(decision, pm_id=pm_id, required=True, packet=packet)
@@ -171,8 +188,10 @@ def dry_run_pm_decisions(
     packet_sha256: str,
     evidence_cutoff: str,
     memory_hashes: dict[str, str] | None = None,
+    principal_model: str | None = None,
 ) -> dict[str, Any]:
     """Deterministic HOLD block for overnight dry-runs (zero model spend)."""
+    model = principal_model or PM_PRINCIPAL_MODEL
     block: dict[str, Any] = {}
     for pm_id in AUTOMATED_PM_IDS:
         row: dict[str, Any] = {
@@ -180,7 +199,7 @@ def dry_run_pm_decisions(
             "overnight_run_id": overnight_run_id,
             "packet_sha256": packet_sha256,
             "evidence_cutoff": evidence_cutoff,
-            "principal_model": PM_PRINCIPAL_MODEL,
+            "principal_model": model,
             "subagent_count": 0,
             "subagent_models": [],
             "actions": [{"action": "HOLD"}],

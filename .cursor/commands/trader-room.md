@@ -1,6 +1,12 @@
 Run the on-demand Market Watch Trader Room debate. If the user says `go`, that is sufficient.
 
-Read `docs/TRADER_ROOM_PROTOCOL.md`, `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md`, `docs/TRADER_RESEARCH_METHOD.md`, and `docs/TRADER_ROOM_ON_DEMAND.md` first. You are not the arbiter. ChatGPT in the Market Watch Trader Room is the sole arbiter.
+Before any tool call or other transcript text, emit verbatim the single line printed by this command on the pinned trusted SHA:
+
+```bash
+PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind ondemand
+```
+
+That line is the first run-policy marker. Do not invent, shorten, or quote an example of its JSON. The hook binds it to the committed registry pin. Then read `docs/TRADER_ROOM_PROTOCOL.md`, `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md`, `docs/TRADER_RESEARCH_METHOD.md`, and `docs/TRADER_ROOM_ON_DEMAND.md`. You are not the arbiter. ChatGPT in the Market Watch Trader Room is the sole arbiter.
 
 This workflow runs in Cursor Cloud. Do not require a local checkout, local terminal, or local Cursor session.
 
@@ -25,7 +31,7 @@ Freeze the packet and SHA-256. Every downstream model receives the exact same fr
 
 ## 2. Round 1
 
-Launch all 14 standing advocates concurrently on exact `grok-4.6`. Keep the standing remits unchanged.
+Launch all 14 standing advocates concurrently on the pinned advocate model, through each seat's `.cursor/agents/<seat>.md` custom agent. The frontmatter model must equal that pinned id. Keep the standing remits unchanged. Seat count and model come from the on-demand pin (`agent_config agents --kind ondemand`).
 
 Expression selection is mandatory before submission:
 - `dollar-king` and `cross-merchant` remain spot-only;
@@ -89,7 +95,7 @@ The no-trade challenge is preserved without forcing all traders into rebuttal ca
 
 ## 5. Round 2
 
-Each directly conflicted advocate gets exactly one `grok-4.6` rebuttal pass. No subagents. No new evidence.
+Each directly conflicted advocate gets exactly one rebuttal pass on the pinned rebuttal model (the same custom agent and exact model as the advocate). No subagents. No new evidence.
 
 Give each advocate only:
 - frozen packet;
@@ -134,15 +140,14 @@ Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). I
 
 ## Hard limits
 
-Full run policy:
+The run-policy marker emitted at the top of this command is the ceiling. On the current 14-seat roster that ceiling is:
 
-`MW_TRADER_ROOM_RUN_POLICY={"version":1,"run_type":"trader-room-ondemand","total_model_cap":57,"grok_cap":29,"composer_cap":28,"parent_model":"grok-4.6","parent_total":1,"parent_grok":1}`
-
-Each child task must contain exactly one `MW_ROLE` tag: `MW_ROLE=advocate:<seat>`, `MW_ROLE=rebuttal:<seat>` (both through the seat's `.cursor/agents/<seat>.md` custom agent), or (nested under an advocate) optional `MW_ROLE=advocate_subagent`. Put that tag alone on its own line and do not mention `MW_ROLE` again. A trailing period or comma, surrounding parentheses, backticks, or asterisks on that single line are accepted. A glued suffix (`.bad`, `/extra`), a repeated tag, an unknown role, or a mismatched seat is denied. Seats come from the pinned roster in preflight `agent_roster_pin`. The literal marker above is valid only for a legacy-equivalent 14-seat `grok-4.6` pin; the hook uses the first marker in the transcript, so a non-legacy pin needs it replaced by `PYTHONPATH=. python -m scripts.trader_room.agent_config markers --kind ondemand` output (stage 2).
-
-- total Grok ceiling 29 including ACP parent;
+- total Grok ceiling 29 including the ACP parent (Grok-family calls on the pinned model);
 - Composer ceiling 28;
 - total model ceiling 57;
+
+Each child task must contain exactly one `MW_ROLE` tag: `MW_ROLE=advocate:<seat>`, `MW_ROLE=rebuttal:<seat>` (both through the seat's `.cursor/agents/<seat>.md` custom agent), or (nested under an advocate) optional `MW_ROLE=advocate_subagent`. Put that tag alone on its own line and do not mention `MW_ROLE` again. A trailing period or comma, surrounding parentheses, backticks, or asterisks on that single line are accepted. A glued suffix (`.bad`, `/extra`), a repeated tag, an unknown role, or a mismatched seat is denied. Seats and exact models come from the pinned roster in preflight `agent_roster_pin`.
+
 - Auto and Other Models prohibited;
 - no silent retries or reroutes.
 

@@ -35,6 +35,8 @@ from tests.test_overnight_scheduled_output import (
     SCHEDULE_ID,
     _hold_decision,
     _pm_block,
+    execution_for_pin,
+    snapshot_pin,
 )
 
 AS_OF = datetime.fromisoformat("2026-09-28T01:55:00-04:00")
@@ -311,6 +313,7 @@ class _FrozenObligationCase(unittest.TestCase):
             },
         }
         packet["packet_sha256"] = sha256_json(packet)
+        pin = snapshot_pin(self.base)
         return {
             "schema_version": 1,
             "type": "OVERNIGHT_SCHEDULED_OUTPUT",
@@ -323,8 +326,13 @@ class _FrozenObligationCase(unittest.TestCase):
                 seat: _hold_decision(seat, self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
                 for seat in STANDING_SEATS
             },
-            "pm_decisions": _pm_block(self.run_id, packet["packet_sha256"], packet["evidence_cutoff"]),
-            "execution": _execution(19, 18, 1),
+            "pm_decisions": _pm_block(
+                self.run_id,
+                packet["packet_sha256"],
+                packet["evidence_cutoff"],
+                pin["roles"]["pm_principal"],
+            ),
+            "execution": execution_for_pin(pin, total=19, grok=18, composer=1),
         }
 
     def _ids(self) -> list[str]:
@@ -378,13 +386,13 @@ class MondayManifestTests(_FrozenObligationCase):
         with self.assertRaises(SchemaError) as nineteen:
             validate_output(self.store, self.payload)
         self.assertIn("20/18/2", str(nineteen.exception))
-        self.payload["execution"] = _execution(20, 18, 2)
+        self.payload["execution"] = execution_for_pin(snapshot_pin(self.base), total=20, grok=18, composer=2)
         with self.assertRaises(SchemaError) as missing_review:
             validate_output(self.store, json.loads(json.dumps(self.payload)))
         self.assertIn("learning_quality_review", str(missing_review.exception))
 
     def test_explicit_missing_grades_leave_debt_and_learning_default(self) -> None:
-        self.payload["execution"] = _execution(20, 18, 2)
+        self.payload["execution"] = execution_for_pin(snapshot_pin(self.base), total=20, grok=18, composer=2)
         self.payload["learning_quality_review"] = _examiner(
             [_grade(owner, obligation_id, "missing") for owner, obligation_id, _trade in self.obligations]
         )
@@ -438,7 +446,7 @@ class MondayManifestTests(_FrozenObligationCase):
 
 class MondayHappyPathTests(_FrozenObligationCase):
     def test_five_adequate_reflections_are_assessed_once_and_need_not_create_lessons(self) -> None:
-        self.payload["execution"] = _execution(20, 18, 2)
+        self.payload["execution"] = execution_for_pin(snapshot_pin(self.base), total=20, grok=18, composer=2)
         assessments = []
         for owner, obligation_id, trade_id in self.obligations:
             self.payload["decisions"][owner].setdefault("postmortems", []).append(_postmortem(trade_id, lesson=False))
@@ -521,7 +529,7 @@ class MixedOutcomeTests(_FrozenObligationCase):
                 decision["postmortems"] = [_postmortem(trade_id, lesson=mode == "lesson")]
                 state = "adequate"
             assessments.append(_grade(owner, obligation_id, state))
-        self.payload["execution"] = _execution(20, 18, 2)
+        self.payload["execution"] = execution_for_pin(snapshot_pin(self.base), total=20, grok=18, composer=2)
         self.payload["learning_quality_review"] = _examiner(assessments)
         pm = self.payload["pm_decisions"]
         pm["pragmatist"]["portfolio_construction"] = synthetic_portfolio_construction(

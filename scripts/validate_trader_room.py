@@ -137,7 +137,9 @@ def main() -> None:
 
     on_demand = (ROOT / "docs" / "TRADER_ROOM_ON_DEMAND.md").read_text(encoding="utf-8")
     assert "scripts/trader_room_go.py go" in on_demand
-    assert "grok-4.6" in on_demand
+    assert ADVOCATE_MODEL in on_demand
+    assert "markers --kind ondemand" in on_demand
+    assert 'MW_TRADER_ROOM_RUN_POLICY={"version":1' not in on_demand
     assert "composer-2.5" in on_demand
     assert "Total Grok ceiling including parent = 29" in on_demand
     assert "Composer ceiling = 28" in on_demand
@@ -147,7 +149,6 @@ def main() -> None:
     assert "free-text cannot prove the linkage" in on_demand
     assert "context_build" in on_demand
     assert "zero model calls" in on_demand
-    assert "MW_TRADER_ROOM_RUN_POLICY=" in on_demand
     assert "trader-room/runs/<run_id>/" in on_demand
 
     evidence_contract = (ROOT / "docs" / "TRADER_ROOM_EVIDENCE_CONTRACT.md").read_text(encoding="utf-8")
@@ -226,7 +227,7 @@ def main() -> None:
     assert "service_role" not in mcp_path.read_text(encoding="utf-8").lower()
 
     print(
-        "Trader Room configuration validated: 14 Grok 4.6 advocates, deterministic conflict mapping and final handoff, "
+        f"Trader Room configuration validated: 14 {ADVOCATE_MODEL} advocates, deterministic conflict mapping and final handoff, "
         "composer-2.5-only internal subagents, mandatory Market Watch evidence, "
         "on-demand go entrypoint, and repository artifact handoff."
     )

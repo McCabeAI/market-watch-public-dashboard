@@ -91,9 +91,15 @@ TR_POLICY_V1 = {
 def _daily_pin_split_trader_model() -> dict:
     body = agent_config.build_pin("daily")
     roles = dict(body["roles"])
-    roles["trader"] = "grok-4.7"
+    if roles["trader"] == roles["advocate"]:
+        other = "grok-4.6" if roles["trader"] != "grok-4.6" else "grok-4.7"
+        roles["advocate"] = other
+        roles["rebuttal"] = other
     families = dict(body["model_families"])
-    families["grok-4.7"] = "grok"
+    known = {"grok-4.6": "grok", "grok-4.7": "grok", "composer-2.5": "composer"}
+    needed = set(roles.values()) | set(body.get("pm_subagent_models") or [])
+    for model in needed:
+        families[model] = families.get(model) or known[model]
     stripped = {k: v for k, v in body.items() if k not in ("roster_sha256", "pin_sha256")}
     stripped["roles"] = roles
     stripped["model_families"] = families
@@ -215,6 +221,13 @@ class RoleGuardTests(unittest.TestCase):
             return "MW_OVERNIGHT_RUN_POLICY=" + json.dumps(OVERNIGHT_POLICY_V1, separators=(",", ":"))
         return agent_config.overnight_policy_marker(pin)
 
+    def _committed_ondemand_pin(self, repo: Path) -> dict:
+        cfg = dict(
+            agent_config.load_config(repo / "scripts" / "trader_room" / "model_registry.json", honor_env=False)
+        )
+        cfg["_source"] = "default"
+        return agent_config.assert_acceptable_pin(agent_config.build_pin("ondemand", config=cfg))
+
     def test_untagged_daily_child_denied(self) -> None:
         repo = self._seed_overnight_repo()
         self._write_marker(self._overnight_marker())
@@ -326,12 +339,14 @@ class RoleGuardTests(unittest.TestCase):
         repo = self._seed_overnight_repo(snapshot=snap)
         self._write_marker(self._overnight_marker(pin))
         self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=synthesis")
+        trader_model = pin["roles"]["trader"]
+        pm_model = pin["roles"]["pm_principal"]
         for t in pin["traders"]:
-            self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=trader:{t['id']}")
+            self._hook(repo=repo, parent="root", model=trader_model, task=f"MW_ROLE=trader:{t['id']}")
         for pm_id in DAILY_PMS:
-            self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=pm:{pm_id}")
+            self._hook(repo=repo, parent="root", model=pm_model, task=f"MW_ROLE=pm:{pm_id}")
         self._hook(repo=repo, parent="root", model="composer-2.5", task="MW_ROLE=learning_examiner")
-        blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task="MW_ROLE=trader:rates-first-extra")
+        blocked = self._hook(repo=repo, parent="root", model=trader_model, task="MW_ROLE=trader:rates-first-extra")
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("cap", blocked.stdout.lower())
 
@@ -350,7 +365,11 @@ class RoleGuardTests(unittest.TestCase):
         self.assertEqual(allowed.returncode, 0)
 
     def test_candidate_pin_denied(self) -> None:
-        pin = agent_config.build_pin("daily", profile_id="candidate-grok-4.7", allow_candidate=True)
+        raw = agent_config.build_pin("daily")
+        body = {k: v for k, v in raw.items() if k not in ("roster_sha256", "pin_sha256")}
+        body["candidate"] = True
+        body["profile_status"] = "candidate"
+        pin = agent_config.seal_pin(body)
         snap = {"schema_version": 1, "type": "OVERNIGHT_EVIDENCE_SNAPSHOT", "agent_roster_pin": pin}
         repo = self._seed_overnight_repo(snapshot=snap)
         self._write_marker(agent_config.overnight_policy_marker(pin))
@@ -392,17 +411,29 @@ class RoleGuardTests(unittest.TestCase):
 
     def test_ondemand_14_max_57(self) -> None:
         repo = self._seed_tr_repo()
+        pin = self._committed_ondemand_pin(repo)
+        advocate = pin["roles"]["advocate"]
         self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        blocked_v1 = self._hook(
+            repo=repo,
+            parent="root",
+            model=advocate,
+            task=f"MW_ROLE=advocate:{ONDEMAND_TRADERS[0]}",
+            child="v1-denied",
+        )
+        self.assertNotEqual(blocked_v1.returncode, 0)
+        self.tr_active.unlink(missing_ok=True)
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         advocates = []
         for seat in ONDEMAND_TRADERS:
             child = f"adv-{seat}"
             advocates.append(child)
-            self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child=child)
+            self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=advocate:{seat}", child=child)
         for seat in ONDEMAND_TRADERS:
             self._hook(
                 repo=repo,
                 parent="root",
-                model="grok-4.6",
+                model=advocate,
                 task=f"MW_ROLE=rebuttal:{seat}",
                 child=f"reb-{seat}",
             )
@@ -412,7 +443,7 @@ class RoleGuardTests(unittest.TestCase):
         blocked = self._hook(
             repo=repo,
             parent="root",
-            model="grok-4.6",
+            model=advocate,
             task=f"MW_ROLE=advocate:{ONDEMAND_TRADERS[0]}",
             child="extra",
         )
@@ -438,16 +469,17 @@ class RoleGuardTests(unittest.TestCase):
         policy = json.loads(agent_config.trader_room_policy_marker(pin).split("=", 1)[1])
         self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(policy, separators=(",", ":")))
         seats = agent_config.pin_trader_ids(pin)
+        advocate = pin["roles"]["advocate"]
         advocates = []
         for seat in seats:
             child = f"adv-{seat}"
             advocates.append(child)
-            self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child=child)
+            self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=advocate:{seat}", child=child)
         for seat in seats:
             self._hook(
                 repo=repo,
                 parent="root",
-                model="grok-4.6",
+                model=advocate,
                 task=f"MW_ROLE=rebuttal:{seat}",
                 child=f"reb-{seat}",
             )
@@ -457,7 +489,7 @@ class RoleGuardTests(unittest.TestCase):
         blocked = self._hook(
             repo=repo,
             parent="root",
-            model="grok-4.6",
+            model=advocate,
             task=f"MW_ROLE=advocate:{seats[0]}",
             child="overflow",
         )
@@ -466,29 +498,35 @@ class RoleGuardTests(unittest.TestCase):
 
     def test_rebuttal_requires_advocate_and_once(self) -> None:
         repo = self._seed_tr_repo()
-        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        pin = self._committed_ondemand_pin(repo)
+        advocate = pin["roles"]["advocate"]
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         seat = ONDEMAND_TRADERS[0]
-        blocked = self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=rebuttal:{seat}")
+        blocked = self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=rebuttal:{seat}")
         self.assertNotEqual(blocked.returncode, 0)
-        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child="adv")
-        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=rebuttal:{seat}", child="reb1")
-        blocked_dup = self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=rebuttal:{seat}", child="reb2")
+        self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=advocate:{seat}", child="adv")
+        self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=rebuttal:{seat}", child="reb1")
+        blocked_dup = self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=rebuttal:{seat}", child="reb2")
         self.assertNotEqual(blocked_dup.returncode, 0)
 
     def test_rebuttal_cannot_launch_subagent(self) -> None:
         repo = self._seed_tr_repo()
-        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        pin = self._committed_ondemand_pin(repo)
+        advocate = pin["roles"]["advocate"]
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         seat = ONDEMAND_TRADERS[0]
-        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child="adv")
-        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=rebuttal:{seat}", child="reb")
+        self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=advocate:{seat}", child="adv")
+        self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=rebuttal:{seat}", child="reb")
         blocked = self._hook(repo=repo, parent="reb", model="composer-2.5", task="MW_ROLE=advocate_subagent")
         self.assertNotEqual(blocked.returncode, 0)
 
     def test_third_composer_denied(self) -> None:
         repo = self._seed_tr_repo()
-        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        pin = self._committed_ondemand_pin(repo)
+        advocate = pin["roles"]["advocate"]
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         seat = ONDEMAND_TRADERS[0]
-        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child="adv")
+        self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=advocate:{seat}", child="adv")
         self._hook(repo=repo, parent="adv", model="composer-2.5", task="MW_ROLE=advocate_subagent", child="c1")
         self._hook(repo=repo, parent="adv", model="composer-2.5", task="MW_ROLE=advocate_subagent", child="c2")
         blocked = self._hook(repo=repo, parent="adv", model="composer-2.5", task="MW_ROLE=advocate_subagent", child="c3")
@@ -497,13 +535,15 @@ class RoleGuardTests(unittest.TestCase):
 
     def test_subagent_type_mismatch_denied(self) -> None:
         repo = self._seed_tr_repo()
-        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        pin = self._committed_ondemand_pin(repo)
+        advocate = pin["roles"]["advocate"]
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         seat = ONDEMAND_TRADERS[0]
         other = ONDEMAND_TRADERS[1]
         blocked = self._hook(
             repo=repo,
             parent="root",
-            model="grok-4.6",
+            model=advocate,
             task=f"MW_ROLE=advocate:{seat}",
             subagent_type=other,
         )
@@ -580,10 +620,14 @@ class RoleGuardTests(unittest.TestCase):
             ledger.charge("subagent", pin["roles"]["advocate_subagent"], seats[0], "sub3")
 
     def test_ondemand_ledger_rejects_grok_4_7_on_4_6_pin(self) -> None:
-        ledger = BudgetLedger()
+        ledger = BudgetLedger(pin=agent_config.legacy_pin("ondemand"))
         seat = ONDEMAND_TRADERS[0]
         with self.assertRaises(BudgetError):
             ledger.charge("advocate", "grok-4.7", seat, "bad model")
+        active = BudgetLedger()
+        active.charge("advocate", "grok-4.7", seat, "active advocate")
+        with self.assertRaises(BudgetError):
+            active.charge("advocate", "grok-4.6", seat, "retired model")
 
     def test_delegation_request_shape_unchanged(self) -> None:
         request = build_delegation_request(
@@ -609,7 +653,7 @@ class RoleGuardTests(unittest.TestCase):
         self.assertEqual(set(budget.keys()), expected_keys)
         self.assertEqual(
             (budget["total_model_cap"], budget["grok_cap"], budget["composer_cap"], budget["parent_model"]),
-            (20, 18, 2, "grok-4.6"),
+            (20, 18, 2, "grok-4.7"),
         )
 
     def test_repeated_identical_mw_role_tag_denied(self) -> None:
@@ -622,16 +666,18 @@ class RoleGuardTests(unittest.TestCase):
         self.assertIn("exactly one MW_ROLE", blocked.stdout)
 
         repo_tr = self._seed_tr_repo()
-        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        pin = self._committed_ondemand_pin(repo_tr)
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         dup_adv = f"MW_ROLE=advocate:{seat} MW_ROLE=advocate:{seat}"
-        blocked_adv = self._hook(repo=repo_tr, parent="root", model="grok-4.6", task=dup_adv)
+        blocked_adv = self._hook(repo=repo_tr, parent="root", model=pin["roles"]["advocate"], task=dup_adv)
         self.assertNotEqual(blocked_adv.returncode, 0)
 
     def test_nested_repeated_advocate_subagent_tag_denied(self) -> None:
         repo = self._seed_tr_repo()
-        self._write_marker("MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(TR_POLICY_V1, separators=(",", ":")))
+        pin = self._committed_ondemand_pin(repo)
+        self._write_marker(agent_config.trader_room_policy_marker(pin))
         seat = ONDEMAND_TRADERS[0]
-        self._hook(repo=repo, parent="root", model="grok-4.6", task=f"MW_ROLE=advocate:{seat}", child="adv")
+        self._hook(repo=repo, parent="root", model=pin["roles"]["advocate"], task=f"MW_ROLE=advocate:{seat}", child="adv")
         blocked = self._hook(
             repo=repo,
             parent="adv",
@@ -857,10 +903,17 @@ class RoleGuardTests(unittest.TestCase):
 
     def test_shell_hook_overnight_marker_models(self) -> None:
         marker = self._overnight_marker()
-        for model in ("composer-2.5", "grok-4.6"):
+        profile = agent_config.get_profile()
+        daily = {
+            profile["roles"]["synthesis"],
+            profile["roles"]["trader"],
+            profile["roles"]["pm_principal"],
+            profile["roles"]["learning_examiner"],
+        }
+        for model in sorted(daily):
             proc = self._shell_hook(model=model, transcript_text=marker)
-            self.assertEqual(proc.returncode, 0, proc.stdout)
-        for model in ("grok-4.7-high", "auto"):
+            self.assertEqual(proc.returncode, 0, (model, proc.stdout))
+        for model in ("grok-4.6", "grok-4.7-high", "auto"):
             proc = self._shell_hook(model=model, transcript_text=marker)
             self.assertNotEqual(proc.returncode, 0, model)
 

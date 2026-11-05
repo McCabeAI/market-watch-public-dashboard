@@ -1,9 +1,12 @@
 # Agent roster and model profiles (architecture + staged migration)
 
-**Status:** stage 0 (compatibility build). Production stays on profile
-`current-production-grok-4.6` with the 14-seat roster. The `candidate-grok-4.7`
-profile exists so that it can be checked, but nothing activates it, and no 15th
-seat is active.
+**Status:** stage 2 cutover. The active profile is `candidate-grok-4.7`.
+`current-production-grok-4.6` is retired and kept for rollback. The live roster
+is still the same 14 seats and three automated PMs, with the same 20/18/2 and
+57/29/28 caps. Grok roles use `grok-4.7`. Synthesis, the learning examiner, and
+the advocate subagent stay on `composer-2.5`. This Market Watch PR must not
+merge until ACP PR #395 has set the one-shot `parent_model` to `grok-4.7`.
+Do not file a `[launch-market-watch]` request between those merges.
 
 This document is the single architecture reference for:
 
@@ -354,7 +357,7 @@ PYTHONPATH=. python -m scripts.trader_room.onboard_trader --recover [--root <rep
 | --- | --- | --- | --- |
 | 0 (this PR) | Market Watch | v2 config, pins, derived budgets, role-verified hooks, split daily/debate agents, onboarding CLI, candidate 4.7 profile defined but inactive | merged by a human; no runtime model change |
 | 1 | ACP (separately authorized PR in the protected repo) | contract in `ACP_MODEL_ROSTER_MIGRATION_CONTRACT.md`: dedicated one-shot config with one parent-model field, parent equality gate, no MW subagent allowlist or trader count/models in ACP, marker emitted truthfully | explicit ACP authorization; launch freeze during cutover |
-| 2 | Market Watch cutover PR | set `candidate-grok-4.7.status = active`, `active_profile = candidate-grok-4.7`, and the old profile's `status = retired`; remove the v1 literal markers from `.cursor/commands/*`; run `agent_config render-agents`; verify with `check-agents` | lands only after stage 1 is live and a human authorizes the cutover |
+| 2 (this change) | Market Watch cutover PR | set `candidate-grok-4.7.status = active`, `active_profile = candidate-grok-4.7`, and the old profile's `status = retired`; remove the candidate `requires` list; remove the v1 literal markers from `.cursor/commands/*`; run `agent_config render-agents`; verify with `check-agents` | ACP PR #395 must merge first; Kevin authorized the cutover on 2026-11-05 |
 | 3 (optional) | Market Watch | onboard a real 15th trader with the user's persona and a real activation date | explicit user profile and authorization; requires stage 1 item 6 |
 
 The parent model is changed in exactly one place, ACP's one-shot config, in

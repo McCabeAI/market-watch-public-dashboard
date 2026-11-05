@@ -105,7 +105,7 @@ fi
 if [ -n "$PM_POLICY" ]; then
   case "$MODEL" in
     cursor-grok-*)
-      deny "PM routing blocked runtime slug '$MODEL'. Launch principals via .cursor/agents/{swinger,pragmatist,grinder}.md (frontmatter grok-4.6[]), not Task model grok-4.6/inherit."
+      deny "PM routing blocked runtime slug '$MODEL'. Launch principals via .cursor/agents/{swinger,pragmatist,grinder}.md (frontmatter exact model from the active profile), not a Task model slug or inherit."
       ;;
   esac
   ALLOWED=$(hook_models pm)

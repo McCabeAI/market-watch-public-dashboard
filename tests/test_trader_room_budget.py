@@ -11,17 +11,6 @@ from pathlib import Path
 from scripts.overnight.constants import ROOT
 from scripts.trader_room import agent_config
 
-POLICY = {
-    "version": 1,
-    "run_type": "trader-room-ondemand",
-    "total_model_cap": 57,
-    "grok_cap": 29,
-    "composer_cap": 28,
-    "parent_model": "grok-4.6",
-    "parent_total": 1,
-    "parent_grok": 1,
-}
-
 LEGACY_ONDEMAND = agent_config.legacy_pin("ondemand")
 TRADER_SEATS = agent_config.pin_trader_ids(LEGACY_ONDEMAND)
 
@@ -34,8 +23,6 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
         self.lock.unlink(missing_ok=True)
         self.tmp = tempfile.TemporaryDirectory()
         self.transcript = Path(self.tmp.name) / "transcript.txt"
-        marker = "MW_TRADER_ROOM_RUN_POLICY=" + json.dumps(POLICY, separators=(",", ":"))
-        self.transcript.write_text(marker + "\n", encoding="utf-8")
         self.script = ROOT / ".cursor" / "hooks" / "enforce-overnight-budget.py"
         self.repo = Path(self.tmp.name) / "repo"
         self.repo.mkdir()
@@ -48,6 +35,11 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
         shutil.copy2(registry_src, registry_dst)
         subprocess.run(["git", "add", "."], cwd=self.repo, check=True)
         subprocess.run(["git", "commit", "-qm", "seed registry"], cwd=self.repo, check=True)
+        cfg = dict(agent_config.load_config(registry_dst, honor_env=False))
+        cfg["_source"] = "default"
+        self.pin = agent_config.assert_acceptable_pin(agent_config.build_pin("ondemand", config=cfg))
+        self.advocate_model = self.pin["roles"]["advocate"]
+        self.transcript.write_text(agent_config.trader_room_policy_marker(self.pin) + "\n", encoding="utf-8")
 
     def tearDown(self) -> None:
         self.active.unlink(missing_ok=True)
@@ -80,24 +72,24 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
             child = f"adv-{seat}"
             advocates.append(child)
             self.assertEqual(
-                self._call("root", child, "grok-4.6", f"MW_ROLE=advocate:{seat}").returncode,
+                self._call("root", child, self.advocate_model, f"MW_ROLE=advocate:{seat}").returncode,
                 0,
             )
         for seat in TRADER_SEATS:
             self.assertEqual(
-                self._call("root", f"rebuttal-{seat}", "grok-4.6", f"MW_ROLE=rebuttal:{seat}").returncode,
+                self._call("root", f"rebuttal-{seat}", self.advocate_model, f"MW_ROLE=rebuttal:{seat}").returncode,
                 0,
             )
         for advocate in advocates:
             self.assertEqual(self._call(advocate, f"{advocate}-c1", "composer-2.5").returncode, 0)
             self.assertEqual(self._call(advocate, f"{advocate}-c2", "composer-2.5").returncode, 0)
-        blocked = self._call("root", "extra-grok", "grok-4.6", f"MW_ROLE=advocate:{TRADER_SEATS[0]}")
+        blocked = self._call("root", "extra-grok", self.advocate_model, f"MW_ROLE=advocate:{TRADER_SEATS[0]}")
         self.assertNotEqual(blocked.returncode, 0)
         self.assertIn("cap", blocked.stdout.lower())
 
     def test_advocate_cannot_launch_third_composer(self) -> None:
         self.assertEqual(
-            self._call("root", "adv", "grok-4.6", f"MW_ROLE=advocate:{TRADER_SEATS[0]}").returncode,
+            self._call("root", "adv", self.advocate_model, f"MW_ROLE=advocate:{TRADER_SEATS[0]}").returncode,
             0,
         )
         self.assertEqual(self._call("adv", "c1", "composer-2.5").returncode, 0)
@@ -109,11 +101,11 @@ class TraderRoomBudgetHookTests(unittest.TestCase):
     def test_non_advocate_cannot_launch_composer(self) -> None:
         seat = TRADER_SEATS[0]
         self.assertEqual(
-            self._call("root", "adv", "grok-4.6", f"MW_ROLE=advocate:{seat}").returncode,
+            self._call("root", "adv", self.advocate_model, f"MW_ROLE=advocate:{seat}").returncode,
             0,
         )
         self.assertEqual(
-            self._call("root", "reb", "grok-4.6", f"MW_ROLE=rebuttal:{seat}").returncode,
+            self._call("root", "reb", self.advocate_model, f"MW_ROLE=rebuttal:{seat}").returncode,
             0,
         )
         blocked = self._call("reb", "c1", "composer-2.5")

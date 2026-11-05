@@ -1,7 +1,7 @@
 ---
 name: conflict-aggregator
 description: First Trader Room aggregator. Identify substantive direct and latent conflicts only. Never rank or choose a winner.
-model: grok-4.6[]
+model: grok-4.7[]
 readonly: true
 is_background: true
 ---
