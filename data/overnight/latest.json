@@ -1,15 +1,15 @@
 {
-  "as_of": "2026-11-04T07:12:27.759870-05:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20261104/assembled_dataset.json",
+  "as_of": "2026-11-05T06:31:48.469658-05:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20261105/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20261104",
+  "overnight_run_id": "overnight-20261105",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-11-04T05:35:22.541505-05:00",
+        "as_of": "2026-11-05T04:53:53.458055-05:00",
         "blocking": false,
         "catastrophic": false,
         "digest": "afece30c61553683a9ad5f2c87f04c0f91ea641c1dc2b4fffeb05defe88c5980",
@@ -22,7 +22,7 @@
         "as_of": "2026-11-04T05:35:22-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "7acba0372f1260135af4c9d1e7aeb452d2673ac2dd1996177db840dcf48272ba",
+        "digest": "dac3b20b7afb2cdd858658eaba8d7b7dee37fb4cd056b1f7e17895bc5feb2f50",
         "notes": [
           "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
           "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=due_missing, AU.Consumer.confidence=due_missing, AU.Consumer.income=due_missing, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+54 more)",
@@ -32,10 +32,10 @@
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-11-04T12:12:27Z",
+        "as_of": "2026-11-05T11:31:47Z",
         "blocking": false,
         "catastrophic": false,
-        "digest": "29e5efd39d33770fe7934ae993170533818333c176f5140634f4afe6e8e67d74",
+        "digest": "ea253b2d38f909cfa05b908a7bdfbac717824640544350b81f4d538c11a03730",
         "notes": [
           "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates",
           "source-isolated unavailable feeds: CME_positioning, NZ_rates"
@@ -43,18 +43,18 @@
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-11-04T05:35:22.541505-05:00",
+        "as_of": "2026-11-05T04:53:53.458055-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "2dc071fd2bed84b65d1462a11c8b9a8767579243062df3be7816c00c8ca8adaa",
+        "digest": "38681546172abb1a08e687500cad7a4fce73108459c79e458db0e2b347689428",
         "notes": [
           "accepted current-cycle ACP research supplement"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20261104",
-    "last_successful_review_run_id": "overnight-20261104",
+    "last_successful_pm_run_id": "overnight-20261105",
+    "last_successful_review_run_id": "overnight-20261105",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",
