@@ -1732,6 +1732,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "The dollar still belongs versus yen. Official SOFR is 3.95 against cash TONA 1.227 and March 2027 TONA 1.6625, while March SOFR is 4.365, so the overnight and path gaps that put this long on are still paying. Dollar-yen is 158.29 versus 158.06 at entry and 157.90 at the prior mark: a grind through entry from the cheaper leftover print, not a closed United States-Japan rate gap and not a reason to add. Dollar-Canada at 1.3975 with Brent 103.60 and cash Canada 2.54 is the worse dollar pair while oil is still three-digit, so the live twenty million dollar-yen long is the expression that stays on."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 20000000,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": "Hold the 20 million dollar-yen long at 158.25. Carry still pays versus TONA 1.227, the print has not broken the 158 area, and cheaper oil is not a yen-policy shock. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "f4f3f6f2f20adc28933810fae3bf0b6a1ad9141e7340b841313ed989ce68b204",
+      "event_id": "jde-2df737f7e62b4f07",
+      "funding_view": null,
+      "invalidation": "Cut if dollar-yen loses 156 with TONA catch-up, or if official SOFR-TONA carry collapses as US cash eases toward Japanese overnight.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "be470753232691ffd639fcb4ccdd306241183ab362b9cdf8499b7096b4eaca0e",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "009fb7020f10214c71c70c241da7c7160dee715c409771992ad6b5c093780016"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar still belongs versus yen. Official SOFR is 3.97 against cash TONA 1.227, so the carry gap remains about 274 basis points, and dollar-yen is 158.25 versus a 158.06 entry. Cheaper oil and a softer post-election dollar tape are a warning, not a yen-regime break at this print. Keep the existing long; do not add at an extended level and do not rotate into dollar-Canada, which mixes the oil fade.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "The dollar still belongs versus yen. Official SOFR is 3.97 against cash TONA 1.227, so the carry gap remains about 274 basis points, and dollar-yen is 158.25 versus a 158.06 entry. Cheaper oil and a softer post-election dollar tape are a warning, not a yen-regime break at this print. Keep the existing long; do not add at an extended level and do not rotate into dollar-Canada, which mixes the oil fade."
     }
   ],
   "schema_version": 1,

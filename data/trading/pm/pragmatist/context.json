@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-05T04:53:53.458055-05:00",
+  "as_of": "2026-11-05T06:26:09.598694-05:00",
   "calibration": {
     "average_holding_seconds": 1736823,
     "average_realized_pnl_usd": 184000.0,
@@ -83,8 +83,8 @@
     "stress_regime": "unknown"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 243249.34,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 203364.35,
+    "best_trader_outearn_streak": 0,
     "best_trader_seat": "value-guy",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -92,7 +92,7 @@
     "competition_rank": 3,
     "competitive_rank": 3,
     "drawdown_usd": 150097.51,
-    "gap_to_best_trader_usd": 698546.9,
+    "gap_to_best_trader_usd": 738431.89,
     "high_water_nav_usd": 1001091893.75,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 941796.24,
@@ -113,7 +113,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "94f339ba4441120c8be835674bc71b0b33f1112f44ab135e6d822960192d5f0a",
+  "memory_context_sha256": "800c6a2c6d29e2e77449857bbf16d4c20e05cf694096962b298e39282fa4a4fb",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -131,7 +131,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 360000.0,
-        "holding_seconds": 3996069,
+        "holding_seconds": 4001605,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -180,8 +180,8 @@
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 156174,
-        "horizon_elapsed_fraction": 0.0603,
+        "holding_seconds": 161710,
+        "horizon_elapsed_fraction": 0.0624,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 30,
@@ -232,7 +232,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.13
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
@@ -247,12 +247,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.19
+        "value": 0.23
       },
       "frustration": {
         "band": "calm",
         "trend": "up",
-        "value": 0.11
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -283,11 +283,16 @@
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261104"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261105"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "7dad3695fb799ed49eee8de6f24b1e54feb7b9354f2eb81f1f16d83247879b21",
+    "state_sha256": "6356f2922475999a70e9b1a461cfb7b88038858eb67dfaca4797986aea842618",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

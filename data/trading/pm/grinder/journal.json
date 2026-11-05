@@ -1759,6 +1759,73 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "AUDNZD is still near the top of its one-year range at 1.2417 after drifting from 1.2456, so the existing short retains a swing path if the cross leaves that extreme toward the recent distribution. Fresh tickets in NZDUSD, AUDCAD, USDJPY, or March leftovers would expand risk into a mid-range oil cross, a stretched yen, or a two-way 41 to 44 basis-point cash-versus-March strip that still sits against Brent near 103.60. Official overnight on shocked capital is the hurdle those new ideas fail; the working ten-million cross does not need to be enlarged."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 10000000,
+          "position_id": "pm-grinder-9366bc9ee048",
+          "rationale": "The cross remains elevated after 1.2456 to 1.2445, invalidation through 1.255 is intact, and shocked capital on this ticket stays small. Hold the original ten million; do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T06:26:08.554807-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "f4f7083deb3620e796a38997e781c4ea9008984b2cd68d52a95efbfa26a90ed0",
+      "event_id": "jde-fce8bd9034ed437d",
+      "funding_view": null,
+      "invalidation": "Cut if Australian-kiwi extends through 1.255 or stays pinned at the extreme without drifting toward the recent distribution. A kiwi-specific shock that lifts the cross while oil and risk appetite stay firm would also void the mean-reversion case.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-grinder-9366bc9ee048"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e1948864f9f2b85d3a775aca3981ddd5ca41a46d63f4576743b7af355b3316dd",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "short_horizon_noise",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "The live swing already avoids sitting in pure cash at the overnight benchmark. Expanding now would be rank-chasing rather than a cleaner hurdle clearance.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "variance",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "7ca1ac2d09cdb450bb4690bbab8008b59e6edc6fbf0b502e1520dc5bb6b4db1a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "6349c5d7a0f41b7bda95567abb0919e87aa8095910c4147dead9109e5787e8b8",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261105-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi is still elevated at 1.2445 after bouncing from 1.2417, so the existing ten-million short retains a swing path if the cross leaves that extreme toward the recent distribution. Fresh tickets in kiwi-dollar, Australian-Canada, dollar-yen, or March leftovers would expand risk into a mid-range oil cross, a stretched yen, or a two-way 39 to 40 basis-point cash-versus-March strip. Official overnight on shocked capital is the hurdle those new ideas fail; the working ten-million cross does not need to be enlarged.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi is still elevated at 1.2445 after bouncing from 1.2417, so the existing ten-million short retains a swing path if the cross leaves that extreme toward the recent distribution. Fresh tickets in kiwi-dollar, Australian-Canada, dollar-yen, or March leftovers would expand risk into a mid-range oil cross, a stretched yen, or a two-way 39 to 40 basis-point cash-versus-March strip. Official overnight on shocked capital is the hurdle those new ideas fail; the working ten-million cross does not need to be enlarged."
     }
   ],
   "schema_version": 1,

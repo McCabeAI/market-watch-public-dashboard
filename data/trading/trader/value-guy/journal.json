@@ -1698,6 +1698,64 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "The book stays short 25 million Australian dollar-Canada at 0.9760, a 42nd one-year percentile versus the 0.9879 entry. Brent at 103.60 and WTI at 96.09 keep paying Canada versus Australia on oil terms of trade. Cash Australia 4.60 versus Canada 2.54 leaves Australia 206 basis points ahead, and March Canada implied 2.97 still sits 43 basis points over cash, so leftover Canada policy tightness is already in the front end. Leftover Canadian dollar value stays in the existing cross rather than a new coupon or pack."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": 25000000,
+          "position_id": "pos-63923b5f6571",
+          "rationale": "Close the 25 million Australian-Canada short. Brent 94.62 and WTI 88.12 take away the Canada oil premium that funded entry at 0.9879, and 0.9776 is not a print I would initiate from flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 48,
+      "decision_fingerprint": "e44d678957cacea3feaaed53033379cb91f6bd5aefbdb6b6504a041c467f8f7b",
+      "event_id": "jde-1354919aa5f6420b",
+      "funding_view": null,
+      "invalidation": "A later freeze would need three-digit crude and a still-elevated Australian-Canada print to reopen a Canada terms-of-trade short. Until then the dislocation is harvested.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-63923b5f6571"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-63923b5f6571"
+      ],
+      "memory_context_sha256": "ba7267e3dfed2ff976c2434d9fa83641ebca2b94e7100661ac59168803d4a14c",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "73e7aea3f78b689e71578a4be38eb640fafb454dda2b8c794e0595666713bea6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The existing Australian-Canada short from 0.9879 to 0.9776 is a material winner, but Brent at 94.62 and WTI at 88.12 remove the three-digit Canada terms-of-trade premium that funded the dislocation. The cross is no longer an extreme versus that oil impulse, and I would not initiate the same 25 million short from flat at this print. Close the leftover rather than invent a new Canada rates ticket.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "The existing Australian-Canada short from 0.9879 to 0.9776 is a material winner, but Brent at 94.62 and WTI at 88.12 remove the three-digit Canada terms-of-trade premium that funded the dislocation. The cross is no longer an extreme versus that oil impulse, and I would not initiate the same 25 million short from flat at this print. Close the leftover rather than invent a new Canada rates ticket."
     }
   ],
   "schema_version": 1,

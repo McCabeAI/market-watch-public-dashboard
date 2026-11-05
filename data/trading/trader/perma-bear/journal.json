@@ -1734,6 +1734,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "official SOFR is 3.95 against SR3 March 4.365, June 4.495 and September 4.535, so the 2027 strip still prices 41.5 to 58.5bp of hikes; CORRA 2.54 versus March 2.97 and AONIA 4.60 versus March 4.915 do the same. US 10-year is 4.95 versus cash 3.95, entry 5.24 and prior mark 4.91. Brent is 103.60, WTI 96.09, VIX 21.15 and SPX 7541. US activity 50.73 and labor 51.26 are cooling; inflation LEVEL 63.1 is still warm. cash below a hike-priced strip is inflation and policy-error, not a growth-break that should be received in STIR. Keep the residual 10-year receive, where 100bp of tightening is already in the coupon, and do not add at 4.95 after the one-month 33bp rally. Paying March SOFR would fight that coupon book, and the five-day Brent fade from 117.64 plus higher VIX make a new front-end pay the wrong defensive ticket. whether Hormuz actually constrains barrels, and whether the March 41.5bp premium over cash is delivered."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 6250000,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Hold the residual 10-year receive at 4.90 versus 5.24 entry. The election bond bid and cheaper oil support the coupon; do not add after a 34bp rally and do not flip into a front-end pay.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "74b21ca0605ec80b36a96ff8dd85b7d2a9ab44898faa727dc510ea44393f8c2d",
+      "event_id": "jde-f769ad105ec94397",
+      "funding_view": null,
+      "invalidation": "The residual ten-year is wrong if US 10-year backs up through 5.24 while hike talk stays open, or if the March premium over cash 3.97 disappears because policy has already turned easy.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "509e5b9d47af52e92b44a4974505f96fefb1b8b3689ddbffb12ded33d5fab928",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "0823824fb0c8351ab7bf5c2a7f2deac12724f5bde9fd72855f80f56b915daee7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.97 against March 4.36, June 4.475, and September 4.505, so the 2027 strip still prices leftover hikes. The US 10-year is 4.90 versus cash 3.97, entry 5.24, so the residual coupon receive already owns a large tightening that cash has not delivered. Brent at 94.62 and a midterm-driven bond bid are a defensive impulse, not a reason to pay the front end against this coupon book. Keep the residual 10-year receive and do not add after the move from 5.24 to 4.90.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.97 against March 4.36, June 4.475, and September 4.505, so the 2027 strip still prices leftover hikes. The US 10-year is 4.90 versus cash 3.97, entry 5.24, so the residual coupon receive already owns a large tightening that cash has not delivered. Brent at 94.62 and a midterm-driven bond bid are a defensive impulse, not a reason to pay the front end against this coupon book. Keep the residual 10-year receive and do not add after the move from 5.24 to 4.90."
     }
   ],
   "schema_version": 1,

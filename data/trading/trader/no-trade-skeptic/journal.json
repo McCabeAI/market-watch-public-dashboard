@@ -2236,6 +2236,81 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.95 on 2 November, and the strip already prices about 21 basis points of tightening by December and 58.5 by September. Brent at 103.60 and Australian dollar-kiwi at 1.2417 do not create a new overnight dislocation versus that path, and the Canada leftover is already owned elsewhere. The overnight session is the wrong horizon for a multi-meeting hike curve, so the book stays flat at the official cash benchmark."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat. The strip already prices 19.5 to 53.5 basis points of tightening versus official SOFR 3.97, and an overnight oil or election print does not create a matching-horizon edge.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 72,
+      "decision_fingerprint": "4fd1255600ceed0e016464c0f9fb2f316383077b4715f0bf9dde39cacc73ceb7",
+      "event_id": "jde-d1bea5e1dbe04812",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-03",
+          "percent_rate": 3.97,
+          "rate": 3.97,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "lower",
+        "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding at 3.97 prints below the December-to-September strip. Paying SOFR on shocked-risk capital to own a hike path already in the strip is not alpha.",
+        "sr3_forward_view": "Strip is a hiking path versus official SOFR 3.97: December 4.165, March 4.36, June 4.475, September 4.505. Overnight realized funding is the official 3.97 fixing, not the term curve."
+      },
+      "invalidation": "A later freeze must show a dated catalyst that is not already in the December-to-September strip, or a measured residual versus those forwards with a matching horizon. Absent that, remain flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "50b9d8b315d17937c95a9e715a468458551e7b022fe3b3088d0e3780f0c6200f",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-03",
+            "percent_rate": 3.97,
+            "rate": 3.97,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "lower",
+          "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding at 3.97 prints below the December-to-September strip. Paying SOFR on shocked-risk capital to own a hike path already in the strip is not alpha.",
+          "sr3_forward_view": "Strip is a hiking path versus official SOFR 3.97: December 4.165, March 4.36, June 4.475, September 4.505. Overnight realized funding is the official 3.97 fixing, not the term curve."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5df104a0e4e395cff3f0077c1b313338df37fa1479dba9599901119b8032d89b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.97 on 3 November, and the strip already prices about 19.5 basis points of tightening by December and 53.5 by September. Brent at 94.62 and a midterm bond bid do not create a new overnight dislocation versus that path; they are the path. The overnight session is the wrong horizon for a multi-meeting hike curve, so the book stays flat at the official cash benchmark.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.97 on 3 November, and the strip already prices about 19.5 basis points of tightening by December and 53.5 by September. Brent at 94.62 and a midterm bond bid do not create a new overnight dislocation versus that path; they are the path. The overnight session is the wrong horizon for a multi-meeting hike curve, so the book stays flat at the official cash benchmark."
     }
   ],
   "schema_version": 1,

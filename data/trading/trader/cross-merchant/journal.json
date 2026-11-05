@@ -1738,6 +1738,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "Australian dollar-New Zealand at 1.2417 is a 94th one-year percentile, below the 1.2456 entry and still a rich Australia-versus-New Zealand location. Kiwi-dollar at 0.5624 is a 7th percentile, so that dollar pair mixes kiwi cheapness with a United States leg and does not isolate the intended gap. Australian dollar-Canada at 0.9760 is a 42nd percentile with Brent at 103.60; that is not a new Australia-Canada policy, growth, inflation, or carry gap, and Canada-yen is not opened because this freeze has no new Canada-Japan differential. New Zealand sovereigns are research-only while kiwi spot is markable, so the live twenty million Australian dollar-New Zealand short remains the cleaner non-dollar expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 20000000,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": "Hold the 20 million Australian-kiwi short. The cross bounced to 1.2445 but remains below entry and still elevated. Do not add after a working fade and a one-session bounce.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "a9b3408420dbcdc4e5a8253beb8a2b13c4952cdf75fda3f0d345f23ce7bc41f7",
+      "event_id": "jde-89262f13e4b84123",
+      "funding_view": null,
+      "invalidation": "Cover if Australian-kiwi reclaims and holds 1.255, or if a kiwi-specific shock drives the cross to new highs while oil and risk appetite stay firm.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "99372f5cdb7a9323a9e6f0f55b9d9e7b59e3a37713cbef48a7ee2b871f36130e",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7755089724d6e3fcf5837d89eff5b342c0c0ab6a05a842e30f88ab1030cd38f2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi at 1.2445 remains near the top of its recent range after bouncing from 1.2417, still below the 1.2456 entry. Kiwi-dollar at 0.5637 stays washed out, and there is no fresh Australian policy shock to justify the cross at this percentile. The existing short is the clean non-dollar expression; euro-yen at 178.3 and euro-Canada at 1.5701 do not isolate the same crowded-cross mean-reversion.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi at 1.2445 remains near the top of its recent range after bouncing from 1.2417, still below the 1.2456 entry. Kiwi-dollar at 0.5637 stays washed out, and there is no fresh Australian policy shock to justify the cross at this percentile. The existing short is the clean non-dollar expression; euro-yen at 178.3 and euro-Canada at 1.5701 do not isolate the same crowded-cross mean-reversion."
     }
   ],
   "schema_version": 1,

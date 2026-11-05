@@ -1728,6 +1728,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "Cash Canada is 2.54 against a 2027 path of March 2.97, June 3.115, September 3.225 and December 3.31, so the four-contract average at 3.155 still prices 61.5 basis points of tightening rather than cuts. Keep receiving the live 2027 Canada strip: the 3.4 entry is already through 3.155, but that average remains far above cash and still embeds 2027 hikes. Restrictive policy, cooling Canada labor, and Brent at 103.60 can bite demand before those hikes land. Cash SOFR 3.95 versus March 4.365 rhymes but does not replace the existing Canada strip. Dollar-Canada near 1.3975 mixes oil into a path residual already owned."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Hold the Canada 2027 strip receive. March 2.93 through September 3.185 still prices unused tightening versus 2.53 cash, and cheaper oil supports the fade. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 63,
+      "decision_fingerprint": "7f93b445c318c117ae05bd58fccf5adcbb809f8daeb06cba464786e3bd892b31",
+      "event_id": "jde-0e3472c43f2643be",
+      "funding_view": null,
+      "invalidation": "Cut if the Canada 2027 strip re-bids hikes as oil restores an income impulse, or if cash rises to the implieds rather than the implieds falling.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4d924aeb2270f31a6b9fdfc7043b25efd99504c37946da0e8a7d9419c5642d35",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d97fadff5fd97b71dc2f9329ab968c87cf4f3d13d0e0fc1fcd4ea81320344803"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash Canada is 2.53 against a 2027 path of March 2.93, June 3.075, and September 3.185, so unused tightening remains the easing-underpriced expression already owned in the Canada strip receive. Cheaper oil and the post-election bond bid support that leftover fade. Do not rotate into a new US March receive that copies the same unused-hike factor, and do not chase dollar-yen.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Cash Canada is 2.53 against a 2027 path of March 2.93, June 3.075, and September 3.185, so unused tightening remains the easing-underpriced expression already owned in the Canada strip receive. Cheaper oil and the post-election bond bid support that leftover fade. Do not rotate into a new US March receive that copies the same unused-hike factor, and do not chase dollar-yen."
     }
   ],
   "schema_version": 1,

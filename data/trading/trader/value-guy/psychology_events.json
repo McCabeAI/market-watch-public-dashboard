@@ -1076,6 +1076,62 @@
       "subject": {
         "session_pnl_change_usd": 83667.07
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          800000.0,
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "event_id": "pse-000046",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261105",
+      "seq": 46,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0213,
+        "defensiveness": -0.0021,
+        "frustration": -0.0026,
+        "revenge_pressure": -0.0013,
+        "self_trust": 0.0149,
+        "thesis_attachment": -0.0034
+      },
+      "event_id": "pse-000047",
+      "kind": "trade_win_close",
+      "magnitude": 0.52059804,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261105",
+      "scale": 1.0,
+      "seq": 47,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "AUDCAD",
+        "notional_usd": 25000000.0,
+        "realized_pnl_usd": 260299.02,
+        "side": "short",
+        "trade_id": "trd-trader-value-guy-pos-63923b5f6571"
+      }
     }
   ],
   "owner_id": "value-guy",

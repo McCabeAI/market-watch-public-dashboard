@@ -1778,6 +1778,71 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "AUD/NZD is still a crowded high-percentile cross after a modest overnight fade, with kiwi washed out on the dollar and no fresh Australian policy shock to justify the spread. The swing still has room toward 1.20-1.22 on a multi-week horizon; a small oil dip does not reverse Australia's terms-of-trade premium enough to close that gap. Cash-versus-March leftovers in SOFR, CORRA, and TONA are already in the tape and do not clear a new rates book versus sitting in the existing cross. Being behind on the scoreboard is not a reason to layer correlated receive risk or to cut a working short that has not reached the realization zone."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 300000000,
+          "position_id": "pm-swinger-f8f9feb515d2",
+          "rationale": "Thesis intact: 1.2445 remains an elevated crowded cross, kiwi is still cheap, and the 1.20-1.22 zone is not in. The bounce from 1.2417 is noise around a still-valid swing, so size stays 300 million and is not added.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T06:26:07.749036-05:00",
+      "conviction": 68,
+      "decision_fingerprint": "9166d5712fe71e61d72b7019e517e9cbee24c0ab0143fd933bcc38b1a5777307",
+      "event_id": "jde-ed551cc8e39e4883",
+      "funding_view": null,
+      "invalidation": "Australian-kiwi reclaims and holds through 1.255, or a genuine Australian hawkish shock / kiwi deterioration that sends kiwi-dollar to a new low while the Australian dollar rips with a fresh oil spike.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-f8f9feb515d2"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "db7851b0da7907b5f6088bda231037e8aaceb15973ca292679411a548646f9b9",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "not_applicable",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "Unused leftovers would look like a reason to receive March Canada or US after oil cheapened. Those leftovers are already the room's consensus two-way, and the only concentrated swing remains the elevated Australian-kiwi short.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "not_behind",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "da6d649fa398be238443a027a5883a1a390eda28b0628b63603750cf08d33ebc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "20c774c14de70d3dc396877385c318abf5df5e419baecc429bd0ad0ea6365d2d",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261105-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi is still a crowded elevated cross at 1.2445 after a bounce from 1.2417, with kiwi washed out on the dollar and no fresh Australian policy shock. The swing still has room toward 1.20-1.22 on a multi-week horizon; cheaper oil does not reverse Australia's relative premium enough to close that gap. Cash-versus-March leftovers in SOFR and CORRA are already in the tape and do not clear a new rates book versus sitting in the existing 300 million cross. Being behind on the scoreboard is not a reason to layer correlated receive risk or to cut a working short that has not reached the realization zone.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi is still a crowded elevated cross at 1.2445 after a bounce from 1.2417, with kiwi washed out on the dollar and no fresh Australian policy shock. The swing still has room toward 1.20-1.22 on a multi-week horizon; cheaper oil does not reverse Australia's relative premium enough to close that gap. Cash-versus-March leftovers in SOFR and CORRA are already in the tape and do not clear a new rates book versus sitting in the existing 300 million cross. Being behind on the scoreboard is not a reason to layer correlated receive risk or to cut a working short that has not reached the realization zone."
     }
   ],
   "schema_version": 1,

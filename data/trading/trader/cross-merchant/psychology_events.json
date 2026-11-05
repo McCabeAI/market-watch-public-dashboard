@@ -933,6 +933,59 @@
       "subject": {
         "session_pnl_change_usd": 61907.55
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0,
+          200000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "event_id": "pse-000040",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261105",
+      "seq": 40,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0011,
+        "defensiveness": 0.004,
+        "external_pressure": 0.0015,
+        "frustration": 0.0063,
+        "revenge_pressure": 0.003,
+        "self_trust": -0.0018,
+        "thesis_attachment": 0.0013
+      },
+      "event_id": "pse-000041",
+      "kind": "session_loss",
+      "magnitude": 0.08991734,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261105",
+      "scale": 1.0,
+      "seq": 41,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": -44958.67
+      }
     }
   ],
   "owner_id": "cross-merchant",

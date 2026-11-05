@@ -1995,6 +1995,86 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "Canada March still embeds about 43 basis points of unused tightening versus cash, and the overnight oil dip is a mild growth-impulse fade, not a reason to pay the leftover. AUDNZD remains crowded near the 94th percentile of the past year, so the tactical short still has a mean-reversion path as long as a Hormuz shock does not drive kiwi through its lows and the cross to new highs. I am not adding U.S. leftover, dollar-yen, or oil-Canada FX: those either duplicate beta already in the book or sit at extended levels that do not improve the adverse path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 450000000,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "If flat, I would still receive Canada March at 2.93: 40bp of unused tightening versus cash 2.53 remains the trade, oil cheapened rather than re-spiked, and shocked risk capital is sized from a plausible 100bp adverse path. The move from 3.13 toward 2.93 is the leftover working, not a thesis break.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 20000000,
+          "position_id": "pm-pragmatist-fb7a9dedff4a",
+          "rationale": "The cross bounced from 1.2417 to 1.2445 and remains elevated, so the tactical mean-reversion is intact without needing more size. Cut only if kiwi goes through the lows and the cross makes new highs.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T06:26:08.125923-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "108378f9996f66b6dd5c190f204afb5008895d567945ef0eab3d5d54dff97df6",
+      "event_id": "jde-e5096fae2d334b8e",
+      "funding_view": null,
+      "invalidation": "Canada March implied re-bids through 3.15 as oil headlines restore a hike impulse, or cash-to-March leftover shrinks because cash rises rather than the implied falls; Australian-kiwi reclaims 1.255 and prints new highs while kiwi-dollar breaks down through 0.55.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05",
+        "pm-pragmatist-fb7a9dedff4a"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "94f339ba4441120c8be835674bc71b0b33f1112f44ab135e6d822960192d5f0a",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": {
+            "allocator_vs_noise": "not_applicable",
+            "chase_temptation": "no",
+            "decision_if_rank_hidden": "same",
+            "detail": "Competitive pressure is present, but the tape still shows unused Canada tightening and an elevated Australian-kiwi cross. Rank does not authorize a third overlapping leftover or FX add.",
+            "heater_risk": "no",
+            "judgment_effect": "neither",
+            "junior_vs_self": "not_behind",
+            "protecting_gains": "no"
+          },
+          "state_sha256": "7dad3695fb799ed49eee8de6f24b1e54feb7b9354f2eb81f1f16d83247879b21"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "93a0221fb61e446c28151a353ea310dfaa867852c0b4048af38321a463c17039",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261105-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Canada March still embeds about 40 basis points of unused tightening versus cash 2.53, and the oil break to Brent 94.62 is a growth-impulse fade that supports the receive rather than a reason to pay. Australian-kiwi remains elevated at 1.2445, so the tactical short still has a mean-reversion path as long as a kiwi smash does not drive the cross to new highs. I am not adding US leftover, dollar-yen, or Australian-Canada: those either duplicate beta already in the book or sit at levels that no longer improve the adverse path after oil cheapened.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Canada March still embeds about 40 basis points of unused tightening versus cash 2.53, and the oil break to Brent 94.62 is a growth-impulse fade that supports the receive rather than a reason to pay. Australian-kiwi remains elevated at 1.2445, so the tactical short still has a mean-reversion path as long as a kiwi smash does not drive the cross to new highs. I am not adding US leftover, dollar-yen, or Australian-Canada: those either duplicate beta already in the book or sit at levels that no longer improve the adverse path after oil cheapened."
     }
   ],
   "schema_version": 1,

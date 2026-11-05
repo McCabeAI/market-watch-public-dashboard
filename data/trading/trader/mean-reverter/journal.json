@@ -1732,6 +1732,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "official cash SOFR is 3.95 against March 2027 implied 4.365, so 41.5bp of unused hike premium remains versus the overnight anchor; the live book is already long pos-1477172adb86 at 5,000,000 from 4.58, with the prior mark 4.345. The strip still prices December 4.16, June 4.495 and a September peak 4.535. the 2bp backup from 4.345 is noise, not a completed re-anchor, and the residual receive is still the fade of crowded hike extrapolation into a cash rate that has not followed. US 10-year 4.95 sits at the 97th five-year percentile but has already fallen 33bp over one month, so that is a move in progress rather than a fresh stretch to duplicate. AUDNZD 1.2417 is a 94th one-year and 99th five-year print, and NZDUSD 0.5624 is a 7th one-year print, but NZ sovereign tenors are unavailable and the cross already fell 0.31 percent on the day, so a new spot fade would leave the working cash-to-March compression. whether the 41.5 to 58.5bp path is actually delivered. Hold the residual March receive; do not add; do not open the cross."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 5000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "Hold the 5 million March SOFR receive. Implied 4.36 versus 4.58 entry is the leftover fade working, and 39bp versus cash 3.97 remains. Do not add after a 22bp move.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "d15c56d671701c3bcd57cab80839a63516c4e86ed496cc33c03ed83eb2b4029f",
+      "event_id": "jde-7d59eec57fce49b4",
+      "funding_view": null,
+      "invalidation": "Cut if March implied re-bids through 4.50 while cash stays near 3.97, or if the leftover disappears because cash rises to the implied.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "234ff1757ccf28850db497c36bd36b69bd74c64bb2b452b743f1c35aab40795a",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "76d7de4f2b37eab4f77721754a991bcf8a1472feb3a5065c7944c4ad6e4733ac"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official cash SOFR is 3.97 against March 4.36, so 39 basis points of unused tightening remain after the implied fell from a 4.58 entry. The post-election bond bid and cheaper oil are the fade of a stretched hike path, not a new dislocation. Keep the existing March receive; do not add after a 22 basis-point working move and do not chase Australian-kiwi, which is a different crowded extreme.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Official cash SOFR is 3.97 against March 4.36, so 39 basis points of unused tightening remain after the implied fell from a 4.58 entry. The post-election bond bid and cheaper oil are the fade of a stretched hike path, not a new dislocation. Keep the existing March receive; do not add after a 22 basis-point working move and do not chase Australian-kiwi, which is a different crowded extreme."
     }
   ],
   "schema_version": 1,

@@ -1752,6 +1752,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "The book stays long 25 million March SOFR, received at 4.325 and now 4.365, four basis points against, with cash SOFR 3.95. United States coupons are still lower over one month: two-year 4.61 is down 22 basis points, five-year 4.74 is down 32, and ten-year 4.95 is down 33, even after a one-day bounce of two, four, and four basis points. Five-day coupon changes remain lower, and two-year 4.61 has not reclaimed 4.67. Four basis points of March cheapening into a one-day coupon bounce is not a trend break and is not a reason to fade the receive. Hold the existing March receive; dollar-yen at 158.29 is mixed across one day, five days, and one month and does not isolate the coupon downtrend."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-96a63a1df145",
+          "rationale": "Hold the 25 million March SOFR receive. Implied 4.36 is only 3.5bp against 4.325 entry, and the coupon tape is still lower. Do not add and do not fade the trend on one session.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "733b9b9f186b335dd4c51c00aad10552d0ed07084d687786243899e007584c64",
+      "event_id": "jde-ba7802c00b49411e",
+      "funding_view": null,
+      "invalidation": "Cut if the US two-year reclaims and holds 4.70, or if March implied continues higher while two-year and ten-year yields reverse higher together.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "346cdc8fbd13d727a2ec0c22a75282fa52e3176e4d6b68fd43c735d0e38e0b01",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9a1dc9e2d883061cf6fc3991806e0a626e37be01717f2ef649add2079899e61b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays long 25 million March SOFR, received at 4.325 and now 4.36, 3.5 basis points against, with cash SOFR 3.97. The post-election bond bid and cheaper oil keep the coupon downtrend intact: US 10-year is 4.90 and US 2-year is 4.58. A 3.5 basis-point March cheapening into that bid is not a trend break. Hold the existing March receive; dollar-yen at 158.25 does not isolate the coupon trend.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "The book stays long 25 million March SOFR, received at 4.325 and now 4.36, 3.5 basis points against, with cash SOFR 3.97. The post-election bond bid and cheaper oil keep the coupon downtrend intact: US 10-year is 4.90 and US 2-year is 4.58. A 3.5 basis-point March cheapening into that bid is not a trend break. Hold the existing March receive; dollar-yen at 158.25 does not isolate the coupon trend."
     }
   ],
   "schema_version": 1,

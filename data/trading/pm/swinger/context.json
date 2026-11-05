@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-05T04:53:53.458055-05:00",
+  "as_of": "2026-11-05T06:26:09.504696-05:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -72,8 +72,8 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 243249.34,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 203364.35,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "value-guy",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -81,7 +81,7 @@
     "competition_rank": 2,
     "competitive_rank": 2,
     "drawdown_usd": 329.17,
-    "gap_to_best_trader_usd": 965282.84,
+    "gap_to_best_trader_usd": 1005167.83,
     "high_water_nav_usd": 1001208861.35,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1208532.18,
@@ -102,7 +102,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "db7851b0da7907b5f6088bda231037e8aaceb15973ca292679411a548646f9b9",
+  "memory_context_sha256": "27a8c34d7797f42efef5198a6af5382e39990a03e2b0aaf40697c1a541507f83",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -120,8 +120,8 @@
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 156174,
-        "horizon_elapsed_fraction": 0.0861,
+        "holding_seconds": 161710,
+        "horizon_elapsed_fraction": 0.0891,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 21,
@@ -171,8 +171,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.19
+        "trend": "flat",
+        "value": 0.2
       },
       "complacency": {
         "band": "calm",
@@ -186,12 +186,12 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.3
+        "trend": "up",
+        "value": 0.31
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.13
       },
       "revenge_pressure": {
@@ -222,17 +222,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261102"
+        "run_id": "overnight-20261103"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261103"
+        "run_id": "overnight-20261105"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "da6d649fa398be238443a027a5883a1a390eda28b0628b63603750cf08d33ebc",
+    "state_sha256": "655b1041f96356346b785d34b777aaec36295fdd6adad62ec7598a793a3be482",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

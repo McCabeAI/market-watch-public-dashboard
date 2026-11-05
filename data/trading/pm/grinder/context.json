@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-05T04:53:53.458055-05:00",
+  "as_of": "2026-11-05T06:26:09.829705-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -30,8 +30,8 @@
     "wins": 0
   },
   "capital_owner": {
-    "allocator_pressure": 18,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 19,
+    "credible_opportunities": "none",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -46,8 +46,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 243249.34,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 203364.35,
+    "best_trader_outearn_streak": 0,
     "best_trader_seat": "value-guy",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -55,7 +55,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 10.97,
-    "gap_to_best_trader_usd": -212295.57,
+    "gap_to_best_trader_usd": -172410.58,
     "high_water_nav_usd": 1000030964.74,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 30953.77,
@@ -77,7 +77,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e1948864f9f2b85d3a775aca3981ddd5ca41a46d63f4576743b7af355b3316dd",
+  "memory_context_sha256": "58ec8c7cb7cf6bf40770adba26f4a170a13288bb60b862ec2841ec66a723a66f",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -95,8 +95,8 @@
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 156173,
-        "horizon_elapsed_fraction": 0.0452,
+        "holding_seconds": 161710,
+        "horizon_elapsed_fraction": 0.0468,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 40,
@@ -210,17 +210,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261102"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261103"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261104"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261105"
       }
     ],
     "required_checks": {
@@ -230,7 +230,7 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "7ca1ac2d09cdb450bb4690bbab8008b59e6edc6fbf0b502e1520dc5bb6b4db1a",
+    "state_sha256": "13762cdcda3b63e6de1c0f0d508f409b59d1f711278f01dab90127d4b9f859bd",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

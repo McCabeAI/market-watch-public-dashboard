@@ -2427,6 +2427,92 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "NY Fed SOFR is 3.95 dated 2 November; CME SR3 March 2027 is 4.365 and September 2027 is 4.535, so 41.5bp and 58.5bp of tightening remain versus cash, and September is the listed peak before December 4.515. CORRA cash is 2.54 versus March 2.97 (43bp). AONIA cash is 4.60 versus March 4.915 and June 4.885 (28.5bp still in June after a 5bp dip from 4.935). US coupons are 2Y 4.61, 5Y 4.74, 10Y 4.95; Brent is 103.60; USDCAD is 1.3975; US core PCE transform is 3.05 percent as of July and the US inflation temperature is warm. leftover 2027 hike paths are still the higher-for-longer ticket, so keep paying September SOFR, March Canada, and June Australia rather than covering marks or switching into spot. no fresh Core PCE print after July in this freeze."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": 25000000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Hold the September SOFR pay. Implied 4.505 is 25bp against the 4.755 entry, but still 53.5bp over cash 3.97. Do not add after the bond bid.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 12500000,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Hold the smaller Canada March pay. Implied 2.93 versus 3.06 entry is against, but 40bp over cash 2.53 remains. Oil cheaper argues against adding.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": 25000000,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Hold the June Australia pay at 4.90 versus 4.91 entry. Cash 4.85 still sits below the contract. Do not add into a thin leftover.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "a2883c9e7c6c3175144d03039a65b7c1d7fd3597687adef6320b2b4a365edea2",
+      "event_id": "jde-87e9413cb6bb4a9f",
+      "funding_view": null,
+      "invalidation": "Cover if September SOFR implied falls through 4.30 while cash eases, or if Canada March implied prices cuts versus 2.53 cash and stays there.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "52160ddab04b7a2e36ee5b55d7b637465f9b859ebd9f50e0f5abae0e363253cf",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bf088684c5aa56352e54ba723ad6341bae4f1d572c96b41a6fd8c2dc8800635c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Official SOFR is 3.97; March is 4.36 and September is 4.505, so the strip still prices hikes even after the election bond bid. The existing September SOFR pay, March Canada pay, and June Australia pay remain the underpriced-tightening book. Cheaper oil and falling coupons are against the Canada and US pays, but cash has not collapsed onto a cut path. Hold the three existing pays; do not add after a 25bp September giveback.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Official SOFR is 3.97; March is 4.36 and September is 4.505, so the strip still prices hikes even after the election bond bid. The existing September SOFR pay, March Canada pay, and June Australia pay remain the underpriced-tightening book. Cheaper oil and falling coupons are against the Canada and US pays, but cash has not collapsed onto a cut path. Hold the three existing pays; do not add after a 25bp September giveback."
     }
   ],
   "schema_version": 1,

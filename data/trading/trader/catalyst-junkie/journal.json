@@ -1696,6 +1696,60 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "The Federal Reserve hold is already printed. Official SOFR is 3.95 against March 4.365, a 41.5 basis-point leftover hike path that can sit there without an unused dated print to force a reprice. Hormuz copy is still on the tape, but Brent at 103.60 is not a new oil spike. Canada cash 2.54 versus March 2.97 and Tokyo overnight 1.227 versus 1.6625 are the same leftover-path shape without an unused dated meeting. Australian dollar-New Zealand at 1.2417 is a rich cross, not a timed policy event. A new March SOFR receive was considered and rejected because it has no dated window. The book is already flat and stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book is flat. Midterms and the oil break are already priced in the leftover compression. Stay flat at the cash benchmark until a dated gap appears that is not already in the strip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 40,
+      "decision_fingerprint": "d7dc271ab7345ad6f03d37534f07f9d872ad10be6420a6a243f06a5555ac44b6",
+      "event_id": "jde-394b971119b44cf0",
+      "funding_view": null,
+      "invalidation": "A later freeze must show a dated leftover that is not already in the December-to-September strip, or a fresh oil shock that reopens a Canada hike path versus 2.53 cash.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "93e5cc9af124763045d73aa901e346f3dd88be3ec4cae2a477bc4ad2070fdd50",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "62b5970cbb8e408619dfdb7d68cadc3085a670a9a08fd442d25cc1f3b3121473"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The midterm result and the oil break are already in the tape: yields are lower, Brent is 94.62, and the March leftovers have compressed rather than opened a new gap. A catalyst seat needs a path from mispricing to a dated repricing, not a chase of a print that has already moved. The book stays flat. Jobs data is the next dated event, and it is not yet a dislocation versus March 4.36 and cash 3.97.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "The midterm result and the oil break are already in the tape: yields are lower, Brent is 94.62, and the March leftovers have compressed rather than opened a new gap. A catalyst seat needs a path from mispricing to a dated repricing, not a chase of a print that has already moved. The book stays flat. Jobs data is the next dated event, and it is not yet a dislocation versus March 4.36 and cash 3.97."
     }
   ],
   "schema_version": 1,

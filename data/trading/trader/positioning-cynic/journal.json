@@ -1752,6 +1752,62 @@
       "run_id": "overnight-20261104",
       "schema_version": 1,
       "thesis": "Carry and dove still receive Canada; this book stays the March pay rather than joining that receive. Cash CORRA is 2.54 against March 2.97, 43 basis points of unused hike, with the contract up from 2.925 and still below the 2.995 entry. Brent at 103.60 has not forced those receives off. CME positioning is unavailable. Canadian dollar futures as of 27 October already show leveraged funds net short the Canadian dollar, so a dollar-Canada short at 1.3975 would only restate a Canada overlay those receives already own. Keep paying March; do not add, do not cover, and do not overlay spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Hold the 50 million Canada March pay. Implied 2.93 versus 2.995 entry is a small working move, and the leftover-receive remains crowded after the oil fade. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 54,
+      "decision_fingerprint": "74d603f903723c4f93ba4ca31ec4a8514e4a2138df00c3161d7a29c0ef9ec3f4",
+      "event_id": "jde-31f9b90782914186",
+      "funding_view": null,
+      "invalidation": "Cover if March implied falls through 2.70 and stays there while oil remains sub-90, or if the receive crowd is already out and the pay no longer has ownership asymmetry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ddc47ff9967229f5a6b784ba5541197f849527d79334d195ad414e10a959a116",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "eebadd62d979c7133e7021add9f3b86e4c550e7636891bcdd694a6f8a819eed9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+        "evidence_hash": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "overnight_run_id": "overnight-20261105",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Carry and dove still receive Canada; this book stays the March pay rather than joining that crowded leftover fade. Cash 2.53 versus March 2.93 still prices 40 basis points of tightening, and cheaper oil is the consensus argument to receive. The existing pay is the ownership-asymmetry expression: fade the crowd that is already long the leftover. Do not add after oil broke the three-digit handle.",
+      "run_id": "overnight-20261105",
+      "schema_version": 1,
+      "thesis": "Carry and dove still receive Canada; this book stays the March pay rather than joining that crowded leftover fade. Cash 2.53 versus March 2.93 still prices 40 basis points of tightening, and cheaper oil is the consensus argument to receive. The existing pay is the ownership-asymmetry expression: fade the crowd that is already long the leftover. Do not add after oil broke the three-digit handle."
     }
   ],
   "schema_version": 1,
