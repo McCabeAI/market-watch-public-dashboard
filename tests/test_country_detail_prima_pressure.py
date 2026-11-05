@@ -215,20 +215,35 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.assertEqual(presentation["history_state"], "trend")
             self.assertEqual(len(presentation["transitions"]), len(trend) - 1)
         latest = trend[-1]
-        snapshot = json.loads(
-            (
-                ROOT
-                / "data/overnight/runs"
-                / latest["run_id"]
-                / "reviews"
-                / latest["review_id"]
-                / "evidence_snapshot.json"
-            ).read_text(encoding="utf-8")
+        snapshot_path = (
+            ROOT
+            / "data/overnight/runs"
+            / latest["run_id"]
+            / "reviews"
+            / latest["review_id"]
+            / "evidence_snapshot.json"
         )
-        from scripts.prima_pressure.presentation import project_block
-
-        self.assertEqual(presentation["current"], project_block(snapshot["canada_prima_pressure"]))
+        snapshot_bytes = snapshot_path.read_bytes()
+        snapshot = json.loads(snapshot_bytes.decode("utf-8"))
         self.assertEqual(presentation["current"]["direction"], latest["direction"])
+        self.assertEqual(latest["futures_validity"], "invalid")
+        self.assertEqual(latest["direction"], "UNAVAILABLE")
+        self.assertNotEqual(latest["direction"], "STABLE")
+        self.assertEqual(
+            latest["subcomponent_directions"]["shock_persistence"],
+            "UNAVAILABLE",
+        )
+        self.assertEqual(snapshot["canada_prima_pressure"]["direction"], "STABLE")
+        self.assertEqual(snapshot_path.read_bytes(), snapshot_bytes)
+        oct30 = next(point for point in trend if point["run_id"] == "overnight-20261030")
+        self.assertEqual(oct30["futures_validity"], "valid")
+        self.assertEqual(oct30["direction"], "RISING")
+        self.assertEqual(oct30["subcomponent_directions"]["shock_persistence"], "RISING")
+        nov4 = next(point for point in trend if point["run_id"] == "overnight-20261104")
+        self.assertEqual(nov4["futures_validity"], "invalid")
+        self.assertEqual(nov4["direction"], "UNAVAILABLE")
+        self.assertNotEqual(nov4["direction"], "STABLE")
+        self.assertNotEqual(nov4["subcomponent_directions"]["shock_persistence"], "STABLE")
         for channel in contract.CHANNELS:
             self.assertIn(
                 presentation["current"]["subcomponent_directions"][channel],

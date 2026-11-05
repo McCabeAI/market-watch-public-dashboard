@@ -52,7 +52,8 @@ def _daily_series(end: date, n: int, start_price: float, step: float = 0.0) -> d
 class CurveBundleTests(unittest.TestCase):
     def test_missing_twelve_month_not_filled_from_front(self):
         as_of = date(2026, 10, 20)
-        front_y, front_m = 2026, 11
+        # BZ Dec-26 is the active front on 20 Oct 2026 (final trade 30 Oct).
+        front_y, front_m = 2026, 12
         front_symbol = contract_symbol("BZ", front_y, front_m)
         front_end = as_of - timedelta(days=1)
         charts = {front_symbol: _daily_series(front_end, 40, 80.0)}
@@ -76,7 +77,7 @@ class CurveBundleTests(unittest.TestCase):
 
     def test_full_brent_strip_slopes(self):
         as_of = date(2026, 10, 20)
-        front_y, front_m = 2026, 11
+        front_y, front_m = 2026, 12
         maturities = {0: 70.0, 3: 71.0, 6: 72.0, 12: 80.0, 24: 90.0}
         charts: dict[str, dict[date, float]] = {}
         from scripts.prima_pressure.contract import add_months
@@ -291,28 +292,27 @@ class CurveBundleTests(unittest.TestCase):
         curve = build_curve("brent_last_day", as_of, opener)
         self.assertIn(12, curve["missing_maturities"])
 
-    def test_404_on_first_front_candidate_continues_walk(self) -> None:
+    def test_missing_active_front_does_not_substitute_next_month(self) -> None:
         as_of = date(2026, 10, 20)
-        from scripts.prima_pressure.contract import add_months
-
-        first_y, first_m = add_months(as_of.year, as_of.month, 1)
-        first_sym = contract_symbol("BZ", first_y, first_m)
-        second_y, second_m = add_months(first_y, first_m, 1)
-        second_sym = contract_symbol("BZ", second_y, second_m)
+        active = contract_symbol("BZ", 2026, 12)
+        following = contract_symbol("BZ", 2027, 1)
         end = as_of - timedelta(days=1)
+        seen: list[str] = []
 
         def opener(url: str, data: bytes | None = None) -> bytes:
-            if first_sym in url:
+            seen.append(url)
+            if active in url:
                 raise OSError("HTTP Error 404: Not Found")
-            if second_sym in url:
-                return _yahoo_bytes(_daily_series(end, 40, 78.0), symbol=second_sym)
+            if following in url:
+                return _yahoo_bytes(_daily_series(end, 40, 78.0), symbol=following)
             raise FileNotFoundError(url)
 
         curve = build_curve("brent_last_day", as_of, opener)
-        by_mat = {p["maturity_months"]: p for p in curve["points"]}
-        self.assertEqual(by_mat[0]["symbol"], second_sym)
-        self.assertEqual(by_mat[0]["price"], 78.0)
-        self.assertNotEqual(by_mat[0]["contract_month"], f"{first_y:04d}-{first_m:02d}")
+        self.assertEqual(curve["status"], "unavailable")
+        self.assertEqual(curve["selection_failure"], "missing_active_front")
+        self.assertEqual(curve["points"], [])
+        self.assertTrue(any(active in url for url in seen))
+        self.assertFalse(any(following in url for url in seen))
 
 
 if __name__ == "__main__":

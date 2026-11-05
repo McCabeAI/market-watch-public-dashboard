@@ -6,6 +6,7 @@ from datetime import date, datetime
 from typing import Any
 
 from scripts.prima_pressure import contract
+from scripts.prima_pressure.expiry import validate_stored_oil_row
 from scripts.prima_pressure.sector_shadow import build_sector_shadow
 
 CHANNELS = contract.CHANNELS
@@ -25,6 +26,32 @@ def _point_at_maturity(points: list[dict] | None, maturity_months: int) -> dict 
         if point.get("maturity_months") == maturity_months:
             return point
     return None
+
+
+def _listed_oil_point_ok(point: dict | None, as_of: date | None) -> bool:
+    """Listed ``*.NYM`` points must be the active maturity. Synthetic points stay as given.
+
+    A false ``active_as_of`` or a final trade before ``as_of`` is rejected even
+    without a listed symbol, so an expired contract cannot be scored from a
+    recent bar. Missing 12m/24m stays missing; it is not rewritten as stable.
+    """
+    if not point:
+        return False
+    if point.get("active_as_of") is False or point.get("quote_fresh") is False:
+        return False
+    final_trade = point.get("final_trade_date")
+    if as_of is not None and final_trade:
+        try:
+            if as_of > date.fromisoformat(str(final_trade)[:10]):
+                return False
+        except ValueError:
+            return False
+    symbol = str(point.get("symbol") or "")
+    if not symbol.endswith(".NYM"):
+        return True
+    if as_of is None:
+        return False
+    return bool(validate_stored_oil_row(point, as_of).get("valid"))
 
 
 def _change_1m(point: dict | None) -> tuple[float | None, float | None]:
@@ -137,9 +164,17 @@ def _shock_persistence(bundle: dict) -> tuple[dict, str, list[dict], bool]:
     brent_points = brent.get("points") or []
     wti_points = wti.get("points") or []
 
+    as_of = _as_of_date(bundle)
     front = _point_at_maturity(brent_points, 0)
     m12 = _point_at_maturity(brent_points, 12)
     m24 = _point_at_maturity(brent_points, 24)
+    if not _listed_oil_point_ok(front, as_of):
+        front = None
+    if not _listed_oil_point_ok(m12, as_of):
+        m12 = None
+    if not _listed_oil_point_ok(m24, as_of):
+        m24 = None
+    wti_points = [pt for pt in wti_points if _listed_oil_point_ok(pt, as_of)]
 
     front_pct = _change_1m(front)[1]
     m12_pct = _change_1m(m12)[1]

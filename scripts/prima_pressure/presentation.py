@@ -7,7 +7,10 @@ import re
 from pathlib import Path
 from typing import Any
 
+from datetime import date
+
 from scripts.prima_pressure.contract import CHANNELS, DIRECTIONS, DISCLAIMER
+from scripts.prima_pressure.expiry import assess_stored_shock_inputs
 
 PRESENTATION_SCHEMA = "canada_prima_pressure_presentation_v1"
 _SOURCE_KIND = "overnight_evidence_snapshot"
@@ -200,7 +203,124 @@ def _trend_point(observation: dict[str, Any], projected: dict[str, Any]) -> dict
     ce = projected.get("channel_evidence")
     if isinstance(ce, dict) and ce:
         point["channel_evidence"] = ce
+    if projected.get("futures_validity"):
+        point["futures_validity"] = projected["futures_validity"]
+    gap = projected.get("futures_history_gap")
+    if isinstance(gap, dict):
+        point["futures_history_gap"] = gap
     return point
+
+
+def _as_of_from_observation(observation: dict[str, Any]) -> date | None:
+    raw = str(observation.get("observed_at") or "")
+    try:
+        return date.fromisoformat(raw[:10])
+    except ValueError:
+        return None
+
+
+def _history_gap_sentence(gap: dict[str, Any]) -> str:
+    findings = gap.get("findings") if isinstance(gap.get("findings"), list) else []
+    bits: list[str] = []
+    for finding in findings:
+        if not isinstance(finding, dict) or finding.get("valid"):
+            continue
+        symbol = finding.get("symbol") or "unknown contract"
+        reason = finding.get("reason") or "invalid"
+        final_trade = finding.get("final_trade_date") or "unknown"
+        bits.append(f"{symbol} {reason} (final trade {final_trade})")
+    detail = "; ".join(bits[:4]) if bits else "listed futures inputs failed the expiry check"
+    source = gap.get("source_id") or "this run"
+    return (
+        f"History gap for {source}: stored Brent futures inputs were not active listed "
+        f"maturities on this run ({detail}). The stored shock reading is not used. "
+        "This is not a stable reading. No backfill was created."
+    )
+
+
+def apply_futures_history_guard(
+    block: dict[str, Any],
+    projected: dict[str, Any],
+    observation: dict[str, Any],
+) -> dict[str, Any]:
+    """Drop contaminated oil from the presentation without rewriting the snapshot.
+
+    Non-oil channels stay as stored. An invalid shock is unavailable, never stable,
+    and the stored aggregate direction is not repeated.
+    """
+    as_of = _as_of_from_observation(observation)
+    if as_of is None:
+        projected = dict(projected)
+        projected["futures_validity"] = "invalid"
+        projected["direction"] = "UNAVAILABLE"
+        subs = dict(projected.get("subcomponent_directions") or {})
+        subs["shock_persistence"] = "UNAVAILABLE"
+        projected["subcomponent_directions"] = subs
+        projected["futures_history_gap"] = {
+            "state": "invalid_futures_inputs",
+            "reason": "missing_as_of",
+            "source_id": observation.get("source_id"),
+            "run_id": observation.get("run_id"),
+            "review_id": observation.get("review_id"),
+            "stored_direction_not_used": block.get("direction"),
+            "findings": [],
+        }
+        return projected
+
+    review = assess_stored_shock_inputs(block, as_of)
+    if review["status"] == "no_futures_inputs":
+        projected = dict(projected)
+        projected["futures_validity"] = "no_futures_inputs"
+        return projected
+    if review["valid"]:
+        projected = dict(projected)
+        projected["futures_validity"] = "valid"
+        return projected
+
+    projected = dict(projected)
+    projected["futures_validity"] = "invalid"
+    projected["direction"] = "UNAVAILABLE"
+    projected["status"] = "history_gap"
+    subs = dict(projected.get("subcomponent_directions") or {})
+    subs["shock_persistence"] = "UNAVAILABLE"
+    projected["subcomponent_directions"] = subs
+    drivers = [
+        item
+        for item in (projected.get("largest_drivers") or [])
+        if isinstance(item, str) and not item.lower().startswith("brent")
+    ]
+    projected["largest_drivers"] = drivers
+    evidence = dict(projected.get("channel_evidence") or {})
+    original_shock: dict[str, Any] = {}
+    if isinstance(block.get("channel_evidence"), dict):
+        raw_shock = block["channel_evidence"].get("shock_persistence")
+        if isinstance(raw_shock, dict):
+            original_shock = raw_shock
+    shock = dict(evidence.get("shock_persistence") or {})
+    shock["direction"] = "UNAVAILABLE"
+    shock["inputs"] = []
+    shock["stored_inputs_rejected"] = True
+    gap = {
+        "state": "invalid_futures_inputs",
+        "source_id": observation.get("source_id"),
+        "run_id": observation.get("run_id"),
+        "review_id": observation.get("review_id"),
+        "as_of": as_of.isoformat(),
+        "findings": review["findings"],
+        "stored_direction_not_used": block.get("direction"),
+        "stored_shock_direction_not_used": original_shock.get("direction"),
+    }
+    shock["note"] = _history_gap_sentence(gap)
+    evidence["shock_persistence"] = shock
+    projected["channel_evidence"] = evidence
+    projected["futures_history_gap"] = gap
+    reason = projected.get("reason")
+    gap_reason = "invalid_futures_inputs"
+    if reason:
+        projected["reason"] = f"{reason}; {gap_reason}"
+    else:
+        projected["reason"] = gap_reason
+    return projected
 
 
 def _load_review_index(
@@ -386,7 +506,7 @@ def build_presentation(root: Path) -> dict[str, Any]:
             projected = _synthetic_unavailable_current()
             projected["reason"] = "observation_block_missing"
         else:
-            projected = project_block(block)
+            projected = apply_futures_history_guard(block, project_block(block), observation)
         projected_rows.append(projected)
         trend.append(_trend_point(observation, projected))
 
