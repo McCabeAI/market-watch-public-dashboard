@@ -43,7 +43,7 @@
     "rebuttals": [],
     "source": "overnight_scheduled_review"
   },
-  "drawdown_usd": 17555.56,
+  "drawdown_usd": 274.31,
   "evidence": {
     "as_of": "2026-11-04T05:35:22.541505-05:00",
     "known_gaps": [
@@ -15167,7 +15167,7 @@
       "repeated_error_escalations": []
     },
     "learning_obligations": [],
-    "memory_context_sha256": "d7ea3fa03ec636e342192a668ca05cfd138c3b87a6780e2154c51ab205925c09",
+    "memory_context_sha256": "d5d4523100c0ff0de89237b789e9967f25eda899bc40290dfdb6084648f250cb",
     "open_positions": [
       {
         "asset_class": "rates",
@@ -15185,7 +15185,7 @@
           "framing": null,
           "full_size_hold_requires_reunderwrite": false,
           "giveback_usd": 0.0,
-          "holding_seconds": 3916894,
+          "holding_seconds": 3970682,
           "horizon_elapsed_fraction": null,
           "horizon_status": "unspecified",
           "instrument": "CORRA_2027H-Z",
@@ -15239,7 +15239,7 @@
     "recent_performance_reflections": [],
     "reflections_due": []
   },
-  "memory_context_sha256": "d7ea3fa03ec636e342192a668ca05cfd138c3b87a6780e2154c51ab205925c09",
+  "memory_context_sha256": "d5d4523100c0ff0de89237b789e9967f25eda899bc40290dfdb6084648f250cb",
   "opportunity_instruction": "Scan the full frozen market evidence in this packet. Trader Room decisions are an input and a challenge set. The permitted opportunity universe is that frozen evidence. Originate independent trades when the packet can mark and risk them. Emit a small opportunity_scan of the best ideas you independently considered.",
   "overnight_books": {
     "as_of": "2026-11-04T05:35:22.541505-05:00",
@@ -17469,24 +17469,26 @@
       "BoC communication or delivered policy validates materially more 2027 tightening",
       "Review the exact CORRA H/M/U/Z 2027 strip, not March alone",
       "BoC communication and the next Canadian core CPI/labor releases can change the remaining edge",
-      "Watch renewed strip cheapening toward 3.35-3.40 together with domestic inflation or labor confirmation"
+      "Watch renewed strip cheapening toward 3.35-3.40 together with domestic inflation or labor confirmation",
+      "Reassess remaining edge after the next common post-election CORRA and oil observations; the authorized article does not supply synchronized execution marks.",
+      "CAD/NOK is a conditional research candidate, with no entry or order. Its potential shared oil exposure must be assessed alongside CORRA."
     ],
     "cash_capital_usd": 1000000000.0,
-    "cash_yield_usd": 4911111.11,
+    "cash_yield_usd": 5020833.33,
     "conviction": 56,
     "decision_status": "active",
-    "drawdown_usd": 17555.56,
+    "drawdown_usd": 274.31,
     "funded_draw_usd": 2500000.0,
     "funding_basis_status": "risk_capital_1pct_shock",
-    "funding_cost_usd": 24555.56,
+    "funding_cost_usd": 24829.87,
     "gross_notional_limit_usd": 1000000000,
     "gross_remaining_usd": 750000000.0,
     "gross_utilization_usd": 250000000.0,
-    "high_water_nav_usd": 1001193000.0,
-    "invalidation": "For the remaining 250m receive, reduce or close if persistent underlying Canadian inflation and labor/wage reacceleration plus BoC guidance validate the further tightening priced in the strip. A renewed move in the same four-contract strip toward 3.35-3.40 alongside that fundamental confirmation requires a fresh decision; do not mistake one component contract for the strip.",
-    "last_action": "REDUCE",
+    "high_water_nav_usd": 1001216069.44,
+    "invalidation": "Reduce or close if domestic underlying inflation, wages and employment sustainably reaccelerate and BoC policy validates additional tightening; persistent deferred-energy strength also challenges the thesis. Review the full four-contract strip around 3.35\u20133.40 with fundamental confirmation. Also reduce if favorable repricing exhausts the remaining edge, even if the original thesis succeeds.",
+    "last_action": "HOLD",
     "max_drawdown_usd": 50000000,
-    "net_after_funding_pnl_usd": 1175444.44,
+    "net_after_funding_pnl_usd": 1215795.13,
     "pm_id": "chatgpt",
     "pnl_unavailable": false,
     "positions": [
@@ -17503,8 +17505,8 @@
         "instrument": "CORRA_2027H-Z",
         "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
         "locked_expression_family": "corra",
-        "mark_price": 3.16,
-        "mark_price_as_of": "2026-11-03T14:35:29Z",
+        "mark_price": 3.14375,
+        "mark_price_as_of": "2026-11-04T12:12:27Z",
         "mark_price_source": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]",
         "mark_status": "ok",
         "notional_usd": 250000000.0,
@@ -17532,19 +17534,19 @@
         },
         "side": "long",
         "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function.",
-        "unrealized_pnl_usd": 600000.0
+        "unrealized_pnl_usd": 640625.0
       }
     ],
     "realized_pnl_usd": 600000.0,
-    "review_status": "stale",
+    "review_status": "fresh",
     "risk_capital_limit_usd": 100000000,
     "risk_capital_remaining_usd": 97500000.0,
     "risk_capital_usd": 2500000.0,
     "risk_stop_pending": false,
     "risk_stopped": false,
-    "thesis": "Take profit on half the existing 2027 CORRA H/M/U/Z receive while preserving a 250m residual. The November 2 frozen contract mids average 3.16%, down from the 3.40% entry; roughly 62bp of 2027 tightening remains priced above 2.54% CORRA. September underlying Canadian inflation near 1.85% and unemployment near 6.5% still challenge a full hiking cycle, but the late-October BoC hike and Brent around 105 weaken the one-way receive thesis.",
-    "total_pnl_usd": 1200000.0,
-    "unrealized_pnl_usd": 600000.0,
+    "thesis": "Retain the reduced $250m receive in CORRA 2027 H/M/U/Z, with no add. The original shared November 4 strip averaged 3.155%, 61.5bp above the 2.54% fixing; underlying inflation 1.85% and unemployment 6.5% challenge the full priced tightening path. The delivered BoC hike and elevated deferred oil are contrary evidence. Later authorized election information adds a possible energy-disinflation catalyst without proving its persistence.",
+    "total_pnl_usd": 1240625.0,
+    "unrealized_pnl_usd": 640625.0,
     "unused_cash_usd": 1000000000.0
   },
   "research_supplement": {
@@ -17834,7 +17836,7 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-chatgpt-overnight-20261104-review-001",
-  "review_packet_sha256": "df90aab6b4962483be285f759291cb15e4b97bce9b5d19bc8e0296261dccc254",
+  "review_packet_sha256": "8d59c54cda25b60e85370ff7e4428d73931d1a498397ae885d341057dcf0ad7a",
   "risk_capital_limit_usd": 100000000,
   "risk_capital_remaining_usd": 97500000.0,
   "risk_capital_usd": 2500000.0,
@@ -17871,6 +17873,30 @@
       "request_id": "fdr-560502e60f04e367",
       "status": "requested",
       "suggested_source": "trusted paper_marks / current PM book hydration"
+    },
+    {
+      "attributions": [
+        {
+          "at": "2026-11-04T22:08:56.296276-05:00",
+          "decision_impact": "Re-underwrite retained CORRA risk and decide whether CAD/NOK has an independent actionable edge.",
+          "pm_id": "chatgpt",
+          "priority": "high",
+          "reason": "Separate new event information from how much relevant markets have already repriced."
+        }
+      ],
+      "decision_impact": "Re-underwrite retained CORRA risk and decide whether CAD/NOK has an independent actionable edge.",
+      "first_requested": "2026-11-04T22:08:56.296276-05:00",
+      "last_requested": "2026-11-04T22:08:56.296276-05:00",
+      "originating_pms": [
+        "chatgpt"
+      ],
+      "priority": "high",
+      "reason": "Separate new event information from how much relevant markets have already repriced.",
+      "repeat_count": 1,
+      "request": "Include synchronized post-election CORRA 2027 H/M/U/Z, deferred oil and CAD/NOK observations in the next shared packet.",
+      "request_id": "fdr-b7edab76f4bf4ca7",
+      "status": "requested",
+      "suggested_source": "Existing shared Market Watch market-data pipeline"
     }
   ]
 }

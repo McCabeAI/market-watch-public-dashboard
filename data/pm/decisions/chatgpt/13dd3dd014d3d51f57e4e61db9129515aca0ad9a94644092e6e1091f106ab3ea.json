@@ -1,0 +1,75 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "HOLD",
+        "asset_class": "rates",
+        "conviction": 56,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Reduce or close if domestic underlying inflation, wages and employment sustainably reaccelerate and BoC policy validates additional tightening; persistent deferred-energy strength also challenges the thesis. Review the full four-contract strip around 3.35\u20133.40 with fundamental confirmation. Also reduce if favorable repricing exhausts the remaining edge, even if the original thesis succeeds.",
+        "note": "November 4 closeout recorded at actual ingestion time. Retain existing $250m equal-weight 2027 H/M/U/Z receive. No add, reshape or new position. Research source prices are not instructions to remark or execute.",
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "thesis": "Retain the reduced $250m receive in CORRA 2027 H/M/U/Z, with no add. The original shared November 4 strip averaged 3.155%, 61.5bp above the 2.54% fixing; underlying inflation 1.85% and unemployment 6.5% challenge the full priced tightening path. The delivered BoC hike and elevated deferred oil are contrary evidence. Later authorized election information adds a possible energy-disinflation catalyst without proving its persistence."
+      }
+    ],
+    "alerts": [
+      "Reassess remaining edge after the next common post-election CORRA and oil observations; the authorized article does not supply synchronized execution marks.",
+      "CAD/NOK is a conditional research candidate, with no entry or order. Its potential shared oil exposure must be assessed alongside CORRA."
+    ],
+    "conviction": 56,
+    "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+    "expected_book_sha256": "510de8efe1c74f2e8bbebc080acd3d952006229aa77418e99803257d79f19b57",
+    "future_data_requests": [
+      {
+        "decision_impact": "Re-underwrite retained CORRA risk and decide whether CAD/NOK has an independent actionable edge.",
+        "priority": "high",
+        "reason": "Separate new event information from how much relevant markets have already repriced.",
+        "request": "Include synchronized post-election CORRA 2027 H/M/U/Z, deferred oil and CAD/NOK observations in the next shared packet.",
+        "suggested_source": "Existing shared Market Watch market-data pipeline"
+      }
+    ],
+    "harvest_reviews": [
+      {
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "remaining_edge": true,
+        "remaining_edge_reason": "Retained reduced exposure is supported by weak domestic persistence against the remaining priced hike path, with a conditional lower-oil catalyst. Original-size conviction is not justified; prior partial profit-taking remains in place.",
+        "thesis_still_valid": true,
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
+        "would_initiate_flat": "yes"
+      }
+    ],
+    "invalidation": "Reduce or close if domestic underlying inflation, wages and employment sustainably reaccelerate and BoC policy validates additional tightening; persistent deferred-energy strength also challenges the thesis. Review the full four-contract strip around 3.35\u20133.40 with fundamental confirmation. Also reduce if favorable repricing exhausts the remaining edge, even if the original thesis succeeds.",
+    "memory_context_sha256": "d7ea3fa03ec636e342192a668ca05cfd138c3b87a6780e2154c51ab205925c09",
+    "pm_id": "chatgpt",
+    "rationale": "This is the November 4 decision finalized retrospectively after both research runs and the completed Trader Room, not a claim to have decided before the freeze. Original common market evidence: commit 612666a21e621e6bb437802cb48ace011f181b7b, overnight-20261104/review-001, stated cutoff 05:35:22 ET. Later information is separately identified: Kevin explicitly authorized the CNBC election article updated November 4 at 17:11Z, received in our later conversation; its reported Treasury rally and roughly 8% oil decline are asynchronous context, not common executable marks. Divided-government fiscal restraint and Iran de-escalation remain conditional hypotheses. I would initiate the reduced CORRA exposure from flat on this reviewed evidence because domestic persistence appears weaker than the remaining priced hike path, but the delivered hike and energy risk argue against adding. Partial profit-taking was already completed on November 3. Reject ACP387's U/Z-only recommendation: it conflated halving DV01 with expression improvement and did not establish relative mispricing. Reject ACP389's flat recommendation: it excluded authorized election context, imposed unsupported portfolio constraints and used stress asymmetry without a probability case. Its SR3-pay and receive-mark sign errors are recorded in research; they are not inputs to canonical marks or P&L. The next common packet must test how much election repricing has already happened before any new risk. No independent market/news retrieval was used beyond Kevin's expressly authorized article.",
+    "review_packet_id": "prp-chatgpt-overnight-20261104-review-001",
+    "review_packet_sha256": "df90aab6b4962483be285f759291cb15e4b97bce9b5d19bc8e0296261dccc254",
+    "schema_version": 1,
+    "synthesis": "HOLD the existing $250m four-leg CORRA receive; no add and no new trade. Keep CAD/NOK long as a conditional candidate for the next shared evidence set. Consider opportunities by their policy, energy, growth, risk and financing components; neither opposing behavior nor overlapping correlation is by itself a reason to exclude a trade.",
+    "thesis": "Retain the reduced $250m receive in CORRA 2027 H/M/U/Z, with no add. The original shared November 4 strip averaged 3.155%, 61.5bp above the 2.54% fixing; underlying inflation 1.85% and unemployment 6.5% challenge the full priced tightening path. The delivered BoC hike and elevated deferred oil are contrary evidence. Later authorized election information adds a possible energy-disinflation catalyst without proving its persistence.",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "already_applied": false,
+    "as_of": "2026-11-04T22:08:56.866528-05:00",
+    "decision_fingerprint": "13dd3dd014d3d51f57e4e61db9129515aca0ad9a94644092e6e1091f106ab3ea",
+    "decision_status": "active",
+    "evidence_cutoff": "2026-11-04T05:35:22.541505-05:00",
+    "gross_utilization_usd": 250000000.0,
+    "overnight_run_id": "overnight-20261104",
+    "pm_id": "chatgpt",
+    "post_book_sha256": "e7caea8e555e9aa5549b4a41a0c7775487975b8cff64e024c88b271fb241a42a",
+    "pre_book_sha256": "510de8efe1c74f2e8bbebc080acd3d952006229aa77418e99803257d79f19b57",
+    "receipt_path": "data/pm/decisions/chatgpt/13dd3dd014d3d51f57e4e61db9129515aca0ad9a94644092e6e1091f106ab3ea.json",
+    "review_packet_id": "prp-chatgpt-overnight-20261104-review-001",
+    "review_packet_sha256": "df90aab6b4962483be285f759291cb15e4b97bce9b5d19bc8e0296261dccc254",
+    "schema_version": 1,
+    "source": "overnight_scheduled_review",
+    "submission": {
+      "channel": "github_issue",
+      "issue_number": 295
+    },
+    "trader_room_run_id": null,
+    "type": "PM_CHATGPT_APPLY_RECEIPT"
+  }
+}
