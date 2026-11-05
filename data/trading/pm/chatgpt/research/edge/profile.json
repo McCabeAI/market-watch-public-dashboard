@@ -15,19 +15,33 @@
         "source_id": "les-portfolio-pass-20260920"
       },
       "revision_id": "rev-edge-portfolio-pass-20260920-02"
+    },
+    {
+      "action": "edge_update",
+      "at": "2026-11-05T09:08:48.262750-05:00",
+      "promotion_basis": {
+        "basis_kind": "lesson",
+        "rationale": "Kevin explicitly requested durably entering the substantial November5 learning after approving the two trades. This revision incorporates his direct coaching, observed PM process failures and the bounded research findings into the existing portfolio method. The linked lesson is reinforced through issue301; no trading profitability is used to establish method validity.",
+        "source_id": "les-portfolio-pass-20260920"
+      },
+      "revision_id": "rev-edge-portfolio-pass-20260920-03"
     }
   ],
-  "current_revision_id": "rev-edge-portfolio-pass-20260920-02",
+  "current_revision_id": "rev-edge-portfolio-pass-20260920-03",
   "methods": [
     {
       "accept_as_method": true,
-      "conditions_failed": [],
+      "conditions_failed": [
+        "Observed pre-correction process: confirmation and missing precision became entry gates while the owned CORRA position received the benefit of the doubt.",
+        "Observed research failure: already-rallied, missing forwards and absent euro-specific residual were used to reject a broad-dollar EUR idea without establishing its forward return."
+      ],
       "conditions_worked": [],
       "confidence": "not_assessed",
       "counterexamples": [
-        "Unvalidated risk to test: an apparent negative-correlation offset can lose alongside the core position when component sensitivities change across regimes.",
-        "Unvalidated risk to test: positively correlated positions can be redundant at a particular size, but the label alone cannot establish that; compare priced edge, component exposure and payoff asymmetry.",
-        "No realized performance validation is claimed for this adopted decision method."
+        "Early entry can be stopped out by ordinary noise even when a broader thesis later proves right.",
+        "CORRA receive and EURUSD long can both lose under renewed energy disruption or renewed USD/rates strength; independent mechanisms do not guarantee diversification.",
+        "Weak average rate/spot relationships do not rule out pair-specific or episodic links; the USD/CAD sample exception requires further prospective testing.",
+        "Equal DV01 does not equal matching period, basis, currency, liquidity or policy exposure."
       ],
       "maturity": "candidate",
       "method_id": "edge-portfolio-pass-20260920",
@@ -38,7 +52,7 @@
         "countries": [],
         "currencies": [],
         "decision_dimension": "portfolio_construction",
-        "failure_mode": "correlation_or_overlap_used_as_veto",
+        "failure_mode": "uncertainty_as_entry_veto_and_owned_position_grandfathering",
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [
@@ -52,6 +66,14 @@
           "carry",
           "horizon_and_path"
         ],
+        "operating_preferences": {
+          "analysis_location": "Cursor; chat frames questions, reviews results and makes PM decisions",
+          "concurrent_work": "Unique isolated research branches and disjoint new artifact paths; never alter repair/main/production state",
+          "evidence_rule": "Same frozen common market evidence plus Kevin direct input; no independent external market/news retrieval",
+          "launch_rule": "Discuss each analysis scope before starting; no automatic extra run/followup/retry",
+          "models": "grok-4.7 and composer-2.5 when Kevin approves this combination",
+          "persistence_rule": "Verify launch and save receipts and actual artifacts; explicitly reload durable memory in future sessions"
+        },
         "setup_type": null
       },
       "source_hypothesis_ids": [],
@@ -62,12 +84,12 @@
         "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
       ],
       "source_trade_ids_note": "scope citation only; profitability is not evidence",
-      "statement": "Begin each review with changes in the world and the available opportunity set, then construct and manage the portfolio. Decompose every candidate and existing position into its material component risks: growth, inflation, policy reaction, energy/terms of trade, fiscal/term premium, currency/FX, liquidity, carry/financing, horizon and path dependence, as applicable. Validate the economic case and priced expectations for those components, and evaluate their joint state-dependent signed sensitivities, nonlinear/asymmetric payoffs and plausible adverse paths at proposed sizes. Negative correlation does not require a direct hedge relationship; positive correlation does not by itself imply doubling down. Shared factors may coexist when different pricing, sensitivities, timing, catalysts and realization paths improve expected portfolio returns or create justified opportunities to harvest and rebalance. Neither a correlation sign nor a low historical coefficient proves edge or diversification. Evaluate the components and aggregate exposures instead of applying a correlation/overlap veto or requiring each addition to hedge the current book. Test whether supposed offsets fail together under alternative regimes and include costs; opposite or imperfectly correlated moves alone do not guarantee profit. Maintain position-specific realization and invalidation logic. One position, multiple positions and flat are all permissible outcomes of an actual opportunity/portfolio comparison. Kevin's AUDNZD/CORRA example teaches this method and is not a trade instruction or predetermined recommendation.",
+      "statement": "Begin with world changes, causal mechanisms and priced expectations, and leave the independent pre-trader review with explicit standing theories. Then compare the opportunity set and construct the book. Make decisions under uncertainty: compare exposure now, a named wait condition and rejection at the same starting price, including what waiting can cost. Lower conviction can justify smaller initial risk; confirmation may justify adding. Neither statistical proof nor price confirmation is a universal entry prerequisite, and uncertainty is not a forced-trading instruction. Give existing and new positions the same forward-return test. Prior profits, entry level and failure of old invalidation do not earn retained size. Re-underwrite the size that would be initiated from flat; harvest when remaining edge closes and reassess failed timing. Every serious proposal including HOLD needs a judgment-supported target range, repricing horizon, ordinary-movement yardstick, fundamental falsifier, practical exit/review, dollar loss budget, size, target payoff, planned-exit loss, gap/stress and same-horizon financing assumptions. Volatility is a yardstick, not a target or hit probability; stop/reward arithmetic and stress tables do not establish expected value. Stops can be noise-sensitive and do not cap gaps. Decompose policy, growth, inflation, energy/terms of trade, fiscal/term premium, currency, liquidity, financing, horizon and path risks. Opposing positions need not be hedges; positive correlation is not automatically duplication. Distinct prices, sensitivities, catalysts and realization paths can justify related positions. Evaluate aggregate adverse paths; do not impose factor neutrality, position quotas or a correlation veto. A futures-minus-overnight premium is a priced period path, not fair value, unused hikes or exact meeting probabilities. A neutral/proxy midpoint is not an independent central-bank forecast. Derive conditional policy paths with explicit judgment instead of treating an input as a target. Separate rate-differential levels/changes, contemporaneous association, future prediction and financing carry. The bounded Nov5 sample had generally weak links and a USD/CAD exception; no causal law, trade rule or empirical G10/EM comparison is established. Missing forward points invite labeled cost sensitivities where defensible, not an automatic spot ban. An observed rally does not establish that a repricing is exhausted; a broad-dollar thesis expressed through EURUSD need not generate euro-specific outperformance. Historical extremes are context, not a thesis. Retain competing interpretations of energy relief and demand; do not assume a fixed oil beta. Preserve source observation, freeze/generation and actual forecast/persistence clocks. Pre-forecast closes are not successes. Respect stored sample length versus metadata counts, percentile units, regime changes, asynchronous closes and expired/rolled-contract contamination. Do not fabricate history or retrieve unshared evidence. Risk-match comparisons, contract units and horizons; distinguish paper USD DV01 from exchange CAD/AUD lots and monthly from quarterly exposures. Independent verification checks signs, units, samples and provenance, not economic truth. Treat Trader Room and research outputs as leads to challenge, not investment votes. Identical scans are not independent evidence; our simulated positions do not establish real crowding. The PM owns acceptance, rejection and discretionary sizing. Kevin's examples teach process, not predetermined trades.",
       "status": "active"
     }
   ],
-  "persisted_at": "2026-11-04T20:55:48.535679-05:00",
+  "persisted_at": "2026-11-05T09:08:48.262750-05:00",
   "schema_version": 1,
   "type": "CHATGPT_RESEARCH_EDGE_PROFILE",
-  "updated_at": "2026-11-04T20:55:48.535679-05:00"
+  "updated_at": "2026-11-05T09:08:48.262750-05:00"
 }
