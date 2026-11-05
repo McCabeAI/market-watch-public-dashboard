@@ -1,0 +1,206 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-11-05T04:53:53.458055-05:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 14,
+    "competition_eligible": true,
+    "competition_rank": 7,
+    "competitive_rank": 7,
+    "drawdown_usd": 0.0,
+    "giveback_usd": 0.0,
+    "high_water_nav_usd": 100000000.0,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100000000.0,
+    "net_pnl_usd": 0.0,
+    "pressure_flags": [],
+    "prior_competition_rank": 7,
+    "rank_change": 0,
+    "raw_pnl_rank": 7,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "50b9d8b315d17937c95a9e715a468458551e7b022fe3b3088d0e3780f0c6200f",
+  "open_positions": [],
+  "owner_id": "no-trade-skeptic",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.35
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.55
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261102"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261103"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261104"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "5df104a0e4e395cff3f0077c1b313338df37fa1479dba9599901119b8032d89b",
+    "streaks": {
+      "flat_cycles": 25,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-02",
+        "percent_rate": 3.95,
+        "rate": 3.95,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "lower",
+      "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding at 3.95 prints below the December-to-September strip. Paying SOFR on shocked-risk capital to own a hike path already in the strip is not alpha.",
+      "sr3_forward_view": "Strip is a hiking path versus official SOFR 3.95: December 4.16, March 4.365, June 4.495, September 4.535. Overnight realized funding is the official 3.95 fixing, not the term curve."
+    },
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-02",
+        "percent_rate": 3.95,
+        "rate": 3.95,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Overnight realized funding should print nearer the 3.95 official zero than the December 4.14 through September 4.505 strip. Remaining at the zero official cash benchmark is the correct default. Paying that same 3.95 percent on shocked-risk capital requires an edge above the already-priced hike path after the hold; none is evidenced, so do not leave flat.",
+      "sr3_forward_view": "Curve prices tightening versus the 3.95 official zero: Dec 4.14, Mar 4.345, Jun 4.47, Sep 4.505. Overnight realized cash is not those quarterly forwards."
+    },
+    {
+      "current_sofr": {
+        "observation_date": "2026-10-29",
+        "percent_rate": 3.94,
+        "rate": 3.94,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "lower",
+      "implication": "Overnight realized funding should print nearer the 3.94 official zero than the December 4.13 through September 4.495 strip. Remaining at the zero official cash benchmark is the correct default. Paying that same 3.94 percent on shocked-risk capital requires an edge above the already-priced hike path after the hold; none is evidenced, so do not leave flat.",
+      "sr3_forward_view": "Curve prices tightening versus the 3.94 official zero: Dec 4.13, Mar 4.325, Jun 4.45, Sep 4.495. Overnight realized cash is not those quarterly forwards."
+    },
+    {
+      "current_sofr": {
+        "observation_date": "2026-10-28",
+        "percent_rate": 3.94,
+        "rate": 3.94,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "lower",
+      "implication": "Overnight realized funding should print nearer the 3.94 official zero (with possible month-end noise) than the Dec 4.165\u2013Sep 4.58 SR3 path. Remaining at the zero official-SOFR benchmark is the correct cash default. Paying SOFR on shocked-risk capital requires an edge above 3.94 after costs and month-end variance; none is evidenced, so do not leave flat.",
+      "sr3_forward_view": "Curve prices tightening versus the 3.94 official zero: Dec 4.165, Mar 4.39, Jun 4.53, Sep 4.58. Overnight realized SOFR is not those quarterly forwards."
+    }
+  ],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

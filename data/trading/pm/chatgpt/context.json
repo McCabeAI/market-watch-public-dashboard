@@ -38,7 +38,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-04T22:08:56.415633-05:00",
+  "as_of": "2026-11-05T04:53:53.458055-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -78,21 +78,18 @@
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
-    "competition_rank": 2,
-    "competitive_rank": 2,
-    "drawdown_usd": 17555.56,
-    "gap_to_best_trader_usd": 932195.1,
-    "high_water_nav_usd": 1001193000.0,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 274.31,
+    "gap_to_best_trader_usd": 972545.79,
+    "high_water_nav_usd": 1001216069.44,
     "max_drawdown_usd": 50000000.0,
-    "net_after_funding_pnl_usd": 1175444.44,
-    "pressure_flags": [
-      "behind_leading_pm",
-      "competitive_pressure"
-    ],
-    "raw_pnl_rank": 2,
-    "spread_to_leader_pm_usd": -33087.74,
+    "net_after_funding_pnl_usd": 1215795.13,
+    "pressure_flags": [],
+    "raw_pnl_rank": 1,
+    "spread_to_leader_pm_usd": 0.0,
     "status": "ok",
-    "total_pnl_usd": 1200000.0
+    "total_pnl_usd": 1240625.0
   },
   "learning": {
     "competition_eligible": true,
@@ -102,7 +99,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d5d4523100c0ff0de89237b789e9967f25eda899bc40290dfdb6084648f250cb",
+  "memory_context_sha256": "3735e1653c9d0e44dc2012c25e28c5e0dd7b1c2347ba142869f847941eb69c30",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -113,21 +110,21 @@
         "asset_class": "rates",
         "catalyst_by": null,
         "catalyst_logic": null,
-        "current_mark": 3.16,
+        "current_mark": 3.14375,
         "current_notional_usd": 250000000.0,
         "entry_mark": 3.4,
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 3970682,
+        "holding_seconds": 3994979,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027H-Z",
         "intended_horizon_days": null,
         "mae_usd": -118750.0,
         "mechanical_order": false,
-        "mfe_usd": 1200000.0,
+        "mfe_usd": 1240625.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pm-chatgpt-595561a1b90f",
@@ -142,9 +139,9 @@
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 1200000.0,
+        "total_pnl_usd": 1240625.0,
         "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
-        "unrealized_pnl_usd": 600000.0
+        "unrealized_pnl_usd": 640625.0
       },
       "instrument": "CORRA_2027H-Z",
       "opened_at": "2026-09-19T23:10:54.130509-04:00",

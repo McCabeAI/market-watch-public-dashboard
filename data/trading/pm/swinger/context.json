@@ -30,7 +30,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-04T22:08:56.551560-05:00",
+  "as_of": "2026-11-05T04:53:53.458055-05:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -78,16 +78,19 @@
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
-    "competition_rank": 1,
-    "competitive_rank": 1,
+    "competition_rank": 2,
+    "competitive_rank": 2,
     "drawdown_usd": 329.17,
     "gap_to_best_trader_usd": 965282.84,
     "high_water_nav_usd": 1001208861.35,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1208532.18,
-    "pressure_flags": [],
-    "raw_pnl_rank": 1,
-    "spread_to_leader_pm_usd": 0.0,
+    "pressure_flags": [
+      "behind_leading_pm",
+      "competitive_pressure"
+    ],
+    "raw_pnl_rank": 2,
+    "spread_to_leader_pm_usd": -7262.95,
     "status": "ok",
     "total_pnl_usd": 1256442.31
   },
@@ -99,7 +102,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b7df1e508e0e523f89185784a52d4b72b7b65760d3841ce1dc524ef9e65f5126",
+  "memory_context_sha256": "db7851b0da7907b5f6088bda231037e8aaceb15973ca292679411a548646f9b9",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -117,8 +120,8 @@
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 131877,
-        "horizon_elapsed_fraction": 0.0727,
+        "holding_seconds": 156174,
+        "horizon_elapsed_fraction": 0.0861,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 21,
