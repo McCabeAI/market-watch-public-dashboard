@@ -570,6 +570,9 @@ def _prima_channel_history(channel: str, trend: list[Any]) -> str:
         if not isinstance(point, Mapping):
             continue
         day = _prima_short_date(str(point.get("observed_at") or ""))
+        if channel == "shock_persistence" and point.get("futures_validity") == "invalid":
+            bits.append(f"{day} history gap")
+            continue
         subs = point.get("subcomponent_directions")
         if isinstance(subs, Mapping):
             d = str(subs.get(channel) or point.get("direction") or "UNAVAILABLE")
@@ -744,7 +747,14 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
     meta_line = f"{available} of 5 channels available · confidence {conf_text} · {fresh}"
 
     headline_change = _prima_headline_change(direction, trend)
-    summary_sents = _prima_summary_sentences(direction, subs, drivers)
+    history_gap = current.get("futures_history_gap")
+    if isinstance(history_gap, Mapping):
+        summary_sents = [
+            "Aggregate direction is unavailable because stored Brent futures inputs were not active listed maturities on this run.",
+            "That is a history gap, not a stable reading. Other channel rows keep their stored non-oil inputs. No backfill was created.",
+        ]
+    else:
+        summary_sents = _prima_summary_sentences(direction, subs, drivers)
     mpr_line = _prima_mpr_oil_line(str(current.get("change_since_last_mpr") or ""))
 
     supporting, offsetting, neutral_list, unavailable_list = (
@@ -840,7 +850,28 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                         pieces.append(f"{key}: {esc(str(inp[key]))}")
                 if pieces:
                     direct_rows.append("<p>" + "; ".join(pieces) + "</p>")
-        if direct_rows:
+        gap_for_channel = history_gap if channel == "shock_persistence" and isinstance(history_gap, Mapping) else None
+        if isinstance(gap_for_channel, Mapping):
+            findings = gap_for_channel.get("findings") if isinstance(gap_for_channel.get("findings"), list) else []
+            detail_bits = []
+            for finding in findings:
+                if not isinstance(finding, Mapping) or finding.get("valid"):
+                    continue
+                detail_bits.append(
+                    f"{finding.get('symbol')} {finding.get('reason')} "
+                    f"(final trade {finding.get('final_trade_date')})"
+                )
+            detail = "; ".join(str(bit) for bit in detail_bits[:4]) or "listed futures inputs failed the expiry check"
+            source = str(gap_for_channel.get("source_id") or current_source or "this run")
+            gap_text = (
+                f"History gap for {source}: stored Brent futures inputs were not active listed "
+                f"maturities on this run ({detail}). The stored shock reading is not used. "
+                "This is not a stable reading. No backfill was created."
+            )
+            why_parts.append(
+                _evidence_block(esc, "history-gap", "History gap", f"<p>{esc(gap_text)}</p>")
+            )
+        elif direct_rows:
             why_parts.append(
                 _evidence_block(esc, "direct", "Direct input", "".join(direct_rows))
             )
@@ -1020,7 +1051,12 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f'<div class="prima-headline" data-prima-direction="{esc(direction)}">'
         f'<span class="prima-headline-dir">{esc(_prima_dir_phrase(direction))}</span>'
         f'<span class="prima-headline-change">{esc(headline_change)}</span></div>'
-        f'<div class="prima-summary">{summary_html}</div>'
+        + (
+            f'<p class="prima-history-gap" data-prima-history-gap="invalid">{esc(summary_sents[0])}</p>'
+            if isinstance(history_gap, Mapping)
+            else ""
+        )
+        + f'<div class="prima-summary">{summary_html}</div>'
         f"{supporting_html}{offset_html}{neutral_html}{unavailable_html}"
         f"{mpr_html}"
         f'<div class="prima-channels">{"".join(channel_html_parts)}</div>'
