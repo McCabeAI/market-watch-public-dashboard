@@ -227,7 +227,7 @@ class ExecutableCatalogTests(unittest.TestCase):
         recipe_types = [recipe["expression_type"] for recipe in catalog["recipes"]]
         self.assertEqual(
             recipe_types,
-            ["calendar_spread", "butterfly", "outright_rv", "curve_rv", "futures_strip_average"],
+            ["calendar_spread", "butterfly", "outright_rv", "curve_rv", "futures_strip_average", "policy_meeting"],
         )
         for recipe in catalog["recipes"]:
             self.assertFalse(recipe["executable_template"])

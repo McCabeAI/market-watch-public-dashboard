@@ -364,6 +364,14 @@ def _annotate_legacy(position: Mapping[str, Any], result: dict[str, Any]) -> dic
 
 
 def value_position(position: Mapping[str, Any], *, exit_price: float | None = None, closed_notional: float | None = None) -> dict[str, Any]:
+    if position.get("valuation_method") == "policy_meeting_dv01" or (
+        isinstance(position.get("paper_expression"), Mapping)
+        and position["paper_expression"].get("type") == "policy_meeting"
+        and position.get("local_dv01") is not None
+    ):
+        from scripts.policy_meeting_book import meeting_pnl
+
+        return meeting_pnl(position, exit_price=exit_price, closed_notional=closed_notional)
     mode = valuation_mode(position)
     if position.get("legs"):
         legs = list(position.get("legs") or [])
@@ -490,6 +498,10 @@ def shock_risk_usd(position: Mapping[str, Any]) -> float | None:
             # Largest current leg captures FX-drift imbalance instead of a stale matched DV01.
             dv01 = max(dv01s)
         return round(abs(dv01) * STANDARD_SHOCK_BP, 2)
+    if position.get("valuation_method") == "policy_meeting_dv01":
+        from scripts.policy_meeting_book import meeting_shock_usd
+
+        return meeting_shock_usd(position)
     mode = valuation_mode(position)
     if mode == INSTRUMENT_METHOD:
         if _ois_position(position):
@@ -550,6 +562,15 @@ def stamp_open_valuation(position: dict[str, Any], market_state: Mapping[str, An
     """Attach the valuation vintage for a newly opened position. Does not invent FX."""
     expression = _expression(position)
     kind = expression.get("type")
+    if kind == "policy_meeting":
+        if position.get("local_dv01") is None or position.get("contracts") in (None, 0):
+            return _reject_new_rates(position, "policy meeting is missing locked DV01 or lots")
+        position["valuation_method"] = "policy_meeting_dv01"
+        position["isolated"] = False
+        position["corrected_valuation_status"] = "policy_meeting_dv01"
+        position["mark_status"] = "ok"
+        position["structure_label"] = "policy_meeting"
+        return position
     if kind == STRIP_TYPE and not position.get("legs"):
         return _reject_new_rates(
             position,

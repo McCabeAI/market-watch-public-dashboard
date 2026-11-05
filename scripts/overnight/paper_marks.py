@@ -666,6 +666,14 @@ def resolve_paper_mid(
             return _treasury_futures_mark(market_state, instrument)
         if kind in {"calendar_spread", "butterfly", "outright_rv", "curve_rv"}:
             return _structure_mark(market_state, expression)
+        if kind == "policy_meeting":
+            from scripts.overnight.errors import SchemaError
+            from scripts.policy_meeting_book import PolicyMeetingHeld, resolve_policy_meeting_mark
+
+            try:
+                return resolve_policy_meeting_mark(market_state, expression)
+            except (PolicyMeetingHeld, SchemaError) as exc:
+                raise PaperMarkError(str(exc)) from exc
         raise PaperMarkError(f"unsupported paper expression type {kind!r}")
     if not instrument:
         raise PaperMarkError("instrument is required for a paper mid")
@@ -878,6 +886,7 @@ def refresh_positions(
     alerts: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Re-mark a position list. Missing marks isolate to that position; nothing is invented."""
+    from scripts.overnight.errors import SchemaError
     from scripts.rates.structures import StructureError
 
     for position in positions:
@@ -892,6 +901,25 @@ def refresh_positions(
                     alerts.append(f"Paper mark unavailable for {position.get('instrument')}: {exc}")
                 continue
             _apply_ois_open_mark(position, resolved)
+            continue
+        expression = position.get("paper_expression")
+        if isinstance(expression, Mapping) and expression.get("type") == "policy_meeting":
+            from scripts.policy_meeting_book import PolicyMeetingHeld, resolve_policy_meeting_mark
+
+            try:
+                mark = resolve_policy_meeting_mark(market_state, expression)
+            except PolicyMeetingHeld:
+                if position.get("mark_price") not in (None, ""):
+                    position["mark_status"] = "held_calendar_revision"
+                    continue
+                clear_unresolved_mark(position, reason="meeting date left the calendar and no mark is stored")
+                continue
+            except (PaperMarkError, SchemaError) as exc:
+                clear_unresolved_mark(position, reason=str(exc))
+                if alerts is not None:
+                    alerts.append(f"Paper mark unavailable for {position.get('instrument')}: {exc}")
+                continue
+            apply_resolved_mark(position, dict(mark))
             continue
         try:
             mark = resolve_paper_mid(

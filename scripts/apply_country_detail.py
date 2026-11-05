@@ -107,17 +107,38 @@ def _score_windows(root: Path, scores: dict) -> dict:
     return score_windows(load_calibration(calibration_path), load_history(history_dir), scores)
 
 
+def load_policy_meeting_view(root: Path | None = None, calendar: dict | None = None) -> dict:
+    """Calendar plus the last canonical price block, for the country-detail fold."""
+    import json
+
+    root = root or ROOT
+    if calendar is None:
+        from scripts.policy_calendar import load_calendar
+
+        calendar = load_calendar(root)
+    prices_path = root / "data" / "policy_meeting_prices.json"
+    prices = None
+    if prices_path.is_file():
+        try:
+            prices = json.loads(prices_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            prices = None
+    return {"prices": prices, "calendar": calendar}
+
+
 def render_dashboard_sections(
     root: Path | None = None,
     context: dict | None = None,
     *,
     observations_dir: Path | None = None,
+    policy_meetings: dict | None = None,
 ) -> dict[str, str]:
     ctx = context or load_country_detail_context(root, observations_dir=observations_dir)
     projection = ctx["projection"]
     attention = ctx["attention"]
     scores = ctx["scores"]
     windows = ctx.get("score_windows") or {}
+    meetings = policy_meetings if policy_meetings is not None else load_policy_meeting_view(root)
     sections: dict[str, str] = {}
     for code in COUNTRY_CODES:
         sections[code] = render_country_detail(
@@ -126,6 +147,7 @@ def render_dashboard_sections(
             attention["countries"][code],
             scores,
             score_windows=windows.get(code),
+            policy_meetings=meetings,
         )
     return sections
 
