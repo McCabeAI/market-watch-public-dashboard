@@ -33,6 +33,7 @@ from scripts.trading.migrate import backfill_from_books
 from scripts.trading.store import TradingStore
 from scripts.trader_room.constants import STANDING_ADVOCATES
 from scripts.trader_room.orchestrator import go as trader_room_go
+from tests.test_overnight_scheduled_output import execution_for_pin, snapshot_pin
 
 NY = ZoneInfo("America/New_York")
 AS_OF = datetime(2026, 9, 19, 12, 0, tzinfo=NY)
@@ -929,6 +930,7 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                         "forward_funding_assessment": "about_the_same",
                         "implication": "Prefer cash earning official SOFR unless a packet-supported trade beats that hurdle.",
                     }
+            pin = snapshot_pin(base)
             payload = {
                 "schema_version": 1,
                 "type": "OVERNIGHT_SCHEDULED_OUTPUT",
@@ -938,23 +940,17 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                 "base_packet_sha256": base["packet_sha256"],
                 "agent_packet": packet,
                 "decisions": decisions,
-                "execution": {
-                    "parent_model": "grok-4.6",
-                    "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                    "total_model_cap": 20,
-                    "grok_cap": 18,
-                    "composer_cap": 2,
-                    "declared_total_model_calls": 19,
-                    "declared_grok_calls": 18,
-                    "declared_composer_calls": 1,
-                    "other_models_calls": 0,
-                    "auto_used": False,
-                },
+                "execution": execution_for_pin(pin, total=19, grok=18, composer=1),
             }
             from tests.test_pm_scheduled_output import _pm_block
 
             packet = payload["agent_packet"]
-            payload["pm_decisions"] = _pm_block(run_id, packet["packet_sha256"], packet["evidence_cutoff"])
+            payload["pm_decisions"] = _pm_block(
+                run_id,
+                packet["packet_sha256"],
+                packet["evidence_cutoff"],
+                pin["roles"]["pm_principal"],
+            )
             apply_output(store, payload)
             trading = TradingStore(root=ROOT, state_root=state)
             event = trading.read_journal("trader", "no-trade-skeptic")["events"][0]

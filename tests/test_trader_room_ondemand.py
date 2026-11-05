@@ -72,14 +72,14 @@ def _packet() -> dict:
 class ModelPolicyTests(unittest.TestCase):
     def test_registry_pins_exact_ids(self):
         registry = load_registry()
-        self.assertEqual(registry["advocate_model"], "grok-4.6")
-        self.assertEqual(registry["aggregator_model"], "grok-4.6")
-        self.assertEqual(registry["agent_frontmatter_model"], "grok-4.6[]")
+        self.assertEqual(registry["advocate_model"], ADVOCATE_MODEL)
+        self.assertEqual(registry["aggregator_model"], ADVOCATE_MODEL)
+        self.assertEqual(registry["agent_frontmatter_model"], f"{ADVOCATE_MODEL}[]")
         self.assertEqual(registry["subagent_models"], ["composer-2.5"])
         self.assertIn("grok-4.5", registry["forbidden_models"])
 
     def test_frontmatter_normalizes_to_grok(self):
-        self.assertEqual(assert_advocate_model("grok-4.6[]"), "grok-4.6")
+        self.assertEqual(assert_advocate_model(f"{ADVOCATE_MODEL}[]"), ADVOCATE_MODEL)
         with self.assertRaises(ModelPolicyError):
             assert_advocate_model("grok-4.5")
         with self.assertRaises(ModelPolicyError):
@@ -89,7 +89,7 @@ class ModelPolicyTests(unittest.TestCase):
 
     def test_hook_policy_line(self):
         line = trader_room_hook_policy()
-        self.assertIn('"advocate_model":"grok-4.6"', line)
+        self.assertIn(f'"advocate_model":"{ADVOCATE_MODEL}"', line)
         self.assertIn('"subagent_models":["composer-2.5"]', line)
 
 
@@ -828,7 +828,7 @@ class HookTests(unittest.TestCase):
             )
             self.assertNotEqual(denied.returncode, 0)
             allowed_grok = subprocess.run(
-                ["sh", str(hook), json.dumps({"subagent_model": "grok-4.6", "transcript_path": transcript})],
+                ["sh", str(hook), json.dumps({"subagent_model": ADVOCATE_MODEL, "transcript_path": transcript})],
                 capture_output=True,
                 text=True,
                 check=False,

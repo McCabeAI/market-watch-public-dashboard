@@ -25,6 +25,7 @@ from scripts.overnight.scheduled_output import (
 from scripts.overnight.store import OvernightStore, sha256_json
 from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
+from scripts.trader_room import agent_config
 
 AS_OF = datetime.fromisoformat("2026-09-18T01:55:00-04:00")
 ACCEPTED_ARTIFACT = ROOT / "data" / "overnight" / "accepted_public_news.json"
@@ -213,6 +214,14 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
             },
         }
         packet["packet_sha256"] = sha256_json(packet)
+        pin = agent_config.assert_acceptable_pin(agent_config.pin_from_artifact(base, kind="daily"))
+        roles = pin["roles"]
+        if agent_config.legacy_equivalent(pin):
+            allowed = ["composer-2.5", "grok-4.6"]
+        else:
+            allowed = sorted(
+                {roles["trader"], roles["pm_principal"], roles["synthesis"], roles["learning_examiner"]}
+            )
         memo = _spot_memo()
         decisions = {
             seat: {
@@ -252,7 +261,7 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
                 "overnight_run_id": run_id,
                 "packet_sha256": packet["packet_sha256"],
                 "evidence_cutoff": packet["evidence_cutoff"],
-                "principal_model": "grok-4.6",
+                "principal_model": roles["pm_principal"],
                 "subagent_count": 0,
                 "subagent_models": [],
                 "actions": [{"action": "HOLD"}],
@@ -279,11 +288,11 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
             "decisions": decisions,
             "pm_decisions": pm,
             "execution": {
-                "parent_model": "grok-4.6",
-                "allowed_subagent_models": ["composer-2.5", "grok-4.6"],
-                "total_model_cap": 20,
-                "grok_cap": 18,
-                "composer_cap": 2,
+                "parent_model": roles["parent"],
+                "allowed_subagent_models": allowed,
+                "total_model_cap": pin["budget"]["total_calls"],
+                "grok_cap": pin["budget"]["grok_family_calls"],
+                "composer_cap": pin["budget"]["composer_calls"],
                 "declared_total_model_calls": 19,
                 "declared_grok_calls": 18,
                 "declared_composer_calls": 1,
