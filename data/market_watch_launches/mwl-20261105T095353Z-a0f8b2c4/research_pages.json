@@ -1,0 +1,347 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-05T10:18:51+00:00",
+      "release_sha256": "4148f89c8a1975dbeac1359f77039e4dc670a06536ca95cbf7e147049f45610a",
+      "run_attempt": "1",
+      "run_id": "42006070143",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42006070143",
+      "site_sha256": "fb01b323e8c495867200eff317710f7c99e3e4ec97a07239e2f6f0f363bb6943"
+    }
+  ],
+  "launch_id": "mwl-20261105T095353Z-a0f8b2c4",
+  "launch_terminal": false,
+  "packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-04T07:12:27.759870-05:00",
+      "as_of": "2026-11-04T05:35:22.541505-05:00",
+      "books_run_id": "overnight-20261104",
+      "overnight_run_id": "overnight-20261104",
+      "packet_sha256": "d1a793edb498fd7c866b54038d6db9cc1139c91301f5b2c8fc20729d8933430f"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-05T04:53:53.458055-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-05T04:53:53.458055-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "already_accepted": 1,
+          "over_cap": 3,
+          "unverified_source": 12
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Sweden\u2019s Slowing Inflation Weakens Riksbank Rate Hike Case",
+          "id": "news:de94d3af30d5193c",
+          "published_at": "2026-11-04T10:59:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-05/sweden-s-slowing-inflation-weakens-riksbank-rate-hike-case",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "evidenced",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Gold and silver prices jump, dollar dips as Democrats take control of Congress",
+          "id": "news:1015f48c4095cd2d",
+          "published_at": "2026-11-04T13:11:56-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/04/gold-silver-platinum-dollar-midterms.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Midterm Election Day recap: Democrats flip Senate and House in stunning victory",
+          "id": "news:fc68b9eca782d5b1",
+          "published_at": "2026-11-04T09:35:22-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/03/midterm-elections-2026-live-updates.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields continue to fall after midterms, traders look ahead to jobs data",
+          "id": "news:982cd01eed45b6b6",
+          "published_at": "2026-11-05T03:38:43-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/05/treasury-yields-bonds-interest-rates.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Norway Keeps Rate Steady With Option of Another Hike If Needed",
+          "id": "news:20535178ce5c2bcb",
+          "published_at": "2026-11-04T20:03:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-05/norway-keeps-rate-steady-with-option-of-another-hike-if-needed",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "White House panel delays hearing on Fed's Lisa Cook to Dec. 14",
+          "id": "news:6297c4f1918efcf9",
+          "published_at": "2026-11-04T19:11:26-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/04/trump-federal-reserve-lisa-cook-hearing.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "boj_whatsnew",
+          "headline": "Minutes of the Monetary Policy Meeting on September 17 and 18, 2026",
+          "id": "news:c7ba80605cd65fa6",
+          "published_at": "2026-11-04T18:50:00-05:00",
+          "source_name": "Bank of Japan",
+          "url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/minu_2026/g260918.pdf",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Yardeni Sees Inflation Cooling, Says US Yields Attractive at 5%",
+          "id": "news:3a7b6ba914ee0eea",
+          "published_at": "2026-11-04T17:26:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-05/yardeni-sees-inflation-cooling-says-us-yields-attractive-at-5",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-05T04:53:53.458055-05:00",
+      "news_family_digest": "30c3c1c1848d58303301c1548c997d0e003cf2baed868493b7e2f5db57fcefcc",
+      "packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-05T04:53:53.458055-05:00",
+        "start": "2026-11-04T05:35:22.541505-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/freeze_binding.json",
+        "sha256": "0d5a96105f536489fa2d3ea2d637630059d7882606155053f2832ddca52727cd"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/remote_freeze.json",
+        "sha256": "aef0385e8e179451adf7a0b91a7853a9426fbb150b27ac990d479a9d00d72e9c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/artifacts/00_authenticate.json",
+        "sha256": "1a3deb8898e5dd6f7b24e0f55b404aaa62c514747faa3f3feeef7061febfcd6d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/artifacts/01_ingest.json",
+        "sha256": "e8bd6d3dda4efb18cfd4aeff52ab6c54fbbb76711f0a3fb0e9e5288f568918ce"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/artifacts/02_acquire.json",
+        "sha256": "88700963cc672816d561fed1d56d6cd5a3df9f04b51e5064cbc5c4978e6c9a69"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/artifacts/03_quality_gate.json",
+        "sha256": "2ee28c45ffbb54dc3672dc1475e26bb1943a99a2eb4939c7caedcbfa8ab1a09d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/artifacts/04_freeze.json",
+        "sha256": "b6b8621da0aea414dcf8675568518ac45cfd6c35fdfd417ed2344aaeef2ed936"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/temperature_scores.json",
+        "sha256": "45b6d0156344cc80a1249549206db1e39213da61a90b862511bad88b46aa3825"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/history/ca.json",
+        "sha256": "dff0fc1c96ec8c89b884428d8833b7774e9740c801c6a3af01d98d7eaa3c56c6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/history/ea.json",
+        "sha256": "52086070646b97a20899de275fd8db7e88665113a44549e6a8489b2fd51b99bc"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/history/jp.json",
+        "sha256": "9ee23b32ee992020ac34fdab2a62fbf7b603264e89b9d1cc11ffaf6cfbbc19bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261105T095353Z-a0f8b2c4/lineage/history/us.json",
+        "sha256": "2437bf5d6c19e5c83d539eeafec52ddbf8e2eb8c8a1ad896d9fe8c716cbc0903"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261105/reviews/review-001/evidence_snapshot.json",
+        "sha256": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "e6a5fbc4953c461abce822f547019e62fa7f363f51ff80dc7e2b097a9b20f856"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261104/assembled_dataset.json",
+        "sha256": "1a7b41f44b8589b27329391c01324bd5838918c0ccc8c2854e3cbda3f512778b"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "38bdd4ebd6107841e64d66726e3580c69ca2407684f5502ea8249404fb35d763"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "43ee2961a72dd3622555a1c9988ef12de3c92f99ab5b0f66be946379497655a8"
+      }
+    ],
+    "launch_id": "mwl-20261105T095353Z-a0f8b2c4",
+    "market_state": {
+      "as_of": "2026-11-05T10:17:36Z",
+      "digest": "a9288667e6e2cf89667eba1c624e7a1460dfae82831c774e69a92eed3413f242",
+      "generated_at": "2026-11-05T10:17:36Z"
+    },
+    "news": {
+      "age_label": "23 h before this freeze",
+      "as_of": "2026-11-04T05:35:22.541505-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261104",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261105",
+    "packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.wages",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.income",
+        "JP.Consumer.spending",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "eedd10f39338a3ece23d50301009ebfa29289fdf",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 2,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-05T09:53:53Z",
+      "inputs_last_ingested_at": "2026-11-05T09:53:53Z",
+      "score_state_sha256": "45b6d0156344cc80a1249549206db1e39213da61a90b862511bad88b46aa3825"
+    },
+    "session_date": "2026-11-05",
+    "site_sha256": "fb01b323e8c495867200eff317710f7c99e3e4ec97a07239e2f6f0f363bb6943",
+    "source_commit": "821642cc702eec9bae9d446cac816feb63ef5b4f",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261105",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "4148f89c8a1975dbeac1359f77039e4dc670a06536ca95cbf7e147049f45610a",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-05",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
