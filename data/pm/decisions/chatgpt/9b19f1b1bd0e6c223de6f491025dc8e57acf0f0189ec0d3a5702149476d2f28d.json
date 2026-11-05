@@ -1,0 +1,123 @@
+{
+  "decision": {
+    "actions": [
+      {
+        "action": "REDUCE",
+        "asset_class": "rates",
+        "conviction": 52,
+        "expected_mark_direction": "lower",
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Exit/review retained receive if strip reaches3.26375 or domestic underlying inflation/labor reaccelerate enough to validate further tightening. Renewed physical energy disruption and WTI back around104.12 challenge the premise. Stop/review levels are not guaranteed fills.",
+        "note": "REDUCE amount is USD150m, leaving USD100m; do not close the entire position. Trusted ingest supplies packet fill. Research reference3.11375 is distinct from the current ingest quote. Retained plan: review target3.03375 over8\u201312weeks and consider harvesting toUSD50m there; reassess an unproductive residual after12weeks. At USD100m, research target payoff aboutUSD80k, review loss aboutUSD150k and +25bp stress lossUSD250k, all conditional calculations at the research anchor, not canonical P&L or automated orders.",
+        "notional_usd": 150000000,
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "rationale": "Kevin approved reducing the existing USD250m position to USD100m. From flat I would initiate the retained reduced exposure, not USD250m. The narrower judged forward edge and uncertainty about energy pass-through do not justify keeping prior size merely because the original trade made money.",
+        "side": "long",
+        "thesis": "Retain USD100m equal-weight CORRA March/June/September/December2027 receive after reducing USD150m. Weak Canadian underlying inflation and labor support a modest further repricing of the rising 2027 path, but the earlier flat2.75 proxy is not a defended target. Judgmental 2027 central average about3.01, with an8\u201312-week tradable target near3.03375, rather than asserting a36bp edge."
+      },
+      {
+        "action": "OPEN",
+        "asset_class": "spot_fx",
+        "conviction": 50,
+        "expected_mark_direction": "higher",
+        "instrument": "EURUSD",
+        "invalidation": "Exit/review on a daily close at or below1.1179; reconsider if renewed energy disruption and renewed dollar demand invalidate the relief thesis. A gap toward1.113 would exceed the planned exit loss. No stop guarantees a loss cap.",
+        "lifecycle": {
+          "catalyst_by": null,
+          "catalyst_logic": "Continued repricing of dollar political/geopolitical demand and Europe's energy outlook over coming weeks. Confirmation may support later resizing but is not an entry prerequisite. Election reporting alone does not prove peace or lower deficits.",
+          "framing": "swing",
+          "horizon_days": 84,
+          "realization_logic": "Realize through EURUSD appreciation toward the judgmental1.1356\u20131.1472 range. Review progress at1.1356; use subsequent shared evidence for any harvest, resize or exit. Re-underwrite by84days rather than indefinitely extending the thesis."
+        },
+        "note": "Trusted packet price only; research reference1.1267. Judgmental targets1.1356\u20131.1472 over8\u201312weeks, with review at the first target and reassessment rather than automatic addition. At USD5m research sensitivity: gross target payoffUSD39k\u201391k, planned-exit lossaboutUSD39k, illustrative gap lossaboutUSD61k at1.113; indicative financingUSD12k\u201318k over56\u201384days is a benchmark-gap sensitivity, not executable forward points. No model-authored book P&L or resting order is supplied.",
+        "notional_usd": 5000000,
+        "rationale": "PM accepts independently verified EUR payoff/volatility arithmetic but overrides the analysts' reject. An already-realized0.79% rally and the absence of a euro-specific residual do not disprove further broad-dollar repricing. Unknowns justify a small initial position before confirmation. The EUR exit lies within ordinary movement and can stop out a right broader thesis; that is accepted explicitly, not labeled low risk.",
+        "setup_fingerprint": {
+          "asset_class": "spot_fx",
+          "countries": [
+            "EA",
+            "US"
+          ],
+          "currencies": [
+            "EUR",
+            "USD"
+          ],
+          "decision_dimension": "portfolio_construction",
+          "failure_mode": "confirmation_required_before_entry",
+          "instrument_family": "spot_fx",
+          "instruments": [
+            "EURUSD"
+          ],
+          "market_drivers": [
+            "energy_terms_of_trade",
+            "currency",
+            "policy",
+            "global_risk"
+          ],
+          "setup_type": "discretionary_macro_swing"
+        },
+        "side": "long",
+        "thesis": "Initial USD5m-equivalent EURUSD long on a discretionary view that post-election unwinding of geopolitical/political dollar demand can continue and cheaper energy can improve Europe's outlook. The trade expresses broad dollar weakness; EUR need not outperform all European peers. This is a conditional judgment, not a proven factor model or a request from Kevin to buy EUR."
+      }
+    ],
+    "alerts": [
+      "Targets are judgmental, not measured fair values; scenario payoffs are not expected values.",
+      "EUR daily-close exit is inside ordinary multi-week movement. Slippage/gaps can exceed either planned loss.",
+      "The two positions can lose together under renewed energy disruption or renewed USD/rates strength. No statistical diversification or guaranteed hedge is claimed."
+    ],
+    "conviction": 52,
+    "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+    "expected_book_sha256": "9657305c3faaccfa2929bb4d0c8ccd747b5e196a67d4cd223d9fe67cdc93d305",
+    "future_data_requests": [],
+    "harvest_reviews": [
+      {
+        "position_id": "pm-chatgpt-595561a1b90f",
+        "remaining_edge": true,
+        "remaining_edge_reason": "Would initiate only the retainedUSD100m at current forward risk, with a modest8\u201312week repricing thesis; the priorUSD250m and flat2.75 proxy target are not retained on historical profits.",
+        "thesis_still_valid": true,
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
+        "would_initiate_flat": "yes"
+      }
+    ],
+    "invalidation": "EUR: daily close at/below1.1179 or loss of the dollar/energy relief mechanism. CORRA: strip3.26375 or fundamental reacceleration/energy disruption validating higher policy. These are management instructions for future PM review, not guaranteed automated exit fills.",
+    "lesson_considerations": [
+      {
+        "disposition": "APPLIES",
+        "lesson_id": "les-portfolio-pass-20260920",
+        "rationale": "Completed a world-first opportunity and portfolio pass across FX, policy paths and alternative expressions. CORRA faces the same from-flat test as EUR; reducing its size and adding a small independent broad-dollar position reflects component risks and distinct realization paths. Shared beta is evaluated in aggregate, not rejected automatically or required to form a hedge."
+      }
+    ],
+    "memory_context_sha256": "3beab6d740d41996428d7826932ea83af00db02467460a10f5598db90e1f922d",
+    "pm_id": "chatgpt",
+    "rationale": "Final November5 ChatGPT PM decision after both authorized Cursor research runs and discussion with Kevin. Market reasoning uses the identical shared overnight-20261105/review-001 snapshot, base SHA0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10, plus his direct input; no new external market/news retrieval. Source report: https://github.com/McCabeAI/market-watch-public-dashboard/blob/ce43c055657a633d6c8635d39a238d5804a8e602/docs/research/chatgpt/2026-11-05-eurusd-corra-decision-review.md. Freeze04:53:53ET and snapshot market generation10:17:36Z are distinct; report authored13:30Z, with actual trade ingestion timestamp preserved. Current trusted ingest packet market-generation/fills may differ slightly from the research anchor; these are execution metadata, not new research or model-authored fills. The first run supported a Canadian receive but used an unearned2.75 anchor; the follow-up narrowed the view and independently checked the proposed risk. Its EUR rejection incorrectly required euro-specific alpha for a broad-USD trade; PM retains ownership of that discretionary decision. Kevin approved these exact exposure changes in this conversation.",
+    "review_packet_id": "prp-chatgpt-overnight-20261105-review-001",
+    "review_packet_sha256": "bbfdd77e3db04c92d175334e199f3f41b1572b9b5dd5fe40231c65028b07fb38",
+    "schema_version": 1,
+    "synthesis": "Retain USD100m CORRA H/M/U/Z receive; OPEN USD5m-equivalent EURUSD long. Independent theses may share energy/disinflation and broad-risk components. Neither hedge labeling nor correlation is a veto. Actual fills, financing, cash, NAV and P&L belong entirely to trusted code.",
+    "thesis": "Reduce CORRA receive toUSD100m and initiate USD5m-equivalent EURUSD long. Hold risk supported by current forward judgment, not by old entry profits or a requirement for certainty. EUR owns a broad-dollar relief thesis; Canada owns a modest policy-path discrepancy.",
+    "type": "PM_DECISION"
+  },
+  "receipt": {
+    "already_applied": false,
+    "as_of": "2026-11-05T08:52:29.560064-05:00",
+    "decision_fingerprint": "9b19f1b1bd0e6c223de6f491025dc8e57acf0f0189ec0d3a5702149476d2f28d",
+    "decision_status": "active",
+    "evidence_cutoff": "2026-11-05T04:53:53.458055-05:00",
+    "gross_utilization_usd": 105000000.0,
+    "overnight_run_id": "overnight-20261105",
+    "pm_id": "chatgpt",
+    "post_book_sha256": "e7259d7f5c8c7708af97b2d8d4a0495d61b08f720b4a575827de7d6b49ffd1ea",
+    "pre_book_sha256": "9657305c3faaccfa2929bb4d0c8ccd747b5e196a67d4cd223d9fe67cdc93d305",
+    "receipt_path": "data/pm/decisions/chatgpt/9b19f1b1bd0e6c223de6f491025dc8e57acf0f0189ec0d3a5702149476d2f28d.json",
+    "review_packet_id": "prp-chatgpt-overnight-20261105-review-001",
+    "review_packet_sha256": "bbfdd77e3db04c92d175334e199f3f41b1572b9b5dd5fe40231c65028b07fb38",
+    "schema_version": 1,
+    "source": "overnight_scheduled_review",
+    "submission": {
+      "channel": "github_issue",
+      "issue_number": 300
+    },
+    "trader_room_run_id": null,
+    "type": "PM_CHATGPT_APPLY_RECEIPT"
+  }
+}
