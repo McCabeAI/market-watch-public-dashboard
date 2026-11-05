@@ -1,0 +1,191 @@
+{
+  "CORRA": {
+    "adopted": {
+      "action": "RESIZE",
+      "anchor_strip_average": 3.11375,
+      "dv01_usd_per_bp": 10000,
+      "notional_usd": 100000000,
+      "side": "receive"
+    },
+    "anchor_distance_bp": {
+      "to_ceiling_3.20": 8.625000000000016,
+      "to_floor_2.80": 31.37500000000002
+    },
+    "central_shape": {
+      "average": 3.0075,
+      "average_matches": true,
+      "average_must_equal": 3.0075,
+      "gap_bp_anchor_minus_central": 10.625000000000018,
+      "leg_rates_percent": [
+        2.9,
+        2.98,
+        3.05,
+        3.1
+      ]
+    },
+    "comparison_not_adopted_full_size": {
+      "dv01_usd_per_bp": 25000,
+      "label": "not_adopted_full_size",
+      "notional_usd": 250000000
+    },
+    "exit_plus_15bp_inside_21obs_proxy_yardstick": {
+      "adverse_bp": 15.0,
+      "inside": true,
+      "yardstick_21_obs_bp": 24.745015447028603
+    },
+    "funding_cost_usd": {
+      "adopted": {
+        "56": 6144.444444444444,
+        "84": 9216.666666666666
+      },
+      "not_adopted_full_size": {
+        "56": 15361.111111111111,
+        "84": 23041.666666666668
+      }
+    },
+    "lot_illustration": {
+      "USDCAD": 1.3935386527025828,
+      "formula": "lots = (dv01/4)/usd_per_bp",
+      "label": "ILLUSTRATION",
+      "lots_per_contract_strip_four_legs": {
+        "dv01_10000": 139.3538652702583,
+        "dv01_25000": 348.3846631756457
+      },
+      "usd_per_bp_per_cad_1mm_lot": 17.939940131201833
+    },
+    "scenario_pnl_usd": {
+      "adopted": {
+        "adverse_20bp": -200000,
+        "adverse_25bp": -250000,
+        "adverse_30bp": -300000,
+        "central_shape_avg_3.0075": 106250.00000000017,
+        "exit_strip_3.26375_plus_15bp_vs_anchor": -149999.9999999999,
+        "noise_marker_3.19375_plus_8bp_vs_anchor": -80000.00000000007,
+        "tradable_target_strip_3.03375_minus_8bp_vs_anchor": 80000.00000000007
+      },
+      "not_adopted_full_size": {
+        "adverse_20bp": -500000,
+        "adverse_25bp": -625000,
+        "adverse_30bp": -750000,
+        "central_shape_avg_3.0075": 265625.00000000047,
+        "exit_strip_3.26375_plus_15bp_vs_anchor": -374999.99999999977,
+        "noise_marker_3.19375_plus_8bp_vs_anchor": -200000.00000000017,
+        "tradable_target_strip_3.03375_minus_8bp_vs_anchor": 200000.00000000017
+      }
+    },
+    "sign_checks_receive": {
+      "receive_0.5bp_yield_decline_3.160_to_3.155_on_250m": 12500.0,
+      "receive_minus_20bp_on_250m": 500000,
+      "receive_plus_20bp_on_250m": -500000
+    },
+    "sovereign_proxy_yardstick": {
+      "daily_bp_sigma_20_obs": 5.399805064707624,
+      "horizon_bp": {
+        "21": 24.745015447028603,
+        "42": 34.994736446319585,
+        "63": 42.85962398833024
+      },
+      "label": "SOVEREIGN_PROXY_YARDSTICK"
+    },
+    "strip_history_status": "ABSENT"
+  },
+  "EURUSD": {
+    "adopted": {
+      "action": "REJECT",
+      "anchor_date": "2026-11-04",
+      "anchor_spot": 1.1267,
+      "label": "adopted",
+      "notional_usd": 0
+    },
+    "carry_gaps_bp": {
+      "sofr_minus_estr": 152.8,
+      "us_minus_ea_2y_2026_11_04": 152.0
+    },
+    "context_simple_moves": {
+      "eur_oct30_to_nov3_simple_percent": 0.06265664160400863,
+      "note": "WTI levels parent-specified; not from quant vol series",
+      "wti_oct30_to_nov3_simple_percent": -7.712261041939906
+    },
+    "declined_illustration": {
+      "carry_drag_usd": {
+        "10000000": {
+          "56": {
+            "gap_152.0bp": 23644.444444444445,
+            "gap_152.8bp_sofr_minus_estr": 23768.888888888894
+          },
+          "84": {
+            "gap_152.0bp": 35466.666666666664,
+            "gap_152.8bp_sofr_minus_estr": 35653.33333333334
+          }
+        },
+        "5000000": {
+          "56": {
+            "gap_152.0bp": 11822.222222222223,
+            "gap_152.8bp_sofr_minus_estr": 11884.444444444447
+          },
+          "84": {
+            "gap_152.0bp": 17733.333333333332,
+            "gap_152.8bp_sofr_minus_estr": 17826.66666666667
+          }
+        }
+      },
+      "label": "declined_not_adopted",
+      "notionals_usd": [
+        5000000,
+        10000000
+      ],
+      "spot_pnl_by_price": {
+        "10000000": {
+          "exit": -78104.19810064917,
+          "far": 181503.5058134362,
+          "near": 78719.02674657872,
+          "stress": -121594.03567941762
+        },
+        "5000000": {
+          "exit": -39052.099050324585,
+          "far": 90751.7529067181,
+          "near": 39359.51337328936,
+          "stress": -60797.01783970881
+        }
+      }
+    },
+    "price_level_checks": {
+      "csv_median_close": 1.14715,
+      "csv_min_close": 1.113,
+      "exit_prior_close": 1.1179,
+      "far_confirmed_from_csv_median": true,
+      "far_stored_median": 1.14715,
+      "near_from_prior_ratio": 1.1355692727435371,
+      "stress_is_stored_csv_minimum": true,
+      "stress_level": 1.113
+    },
+    "volatility_context": {
+      "daily_log_sigma_20": 0.0028810258963674557,
+      "daily_log_sigma_60": 0.00309315397739024,
+      "label_yardstick": "YARDSTICK not probability",
+      "overlapping_excursions_simple_percent": {
+        "21": {
+          "best": 2.694873595505598,
+          "worst": -3.9993134225884464
+        },
+        "63": {
+          "best": 1.3227513227513255,
+          "worst": -3.5110533159948276
+        }
+      },
+      "yardstick_simple_percent_sigma20_h": {
+        "10": 0.915223170384416,
+        "21": 1.3290057323312343,
+        "42": 1.8846578213249865,
+        "63": 2.313089831657744
+      }
+    }
+  },
+  "note": "Parent-specified scenarios; not investment recommendation",
+  "source_files": [
+    "inputs.json",
+    "volatility.json",
+    "sensitivities.json",
+    "series_eurusd.csv"
+  ]
+}

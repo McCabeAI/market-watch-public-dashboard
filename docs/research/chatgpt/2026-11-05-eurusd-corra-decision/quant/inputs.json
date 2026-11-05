@@ -1,0 +1,257 @@
+{
+  "book_identity_chatgpt": {
+    "entry_implied_rate": 3.4,
+    "funding_cost_usd_stored": 24829.87,
+    "label": "book identity",
+    "mark_implied_rate": 3.14375,
+    "notional_usd": 250000000.0,
+    "realized_half_identity_formula": "(entry-mark_closeout)*100*25000",
+    "realized_usd_stored": 600000.0,
+    "snapshot_vs_book_mark_usd_remark": 74999.9999999995,
+    "unrealized_usd_identity": 640625.0000000002
+  },
+  "ca2y_proxy": {
+    "daily_change_bp_sample_std_20": 5.399805064707624,
+    "daily_change_bp_sample_std_60": 5.292676957696462,
+    "label": "SOVEREIGN_PROXY_NOT_STRIP",
+    "last_date": "2026-11-03",
+    "last_level_bp": 326.0,
+    "n_changes_20": 20,
+    "n_changes_60": 60,
+    "series_id": "CA_2Y"
+  },
+  "clocks": {
+    "macro_hard_as_of": "2026-11-04T05:35:22-05:00",
+    "market_state_as_of": "2026-11-05T10:17:36Z",
+    "market_state_generated_at": "2026-11-05T10:17:36Z",
+    "snapshot_as_of": "2026-11-05T04:53:53.458055-05:00"
+  },
+  "corra_strip": {
+    "curve_path": "families.market_state.data.tradable_rate_curves.curves.CORRA",
+    "equal_weight_average_implied_rate": 3.11375,
+    "legs": [
+      {
+        "change_from_overnight_bps": 40.0,
+        "code": "CRAH27",
+        "expiry": "2027-03",
+        "implied_rate": 2.93,
+        "open_interest": null,
+        "price": 97.07,
+        "source": "MX_CORRA_FUTURES"
+      },
+      {
+        "change_from_overnight_bps": 54.5,
+        "code": "CRAM27",
+        "expiry": "2027-06",
+        "implied_rate": 3.075,
+        "open_interest": null,
+        "price": 96.925,
+        "source": "MX_CORRA_FUTURES"
+      },
+      {
+        "change_from_overnight_bps": 65.5,
+        "code": "CRAU27",
+        "expiry": "2027-09",
+        "implied_rate": 3.185,
+        "open_interest": null,
+        "price": 96.815,
+        "source": "MX_CORRA_FUTURES"
+      },
+      {
+        "change_from_overnight_bps": 73.5,
+        "code": "CRAZ27",
+        "expiry": "2027-12",
+        "implied_rate": 3.265,
+        "open_interest": null,
+        "price": 96.735,
+        "source": "MX_CORRA_FUTURES"
+      }
+    ],
+    "mark_convention": "implied_rate = 100 - futures price",
+    "product_code": "CRA",
+    "strip_history_status": "ABSENT"
+  },
+  "dec2026_brent_leg_stale_flag": true,
+  "eurusd_fx_pairs_stats_path": "families.market_state.data.fx.pairs.EURUSD",
+  "eurusd_history_path": "families.market_state.data.opportunities.series[id=EURUSD].history",
+  "fx_pairs_eurusd_pctile_1y": 8.928571428571429,
+  "fx_pairs_eurusd_pctile_5y": 66.46825396825396,
+  "hash_checks": {
+    "agent_evidence_packet_canonical_sha256": {
+      "computed": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+      "expected": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+      "match": true
+    },
+    "agent_evidence_packet_sha256": {
+      "computed": "ede2de1a6df9bc362412928919e6fd0363bd62b875be5592b5f3dafd07a9b340",
+      "expected": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+      "match": false
+    },
+    "evidence_snapshot_canonical_sha256": {
+      "computed": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "expected": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "match": true
+    },
+    "evidence_snapshot_raw_sha256": {
+      "computed": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+      "expected": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+      "match": true
+    },
+    "git_blob_head": {
+      "computed": "16a74cdf5149e3fa8a9211fa2559b9ba9fc8f2ad",
+      "expected": "16a74cdf5149e3fa8a9211fa2559b9ba9fc8f2ad",
+      "match": true
+    }
+  },
+  "last_close": 1.1267,
+  "last_date": "2026-11-04",
+  "leads_not_votes": [
+    {
+      "label": "leads_not_votes",
+      "text": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]"
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "market_state.tradable_rate_curves.CORRA.2027-03.implied_rate"
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "Cut the Canada receive if March implied re-bids through 3.15 as oil restores a hike impulse, or if cash rises to the implied rather than the implied falling. Cut Australia if cash-versus-March flips to a cut."
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "Exit if cash CORRA rises from 2.26 toward 2.995 or if oil-driven Canadian inflation makes the Bank deliver the priced hikes."
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "The packet still pays the receiver for unused policy tightening that cash has not delivered. The widest eligible unused gap is Canada: cash CORRA 2.26 versus Mar27 2.995, a 73.5bp path premium, while September underlying inflation is 1.85 and labor is cooling. Triple-digit oil and a rising Canada oil-pressure proxy are known energy facts, not a cash-rate or reaction-function change, so they do not overwhelm the carry or justify staying out of the Canadian receive. Existing AONIA Mar27 remains a "
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "Cash Canada is 2.53 against March 2.93, leaving 40 basis points of unused tightening, and the existing March receive still pays if that leftover fades. Australian cash 4.85 versus March 4.925 is only 7.5 basis points, so the Australian receive is now a smaller carry stub after cash jumped. Cheaper oil supports the Canada leftover fade more than it creates a new ticket. Keep both existing receives; do not add."
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "A later freeze must show a dated leftover that is not already in the December-to-September strip, or a fresh oil shock that reopens a Canada hike path versus 2.53 cash."
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "The short is wrong if Australian dollar-New Zealand holds a new high through 1.2456, or if New Zealand cheapness is only a dollar bounce and the kiwi rises while the cross stays rich. It is also wrong if a later tape shows an Australia-New Zealand cash or policy gap that pays Australia as hard as cash Australia versus Canada already pays."
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "Australian dollar versus New Zealand dollar at 1.2456 is a 99.6 five-year percentile while the kiwi versus the dollar at 0.5627 is a 3.5 five-year percentile, so the dollar pair mixes New Zealand cheapness with a United States leg and the cross is the cleaner Australia-versus-New Zealand expression. Australian dollar-Canada at 0.9793 is only a 90th percentile, cash Australia 4.60 versus Canada 2.55 still pays 205 basis points to Australia, and Brent 104.77 supports Canada on oil without a new Au"
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "Australian-kiwi at 1.2445 remains near the top of its recent range after bouncing from 1.2417, still below the 1.2456 entry. Kiwi-dollar at 0.5637 stays washed out, and there is no fresh Australian policy shock to justify the cross at this percentile. The existing short is the clean non-dollar expression; euro-yen at 178.3 and euro-Canada at 1.5701 do not isolate the same crowded-cross mean-reversion."
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "The Bank of Japan held, so the dated yen event that kept dollar-yen unowned is spent, and the leftover still sits in a 271 basis-point SOFR 3.94 versus TONA 1.227 cash gap and a 272 basis-point March SOFR 4.39 versus March TONA 1.67 path gap. Long USDJPY at the 158.06 paper mid is the cleanest from-zero dollar expression: the pair is at a one-year z-score of 0.02, not a chase. Dollar-Canada at 1.3996 is not that ticket while WTI is 102, Brent is 114.88, Canada's oil-pressure proxy is rising, and"
+    },
+    {
+      "label": "leads_not_votes",
+      "text": "The dollar still belongs versus yen. Official SOFR is 3.97 against cash TONA 1.227, so the carry gap remains about 274 basis points, and dollar-yen is 158.25 versus a 158.06 entry. Cheaper oil and a softer post-election dollar tape are a warning, not a yen-regime break at this print. Keep the existing long; do not add at an extended level and do not rotate into dollar-Canada, which mixes the oil fade."
+    }
+  ],
+  "nominal_real_breakeven_dates": {
+    "US_breakeven_10y_last": [
+      "2026-11-04",
+      225.99999999999997
+    ],
+    "US_real_10y_last": [
+      "2026-11-03",
+      265.0
+    ],
+    "note": "do not combine into same-day real-yield split"
+  },
+  "oil_data_quality": {
+    "BRENT": {
+      "history_end_date": "2026-11-04",
+      "last_5_closes": [
+        [
+          "2026-10-29",
+          114.87999725341797
+        ],
+        [
+          "2026-10-30",
+          117.63999938964844
+        ],
+        [
+          "2026-11-02",
+          104.7699966430664
+        ],
+        [
+          "2026-11-03",
+          103.5999984741211
+        ],
+        [
+          "2026-11-04",
+          94.62000274658203
+        ]
+      ]
+    },
+    "WTI": {
+      "history_end_date": "2026-11-04",
+      "last_5_closes": [
+        [
+          "2026-10-29",
+          102.0
+        ],
+        [
+          "2026-10-30",
+          104.12000274658203
+        ],
+        [
+          "2026-11-02",
+          96.45999908447266
+        ],
+        [
+          "2026-11-03",
+          96.08999633789062
+        ],
+        [
+          "2026-11-04",
+          88.12000274658203
+        ]
+      ]
+    },
+    "brent_dec2026_leg": {
+      "flag": "STALE",
+      "observation_date": "2026-10-30"
+    },
+    "note": "stored oil series is futures path; no oil vol computed",
+    "vol_computation": "excluded_futures_roll_contamination"
+  },
+  "prima_neutral": {
+    "as_of": "2026-11-03",
+    "corra_rate": 2.53,
+    "gap": -0.2200000000000002,
+    "label": "PROXY_NEUTRAL_INPUT",
+    "neutral_midpoint": 2.75
+  },
+  "prior_close": 1.1179,
+  "sofr_estr": {
+    "ESTR_fixing": {
+      "date": "2026-11-04",
+      "rate_percent": 2.442
+    },
+    "SOFR_2026_11_03_from_history": 3.97,
+    "SOFR_fixing": {
+      "date": "2026-11-03",
+      "rate_percent": 3.97
+    },
+    "US_2Y_2026_11_03": {
+      "EA_2Y_bp": 305.0,
+      "US_2Y_bp": 461.00000000000006,
+      "gap_us_minus_ea_bp": 156.00000000000006
+    },
+    "US_2Y_2026_11_04": {
+      "EA_2Y_bp": 306.0,
+      "US_2Y_bp": 458.0,
+      "gap_us_minus_ea_bp": 152.0
+    }
+  },
+  "weak_inclusive_rank_last_close": 18.253968253968253
+}

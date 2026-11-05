@@ -1,0 +1,582 @@
+{
+  "arithmetic_checks": [
+    {
+      "computed": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "detail": "Canonical snapshot hash with packet_sha256 removed",
+      "expected": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10",
+      "name": "snapshot_canonical_sha256",
+      "status": "pass"
+    },
+    {
+      "computed": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+      "detail": "Raw evidence_snapshot.json SHA256",
+      "expected": "13a1b1ca0fb89f4030f427f4106199ab8087894e478db8e980e1cc1d050f2744",
+      "name": "snapshot_raw_sha256",
+      "status": "pass"
+    },
+    {
+      "computed": "16a74cdf5149e3fa8a9211fa2559b9ba9fc8f2ad",
+      "detail": "Git blob hash at HEAD for snapshot path",
+      "expected": "16a74cdf5149e3fa8a9211fa2559b9ba9fc8f2ad",
+      "name": "snapshot_git_blob_sha256",
+      "status": "pass"
+    },
+    {
+      "computed": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+      "detail": "Canonical agent packet hash; raw may differ when digest field present",
+      "expected": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+      "name": "agent_packet_canonical_sha256",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "canonical": "633501f729ca9917b211edbfb809dce6dd89edb762b14c669582e2a2ca5fee5a",
+        "raw": "ede2de1a6df9bc362412928919e6fd0363bd62b875be5592b5f3dafd07a9b340"
+      },
+      "detail": "Raw agent file differs from canonical (expected when packet_sha256 embedded)",
+      "expected": "raw != canonical",
+      "name": "agent_packet_raw_diff_not_fail",
+      "status": "pass"
+    },
+    {
+      "computed": "2026-11-05T04:53:53.458055-05:00",
+      "detail": "Packet freeze clock",
+      "expected": "2026-11-05T04:53:53.458055-05:00",
+      "name": "snapshot_as_of",
+      "status": "pass"
+    },
+    {
+      "computed": "2026-11-05T10:17:36Z",
+      "detail": "Market-state generated_at",
+      "expected": "2026-11-05T10:17:36Z",
+      "name": "market_state_generated_at",
+      "status": "pass"
+    },
+    {
+      "computed": "2026-11-05T10:17:36Z",
+      "detail": "market_state as_of equals generated_at in snapshot",
+      "expected": "2026-11-05T10:17:36Z",
+      "name": "market_state_as_of_matches_generated",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "freeze": "2026-11-05T04:53:53.458055-05:00",
+        "market_state": "2026-11-05T10:17:36Z"
+      },
+      "detail": "Parent report labels freeze, market-state, and integration clocks separately",
+      "expected": "three distinct labels",
+      "name": "report_keeps_clocks_distinct",
+      "status": "pass"
+    },
+    {
+      "computed": 1,
+      "detail": "Exactly one open chatgpt position",
+      "expected": 1,
+      "name": "single_chatgpt_position",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "entry": 3.4,
+        "mark": 3.14375,
+        "notional": 250000000.0,
+        "recomputed_unrealized": 640625.0000000002,
+        "unrealized": 640625.0
+      },
+      "detail": "Book position economics",
+      "expected": {
+        "notional": 250000000,
+        "unrealized": 640625
+      },
+      "name": "book_notional_entry_mark_unrealized",
+      "status": "pass"
+    },
+    {
+      "computed": 24829.87,
+      "detail": "Funding stock charge is historical book field",
+      "expected": 24829.87,
+      "name": "funding_stock_historical",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "avg": 3.11375,
+        "legs": [
+          2.93,
+          3.075,
+          3.185,
+          3.265
+        ]
+      },
+      "detail": "CORRA 2027 H/M/U/Z legs and strip average",
+      "expected": {
+        "avg": 3.11375,
+        "legs": [
+          2.93,
+          3.075,
+          3.185,
+          3.265
+        ]
+      },
+      "name": "corra_legs_and_average",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "No fabricated CORRA strip history in snapshot curve object",
+      "expected": null,
+      "name": "corra_strip_history_absent",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "+20bp": -500000,
+        "-0.5bp": 12500.0,
+        "-20bp": 500000
+      },
+      "detail": "Receive P&L sign at USD 250m identity",
+      "expected": {
+        "+20bp": -500000,
+        "-0.5bp": 12500,
+        "-20bp": 500000
+      },
+      "name": "receive_sign_250m_25k",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "+15bp": -150000,
+        "+20bp": -200000,
+        "+25bp": -250000,
+        "-10.625bp": 106250.0,
+        "-8bp": 80000
+      },
+      "detail": "Adopted USD 100m DV01 scenarios",
+      "expected": {
+        "+15bp": -150000,
+        "+20bp": -200000,
+        "+25bp": -250000,
+        "-10.625bp": 106250,
+        "-8bp": 80000
+      },
+      "name": "receive_dv01_100m",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "central": 3.0075,
+        "gap_bp": 10.625000000000018
+      },
+      "detail": "Central shape average and gap to anchor",
+      "expected": {
+        "central": 3.0075,
+        "gap_bp": 10.625
+      },
+      "name": "central_legs_average",
+      "status": "pass"
+    },
+    {
+      "computed": 4.999999999999982,
+      "detail": "2.75 is 5bp under 2.80 floor",
+      "expected": 5,
+      "name": "275_vs_floor_bp",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "vs_2.80": 31.37500000000002,
+        "vs_3.20": 8.625000000000016
+      },
+      "detail": "Anchor vs 3.20 ceiling and 2.80 floor in bp",
+      "expected": {
+        "vs_2.80": 31.375,
+        "vs_3.20": 8.625
+      },
+      "name": "anchor_vs_range_bp",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "56d": 6144.444444444444,
+        "84d": 9216.666666666666
+      },
+      "detail": "Funding ACT/360 at 1m draw",
+      "expected": {
+        "56d": 6144.444444444444,
+        "84d": 9216.666666666666
+      },
+      "name": "funding_1m_56_84",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "56d": 15361.111111111111,
+        "84d": 23041.666666666668
+      },
+      "detail": "Funding ACT/360 at 2.5m draw",
+      "expected": {
+        "56d": 15361.111111111111,
+        "84d": 23041.666666666668
+      },
+      "name": "funding_2.5m_56_84",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "close": 1.1267,
+        "date": "2026-11-04",
+        "prior": 1.1179
+      },
+      "detail": "Last two EURUSD closes",
+      "expected": {
+        "close": 1.1267,
+        "date": "2026-11-04",
+        "prior": 1.1179
+      },
+      "name": "eurusd_last_close",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "last": [
+          "2026-11-04",
+          "1.1267"
+        ],
+        "rows": 126
+      },
+      "detail": "Optional CSV matches snapshot history length and last close",
+      "expected": {
+        "last": [
+          "2026-11-04",
+          1.1267
+        ],
+        "rows": 126
+      },
+      "name": "eurusd_csv_matches_snapshot",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "sigma20": 0.0028810258963674557,
+        "sigma60": 0.00309315397739024
+      },
+      "detail": "Sample std (N-1) of daily log returns, last 20 and 60",
+      "expected": {
+        "sigma20": 0.002881,
+        "sigma60": 0.003093
+      },
+      "name": "eurusd_log_sigma_20_60",
+      "status": "pass"
+    },
+    {
+      "computed": 0.9152,
+      "detail": "100*(exp(sigma20*sqrt(10))-1)",
+      "expected": 0.92,
+      "name": "eurusd_yardstick_h10",
+      "status": "pass"
+    },
+    {
+      "computed": 1.329,
+      "detail": "100*(exp(sigma20*sqrt(21))-1)",
+      "expected": 1.33,
+      "name": "eurusd_yardstick_h21",
+      "status": "pass"
+    },
+    {
+      "computed": 1.8847,
+      "detail": "100*(exp(sigma20*sqrt(42))-1)",
+      "expected": 1.88,
+      "name": "eurusd_yardstick_h42",
+      "status": "pass"
+    },
+    {
+      "computed": 2.3131,
+      "detail": "100*(exp(sigma20*sqrt(63))-1)",
+      "expected": 2.31,
+      "name": "eurusd_yardstick_h63",
+      "status": "pass"
+    },
+    {
+      "computed": 0.0627,
+      "detail": "EURUSD simple % 2026-10-30 to 2026-11-03",
+      "expected": 0.06,
+      "name": "eurusd_oct30_nov3_simple",
+      "status": "pass"
+    },
+    {
+      "computed": -7.7123,
+      "detail": "WTI simple % 2026-10-30 to 2026-11-03",
+      "expected": -7.71,
+      "name": "wti_oct30_nov3_simple",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "median": 1.14715,
+        "min": 1.113,
+        "near": 1.1355692727435371
+      },
+      "detail": "Near clone, median, min of stored closes",
+      "expected": {
+        "median": 1.14715,
+        "min": 1.113,
+        "near": 1.135569
+      },
+      "name": "eurusd_near_median_min",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "5m_exit": {
+          "expected": -39052,
+          "got": -39052,
+          "price": 1.1179
+        },
+        "5m_median": {
+          "expected": 90752,
+          "got": 90752,
+          "price": 1.14715
+        },
+        "5m_near": {
+          "expected": 39360,
+          "got": 39360,
+          "price": 1.1355692727435371
+        },
+        "5m_stress": {
+          "expected": -60797,
+          "got": -60797,
+          "price": 1.113
+        }
+      },
+      "detail": "Spot P&L at USD 5m for near/median/exit/stress",
+      "expected": {
+        "5m_exit": -39052,
+        "5m_median": 90752,
+        "5m_near": 39360,
+        "5m_stress": -60797
+      },
+      "name": "eurusd_spot_pnl_5m",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "10m_152": 35466.666666666664,
+        "10m_152.8": 35653.333333333336,
+        "5m_152": 17733.333333333332
+      },
+      "detail": "Indicative carry drag 84/360 at 152 and 152.8 bp",
+      "expected": {
+        "10m_152": 35467,
+        "10m_152.8": 35653,
+        "5m_152": 17733
+      },
+      "name": "eurusd_carry_84d",
+      "status": "pass"
+    },
+    {
+      "computed": 5.3998,
+      "detail": "Canada 2y daily change bp sample std (last 20)",
+      "expected": 5.4,
+      "name": "ca2y_daily_change_sigma_20",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "21": 24.75,
+        "42": 34.99,
+        "63": 42.86
+      },
+      "detail": "sqrt(h) scaled sovereign proxy yardsticks",
+      "expected": {
+        "21": 24.7,
+        "42": 35.0,
+        "63": 42.9
+      },
+      "name": "ca2y_proxy_yardsticks",
+      "status": "pass"
+    },
+    {
+      "computed": 15,
+      "detail": "+15bp review inside 21-obs proxy yardstick",
+      "expected": "< 24.75",
+      "name": "review_15bp_inside_21obs",
+      "status": "pass"
+    },
+    {
+      "computed": true,
+      "detail": "Report labels Canada 2y as sovereign proxy, not strip volatility",
+      "expected": true,
+      "name": "labeled_sovereign_proxy_not_strip",
+      "status": "pass"
+    },
+    {
+      "computed": 139.4,
+      "detail": "Lots per contract illustration at USDCAD 1.3935386527025828",
+      "expected": 139.0,
+      "name": "montreal_lots_dv01_10000",
+      "status": "pass"
+    },
+    {
+      "computed": 348.4,
+      "detail": "Lots per contract illustration at USDCAD 1.3935386527025828",
+      "expected": 348.0,
+      "name": "montreal_lots_dv01_25000",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "moves": {
+          "AUDUSD": 0.45,
+          "EURUSD": 0.79,
+          "GBPUSD": 0.66,
+          "NZDUSD": 0.22,
+          "USDCAD": 0.29,
+          "USDCHF": 0.55,
+          "USDJPY": 0.02,
+          "USDNOK": 0.03,
+          "USDSEK": 0.6
+        },
+        "vs3": 0.184,
+        "vs9": 0.387
+      },
+      "detail": "EUR simple % minus equal-weight GBP/SEK/CHF and minus nine G10",
+      "expected": {
+        "vs3": 0.18,
+        "vs9": 0.39
+      },
+      "name": "cross_section_eur_minus_peers",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "corra": "resize",
+        "eur": "reject"
+      },
+      "detail": "decision_cards.json aligns with parent table actions",
+      "expected": {
+        "corra": "resize_100m",
+        "eur": "reject"
+      },
+      "name": "cards_match_parent_actions",
+      "status": "pass"
+    },
+    {
+      "computed": {
+        "status": [
+          "?? docs/research/chatgpt/2026-11-05-eurusd-corra-decision-review.md",
+          "?? docs/research/chatgpt/2026-11-05-eurusd-corra-decision/decision_cards.json",
+          "?? docs/research/chatgpt/2026-11-05-eurusd-corra-decision/quant/",
+          "?? docs/research/chatgpt/2026-11-05-eurusd-corra-decision/verification/"
+        ],
+        "tracked_diff": [
+          "docs/research/chatgpt/2026-11-05-eurusd-corra-decision/corra/decision_memo.md",
+          "docs/research/chatgpt/2026-11-05-eurusd-corra-decision/corra/judgment.json",
+          "docs/research/chatgpt/2026-11-05-eurusd-corra-decision/eur/decision_memo.md",
+          "docs/research/chatgpt/2026-11-05-eurusd-corra-decision/eur/judgment.json"
+        ],
+        "unexpected": []
+      },
+      "detail": "All git changes under allowed research paths",
+      "expected": [],
+      "name": "write_boundary_git",
+      "status": "pass"
+    }
+  ],
+  "generated_at": "2026-11-05T13:37:41Z",
+  "notes": [],
+  "overall_status": "PASS",
+  "reasoning_audit": [
+    {
+      "computed": null,
+      "detail": "Parent report states NOW, WAIT, and REJECT for EURUSD and CORRA anchored to 1.1267 and 3.11375.",
+      "expected": null,
+      "name": "now_wait_reject_both_instruments",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Decision cards document wait benefit, forgone move, and when waiting loses for both legs.",
+      "expected": null,
+      "name": "waiting_triad",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Euro reject is framed as unidentified residual, not rally/percentile/forwards/differential bans.",
+      "expected": null,
+      "name": "euro_reject_not_four_screens",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "2.75 is rejected as four-quarter average, not adopted because prima stores it.",
+      "expected": null,
+      "name": "275_not_prima_target",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Full USD 250m is cut under an explicit from-flat USD 100m test, not grandfathered.",
+      "expected": null,
+      "name": "no_grandfather_250m",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Vol yardsticks and the 80k/150k pair are not treated as probability, target, or EV proof.",
+      "expected": null,
+      "name": "yardstick_not_probability",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Named unknowns adjust size/horizon/flat euro without blanket wait-for-data on the receive.",
+      "expected": null,
+      "name": "unknowns_resize_not_blanket_wait",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Parent approval separates mathematical pass from economic truth.",
+      "expected": null,
+      "name": "math_not_economic_truth",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Parent corrects that +8 bp is not ordinary multi-week strip movement versus proxy yardstick.",
+      "expected": null,
+      "name": "plus8bp_correction",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Authorship/integration clock is labeled and not substituted for freeze or 4 Nov close.",
+      "expected": null,
+      "name": "integration_clock_labeled",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "Prospective cards are unexecuted research plans, not ledger events.",
+      "expected": null,
+      "name": "prospective_unexecuted",
+      "status": "pass"
+    },
+    {
+      "computed": null,
+      "detail": "4 November move is not claimed as out-of-sample success.",
+      "expected": null,
+      "name": "no_oos_success_claim",
+      "status": "pass"
+    }
+  ],
+  "summary": {
+    "arithmetic_fail": 0,
+    "arithmetic_pass": 42,
+    "reasoning_fail": 0,
+    "reasoning_pass": 12
+  },
+  "verifier": "composer-2.5-independent"
+}

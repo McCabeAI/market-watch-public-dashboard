@@ -1,0 +1,201 @@
+{
+  "eurusd": {
+    "annualized_sqrt252_from_20": 0.0457348682551514,
+    "annualized_sqrt252_from_60": 0.04910229714602928,
+    "cross_section_last_step": {
+      "equal_weight_europe_three_mean": 0.603530217454562,
+      "equal_weight_nine_mean_simple_percent": 0.4005939954503083,
+      "eur_minus_europe_three": 0.1836600500112251,
+      "eur_minus_ew_nine": 0.3865962720154788,
+      "last_step_only": {
+        "AUD": {
+          "pair": "AUDUSD",
+          "simple_percent_usd_per_fx": 0.44832542253441243
+        },
+        "CAD": {
+          "pair": "USDCAD",
+          "simple_percent_usd_per_fx": 0.2864959906132114
+        },
+        "CHF": {
+          "pair": "USDCHF",
+          "simple_percent_usd_per_fx": 0.5458626460156157
+        },
+        "EUR": {
+          "pair": "EURUSD",
+          "simple_percent_usd_per_fx": 0.7871902674657871
+        },
+        "GBP": {
+          "pair": "GBPUSD",
+          "simple_percent_usd_per_fx": 0.6640139745436757
+        },
+        "JPY": {
+          "pair": "USDJPY",
+          "simple_percent_usd_per_fx": 0.024079180191072247
+        },
+        "NOK": {
+          "pair": "USDNOK",
+          "simple_percent_usd_per_fx": 0.026221292184858136
+        },
+        "NZD": {
+          "pair": "NZDUSD",
+          "simple_percent_usd_per_fx": 0.22244315369974732
+        },
+        "SEK": {
+          "pair": "USDSEK",
+          "simple_percent_usd_per_fx": 0.6007140318043946
+        }
+      },
+      "note": "decomposition_not_correlation"
+    },
+    "empirical_excursions_overlapping": {
+      "21": {
+        "best_simple_percent": 2.694873595505598,
+        "label": "overlapping_descriptive_not_independent",
+        "max_end_date": "2026-08-21",
+        "max_sum_log": 0.026592013395844237,
+        "min_end_date": "2026-10-08",
+        "min_sum_log": -0.040814842697792404,
+        "worst_simple_percent": -3.9993134225884464
+      },
+      "5": {
+        "best_simple_percent": 1.528998242530788,
+        "label": "overlapping_descriptive_not_independent",
+        "max_end_date": "2026-08-05",
+        "max_sum_log": 0.015174268660889145,
+        "min_end_date": "2026-06-24",
+        "min_sum_log": -0.02189263660700204,
+        "worst_simple_percent": -2.165473211974822
+      },
+      "63": {
+        "best_simple_percent": 1.3227513227513255,
+        "label": "overlapping_descriptive_not_independent",
+        "max_end_date": "2026-09-21",
+        "max_sum_log": 0.013140793561058288,
+        "min_end_date": "2026-10-29",
+        "min_sum_log": -0.03574172633826387,
+        "worst_simple_percent": -3.5110533159948276
+      }
+    },
+    "history_path": "families.market_state.data.opportunities.series[id=EURUSD].history",
+    "max_abs_daily_log_return": {
+      "date": "2026-06-18",
+      "value": -0.01127896739204591
+    },
+    "move_facts": {
+      "simple_1d_2026_11_04": {
+        "prior_date": "2026-11-03",
+        "simple_percent": 0.7871902674657871
+      },
+      "simple_5_observations": {
+        "end_date": "2026-11-04",
+        "simple_percent": 1.2036288511632076,
+        "start_date": "2026-10-28"
+      },
+      "simple_63_observations": {
+        "end_date": "2026-11-04",
+        "simple_percent": -2.3233636757693965,
+        "start_date": "2026-08-07"
+      }
+    },
+    "n_closes": 126,
+    "n_daily_log_returns": 125,
+    "pctile_1y_from_fx_pairs": 8.928571428571429,
+    "pctile_5y_from_fx_pairs": 66.46825396825396,
+    "sample_std_daily_log_return": {
+      "full_sample": {
+        "n": 125,
+        "sigma": 0.0030900826032160796
+      },
+      "last_20": {
+        "n": 20,
+        "sigma": 0.0028810258963674557
+      },
+      "last_60": {
+        "n": 60,
+        "sigma": 0.00309315397739024
+      }
+    },
+    "weak_inclusive_rank_percent": 18.253968253968253,
+    "yardsticks": {
+      "daily_sigma_20": {
+        "annualized_convention_sqrt252": 0.0457348682551514,
+        "label_annualized": "convention on stored observations; not claim of 252 trading days in file",
+        "n_returns": 20,
+        "value": 0.0028810258963674557
+      },
+      "daily_sigma_60": {
+        "annualized_convention_sqrt252": 0.04910229714602928,
+        "n_returns": 60,
+        "value": 0.00309315397739024
+      },
+      "daily_sigma_full_sample": {
+        "n_returns": 125,
+        "value": 0.0030900826032160796
+      },
+      "horizon_yardsticks_sigma20": {
+        "10": {
+          "approx_simple_percent": 0.915223170384416,
+          "horizon_observations": 10,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.009110603830449386
+        },
+        "21": {
+          "approx_simple_percent": 1.3290057323312343,
+          "horizon_observations": 21,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.013202519249231865
+        },
+        "42": {
+          "approx_simple_percent": 1.8846578213249865,
+          "horizon_observations": 42,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.018671181779755557
+        },
+        "5": {
+          "approx_simple_percent": 0.646296515661815,
+          "horizon_observations": 5,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.006442169749214896
+        },
+        "63": {
+          "approx_simple_percent": 2.313089831657744,
+          "horizon_observations": 63,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.0228674341275757
+        }
+      },
+      "horizon_yardsticks_sigma60": {
+        "10": {
+          "approx_simple_percent": 0.9829406086377501,
+          "horizon_observations": 10,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.009781411722162124
+        },
+        "21": {
+          "approx_simple_percent": 1.4275548400041638,
+          "horizon_observations": 21,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.0141746122375445
+        },
+        "42": {
+          "approx_simple_percent": 2.0248197795198486,
+          "horizon_observations": 42,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.020045928867715074
+        },
+        "5": {
+          "approx_simple_percent": 0.6940476802906881,
+          "horizon_observations": 5,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.006916502558318424
+        },
+        "63": {
+          "approx_simple_percent": 2.485500963791054,
+          "horizon_observations": 63,
+          "label": "YARDSTICK",
+          "sigma_h_log": 0.02455114857301464
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "authorship_time": "2026-11-05T13:30:00Z",
+  "status": "unexecuted_research_plan",
+  "not_a_ledger_event": true,
+  "snapshot_anchor_note": "Prices are the frozen 4 November EURUSD close and the snapshot CORRA strip average. The 4 November move is not an out-of-sample success.",
+  "clocks": {
+    "integration": "2026-11-05T13:30:00Z",
+    "packet_freeze": "2026-11-05T04:53:53.458055-05:00",
+    "market_state_generated": "2026-11-05T10:17:36Z"
+  },
+  "cards": [
+    {
+      "instrument": "EURUSD",
+      "action": "reject",
+      "direction": null,
+      "reference_price": 1.1267,
+      "reference_date": "2026-11-04",
+      "adopted_notional_usd": 0,
+      "confidence": "medium",
+      "target_range_adopted": null,
+      "declined_illustration": {
+        "near": 1.135569,
+        "far": 1.14715,
+        "horizon_weeks": [8, 12],
+        "exit_price": 1.1179,
+        "stress_price": 1.113,
+        "initial_notional_usd_if_sign_were_owned": 5000000,
+        "add_ceiling_notional_usd": 10000000
+      },
+      "wait_condition": "Later shared packet with EURUSD at or below 1.1267, WTI at or below 88.12, and the euro higher versus CHF than the 4 November implied cross near 0.9188.",
+      "wait_adopted": false,
+      "what_wait_buys": "Same or better spot, plus one cross that is not only the European complex.",
+      "what_wait_can_forgo": "A path to 1.1356 or 1.1472 that never returns to 1.1267 while oil stays at or below 88.12.",
+      "circumstance_where_waiting_loses": "The second leg prints and does not retrace to 1.1267.",
+      "foregone_opportunity_hypothesis": "From the 4 November 2026 close of 1.1267, EURUSD does not trade at 1.1356 within 12 weeks unless a daily close at or below 1.1179 prints first.",
+      "score_miss": "1.1356 prints before any daily close at or below 1.1179, with WTI still at or below 88.12, inside 12 weeks.",
+      "mechanism_owned": null
+    },
+    {
+      "instrument": "CORRA_2027H-Z",
+      "position_id": "pm-chatgpt-595561a1b90f",
+      "action": "resize",
+      "direction": "receive",
+      "reference_price": 3.11375,
+      "adopted_notional_usd": 100000000,
+      "dv01_usd_per_bp": 10000,
+      "from_flat_notional_usd": 100000000,
+      "current_book_notional_usd_not_a_fill": 250000000,
+      "confidence": "low-to-medium",
+      "eventual_2027_average_range": [2.8, 3.2],
+      "central_average": 3.0075,
+      "central_legs": [2.9, 2.98, 3.05, 3.1],
+      "proxy_2_75_role": "fails as the four-quarter average; 5 bp under the 2.80 floor",
+      "tradable_bp": -8,
+      "tradable_bp_range": [-10, -5],
+      "tradable_strip": 3.03375,
+      "horizon_weeks": [8, 12],
+      "review_strip": 3.26375,
+      "review_bp": 15,
+      "stress_bp": 25,
+      "target_payoff_usd": 80000,
+      "planned_exit_loss_usd": -150000,
+      "worse_stress_usd": -250000,
+      "wait_condition": "One Canadian CPI or labor print newer than September.",
+      "wait_adopted": false,
+      "what_wait_buys": "A test of whether September energy producer prices passed through and whether the underlying impulse stayed negative.",
+      "what_wait_can_forgo": "About 8 bp, near USD 80000 on the USD 100m receive, if the strip reaches 3.03 before that print.",
+      "circumstance_where_waiting_loses": "The average trades through 3.03 before the print, or rises 15 bp while the full USD 250m face is still on.",
+      "foregone_opportunity_hypothesis": "If the strip falls about 8 bp toward 3.03 over the next 8 to 12 weeks while domestic softness and front oil near the 4 November marks persist, a book that waited for a post-September CPI gives up that repricing.",
+      "mechanism_owned": "The 2027 climb after the February one-month contract is too steep for underlying inflation at 1.85, unemployment at 6.5, and an October survey at 48.2."
+    }
+  ]
+}
