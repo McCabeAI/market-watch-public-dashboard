@@ -1,0 +1,131 @@
+{
+  "as_of": "2026-11-05T14:05:24.664Z",
+  "calculations": [
+    {
+      "as_of": "2026-11-05T13:56:42.611Z",
+      "description": "Cursor verified research anchor3.11375, central average3.0075 and10.625bp gap. USD100m paper receive isUSD10000/bp. At research anchor the8bp target givesaboutUSD80k gross, +15bp adverse review costsaboutUSD150k and +25bp stress costsUSD250k; indicative same-horizon paper fundingUSD6k\u20139k over56\u201384days. Actual reduction fill3.10875 is distinct; these are research scenarios, not new book P&L. Canada2Y proxy movement yardstickabout24.7bp over21observations is not strip volatility.",
+      "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/ce43c055657a633d6c8635d39a238d5804a8e602/docs/research/chatgpt/2026-11-05-eurusd-corra-decision/quant/decision_plan.json"
+    }
+  ],
+  "claim": "November5 re-underwriting replaces the prior USD250m retention judgment with USD100m retained risk; trusted code applied the approved USD150m reduction at3.10875. The receive still owns a conflict between the rising2027 policy path and weak Canadian underlying inflation/labor, but a flat2.75 proxy midpoint is not a defended BoC forecast. I accept a modest further rally and smaller risk; existing ownership, realized gains and unbroken old invalidation do not justify keeping the former size. The research's judgmental central2027 shape2.90/2.98/3.05/3.10 averages3.0075; this is not empirically estimated fair value. Headline inflation, rising breadth and energy pass-through are coherent contrary evidence. The new EURUSD starter has an independent broad-dollar mechanism; shared energy/disinflation exposure is evaluated through components, not a correlation veto. Preserve old revisions and do not backdate today's forecast.",
+  "competing_explanations": [
+    {
+      "statement": "The delivered BoC hike despite low measured underlying inflation may reflect durable propagation that the lagged data do not yet show."
+    },
+    {
+      "statement": "Cheaper energy can support domestic consumption and maintain tightening; a cooling labor block is not a complete reaction function."
+    },
+    {
+      "statement": "The central3.01 path is a discretionary judgment within a broad range, not proof of positive expected value; actual strip volatility is absent."
+    }
+  ],
+  "contradictory_evidence": [],
+  "current_revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-06",
+  "evidence": [
+    {
+      "as_of": "2026-11-05T04:53:53.458055-05:00",
+      "kind": "packet",
+      "note": "Shared November5 snapshot; market generation10:17:36Z is later than the freeze label. EUR/oil closes areNovember4. No new external market/news retrieval. Evidence base SHA0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/5117a4c4f16183bc65a833795731a2e1612d0ec7/data/overnight/runs/overnight-20261105/reviews/review-001/evidence_snapshot.json"
+    },
+    {
+      "as_of": "2026-11-05T12:13:05Z",
+      "kind": "git",
+      "note": "First research run: bounded five-pair differential/spot study, conditional rate paths, and source-vintage review. Adopt empirical limits, not an automatic spot veto or the2.75 proxy as a BoC target.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/a0c9357097fbd812bbac3e669b314349c0831660/docs/research/chatgpt/2026-11-05-election-repricing-review.md"
+    },
+    {
+      "as_of": "2026-11-05T13:30:00Z",
+      "kind": "git",
+      "note": "Focused follow-up; independent arithmetic verification13:37:41Z. PM accepts smaller CORRA risk and verified EUR payoff/volatility sensitivity but overrides the EUR reject: a broad-dollar thesis need not establish euro-specific alpha. Targets remain judgmental.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/ce43c055657a633d6c8635d39a238d5804a8e602/docs/research/chatgpt/2026-11-05-eurusd-corra-decision-review.md"
+    },
+    {
+      "as_of": "2026-11-05T13:56:42.611Z",
+      "kind": "git",
+      "note": "Kevin approved REDUCE CORRA150m to100m and OPEN USD5m-equivalent EURUSD long. Canonical book observed after actual trusted ingestion at2026-11-05T08:52:26.537704-05:00: EUR entry1.1267, CORRA reduction3.10875. Those fills are execution facts, not model-authored marks.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/300"
+    }
+  ],
+  "evidence_assessment": "mixed",
+  "falsifiers": [
+    {
+      "statement": "Domestic underlying inflation/labor/wages reaccelerate enough to validate the further tightening priced in the curve."
+    },
+    {
+      "statement": "Renewed physical energy disruption or WTI returning toward104.12 undermines the relief premise; September source vintages and front-contract limitations must remain visible."
+    },
+    {
+      "statement": "Strip3.26375 triggers the planned adverse review/exit; slippage can exceed the loss budget. Reassess residual after12weeks without the intended repricing, and harvest if target closes the remaining edge."
+    }
+  ],
+  "forecast": {
+    "expectation": "Over8\u201312weeks expect scope for a modest further fall of the CORRA2027 H/M/U/Z average toward3.03375 if Canadian domestic persistence stays weak and energy relief persists. This replaces the broader unquantified prior forecast with a narrower conditional trading plan. Eventual2027 average judgment2.80\u20133.20, central about3.01, is distinct from the nearer repricing target. Retain only USD100m and reassess remaining edge after each common packet.",
+    "forecast_kind": "prospective",
+    "horizon": "8\u201312weeks trading repricing; eventual2027 period-rate range is a different horizon",
+    "metric": "Equal-weight CORRA2027 H/M/U/Z implied-rate average; domestic inflation/labor and energy pass-through",
+    "quantitative": "Research reference3.11375; target/review3.03375; adverse review/exit3.26375 or earlier fundamental invalidation. Approved retained paper notionalUSD100m; consider harvesting toUSD50m at target. Actual reduction fill3.10875 differs from research anchor; research scenario dollars are not canonical results.",
+    "stated_at": "2026-11-05T09:06:05.310456-05:00"
+  },
+  "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+  "linked_position_ids": [
+    "pm-chatgpt-595561a1b90f"
+  ],
+  "linked_trade_ids": [
+    "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+  ],
+  "persisted_at": "2026-11-05T09:06:05.310456-05:00",
+  "previous_forecast": {
+    "expectation": "Over the next one to three months, expect the Canadian 2027 H/M/U/Z average implied rate to fall if domestic underlying inflation and labor remain soft and the energy impulse fades. This prospective conditional forecast starts at trusted apply time; no claim is made that the later election information was known at the original freeze. Review retained size and profit realization against each new common packet.",
+    "forecast_kind": "prospective",
+    "horizon": "1\u20133 months from actual persistence; reassess next shared session",
+    "metric": "Average implied rate of CORRA 2027 H/M/U/Z; domestic inflation/labor and deferred energy",
+    "quantitative": null,
+    "stated_at": "2026-11-04T22:06:00.182321-05:00"
+  },
+  "review_due": "2026-11-06",
+  "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-06",
+  "schema_version": 1,
+  "status": "open",
+  "status_history": [
+    {
+      "at": "2026-09-19T23:10:54.130509-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-01",
+      "status": "open"
+    },
+    {
+      "at": "2026-09-28T08:55:41.642445-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-02",
+      "status": "open"
+    },
+    {
+      "at": "2026-10-02T14:30:12.373594-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-03",
+      "status": "open"
+    },
+    {
+      "at": "2026-11-03T18:36:08.042362-05:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-04",
+      "status": "open"
+    },
+    {
+      "at": "2026-11-05T03:05:20.954Z",
+      "reason": "ticket",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-05",
+      "status": "open"
+    },
+    {
+      "at": "2026-11-05T14:05:24.664Z",
+      "reason": "ticket",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-06",
+      "status": "open"
+    }
+  ],
+  "title": "CORRA2027 H/M/U/Z receive: narrower forward edge and USD100m retained risk",
+  "type": "CHATGPT_RESEARCH_HYPOTHESIS_REVISION",
+  "updated_at": "2026-11-05T14:05:24.664Z"
+}
