@@ -1,0 +1,145 @@
+{
+  "as_of": "2026-11-05T03:05:20.954Z",
+  "calculations": [
+    {
+      "as_of": "2026-11-04T05:35:22.541505-05:00",
+      "description": "Frozen H/M/U/Z average = (2.970+3.115+3.225+3.310)/4 = 3.155%; 61.5bp above fixing 2.54%; H-Z = 34bp. These are arithmetic observations, not a fair-value estimate.",
+      "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/612666a21e621e6bb437802cb48ace011f181b7b/data/overnight/runs/overnight-20261104/reviews/review-001/evidence_snapshot.json"
+    },
+    {
+      "as_of": "2026-11-05T03:05:20.954Z",
+      "description": "Correct CRA sensitivity: CAD25/bp/lot divided by USDCAD1.397531 = USD17.8887/bp/lot. 349 lots in each of four contracts is about USD24,973/bp, close to the paper position's USD25,000/bp. Keeping 349 lots only in U/Z roughly halves risk; that is not an equal-risk expression comparison. Stationary-tenor roll is a scenario, not guaranteed carry.",
+      "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/250bf6f4a6d00e1f115fc6305d0a998a632f9651/docs/research/chatgpt/2026-11-04-corra-expression-review.md"
+    },
+    {
+      "as_of": "2026-11-05T03:05:20.954Z",
+      "description": "Known ACP389 calculation errors: calc_portfolio_math.py/calc_results.json reverse the SR3 pay sign. A +20bp yield move on 1,000 SR3 at USD25/bp should gain USD500,000, not lose USD500,000. scenario_book.py/portfolio_scenarios.json correct this and were independently reproduced. A receive move from 3.160% to 3.155% gains USD12,500 at USD25,000/bp, whereas report/integrator/verifier text called it a loss. Quarter-roll gross scenarios must not be presented as net quarter returns after subtracting only 30-day funding. No canonical mark or P&L is authored by this research.",
+      "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/a13c128e1961675aab053d4789fb2720fb02a048/docs/research/chatgpt/2026-11-04-post-election-opportunity-review.md"
+    }
+  ],
+  "claim": "Retrospective November 4 closeout, recorded at the actual save time, not a forecast made before the morning freeze. Retain the reduced $250m four-contract CORRA receive, with no add. I would initiate this reduced exposure from flat on the reviewed evidence: the frozen strip averaged 3.155%, 61.5bp over the 2.54% fixing, while underlying inflation was 1.85% and unemployment 6.5%. Those facts suggest the priced tightening path can outrun domestic persistence, although the realized BoC hike and expensive deferred energy are material contrary evidence. The authorized later election article strengthens the possible oil/disinflation channel, but does not prove peace, fiscal restraint, or a Canadian easing cycle. Carry and elapsed-time roll are conditional, not the edge by themselves. Higher U/Z rates alone do not justify concentrating there. Neither agent established that flat or U/Z-only has superior forward expected value. The existing position has earned no exemption from the same test used for new positions. CAD/NOK is a separate conditional opportunity; its possible shared oil exposure must be sized in aggregate, not vetoed as correlation.",
+  "competing_explanations": [
+    {
+      "statement": "The market may correctly price a durable inflation regime after the late-October hike; soft underlying readings can lag an energy shock."
+    },
+    {
+      "statement": "The reported US election rally could reflect positioning or US fiscal expectations rather than a durable global disinflation impulse; divided government does not mechanically reduce deficits."
+    },
+    {
+      "statement": "U/Z-only reduces front-end exposure but concentrates later policy-path risk. Its recommendation did not separate that expression choice from simply halving total DV01."
+    },
+    {
+      "statement": "Matched foreign pay and domestic receive can offset a common shock, but independent relative paths and funding determine whether the combination earns money. Correlation is a component to analyze, not a veto."
+    }
+  ],
+  "contradictory_evidence": [],
+  "current_revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-05",
+  "evidence": [
+    {
+      "as_of": "2026-11-04T05:35:22.541505-05:00",
+      "kind": "packet",
+      "note": "Original shared November 4 freeze; underlying observations have their own dates. CORRA 2027 H/M/U/Z 2.970/3.115/3.225/3.310, fixing 2.54; Canada underlying 1.85, unemployment 6.5. Composite packet's later prices are not substituted into this morning assessment.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/612666a21e621e6bb437802cb48ace011f181b7b/data/overnight/runs/overnight-20261104/reviews/review-001/evidence_snapshot.json"
+    },
+    {
+      "as_of": "2026-11-04T17:11:00Z",
+      "kind": "url",
+      "note": "Explicitly authorized by Kevin after the freeze. Article reports Democratic House/Senate majorities, lower Treasury yields and roughly 8% lower oil. Reported quotations are asynchronous context, not executable marks. Receipt minute in conversation was not recorded. Fiscal constraint and Iran de-escalation are hypotheses, not established consequences.",
+      "ref": "https://www.cnbc.com/2026/11/03/treasury-yields-fall-as-democrats-win-big-in-us-midterm-elections.html"
+    },
+    {
+      "as_of": "2026-11-04",
+      "kind": "git",
+      "note": "ACP 387: reject H/M removal and U/Z-only recommendation. Halving DV01 is risk reduction, not proof of superior expression; higher implied rates do not establish relative cheapness. Useful contract calculations were independently reproduced.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/250bf6f4a6d00e1f115fc6305d0a998a632f9651/docs/research/chatgpt/2026-11-04-corra-expression-review.md"
+    },
+    {
+      "as_of": "2026-11-04",
+      "kind": "git",
+      "note": "ACP 389: reject CLOSE/flat recommendation. It excluded authorized election context from reasoning, imposed unsupported one-FX/risk caps, used missing NZ bond data as a blanket spot ban, and substituted arbitrary stress asymmetry for expected-value evidence. Verifier approval did not catch all sign errors.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/a13c128e1961675aab053d4789fb2720fb02a048/docs/research/chatgpt/2026-11-04-post-election-opportunity-review.md"
+    },
+    {
+      "as_of": "2026-11-04",
+      "kind": "git",
+      "note": "Kevin's component-risk lesson already saved as edge revision 02. Opposite directional responses need not form a hedge; correlated positions are not automatically duplicates. AUDNZD discussion was an illustration, not an instruction to sell.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/289"
+    }
+  ],
+  "evidence_assessment": "mixed",
+  "falsifiers": [
+    {
+      "statement": "A sustained rise in domestic underlying inflation, wages and employment that validates further BoC tightening would undermine the domestic-persistence premise."
+    },
+    {
+      "statement": "A persistent or renewed deferred-energy shock and hawkish policy transmission could make the priced 2027 path reasonable; distinguish this from a temporary headline oil jump."
+    },
+    {
+      "statement": "If the next shared marks show most repricing already realized, remaining edge may no longer justify retaining $250m even if the original thesis was right. A 3.35\u20133.40% strip is a review trigger, not an automatic add or mechanical stop."
+    }
+  ],
+  "forecast": {
+    "expectation": "Over the next one to three months, expect the Canadian 2027 H/M/U/Z average implied rate to fall if domestic underlying inflation and labor remain soft and the energy impulse fades. This prospective conditional forecast starts at trusted apply time; no claim is made that the later election information was known at the original freeze. Review retained size and profit realization against each new common packet.",
+    "forecast_kind": "prospective",
+    "horizon": "1\u20133 months from actual persistence; reassess next shared session",
+    "metric": "Average implied rate of CORRA 2027 H/M/U/Z; domestic inflation/labor and deferred energy",
+    "quantitative": null,
+    "stated_at": "2026-11-04T22:06:00.182321-05:00"
+  },
+  "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+  "linked_position_ids": [
+    "pm-chatgpt-595561a1b90f"
+  ],
+  "linked_trade_ids": [
+    "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+  ],
+  "persisted_at": "2026-11-04T22:06:00.182321-05:00",
+  "previous_forecast": {
+    "expectation": "The Bank of Canada's late-October hike is now real, and the energy shock is the strongest challenge to the earlier Canadian receive. Yet the November 2 CORRA March/June/September/December 2027 mids (2.96/3.12/3.235/3.325%) average 3.16%, still 62bp above the 2.54% CORRA benchmark, against September underlying CPI near 1.85% and 6.5% unemployment. This is still an overpricing candidate, but not at the original 500m size after the 24bp favorable move.",
+    "forecast_kind": "migrated_historical_observation",
+    "horizon": null,
+    "metric": null,
+    "persistence": "journal_migration",
+    "quantitative": null,
+    "stated_at": "2026-11-03T18:36:08.042362-05:00"
+  },
+  "review_due": "2026-11-05",
+  "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-05",
+  "schema_version": 1,
+  "status": "open",
+  "status_history": [
+    {
+      "at": "2026-09-19T23:10:54.130509-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-01",
+      "status": "open"
+    },
+    {
+      "at": "2026-09-28T08:55:41.642445-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-02",
+      "status": "open"
+    },
+    {
+      "at": "2026-10-02T14:30:12.373594-04:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-03",
+      "status": "open"
+    },
+    {
+      "at": "2026-11-03T18:36:08.042362-05:00",
+      "reason": "journal_migration",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-04",
+      "status": "open"
+    },
+    {
+      "at": "2026-11-05T03:05:20.954Z",
+      "reason": "ticket",
+      "revision_id": "rev-hyp-chatgpt-corra-2027hz-20260919-05",
+      "status": "open"
+    }
+  ],
+  "title": "CORRA 2027 H/M/U/Z receive: retain reduced risk after election review",
+  "type": "CHATGPT_RESEARCH_HYPOTHESIS_REVISION",
+  "updated_at": "2026-11-05T03:05:20.954Z"
+}
