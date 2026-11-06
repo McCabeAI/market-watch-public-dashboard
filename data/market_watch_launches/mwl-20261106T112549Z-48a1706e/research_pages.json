@@ -1,0 +1,351 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-06T11:44:06+00:00",
+      "release_sha256": "bfe282c45c586fccf0815db071866f0e96007d515733196666ba86471059d106",
+      "run_attempt": "1",
+      "run_id": "42210107741",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42210107741",
+      "site_sha256": "b99db54893068a903cfdf007522965d560fb09f4323e35d1123c2af7bb8c3fd6"
+    }
+  ],
+  "launch_id": "mwl-20261106T112549Z-48a1706e",
+  "launch_terminal": false,
+  "packet_sha256": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-05T06:31:48.469658-05:00",
+      "as_of": "2026-11-05T04:53:53.458055-05:00",
+      "books_run_id": "overnight-20261105",
+      "overnight_run_id": "overnight-20261105",
+      "packet_sha256": "0bc766c948f4f88f81ea6e28bc00ad0a67e09ee5605b23b47cb69b039f415b10"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-06T06:25:49.281876-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-06T06:25:49.281876-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "already_accepted": 1,
+          "over_cap": 7,
+          "unverified_source": 8
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Williams Says Fed Should Gather Information to Judge Price Risks",
+          "id": "news:b29f14175842c119",
+          "published_at": "2026-11-05T20:57:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-06/williams-says-fed-should-gather-information-to-judge-price-risks",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "CAD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "boc_press",
+          "headline": "Joint Statement of the Government of Canada and the Bank of Canada on the Renewal of the Monetary Policy Framework",
+          "id": "news:6f42778ba9ae2f8b",
+          "published_at": "2026-11-05T11:00:19-05:00",
+          "source_name": "Bank of Canada",
+          "url": "https://www.bankofcanada.ca/2026/11/joint-statement-of-the-government-of-canada-and-the-bank-of-canada-on-the-renewal-of-the-monetary-policy-framework-2026/",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Bank of England hikes interest rate for the first time since Iran war, warns inflation will near 5%",
+          "id": "news:6a0f5a47e09e2a92",
+          "published_at": "2026-11-05T10:01:47-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/05/interest-rates-inflation-uk.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "AI debt concerns grow as ING reportedly seeks buyers for $500 million of data center loans",
+          "id": "news:80f84c85f21e0aa9",
+          "published_at": "2026-11-06T05:24:52-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/06/ing-ai-data-center-loans-debt.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "reuters_credit",
+          "headline": "SoftBank credit risk jumps to 4-year high, shares tumble as AI fears roil market",
+          "id": "news:5dd4b0f051ae8ece",
+          "published_at": "2026-11-05T20:15:00-05:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/business/media-telecom/softbank-cds-softbank-cds-2026-11-06/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "SoftBank Leads Asia Bond Losses as AI Rout Spreads to Credit",
+          "id": "news:5280c2a7f410b0c3",
+          "published_at": "2026-11-05T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-06/softbank-leads-asia-bond-losses-ai-rout-spreads-credit",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "ecb_press",
+          "headline": "ECB publishes consolidated banking data for end-June 2026",
+          "id": "news:308c455948d25aeb",
+          "published_at": "2026-11-06T04:00:00-05:00",
+          "source_name": "European Central Bank",
+          "url": "https://www.ecb.europa.eu//press/pr/date/2026/html/ecb.pr261106~356f2fc73a.en.html",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields inch lower as investors look ahead to key jobs data",
+          "id": "news:58c4234f1df4ed6a",
+          "published_at": "2026-11-06T03:34:51-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/06/treasury-yields-inch-lower-as-investors-look-ahead-to-key-jobs-data-.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-06T06:25:49.281876-05:00",
+      "news_family_digest": "135684089f7f5f7f265247fbcd6f3e9c6c5cb27c7d4a90e6cddae74e1c733982",
+      "packet_sha256": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-06T06:25:49.281876-05:00",
+        "start": "2026-11-05T06:25:49.281876-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/freeze_binding.json",
+        "sha256": "dd53a717e2ce5d20637b2ca6b6e157a2fc7c87709747954260ced264d77b0419"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/remote_freeze.json",
+        "sha256": "0da0d7378aa3237fa472d47cea068233c9a687610ab0965595e3c938c3ff0f3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/artifacts/00_authenticate.json",
+        "sha256": "3b676b35e99d42b00d66e4187aa7e3be25fc5da13cc45dba9e36eb391b709e1a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/artifacts/01_ingest.json",
+        "sha256": "deaf7a73ac5b35e86fec106d9168db74139a152ed6baa590889a2c4b36dca49e"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/artifacts/02_acquire.json",
+        "sha256": "943991a680f983c20d22a7fa37c135ff9629d139f074188b14921921635160f7"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/artifacts/03_quality_gate.json",
+        "sha256": "37d5db290146ae8968277e50cb102c622c92f5fe13ee47b25e83d32eb1e7c86b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/artifacts/04_freeze.json",
+        "sha256": "80d64c7d8adb7c236e41d09a3b030a6cfd2642dceff146ae64fd1d4d482f5f34"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/temperature_scores.json",
+        "sha256": "3b4bafc6afd8f1cc27847ddd54033b0f3b57c626f6b6f5c7ee3aa8f81b660a65"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/history/ca.json",
+        "sha256": "dff0fc1c96ec8c89b884428d8833b7774e9740c801c6a3af01d98d7eaa3c56c6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/history/ea.json",
+        "sha256": "4ff434b23ffcd9f4b9c46f12e89e2fecd988ee6b1945404093fd90a2bf02ab3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/history/jp.json",
+        "sha256": "9ee23b32ee992020ac34fdab2a62fbf7b603264e89b9d1cc11ffaf6cfbbc19bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261106T112549Z-48a1706e/lineage/history/us.json",
+        "sha256": "2437bf5d6c19e5c83d539eeafec52ddbf8e2eb8c8a1ad896d9fe8c716cbc0903"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json",
+        "sha256": "e7fc28a6109a744129133d55e3a789ce950d4373d01f6c12aef30660a5d08931"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "4f868d0509ea8d3cf60c002e0864b30f76c263d49da11dd5fb8b0ccb7d1f62c4"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261105/assembled_dataset.json",
+        "sha256": "b40359e92fe4354909ff7824b5c630c9f2c7794f0092544f25b5a6d757964c9e"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "ffe6bfab51a81f28e664fe9422556b9b101f33be23d7dc4c5faef9a2b3ffd34d"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "f255140f7b2d7f4f5d02d4d374574a34f0ee2844992ed8b280fbce8220782226"
+      }
+    ],
+    "launch_id": "mwl-20261106T112549Z-48a1706e",
+    "market_state": {
+      "as_of": "2026-11-06T11:42:41Z",
+      "digest": "7ec32d744126a72b716ff193bd224f5b0e528474c756536641205c8eabfb1c37",
+      "generated_at": "2026-11-06T11:42:41Z"
+    },
+    "news": {
+      "age_label": "25 h before this freeze",
+      "as_of": "2026-11-05T04:53:53.458055-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261105",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261106",
+    "packet_sha256": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "CA.Labor.employment",
+        "CA.Labor.unemployment",
+        "CA.Labor.wages",
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.income",
+        "JP.Consumer.spending",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "092b1db8f7545c1db83a3c6527438e149a52465f",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 13,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-06T11:25:49Z",
+      "inputs_last_ingested_at": "2026-11-06T11:25:49Z",
+      "score_state_sha256": "3b4bafc6afd8f1cc27847ddd54033b0f3b57c626f6b6f5c7ee3aa8f81b660a65"
+    },
+    "session_date": "2026-11-06",
+    "site_sha256": "b99db54893068a903cfdf007522965d560fb09f4323e35d1123c2af7bb8c3fd6",
+    "source_commit": "578e1da874453607877af9d6cc9c7c5aec0e25f7",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261106",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "bfe282c45c586fccf0815db071866f0e96007d515733196666ba86471059d106",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-06",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
