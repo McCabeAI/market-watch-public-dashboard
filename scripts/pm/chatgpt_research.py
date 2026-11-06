@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import inspect
 import json
 import os
 import re
@@ -1757,6 +1758,35 @@ def main(argv: list[str] | None = None) -> int:
 
     suggest_worldview_cmd = sub.add_parser("suggest-worldview")
     suggest_worldview_cmd.add_argument("--root", type=Path, default=Path.cwd())
+    suggest_worldview_cmd.add_argument(
+        "--snapshot",
+        default=None,
+        help="Repository-relative evidence snapshot path (requires --file-sha256 and --packet-sha256)",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--file-sha256",
+        dest="file_sha256",
+        default=None,
+        help="Expected SHA256 of the snapshot file bytes",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--packet-sha256",
+        dest="packet_sha256",
+        default=None,
+        help="Expected packet_sha256 inside the snapshot JSON",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--freeze-label",
+        dest="freeze_label",
+        default=None,
+        help="Optional expected snapshot as_of freeze label",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--git-blob",
+        dest="git_blob",
+        default=None,
+        help="Optional expected git hash-object for the snapshot file",
+    )
 
     seed_worldview_cmd = sub.add_parser("seed-worldview")
     seed_worldview_cmd.add_argument("--root", type=Path, default=Path.cwd())
@@ -1830,7 +1860,36 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "suggest-worldview":
         from scripts.pm.worldview_store import suggest_worldview
 
-        print(json.dumps(suggest_worldview(root), indent=2, sort_keys=True))
+        trio = (args.snapshot, args.file_sha256, args.packet_sha256)
+        if any(x is not None for x in trio):
+            if not all(x is not None for x in trio):
+                raise SystemExit("--snapshot, --file-sha256, and --packet-sha256 are required together")
+            for label, val in (("file_sha256", args.file_sha256), ("packet_sha256", args.packet_sha256)):
+                if _SHA256_RE.fullmatch(str(val).strip()) is None:
+                    raise SystemExit(f"invalid --{label.replace('_', '-')}: must be 64 hex characters")
+
+        sig = inspect.signature(suggest_worldview)
+        param_names = set(sig.parameters.keys())
+        kwargs: dict[str, Any] = {}
+        use_snapshot = False
+        if (
+            args.snapshot is not None
+            and {"snapshot_relpath", "expected_file_sha256", "expected_packet_sha256"}.issubset(param_names)
+        ):
+            use_snapshot = True
+            kwargs["snapshot_relpath"] = args.snapshot
+            kwargs["expected_file_sha256"] = str(args.file_sha256).strip().lower()
+            kwargs["expected_packet_sha256"] = str(args.packet_sha256).strip().lower()
+        if use_snapshot:
+            if args.freeze_label is not None and "expected_freeze_label" in param_names:
+                kwargs["expected_freeze_label"] = args.freeze_label
+            if args.git_blob is not None and "expected_git_blob" in param_names:
+                kwargs["expected_git_blob"] = args.git_blob
+
+        if kwargs:
+            print(json.dumps(suggest_worldview(root, **kwargs), indent=2, sort_keys=True))
+        else:
+            print(json.dumps(suggest_worldview(root), indent=2, sort_keys=True))
         return 0
     if args.command == "seed-worldview":
         from scripts.pm.worldview_seed import materialize_worldview_seed

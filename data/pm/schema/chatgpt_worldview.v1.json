@@ -2,6 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mccabeai.github.io/market-watch-public-dashboard/pm/chatgpt_worldview.v1.json",
   "title": "ChatGPT PM worldview state",
+  "description": "Worldview persistence for the ChatGPT PM seat. PM-authored tickets may apply worldview_patch sections (beliefs, countries, global, contradictions, signposts, research_questions, watchlist, acceptance) via scripts/pm/worldview_store.py; the state file shape remains backward compatible and this schema does not require every section to be present.",
   "type": "object",
   "required": [
     "schema_version",

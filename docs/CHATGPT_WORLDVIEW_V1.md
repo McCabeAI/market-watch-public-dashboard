@@ -45,7 +45,13 @@ The seed is `acceptance: awaiting_pm`. `claims.learned_edge` and `claims.validat
 
 Market Watch temperature levels, impulses, classes, component vintages, and the score lineage are reused. They are not a new score model. Country prose is a reading of those stored components. Policy reaction, transmission, and financial conditions are unsupported where the frozen packet does not contain them. Derived meeting-price levels are excluded because Kevin flagged the frozen front Fed estimate as wrong by about 8bp. Calendar dates are kept. An empty date list means unverified timing, not the absence of events.
 
-`scope.approved_foundation_and_tail_lessons` is not a field on this branch. The seed cites the twelve current lesson ids and edge revision `rev-edge-portfolio-pass-20260920-04`. It does not replace or retire them.
+The sixteen numbered foundation lessons (1–16) are stored on the edge profile at `data/trading/pm/chatgpt/research/edge/profile.json` under `methods[0].scope.approved_foundation_and_tail_lessons`. The seed cites `edge.current_revision_id` from `index.json` (currently `rev-edge-portfolio-pass-20260920-05`) plus that lesson list; it does not replace or retire them.
+
+Clocks are split on purpose: belief `effective_at` stays on the **freeze label** from the November 6 evidence packet (`2026-11-06T06:25:49.281876-05:00`). Packet component `as_of` / `retrieved_at` and internal market generation `2026-11-06T11:42:41Z` stay on the evidence rows. Direct-input `observation_as_of` stays the input calendar day (`2026-11-06`); `collection_as_of` is the **persisted_at** clock when the seed recorded that input. `seeded_at`, `updated_at`, `persisted_at`, and `first_stated_at` / `last_reviewed_at` on beliefs use the same **generation** timestamp (UTC ISO) when the seed is written—not the freeze label.
+
+Canada transmission in the seed is a **qualitative hypothesis** from Kevin’s direct input (not a calibrated strength). The tail on deleveraging is explicitly **not** a bot verdict on credibility or trade selection; mechanism and practical evaluation remain open.
+
+There is **no** runtime autoload. A **new session must run** `retrieve` (or read the files) to load the worldview; do not claim automatic recall.
 
 ## Daily order
 
@@ -59,10 +65,20 @@ Market Watch temperature levels, impulses, classes, component vintages, and the 
 
 Trusted apply time is the clock for a new statement. Evidence dates stay on the evidence refs. A no-change review updates `last_reviewed_at` only. It does not reset `first_stated_at` or invent a revised opinion. A review may lower confidence without reversing the statement. The same ticket, or the same patch body replayed under a fresh hash, does not write a second revision. A stale `expected_research_sha256` or a stale `expected_worldview_revision_id` writes nothing.
 
-`suggest-worldview` compares the frozen score file with the stored score foundation and prints diffs. It does not author a belief and it does not write.
+`suggest-worldview` compares the authorized evidence snapshot’s `temperature_scores` with the stored score foundation and prints diffs. It does not author a belief and it does not write.
 
 ```bash
 PYTHONPATH=. python -m scripts.pm.chatgpt_research suggest-worldview
+```
+
+To compare against an explicit file (no automatic “newest file” discovery), pass `--snapshot`, `--file-sha256`, and `--packet-sha256`. Optionally pass `--freeze-label` when the file is not the canonical November 6 path.
+
+```bash
+PYTHONPATH=. python -m scripts.pm.chatgpt_research suggest-worldview \\
+  --snapshot tests/fixtures/worldview_synthetic_future.json \\
+  --file-sha256 <sha256 of that file’s bytes> \\
+  --packet-sha256 <packet_sha256 field inside the JSON> \\
+  --freeze-label 2099-01-01T00:00:00Z
 ```
 
 ## Save an accepted update
@@ -76,7 +92,7 @@ PYTHONPATH=. python -m scripts.pm.chatgpt_research apply --input TICKET.json --a
 
 On `main`, the same JSON is the body of one new issue titled `[chatgpt-research-memory]`. The workflow commits only `data/trading/pm/chatgpt/research/`. It does not book a trade, change canonical scores, or dispatch Pages.
 
-Minimal patch:
+Minimal patch (belief-only):
 
 ```json
 {
@@ -100,6 +116,40 @@ Minimal patch:
         "confidence": {
           "level": "low",
           "reason": "Component signs disagree and the GDP vintage is older."
+        }
+      }
+    ]
+  }
+}
+```
+
+Copyable example that updates a **country score foundation** (merge into `countries.CA.score_foundation.Activity`; supply the scalar fields your change touches—`level`, `impulse`, `temperature_class`, `direction`, `as_of`, `coverage`—so the patch is substantive):
+
+```json
+{
+  "schema_version": 1,
+  "type": "RESEARCH_MEMORY",
+  "pm_id": "chatgpt",
+  "action": "worldview_patch",
+  "pm_authored": true,
+  "expected_research_sha256": "<COPY_FROM_index.json>",
+  "expected_worldview_revision_id": "<COPY_worldview.current_revision_id>",
+  "worldview_patch": {
+    "why": "PM adjusts the retained Canada Activity level after reconciling with the latest authorized packet.",
+    "contrary_evidence": "Prior retained level disagrees with the incoming structural level.",
+    "implications": "Tension belief may need review if pillars diverge from the stored narrative.",
+    "countries": [
+      {
+        "country": "CA",
+        "score_foundation": {
+          "Activity": {
+            "level": 41.25,
+            "impulse": 0.5,
+            "temperature_class": "neutral",
+            "direction": "neutral",
+            "as_of": "2026-08",
+            "coverage": 1.0
+          }
         }
       }
     ]

@@ -49,7 +49,7 @@ One-time seed from journal and lessons (`migration.json`). These are migrated jo
 | `hyp-chatgpt-corra-2027hz-20260919` | Open hypothesis **CORRA_2027H-Z receive**. Revisions `rev-hyp-chatgpt-corra-2027hz-20260919-01` through `-04` tied to journal events `jde-bae95770371d4083`, `jde-69e33ef1bd1e4bcf`, `jde-f8d178e55a6644dd`, `jde-2c433e94a5934e8c`. Quantitative forecast field is null. |
 | `hyp-chatgpt-rejected-cad-fx-20261002` | Rejected 2026-10-02 from the portfolio pass in journal event `jde-f8d178e55a6644dd`. Not executed. |
 | `hyp-chatgpt-rejected-duration-beta-20261002` | Same rejection pass and event. Not executed. |
-| `edge-portfolio-pass-20260920` | Seeded from lesson `les-portfolio-pass-20260920`. `provenance_label`: `seeded_from_existing_lesson`. `conditions_worked` is empty. Not promoted from P&L. Confidence `not_assessed`. Maturity `candidate`. Current edge revision: `rev-edge-portfolio-pass-20260920-01`. |
+| `edge-portfolio-pass-20260920` | Seeded from lesson `les-portfolio-pass-20260920`. `provenance_label`: `seeded_from_existing_lesson`. `conditions_worked` is empty. Not promoted from P&L. Confidence `not_assessed`. Maturity `candidate`. Current edge revision (in-repo): `rev-edge-portfolio-pass-20260920-05`. |
 
 ## Saving updates
 

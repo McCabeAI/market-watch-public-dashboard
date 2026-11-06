@@ -8,6 +8,7 @@ reads the frozen packet already in the repository.
 from __future__ import annotations
 
 import hashlib
+import re
 import subprocess
 from pathlib import Path
 from typing import Any
@@ -34,6 +35,11 @@ COUNTRY_NAMES = {
 }
 PILLARS = ("Activity", "Consumer", "Inflation", "Labor")
 MARK_IDS = ("BRENT", "WTI", "BROAD_USD", "EURUSD", "NASDAQ", "SP500", "DOW", "VIX", "HY_OAS")
+_SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
+
+# Canonical pinned November 6 evidence path (same file as SNAPSHOT_RELPATH).
+CANONICAL_N6_EVIDENCE_RELPATH = SNAPSHOT_RELPATH.as_posix()
+
 HEADLINE_NEEDLES = (
     "ai ",
     "ai-",
@@ -48,6 +54,13 @@ HEADLINE_NEEDLES = (
     "midterm",
     "election",
 )
+
+
+def _require_sha256_hex(label: str, value: str) -> str:
+    text = str(value).strip()
+    if _SHA256_HEX_RE.fullmatch(text) is None:
+        raise SchemaError(f"{label} must be 64 lowercase hex digits")
+    return text.lower()
 
 
 def resolve_repo_file(root: Path, relative: str | Path) -> Path:
@@ -86,6 +99,106 @@ def _git_blob(path: Path) -> str:
     if len(blob) != 40:
         raise SchemaError("git blob check failed")
     return blob
+
+
+def load_selected_snapshot(
+    root: Path,
+    snapshot_relpath: str | Path,
+    *,
+    expected_file_sha256: str,
+    expected_packet_sha256: str,
+    expected_freeze_label: str | None = None,
+    expected_git_blob: str | None = None,
+) -> dict[str, Any]:
+    """Load an evidence snapshot bound by file and packet hashes (and optional git blob).
+
+    For the canonical November 6 path, expected hashes must match the pinned
+    constants; callers cannot override them.
+    """
+    path = resolve_repo_file(root, snapshot_relpath)
+    rel_norm = Path(snapshot_relpath).as_posix()
+    exp_file = _require_sha256_hex("expected_file_sha256", expected_file_sha256)
+    exp_packet = _require_sha256_hex("expected_packet_sha256", expected_packet_sha256)
+
+    if rel_norm == CANONICAL_N6_EVIDENCE_RELPATH:
+        if exp_file != FILE_SHA256 or exp_packet != PACKET_SHA256:
+            raise SchemaError("canonical evidence path is pinned to fixed hashes")
+        if expected_freeze_label is not None and expected_freeze_label != FREEZE_LABEL:
+            raise SchemaError("canonical evidence path is pinned to fixed freeze label")
+        if expected_git_blob is not None and expected_git_blob != GIT_BLOB:
+            raise SchemaError("canonical evidence path is pinned to fixed git blob")
+
+    if not path.is_file():
+        raise SchemaError("evidence snapshot missing")
+    file_sha = _sha256_file(path)
+    if file_sha != exp_file:
+        raise SchemaError("evidence file hash mismatch")
+
+    from scripts.overnight.store import read_json
+
+    snapshot = read_json(path)
+    packet_hash = snapshot.get("packet_sha256")
+    try:
+        packet_norm = _require_sha256_hex("packet_sha256", str(packet_hash))
+    except SchemaError as exc:
+        raise SchemaError("evidence packet hash mismatch") from exc
+    if packet_norm != exp_packet:
+        raise SchemaError("evidence packet hash mismatch")
+
+    if expected_freeze_label is not None:
+        if snapshot.get("as_of") != expected_freeze_label:
+            raise SchemaError("evidence freeze label mismatch")
+
+    git_blob_value: str | None = None
+    if expected_git_blob is not None:
+        exp_blob = str(expected_git_blob).strip()
+        if len(exp_blob) != 40 or not all(c in "0123456789abcdef" for c in exp_blob.lower()):
+            raise SchemaError("expected_git_blob must be a 40-character hex git object id")
+        blob = _git_blob(path)
+        if blob.lower() != exp_blob.lower():
+            raise SchemaError("evidence git blob mismatch")
+        git_blob_value = blob
+    elif rel_norm == CANONICAL_N6_EVIDENCE_RELPATH:
+        blob = _git_blob(path)
+        if blob != GIT_BLOB:
+            raise SchemaError("evidence git blob mismatch")
+        git_blob_value = blob
+
+    freeze_actual = snapshot.get("as_of") if isinstance(snapshot.get("as_of"), str) else None
+    if rel_norm == CANONICAL_N6_EVIDENCE_RELPATH:
+        if freeze_actual != FREEZE_LABEL:
+            raise SchemaError("evidence freeze label mismatch")
+
+    return {
+        "binding": {
+            "path": rel_norm,
+            "file_sha256": file_sha,
+            "packet_sha256": exp_packet,
+            "freeze_label": freeze_actual,
+            "git_blob": git_blob_value,
+        },
+        "snapshot": snapshot,
+    }
+
+
+def extract_selected_view(
+    root: Path,
+    snapshot_relpath: str | Path,
+    *,
+    expected_file_sha256: str,
+    expected_packet_sha256: str,
+    expected_freeze_label: str | None = None,
+    expected_git_blob: str | None = None,
+) -> dict[str, Any]:
+    loaded = load_selected_snapshot(
+        root,
+        snapshot_relpath,
+        expected_file_sha256=expected_file_sha256,
+        expected_packet_sha256=expected_packet_sha256,
+        expected_freeze_label=expected_freeze_label,
+        expected_git_blob=expected_git_blob,
+    )
+    return {"binding": loaded["binding"], "scores": extract_score_foundation(loaded["snapshot"])}
 
 
 def load_frozen_evidence(root: Path) -> dict[str, Any]:
