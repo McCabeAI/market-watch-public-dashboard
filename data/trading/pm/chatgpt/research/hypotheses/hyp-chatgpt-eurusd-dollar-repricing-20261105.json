@@ -1,13 +1,18 @@
 {
-  "as_of": "2026-11-05T14:04:11.182Z",
+  "as_of": "2026-11-06",
   "calculations": [
     {
       "as_of": "2026-11-05T13:56:42.611Z",
       "description": "Independent Cursor verification: EUR daily log-return sample sigma about0.288% over20observations and0.309% over60. Approximate42/63-observation movement yardsticks1.88%/2.31%, not probabilities. At USD5m and1.1267 reference, gross target payoffaboutUSD39k\u201391k, planned-exit lossaboutUSD39k and gap lossaboutUSD61k at1.113. Indicative benchmark-gap financingaboutUSD12k\u201318k over56\u201384days is not executable forward pricing or a forecast of spot.",
       "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/ce43c055657a633d6c8635d39a238d5804a8e602/docs/research/chatgpt/2026-11-05-eurusd-corra-decision/quant/decision_plan.json"
+    },
+    {
+      "as_of": "2026-11-06",
+      "description": "At frozen1.1224 versus original1.1267 the USD5m paper long is about19082 adverse before costs. Report's marginal5m-at-current-reference illustrations to1.1179 and1.113 are about20k and42k additional downside; actual held-unit sensitivity must retain original position identity. Keep1.113 as worse gap, not a new stop. No canonical P&L authored.",
+      "reproducible_ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/d3659ada5e3e48b7d9046f20ec4d089266f371e6/docs/research/chatgpt/2026-11-06-growth-shock-decision/verification/verifier_report.md"
     }
   ],
-  "claim": "November5 prospective PM judgment, saved at actual persistence time after Kevin approved a USD5m-equivalent EURUSD long. The trade owns possible continued unwinding of dollar political/geopolitical demand and benefits to Europe's outlook from energy relief. It does not require EUR-specific outperformance versus every European peer. The report rejected EUR for lacking an identified residual; I overrode that investment conclusion while accepting its independently checked arithmetic. A0.79% rally already in the close, a5Y rank around66 and missing executable forwards do not establish that the adjustment is exhausted. Political results do not prove peace or a durable oil decline. Initial size is deliberately small because the causal interpretation is uncertain, the exit is inside ordinary movement and targets are judgmental reference ranges rather than fair-value estimates. This is not a response to Kevin instructing a EUR trade; he coached process and later approved my proposal. The November4 close predates this forecast and is not an out-of-sample success.",
+  "claim": "November6 closeout: retain the existing USD5m-equivalent EURUSD long, entry1.1267, position pm-chatgpt-aef5bacd43d3. Frozen November5close1.1224 is adverse versus entry. Dollar rebound, higher oil and AI/credit stress challenge the political/energy-relief mechanism, but the supplied adverse day remains ordinary movement and does not settle an8-12week thesis. Moderate conviction supports a small starter, not an add. Keep original1.1179 daily-close exit/review discipline and1.1356-1.1472 references; the research's effective loosening toward1.113 and silent median target replacement are not adopted.1.113 remains gap stress. No automatic resting order or guaranteed loss cap. Hot US data can hurt this long and the retained Canada receiver together, so evaluate joint loss rather than assume diversification. Kevin's employment/inflation reminders are direct event input; the frozen packet contains no later outcomes. The forecast below remains the original prospective forecast with its original clock; no reset merely because it is losing. Book HOLD and all process corrections committed through issue312.",
   "competing_explanations": [
     {
       "statement": "The election-day European currency rally may have been a largely complete positioning adjustment rather than a continuing macro repricing."
@@ -17,10 +22,13 @@
     },
     {
       "statement": "The supplied target markers, a cloned move and sample median, are not independent economic fair values; the thesis may be wrong despite attractive conditional payoff arithmetic."
+    },
+    {
+      "statement": "Strong US employment/inflation or a wider credit/funding shock can renew USD demand even as rate yields fall; neither lower US rates nor weaker equities alone guarantees EUR gains."
     }
   ],
   "contradictory_evidence": [],
-  "current_revision_id": "rev-hyp-chatgpt-eurusd-dollar-repricing-20261105-01",
+  "current_revision_id": "rev-hyp-chatgpt-eurusd-dollar-repricing-20261105-02",
   "evidence": [
     {
       "as_of": "2026-11-05T04:53:53.458055-05:00",
@@ -45,9 +53,21 @@
       "kind": "git",
       "note": "Kevin approved REDUCE CORRA150m to100m and OPEN USD5m-equivalent EURUSD long. Canonical book observed after actual trusted ingestion at2026-11-05T08:52:26.537704-05:00: EUR entry1.1267, CORRA reduction3.10875. Those fills are execution facts, not model-authored marks.",
       "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/300"
+    },
+    {
+      "as_of": "2026-11-06",
+      "kind": "git",
+      "note": "Authorized research reviewed; adopt own-history yardsticks and conditional arithmetic, not a wider exit or an automatic EUR-specific residual gate. Calculations from a new USD-notional reference are marginal illustrations, not canonical ownership units or P&L.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/blob/d3659ada5e3e48b7d9046f20ec4d089266f371e6/docs/research/chatgpt/2026-11-06-growth-shock-decision-review.md"
+    },
+    {
+      "as_of": "2026-11-06T12:55:30.969326-05:00",
+      "kind": "git",
+      "note": "Trusted HOLD existing5m, no add; new CORRA reduction leaves50m. Original EUR management retained. Actual apply timestamp does not backdate the hold as a pre-jobs transaction.",
+      "ref": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/312"
     }
   ],
-  "evidence_assessment": null,
+  "evidence_assessment": "mixed",
   "falsifiers": [
     {
       "statement": "A daily close at/below1.1179 triggers the planned position review/exit even though it can be ordinary volatility, rather than proof that the long-run thesis is false."
@@ -70,8 +90,16 @@
   "hypothesis_id": "hyp-chatgpt-eurusd-dollar-repricing-20261105",
   "linked_position_ids": [],
   "linked_trade_ids": [],
-  "persisted_at": "2026-11-05T09:04:50.535661-05:00",
-  "review_due": "2026-11-06",
+  "persisted_at": "2026-11-06T12:58:27.319523-05:00",
+  "previous_forecast": {
+    "expectation": "Expect scope for EURUSD appreciation toward1.1356\u20131.1472 from the shared1.1267 reference over8\u201312weeks if dollar-demand unwinding and energy relief persist. Review a daily close at/below1.1179 as the planned exit and reconsider fundamental failure sooner. Smaller initial exposure accepts a possible noise stop; no win probability is claimed.",
+    "forecast_kind": "prospective",
+    "horizon": "8\u201312weeks from actual trade/research decision; review each new common packet",
+    "metric": "EURUSD spot and the political/energy/dollar mechanism",
+    "quantitative": "Judgmental target range1.1356\u20131.1472; daily-close exit/review1.1179; gap illustration1.113. Initial approved USD-equivalent notional5m. Review progress at first target; no automatic add or resting order.",
+    "stated_at": "2026-11-05T09:04:50.535661-05:00"
+  },
+  "review_due": "2026-11-09",
   "schema_version": 1,
   "status": "open",
   "status_history": [
@@ -80,9 +108,15 @@
       "reason": "ticket",
       "revision_id": "rev-hyp-chatgpt-eurusd-dollar-repricing-20261105-01",
       "status": "open"
+    },
+    {
+      "at": "2026-11-06",
+      "reason": "ticket",
+      "revision_id": "rev-hyp-chatgpt-eurusd-dollar-repricing-20261105-02",
+      "status": "open"
     }
   ],
   "title": "EURUSD long: small exposure to further dollar-risk-premium unwinding",
   "type": "CHATGPT_RESEARCH_HYPOTHESIS",
-  "updated_at": "2026-11-05T14:04:11.182Z"
+  "updated_at": "2026-11-06"
 }
