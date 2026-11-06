@@ -3,7 +3,10 @@
 Locked 2026-10-20 from current main, StatCan WDS, and Bank of Canada Valet.
 Later lanes implement collectors and the proxy against these constants.
 Do not relabel a continuous front contract as a maturity curve.
-Do not fill a missing maturity from the front contract.
+Do not fill a missing maturity from the front contract, from a continuous symbol,
+or from an expired listed month. Twelve- and twenty-four-month horizon roles may
+use another listed month within the bounds below when the calendar target month
+is missing or unusable.
 Do not treat this proxy as the Bank of Canada's Prima model.
 """
 
@@ -51,6 +54,13 @@ POLICY_GAP_RISING = -NEUTRAL_BAND
 POLICY_GAP_FALLING = NEUTRAL_BAND
 
 TARGET_MATURITY_MONTHS = (0, 3, 6, 12, 24)
+
+# Brent horizon roles (12m / 24m): search window for a listed alternative in months
+# from the active front. Used by curve collection and stored-row validation.
+HORIZON_ROLES = (12, 24)
+MIN_HORIZON_ACTUAL_MONTHS = {12: 9, 24: 18}
+MAX_HORIZON_ACTUAL_MONTHS = {12: 15, 24: 30}
+MIN_HORIZON_SEPARATION_MONTHS = 6
 GALLONS_PER_BARREL = 42.0
 YAHOO_CHART_URL = (
     "https://query2.finance.yahoo.com/v8/finance/chart/{symbol}"
@@ -473,6 +483,46 @@ def add_months(year: int, month: int, delta: int) -> tuple[int, int]:
 
 def period_key(year: int, month: int) -> str:
     return f"{year:04d}-{month:02d}"
+
+
+def calendar_months_from_front(
+    front_year: int, front_month: int, contract_year: int, contract_month: int
+) -> int:
+    """Whole calendar months from the active front month to the contract month."""
+    return (contract_year * 12 + contract_month - 1) - (front_year * 12 + front_month - 1)
+
+
+def horizon_fallback_acceptable(
+    *,
+    horizon_role_months: int,
+    actual_maturity_months: int | None,
+    selection: str | None,
+    months_from_target: int | None,
+) -> bool:
+    """Pure check: alternative listed month is within MIN/MAX for the role (stored rows)."""
+    if horizon_role_months not in HORIZON_ROLES:
+        return False
+    if actual_maturity_months is None:
+        return False
+    lo = MIN_HORIZON_ACTUAL_MONTHS.get(horizon_role_months)
+    hi = MAX_HORIZON_ACTUAL_MONTHS.get(horizon_role_months)
+    if lo is None or hi is None:
+        return False
+    if actual_maturity_months < lo or actual_maturity_months > hi:
+        return False
+    if selection not in ("nearest_listed", "farthest_viable_listed"):
+        return False
+    if int(actual_maturity_months) == int(horizon_role_months):
+        return False
+    if months_from_target is not None and months_from_target != (
+        int(actual_maturity_months) - int(horizon_role_months)
+    ):
+        return False
+    if horizon_role_months == 24 and selection == "farthest_viable_listed":
+        return actual_maturity_months < horizon_role_months
+    if selection == "farthest_viable_listed":
+        return False
+    return True
 
 
 def move_band(change_pct: float | None, change_usd: float | None) -> str:

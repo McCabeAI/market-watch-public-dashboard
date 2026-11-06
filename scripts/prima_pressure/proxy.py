@@ -117,7 +117,7 @@ def _curve_driver(point: dict, label: str) -> dict:
     abs_chg, pct_chg = _change_1m(point)
     bucket = (point.get("changes") or {}).get("1m") or {}
     obs_date = point.get("observation_date") or point.get("as_of")
-    return {
+    out: dict[str, Any] = {
         "label": label,
         "symbol": point.get("symbol"),
         "contract_month": point.get("contract_month"),
@@ -128,6 +128,20 @@ def _curve_driver(point: dict, label: str) -> dict:
         "observation_date": obs_date,
         "change_1m_base_date": bucket.get("prior_date"),
     }
+    for key in (
+        "actual_maturity_months",
+        "horizon_role_months",
+        "target_contract_month",
+        "selection",
+        "selection_reason",
+        "months_from_target",
+        "coverage",
+        "coverage_shortfall_months",
+        "final_trade_date",
+    ):
+        if point.get(key) is not None:
+            out[key] = point.get(key)
+    return out
 
 
 def _format_pct_driver(point: dict, prefix: str = "Brent last-day") -> str:
@@ -135,9 +149,20 @@ def _format_pct_driver(point: dict, prefix: str = "Brent last-day") -> str:
     if pct is None:
         _, pct = _change_1m(point)
     month = point.get("contract_month") or "unknown"
+    role = point.get("maturity_months")
+    actual = point.get("actual_maturity_months")
     if pct is None:
         return f"{prefix} {month} 1m change unavailable"
     sign = "+" if pct >= 0 else ""
+    if (
+        actual is not None
+        and role in (12, 24)
+        and int(actual) != int(role)
+    ):
+        return (
+            f"{prefix} {month} ({int(actual)}m listed, {int(role)}m horizon) "
+            f"1m change {sign}{pct * 100:.1f} percent"
+        )
     return f"{prefix} {month} 1m change {sign}{pct * 100:.1f} percent"
 
 
@@ -162,9 +187,24 @@ def _shock_persistence(bundle: dict) -> tuple[dict, str, list[dict], bool]:
     brent = oil.get("brent_last_day") or {}
     wti = oil.get("wti") or {}
     brent_points = brent.get("points") or []
-    wti_points = wti.get("points") or []
 
     as_of = _as_of_date(bundle)
+    reasons = brent.get("missing_maturity_reasons") or {}
+    horizon_sel = brent.get("horizon_selection") or {}
+
+    def _horizon_note(role: int) -> str:
+        meta = horizon_sel.get(str(role)) if isinstance(horizon_sel, dict) else None
+        if not isinstance(meta, dict):
+            return ""
+        tgt = meta.get("target_contract_month")
+        reason = meta.get("reason") or reasons.get(str(role))
+        if not reason:
+            return ""
+        tgt_txt = f" (target month {tgt})" if tgt else ""
+        return f"{reason}{tgt_txt}"
+
+    wti_points = wti.get("points") or []
+
     front = _point_at_maturity(brent_points, 0)
     m12 = _point_at_maturity(brent_points, 12)
     m24 = _point_at_maturity(brent_points, 24)
@@ -199,7 +239,23 @@ def _shock_persistence(bundle: dict) -> tuple[dict, str, list[dict], bool]:
     note: str | None = None
 
     if m12 is None or m24 is None or m12_pct is None or m24_pct is None:
-        note = "12m and 24m Brent last-day quotes are required; the front contract alone is not persistence."
+        parts: list[str] = []
+        if m12 is None:
+            parts.append(f"12m horizon: {_horizon_note(12) or reasons.get('12') or 'missing'}")
+        elif m12_pct is None:
+            parts.append(
+                "12m Brent listed contract has no one-month change (insufficient history)."
+            )
+        if m24 is None:
+            parts.append(f"24m horizon: {_horizon_note(24) or reasons.get('24') or 'missing'}")
+        elif m24_pct is None:
+            parts.append(
+                "24m Brent listed contract has no one-month change (insufficient history)."
+            )
+        note = (
+            "Shock persistence requires active listed 12m and 24m horizon roles with real 1m changes. "
+            + "; ".join(parts)
+        )
     else:
         has_front = front is not None and front_pct is not None
         if m12_pct >= contract.PATH_PERSISTENCE_PCT and m24_pct >= contract.PATH_PERSISTENCE_PCT:
@@ -220,9 +276,23 @@ def _shock_persistence(bundle: dict) -> tuple[dict, str, list[dict], bool]:
                 "Front-month move is material but 12m/24m repricing is below the persistence band; "
                 "the front shock is not treated as persistent inflation pressure."
             )
-        elif has_front or True:
+        else:
             classification = "mixed"
             direction = "STABLE"
+        fallback_bits: list[str] = []
+        for role, pt in ((12, m12), (24, m24)):
+            if not pt or not pt.get("fallback"):
+                continue
+            fallback_bits.append(
+                f"{role}m horizon uses {pt.get('symbol')} {pt.get('contract_month')} "
+                f"({pt.get('actual_maturity_months')} months after the front; "
+                f"target {pt.get('target_contract_month')} was {pt.get('target_status') or 'unusable'}; "
+                f"coverage shortfall {pt.get('coverage_shortfall_months')} month(s)). "
+                "The 1m change is that listed contract's own history."
+            )
+        if fallback_bits:
+            extra = " ".join(fallback_bits)
+            note = f"{note} {extra}" if note else extra
 
     if context_drivers:
         drivers = drivers + [{"context": "wti", "points": context_drivers}]
@@ -596,7 +666,9 @@ def _largest_driver_labels(
         if drv.get("context") == "wti":
             continue
         if drv.get("maturity_months") in (12, 24) and drv.get("change_1m_pct") is not None:
-            labels.append(_format_pct_driver(drv))
+            sym = drv.get("symbol")
+            label = _format_pct_driver(drv)
+            labels.append(f"{sym} {label}" if sym else label)
     prod = subcomponents.get("production_network_pressure") or {}
     for drv in prod.get("drivers") or []:
         mom = drv.get("mom")

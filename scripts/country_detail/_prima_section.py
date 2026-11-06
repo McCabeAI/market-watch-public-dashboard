@@ -38,7 +38,7 @@ _PRIMA_CAVEAT = (
 )
 
 _BRENT_DRIVER_RE = re.compile(
-    r"Brent last-day (\d{4}-\d{2}) 1m change ([+-]?\d+(?:\.\d+)?) percent",
+    r"Brent last-day (\d{4}-\d{2})(?: \((\d+)m listed, (\d+)m horizon\))? 1m change ([+-]?\d+(?:\.\d+)?) percent",
     re.I,
 )
 _IPPI_DRIVER_RE = re.compile(r"IPPI ex-energy mom ([+-]?\d+(?:\.\d+)?) percent", re.I)
@@ -162,13 +162,17 @@ def _brent_driver_labels(drivers: list[str]) -> list[str]:
         if not m:
             continue
         ym = m.group(1)
-        pct = m.group(2)
+        pct = m.group(4) if m.lastindex and m.lastindex >= 4 else m.group(2)
+        listed_m = m.group(2) if m.lastindex and m.lastindex >= 4 else None
         try:
             y, mo = ym.split("-")
             label = f"{_MONTHS_TITLE[int(mo) - 1]}-{y}"
         except (ValueError, IndexError):
             label = ym
-        brent_bits.append(f"{label} {pct}%")
+        if listed_m is not None:
+            brent_bits.append(f"{label} {listed_m}m {pct}%")
+        else:
+            brent_bits.append(f"{label} {pct}%")
     return brent_bits
 
 
@@ -446,6 +450,17 @@ def _prima_channel_snippet(
                         except (ValueError, IndexError):
                             tag = cm
                         sign = "+" if float(pct) >= 0 else ""
+                        role = inp.get("maturity_months")
+                        actual_m = inp.get("actual_maturity_months")
+                        if (
+                            actual_m is not None
+                            and role in (12, 24)
+                            and int(actual_m) != int(role)
+                        ):
+                            return (
+                                f"Brent {tag} {int(actual_m)}m "
+                                f"{sign}{float(pct) * 100:.1f}% 1m"
+                            )
                         return f"Brent {tag} {sign}{float(pct) * 100:.1f}% 1m"
         if channel == "production_network_pressure" and first.get("mom") is not None:
             mom = float(first["mom"])
@@ -462,10 +477,14 @@ def _prima_channel_snippet(
     for drv in drivers:
         if channel == "shock_persistence":
             m = _BRENT_DRIVER_RE.search(drv)
-            if m and "2027" in m.group(1):
-                ym, pct = m.group(1), m.group(2)
+            if m:
+                ym = m.group(1)
+                pct = m.group(4) if m.lastindex and m.lastindex >= 4 else m.group(2)
                 y, mo = ym.split("-")
                 tag = f"{_MONTHS_TITLE[int(mo) - 1][:3]}-{y[2:]}"
+                listed_m = m.group(2)
+                if listed_m is not None:
+                    return f"Brent {tag} {listed_m}m {pct}% 1m"
                 return f"Brent {tag} {pct}% 1m"
         if channel == "production_network_pressure":
             m = _IPPI_DRIVER_RE.search(drv)
@@ -505,8 +524,10 @@ def _prima_channel_rule_text(channel: str) -> str:
     if channel == "shock_persistence":
         p = _prima_band_pct(prima_contract.PATH_PERSISTENCE_PCT)
         return (
-            f"Rising needs Brent last-day 12m and 24m contracts both up at least {p} over one month; "
-            f"falling needs both down at least {p}; front-loaded or mixed moves stay stable."
+            f"Rising needs Brent last-day 12m and 24m horizon roles both up at least {p} over one month "
+            f"(exact calendar month when it qualifies; otherwise the nearest viable listed contract within bounds); "
+            f"falling needs both down at least {p}; front-loaded or mixed moves stay stable. "
+            f"A missing exact calendar month is not read as a quiet, persistent path."
         )
     if channel == "production_network_pressure":
         b = _prima_band_pct(prima_contract.IPPI_EX_ENERGY_MOM_BAND)
@@ -831,6 +852,15 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                     continue
                 pieces = []
                 for key in (
+                    "symbol",
+                    "contract_month",
+                    "maturity_months",
+                    "actual_maturity_months",
+                    "horizon_role_months",
+                    "selection",
+                    "selection_reason",
+                    "observation_date",
+                    "final_trade_date",
                     "frequency",
                     "mom",
                     "value",
@@ -857,10 +887,13 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
             for finding in findings:
                 if not isinstance(finding, Mapping) or finding.get("valid"):
                     continue
-                detail_bits.append(
-                    f"{finding.get('symbol')} {finding.get('reason')} "
-                    f"(final trade {finding.get('final_trade_date')})"
-                )
+                sym = finding.get("symbol")
+                rsn = finding.get("reason") or "invalid"
+                ft = finding.get("final_trade_date") or "unknown"
+                if sym:
+                    detail_bits.append(f"{sym} {rsn} (final trade {ft})")
+                else:
+                    detail_bits.append(f"{rsn} (final trade {ft})")
             detail = "; ".join(str(bit) for bit in detail_bits[:4]) or "listed futures inputs failed the expiry check"
             source = str(gap_for_channel.get("source_id") or current_source or "this run")
             gap_text = (
@@ -872,8 +905,14 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                 _evidence_block(esc, "history-gap", "History gap", f"<p>{esc(gap_text)}</p>")
             )
         elif direct_rows:
+            blocks = list(direct_rows)
+            ch_note = (ev_entry or {}).get("note") if ev_entry else None
+            if channel == "shock_persistence" and ch_note:
+                note_text = str(ch_note).strip()
+                if note_text:
+                    blocks.append(f"<p>{esc(note_text)}</p>")
             why_parts.append(
-                _evidence_block(esc, "direct", "Direct input", "".join(direct_rows))
+                _evidence_block(esc, "direct", "Direct input", "".join(blocks))
             )
         else:
             prior = _prior_run_driver_line(channel, trend, drivers)

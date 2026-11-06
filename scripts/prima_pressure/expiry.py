@@ -64,7 +64,14 @@ import re
 from datetime import date, timedelta
 from typing import Any
 
-from scripts.prima_pressure.contract import MONTH_CODES, add_months, contract_symbol, period_key
+from scripts.prima_pressure.contract import (
+    MONTH_CODES,
+    add_months,
+    calendar_months_from_front,
+    contract_symbol,
+    horizon_fallback_acceptable,
+    period_key,
+)
 
 CALENDAR_YEAR_MIN = 2025
 CALENDAR_YEAR_MAX = 2032
@@ -501,10 +508,72 @@ def validate_stored_oil_row(row: dict[str, Any], as_of: date) -> dict[str, Any]:
             expected_listed = target["symbol"]
         except ExpiryError as exc:
             reasons.append(exc.reason)
-    if not active:
-        reasons.append("expired_contract")
-    if expected_month is not None and contract_month != expected_month:
-        reasons.append("misanchored_maturity")
+
+    front_y, front_m = int(front["year"]), int(front["month"])
+    actual_from_front = calendar_months_from_front(front_y, front_m, year, month)
+
+    # Explicit null/empty selection in stored JSON is treated like a legacy row (no metadata).
+    sel_raw = row.get("selection")
+    if sel_raw in (None, ""):
+        if not active:
+            reasons.append("expired_contract")
+        if expected_month is not None and contract_month != expected_month:
+            reasons.append("misanchored_maturity")
+    else:
+        sel = str(sel_raw)
+        row_actual = row.get("actual_maturity_months")
+        try:
+            row_actual_i = int(row_actual) if row_actual is not None else None
+        except (TypeError, ValueError):
+            row_actual_i = None
+            reasons.append("invalid_horizon_fallback")
+
+        if not active:
+            reasons.append("expired_contract")
+
+        if row_actual_i is not None and row_actual_i != actual_from_front:
+            reasons.append("misanchored_maturity")
+
+        months_from_target = row.get("months_from_target")
+        try:
+            mft_i = int(months_from_target) if months_from_target is not None else None
+        except (TypeError, ValueError):
+            mft_i = None
+            reasons.append("invalid_horizon_fallback")
+
+        if sel == "active_front":
+            if maturity_i != 0:
+                reasons.append("invalid_horizon_fallback")
+            elif contract_month != front["contract_month"]:
+                reasons.append("misanchored_maturity")
+        elif sel == "active_front_plus_maturity":
+            if expected_month is not None and contract_month != expected_month:
+                reasons.append("misanchored_maturity")
+        elif sel == "exact":
+            if expected_month is not None and contract_month != expected_month:
+                reasons.append("misanchored_maturity")
+        elif sel in ("nearest_listed", "farthest_viable_listed"):
+            if maturity_i not in (12, 24):
+                reasons.append("invalid_horizon_fallback")
+            elif expected_month is not None and contract_month == expected_month:
+                reasons.append("invalid_horizon_fallback")
+            elif row_actual_i is None:
+                reasons.append("invalid_horizon_fallback")
+            elif not horizon_fallback_acceptable(
+                horizon_role_months=maturity_i,
+                actual_maturity_months=row_actual_i,
+                selection=sel,
+                months_from_target=mft_i,
+            ):
+                reasons.append("invalid_horizon_fallback")
+            elif mft_i is not None and mft_i != row_actual_i - maturity_i:
+                reasons.append("invalid_horizon_fallback")
+            elif sel == "farthest_viable_listed" and not (
+                maturity_i == 24 and row_actual_i < maturity_i
+            ):
+                reasons.append("invalid_horizon_fallback")
+        else:
+            reasons.append("invalid_horizon_fallback")
 
     unique: list[str] = []
     for item in reasons:
