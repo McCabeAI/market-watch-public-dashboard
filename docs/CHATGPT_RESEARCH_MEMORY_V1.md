@@ -10,10 +10,10 @@ There is **no** runtime hook that loads these files into a ChatGPT conversation.
 
 ## Cold-start retrieval (order)
 
-1. Read this document: `docs/CHATGPT_RESEARCH_MEMORY_V1.md`.
-2. Read `data/trading/pm/chatgpt/research/index.json` — compact current hypotheses, edge revision id, `research_sha256`, and (via CLI) due reviews.
-3. Read `data/trading/pm/chatgpt/research/edge/profile.json` for the trading-edge profile.
-4. Only if a summary is not enough, open one current hypothesis file or one archive revision:
+1. Read this document: `docs/CHATGPT_RESEARCH_MEMORY_V1.md`, then the worldview procedure in `docs/CHATGPT_WORLDVIEW_V1.md`.
+2. Read `data/trading/pm/chatgpt/research/index.json` — compact current hypotheses, edge revision id, worldview revision id, `research_sha256`, and (via CLI) due reviews. The `retrieve` command includes the compact worldview bundle when `worldview/state.json` is present.
+3. Read `data/trading/pm/chatgpt/research/edge/profile.json` for the trading-edge profile. Do this before the book and packet review.
+4. Only if a summary is not enough, open one current hypothesis file, one archive revision, or one worldview country, theme, or history file:
 
 ```bash
 PYTHONPATH=. python -m scripts.pm.chatgpt_research retrieve
@@ -22,6 +22,8 @@ PYTHONPATH=. python -m scripts.pm.chatgpt_research show --hypothesis HYP_ID
 PYTHONPATH=. python -m scripts.pm.chatgpt_research show --hypothesis HYP_ID --revision REV_ID
 PYTHONPATH=. python -m scripts.pm.chatgpt_research show-edge
 PYTHONPATH=. python -m scripts.pm.chatgpt_research show-edge --revision REV_ID
+PYTHONPATH=. python -m scripts.pm.chatgpt_research show-worldview
+PYTHONPATH=. python -m scripts.pm.chatgpt_research show-worldview --country US --markdown
 ```
 
 Archive files under `archive/` and `edge/archive/` are historical judgments. Do not treat a later revision as what was believed on an earlier date.
@@ -47,7 +49,7 @@ One-time seed from journal and lessons (`migration.json`). These are migrated jo
 | `hyp-chatgpt-corra-2027hz-20260919` | Open hypothesis **CORRA_2027H-Z receive**. Revisions `rev-hyp-chatgpt-corra-2027hz-20260919-01` through `-04` tied to journal events `jde-bae95770371d4083`, `jde-69e33ef1bd1e4bcf`, `jde-f8d178e55a6644dd`, `jde-2c433e94a5934e8c`. Quantitative forecast field is null. |
 | `hyp-chatgpt-rejected-cad-fx-20261002` | Rejected 2026-10-02 from the portfolio pass in journal event `jde-f8d178e55a6644dd`. Not executed. |
 | `hyp-chatgpt-rejected-duration-beta-20261002` | Same rejection pass and event. Not executed. |
-| `edge-portfolio-pass-20260920` | Seeded from lesson `les-portfolio-pass-20260920`. `provenance_label`: `seeded_from_existing_lesson`. `conditions_worked` is empty. Not promoted from P&L. Confidence `not_assessed`. Maturity `candidate`. Current edge revision: `rev-edge-portfolio-pass-20260920-01`. |
+| `edge-portfolio-pass-20260920` | Seeded from lesson `les-portfolio-pass-20260920`. `provenance_label`: `seeded_from_existing_lesson`. `conditions_worked` is empty. Not promoted from P&L. Confidence `not_assessed`. Maturity `candidate`. Current edge revision (in-repo): `rev-edge-portfolio-pass-20260920-05`. |
 
 ## Saving updates
 
@@ -199,10 +201,24 @@ Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, 
 
 ## Daily procedure (order)
 
-1. **Rehydrate** from the compact index, edge profile, and any due review (from `retrieve` → `due_reviews`) before the Trader Room decision is completed. This is a read. It does not change the frozen packet.
-2. **Research and record** new or revised hypotheses, rejected ideas, and evidence assessments through the research issue or the local `apply` command.
-3. **Score evidence** against the forecast that was stored, including contradictory evidence. Do not delete the earlier revision.
-4. **Trade, hold, or reduce** only through the existing `[chatgpt-pm-decision]` path in [`docs/CHATGPT_PM_DECISION_INGEST.md`](CHATGPT_PM_DECISION_INGEST.md), bound to the current review packet and book hash. Research memory does **not** authorize a trade. Learning lessons still go through the existing `postmortems` and `memory_updates` fields on that decision path. Do not promote a research outcome into a lesson from P&L alone.
+A fresh ChatGPT session does not remember the worldview or the research files. Retrieval is explicit. There is no runtime hook, cron, or automatic recall.
+
+Do this before the book and packet review:
+
+1. **Retrieve standing context**, including the compact worldview (global tension, six core countries, wider watchlist, recent changes, unresolved contradictions, signposts, and research questions). This is a read. It does not change the frozen packet, the book, or canonical scores.
+2. **Mark and evaluate the owned book** (entry, original reason, size, current P&L, targets, and immediate catalysts).
+3. **Read the whole market and the regime**, not only the positions. Keep wider-world topics even when they are absent from that day's headlines.
+4. **Reconcile the book** with prices, news, and the retained macro readings.
+5. **Rank scenarios, research questions, and opportunities.** A trade is one expression of the worldview, not the filter for what is remembered.
+6. **Discuss any research launch with Kevin** before it starts. The two-stage workflow still requires Kevin to say data complete, then traders complete. Worldview retrieval does not launch research and does not authorize that handoff.
+7. **Save accepted worldview and hypothesis changes** after the review, through the research issue or local `apply`. A score threshold or an unattended model opinion must not silently rewrite a belief. Unchanged beliefs keep their original provenance and review age.
+
+Then, as before:
+
+8. **Score evidence** against the forecast that was stored, including contradictory evidence. Do not delete the earlier revision.
+9. **Trade, hold, or reduce** only through the existing `[chatgpt-pm-decision]` path in [`docs/CHATGPT_PM_DECISION_INGEST.md`](CHATGPT_PM_DECISION_INGEST.md), bound to the current review packet and book hash. Research memory does **not** authorize a trade. Learning lessons still go through the existing `postmortems` and `memory_updates` fields on that decision path. Do not promote a research outcome into a lesson from P&L alone.
+
+Worldview tickets use the same `[chatgpt-research-memory]` issue and the same research-only commit. See [`docs/CHATGPT_WORLDVIEW_V1.md`](CHATGPT_WORLDVIEW_V1.md).
 
 ## Provenance
 
@@ -215,7 +231,8 @@ Require `expected_revision_id` of the edge profile, `accept_as_method`: `true`, 
 
 | Path | Role |
 | --- | --- |
-| `index.json`, `hypotheses/*.json`, `edge/profile.json` | Current retrieval view |
-| `archive/<hypothesis_id>/<revision_id>.json`, `edge/archive/<revision_id>.json` | Append-only history |
+| `index.json`, `hypotheses/*.json`, `edge/profile.json`, `worldview/state.json` | Current retrieval view |
+| `archive/<hypothesis_id>/<revision_id>.json`, `edge/archive/<revision_id>.json`, `worldview/archive/<revision_id>.json` | Append-only history |
+| `worldview/changes/<change_id>.json` | Append-only worldview change records |
 | `receipts/<fingerprint>.json` | Replay prevention |
-| `migration.json` | One-time seed record |
+| `migration.json` | One-time hypothesis seed record |

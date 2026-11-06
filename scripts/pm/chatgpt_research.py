@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import inspect
 import json
 import os
 import re
@@ -594,6 +595,8 @@ def retrieve_current(root: Path, *, today: date | None = None) -> dict[str, Any]
         if isinstance(row, dict):
             status = str(row.get("status") or "unknown")
             statuses[status] = statuses.get(status, 0) + 1
+    from scripts.pm.worldview_retrieve import startup_bundle
+
     return {
         **index,
         "counts": {
@@ -604,6 +607,7 @@ def retrieve_current(root: Path, *, today: date | None = None) -> dict[str, Any]
         "due_reviews": sorted(due, key=lambda item: str(item.get("hypothesis_id") or "")),
         "historical_as_of": historical_as_of,
         "review_date": review_date.isoformat(),
+        "worldview": startup_bundle(root),
     }
 
 
@@ -759,7 +763,16 @@ def validate_ticket(payload: dict[str, Any]) -> dict[str, Any]:
     if payload.get("pm_id") != "chatgpt":
         raise SchemaError("pm_id must be chatgpt")
     action = payload.get("action")
-    if action not in {"create", "revise", "close", "invalidate", "reject", "edge_update"}:
+    if action not in {
+        "create",
+        "revise",
+        "close",
+        "invalidate",
+        "reject",
+        "edge_update",
+        "worldview_patch",
+        "worldview_review",
+    }:
         raise SchemaError("action invalid")
     expected_hash = _require_str(payload.get("expected_research_sha256"), field="expected_research_sha256")
     if _SHA256_RE.fullmatch(expected_hash) is None:
@@ -822,6 +835,10 @@ def validate_ticket(payload: dict[str, Any]) -> dict[str, Any]:
         _validate_string_list(method.get("conditions_worked"), field="conditions_worked", max_items=8, max_len=500)
         _validate_string_list(method.get("conditions_failed"), field="conditions_failed", max_items=8, max_len=500)
         _validate_string_list(method.get("counterexamples"), field="counterexamples", max_items=8, max_len=500)
+    elif action in {"worldview_patch", "worldview_review"}:
+        from scripts.pm.worldview_store import validate_worldview_ticket
+
+        validate_worldview_ticket(payload)
 
     return {"valid": True, "action": action}
 
@@ -1260,6 +1277,34 @@ def apply_ticket(
     applied = _default_applied_at(applied_at)
     applied_iso = _iso_applied(applied)
 
+    if action in {"worldview_patch", "worldview_review"}:
+        from scripts.pm.worldview_store import apply_worldview_mutation
+
+        outcome = apply_worldview_mutation(
+            root,
+            ticket,
+            index,
+            applied_iso=applied_iso,
+            author=author,
+        )
+        outcome["fingerprint"] = fingerprint
+        if outcome.get("status") != "applied":
+            return outcome
+        _write_index(root, index)
+        post_index = _load_index(root)
+        receipt = {
+            "applied_at": applied_iso,
+            "author": author,
+            "change_id": outcome.get("change_id"),
+            "fingerprint": fingerprint,
+            "issue_number": issue_number,
+            "research_sha256": post_index.get("research_sha256"),
+            "worldview_revision_id": outcome.get("worldview_revision_id"),
+        }
+        write_json(receipt_file, receipt)
+        outcome["research_sha256"] = post_index.get("research_sha256")
+        return outcome
+
     if action == "edge_update":
         profile = show_edge(root)
         if ticket.get("expected_revision_id") != profile.get("current_revision_id"):
@@ -1505,6 +1550,12 @@ def dry_run_ticket(root: Path, ticket: dict[str, Any]) -> dict[str, Any]:
         if ticket.get("expected_revision_id") != profile.get("current_revision_id"):
             return {"fingerprint": fingerprint, "status": "conflict"}
         _validate_promotion_source_id(root, ticket["promotion_basis"])
+    if action in {"worldview_patch", "worldview_review"}:
+        from scripts.pm.worldview_store import preview_worldview
+
+        preview = preview_worldview(root, ticket, index)
+        preview["fingerprint"] = fingerprint
+        return preview
     return {"fingerprint": fingerprint, "status": "applied"}
 
 
@@ -1527,6 +1578,9 @@ def render_research_comment(result: dict[str, Any]) -> str:
         f"research_sha256: {result.get('research_sha256') or ''}",
         "books_mutated: false",
     ]
+    worldview_revision = result.get("worldview_revision_id")
+    if isinstance(worldview_revision, str) and worldview_revision:
+        lines.append(f"worldview_revision_id: {worldview_revision}")
     reason = result.get("reason")
     if isinstance(reason, str) and _REASON_TOKEN_RE.fullmatch(reason):
         lines.append(f"reason: {reason}")
@@ -1693,6 +1747,50 @@ def main(argv: list[str] | None = None) -> int:
     show_edge_cmd.add_argument("--revision", default=None)
     show_edge_cmd.add_argument("--root", type=Path, default=Path.cwd())
 
+    show_worldview_cmd = sub.add_parser("show-worldview")
+    show_worldview_cmd.add_argument("--country", default=None)
+    show_worldview_cmd.add_argument("--theme", default=None)
+    show_worldview_cmd.add_argument("--watch", default=None)
+    show_worldview_cmd.add_argument("--history", default=None)
+    show_worldview_cmd.add_argument("--revision", default=None)
+    show_worldview_cmd.add_argument("--markdown", action="store_true")
+    show_worldview_cmd.add_argument("--root", type=Path, default=Path.cwd())
+
+    suggest_worldview_cmd = sub.add_parser("suggest-worldview")
+    suggest_worldview_cmd.add_argument("--root", type=Path, default=Path.cwd())
+    suggest_worldview_cmd.add_argument(
+        "--snapshot",
+        default=None,
+        help="Repository-relative evidence snapshot path (requires --file-sha256 and --packet-sha256)",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--file-sha256",
+        dest="file_sha256",
+        default=None,
+        help="Expected SHA256 of the snapshot file bytes",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--packet-sha256",
+        dest="packet_sha256",
+        default=None,
+        help="Expected packet_sha256 inside the snapshot JSON",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--freeze-label",
+        dest="freeze_label",
+        default=None,
+        help="Optional expected snapshot as_of freeze label",
+    )
+    suggest_worldview_cmd.add_argument(
+        "--git-blob",
+        dest="git_blob",
+        default=None,
+        help="Optional expected git hash-object for the snapshot file",
+    )
+
+    seed_worldview_cmd = sub.add_parser("seed-worldview")
+    seed_worldview_cmd.add_argument("--root", type=Path, default=Path.cwd())
+
     apply_cmd = sub.add_parser("apply")
     apply_cmd.add_argument("--input", type=Path, required=True)
     apply_cmd.add_argument("--root", type=Path, default=Path.cwd())
@@ -1742,6 +1840,61 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     if args.command == "show-edge":
         print(json.dumps(show_edge(root, args.revision), indent=2, sort_keys=True))
+        return 0
+    if args.command == "show-worldview":
+        from scripts.pm.worldview_retrieve import render_markdown, show_worldview
+
+        payload = show_worldview(
+            root,
+            country=args.country,
+            theme=args.theme,
+            watch=args.watch,
+            history=args.history,
+            revision=args.revision,
+        )
+        if args.markdown:
+            print(render_markdown(payload), end="")
+        else:
+            print(json.dumps(payload, indent=2, sort_keys=True))
+        return 0
+    if args.command == "suggest-worldview":
+        from scripts.pm.worldview_store import suggest_worldview
+
+        trio = (args.snapshot, args.file_sha256, args.packet_sha256)
+        if any(x is not None for x in trio):
+            if not all(x is not None for x in trio):
+                raise SystemExit("--snapshot, --file-sha256, and --packet-sha256 are required together")
+            for label, val in (("file_sha256", args.file_sha256), ("packet_sha256", args.packet_sha256)):
+                if _SHA256_RE.fullmatch(str(val).strip()) is None:
+                    raise SystemExit(f"invalid --{label.replace('_', '-')}: must be 64 hex characters")
+
+        sig = inspect.signature(suggest_worldview)
+        param_names = set(sig.parameters.keys())
+        kwargs: dict[str, Any] = {}
+        use_snapshot = False
+        if (
+            args.snapshot is not None
+            and {"snapshot_relpath", "expected_file_sha256", "expected_packet_sha256"}.issubset(param_names)
+        ):
+            use_snapshot = True
+            kwargs["snapshot_relpath"] = args.snapshot
+            kwargs["expected_file_sha256"] = str(args.file_sha256).strip().lower()
+            kwargs["expected_packet_sha256"] = str(args.packet_sha256).strip().lower()
+        if use_snapshot:
+            if args.freeze_label is not None and "expected_freeze_label" in param_names:
+                kwargs["expected_freeze_label"] = args.freeze_label
+            if args.git_blob is not None and "expected_git_blob" in param_names:
+                kwargs["expected_git_blob"] = args.git_blob
+
+        if kwargs:
+            print(json.dumps(suggest_worldview(root, **kwargs), indent=2, sort_keys=True))
+        else:
+            print(json.dumps(suggest_worldview(root), indent=2, sort_keys=True))
+        return 0
+    if args.command == "seed-worldview":
+        from scripts.pm.worldview_seed import materialize_worldview_seed
+
+        materialize_worldview_seed(root)
         return 0
     if args.command == "apply":
         ticket = json.loads(args.input.read_text(encoding="utf-8"))

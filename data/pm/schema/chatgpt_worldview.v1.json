@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://mccabeai.github.io/market-watch-public-dashboard/pm/chatgpt_worldview.v1.json",
+  "title": "ChatGPT PM worldview state",
+  "description": "Worldview persistence for the ChatGPT PM seat. PM-authored tickets may apply worldview_patch sections (beliefs, countries, global, contradictions, signposts, research_questions, watchlist, acceptance) via scripts/pm/worldview_store.py; the state file shape remains backward compatible and this schema does not require every section to be present.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "type",
+    "worldview_revision_id",
+    "acceptance",
+    "beliefs",
+    "countries",
+    "global",
+    "watchlist",
+    "claims"
+  ],
+  "properties": {
+    "schema_version": { "const": 1 },
+    "type": { "const": "CHATGPT_WORLDVIEW_STATE" },
+    "worldview_revision_id": {
+      "type": "string",
+      "pattern": "^rev-worldview-[0-9]{4}$"
+    },
+    "acceptance": { "enum": ["awaiting_pm", "pm_accepted"] },
+    "claims": {
+      "type": "object",
+      "required": ["learned_edge", "validated_edge", "pm_accepted"],
+      "properties": {
+        "learned_edge": { "type": "boolean" },
+        "validated_edge": { "type": "boolean" },
+        "pm_accepted": { "type": "boolean" }
+      }
+    },
+    "countries": { "type": "object" },
+    "beliefs": { "type": "object" },
+    "global": { "type": "object" },
+    "watchlist": { "type": "array" },
+    "contradictions": { "type": "array" },
+    "signposts": { "type": "array" },
+    "research_questions": { "type": "array" }
+  }
+}

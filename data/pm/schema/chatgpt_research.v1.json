@@ -16,7 +16,7 @@
     "type": { "const": "RESEARCH_MEMORY" },
     "pm_id": { "const": "chatgpt" },
     "action": {
-      "enum": ["create", "revise", "close", "invalidate", "reject", "edge_update"]
+      "enum": ["create", "revise", "close", "invalidate", "reject", "edge_update", "worldview_patch", "worldview_review"]
     },
     "expected_research_sha256": {
       "type": "string",
@@ -138,6 +138,13 @@
       }
     },
     "accept_as_method": { "type": "boolean" },
+    "pm_authored": { "type": "boolean" },
+    "expected_worldview_revision_id": {
+      "type": "string",
+      "pattern": "^rev-worldview-[0-9]{4}$"
+    },
+    "worldview_patch": { "type": "object" },
+    "worldview_review": { "type": "object" },
     "promotion_basis": {
       "type": "object",
       "required": ["basis_kind", "source_id", "rationale"],
