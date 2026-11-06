@@ -8,6 +8,7 @@ from zoneinfo import ZoneInfo
 
 from scripts.overnight.books import apply_action, empty_seat, position_pnl
 from scripts.overnight.paper_marks import refresh_positions
+from scripts.policy_meeting_book import meeting_pnl, meeting_shock_usd
 from scripts.rates.executable_catalog import assess_expression
 from scripts.rates.valuation import value_position
 from scripts.trader_room.rates_scan import with_tenor_scan
@@ -305,6 +306,71 @@ class PolicyMeetingPaperTest(unittest.TestCase):
         }
         self.assertEqual(value_position(legacy)["unrealized_pnl_usd"], 1000.0)
         self.assertNotEqual(value_position(legacy)["valuation_method"], "policy_meeting_dv01")
+
+    def test_meeting_pnl_uses_booked_contracts(self) -> None:
+        base = {
+            "side": "long",
+            "entry_price": 4.0,
+            "mark_price": 3.9,
+            "notional_usd": 2_500_000,
+            "contracts": 1,
+            "local_dv01": 25.0,
+            "entry_fx_usd_per_unit": 1.0,
+            "quote_unit": "percent",
+            "paper_expression": {"kind": "meeting", "bank": "US"},
+        }
+        pnl = meeting_pnl(base)
+        self.assertEqual(pnl["unrealized_pnl_usd"], 250.0)
+        self.assertEqual(meeting_shock_usd(base), 2500.0)
+
+        closed = dict(base)
+        closed.update(
+            {
+                "contracts": 2,
+                "notional_usd": 2_000_000,
+                "_closed_lots": 1,
+            }
+        )
+        realized = meeting_pnl(closed, closed_notional=1_000_000)
+        self.assertEqual(realized["unrealized_pnl_usd"], 250.0)
+
+        sub_lot = dict(closed)
+        sub_lot.pop("_closed_lots", None)
+        contracts_before = sub_lot["contracts"]
+        zero = meeting_pnl(sub_lot, closed_notional=100.0)
+        self.assertEqual(zero["unrealized_pnl_usd"], 0.0)
+        self.assertEqual(sub_lot["contracts"], contracts_before)
+
+        spread = {
+            "side": "short",
+            "entry_price": 10.0,
+            "mark_price": 8.0,
+            "notional_usd": 2_000_000,
+            "contracts": 1,
+            "local_dv01": 25.0,
+            "entry_fx_usd_per_unit": 1.0,
+            "quote_unit": "bp",
+            "paper_expression": {"kind": "calendar_spread", "bank": "US"},
+        }
+        delta_bp = spread["mark_price"] - spread["entry_price"]
+        sign = -1
+        expected_spread = -sign * delta_bp * 1 * spread["local_dv01"] * spread["entry_fx_usd_per_unit"]
+        self.assertEqual(meeting_pnl(spread)["unrealized_pnl_usd"], round(expected_spread, 2))
+
+        cross = {
+            "side": "long",
+            "entry_price": 5.0,
+            "mark_price": 4.0,
+            "notional_usd": 5_000_000,
+            "contracts": 1,
+            "local_dv01": 25.0,
+            "mark_fx_usd_per_unit": 1.0,
+            "quote_unit": "bp",
+            "paper_expression": {"kind": "cross_country", "banks": ["US", "CA"]},
+        }
+        delta_cross = cross["mark_price"] - cross["entry_price"]
+        expected_cross = -1 * delta_cross * 1 * cross["local_dv01"] * cross["mark_fx_usd_per_unit"]
+        self.assertEqual(meeting_pnl(cross)["unrealized_pnl_usd"], round(expected_cross, 2))
 
 
 if __name__ == "__main__":

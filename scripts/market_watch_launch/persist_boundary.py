@@ -26,6 +26,9 @@ ACP_ALLOWLIST: tuple[str, ...] = (
     "data/overnight/latest.json",
     "data/pm",
     "data/trading",
+    "data/policy_meetings.json",
+    "data/policy_meeting_history.json",
+    "data/policy_meeting_prices.json",
     *CANONICAL_OBSERVATION_STORE_PATHS,
 )
 

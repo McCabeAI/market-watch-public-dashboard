@@ -149,6 +149,62 @@ class CountryDetailApplyTest(unittest.TestCase):
         end = out.find("</details>", start) + len("</details>")
         self.policy_meetings_snippet = out[start:end]
 
+    def test_policy_meeting_prices_render_without_dashboard_mock(self) -> None:
+        from scripts.apply_country_detail import load_policy_meeting_view
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data = root / "data"
+            data.mkdir(parents=True)
+            for rel in ("country_registry.json", "policy_meetings.json", "temperature_calibration.json"):
+                src = ROOT / "data" / rel
+                if src.is_file():
+                    shutil.copy2(src, data / rel)
+            prices = {
+                "schema_version": 1,
+                "construction_version": "policy_meeting_v1",
+                "as_of": "2026-11-05",
+                "banks": {
+                    "US": {
+                        "status": "ok",
+                        "anchor": 4.0,
+                        "meetings": [
+                            {
+                                "instrument_id": "PM:US:2026-12-09",
+                                "decision_date": "2026-12-09",
+                                "post_rate": 4.19,
+                                "method": "identified",
+                            }
+                        ],
+                    },
+                    "NZ": {
+                        "status": "unavailable",
+                        "reason": "No NZD short-rate futures strip",
+                        "meetings": [],
+                    },
+                },
+            }
+            (data / "policy_meeting_prices.json").write_text(json.dumps(prices, indent=2) + "\n", encoding="utf-8")
+            meetings = load_policy_meeting_view(root)
+            us_html = render_country_detail(
+                "US",
+                synthetic_projection(SHARED_OBS_ID),
+                synthetic_attention_populated(SHARED_OBS_ID),
+                synthetic_score_state(),
+                policy_meetings=meetings,
+            )
+            nz_html = render_country_detail(
+                "NZ",
+                synthetic_projection(SHARED_OBS_ID),
+                synthetic_attention_populated(SHARED_OBS_ID),
+                synthetic_score_state(),
+                policy_meetings=meetings,
+            )
+        self.assertIn("4.19%", us_html)
+        self.assertIn('class="policy-meetings"', us_html)
+        self.assertIn('class="policy-meetings"', nz_html)
+        self.assertIn("No NZD short-rate futures strip", nz_html)
+
     def test_overlay_copy_isolates_policy_prices_without_a_launch(self) -> None:
         import hashlib
         import json

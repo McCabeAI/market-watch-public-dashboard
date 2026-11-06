@@ -227,6 +227,67 @@ class PersistBoundaryTests(unittest.TestCase):
             diff = _git(work, "diff", "--cached", "--name-only", check=False)
             self.assertNotIn("temperature_scores.json", diff.stdout or "")
 
+    def test_policy_meeting_artifacts_stage_on_acp_freeze(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp = Path(tmpdir)
+            _bare, work = _init_remote_repo(tmp)
+            launch_id = _seed_repo(work)
+            _simulate_freeze_dirty_tree(work, launch_id)
+            data = work / "data"
+            meetings_path = data / "policy_meetings.json"
+            if not meetings_path.is_file():
+                meetings_path.parent.mkdir(parents=True, exist_ok=True)
+                meetings_path.write_text('{"schema_version":1,"banks":{}}\n', encoding="utf-8")
+            prior_meetings = json.loads(meetings_path.read_text(encoding="utf-8"))
+            prior_meetings["freeze_marker"] = True
+            meetings_path.write_text(json.dumps(prior_meetings, indent=2) + "\n", encoding="utf-8")
+
+            history_path = data / "policy_meeting_history.json"
+            history_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "sessions": {
+                            "2026-11-04": {"US": {"2026-12-09": {"post_rate": 4.0, "method": "identified"}}},
+                            "2026-11-05": {"US": {"2026-12-09": {"post_rate": 4.1, "method": "identified"}}},
+                        },
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            prices_path = data / "policy_meeting_prices.json"
+            prices_path.write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "as_of": "2026-11-05",
+                        "banks": {"US": {"status": "ok", "meetings": []}},
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+
+            code = stage_freeze_artifacts("acp", repo_root=work)
+            self.assertEqual(code, 0)
+            _git(work, "commit", "-m", "freeze policy meeting artifacts")
+            committed_history = json.loads(
+                _git(work, "show", "HEAD:data/policy_meeting_history.json").stdout
+            )
+            self.assertIn("2026-11-04", committed_history["sessions"])
+            self.assertIn("2026-11-05", committed_history["sessions"])
+            self.assertIn("freeze_marker", json.loads(_git(work, "show", "HEAD:data/policy_meetings.json").stdout))
+
+            surprise = data / "temperature_scores.json"
+            surprise.write_text('{"blocked": true}\n', encoding="utf-8")
+            blocked = stage_freeze_artifacts("acp", repo_root=work)
+            self.assertEqual(blocked, 1)
+            diff = _git(work, "diff", "--cached", "--name-only", check=False)
+            self.assertNotIn("temperature_scores.json", diff.stdout or "")
+
     def test_live_promoted_observations_survive_freeze_and_reload_unchanged(self) -> None:
         """Live promotion, freeze stage/commit, and the next checkout stay one path.
 

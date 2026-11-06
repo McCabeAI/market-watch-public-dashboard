@@ -425,7 +425,28 @@ def meeting_pnl(
             "isolated": True,
         }
     notional = closed_notional if closed_notional is not None else position.get("notional_usd")
-    lots = lots_for(float(notional or 0.0), bank, float(fx))
+    contracts = position.get("contracts")
+    if closed_notional is not None:
+        closed_lots = position.get("_closed_lots")
+        if closed_lots is not None:
+            lots = int(closed_lots)
+        elif isinstance(contracts, int):
+            from scripts.rates.lifecycle import split_lots
+
+            old_notional = float(position.get("notional_usd") or 0.0)
+            remaining_notional = old_notional - float(closed_notional)
+            _remaining, closed, zero_lot = split_lots(
+                int(contracts),
+                old_notional,
+                remaining_notional,
+            )
+            lots = 0 if zero_lot else int(closed)
+        else:
+            lots = lots_for(float(notional or 0.0), bank, float(fx))
+    elif isinstance(contracts, int):
+        lots = int(contracts)
+    else:
+        lots = lots_for(float(notional or 0.0), bank, float(fx))
     local = float(position.get("local_dv01") or spec["dv01"])
     delta = (float(mark) - float(entry)) * (100.0 if kind == "meeting" or position.get("quote_unit") == "percent" else 1.0)
     side = position.get("side")
@@ -450,9 +471,15 @@ def meeting_shock_usd(position: Mapping[str, Any]) -> float | None:
     bank = str(expression["banks"][0]) if kind == "cross_country" else str(expression.get("bank") or "")
     if bank not in _ANCHOR:
         return None
-    fx = position.get("mark_fx_usd_per_unit") or position.get("entry_fx_usd_per_unit")
+    fx = position.get("entry_fx_usd_per_unit")
+    if fx in (None, ""):
+        fx = position.get("mark_fx_usd_per_unit")
     if fx in (None, ""):
         return None
-    lots = lots_for(float(position.get("notional_usd") or 0.0), bank, float(fx))
+    contracts = position.get("contracts")
+    if isinstance(contracts, int):
+        lots = int(contracts)
+    else:
+        lots = lots_for(float(position.get("notional_usd") or 0.0), bank, float(fx))
     local = float(position.get("local_dv01") or _ANCHOR[bank]["dv01"])
     return round(abs(lots * local * float(fx) * 100.0), 2)

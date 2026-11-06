@@ -422,7 +422,18 @@ def collect_inputs(
         market_notes.append("offline collect: market_state not fetched")
     else:
         try:
-            from scripts.market_state import build_snapshot, validate_snapshot
+            from scripts.market_state import build_snapshot, fetch_bytes, validate_snapshot
+            from scripts.overnight.constants import ROOT as REPO_ROOT
+            from scripts.policy_calendar import load_calendar, refresh_calendars
+
+            try:
+
+                def _calendar_fetch(url: str) -> str:
+                    return fetch_bytes(url, retries=1).decode("utf-8", "replace")
+
+                refresh_calendars(_calendar_fetch, load_calendar(REPO_ROOT), save=True, root=REPO_ROOT)
+            except Exception:
+                pass
 
             market_payload = build_snapshot()
             validate_snapshot(market_payload)
