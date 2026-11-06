@@ -2181,8 +2181,6 @@ def _policy_meeting_prices(today: date, policy_paths: dict) -> dict:
     A missing calendar or a bank failure leaves that bank unavailable. It does
     not fail the rest of the snapshot.
     """
-    from pathlib import Path
-
     root = Path(__file__).resolve().parents[1]
     try:
         from scripts.policy_calendar import load_calendar
@@ -2214,8 +2212,6 @@ def _policy_meeting_prices(today: date, policy_paths: dict) -> dict:
 
 def _refresh_meeting_calendars() -> None:
     """Best-effort official calendars. One bank failure keeps that bank's last schedule."""
-    from pathlib import Path
-
     root = Path(__file__).resolve().parents[1]
     try:
         from scripts.policy_calendar import load_calendar, refresh_calendars
@@ -2267,8 +2263,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
     try:
-        from pathlib import Path
-
         from scripts.policy_meeting_pricing import append_history
 
         root = Path(__file__).resolve().parents[1]

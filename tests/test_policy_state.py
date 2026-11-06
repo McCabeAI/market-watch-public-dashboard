@@ -239,18 +239,27 @@ class CommittedPolicyStateTest(unittest.TestCase):
         resolved = resolve_country(state, "US", date(2026, 11, 5))
         self.assertEqual(resolved["status"], "current")
         self.assertEqual(resolved["decision"]["decision_date"], "2026-10-28")
-        for code, rate, decided in (
-            ("CA", 2.5, "2026-11-04"),
-            ("AU", 4.85, "2026-11-04"),
-            ("EA", 2.5, "2026-11-05"),
+        # CA and EA stamps are the latest official series observation, so the
+        # calendar day moves when the source reprints the same rate. AU is the
+        # cash-rate announcement date and only moves when the target changes.
+        # The rate and the https source stay checked; the day is not pinned.
+        for code, rate, earliest in (
+            ("CA", 2.5, date(2026, 11, 4)),
+            ("AU", 4.85, date(2026, 11, 4)),
+            ("EA", 2.5, date(2026, 11, 5)),
         ):
             block = state["countries"][code]
             self.assertEqual(block["status"], "current", code)
             current = [row for row in block["decisions"] if row.get("status") == "current"]
             self.assertEqual(len(current), 1, code)
             self.assertEqual(current[0]["rate"], rate, code)
-            self.assertEqual(current[0]["decision_date"], decided, code)
+            observed = date.fromisoformat(str(current[0]["decision_date"]))
+            self.assertGreaterEqual(observed, earliest, code)
+            self.assertLessEqual(observed, date.today(), code)
             self.assertTrue(str(current[0]["source_url"]).startswith("https://"), code)
+            self.assertNotIn("corra", json.dumps(current[0]).lower(), code)
+            self.assertNotIn("aonia", json.dumps(current[0]).lower(), code)
+            self.assertNotIn("estr", json.dumps(current[0]).lower(), code)
         for code in ("NZ", "JP"):
             block = state["countries"][code]
             self.assertEqual(block["status"], "unavailable", code)

@@ -472,5 +472,54 @@ class MarketStateTests(unittest.TestCase):
         self.assertIn("days old", too_old["rates"]["US"].get("error", ""))
 
 
+class MarketStateCliTest(unittest.TestCase):
+    def test_main_writes_output_and_public_snapshot(self) -> None:
+        import json
+        import tempfile
+        from pathlib import Path
+
+        import scripts.market_state as market_state
+
+        root = Path(__file__).resolve().parents[1]
+        sidecars = (
+            root / "data" / "policy_meeting_history.json",
+            root / "data" / "policy_meeting_prices.json",
+        )
+        saved = {path: path.read_bytes() if path.is_file() else None for path in sidecars}
+        snapshot = {
+            "status": "ok",
+            "method": {"fx_pair_count": 45, "rate_rv_count": 45},
+            "fx": {"source_observation": "2026-11-05"},
+            "rates": {code: {"latest_observation": "2026-11-05"} for code in market_state.RATE_COUNTRIES},
+            "stale_sources": [],
+            "positioning": {"status": "ok"},
+            "policy_meeting_prices": {"as_of": "2026-11-05", "banks": {}},
+        }
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                out = Path(tmp) / "site" / "market-state.json"
+                with mock.patch.object(market_state, "_refresh_meeting_calendars"), mock.patch.object(
+                    market_state, "_refresh_policy_state"
+                ), mock.patch.object(market_state, "build_snapshot", return_value=snapshot), mock.patch.object(
+                    market_state, "validate_snapshot"
+                ), mock.patch(
+                    "scripts.cross_asset_data.public_snapshot", side_effect=lambda packet: packet
+                ):
+                    code = market_state.main(
+                        ["--output", str(out), "--today", "2026-11-05", "--public"]
+                    )
+                self.assertEqual(code, 0)
+                written = json.loads(out.read_text(encoding="utf-8"))
+                self.assertEqual(written["status"], "ok")
+                self.assertEqual(written["policy_meeting_prices"]["as_of"], "2026-11-05")
+                self.assertTrue((root / "data" / "policy_meeting_prices.json").is_file())
+        finally:
+            for path, blob in saved.items():
+                if blob is None:
+                    path.unlink(missing_ok=True)
+                else:
+                    path.write_bytes(blob)
+
+
 if __name__ == "__main__":
     unittest.main()
