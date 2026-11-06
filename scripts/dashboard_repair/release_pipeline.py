@@ -17,6 +17,7 @@ from scripts.dashboard_repair.release_contract import (
     events_to_slots,
 )
 from scripts.dashboard_repair.schedules import au, ca, ea, jp, nz, us
+from scripts.dashboard_repair.pdf_text import PdfExtractError, body_to_text
 
 ROOT = Path(__file__).resolve().parents[2]
 ET = ZoneInfo("America/New_York")
@@ -44,15 +45,23 @@ def _default_cache_path() -> Path:
 
 
 def _default_get(url: str, timeout: float) -> str:
+    """Read response bytes and decode via ``body_to_text`` (PDFs are not UTF-8 decoded)."""
     request = Request(url, headers={"User-Agent": USER_AGENT})
     with urlopen(request, timeout=timeout) as response:
-        return response.read().decode("utf-8", "replace")
+        payload = response.read()
+        ctype = response.headers.get_content_type() or ""
+    try:
+        return body_to_text(url, payload, ctype)
+    except PdfExtractError:
+        raise
 
 
 def _fetch_page(url: str, getter: Callable[[str, float], str], timeout: float) -> dict[str, Any]:
     try:
         body = getter(url, timeout)
-    except (HTTPError, URLError, TimeoutError, OSError) as exc:
+    except (HTTPError, URLError, TimeoutError, OSError, PdfExtractError) as exc:
+        return {"url": url, "status": "failed", "error": f"{type(exc).__name__}: {exc}", "html": ""}
+    except Exception as exc:  # noqa: BLE001 — propagate as failed page
         return {"url": url, "status": "failed", "error": f"{type(exc).__name__}: {exc}", "html": ""}
     if not body or "Just a moment" in body or "cf-browser-verification" in body:
         return {"url": url, "status": "failed", "error": "page blocked or empty", "html": ""}
@@ -166,6 +175,109 @@ def _counts_by_source_url(events: list[EconomicReleaseEvent]) -> dict[str, int]:
     return out
 
 
+def _max_fetched_at_string(candidates: list[str], *, fallback: str) -> str:
+    best_dt: datetime | None = None
+    best_s = fallback
+    for s in candidates:
+        if not s or not str(s).strip():
+            continue
+        dt = _parse_cache_fetched_at(str(s))
+        if dt is None:
+            continue
+        if best_dt is None or dt > best_dt:
+            best_dt = dt
+            best_s = str(s).strip()
+    return best_s
+
+
+def _effective_source_fetched_at_for_retention(
+    ev: EconomicReleaseEvent,
+    *,
+    country_blob: dict[str, Any],
+    source_url: str,
+) -> tuple[datetime | None, str]:
+    """Return (parsed UTC time, string token for provenance suffix) for 45-day TTL checks."""
+    src_map = country_blob.get("sources")
+    if isinstance(src_map, dict) and source_url in src_map:
+        entry = src_map.get(source_url)
+        if isinstance(entry, dict):
+            fa = entry.get("fetched_at")
+            if fa:
+                ds = str(fa).strip()
+                parsed = _parse_cache_fetched_at(ds)
+                return parsed, ds
+    # Legacy caches without per-source rows: one country batch timestamp gates retention.
+    cfa = country_blob.get("fetched_at")
+    if cfa and str(cfa).strip():
+        ds = str(cfa).strip()
+        parsed = _parse_cache_fetched_at(ds)
+        return parsed, ds
+    ev_dt = _parse_cache_fetched_at(ev.fetched_at)
+    if ev_dt is not None:
+        return ev_dt, str(ev.fetched_at).strip()
+    return None, ""
+
+
+def _retain_events_for_source(
+    prior_by_url: dict[str, list[EconomicReleaseEvent]],
+    url: str,
+    *,
+    country_blob: dict[str, Any],
+    horizon_start: date,
+    horizon_end: date,
+    now_utc: datetime,
+    old_fetch_ts: str,
+) -> list[EconomicReleaseEvent]:
+    out: list[EconomicReleaseEvent] = []
+    for ev in prior_by_url.get(url, []):
+        if not _in_horizon(ev.local_date, horizon_start=horizon_start, horizon_end=horizon_end):
+            continue
+        src_dt, ts_token = _effective_source_fetched_at_for_retention(
+            ev, country_blob=country_blob, source_url=url
+        )
+        if src_dt is None or (now_utc - src_dt) > timedelta(days=45):
+            continue
+        use_ts = ts_token or old_fetch_ts
+        suf = _RETENTION_SUFFIX.format(old_fetched_at=use_ts)
+        prov = str(ev.provenance or "")
+        if suf.strip() not in prov:
+            ev = EconomicReleaseEvent(
+                event_family=ev.event_family,
+                country=ev.country,
+                title=ev.title,
+                publisher=ev.publisher,
+                local_date=ev.local_date,
+                local_time=ev.local_time,
+                timezone=ev.timezone,
+                reference_period=ev.reference_period,
+                source_url=ev.source_url,
+                fetched_at=ev.fetched_at,
+                status=ev.status,
+                series_ids=ev.series_ids,
+                provenance=(prov + suf).strip(),
+                date_confidence=ev.date_confidence,
+            )
+        out.append(ev)
+    return out
+
+
+def _country_level_status(source_statuses: list[str]) -> str:
+    if not source_statuses:
+        return "empty"
+    okish = {"ok", "empty"}
+    if all(s in okish for s in source_statuses):
+        return "ok"
+    if any(s in okish for s in source_statuses) and any(s in ("retained", "failed") for s in source_statuses):
+        return "partial"
+    if all(s == "retained" for s in source_statuses):
+        return "retained"
+    if all(s == "failed" for s in source_statuses):
+        return "failed"
+    if any(s == "retained" for s in source_statuses):
+        return "partial"
+    return "failed"
+
+
 def fetch_official_schedules(
     now: datetime,
     *,
@@ -189,8 +301,6 @@ def fetch_official_schedules(
 
     url_to_meta: dict[str, tuple[str, str]] = {}
     all_urls: list[str] = []
-    country_docs: dict[str, dict[str, str]] = {cc: {} for cc in _ADAPTER_MODULES}
-
     for cc, (_mod, adapter) in _ADAPTER_MODULES.items():
         for doc in adapter.source_plan():
             url_to_meta[doc.url] = (cc, doc.key)
@@ -219,126 +329,225 @@ def fetch_official_schedules(
                     "html": "",
                 }
 
-    for url, page in raw_pages.items():
-        meta = url_to_meta.get(url)
-        if not meta:
-            continue
-        cc, key = meta
-        if page["status"] == "ok" and page.get("html"):
-            country_docs[cc][key] = str(page["html"])
-        else:
-            country_docs[cc][key] = ""
+    now_utc = now.astimezone(timezone.utc)
 
     countries_diag: dict[str, dict[str, Any]] = {}
     published_events: list[EconomicReleaseEvent] = []
     all_errors: list[str] = []
     per_country_published: dict[str, list[EconomicReleaseEvent]] = {cc: [] for cc in _ADAPTER_MODULES}
-    retained_fetched_at: dict[str, str] = {}
 
     for cc in COUNTRIES:
         if cc not in _ADAPTER_MODULES:
             continue
         adapter_mod, adapter = _ADAPTER_MODULES[cc]
-        docs_map = country_docs.get(cc) or {}
+        plan = adapter.source_plan()
+        country_blob: dict[str, Any] = {}
+        if prior_cache:
+            cb = (prior_cache.get("countries") or {}).get(cc)
+            if isinstance(cb, dict):
+                country_blob = cb
 
-        status_flag = "ok"
-        retained_from_cache = False
-        cache_fetched_at_flag: str | None = None
-        event_count = 0
-        parse_errors: list[str] = []
-        chosen_events: list[EconomicReleaseEvent] = []
+        prior_by_url: dict[str, list[EconomicReleaseEvent]] = {}
+        prior_country_fetch = str(country_blob.get("fetched_at") or "")
+        for raw_ev in country_blob.get("events") or []:
+            if not isinstance(raw_ev, dict):
+                continue
+            try:
+                ev = _event_from_cache_dict(raw_ev)
+            except (ValueError, TypeError, KeyError):
+                continue
+            if not _in_horizon(ev.local_date, horizon_start=horizon_start, horizon_end=horizon_end):
+                continue
+            u = str(ev.source_url or "")
+            if not u:
+                continue
+            prior_by_url.setdefault(u, []).append(ev)
 
-        live_events: list[EconomicReleaseEvent] = []
-        parse_failed = False
-        try:
-            live_events = adapter.parse_documents(
-                docs_map,
-                now=now,
-                fetched_at=retrieved_at,
+        merged: list[EconomicReleaseEvent] = []
+        sources_out: dict[str, dict[str, Any]] = {}
+        gaps_seen: list[str] = []
+        gaps_seen_set: set[str] = set()
+        source_statuses: list[str] = []
+        any_retained = False
+        retained_country_ts: str | None = None
+
+        keys_in_plan = [doc.key for doc in plan]
+        empty_docs: dict[str, str] = {k: "" for k in keys_in_plan}
+        key_to_url = {d.key: d.url for d in plan}
+        clock_body_for_ca = ""
+        if cc == "CA":
+            u = key_to_url.get("daily_clock") or ""
+            if u:
+                pg = raw_pages.get(u) or {}
+                if pg.get("status") == "ok" and str(pg.get("html") or "").strip():
+                    clock_body_for_ca = str(pg["html"])
+
+        for doc in plan:
+            url = doc.url
+            page = raw_pages.get(
+                url,
+                {"url": url, "status": "failed", "error": "not fetched", "html": ""},
             )
-        except Exception as exc:  # noqa: BLE001
-            parse_failed = True
-            parse_errors.append(f"{type(exc).__name__}: {exc}")
-        gaps = _collect_gaps(adapter_mod, adapter)
+            st = str(page.get("status") or "failed")
+            err = str(page.get("error") or "")
 
-        if not parse_failed:
-            filtered_live = [
-                ev
-                for ev in live_events
-                if _in_horizon(ev.local_date, horizon_start=horizon_start, horizon_end=horizon_end)
-            ]
-            if filtered_live:
-                chosen_events = filtered_live
-                status_flag = "ok"
-            else:
-                # Parse ran but nothing printable in the horizon window.
-                status_flag = "empty"
-        else:
-            status_flag = "failed"
-
-        if parse_failed or status_flag == "empty":
-            retained_events: list[EconomicReleaseEvent] = []
-            if prior_cache:
-                blob = (prior_cache.get("countries") or {}).get(cc)
-                if isinstance(blob, dict):
-                    cache_fetch_at = str(blob.get("fetched_at") or "")
-                    cache_dt = _parse_cache_fetched_at(cache_fetch_at)
-                    now_utc = now.astimezone(timezone.utc)
-                    if cache_dt is not None and (now_utc - cache_dt) <= timedelta(days=45):
-                        for raw_ev in blob.get("events") or []:
-                            if not isinstance(raw_ev, dict):
-                                continue
-                            try:
-                                ev = _event_from_cache_dict(raw_ev)
-                            except (ValueError, TypeError, KeyError):
-                                continue
-                            if not _in_horizon(ev.local_date, horizon_start=horizon_start, horizon_end=horizon_end):
-                                continue
-                            suf = _RETENTION_SUFFIX.format(old_fetched_at=cache_fetch_at)
-                            prov = str(ev.provenance or "")
-                            if suf.strip() not in prov:
-                                ev = EconomicReleaseEvent(
-                                    event_family=ev.event_family,
-                                    country=ev.country,
-                                    title=ev.title,
-                                    publisher=ev.publisher,
-                                    local_date=ev.local_date,
-                                    local_time=ev.local_time,
-                                    timezone=ev.timezone,
-                                    reference_period=ev.reference_period,
-                                    source_url=ev.source_url,
-                                    fetched_at=ev.fetched_at,
-                                    status=ev.status,
-                                    series_ids=ev.series_ids,
-                                    provenance=(prov + suf).strip(),
-                                    date_confidence=ev.date_confidence,
-                                )
-                            retained_events.append(ev)
-            if retained_events:
-                chosen_events = retained_events
-                status_flag = "retained"
-                retained_from_cache = True
-                cache_fetched_at_flag = str(
-                    (prior_cache.get("countries") or {}).get(cc, {}).get("fetched_at") or ""
+            if st != "ok" or err:
+                if st != "ok" and err:
+                    all_errors.append(f"{url} ({err})")
+                retained = _retain_events_for_source(
+                    prior_by_url,
+                    url,
+                    country_blob=country_blob,
+                    horizon_start=horizon_start,
+                    horizon_end=horizon_end,
+                    now_utc=now_utc,
+                    old_fetch_ts=prior_country_fetch,
                 )
-                retained_fetched_at[cc] = cache_fetched_at_flag
-            elif parse_failed:
-                status_flag = "failed"
-            else:
-                status_flag = "empty"
+                fa_retain = prior_country_fetch
+                prior_src = country_blob.get("sources")
+                if isinstance(prior_src, dict) and url in prior_src:
+                    ent = prior_src.get(url)
+                    if isinstance(ent, dict) and ent.get("fetched_at"):
+                        fa_retain = str(ent["fetched_at"])
+                if retained:
+                    any_retained = True
+                    merged.extend(retained)
+                    source_statuses.append("retained")
+                    if retained_country_ts is None:
+                        retained_country_ts = prior_country_fetch
+                    sources_out[url] = {
+                        "status": "retained",
+                        "event_count": len(retained),
+                        "fetched_at": fa_retain,
+                        "retained_from_cache": True,
+                    }
+                else:
+                    source_statuses.append("failed")
+                    sources_out[url] = {
+                        "status": "failed",
+                        "event_count": 0,
+                        "fetched_at": fa_retain if fa_retain else "",
+                        "retained_from_cache": False,
+                    }
+                continue
 
-        event_count = len(chosen_events)
+            body = str(page.get("html") or "")
+            docs_one = dict(empty_docs)
+            docs_one[doc.key] = body
+            if cc == "CA" and clock_body_for_ca and doc.key in {"primary_table", "lfs_daily"}:
+                # Standing 08:30 clock is on the cal2 page; PDF/LFS-daily parsers read it.
+                docs_one["daily_clock"] = clock_body_for_ca
+            parse_failed = False
+            parse_exc: str = ""
+            try:
+                live_list = adapter.parse_documents(
+                    docs_one,
+                    now=now,
+                    fetched_at=retrieved_at,
+                )
+            except Exception as exc:  # noqa: BLE001
+                parse_failed = True
+                parse_exc = f"{type(exc).__name__}: {exc}"
+
+            for g in _collect_gaps(adapter_mod, adapter):
+                if g and g not in gaps_seen_set:
+                    gaps_seen_set.add(g)
+                    gaps_seen.append(g)
+
+            if parse_failed:
+                all_errors.append(f"{url} ({parse_exc})")
+                retained = _retain_events_for_source(
+                    prior_by_url,
+                    url,
+                    country_blob=country_blob,
+                    horizon_start=horizon_start,
+                    horizon_end=horizon_end,
+                    now_utc=now_utc,
+                    old_fetch_ts=prior_country_fetch,
+                )
+                fa_retain = prior_country_fetch
+                prior_src = country_blob.get("sources")
+                if isinstance(prior_src, dict) and url in prior_src:
+                    ent = prior_src.get(url)
+                    if isinstance(ent, dict) and ent.get("fetched_at"):
+                        fa_retain = str(ent["fetched_at"])
+                if retained:
+                    any_retained = True
+                    merged.extend(retained)
+                    source_statuses.append("retained")
+                    if retained_country_ts is None:
+                        retained_country_ts = prior_country_fetch
+                    sources_out[url] = {
+                        "status": "retained",
+                        "event_count": len(retained),
+                        "fetched_at": fa_retain,
+                        "retained_from_cache": True,
+                    }
+                else:
+                    source_statuses.append("failed")
+                    sources_out[url] = {
+                        "status": "failed",
+                        "event_count": 0,
+                        "fetched_at": fa_retain if fa_retain else "",
+                        "retained_from_cache": False,
+                    }
+                continue
+
+            from_this = [
+                e
+                for e in live_list
+                if str(e.source_url or "") == url
+                and _in_horizon(e.local_date, horizon_start=horizon_start, horizon_end=horizon_end)
+            ]
+
+            if from_this:
+                merged.extend(from_this)
+                source_statuses.append("ok")
+                sources_out[url] = {
+                    "status": "ok",
+                    "event_count": len(from_this),
+                    "fetched_at": retrieved_at,
+                    "retained_from_cache": False,
+                }
+            else:
+                source_statuses.append("empty")
+                sources_out[url] = {
+                    "status": "empty",
+                    "event_count": 0,
+                    "fetched_at": retrieved_at,
+                    "retained_from_cache": False,
+                }
+
+        # De-dupe by event_id: first source in plan order wins (retention runs before later URLs).
+        seen_ids: set[str] = set()
+        chosen_events: list[EconomicReleaseEvent] = []
+        for ev in merged:
+            eid = ev.event_id()
+            if eid in seen_ids:
+                continue
+            seen_ids.add(eid)
+            chosen_events.append(ev)
+        chosen_events.sort(key=lambda e: (e.local_date, e.event_family, e.reference_period))
+
         if chosen_events:
             published_events.extend(chosen_events)
             per_country_published[cc] = chosen_events
 
+        country_st = _country_level_status(source_statuses)
+        event_count = len(chosen_events)
+
+        cache_fetched_at_flag: str | None = None
+        if any_retained:
+            cache_fetched_at_flag = retained_country_ts or prior_country_fetch
+
         countries_diag[cc] = {
-            "status": status_flag,
+            "status": country_st,
             "event_count": event_count,
-            "gaps": list(gaps),
-            "errors": parse_errors,
-            "retained_from_cache": retained_from_cache,
+            "gaps": gaps_seen,
+            "errors": [],
+            "retained_from_cache": any_retained,
             "cache_fetched_at": cache_fetched_at_flag,
+            "sources": sources_out,
         }
 
     # Per-URL report rows
@@ -376,13 +585,39 @@ def fetch_official_schedules(
     if write_cache:
         country_payload: dict[str, Any] = {}
         for cc, evs in per_country_published.items():
+            _mod, adapter = _ADAPTER_MODULES[cc]
+            diag = countries_diag.get(cc) or {}
+            sources_diag = diag.get("sources") if isinstance(diag.get("sources"), dict) else {}
+
+            fetch_candidates: list[str] = []
+            for u in [d.url for d in adapter.source_plan()]:
+                ent = sources_diag.get(u) if isinstance(sources_diag, dict) else None
+                if isinstance(ent, dict) and str(ent.get("fetched_at") or "").strip():
+                    fetch_candidates.append(str(ent["fetched_at"]).strip())
+            for ev in evs:
+                if ev.fetched_at and str(ev.fetched_at).strip():
+                    fetch_candidates.append(str(ev.fetched_at).strip())
+
+            country_fa = _max_fetched_at_string(fetch_candidates, fallback=retrieved_at)
+
+            sources_payload: dict[str, Any] = {}
+            if isinstance(sources_diag, dict):
+                for u, meta in sources_diag.items():
+                    if isinstance(meta, dict):
+                        sources_payload[u] = {
+                            "status": meta.get("status"),
+                            "event_count": int(meta.get("event_count") or 0),
+                            "fetched_at": meta.get("fetched_at") or "",
+                            "retained_from_cache": bool(meta.get("retained_from_cache")),
+                        }
+
             if not evs:
                 continue
-            _mod, adapter = _ADAPTER_MODULES[cc]
             country_payload[cc] = {
-                "fetched_at": retained_fetched_at.get(cc) or retrieved_at,
+                "fetched_at": country_fa,
                 "source_urls": [d.url for d in adapter.source_plan()],
                 "events": [_event_to_jsonable(e) for e in evs],
+                "sources": sources_payload,
             }
         out_obj = {"version": _CACHE_VERSION, "countries": country_payload}
         try:

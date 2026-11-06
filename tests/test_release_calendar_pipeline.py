@@ -15,6 +15,11 @@ from scripts.dashboard_repair.calendar_view import build_release_model, render_r
 from scripts.dashboard_repair.release_pipeline import fetch_official_schedules
 from scripts.dashboard_repair.schedules import au, ca, ea, jp, nz, us
 
+# Eurostat QNA PDF URL (adapter constant; used in selective getter tests)
+_EUROSTAT_QNA_URL = "https://ec.europa.eu/eurostat/documents/24987/6642470/QNA_release_calendar.pdf"
+_ECB_HICP_URL = "https://www.ecb.europa.eu/press/calendars/statscal/ges/html/sthicp.en.html"
+_ECB_GC_URL = "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html"
+
 ET = ZoneInfo("America/New_York")
 _FIXTURE_ROOT = Path(__file__).resolve().parent / "fixtures" / "release_calendar"
 _COMMITTED_CACHE = (
@@ -104,6 +109,19 @@ def _us_down_getter(url: str, timeout: float) -> str:
 
 def _all_rows(model: dict) -> list:
     return list(model["upcoming"]) + list(model["recent"]) + list(model["later"])
+
+
+def _events_list(fetch: dict) -> list:
+    """Slots from ``fetch_official_schedules`` (one dict per event with event_family, source_url, …)."""
+    return list(fetch.get("slots") or [])
+
+
+def _statcan_pdf_url() -> str:
+    return next(d.url for d in ca.ADAPTER.source_plan() if d.key == "primary_table")
+
+
+def _boc_url() -> str:
+    return next(d.url for d in ca.ADAPTER.source_plan() if d.key == "boc_rate")
 
 
 class ReleaseCalendarPipelineTests(unittest.TestCase):
@@ -240,6 +258,318 @@ class ReleaseCalendarPipelineTests(unittest.TestCase):
             write_cache=False,
         )
         self.assertFalse(fetched.get("countries", {}).get("US", {}).get("retained_from_cache"))
+
+    def test_ca_pdf_fetch_fails_retains_lfs_adds_boc_from_fixture(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+        statcan = _statcan_pdf_url()
+
+        def getter(url: str, timeout: float) -> str:
+            if url == statcan:
+                raise RuntimeError("simulated StatCan PDF failure")
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        lfs_nov = [
+            e
+            for e in evs
+            if str(e.get("event_family")) == "ca_lfs"
+            and str(e.get("local_date")) == "2026-11-06"
+            and e.get("source_url") == statcan
+        ]
+        self.assertEqual(len(lfs_nov), 1)
+        self.assertEqual(lfs_nov[0].get("fetched_at"), "2026-11-06T18:00:00Z")
+        self.assertTrue(any(str(e.get("event_family")) == "ca_boc" for e in evs))
+
+    def test_ca_boc_fetch_fails_retains_boc_lfs_from_live_pdf(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+        boc = _boc_url()
+        cache_before = json.loads(self.cache_path.read_text(encoding="utf-8"))
+        boc_cached_fa = next(
+            e["fetched_at"]
+            for e in cache_before["countries"]["CA"]["events"]
+            if e.get("event_family") == "ca_boc"
+        )
+
+        def getter(url: str, timeout: float) -> str:
+            if url == boc:
+                raise RuntimeError("simulated BoC failure")
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        boc_rows = [e for e in evs if str(e.get("event_family")) == "ca_boc"]
+        self.assertTrue(boc_rows)
+        self.assertEqual(boc_rows[0].get("fetched_at"), boc_cached_fa)
+        self.assertTrue(
+            any(
+                str(e.get("event_family")) == "ca_lfs" and "2026-11-06" in str(e.get("local_date"))
+                for e in evs
+            )
+        )
+
+    def test_ea_eurostat_fails_retains_gdp_flash_ecb_fixture_adds_hicp(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+
+        def getter(url: str, timeout: float) -> str:
+            if url == _EUROSTAT_QNA_URL:
+                raise RuntimeError("simulated Eurostat PDF failure")
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        self.assertTrue(any(str(e.get("event_family")) == "ea_gdp_flash" for e in evs))
+        families = {str(e.get("event_family")) for e in evs}
+        self.assertTrue("ea_hicp" in families or "ea_ecb_mp" in families)
+
+    def test_ea_ecb_urls_fail_eurostat_fixture_yields_gdp_retains_cached_ecb_fetched_at(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+        cache_before = json.loads(self.cache_path.read_text(encoding="utf-8"))
+        ea_events = cache_before["countries"]["EA"]["events"]
+        hicp_cached_fa = next(
+            e["fetched_at"]
+            for e in ea_events
+            if str(e.get("event_family")) == "ea_hicp" and str(e.get("local_date")) == "2026-11-18"
+        )
+        mp_cached_fa = next(
+            e["fetched_at"]
+            for e in ea_events
+            if str(e.get("event_family")) == "ea_ecb_mp" and str(e.get("local_date")) == "2026-12-17"
+        )
+
+        def getter(url: str, timeout: float) -> str:
+            if url in (_ECB_HICP_URL, _ECB_GC_URL):
+                raise RuntimeError("simulated ECB fetch failure")
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        self.assertTrue(
+            any(str(e.get("event_family")) in ("ea_gdp_flash", "ea_gdp") for e in evs),
+        )
+        hicp_rows = [
+            e
+            for e in evs
+            if str(e.get("event_family")) == "ea_hicp" and str(e.get("local_date")) == "2026-11-18"
+        ]
+        self.assertTrue(hicp_rows)
+        self.assertEqual(hicp_rows[0].get("fetched_at"), hicp_cached_fa)
+        mp_rows = [
+            e
+            for e in evs
+            if str(e.get("event_family")) == "ea_ecb_mp" and str(e.get("local_date")) == "2026-12-17"
+        ]
+        self.assertTrue(mp_rows)
+        self.assertEqual(mp_rows[0].get("fetched_at"), mp_cached_fa)
+
+    def test_au_wpi_fetch_fails_retains_wpi_other_abs_fixture_events_present(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+        wpi_url = au._URL_ABS_WPI
+
+        def getter(url: str, timeout: float) -> str:
+            if url == wpi_url:
+                raise RuntimeError("simulated ABS WPI failure")
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        wpi = [e for e in evs if str(e.get("event_family")) == "au_wpi"]
+        self.assertTrue(wpi)
+        self.assertEqual(wpi[0].get("fetched_at"), "2026-11-06T18:00:00Z")
+        self.assertTrue(
+            any("labour" in str(e.get("title", "")).lower() for e in evs)
+            or any(str(e.get("event_family", "")).startswith("au_cpi") for e in evs)
+        )
+
+    def test_ca_updated_statcan_snippet_replaces_cached_nov6_lfs(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+        statcan = _statcan_pdf_url()
+        minimal_pdf_text = (
+            "LabourForceSurvey\n\nDecember 4, 2026 November 2026\n"
+        )
+
+        def getter(url: str, timeout: float) -> str:
+            if url == statcan:
+                return minimal_pdf_text
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        from_pdf = [e for e in evs if e.get("source_url") == statcan and e.get("event_family") == "ca_lfs"]
+        ids = {f'{e.get("country")}:{e.get("event_family")}:{e.get("local_date")}:{e.get("reference_period")}' for e in from_pdf}
+        self.assertNotIn("CA:ca_lfs:2026-11-06:2026-10", ids)
+        self.assertIn("CA:ca_lfs:2026-12-04:2026-11", ids)
+
+    def test_stale_source_fetched_at_not_retained_horizon_drop(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+        empsit = "https://www.bls.gov/schedule/news_release/empsit.htm"
+        stale_path = Path(self._tmpdir.name) / "stale_src.json"
+        base = json.loads(_COMMITTED_CACHE.read_text(encoding="utf-8"))
+        us = copy.deepcopy(base["countries"]["US"])
+        us["sources"] = {
+            empsit: {
+                "status": "ok",
+                "fetched_at": "2025-01-01T12:00:00Z",
+                "event_count": 1,
+                "retained_from_cache": False,
+            }
+        }
+        us["events"] = [
+            e
+            for e in us["events"]
+            if e.get("source_url") != empsit or e.get("reference_period") != "2026-11"
+        ]
+        us["events"].append(
+            {
+                "event_family": "us_empsit",
+                "country": "US",
+                "title": "Employment Situation",
+                "publisher": "Bureau of Labor Statistics",
+                "local_date": "2026-12-04",
+                "local_time": "08:30",
+                "timezone": "America/New_York",
+                "reference_period": "2026-11",
+                "source_url": empsit,
+                "fetched_at": "2025-01-01T12:00:00Z",
+                "status": "verified",
+                "series_ids": ["US.Labor.payrolls"],
+                "provenance": "synthetic stale",
+                "date_confidence": "confirmed",
+            }
+        )
+        base["countries"]["US"] = us
+        stale_path.write_text(json.dumps(base), encoding="utf-8")
+
+        def getter(url: str, timeout: float) -> str:
+            if "bls.gov" in url:
+                raise RuntimeError("bls down")
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=stale_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        self.assertFalse(
+            any(
+                e.get("source_url") == empsit
+                and str(e.get("reference_period")) == "2026-11"
+                and str(e.get("local_date")) == "2026-12-04"
+                for e in evs
+            )
+        )
+
+        horizon_path = Path(self._tmpdir.name) / "horizon.json"
+        base2 = json.loads(_COMMITTED_CACHE.read_text(encoding="utf-8"))
+        us2 = copy.deepcopy(base2["countries"]["US"])
+        us2["sources"] = {
+            empsit: {
+                "status": "ok",
+                "fetched_at": "2026-11-06T18:00:00Z",
+                "event_count": 1,
+                "retained_from_cache": False,
+            }
+        }
+        us2["events"] = [
+            e
+            for e in us2["events"]
+            if e.get("source_url") != empsit or e.get("reference_period") != "2026-09"
+        ]
+        us2["events"].append(
+            {
+                "event_family": "us_empsit",
+                "country": "US",
+                "title": "Employment Situation",
+                "publisher": "Bureau of Labor Statistics",
+                "local_date": "2026-10-01",
+                "local_time": "08:30",
+                "timezone": "America/New_York",
+                "reference_period": "2026-09",
+                "source_url": empsit,
+                "fetched_at": "2026-11-06T18:00:00Z",
+                "status": "verified",
+                "series_ids": ["US.Labor.payrolls"],
+                "provenance": "synthetic old horizon",
+                "date_confidence": "confirmed",
+            }
+        )
+        base2["countries"]["US"] = us2
+        horizon_path.write_text(json.dumps(base2), encoding="utf-8")
+
+        fetched2 = fetch_official_schedules(
+            now, getter=getter, cache_path=horizon_path, write_cache=False
+        )
+        evs2 = _events_list(fetched2)
+        self.assertFalse(any(e.get("local_date") == "2026-10-01" for e in evs2))
+
+    def test_success_empty_body_clears_cached_events_for_that_source(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+
+        def getter(url: str, timeout: float) -> str:
+            if url == _ECB_HICP_URL:
+                return "<html><body><p>no release table</p></body></html>"
+            return _fixture_getter(url, timeout)
+
+        fetched = fetch_official_schedules(
+            now, getter=getter, cache_path=self.cache_path, write_cache=False
+        )
+        evs = _events_list(fetched)
+        self.assertFalse(
+            any(
+                str(e.get("event_family", "")).startswith("ea_hicp")
+                and e.get("source_url") == _ECB_HICP_URL
+                for e in evs
+            )
+        )
+
+    def test_second_write_cache_does_not_refresh_retained_fetched_at(self) -> None:
+        now = datetime(2026, 11, 6, 12, 0, 0, tzinfo=ET)
+
+        def getter(url: str, timeout: float) -> str:
+            if url == _statcan_pdf_url():
+                raise RuntimeError("pdf fail")
+            return _fixture_getter(url, timeout)
+
+        fetch_official_schedules(now, getter=getter, cache_path=self.cache_path, write_cache=True)
+        first = json.loads(self.cache_path.read_text(encoding="utf-8"))
+        lfs_fa_1 = next(
+            e["fetched_at"]
+            for e in first["countries"]["CA"]["events"]
+            if e.get("event_family") == "ca_lfs"
+            and str(e.get("local_date")) == "2026-11-06"
+        )
+        boc_fa_1 = next(
+            e["fetched_at"]
+            for e in first["countries"]["CA"]["events"]
+            if e.get("event_family") == "ca_boc"
+        )
+
+        fetch_official_schedules(now, getter=getter, cache_path=self.cache_path, write_cache=True)
+        second = json.loads(self.cache_path.read_text(encoding="utf-8"))
+        lfs_fa_2 = next(
+            e["fetched_at"]
+            for e in second["countries"]["CA"]["events"]
+            if e.get("event_family") == "ca_lfs"
+            and str(e.get("local_date")) == "2026-11-06"
+        )
+        boc_fa_2 = next(
+            e["fetched_at"]
+            for e in second["countries"]["CA"]["events"]
+            if e.get("event_family") == "ca_boc"
+        )
+        self.assertEqual(lfs_fa_1, lfs_fa_2)
+        self.assertEqual(boc_fa_1, boc_fa_2)
 
 
 if __name__ == "__main__":
