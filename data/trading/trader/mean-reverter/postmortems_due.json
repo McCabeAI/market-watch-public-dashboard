@@ -1,5 +1,32 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-06T06:25:49.281876-05:00",
+      "created_run_id": "overnight-20261106",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-06T06:25:49.281876-05:00",
+        "conviction": 56,
+        "entry_mark": 4.58,
+        "exit_mark": 4.24,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 4088939,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Another clearly delivered 25bp into the Dec-26 window with SR3H7 implied holding at or above the packet Jun-27 4.72 mid, or hotter US labor/inflation with a re-widening oil tail.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-a5f512bc204e",
+      "status": "due",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

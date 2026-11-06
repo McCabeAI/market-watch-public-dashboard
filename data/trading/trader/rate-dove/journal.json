@@ -1784,6 +1784,62 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Cash Canada is 2.53 against a 2027 path of March 2.93, June 3.075, and September 3.185, so unused tightening remains the easing-underpriced expression already owned in the Canada strip receive. Cheaper oil and the post-election bond bid support that leftover fade. Do not rotate into a new US March receive that copies the same unused-hike factor, and do not chase dollar-yen."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 42500000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Hold the Canada 2027 strip. The average at 3.05 is still about 53 basis points above cash 2.52, and size stays put into the jobs report.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "2d46f5821bc7c4e72cbd108ed2bbe0394228cb5c5937a0e158de3ad60a99cf50",
+      "event_id": "jde-02976bd1235a4eb2",
+      "funding_view": null,
+      "invalidation": "Cut the long if the CORRA 2027 strip average rises from 3.05 back above 3.25 toward the 3.40 entry, or if cash CORRA lifts materially from 2.52.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e8067559685a7dcebd1454d6416d04c859048575204d8364969fa6d47bf7d920",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "35d2804d216500871a157698a057b2d19bf211071116a38d7e76eb7f6b40df24"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "CORRA cash at 2.52 against the 2027 strip average of 3.05 still embeds about 53 basis points of hikes, and that premium is the easing gap to keep. The long strip from 3.40 is already ahead and stays at 42.5 million. US March SOFR at 4.24 is only about 30 basis points over 3.94 cash after a large bond rally, with Williams still waiting on price risks and Brent at 98.29, so there is no fresh US receive in front of the jobs report.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "CORRA cash at 2.52 against the 2027 strip average of 3.05 still embeds about 53 basis points of hikes, and that premium is the easing gap to keep. The long strip from 3.40 is already ahead and stays at 42.5 million. US March SOFR at 4.24 is only about 30 basis points over 3.94 cash after a large bond rally, with Williams still waiting on price risks and Brent at 98.29, so there is no fresh US receive in front of the jobs report."
     }
   ],
   "schema_version": 1,

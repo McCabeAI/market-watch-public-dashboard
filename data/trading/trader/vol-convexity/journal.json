@@ -1716,6 +1716,60 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "The book is flat. Observed prints are VIX 20.83, Brent 94.62, and dollar-yen 158.25, but this freeze has no listed-option premium, implied volatility surface, or strike mids. Convexity cannot be marked in options, and substituting directional spot or a March leftover would be the wrong instrument. Stay flat rather than inventing a surface."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Listed downside on dollar-yen is the expression, with Australian-kiwi downside as the secondary fade. Volatility is not marked, so the option cannot be opened.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 72,
+      "decision_fingerprint": "8497f27569e365dcb8a4464d2dd5e3ec03926e564d107a6a9be367e415a7bc6a",
+      "event_id": "jde-18d8f4bbce7a40f0",
+      "funding_view": null,
+      "invalidation": "The flat stance is wrong if dollar-yen or Australian-kiwi downside becomes markable with a listed premium and strike before the jobs report and that premium still looks cheap against these extremes.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0abdda9224c9a7f0c29c09a32c5fa8e3bac889d3823f521b538d7ad85c46f2e0",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "2f10e35f6afd0890698684a9b6defab378bca8a647e65e882f87a7063e3918aa"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "VIX at 16.61 is a calm equity-vol print in front of a US jobs report and credit stress, and Australian-kiwi at 1.2453 plus dollar-yen at 158.46 are the spot tails that want optionality. No implied volatility, premium, or strike is in the packet, so nothing is opened and the book stays flat. The overlay, had volatility been marked, would have been dollar-yen downside into the jobs report.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "VIX at 16.61 is a calm equity-vol print in front of a US jobs report and credit stress, and Australian-kiwi at 1.2453 plus dollar-yen at 158.46 are the spot tails that want optionality. No implied volatility, premium, or strike is in the packet, so nothing is opened and the book stays flat. The overlay, had volatility been marked, would have been dollar-yen downside into the jobs report."
     }
   ],
   "schema_version": 1,

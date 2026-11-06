@@ -1790,6 +1790,62 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.97 against March 4.36, June 4.475, and September 4.505, so the 2027 strip still prices leftover hikes. The US 10-year is 4.90 versus cash 3.97, entry 5.24, so the residual coupon receive already owns a large tightening that cash has not delivered. Brent at 94.62 and a midterm-driven bond bid are a defensive impulse, not a reason to pay the front end against this coupon book. Keep the residual 10-year receive and do not add after the move from 5.24 to 4.90."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 6250000,
+          "position_id": "pos-5ac8fc69cb81",
+          "rationale": "Keep the 10-year long built at 5.24. The yield has already fallen to 4.84, so this size would not be initiated here, but the existing line still hedges spreading credit stress against a strip priced for hikes.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "204d9fbc9f447098ff59aecc0e3928881ea67fd6b16ebab561f1a49c9c391357",
+      "event_id": "jde-bcc997360b824181",
+      "funding_view": null,
+      "invalidation": "The hold is wrong if the 10-year yield reverses through the 5.24 entry on a firm jobs report while December SOFR implied stays at or above 4.115 and the credit stress stops spreading.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5ac8fc69cb81"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "41c42d620b1abbb73fd18d07f01f3e2403bd25020490e88f6fc362936a1affe2",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8eeb47e72fef1a0ef3c27f8e20c47d63198bf689f1a4f0be07d8331484aa7c28"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SoftBank credit risk at a four-year high sits beside a VIX at 16.61 and the S&P 500 at 7688, so the liquidity tail is still underpriced. US duration has already marked a lot of that stress, with the 10-year down to 4.84, while SOFR futures still imply hikes from 3.94 cash. A fresh long at 4.84 is no longer the entry, but the line bought at 5.24 still hedges a hike path that can be pared back if credit stress spreads.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "SoftBank credit risk at a four-year high sits beside a VIX at 16.61 and the S&P 500 at 7688, so the liquidity tail is still underpriced. US duration has already marked a lot of that stress, with the 10-year down to 4.84, while SOFR futures still imply hikes from 3.94 cash. A fresh long at 4.84 is no longer the entry, but the line bought at 5.24 still hedges a hike path that can be pared back if credit stress spreads."
     }
   ],
   "schema_version": 1,

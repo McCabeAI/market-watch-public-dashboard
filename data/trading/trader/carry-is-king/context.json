@@ -93,7 +93,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -12445.28,
     "status": "ok"
   },
   "learning": {
@@ -104,7 +104,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e1205457515db29b7b15f720350961221140cc0a02a95399dde75377e2f09780",
+  "memory_context_sha256": "d66486841239a9728bf90511fd83a6a5531573526f73f5bd670979d865011162",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -170,7 +170,7 @@
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 1250.0,
+        "giveback_usd": 11250.0,
         "holding_seconds": 1375421,
         "horizon_elapsed_fraction": 0.1769,
         "horizon_status": "within",
@@ -178,15 +178,15 @@
         "intended_horizon_days": 90,
         "mae_usd": -7500.0,
         "mechanical_order": false,
-        "mfe_usd": 17500.0,
+        "mfe_usd": 27500.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-23b8d2f30846",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Implied-minus-realized: CRAH27 at 2.995 cheapens if cash CORRA stays near 2.26 and the priced 73.5bp of hikes is not delivered.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 17500.0,
-        "retained_mfe_fraction": 0.9286,
+        "recorded_mfe_usd": 27500.0,
+        "retained_mfe_fraction": 0.5909,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 250000.0,
@@ -238,7 +238,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
@@ -272,7 +272,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5f9a22c45951d18f48605cd138b444cf7e24e18724b917d8406ee0686ac3ded7",
+    "state_sha256": "77f72c8e35697b38b9ba0dfdf6f74887bd5595028e780b3201d633a85c94c7de",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

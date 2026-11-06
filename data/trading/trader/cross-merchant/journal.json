@@ -1794,6 +1794,62 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Australian-kiwi at 1.2445 remains near the top of its recent range after bouncing from 1.2417, still below the 1.2456 entry. Kiwi-dollar at 0.5637 stays washed out, and there is no fresh Australian policy shock to justify the cross at this percentile. The existing short is the clean non-dollar expression; euro-yen at 178.3 and euro-Canada at 1.5701 do not isolate the same crowded-cross mean-reversion."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 20000000,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": "Hold the 20 million Australian-kiwi short. The 99th-percentile extreme has not bled, and size is already the expression.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 76,
+      "decision_fingerprint": "81d55bb393d41bca1fdb839cfa070820af083ee51d57c27bc1e21f2f87cf2af5",
+      "event_id": "jde-67adb29a248d4b4b",
+      "funding_view": null,
+      "invalidation": "The short is invalidated if a New Zealand-specific deterioration turns the 99th-percentile print into a regime, or if a durable Australian premium is large enough to justify the cross at 1.2453.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "08d133ae24a94edf8a27325cb9f7d40f991d7346fa0b45305d2b51ad31eff5e5",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "155015ee5392d6e8957fd11e7b285afce42a8812e7ab2523f9f36bbe7816c749"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi at 1.2453 is a five-year z-score of 2.75 and the 99th percentile, and the existing 20 million short from 1.2456 is marked at 1.2453, so the extreme is intact and still unmonetized. The cross isolates rich Australian dollars against a kiwi that is independently cheap, with kiwi-dollar at 0.5622 in the 3rd percentile. Australian-Canada is a lesser rich print and pays a wide cash-rate gap while oil is firm, so it is not the cleaner cross.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi at 1.2453 is a five-year z-score of 2.75 and the 99th percentile, and the existing 20 million short from 1.2456 is marked at 1.2453, so the extreme is intact and still unmonetized. The cross isolates rich Australian dollars against a kiwi that is independently cheap, with kiwi-dollar at 0.5622 in the 3rd percentile. Australian-Canada is a lesser rich print and pays a wide cash-rate gap while oil is firm, so it is not the cleaner cross."
     }
   ],
   "schema_version": 1,

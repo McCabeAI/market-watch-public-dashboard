@@ -1,0 +1,463 @@
+{
+  "base_evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+  "base_packet_sha256": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-11-04",
+    "funding_rate_annual": 0.0394,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+  "learning_obligations": {
+    "manifest_sha256": "829a231788181b917926155c19b6438bfc306c8d842d8a5b686fee55ab276ced",
+    "obligation_count": 1
+  },
+  "overnight_run_id": "overnight-20261106",
+  "packet_sha256": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+  "research_supplement": {
+    "central_bank_research": [
+      {
+        "country_codes": [],
+        "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
+        "id": null,
+        "primary_category": null,
+        "published_at": null,
+        "source_name": null,
+        "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal.",
+        "url": null
+      },
+      {
+        "country_codes": [],
+        "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
+        "id": null,
+        "primary_category": null,
+        "published_at": null,
+        "source_name": null,
+        "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero.",
+        "url": null
+      },
+      {
+        "country_codes": [],
+        "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
+        "id": null,
+        "primary_category": null,
+        "published_at": null,
+        "source_name": null,
+        "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September.",
+        "url": null
+      }
+    ],
+    "news": [
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Williams Says Fed Should Gather Information to Judge Price Risks",
+        "id": "news:b29f14175842c119",
+        "primary_category": "inflation",
+        "published_at": "2026-11-05T20:57:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "Federal Reserve Bank of New York President John Williams endorsed the US central bank\u2019s statement saying that this is the time to collect information on the risks to inflation.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-06/williams-says-fed-should-gather-information-to-judge-price-risks"
+      },
+      {
+        "country_codes": [
+          "CA"
+        ],
+        "headline": "Joint Statement of the Government of Canada and the Bank of Canada on the Renewal of the Monetary Policy Framework",
+        "id": "news:6f42778ba9ae2f8b",
+        "primary_category": "inflation",
+        "published_at": "2026-11-05T11:00:19-05:00",
+        "source_name": "Bank of Canada",
+        "summary": "The Government and the Bank agree that monetary policy must work to promote the economic and financial well-being of Canadians. We also agree that the best way monetary policy can do this is by keeping inflation low, stable and predictable, thereby protecting Canadians from large increases in the cost of living.",
+        "url": "https://www.bankofcanada.ca/2026/11/joint-statement-of-the-government-of-canada-and-the-bank-of-canada-on-the-renewal-of-the-monetary-policy-framework-2026/"
+      },
+      {
+        "country_codes": [],
+        "headline": "Sweden\u2019s Slowing Inflation Weakens Riksbank Rate Hike Case",
+        "id": "news:de94d3af30d5193c",
+        "primary_category": "inflation",
+        "published_at": "2026-11-04T10:59:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "Sweden\u2019s core inflation rate unexpectedly slowed to its weakest pace in six months, denting arguments for further interest-rate hikes over the months ahead.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-05/sweden-s-slowing-inflation-weakens-riksbank-rate-hike-case"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Gold and silver prices jump, dollar dips as Democrats take control of Congress",
+        "id": "news:1015f48c4095cd2d",
+        "primary_category": "fx",
+        "published_at": "2026-11-04T13:11:56-05:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/11/04/gold-silver-platinum-dollar-midterms.html"
+      },
+      {
+        "country_codes": [],
+        "headline": "AI debt concerns grow as ING reportedly seeks buyers for $500 million of data center loans",
+        "id": "news:80f84c85f21e0aa9",
+        "primary_category": "macro",
+        "published_at": "2026-11-06T05:24:52-05:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/11/06/ing-ai-data-center-loans-debt.html"
+      },
+      {
+        "country_codes": [],
+        "headline": "SoftBank credit risk jumps to 4-year high, shares tumble as AI fears roil market",
+        "id": "news:5dd4b0f051ae8ece",
+        "primary_category": "macro",
+        "published_at": "2026-11-05T20:15:00-05:00",
+        "source_name": "Reuters",
+        "summary": "SoftBank Group shares dropped 11% on Friday and the cost of insuring its debt against default \u200chit a four-year high as worries about AI profitability roiled the world's financial markets.",
+        "url": "https://www.reuters.com/business/media-telecom/softbank-cds-softbank-cds-2026-11-06/"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Midterm Election Day recap: Democrats flip Senate and House in stunning victory",
+        "id": "news:fc68b9eca782d5b1",
+        "primary_category": "geopolitics",
+        "published_at": "2026-11-04T09:35:22-05:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/11/03/midterm-elections-2026-live-updates.html"
+      },
+      {
+        "country_codes": [],
+        "headline": "SoftBank Leads Asia Bond Losses as AI Rout Spreads to Credit",
+        "id": "news:5280c2a7f410b0c3",
+        "primary_category": "fx",
+        "published_at": "2026-11-05T11:00:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "SoftBank Group Corp. led declines in Asian dollar bonds on Friday as a deepening rout in artificial-intelligence stocks extended into credit markets.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-06/softbank-leads-asia-bond-losses-ai-rout-spreads-credit"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Treasury yields inch lower as investors look ahead to key jobs data",
+        "id": "news:58c4234f1df4ed6a",
+        "primary_category": "rates",
+        "published_at": "2026-11-06T03:34:51-05:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/11/06/treasury-yields-inch-lower-as-investors-look-ahead-to-key-jobs-data-.html"
+      },
+      {
+        "country_codes": [
+          "EA"
+        ],
+        "headline": "ECB Is Gathering Data for Rate Decision in December, Lane Says",
+        "id": "news:de086afad6ddfb89",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-11-05T21:03:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "The European Central Bank is looking at all data arriving before its final interest-rate meeting of the year, Chief Economist Philip Lane said as markets continue to lean toward a hike.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-06/ecb-is-gathering-data-for-rate-decision-in-december-lane-says"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "US Treasury Traders Make Bullish Bets Ahead of Jobs Report",
+        "id": "news:63761fa41f5a606e",
+        "primary_category": "monetary_policy",
+        "published_at": "2026-11-05T19:44:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "Bond traders are positioned for further gains for the Treasury market ahead of Friday\u2019s October employment report as expectations for additional Federal Reserve interest-rate hikes continue to fade.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-06/us-treasury-traders-make-bullish-bets-ahead-of-jobs-report"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "10-year Treasury yield falls as traders exit tech stocks, look ahead to jobs data",
+        "id": "news:982cd01eed45b6b6",
+        "primary_category": "rates",
+        "published_at": "2026-11-05T15:03:28-05:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/11/05/treasury-yields-bonds-interest-rates.html"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Gold Set for Biggest Weekly Gain Since August After US Midterms",
+        "id": "news:94fab511cee57d9b",
+        "primary_category": "rates",
+        "published_at": "2026-11-05T11:00:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "Gold was on track for its biggest weekly gain since August after the US midterm elections sent the dollar and Treasury yields lower.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-06/gold-set-for-biggest-weekly-gain-since-august-after-us-midterms"
+      },
+      {
+        "country_codes": [],
+        "headline": "Bank rate increased to 4% - November 2026 Monetary Policy Summary and Minutes",
+        "id": "news:c015fed1fc92be23",
+        "primary_category": "macro",
+        "published_at": "2026-11-05T07:00:00-05:00",
+        "source_name": "Bank of England",
+        "summary": "The Bank of England\u2019s Monetary Policy Committee is responsible for making decisions about Bank Rate.",
+        "url": "https://www.bankofengland.co.uk/monetary-policy-summary-and-minutes/2026/november-2026"
+      },
+      {
+        "country_codes": [
+          "US"
+        ],
+        "headline": "Treasury yields continue to fall after midterms, traders look ahead to jobs data",
+        "id": "news:982cd01eed45b6b6",
+        "primary_category": "rates",
+        "published_at": "2026-11-05T03:38:43-05:00",
+        "source_name": "CNBC",
+        "summary": "Headline-only public metadata; article body was not retrieved.",
+        "url": "https://www.cnbc.com/2026/11/05/treasury-yields-bonds-interest-rates.html"
+      },
+      {
+        "country_codes": [],
+        "headline": "Norway Keeps Rate Steady With Option of Another Hike If Needed",
+        "id": "news:20535178ce5c2bcb",
+        "primary_category": "inflation",
+        "published_at": "2026-11-04T20:03:00-05:00",
+        "source_name": "Bloomberg",
+        "summary": "Norway\u2019s central bank kept borrowing costs steady as expected and reiterated the option of raising them again if required to curb inflation.",
+        "url": "https://www.bloomberg.com/news/articles/2026-11-05/norway-keeps-rate-steady-with-option-of-another-hike-if-needed"
+      }
+    ],
+    "sources": [
+      {
+        "name": "NY Fed",
+        "note": "Official SOFR fixing inside the frozen packet"
+      },
+      {
+        "name": "Bloomberg"
+      },
+      {
+        "name": "Bank of Canada"
+      },
+      {
+        "name": "Bank of England"
+      },
+      {
+        "name": "CNBC"
+      },
+      {
+        "name": "Reuters"
+      }
+    ],
+    "summary": "Overnight, US Treasury yields moved lower with the 10-year at 4.84% and the 2-year at 4.46% as traders positioned for the jobs release; SOFR is 3.94% and futures imply a gradual rise toward the mid-4.3% area by late 2027. Equities stayed firm with the S&P 500 at 7688.62 and Nasdaq at 24315, while gold held 4113.5 after the US congressional shift initially pressured the dollar and lifted bullion. The Bank of England raised Bank Rate to 4.0%, its first increase since the Iran war began, and warned inflation could approach 5%. Canada and the Bank of Canada renewed their inflation-targeting framework. Stress around AI-related leverage intensified, with SoftBank credit risk at a four-year high and banks reportedly marketing data-center loans. The period ahead turns on US employment data, ECB inputs toward the December meeting, and whether tech-financing strains broaden."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "block_why": null,
+    "blocked_expressions": [],
+    "blocked_legs": [],
+    "blocked_sources": [],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence",
+          "AU.Consumer.retail"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence",
+          "CA.Consumer.income",
+          "CA.Consumer.retail",
+          "CA.Consumer.spending",
+          "CA.Labor.employment",
+          "CA.Labor.unemployment",
+          "CA.Labor.wages"
+        ],
+        "scored_status": "partial"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [
+          "EA.Labor.wages",
+          "EA.Consumer.income",
+          "EA.Consumer.spending",
+          "EA.Labor.employment"
+        ],
+        "scored_status": "blocked"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Activity.gdp_domestic_demand",
+          "JP.Activity.business_surveys",
+          "JP.Consumer.income",
+          "JP.Consumer.spending",
+          "JP.Labor.wages"
+        ],
+        "scored_status": "blocked"
+      },
+      "NZ": {
+        "eligible": true,
+        "gaps": [
+          "NZ.Consumer.confidence",
+          "NZ.Activity.business_surveys",
+          "NZ.Consumer.income"
+        ],
+        "scored_status": "blocked",
+        "sovereign_admission": "research_only"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "hold_decisions_emitted": 0,
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:CA",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "partial_legs": [
+      "NZ_rates"
+    ],
+    "quarantine_mode": null,
+    "quarantine_reason": null,
+    "quarantined_positions": [],
+    "research_coverage_gaps": [
+      "macro:CA",
+      "macro:AU",
+      "macro:NZ",
+      "macro:EA",
+      "macro:JP"
+    ],
+    "research_coverage_series": [
+      "CA.Consumer.income",
+      "CA.Consumer.retail",
+      "CA.Consumer.spending",
+      "AU.Consumer.retail",
+      "NZ.Activity.business_surveys",
+      "EA.Labor.wages",
+      "EA.Consumer.income",
+      "EA.Consumer.spending",
+      "EA.Labor.employment",
+      "JP.Activity.gdp_domestic_demand",
+      "JP.Consumer.income",
+      "JP.Consumer.spending",
+      "JP.Labor.wages"
+    ],
+    "research_eligible": true,
+    "restricted_seats": [],
+    "seat_risk": {},
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      }
+    ],
+    "synthetic_holds": false,
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "AU",
+      "NZ",
+      "EA",
+      "JP"
+    ],
+    "trader_eligible": true,
+    "trader_execution": "allowed"
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

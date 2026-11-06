@@ -112,14 +112,14 @@
     "nav_usd": 99806564.14,
     "net_pnl_usd": -193435.86,
     "pressure_flags": [],
-    "prior_competition_rank": 14,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": 1,
     "raw_pnl_rank": 14,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 62500.0,
     "risk_capital_utilization": 0.0063,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -7493.16,
     "status": "ok"
   },
   "learning": {
@@ -130,12 +130,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "5b09790ac2690ea457af1c2a77d52f9154725fade7b2d760dfabc88a2ae8555a",
+  "memory_context_sha256": "16e4c7d291e916e00efbe3039f95111b1ffad2736eb9d24efe345c4dc439b3c3",
   "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 64,
-      "current_notional_usd": 25000000.0,
+      "current_notional_usd": 50000000.0,
       "entry_mark": 4.33,
       "harvest": {
         "asset_class": "rates",
@@ -147,7 +147,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 7500.0,
         "holding_seconds": 349031,
         "horizon_elapsed_fraction": 0.202,
         "horizon_status": "within",
@@ -155,15 +155,15 @@
         "intended_horizon_days": 20,
         "mae_usd": -2500.0,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 5312.5,
         "move_versus_entry_intent": "against_intent",
         "order_policy": "review_only",
         "position_id": "pos-96a63a1df145",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "March implied continues lower with the 1d/5d/1m US coupon downtrend rather than mean-reverting up toward a confirmed backup.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 5312.5,
+        "retained_mfe_fraction": -0.4118,
         "review_move_bp": 10.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -200,7 +200,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -215,7 +215,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
@@ -249,7 +249,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "aa3c652948b915b843289ed527f05ca44f69f0b744c30ee513281ceba020e218",
+    "state_sha256": "577aadc9a97b3ebf5df1965d186e1706371a466264063a217c5e09a53a48e853",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

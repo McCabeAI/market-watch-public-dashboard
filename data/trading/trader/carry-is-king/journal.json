@@ -1970,6 +1970,77 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Cash Canada is 2.53 against March 2.93, leaving 40 basis points of unused tightening, and the existing March receive still pays if that leftover fades. Australian cash 4.85 versus March 4.925 is only 7.5 basis points, so the Australian receive is now a smaller carry stub after cash jumped. Cheaper oil supports the Canada leftover fade more than it creates a new ticket. Keep both existing receives; do not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-524ab67108ee",
+          "rationale": "Keep the Australia March long. The 7 basis point hump over cash is too small to abandon and too thin to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Keep the Canada March long. About 36 basis points over cash is still the best futures carry on the book.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "6e2495f6eea56af12263956e05f13d85fc9943606c22c7683097d16299e0ca5d",
+      "event_id": "jde-2b1be9882aa34308",
+      "funding_view": null,
+      "invalidation": "The CORRA long is finished if the March implied yield rises back through the 2.995 entry. The AONIA long is finished if March implied holds above both 4.85 cash and 4.88 June.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e1205457515db29b7b15f720350961221140cc0a02a95399dde75377e2f09780",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5f9a22c45951d18f48605cd138b444cf7e24e18724b917d8406ee0686ac3ded7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Canada is the carry that still pays to wait. March CORRA at 2.885 sits about 36 basis points over 2.52 cash and the long is already ahead of the 2.995 entry, so that futures long stays. March AONIA at 4.92 is only 7 basis points over 4.85 cash, enough roll to keep the long and too little to add. The Canada 10-year at 3.70 is the cleaner new bond, and it stays unopened until the US jobs print is out.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Canada is the carry that still pays to wait. March CORRA at 2.885 sits about 36 basis points over 2.52 cash and the long is already ahead of the 2.995 entry, so that futures long stays. March AONIA at 4.92 is only 7 basis points over 4.85 cash, enough roll to keep the long and too little to add. The Canada 10-year at 3.70 is the cleaner new bond, and it stays unopened until the US jobs print is out."
     }
   ],
   "schema_version": 1,

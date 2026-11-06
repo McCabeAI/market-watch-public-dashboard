@@ -19,18 +19,31 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
+        "asset_class": "rates_rv",
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
         "instruments": [
           "SOFR-CORRA_2Y_2027H1"
         ],
-        "instrument_family": null,
-        "asset_class": "rates_rv",
-        "countries": [],
-        "currencies": [],
-        "setup_type": "linear_combo",
         "market_drivers": [],
-        "catalyst_type": null,
-        "failure_mode": null,
-        "decision_dimension": null
+        "setup_type": "linear_combo"
+      },
+      "scope_evidence": {
+        "fields": [
+          "asset_class",
+          "instrument",
+          "paper_expression.type"
+        ],
+        "history_modified": false,
+        "method": "ledger_identity_fields",
+        "retrievals_backfilled": false,
+        "status": "scoped_from_trade",
+        "text_modified": false,
+        "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
@@ -38,20 +51,45 @@
       "trade_ids": [
         "trd-trader-value-guy-pos-cdde326460b4"
       ],
-      "updated_at": "2026-09-29T04:44:08.485973-04:00",
-      "scope_evidence": {
-        "method": "ledger_identity_fields",
-        "trade_id": "trd-trader-value-guy-pos-cdde326460b4",
-        "fields": [
-          "asset_class",
-          "instrument",
-          "paper_expression.type"
-        ],
-        "retrievals_backfilled": false,
-        "text_modified": false,
-        "history_modified": false,
-        "status": "scoped_from_trade"
-      }
+      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-06T06:25:49.281876-05:00",
+      "future_rule": "Do not reopen a covered value short unless the fundamental sponsor named at entry is still present, or a separate historical extreme with its own anchor has replaced it.",
+      "history": [
+        {
+          "at": "2026-11-06T06:25:49.281876-05:00",
+          "op": "add",
+          "run_id": "overnight-20261106"
+        }
+      ],
+      "lesson_id": "les-2d4618441ed0",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-855908a87c6b"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null
+      },
+      "source_run_id": "overnight-20261106",
+      "status": "active",
+      "text": "When a valuation short converges while its commodity sponsor fades, the profit belongs to the original thesis, but the residual percentile is a new question and does not inherit the old ticket.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-63923b5f6571"
+      ],
+      "updated_at": "2026-11-06T06:25:49.281876-05:00"
     }
   ],
   "schema_version": 1,

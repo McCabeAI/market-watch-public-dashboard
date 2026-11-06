@@ -1750,6 +1750,60 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "The midterm result and the oil break are already in the tape: yields are lower, Brent is 94.62, and the March leftovers have compressed rather than opened a new gap. A catalyst seat needs a path from mispricing to a dated repricing, not a chase of a print that has already moved. The book stays flat. Jobs data is the next dated event, and it is not yet a dislocation versus March 4.36 and cash 3.97."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The two-year rally is the mispricing with a same-day path, and that cash instrument cannot be booked. The SOFR strip does not locate the crowded bet, so the flat book stays flat.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "731614672758f41dfe060b675f8fd1bd4389ccd3a5996acb069317d2c873ed04",
+      "event_id": "jde-ed908e7ae8af4a56",
+      "funding_view": null,
+      "invalidation": "The flat call is wrong only if a markable front-end contract shows the same pre-positioned long and still looks cheap to fade after the two-year rally, before the jobs report.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d3a82c0ad0092c914e7febe1ad4213e589f8f59bbd6bbc69354afdc4abf9e7d6",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8ce7f0eaac26cfc0d918f3ef39da272b37575c39688d298b128c372d8e72feda"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The US employment report is the dated event, and the two-year has already traded the dovish outcome at 4.46, down 12bp, with bullish bond bets put on ahead of the print. That cash yield is not an exchange contract, and the SOFR strip was not where the day's crowded bet printed, so no new risk is opened. The book stays flat into the release.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "The US employment report is the dated event, and the two-year has already traded the dovish outcome at 4.46, down 12bp, with bullish bond bets put on ahead of the print. That cash yield is not an exchange contract, and the SOFR strip was not where the day's crowded bet printed, so no new risk is opened. The book stays flat into the release."
     }
   ],
   "schema_version": 1,

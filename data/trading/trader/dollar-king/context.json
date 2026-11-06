@@ -131,14 +131,14 @@
     "nav_usd": 100179265.77,
     "net_pnl_usd": 179265.77,
     "pressure_flags": [],
-    "prior_competition_rank": 2,
-    "rank_change": 0,
+    "prior_competition_rank": 1,
+    "rank_change": 1,
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -25960.8,
     "status": "ok"
   },
   "learning": {
@@ -149,7 +149,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9ecadd8f9b01c2e5ae97bfd460c8299e9d61b62839fab3245b2290991a4b84e1",
+  "memory_context_sha256": "d1a4a999314b35ac79b2c1d2b2d4ae9f96f11ed8f05306ef1618b6893acaa6e4",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -166,7 +166,7 @@
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 4821.64,
+        "giveback_usd": 25982.69,
         "holding_seconds": 604363,
         "horizon_elapsed_fraction": 0.1554,
         "horizon_status": "within",
@@ -174,15 +174,15 @@
         "intended_horizon_days": 45,
         "mae_usd": -102370.52,
         "mechanical_order": false,
-        "mfe_usd": 28921.04,
+        "mfe_usd": 50082.09,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-012b8f0c252c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Dollar-yen grinds higher as the 271 basis-point SOFR-TONA cash gap and the March 2027 4.39 versus 1.67 path gap keep paying after a hold, not as a one-day devaluation spike.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 28921.04,
-        "retained_mfe_fraction": 0.8333,
+        "recorded_mfe_usd": 50082.09,
+        "retained_mfe_fraction": 0.4812,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 200000.0,
@@ -224,27 +224,27 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.19
+        "value": 0.18
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.24
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.21
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.06
+        "value": 0.05
       },
       "self_trust": {
         "band": "steady",
@@ -279,7 +279,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e580a94fa44d222a9b83eddd3a79521725135f0a03d3fbb242ca417d32d9e150",
+    "state_sha256": "b3db4b7934625530f680b5d22e7b2fcd3d8d248afde9d0cfb1094e334147e6cc",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -2311,6 +2311,81 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Official SOFR is 3.97 on 3 November, and the strip already prices about 19.5 basis points of tightening by December and 53.5 by September. Brent at 94.62 and a midterm bond bid do not create a new overnight dislocation versus that path; they are the path. The overnight session is the wrong horizon for a multi-meeting hike curve, so the book stays flat at the official cash benchmark."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The hike strip is the price, twos and tens have already rallied into the jobs report, and paying SOFR to hold any of those expressions finances a crowded pre-event position.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 18,
+      "decision_fingerprint": "de47d28415603335c1012f6a8f6d0b519c5655209902d6add00074e7759eed9e",
+      "event_id": "jde-c59449a2732047cf",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-04",
+          "percent_rate": 3.94,
+          "rate": 3.94,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Realized funding should print about the same as this hike strip, so the book stays at the zero official SOFR benchmark of 3.94 percent and does not pay SOFR on shocked risk capital.",
+        "sr3_forward_view": "The strip is a hiking path versus 3.94 percent cash, with implied rates of 4.115 in December 2026, 4.24 in March 2027, 4.335 in June 2027 and 4.365 in September 2027."
+      },
+      "invalidation": "The flat call breaks if the jobs report leaves the SOFR strip sitting on these implied rates after a funding outcome the strip failed to absorb, or if a Canadian or Australian fixing jumps through the March forwards already on the screen.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8222583fa018ec48e2ef406ca5d166a0ae88cd8934bbcf9ce5cbf4dae83a318f",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-04",
+            "percent_rate": 3.94,
+            "rate": 3.94,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Realized funding should print about the same as this hike strip, so the book stays at the zero official SOFR benchmark of 3.94 percent and does not pay SOFR on shocked risk capital.",
+          "sr3_forward_view": "The strip is a hiking path versus 3.94 percent cash, with implied rates of 4.115 in December 2026, 4.24 in March 2027, 4.335 in June 2027 and 4.365 in September 2027."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "21c22afde51cf943221ee05b2ac1396ada670bc42d02166a43672f5dea3a6afa"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR futures already capitalize a hike path off 3.94 percent cash, with December at 4.115, March at 4.24, June at 4.335 and September at 4.365. The US 2-year at 4.46 and the 10-year at 4.84 have rallied hard into the jobs report, so new duration is a crowded pre-position. Canada and Australia show the same priced paths, and the completed Bank of England hike leaves no rates spread that is cheap to the information already in the curve.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "SOFR futures already capitalize a hike path off 3.94 percent cash, with December at 4.115, March at 4.24, June at 4.335 and September at 4.365. The US 2-year at 4.46 and the 10-year at 4.84 have rallied hard into the jobs report, so new duration is a crowded pre-position. Canada and Australia show the same priced paths, and the completed Bank of England hike leaves no rates spread that is cheap to the information already in the curve."
     }
   ],
   "schema_version": 1,

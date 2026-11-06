@@ -1826,6 +1826,64 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Australian-kiwi is still elevated at 1.2445 after bouncing from 1.2417, so the existing ten-million short retains a swing path if the cross leaves that extreme toward the recent distribution. Fresh tickets in kiwi-dollar, Australian-Canada, dollar-yen, or March leftovers would expand risk into a mid-range oil cross, a stretched yen, or a two-way 39 to 40 basis-point cash-versus-March strip. Official overnight on shocked capital is the hurdle those new ideas fail; the working ten-million cross does not need to be enlarged."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 10000000,
+          "position_id": "pm-grinder-9366bc9ee048",
+          "rationale": "The cross is still at a five-year 99th percentile and the mark has barely moved, so keep the 10 million short and do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-06T07:31:52.506033-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "4fe735927cfe78b11acf2cb085d8358b9708539cd9359745eb40735e8f8c2e60",
+      "event_id": "jde-3f3257fb58434379",
+      "funding_view": null,
+      "invalidation": "Cover the short if the cross trades about one percent through the mark, near 1.258, or if it keeps making fresh extremes without a pullback. Stay out of the SOFR contracts until the gap versus 3.94 cash is more than a jobs-week adverse move.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-grinder-9366bc9ee048"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "535c702f4a46dbcfe876c73c111afad2638e26054902d0fd9846d29f16dd7c11",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "13762cdcda3b63e6de1c0f0d508f409b59d1f711278f01dab90127d4b9f859bd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "c887cd6f4147708e254c982152aea0f39a51d67a1e84c87aafda4154d0ccf708",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261106-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi is still a five-year extreme at 1.2453, against the existing short from 1.2456. A one percent squeeze on the 10 million stub is about 100 thousand dollars, and the 3.94 percent SOFR charge on that risk capital is small beside an unchanged dislocation, so the short stays at this size. December SOFR at 4.115 and March SOFR at 4.24 are the market's own price over 3.94 cash, not an edge that covers funding on shock capital ahead of the jobs report.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi is still a five-year extreme at 1.2453, against the existing short from 1.2456. A one percent squeeze on the 10 million stub is about 100 thousand dollars, and the 3.94 percent SOFR charge on that risk capital is small beside an unchanged dislocation, so the short stays at this size. December SOFR at 4.115 and March SOFR at 4.24 are the market's own price over 3.94 cash, not an edge that covers funding on shock capital ahead of the jobs report."
     }
   ],
   "schema_version": 1,

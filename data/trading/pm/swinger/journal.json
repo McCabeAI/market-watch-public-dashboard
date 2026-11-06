@@ -1843,6 +1843,62 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Australian-kiwi is still a crowded elevated cross at 1.2445 after a bounce from 1.2417, with kiwi washed out on the dollar and no fresh Australian policy shock. The swing still has room toward 1.20-1.22 on a multi-week horizon; cheaper oil does not reverse Australia's relative premium enough to close that gap. Cash-versus-March leftovers in SOFR and CORRA are already in the tape and do not clear a new rates book versus sitting in the existing 300 million cross. Being behind on the scoreboard is not a reason to layer correlated receive risk or to cut a working short that has not reached the realization zone."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 300000000,
+          "position_id": "pm-swinger-f8f9feb515d2",
+          "rationale": "The 99th-percentile extreme is intact, so the 300 million short stays on at full size and is not added. Shocked risk on a one-percent move is already about three million dollars.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-06T07:31:52.114849-05:00",
+      "conviction": 78,
+      "decision_fingerprint": "0a493b5c42f19f1d895cb395880cc89d511e9a7c1fa538385b1527cf63334a52",
+      "event_id": "jde-cf45c2ebe9384ebc",
+      "funding_view": null,
+      "invalidation": "Cover the short if the cross extends and holds well above this extreme on a domestic New Zealand shock, or if a reversal through 1.22 exhausts the remaining downside.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-f8f9feb515d2"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "db1f5c0bc80a73ce19a2f146c0f325ab2ff27f8a0bdf0d0b7ffe2945f472ee94",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "655b1041f96356346b785d34b777aaec36295fdd6adad62ec7598a793a3be482"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "fb5ec2846028a0ebc148f14656ea4a5f6064bf9e23bda7a84a30140c32a65724",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261106-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi is still the five-year extreme at 1.2453, a 2.75 z-score and the 99th percentile, and the short from 1.2456 has not mean-reverted. The book stays concentrated in that fade. A one-percent squeeze on 300 million is about three million dollars against a ten million risk-capital limit, so the line is already large and is not pyramided. December and March SOFR already price hikes off 3.94 cash, which is a contested strip and not a second swing.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi is still the five-year extreme at 1.2453, a 2.75 z-score and the 99th percentile, and the short from 1.2456 has not mean-reverted. The book stays concentrated in that fade. A one-percent squeeze on 300 million is about three million dollars against a ten million risk-capital limit, so the line is already large and is not pyramided. December and March SOFR already price hikes off 3.94 cash, which is a contested strip and not a second swing."
     }
   ],
   "schema_version": 1,

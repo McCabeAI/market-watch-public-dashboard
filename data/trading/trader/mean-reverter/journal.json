@@ -1788,6 +1788,80 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Official cash SOFR is 3.97 against March 4.36, so 39 basis points of unused tightening remain after the implied fell from a 4.58 entry. The post-election bond bid and cheaper oil are the fade of a stretched hike path, not a new dislocation. Keep the existing March receive; do not add after a 22 basis-point working move and do not chase Australian-kiwi, which is a different crowded extreme."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 5000000,
+          "position_id": "pos-1477172adb86",
+          "rationale": "The receive from 4.58 has done the job. At 4.24 the leftover versus cash 3.94 is about 30 basis points and is no longer a fade in this size.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 5000000,
+          "position_id": null,
+          "rationale": "Short the cross at 1.2453. The 99th percentile lines up with a cheap kiwi and a rich Australian-Canada print, while the Australian path is not stretched.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "67ad6d5f02af352d39d4557964f0436a0e3f9c23990b11aeba2202a6fbd4a261",
+      "event_id": "jde-6c23587b1e1e4f89",
+      "funding_view": null,
+      "invalidation": "The cross short is wrong if Australian-kiwi holds or extends this 99th-percentile print while oil stays firm near Brent 98.29, or if kiwi-dollar breaks below 0.5622.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-1477172adb86",
+        "pos-9a020b7cffca"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-1477172adb86",
+        "trd-trader-mean-reverter-pos-9a020b7cffca"
+      ],
+      "memory_context_sha256": "988140e7f2a82022631a636a3bdafff82030ae38198120a2bfeb2949be25de26",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4de589b744a29d90ff12441029adc85be704d647aae2b204a6036c23aa75ba3e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi at 1.2453 is the level that is actually dislocated, a five-year z of 2.75 and the 99th percentile, while Australia's policy path is only 7 basis points above cash. The SOFR March long has already compressed from 4.58 to 4.24, and the leftover 30 basis points over cash at 3.94 is not a premium to keep with oil firm and yields bid into the jobs report. Flatten that receive and fade the cross in the same small size.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi at 1.2453 is the level that is actually dislocated, a five-year z of 2.75 and the 99th percentile, while Australia's policy path is only 7 basis points above cash. The SOFR March long has already compressed from 4.58 to 4.24, and the leftover 30 basis points over cash at 3.94 is not a premium to keep with oil firm and yields bid into the jobs report. Flatten that receive and fade the cross in the same small size."
     }
   ],
   "schema_version": 1,

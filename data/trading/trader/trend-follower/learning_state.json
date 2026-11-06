@@ -28,6 +28,18 @@
       "owner_type": "trader",
       "rationale": "That rule is about not adding to a March SOFR pay when implied drifts lower against a live ten-year backup. This ticket receives March SOFR with the ten-year already down 35bp over one month, so the confirming coupon tape is lower yields, not a pay.",
       "run_id": "overnight-20261102"
+    },
+    {
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "disposition": "DOES_NOT_APPLY",
+      "instruments": [
+        "SOFR_2027-03"
+      ],
+      "lesson_id": "les-1d92cbbe59eb",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "rationale": "That lesson bars adding to a SOFR pay while the contract drifts lower against a US 10-year backup. This add is a receive with the yield downtrend, and the 10-year is rallying rather than backing up, so the pay-rotation rule does not govern it.",
+      "run_id": "overnight-20261106"
     }
   ],
   "schema_version": 1,

@@ -1808,6 +1808,80 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Carry and dove still receive Canada; this book stays the March pay rather than joining that crowded leftover fade. Cash 2.53 versus March 2.93 still prices 40 basis points of tightening, and cheaper oil is the consensus argument to receive. The existing pay is the ownership-asymmetry expression: fade the crowd that is already long the leftover. Do not add after oil broke the three-digit handle."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Cut 25 million of the 50 million Canada March short. The implied yield has already fallen from 2.995 to 2.885, and the leftover gap versus cash is no longer a special outlier.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": "Short Australian-kiwi at 1.2453. Both legs print at opposite five-year tails, which is a cleaner ownership extreme than dollar-yen near the 90th percentile.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "d1f5e4cd6c360007669aabf7b94c0b829669e48d9c0f8154507610413b18c71f",
+      "event_id": "jde-cc00664e99484ecd",
+      "funding_view": null,
+      "invalidation": "The cross fade is invalidated if Australian-kiwi holds 1.2453 and extends while kiwi-dollar stays pinned at 0.5622. The residual Canada short is invalidated if March implied yield keeps falling toward cash at 2.52.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-be9eaa63695e",
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-be9eaa63695e",
+        "trd-trader-positioning-cynic-pos-df316f59e974"
+      ],
+      "memory_context_sha256": "036d5a9d2980a81785d7bce1c1ea0898843bacd30b9a054ca8d6d892c8823b3a",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "31a6106e5f2b89841f297c164c0aea7d39de26d96fed314d73220a85fb4a1845"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi at 1.2453 is the 99th percentile of five years and kiwi-dollar at 0.5622 is the 3rd, so the crowded-looking position is long the cross and short the kiwi. The 50 million Canada March short from 2.995 is behind at 2.885, and the leftover premium versus cash now looks like the US gap rather than a special outlier. Cut that short in half and fade the cross.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi at 1.2453 is the 99th percentile of five years and kiwi-dollar at 0.5622 is the 3rd, so the crowded-looking position is long the cross and short the kiwi. The 50 million Canada March short from 2.995 is behind at 2.885, and the leftover premium versus cash now looks like the US gap rather than a special outlier. Cut that short in half and fade the cross."
     }
   ],
   "schema_version": 1,

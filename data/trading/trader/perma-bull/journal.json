@@ -2191,6 +2191,92 @@
       "run_id": "overnight-20261105",
       "schema_version": 1,
       "thesis": "Cash CORRA at 2.53 still sits 40 basis points below March 2.93, and cash SOFR at 3.97 still sits 39 below March 4.36, so the 2027 strips continue to price hikes rather than a completed growth break. Brent at 94.62 and WTI at 88.12 are a real income fade versus the prior three-digit handle, but equities near 7569 and copper at 6.40 keep the cyclical tape from a hard stop. Australian cash 4.85 versus March 4.925 still prices a little tightening, so the existing front-end pays stay the growth-into-policy book."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Hold the 50 million Canada March pay. Implied 2.885 still prices tightening versus cash 2.52, and firm oil keeps the path alive. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 25000000,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Hold the 25 million Australia March pay. It is ahead at 4.92 versus a 4.765 entry, with only a small premium over cash 4.85. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 50000000,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Hold the 50 million US March pay. Implied 4.24 still prices tightening versus cash 3.94 after the pre-jobs rally. Do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "bc10e281b39ec0c3f12c88d464f59b01a4a5ec2b520045045d1de0bfaeb57918",
+      "event_id": "jde-2ca000f873ab4895",
+      "funding_view": null,
+      "invalidation": "The pays are wrong if March SOFR falls through cash at 3.94 or March CORRA falls through cash at 2.52, or if equities and copper break while oil rolls over.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1472ccc3cd36729d4ac517fbc7f4dd3ebd728976691550bc19221447f3089e28",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e3d08ff2da4d4802a611b1fda7580521e30852736db4fa8443817b7e7b5ce42d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The front end has priced a growth scare the cyclical tape does not confirm. Official SOFR is 3.94 against March 4.24, cash CORRA is 2.52 against March 2.885, and cash AONIA is 4.85 against March 4.92, so the strips still price tightening after the US two-year fell 12bp on the day. Brent at 98.29, the S&P 500 at 7688.62, copper at 6.25, and VIX at 16.61 say nominal growth is intact, and the Bank of England hike to 4 percent argues the global nominal pulse is not rolling over. Keep the three pays and do not add in front of the jobs report.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "The front end has priced a growth scare the cyclical tape does not confirm. Official SOFR is 3.94 against March 4.24, cash CORRA is 2.52 against March 2.885, and cash AONIA is 4.85 against March 4.92, so the strips still price tightening after the US two-year fell 12bp on the day. Brent at 98.29, the S&P 500 at 7688.62, copper at 6.25, and VIX at 16.61 say nominal growth is intact, and the Bank of England hike to 4 percent argues the global nominal pulse is not rolling over. Keep the three pays and do not add in front of the jobs report."
     }
   ],
   "schema_version": 1,

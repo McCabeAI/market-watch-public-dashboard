@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 625000.0,
     "risk_capital_utilization": 0.0625,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 45693.4,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b8250efa21a7bb9a1d96ae005e3bfc2b33993495c08c4950437051ddd19cebee",
+  "memory_context_sha256": "ba035dc37ef21a74d5ad30e16a069c4e14a6040b9af509aec60e07b99d55bbcc",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -83,7 +83,7 @@
         "horizon_status": "unspecified",
         "instrument": "SOFR_2027-09",
         "intended_horizon_days": null,
-        "mae_usd": -65000.0,
+        "mae_usd": -97500.0,
         "mechanical_order": false,
         "mfe_usd": 70000.0,
         "move_versus_entry_intent": "unknown",
@@ -208,6 +208,55 @@
       "risk_capital_usd": 250000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 60,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 4.12,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": "The US jobs report is the catalyst. Oil near Brent 98.29 and a Fed still watching price risks are what should push the front-end yield back up.",
+        "current_mark": 4.115,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 4.12,
+        "expected_mark_direction": null,
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "SOFR_2026-12",
+        "intended_horizon_days": 20,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-6c7bcf0fe6af",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The short pays if December SOFR implied yield rises as the jobs-report gap closes and the 12bp front-end rally is retraced.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "SOFR_2026-12",
+      "opened_at": "2026-11-06T06:25:49.281876-05:00",
+      "position_id": "pos-6c7bcf0fe6af",
+      "risk_capital_usd": 100000.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
     }
   ],
   "owner_id": "rate-hawk",
@@ -228,7 +277,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -237,17 +286,17 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.2
+        "value": 0.19
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
+        "trend": "up",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -276,17 +325,17 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_drop_minor",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261030"
+        "kind": "session_loss",
+        "magnitude": 0.0913868,
+        "run_id": "overnight-20261106"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "a9648953eb2bef5e2b2f07db0b5e4ad93823434a45680724125227d18d6afc70",
+    "state_sha256": "6002d9153a61ff2c39ba6b0113d9af6a7cfd08ab3cb66a71ba561fb276ea6f7b",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 2,
+      "session_loss": 3,
       "session_win": 0
     }
   },
