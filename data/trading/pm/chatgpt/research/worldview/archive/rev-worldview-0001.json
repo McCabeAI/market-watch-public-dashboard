@@ -1,0 +1,4379 @@
+{
+  "acceptance": "awaiting_pm",
+  "beliefs": {
+    "wv-au-activity": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-au-activity",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-09-21T17:20:30Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-08",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU.Activity"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the AU Activity level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized AU Activity print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Australia Activity score level 45.79 versus structural anchor 50, class neutral, impulse 2.23, direction warming, component period 2026-08, coverage 1. Components: business_surveys level 52.1 impulse -0.5 period 2026-08 transform 52.1 release 2026-09-03 retrieved 2026-09-21T17:20:30Z; gdp_domestic_demand level 41.58 impulse 4.04 period 2026-Q2 transform 1.4075 release 2026-09-03 retrieved 2026-09-21T14:49:33Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "activity",
+      "watch_id": null
+    },
+    "wv-au-consumer": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-au-consumer",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-02T09:40:56Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU.Consumer"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the AU Consumer level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized AU Consumer print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Australia Consumer score level 49.1 versus structural anchor 50, class neutral, impulse -1.87, direction cooling, component period 2026-09, coverage 0.75. Components: confidence level 34.4 impulse null period 2026-09 transform 84.4 release unverified retrieved 2026-09-21T14:49:33Z; income level 49.89 impulse 12.26 period 2026-Q2 transform 1.1175 release 2026-09-03 retrieved 2026-10-02T09:40:56Z; retail is unobserved and is retained as a gap, not as a zero; spending level 63 impulse -16 period 2026-08 transform 0.7 release unverified retrieved 2026-10-02T09:40:56Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "consumer",
+      "watch_id": null
+    },
+    "wv-au-financial": {
+      "alternatives": [],
+      "belief_id": "wv-au-financial",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "Australia has no financial-conditions pillar in the frozen temperature_scores block. This belief stays unsupported. No financial conditions are inferred from the missing pillar.",
+      "support": "unsupported",
+      "theme": "financial",
+      "watch_id": null
+    },
+    "wv-au-inflation": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-au-inflation",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-28T09:26:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU.Inflation"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the AU Inflation level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized AU Inflation print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Australia Inflation score level 67.25 versus structural anchor 50, class warm, impulse 1.5, direction warming, component period 2026-09, coverage 1. Components: headline level 72.5 impulse 3.75 period 2026-09 transform 4.3 release unverified retrieved 2026-10-28T09:26:41Z; underlying level 63.75 impulse 0 period 2026-09 transform 3.6 release unverified retrieved 2026-10-28T09:26:41Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-au-labor": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-au-labor",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-15T10:25:03Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU.Labor"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the AU Labor level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized AU Labor print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Australia Labor score level 45.74 versus structural anchor 50, class neutral, impulse -4.39, direction cooling, component period 2026-09, coverage 1. Components: employment level 43.96 impulse -7.97 period 2026-09 transform -5.2118 release unverified retrieved 2026-10-15T10:25:03Z; unemployment level 45.63 impulse -5.13 period 2026-09 transform 4.7183 release unverified retrieved 2026-10-15T10:25:03Z; wages level 47 impulse 0 period 2026-Q2 transform 3.2 release 2026-08-13 retrieved 2026-09-21T14:49:33Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-au-policy": {
+      "alternatives": [],
+      "belief_id": "wv-au-policy",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Australia policy-reaction conclusion is seeded. Warm or cool scores are not a central-bank call. Derived meeting-price levels stay excluded.",
+      "support": "unsupported",
+      "theme": "policy",
+      "watch_id": null
+    },
+    "wv-au-pricing": {
+      "alternatives": [],
+      "belief_id": "wv-au-pricing",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Australia market-pricing disagreement is quantified. Meeting-level derived prices are excluded until corrected common evidence is authorized.",
+      "support": "unsupported",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-au-transmission": {
+      "alternatives": [],
+      "belief_id": "wv-au-transmission",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "AU",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.AU"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Australia consumer or corporate transmission estimate is authorized in this seed. The question is retained. The answer is unsupported.",
+      "support": "unsupported",
+      "theme": "transmission",
+      "watch_id": null
+    },
+    "wv-ca-activity": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ca-activity",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-05T09:53:53Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-10",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA.Activity"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the CA Activity level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized CA Activity print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Canada Activity score level 49.4 versus structural anchor 50, class neutral, impulse 16.79, direction warming, component period 2026-10, coverage 1. Components: business_surveys level 48.2 impulse -0.6 period 2026-10 transform 48.2 release unverified retrieved 2026-11-05T09:53:53Z; gdp_domestic_demand level 50.2 impulse 28.38 period 2026-Q2 transform 1.8196 release 2026-08-28 retrieved 2026-09-21T14:45:36Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "activity",
+      "watch_id": null
+    },
+    "wv-ca-consumer": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ca-consumer",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-29T08:24:31Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-08",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA.Consumer"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the CA Consumer level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized CA Consumer print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Canada Consumer score level 57.03 versus structural anchor 50, class neutral, impulse 6.61, direction warming, component period 2026-08, coverage 0.75. Components: confidence is unobserved and is retained as a gap, not as a zero; income level 66.8 impulse 15 period 2026-Q2 transform 2.12 release 2026-08-28 retrieved 2026-09-21T14:45:36Z; retail level 49.78 impulse 1.84 period 2026-08 transform 0.3277 release 2026-10-23 retrieved 2026-10-29T08:24:31Z; spending level 54.5 impulse 3 period 2026-Q2 transform 0.8 release 2026-08-28 retrieved 2026-09-21T14:45:36Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "consumer",
+      "watch_id": null
+    },
+    "wv-ca-financial": {
+      "alternatives": [],
+      "belief_id": "wv-ca-financial",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "Canada has no financial-conditions pillar in the frozen temperature_scores block. This belief stays unsupported. No financial conditions are inferred from the missing pillar.",
+      "support": "unsupported",
+      "theme": "financial",
+      "watch_id": null
+    },
+    "wv-ca-inflation": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ca-inflation",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-20T13:31:20Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA.Inflation"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the CA Inflation level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized CA Inflation print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Canada Inflation score level 54.34 versus structural anchor 50, class neutral, impulse -0.44, direction static, component period 2026-09, coverage 1. Components: headline level 63.66 impulse 0.78 period 2026-09 transform 3.0928 release 2026-10-19 retrieved 2026-10-20T13:31:20Z; underlying level 48.12 impulse -1.25 period 2026-09 transform 1.85 release 2026-10-19 retrieved 2026-10-20T13:31:20Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-ca-labor": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ca-labor",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-15T10:25:03Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA.Labor"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the CA Labor level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized CA Labor print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Canada Labor score level 40.94 versus structural anchor 50, class neutral, impulse -1.22, direction cooling, component period 2026-09, coverage 1. Components: employment level 42.67 impulse -5.77 period 2026-09 transform -11.6333 release unverified retrieved 2026-10-15T10:25:03Z; unemployment level 40 impulse -2 period 2026-09 transform 6.5 release unverified retrieved 2026-10-15T10:25:03Z; wages level 43.38 impulse 3.78 period 2026-09 transform 2.3382 release unverified retrieved 2026-10-15T10:25:03Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-ca-policy": {
+      "alternatives": [],
+      "belief_id": "wv-ca-policy",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Canada policy-reaction conclusion is seeded. Warm or cool scores are not a central-bank call. Derived meeting-price levels stay excluded.",
+      "support": "unsupported",
+      "theme": "policy",
+      "watch_id": null
+    },
+    "wv-ca-pricing": {
+      "alternatives": [],
+      "belief_id": "wv-ca-pricing",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Canada market-pricing disagreement is quantified. Meeting-level derived prices are excluded until corrected common evidence is authorized.",
+      "support": "unsupported",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-ca-transmission": {
+      "alternatives": [],
+      "belief_id": "wv-ca-transmission",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "CA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Canada consumer or corporate transmission estimate is authorized in this seed. The question is retained. The answer is unsupported.",
+      "support": "unsupported",
+      "theme": "transmission",
+      "watch_id": null
+    },
+    "wv-ea-activity": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ea-activity",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-30T10:33:05Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-Q3",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA.Activity"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the EA Activity level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized EA Activity print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Euro area Activity score level 54.59 versus structural anchor 50, class neutral, impulse -4.27, direction cooling, component period 2026-Q3, coverage 1. Components: business_surveys level 52.23 impulse 1.5 period 2026-09 transform 52.2333 release 2026-10-05 retrieved 2026-10-05T10:08:21Z; gdp_domestic_demand level 56.16 impulse -8.12 period 2026-Q3 transform 2.0157 release unverified retrieved 2026-10-30T10:33:05Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "activity",
+      "watch_id": null
+    },
+    "wv-ea-consumer": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ea-consumer",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T11:25:49Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-10",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA.Consumer"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the EA Consumer level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized EA Consumer print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Euro area Consumer score level 40.92 versus structural anchor 50, class neutral, impulse -2.72, direction cooling, component period 2026-10, coverage 1. Components: confidence level 42.1 impulse -1.1 period 2026-10 transform -17.9 release unverified retrieved 2026-11-04T10:35:22Z; income level 44.6 impulse 0.9 period 2026-Q2 transform 0.14 release unverified retrieved 2026-10-29T08:24:31Z; retail level 30 impulse -10.67 period 2026-09 transform -0.3333 release unverified retrieved 2026-11-06T11:25:49Z; spending level 47 impulse 0 period 2026-Q2 transform 0.3 release unverified retrieved 2026-09-21T20:24:59Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "consumer",
+      "watch_id": null
+    },
+    "wv-ea-financial": {
+      "alternatives": [],
+      "belief_id": "wv-ea-financial",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "Euro area has no financial-conditions pillar in the frozen temperature_scores block. This belief stays unsupported. No financial conditions are inferred from the missing pillar.",
+      "support": "unsupported",
+      "theme": "financial",
+      "watch_id": null
+    },
+    "wv-ea-inflation": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ea-inflation",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-04T10:35:22Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-10",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA.Inflation"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the EA Inflation level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized EA Inflation print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Euro area Inflation score level 64.5 versus structural anchor 50, class warm, impulse 1.75, direction warming, component period 2026-10, coverage 1. Components: headline level 75 impulse 2.5 period 2026-10 transform 4 release unverified retrieved 2026-11-04T10:35:22Z; underlying level 57.5 impulse 1.25 period 2026-10 transform 2.6 release unverified retrieved 2026-11-04T10:35:22Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-ea-labor": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-ea-labor",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-30T10:33:05Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA.Labor"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the EA Labor level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized EA Labor print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Euro area Labor score level 49.02 versus structural anchor 50, class neutral, impulse 0.16, direction static, component period 2026-09, coverage 1. Components: employment level 51.2 impulse 3.8 period 2026-Q2 transform 162 release unverified retrieved 2026-09-21T20:24:59Z; unemployment level 50 impulse 0 period 2026-09 transform 6.5 release unverified retrieved 2026-10-30T10:33:05Z; wages level 44.5 impulse -1.1 period 2026-Q2 transform 2.45 release unverified retrieved 2026-10-02T09:40:56Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-ea-policy": {
+      "alternatives": [],
+      "belief_id": "wv-ea-policy",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Euro area policy-reaction conclusion is seeded. Warm or cool scores are not a central-bank call. Derived meeting-price levels stay excluded.",
+      "support": "unsupported",
+      "theme": "policy",
+      "watch_id": null
+    },
+    "wv-ea-pricing": {
+      "alternatives": [],
+      "belief_id": "wv-ea-pricing",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Euro area market-pricing disagreement is quantified. Meeting-level derived prices are excluded until corrected common evidence is authorized.",
+      "support": "unsupported",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-ea-transmission": {
+      "alternatives": [],
+      "belief_id": "wv-ea-transmission",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "EA",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.EA"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Euro area consumer or corporate transmission estimate is authorized in this seed. The question is retained. The answer is unsupported.",
+      "support": "unsupported",
+      "theme": "transmission",
+      "watch_id": null
+    },
+    "wv-global-alt-relief": {
+      "alternatives": [],
+      "belief_id": "wv-global-alt-relief",
+      "cadence": "market",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Retained as an alternative. No probability is assigned."
+      },
+      "country": null,
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "hypothesis",
+          "note": "Stored expression of dollar and energy relief. A trade expression, not the memory filter.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/trading/pm/chatgpt/research/hypotheses/hyp-chatgpt-eurusd-dollar-repricing-20261105.json"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Spot 1.1224 as of 2026-11-05; ret_1d -0.3816 with units unlabeled in the packet.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.fx.pairs.EURUSD"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Brent 98.29 USD/bbl as of 2026-11-05. Rebound is not recalculated here.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.BRENT"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "WTI 90.52 USD/bbl as of 2026-11-05.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.WTI"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "The PM ranks this against the turn explanation."
+      ],
+      "scope": "global",
+      "statement": "Competing explanation, not the selected base case: post-election dollar and energy relief can still be underway, and the AI-credit and tech-swoon headlines can be a positioning shock rather than a macro regime change.",
+      "support": "sourced",
+      "theme": "regime",
+      "watch_id": null
+    },
+    "wv-global-alt-turn": {
+      "alternatives": [],
+      "belief_id": "wv-global-alt-turn",
+      "cadence": "market",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Retained as an alternative. The oil rebound itself is not recalculated."
+      },
+      "country": null,
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "hypothesis",
+          "note": "Stored expression of dollar and energy relief. A trade expression, not the memory filter.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/trading/pm/chatgpt/research/hypotheses/hyp-chatgpt-eurusd-dollar-repricing-20261105.json"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Spot 1.1224 as of 2026-11-05; ret_1d -0.3816 with units unlabeled in the packet.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.fx.pairs.EURUSD"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Brent 98.29 USD/bbl as of 2026-11-05. Rebound is not recalculated here.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.BRENT"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "WTI 90.52 USD/bbl as of 2026-11-05.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.WTI"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Broad USD 121.6656 as of 2026-10-30, earlier than the Nov 5 EURUSD spot.",
+          "observation_as_of": "2026-10-30",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.BROAD_USD"
+        },
+        {
+          "collection_as_of": "2026-11-06T20:00:00-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "direct_input",
+          "note": "Kevin's documented tension: post-election dollar/energy relief was challenged by the equity selloff, AI-credit headlines, oil rebound, and firmer USD.",
+          "observation_as_of": "2026-11-06",
+          "ref": "control-plane issue 404 direct input"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "The PM ranks this against continued relief."
+      ],
+      "scope": "global",
+      "statement": "Competing explanation, not the selected base case: the supplied AI-credit and tech-swoon headlines, together with the stored negative EURUSD ret_1d and still-elevated oil closes, can be the start of a turn away from dollar and energy relief.",
+      "support": "sourced",
+      "theme": "regime",
+      "watch_id": null
+    },
+    "wv-global-regime": {
+      "alternatives": [
+        "The warm inflation levels are lagged and the impulses already contradict a heating story."
+      ],
+      "belief_id": "wv-global-regime",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "It only restates stored classes. It does not identify a regime."
+      },
+      "country": null,
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Six-country class and level fields used in the sentence.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries"
+        }
+      ],
+      "falsifiers": [
+        "Authorized revisions move the cited warm inflation levels back to the anchor."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "The next authorized temperature vintage."
+      ],
+      "scope": "global",
+      "statement": "Provisional regime reading, not a base case. Inflation scores stored as warm: AU inflation level 67.25 as of 2026-09; EA inflation level 64.5 as of 2026-10; NZ inflation level 64.25 as of 2026-Q2; US inflation level 63.1 as of 2026-07. Labor scores with level under 45 or class cool: CA labor level 40.94 class neutral as of 2026-09; NZ labor level 36.51 class cool as of 2026-Q2. Other stored pillar classes are neutral except where a country belief says otherwise. Activity levels sit near the anchor in several cores while impulses and vintages differ. No single global regime is established. A regime transition that would change correlations is a question, not a finding.",
+      "support": "sourced",
+      "theme": "regime",
+      "watch_id": null
+    },
+    "wv-global-tail-deleveraging": {
+      "alternatives": [],
+      "belief_id": "wv-global-tail-deleveraging",
+      "cadence": "market",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The tail is named so it is not forgotten. It is not a forecast."
+      },
+      "country": null,
+      "epistemic": "assumption",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T20:00:00-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "direct_input",
+          "note": "Kevin: broader deleveraging is a possible tail, not established causality or the base case.",
+          "observation_as_of": "2026-11-06",
+          "ref": "control-plane issue 404 direct input"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence shows the equity and credit moves were idiosyncratic and reversed without deleveraging."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "A later authorized packet describes credit, equity, and dollar moves together."
+      ],
+      "scope": "global",
+      "statement": "Possible tail, not the base case and not established causality: broader deleveraging could connect the supplied AI-credit and tech-swoon headlines with risk assets and the dollar. No practical small-risk proposal is attached. A credible tail would deserve one later; this tail is not yet credible enough, and the missing proposal is not an instruction to trade.",
+      "support": "insufficient_authorized_current_evidence",
+      "theme": "tail",
+      "watch_id": null
+    },
+    "wv-global-tension": {
+      "alternatives": [
+        "Relief can still be the cyclical base while the headlines are a positioning shock.",
+        "The headlines and the firmer EURUSD daily print can be the start of a turn."
+      ],
+      "belief_id": "wv-global-tension",
+      "cadence": "market",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The tension is Kevin's documented challenge plus stored marks. Causality is not established."
+      },
+      "country": null,
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "hypothesis",
+          "note": "Stored expression of dollar and energy relief. A trade expression, not the memory filter.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/trading/pm/chatgpt/research/hypotheses/hyp-chatgpt-eurusd-dollar-repricing-20261105.json"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Spot 1.1224 as of 2026-11-05; ret_1d -0.3816 with units unlabeled in the packet.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.fx.pairs.EURUSD"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Brent 98.29 USD/bbl as of 2026-11-05. Rebound is not recalculated here.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.BRENT"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "WTI 90.52 USD/bbl as of 2026-11-05.",
+          "observation_as_of": "2026-11-05",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.WTI"
+        },
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Broad USD 121.6656 as of 2026-10-30, earlier than the Nov 5 EURUSD spot.",
+          "observation_as_of": "2026-10-30",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.market_state.data.cross_assets.series.BROAD_USD"
+        },
+        {
+          "collection_as_of": "2026-11-06T20:00:00-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "direct_input",
+          "note": "Kevin's documented tension: post-election dollar/energy relief was challenged by the equity selloff, AI-credit headlines, oil rebound, and firmer USD.",
+          "observation_as_of": "2026-11-06",
+          "ref": "control-plane issue 404 direct input"
+        },
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "AI debt concerns grow as ING reportedly seeks buyers for $500 million of data center loans",
+          "observation_as_of": "2026-11-06T05:24:52-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items.news:80f84c85f21e0aa9"
+        },
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "SoftBank credit risk jumps to 4-year high, shares tumble as AI fears roil market",
+          "observation_as_of": "2026-11-05T20:15:00-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items.news:5dd4b0f051ae8ece"
+        },
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "SoftBank Leads Asia Bond Losses as AI Rout Spreads to Credit",
+          "observation_as_of": "2026-11-05T11:00:00-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items.news:5280c2a7f410b0c3"
+        },
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Wall St Week Ahead As tech swoon roils market, US inflation data on tap",
+          "observation_as_of": "2026-11-05T22:06:00-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items.news:30ffebb0ff362279"
+        }
+      ],
+      "falsifiers": [
+        "Authorized later evidence restores the relief mechanism without the cited challenge."
+      ],
+      "hypothesis_refs": [
+        "hyp-chatgpt-eurusd-dollar-repricing-20261105"
+      ],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "PM accepts, revises, or retires this tension after the next packet."
+      ],
+      "scope": "global",
+      "statement": "Provisional and awaiting PM acceptance. The standing dollar-and-energy relief view, stored as hypothesis hyp-chatgpt-eurusd-dollar-repricing-20261105, is challenged by Kevin's direct characterization that the next supplied equity selloff and AI-credit headlines, an oil rebound, and a firmer USD pushed against that relief. Frozen marks, not a new calculation: EURUSD spot 1.1224 on 2026-11-05 with ret_1d -0.3816 (the packet does not label ret_1d units); Brent 98.29 and WTI 90.52 on 2026-11-05; broad USD index 121.6656 as of 2026-10-30, an earlier clock than the Nov 5 spot. This seed does not compute an oil rebound and does not treat headline claims as established facts. Broader deleveraging is a possible tail, not established causality and not the base case.",
+      "support": "sourced",
+      "theme": "regime",
+      "watch_id": null
+    },
+    "wv-jp-activity": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-jp-activity",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-09-21T22:23:58Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-08",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP.Activity"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the JP Activity level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized JP Activity print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Japan Activity score level 57.46 versus structural anchor 50, class neutral, impulse -2.68, direction cooling, component period 2026-08, coverage 1. Components: business_surveys level 52.9 impulse 0.8 period 2026-08 transform 52.9 release 2026-09-03 retrieved 2026-09-21T22:23:58Z; gdp_domestic_demand level 60.5 impulse -5 period 2026-Q2 transform 1.65 release unverified retrieved 2026-09-21T22:23:30Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "activity",
+      "watch_id": null
+    },
+    "wv-jp-consumer": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-jp-consumer",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-30T10:33:05Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP.Consumer"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the JP Consumer level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized JP Consumer print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Japan Consumer score level 33.74 versus structural anchor 50, class cool, impulse 7.29, direction warming, component period 2026-09, coverage 1. Components: confidence level 47.3 impulse -0.1 period 2026-09 transform 35.4 release unverified retrieved 2026-10-05T10:08:21Z; income level 32.08 impulse 32.75 period 2026-08 transform 1.1667 release unverified retrieved 2026-10-13T15:45:39Z; retail level 54.58 impulse -7.5 period 2026-09 transform 2.9667 release unverified retrieved 2026-10-30T10:33:05Z; spending level 1 impulse 4 period 2026-08 transform -1.3333 release unverified retrieved 2026-10-13T15:45:39Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "consumer",
+      "watch_id": null
+    },
+    "wv-jp-financial": {
+      "alternatives": [],
+      "belief_id": "wv-jp-financial",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "Japan has no financial-conditions pillar in the frozen temperature_scores block. This belief stays unsupported. No financial conditions are inferred from the missing pillar.",
+      "support": "unsupported",
+      "theme": "financial",
+      "watch_id": null
+    },
+    "wv-jp-inflation": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-jp-inflation",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-26T11:37:10Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP.Inflation"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the JP Inflation level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized JP Inflation print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Japan Inflation score level 52.5 versus structural anchor 50, class neutral, impulse 4.75, direction warming, component period 2026-09, coverage 1. Components: headline level 52.5 impulse 2.5 period 2026-09 transform 2.2 release unverified retrieved 2026-10-26T11:37:10Z; underlying level 52.5 impulse 6.25 period 2026-09 transform 2.2 release unverified retrieved 2026-10-23T19:46:45Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-jp-labor": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-jp-labor",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-30T10:33:05Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP.Labor"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the JP Labor level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized JP Labor print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "Japan Labor score level 53.78 versus structural anchor 50, class neutral, impulse 2.93, direction warming, component period 2026-09, coverage 1. Components: employment level 55.83 impulse 23.33 period 2026-09 transform 73.3333 release unverified retrieved 2026-10-30T10:33:05Z; unemployment level 52 impulse 2 period 2026-09 transform 2.4 release unverified retrieved 2026-10-30T10:33:05Z; wages level 59 impulse -4 period 2026-08 transform 3.9 release unverified retrieved 2026-10-23T19:46:45Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-jp-policy": {
+      "alternatives": [],
+      "belief_id": "wv-jp-policy",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Japan policy-reaction conclusion is seeded. Warm or cool scores are not a central-bank call. Derived meeting-price levels stay excluded.",
+      "support": "unsupported",
+      "theme": "policy",
+      "watch_id": null
+    },
+    "wv-jp-pricing": {
+      "alternatives": [],
+      "belief_id": "wv-jp-pricing",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Japan market-pricing disagreement is quantified. Meeting-level derived prices are excluded until corrected common evidence is authorized.",
+      "support": "unsupported",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-jp-transmission": {
+      "alternatives": [],
+      "belief_id": "wv-jp-transmission",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "JP",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.JP"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No Japan consumer or corporate transmission estimate is authorized in this seed. The question is retained. The answer is unsupported.",
+      "support": "unsupported",
+      "theme": "transmission",
+      "watch_id": null
+    },
+    "wv-meeting-prices-excluded": {
+      "alternatives": [],
+      "belief_id": "wv-meeting-prices-excluded",
+      "cadence": "structural",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "This is an exclusion instruction from existing coaching, not a price estimate."
+      },
+      "country": null,
+      "epistemic": "fact",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T12:55:30.969326-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "lesson",
+          "note": "November 6 STIRT lesson excluding derived meeting prices.",
+          "observation_as_of": "2026-11-06",
+          "ref": "data/trading/pm/chatgpt/lessons.json#les-aea64fbd5841"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized packet replaces the derived levels and Kevin withdraws the exclusion."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized corrected common meeting prices are supplied."
+      ],
+      "scope": "global",
+      "statement": "Derived meeting-price levels in the frozen packet are excluded from this worldview. Kevin flagged the front Fed meeting estimate as materially wrong by about 8bp (lesson les-aea64fbd5841). Calendar dates are retained as metadata. An empty date list means unverified timing, not a claim that no event exists. Later private repairs are not imported.",
+      "support": "sourced",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-nz-activity": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-nz-activity",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-09-21T17:06:39Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-08",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ.Activity"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the NZ Activity level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized NZ Activity print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "New Zealand Activity score level 51.87 versus structural anchor 50, class neutral, impulse -16.88, direction cooling, component period 2026-08, coverage 1. Components: business_surveys level 51.3 impulse 0.5 period 2026-08 transform 51.3 release unverified retrieved 2026-09-21T17:06:39Z; gdp_domestic_demand level 52.26 impulse -28.46 period 2026-Q2 transform 2.2256 release 2026-09-17 retrieved 2026-09-21T14:51:02Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "activity",
+      "watch_id": null
+    },
+    "wv-nz-consumer": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-nz-consumer",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-30T10:33:05Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-08",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ.Consumer"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the NZ Consumer level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized NZ Consumer print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "New Zealand Consumer score level 48.26 versus structural anchor 50, class neutral, impulse -4.65, direction cooling, component period 2026-08, coverage 1. Components: confidence level 48 impulse null period 2026-08 transform 98 release unverified retrieved 2026-09-21T14:51:02Z; income level 66.5 impulse 16.5 period 2026-Q1 transform 2.1 release 2026-07-02 retrieved 2026-09-21T14:51:02Z; retail level 34.56 impulse -22.94 period 2026-Q2 transform -0.5296 release unverified retrieved 2026-10-30T10:33:05Z; spending level 44 impulse -7.5 period 2026-Q2 transform 0.1 release 2026-09-17 retrieved 2026-09-21T14:51:02Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "consumer",
+      "watch_id": null
+    },
+    "wv-nz-financial": {
+      "alternatives": [],
+      "belief_id": "wv-nz-financial",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "New Zealand has no financial-conditions pillar in the frozen temperature_scores block. This belief stays unsupported. No financial conditions are inferred from the missing pillar.",
+      "support": "unsupported",
+      "theme": "financial",
+      "watch_id": null
+    },
+    "wv-nz-inflation": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-nz-inflation",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-09-21T14:51:02Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-Q2",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ.Inflation"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the NZ Inflation level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized NZ Inflation print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "New Zealand Inflation score level 64.25 versus structural anchor 50, class warm, impulse 4.25, direction warming, component period 2026-Q2, coverage 1. Components: headline level 76.25 impulse 12.5 period 2026-Q2 transform 4.1 release 2026-07-21 retrieved 2026-09-21T14:51:02Z; underlying level 56.25 impulse -1.25 period 2026-Q2 transform 2.5 release 2026-07-21 retrieved 2026-09-21T14:51:02Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-nz-labor": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-nz-labor",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-30T10:33:05Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-Q2",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ.Labor"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the NZ Labor level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized NZ Labor print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "New Zealand Labor score level 36.51 versus structural anchor 50, class cool, impulse -2.19, direction cooling, component period 2026-Q2, coverage 1. Components: employment level 55 impulse 7 period 2026-Q2 transform 13 release 2026-08-05 retrieved 2026-09-21T14:51:02Z; unemployment level 33 impulse -4 period 2026-Q2 transform 5.6 release 2026-08-05 retrieved 2026-09-21T14:51:02Z; wages level 39.57 impulse -0.43 period 2026-Q2 transform 1.9567 release unverified retrieved 2026-10-30T10:33:05Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-nz-policy": {
+      "alternatives": [],
+      "belief_id": "wv-nz-policy",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No New Zealand policy-reaction conclusion is seeded. Warm or cool scores are not a central-bank call. Derived meeting-price levels stay excluded.",
+      "support": "unsupported",
+      "theme": "policy",
+      "watch_id": null
+    },
+    "wv-nz-pricing": {
+      "alternatives": [],
+      "belief_id": "wv-nz-pricing",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No New Zealand market-pricing disagreement is quantified. Meeting-level derived prices are excluded until corrected common evidence is authorized.",
+      "support": "unsupported",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-nz-transmission": {
+      "alternatives": [],
+      "belief_id": "wv-nz-transmission",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "NZ",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.NZ"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No New Zealand consumer or corporate transmission estimate is authorized in this seed. The question is retained. The answer is unsupported.",
+      "support": "unsupported",
+      "theme": "transmission",
+      "watch_id": null
+    },
+    "wv-score-lineage": {
+      "alternatives": [],
+      "belief_id": "wv-score-lineage",
+      "cadence": "structural",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "The lineage sentence is copied from the stored score contract, not inferred."
+      },
+      "country": null,
+      "epistemic": "fact",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T11:42:41Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Score lineage and baseline fields on the frozen temperature block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores"
+        }
+      ],
+      "falsifiers": [
+        "The frozen block's baseline_meaning is not the structural policy anchor."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "A later authorized packet changes the temperature contract or anchor."
+      ],
+      "scope": "global",
+      "statement": "Structural fact: Market Watch temperature LEVEL uses anchor 50 as the policy/trend baseline, not a 2026-09-17 cumulative-impulse reindex. The block calibration as_of is 2026-09-21, which is the anchor date and not the freshness clock. Freeze label 2026-11-06T06:25:49.281876-05:00 and internal market generation 2026-11-06T11:42:41Z are different clocks. Core inflation scores, an unemployment transform, or a rate level are observations, not conclusions.",
+      "support": "sourced",
+      "theme": "structure",
+      "watch_id": null
+    },
+    "wv-signpost-employment-20261106": {
+      "alternatives": [],
+      "belief_id": "wv-signpost-employment-20261106",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "The input date and the stored transforms are sourced. The print outcome is not."
+      },
+      "country": null,
+      "epistemic": "fact",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T20:00:00-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "direct_input",
+          "note": "Kevin flagged November 6 Canadian and US employment.",
+          "observation_as_of": "2026-11-06",
+          "ref": "control-plane issue 404 direct input"
+        },
+        {
+          "collection_as_of": "2026-10-15T10:25:03Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Retained Canada unemployment transform 6.5 for 2026-09. Not a policy conclusion.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.CA.Labor.unemployment"
+        },
+        {
+          "collection_as_of": "2026-10-06T08:52:57Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Retained US unemployment transform 4.2 for 2026-09. Not a policy conclusion.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US.Labor.unemployment"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "An authorized post-freeze labor packet is supplied."
+      ],
+      "scope": "cross",
+      "statement": "Dated direct input from Kevin on 2026-11-06: Canadian and US employment were the immediate risk that day. Stored labor scores are still the September vintages (Canada unemployment transform 6.5, US unemployment transform 4.2). This sentence is not a pending future event at a later apply time, and it does not record the print outcome.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-signpost-inflation-kevin-20261106": {
+      "alternatives": [],
+      "belief_id": "wv-signpost-inflation-kevin-20261106",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "high",
+        "reason": "The words and the input date are sourced. The calendar date is not."
+      },
+      "country": null,
+      "epistemic": "fact",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T20:00:00-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "direct_input",
+          "note": "Kevin said inflation is next week. No precise verified date was supplied.",
+          "observation_as_of": "2026-11-06",
+          "ref": "control-plane issue 404 direct input"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "A verified inflation release date is present in an authorized packet."
+      ],
+      "scope": "cross",
+      "statement": "Dated direct input from Kevin on 2026-11-06: US and Canadian inflation is next week. That is not a packet-verified calendar date. Empty or unverified dates do not mean there is no release. At a later apply time this sentence must not be treated as still in the future solely because it says next week.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-us-activity": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-us-activity",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-05T09:53:53Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-10",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US.Activity"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the US Activity level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized US Activity print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "United States Activity score level 50.77 versus structural anchor 50, class neutral, impulse -3.59, direction cooling, component period 2026-10, coverage 1. Components: gdp_domestic_demand level 48 impulse -6 period 2026-Q2 transform 1.8 release unverified retrieved 2026-09-21T14:41:19Z; manufacturing_surveys level 54.87 impulse 1 period 2026-10 transform 54.8667 release 2026-11-02 retrieved 2026-11-04T10:35:22Z; services_surveys level 54.93 impulse -0.4 period 2026-10 transform 54.9333 release 2026-11-04 retrieved 2026-11-05T09:53:53Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "activity",
+      "watch_id": null
+    },
+    "wv-us-consumer": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-us-consumer",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-09-21T14:41:19Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-08",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US.Consumer"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the US Consumer level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized US Consumer print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "United States Consumer score level 46.47 versus structural anchor 50, class neutral, impulse 3.55, direction warming, component period 2026-08, coverage 1. Components: confidence level 25.2 impulse 5.7 period 2026-07 transform 55.2 release unverified retrieved 2026-09-21T14:41:19Z; income level 56.19 impulse 6.97 period 2026-07 transform 0.4881 release unverified retrieved 2026-09-21T14:41:19Z; retail level 50.22 impulse 4.08 period 2026-08 transform 0.3389 release unverified retrieved 2026-09-21T14:41:19Z; spending level 54.27 impulse -2.56 period 2026-07 transform 0.2734 release unverified retrieved 2026-09-21T14:41:19Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "consumer",
+      "watch_id": null
+    },
+    "wv-us-financial": {
+      "alternatives": [],
+      "belief_id": "wv-us-financial",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "United States has no financial-conditions pillar in the frozen temperature_scores block. This belief stays unsupported. No financial conditions are inferred from the missing pillar.",
+      "support": "unsupported",
+      "theme": "financial",
+      "watch_id": null
+    },
+    "wv-us-inflation": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-us-inflation",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-09-21T14:41:19Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-07",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US.Inflation"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the US Inflation level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized US Inflation print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "United States Inflation score level 63.1 versus structural anchor 50, class warm, impulse -0.81, direction static, component period 2026-07, coverage 1. Components: core_pce level 63.1 impulse -0.81 period 2026-07 transform 3.0478 release unverified retrieved 2026-09-21T14:41:19Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "inflation",
+      "watch_id": null
+    },
+    "wv-us-labor": {
+      "alternatives": [
+        "The same prints can be noise around the anchor rather than a cyclical turn."
+      ],
+      "belief_id": "wv-us-labor",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "low",
+        "reason": "The numbers are sourced. The reading is provisional and is not a policy conclusion."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": "2026-10-06T08:52:57Z",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Stored level, impulse, class, direction, coverage, and component state.",
+          "observation_as_of": "2026-09",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US.Labor"
+        }
+      ],
+      "falsifiers": [
+        "A later authorized vintage revises the US Labor level, impulse, or component period."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Next authorized US Labor print or a revision of this vintage."
+      ],
+      "scope": "country",
+      "statement": "United States Labor score level 51.26 versus structural anchor 50, class neutral, impulse -1.54, direction cooling, component period 2026-09, coverage 1. Components: payrolls level 62.13 impulse -0.13 period 2026-09 transform 70.6667 release unverified retrieved 2026-10-06T08:52:57Z; unemployment level 50 impulse -2 period 2026-09 transform 4.2 release unverified retrieved 2026-10-06T08:52:57Z; wages level 50.25 impulse -0.61 period 2026-09 transform 3.0245 release unverified retrieved 2026-10-06T08:52:57Z. Provisional cyclical reading of the stored Market Watch score only. Not a policy conclusion, forecast, or claim that the score is a sufficient statistic.",
+      "support": "sourced",
+      "theme": "labor",
+      "watch_id": null
+    },
+    "wv-us-policy": {
+      "alternatives": [],
+      "belief_id": "wv-us-policy",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No United States policy-reaction conclusion is seeded. Warm or cool scores are not a central-bank call. Derived meeting-price levels stay excluded.",
+      "support": "unsupported",
+      "theme": "policy",
+      "watch_id": null
+    },
+    "wv-us-pricing": {
+      "alternatives": [],
+      "belief_id": "wv-us-pricing",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No United States market-pricing disagreement is quantified. Meeting-level derived prices are excluded until corrected common evidence is authorized.",
+      "support": "unsupported",
+      "theme": "pricing",
+      "watch_id": null
+    },
+    "wv-us-transmission": {
+      "alternatives": [],
+      "belief_id": "wv-us-transmission",
+      "cadence": "cyclical",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Unsupported on purpose. Missing evidence is not converted into a fact."
+      },
+      "country": "US",
+      "epistemic": "inference",
+      "evidence": [
+        {
+          "collection_as_of": null,
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Absence of a separate financial, policy, transmission, or pricing conclusion in the score block.",
+          "observation_as_of": "2026-09-21",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#temperature_scores.countries.US"
+        }
+      ],
+      "falsifiers": [
+        "Authorized evidence supports a specific conclusion that this seed refused to invent."
+      ],
+      "hypothesis_refs": [],
+      "links_to": [],
+      "mechanisms": [],
+      "probability": null,
+      "review_triggers": [
+        "Authorized evidence for this channel is supplied."
+      ],
+      "scope": "country",
+      "statement": "No United States consumer or corporate transmission estimate is authorized in this seed. The question is retained. The answer is unsupported.",
+      "support": "unsupported",
+      "theme": "transmission",
+      "watch_id": null
+    },
+    "wv-watch-brazil": {
+      "alternatives": [],
+      "belief_id": "wv-watch-brazil",
+      "cadence": "structural",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Insufficient authorized current evidence. The topic is retained anyway."
+      },
+      "country": null,
+      "epistemic": "assumption",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Headline scan of the frozen news list. URLs were not opened.",
+          "observation_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [
+        "US",
+        "AU",
+        "CA"
+      ],
+      "mechanisms": [
+        "Commodity and risk channels could later connect to core terms of trade if authorized evidence arrives."
+      ],
+      "probability": null,
+      "review_triggers": [
+        "Authorized current evidence on Brazil is supplied."
+      ],
+      "scope": "watch",
+      "statement": "No Brazil-specific item was selected from the frozen news list. Retained awareness only: insufficient authorized current evidence for a Brazil view.",
+      "support": "insufficient_authorized_current_evidence",
+      "theme": "brazil",
+      "watch_id": "wv-watch-brazil"
+    },
+    "wv-watch-iran": {
+      "alternatives": [],
+      "belief_id": "wv-watch-iran",
+      "cadence": "structural",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Insufficient authorized current evidence. The topic is retained anyway."
+      },
+      "country": null,
+      "epistemic": "assumption",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Headline scan of the frozen news list. URLs were not opened.",
+          "observation_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [
+        "US",
+        "EA",
+        "CA",
+        "AU"
+      ],
+      "mechanisms": [
+        "Energy supply and risk premium could later connect to core inflation and the dollar narrative if authorized evidence arrives."
+      ],
+      "probability": null,
+      "review_triggers": [
+        "Authorized current evidence on Iran is supplied."
+      ],
+      "scope": "watch",
+      "statement": "The frozen news list has an item whose headline mentions Iran (news:6a0f5a47e09e2a92, published 2026-11-05T10:01:47-05:00). The headline's other claims are not adopted. That string is not treated as established geopolitical fact. Retained awareness only: insufficient authorized current evidence for an Iran view.",
+      "support": "insufficient_authorized_current_evidence",
+      "theme": "iran",
+      "watch_id": "wv-watch-iran"
+    },
+    "wv-watch-ukraine": {
+      "alternatives": [],
+      "belief_id": "wv-watch-ukraine",
+      "cadence": "structural",
+      "clocks": {
+        "effective_at": "2026-11-06T06:25:49.281876-05:00",
+        "first_stated_at": "2026-11-06T20:00:00-05:00",
+        "last_reviewed_at": "2026-11-06T20:00:00-05:00",
+        "revised_at": null
+      },
+      "confidence": {
+        "level": "not_assessed",
+        "reason": "Insufficient authorized current evidence. The topic is retained anyway."
+      },
+      "country": null,
+      "epistemic": "assumption",
+      "evidence": [
+        {
+          "collection_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "freeze_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "kind": "packet",
+          "note": "Headline scan of the frozen news list. URLs were not opened.",
+          "observation_as_of": "2026-11-06T06:25:49.281876-05:00",
+          "ref": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json#families.news.items"
+        }
+      ],
+      "falsifiers": [],
+      "hypothesis_refs": [],
+      "links_to": [
+        "EA",
+        "US"
+      ],
+      "mechanisms": [
+        "European energy and risk channels could later connect to the euro area and the dollar narrative if authorized evidence arrives."
+      ],
+      "probability": null,
+      "review_triggers": [
+        "Authorized current evidence on Ukraine is supplied."
+      ],
+      "scope": "watch",
+      "statement": "No Ukraine-specific item was selected from the frozen news list. Retained awareness only: insufficient authorized current evidence for a Ukraine view.",
+      "support": "insufficient_authorized_current_evidence",
+      "theme": "ukraine",
+      "watch_id": "wv-watch-ukraine"
+    }
+  },
+  "boundaries": {
+    "distinct_from_hypotheses": true,
+    "does_not_launch_research": true,
+    "does_not_mutate_books": true,
+    "does_not_mutate_scores": true,
+    "not_a_trade": true,
+    "not_canonical_scores": true,
+    "runtime_autoload": false
+  },
+  "claims": {
+    "learned_edge": false,
+    "pm_accepted": false,
+    "validated_edge": false
+  },
+  "contradictions": [
+    {
+      "belief_ids": [
+        "wv-global-tension",
+        "wv-global-alt-relief",
+        "wv-global-alt-turn"
+      ],
+      "contradiction_id": "wvx-relief-versus-headlines",
+      "statement": "Dollar and energy relief remains the stored EURUSD hypothesis expression, while frozen AI-credit and tech-swoon headlines and Kevin's direct tension say that relief was challenged. Both are retained. Neither is deleted or rewritten into the other.",
+      "status": "unresolved"
+    }
+  ],
+  "countries": {
+    "AU": {
+      "belief_ids": [
+        "wv-score-lineage",
+        "wv-meeting-prices-excluded",
+        "wv-au-activity",
+        "wv-au-consumer",
+        "wv-au-inflation",
+        "wv-au-labor",
+        "wv-au-financial",
+        "wv-au-policy",
+        "wv-au-transmission",
+        "wv-au-pricing"
+      ],
+      "country": "AU",
+      "financial_conditions": {
+        "belief_id": "wv-au-financial",
+        "support": "unsupported"
+      },
+      "name": "Australia",
+      "policy_reaction": {
+        "belief_id": "wv-au-policy",
+        "support": "unsupported"
+      },
+      "pricing": {
+        "belief_id": "wv-au-pricing",
+        "support": "excluded_derived_meeting_prices"
+      },
+      "score_foundation": {
+        "Activity": {
+          "as_of": "2026-08",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-08",
+              "impulse": -0.5,
+              "level": 52.1,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T17:20:30Z",
+              "transform_value": 52.1,
+              "weight": 0.4
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "impulse": 4.04,
+              "level": 41.58,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:49:33Z",
+              "transform_value": 1.4075,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 2.23,
+          "level": 45.79,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Consumer": {
+          "as_of": "2026-09",
+          "components": {
+            "confidence": {
+              "as_of": "2026-09",
+              "impulse": null,
+              "level": 34.4,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-09-21T14:49:33Z",
+              "transform_value": 84.4,
+              "weight": 0.25
+            },
+            "income": {
+              "as_of": "2026-Q2",
+              "impulse": 12.26,
+              "level": 49.89,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "transform_value": 1.1175,
+              "weight": 0.25
+            },
+            "retail": {
+              "as_of": null,
+              "impulse": null,
+              "level": null,
+              "observed": false,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": null,
+              "transform_value": null,
+              "weight": 0.25
+            },
+            "spending": {
+              "as_of": "2026-08",
+              "impulse": -16.0,
+              "level": 63.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "transform_value": 0.7,
+              "weight": 0.25
+            }
+          },
+          "coverage": 0.75,
+          "direction": "cooling",
+          "impulse": -1.87,
+          "level": 49.1,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Inflation": {
+          "as_of": "2026-09",
+          "components": {
+            "headline": {
+              "as_of": "2026-09",
+              "impulse": 3.75,
+              "level": 72.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-28T09:26:41Z",
+              "transform_value": 4.3,
+              "weight": 0.4
+            },
+            "underlying": {
+              "as_of": "2026-09",
+              "impulse": 0.0,
+              "level": 63.75,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-28T09:26:41Z",
+              "transform_value": 3.6,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 1.5,
+          "level": 67.25,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "warm"
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-09",
+              "impulse": -7.97,
+              "level": 43.96,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z",
+              "transform_value": -5.2118,
+              "weight": 0.1
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "impulse": -5.13,
+              "level": 45.63,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z",
+              "transform_value": 4.7183,
+              "weight": 0.7
+            },
+            "wages": {
+              "as_of": "2026-Q2",
+              "impulse": 0.0,
+              "level": 47.0,
+              "observed": true,
+              "release_date": "2026-08-13",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:49:33Z",
+              "transform_value": 3.2,
+              "weight": 0.2
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -4.39,
+          "level": 45.74,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        }
+      },
+      "transmission": {
+        "belief_id": "wv-au-transmission",
+        "support": "unsupported"
+      }
+    },
+    "CA": {
+      "belief_ids": [
+        "wv-score-lineage",
+        "wv-meeting-prices-excluded",
+        "wv-ca-activity",
+        "wv-ca-consumer",
+        "wv-ca-inflation",
+        "wv-ca-labor",
+        "wv-ca-financial",
+        "wv-ca-policy",
+        "wv-ca-transmission",
+        "wv-ca-pricing"
+      ],
+      "country": "CA",
+      "financial_conditions": {
+        "belief_id": "wv-ca-financial",
+        "support": "unsupported"
+      },
+      "name": "Canada",
+      "policy_reaction": {
+        "belief_id": "wv-ca-policy",
+        "support": "unsupported"
+      },
+      "pricing": {
+        "belief_id": "wv-ca-pricing",
+        "support": "excluded_derived_meeting_prices"
+      },
+      "score_foundation": {
+        "Activity": {
+          "as_of": "2026-10",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-10",
+              "impulse": -0.6,
+              "level": 48.2,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-11-05T09:53:53Z",
+              "transform_value": 48.2,
+              "weight": 0.4
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "impulse": 28.38,
+              "level": 50.2,
+              "observed": true,
+              "release_date": "2026-08-28",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:45:36Z",
+              "transform_value": 1.8196,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 16.79,
+          "level": 49.4,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Consumer": {
+          "as_of": "2026-08",
+          "components": {
+            "confidence": {
+              "as_of": null,
+              "impulse": null,
+              "level": null,
+              "observed": false,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": null,
+              "transform_value": null,
+              "weight": 0.25
+            },
+            "income": {
+              "as_of": "2026-Q2",
+              "impulse": 15.0,
+              "level": 66.8,
+              "observed": true,
+              "release_date": "2026-08-28",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:45:36Z",
+              "transform_value": 2.12,
+              "weight": 0.25
+            },
+            "retail": {
+              "as_of": "2026-08",
+              "impulse": 1.84,
+              "level": 49.78,
+              "observed": true,
+              "release_date": "2026-10-23",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-29T08:24:31Z",
+              "transform_value": 0.3277,
+              "weight": 0.25
+            },
+            "spending": {
+              "as_of": "2026-Q2",
+              "impulse": 3.0,
+              "level": 54.5,
+              "observed": true,
+              "release_date": "2026-08-28",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:45:36Z",
+              "transform_value": 0.8,
+              "weight": 0.25
+            }
+          },
+          "coverage": 0.75,
+          "direction": "warming",
+          "impulse": 6.61,
+          "level": 57.03,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Inflation": {
+          "as_of": "2026-09",
+          "components": {
+            "headline": {
+              "as_of": "2026-09",
+              "impulse": 0.78,
+              "level": 63.66,
+              "observed": true,
+              "release_date": "2026-10-19",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-20T13:31:20Z",
+              "transform_value": 3.0928,
+              "weight": 0.4
+            },
+            "underlying": {
+              "as_of": "2026-09",
+              "impulse": -1.25,
+              "level": 48.12,
+              "observed": true,
+              "release_date": "2026-10-19",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-20T13:31:20Z",
+              "transform_value": 1.85,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "static",
+          "impulse": -0.44,
+          "level": 54.34,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-09",
+              "impulse": -5.77,
+              "level": 42.67,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z",
+              "transform_value": -11.6333,
+              "weight": 0.1
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "impulse": -2.0,
+              "level": 40.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z",
+              "transform_value": 6.5,
+              "weight": 0.7
+            },
+            "wages": {
+              "as_of": "2026-09",
+              "impulse": 3.78,
+              "level": 43.38,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-10-15T10:25:03Z",
+              "transform_value": 2.3382,
+              "weight": 0.2
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -1.22,
+          "level": 40.94,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        }
+      },
+      "transmission": {
+        "belief_id": "wv-ca-transmission",
+        "support": "unsupported"
+      }
+    },
+    "EA": {
+      "belief_ids": [
+        "wv-score-lineage",
+        "wv-meeting-prices-excluded",
+        "wv-ea-activity",
+        "wv-ea-consumer",
+        "wv-ea-inflation",
+        "wv-ea-labor",
+        "wv-ea-financial",
+        "wv-ea-policy",
+        "wv-ea-transmission",
+        "wv-ea-pricing"
+      ],
+      "country": "EA",
+      "financial_conditions": {
+        "belief_id": "wv-ea-financial",
+        "support": "unsupported"
+      },
+      "name": "Euro area",
+      "policy_reaction": {
+        "belief_id": "wv-ea-policy",
+        "support": "unsupported"
+      },
+      "pricing": {
+        "belief_id": "wv-ea-pricing",
+        "support": "excluded_derived_meeting_prices"
+      },
+      "score_foundation": {
+        "Activity": {
+          "as_of": "2026-Q3",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-09",
+              "impulse": 1.5,
+              "level": 52.23,
+              "observed": true,
+              "release_date": "2026-10-05",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-10-05T10:08:21Z",
+              "transform_value": 52.2333,
+              "weight": 0.4
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q3",
+              "impulse": -8.12,
+              "level": 56.16,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": 2.0157,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -4.27,
+          "level": 54.59,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Consumer": {
+          "as_of": "2026-10",
+          "components": {
+            "confidence": {
+              "as_of": "2026-10",
+              "impulse": -1.1,
+              "level": 42.1,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-11-04T10:35:22Z",
+              "transform_value": -17.9,
+              "weight": 0.25
+            },
+            "income": {
+              "as_of": "2026-Q2",
+              "impulse": 0.9,
+              "level": 44.6,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-29T08:24:31Z",
+              "transform_value": 0.14,
+              "weight": 0.25
+            },
+            "retail": {
+              "as_of": "2026-09",
+              "impulse": -10.67,
+              "level": 30.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-11-06T11:25:49Z",
+              "transform_value": -0.3333,
+              "weight": 0.25
+            },
+            "spending": {
+              "as_of": "2026-Q2",
+              "impulse": 0.0,
+              "level": 47.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T20:24:59Z",
+              "transform_value": 0.3,
+              "weight": 0.25
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -2.72,
+          "level": 40.92,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Inflation": {
+          "as_of": "2026-10",
+          "components": {
+            "headline": {
+              "as_of": "2026-10",
+              "impulse": 2.5,
+              "level": 75.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-11-04T10:35:22Z",
+              "transform_value": 4.0,
+              "weight": 0.4
+            },
+            "underlying": {
+              "as_of": "2026-10",
+              "impulse": 1.25,
+              "level": 57.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-11-04T10:35:22Z",
+              "transform_value": 2.6,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 1.75,
+          "level": 64.5,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "warm"
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-Q2",
+              "impulse": 3.8,
+              "level": 51.2,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T20:24:59Z",
+              "transform_value": 162.0,
+              "weight": 0.1
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "impulse": 0.0,
+              "level": 50.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": 6.5,
+              "weight": 0.7
+            },
+            "wages": {
+              "as_of": "2026-Q2",
+              "impulse": -1.1,
+              "level": 44.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-02T09:40:56Z",
+              "transform_value": 2.45,
+              "weight": 0.2
+            }
+          },
+          "coverage": 1.0,
+          "direction": "static",
+          "impulse": 0.16,
+          "level": 49.02,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        }
+      },
+      "transmission": {
+        "belief_id": "wv-ea-transmission",
+        "support": "unsupported"
+      }
+    },
+    "JP": {
+      "belief_ids": [
+        "wv-score-lineage",
+        "wv-meeting-prices-excluded",
+        "wv-jp-activity",
+        "wv-jp-consumer",
+        "wv-jp-inflation",
+        "wv-jp-labor",
+        "wv-jp-financial",
+        "wv-jp-policy",
+        "wv-jp-transmission",
+        "wv-jp-pricing"
+      ],
+      "country": "JP",
+      "financial_conditions": {
+        "belief_id": "wv-jp-financial",
+        "support": "unsupported"
+      },
+      "name": "Japan",
+      "policy_reaction": {
+        "belief_id": "wv-jp-policy",
+        "support": "unsupported"
+      },
+      "pricing": {
+        "belief_id": "wv-jp-pricing",
+        "support": "excluded_derived_meeting_prices"
+      },
+      "score_foundation": {
+        "Activity": {
+          "as_of": "2026-08",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-08",
+              "impulse": 0.8,
+              "level": 52.9,
+              "observed": true,
+              "release_date": "2026-09-03",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T22:23:58Z",
+              "transform_value": 52.9,
+              "weight": 0.4
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "impulse": -5.0,
+              "level": 60.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T22:23:30Z",
+              "transform_value": 1.65,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -2.68,
+          "level": 57.46,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Consumer": {
+          "as_of": "2026-09",
+          "components": {
+            "confidence": {
+              "as_of": "2026-09",
+              "impulse": -0.1,
+              "level": 47.3,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-05T10:08:21Z",
+              "transform_value": 35.4,
+              "weight": 0.25
+            },
+            "income": {
+              "as_of": "2026-08",
+              "impulse": 32.75,
+              "level": 32.08,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-13T15:45:39Z",
+              "transform_value": 1.1667,
+              "weight": 0.25
+            },
+            "retail": {
+              "as_of": "2026-09",
+              "impulse": -7.5,
+              "level": 54.58,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": 2.9667,
+              "weight": 0.25
+            },
+            "spending": {
+              "as_of": "2026-08",
+              "impulse": 4.0,
+              "level": 1.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-13T15:45:39Z",
+              "transform_value": -1.3333,
+              "weight": 0.25
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 7.29,
+          "level": 33.74,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "cool"
+        },
+        "Inflation": {
+          "as_of": "2026-09",
+          "components": {
+            "headline": {
+              "as_of": "2026-09",
+              "impulse": 2.5,
+              "level": 52.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-26T11:37:10Z",
+              "transform_value": 2.2,
+              "weight": 0.4
+            },
+            "underlying": {
+              "as_of": "2026-09",
+              "impulse": 6.25,
+              "level": 52.5,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-23T19:46:45Z",
+              "transform_value": 2.2,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 4.75,
+          "level": 52.5,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "components": {
+            "employment": {
+              "as_of": "2026-09",
+              "impulse": 23.33,
+              "level": 55.83,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": 73.3333,
+              "weight": 0.1
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "impulse": 2.0,
+              "level": 52.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": 2.4,
+              "weight": 0.7
+            },
+            "wages": {
+              "as_of": "2026-08",
+              "impulse": -4.0,
+              "level": 59.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-23T19:46:45Z",
+              "transform_value": 3.9,
+              "weight": 0.2
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 2.93,
+          "level": 53.78,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        }
+      },
+      "transmission": {
+        "belief_id": "wv-jp-transmission",
+        "support": "unsupported"
+      }
+    },
+    "NZ": {
+      "belief_ids": [
+        "wv-score-lineage",
+        "wv-meeting-prices-excluded",
+        "wv-nz-activity",
+        "wv-nz-consumer",
+        "wv-nz-inflation",
+        "wv-nz-labor",
+        "wv-nz-financial",
+        "wv-nz-policy",
+        "wv-nz-transmission",
+        "wv-nz-pricing"
+      ],
+      "country": "NZ",
+      "financial_conditions": {
+        "belief_id": "wv-nz-financial",
+        "support": "unsupported"
+      },
+      "name": "New Zealand",
+      "policy_reaction": {
+        "belief_id": "wv-nz-policy",
+        "support": "unsupported"
+      },
+      "pricing": {
+        "belief_id": "wv-nz-pricing",
+        "support": "excluded_derived_meeting_prices"
+      },
+      "score_foundation": {
+        "Activity": {
+          "as_of": "2026-08",
+          "components": {
+            "business_surveys": {
+              "as_of": "2026-08",
+              "impulse": 0.5,
+              "level": 51.3,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-09-21T17:06:39Z",
+              "transform_value": 51.3,
+              "weight": 0.4
+            },
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "impulse": -28.46,
+              "level": 52.26,
+              "observed": true,
+              "release_date": "2026-09-17",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 2.2256,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -16.88,
+          "level": 51.87,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Consumer": {
+          "as_of": "2026-08",
+          "components": {
+            "confidence": {
+              "as_of": "2026-08",
+              "impulse": null,
+              "level": 48.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "inherited_or_inconsistent",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 98.0,
+              "weight": 0.25
+            },
+            "income": {
+              "as_of": "2026-Q1",
+              "impulse": 16.5,
+              "level": 66.5,
+              "observed": true,
+              "release_date": "2026-07-02",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 2.1,
+              "weight": 0.25
+            },
+            "retail": {
+              "as_of": "2026-Q2",
+              "impulse": -22.94,
+              "level": 34.56,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": -0.5296,
+              "weight": 0.25
+            },
+            "spending": {
+              "as_of": "2026-Q2",
+              "impulse": -7.5,
+              "level": 44.0,
+              "observed": true,
+              "release_date": "2026-09-17",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 0.1,
+              "weight": 0.25
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -4.65,
+          "level": 48.26,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Inflation": {
+          "as_of": "2026-Q2",
+          "components": {
+            "headline": {
+              "as_of": "2026-Q2",
+              "impulse": 12.5,
+              "level": 76.25,
+              "observed": true,
+              "release_date": "2026-07-21",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 4.1,
+              "weight": 0.4
+            },
+            "underlying": {
+              "as_of": "2026-Q2",
+              "impulse": -1.25,
+              "level": 56.25,
+              "observed": true,
+              "release_date": "2026-07-21",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 2.5,
+              "weight": 0.6
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 4.25,
+          "level": 64.25,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "warm"
+        },
+        "Labor": {
+          "as_of": "2026-Q2",
+          "components": {
+            "employment": {
+              "as_of": "2026-Q2",
+              "impulse": 7.0,
+              "level": 55.0,
+              "observed": true,
+              "release_date": "2026-08-05",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 13.0,
+              "weight": 0.1
+            },
+            "unemployment": {
+              "as_of": "2026-Q2",
+              "impulse": -4.0,
+              "level": 33.0,
+              "observed": true,
+              "release_date": "2026-08-05",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-09-21T14:51:02Z",
+              "transform_value": 5.6,
+              "weight": 0.7
+            },
+            "wages": {
+              "as_of": "2026-Q2",
+              "impulse": -0.43,
+              "level": 39.57,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-30T10:33:05Z",
+              "transform_value": 1.9567,
+              "weight": 0.2
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -2.19,
+          "level": 36.51,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "cool"
+        }
+      },
+      "transmission": {
+        "belief_id": "wv-nz-transmission",
+        "support": "unsupported"
+      }
+    },
+    "US": {
+      "belief_ids": [
+        "wv-score-lineage",
+        "wv-meeting-prices-excluded",
+        "wv-us-activity",
+        "wv-us-consumer",
+        "wv-us-inflation",
+        "wv-us-labor",
+        "wv-us-financial",
+        "wv-us-policy",
+        "wv-us-transmission",
+        "wv-us-pricing"
+      ],
+      "country": "US",
+      "financial_conditions": {
+        "belief_id": "wv-us-financial",
+        "support": "unsupported"
+      },
+      "name": "United States",
+      "policy_reaction": {
+        "belief_id": "wv-us-policy",
+        "support": "unsupported"
+      },
+      "pricing": {
+        "belief_id": "wv-us-pricing",
+        "support": "excluded_derived_meeting_prices"
+      },
+      "score_foundation": {
+        "Activity": {
+          "as_of": "2026-10",
+          "components": {
+            "gdp_domestic_demand": {
+              "as_of": "2026-Q2",
+              "impulse": -6.0,
+              "level": 48.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "transform_value": 1.8,
+              "weight": 0.6
+            },
+            "manufacturing_surveys": {
+              "as_of": "2026-10",
+              "impulse": 1.0,
+              "level": 54.87,
+              "observed": true,
+              "release_date": "2026-11-02",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-11-04T10:35:22Z",
+              "transform_value": 54.8667,
+              "weight": 0.12
+            },
+            "services_surveys": {
+              "as_of": "2026-10",
+              "impulse": -0.4,
+              "level": 54.93,
+              "observed": true,
+              "release_date": "2026-11-04",
+              "release_date_status": "recorded",
+              "retrieved_at": "2026-11-05T09:53:53Z",
+              "transform_value": 54.9333,
+              "weight": 0.28
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -3.59,
+          "level": 50.77,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Consumer": {
+          "as_of": "2026-08",
+          "components": {
+            "confidence": {
+              "as_of": "2026-07",
+              "impulse": 5.7,
+              "level": 25.2,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "transform_value": 55.2,
+              "weight": 0.25
+            },
+            "income": {
+              "as_of": "2026-07",
+              "impulse": 6.97,
+              "level": 56.19,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "transform_value": 0.4881,
+              "weight": 0.25
+            },
+            "retail": {
+              "as_of": "2026-08",
+              "impulse": 4.08,
+              "level": 50.22,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "transform_value": 0.3389,
+              "weight": 0.25
+            },
+            "spending": {
+              "as_of": "2026-07",
+              "impulse": -2.56,
+              "level": 54.27,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "transform_value": 0.2734,
+              "weight": 0.25
+            }
+          },
+          "coverage": 1.0,
+          "direction": "warming",
+          "impulse": 3.55,
+          "level": 46.47,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        },
+        "Inflation": {
+          "as_of": "2026-07",
+          "components": {
+            "core_pce": {
+              "as_of": "2026-07",
+              "impulse": -0.81,
+              "level": 63.1,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-09-21T14:41:19Z",
+              "transform_value": 3.0478,
+              "weight": 1.0
+            }
+          },
+          "coverage": 1.0,
+          "direction": "static",
+          "impulse": -0.81,
+          "level": 63.1,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "warm"
+        },
+        "Labor": {
+          "as_of": "2026-09",
+          "components": {
+            "payrolls": {
+              "as_of": "2026-09",
+              "impulse": -0.13,
+              "level": 62.13,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-06T08:52:57Z",
+              "transform_value": 70.6667,
+              "weight": 0.1
+            },
+            "unemployment": {
+              "as_of": "2026-09",
+              "impulse": -2.0,
+              "level": 50.0,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-06T08:52:57Z",
+              "transform_value": 4.2,
+              "weight": 0.7
+            },
+            "wages": {
+              "as_of": "2026-09",
+              "impulse": -0.61,
+              "level": 50.25,
+              "observed": true,
+              "release_date": null,
+              "release_date_status": "not_recorded",
+              "retrieved_at": "2026-10-06T08:52:57Z",
+              "transform_value": 3.0245,
+              "weight": 0.2
+            }
+          },
+          "coverage": 1.0,
+          "direction": "cooling",
+          "impulse": -1.54,
+          "level": 51.26,
+          "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print.",
+          "temperature_class": "neutral"
+        }
+      },
+      "transmission": {
+        "belief_id": "wv-us-transmission",
+        "support": "unsupported"
+      }
+    }
+  },
+  "evidence_binding": {
+    "file_sha256": "e7fc28a6109a744129133d55e3a789ce950d4373d01f6c12aef30660a5d08931",
+    "freeze_label": "2026-11-06T06:25:49.281876-05:00",
+    "git_blob": "d875ddc64fab7258cbcf72c6b4a7df0a4ec64d33",
+    "market_generated_at": "2026-11-06T11:42:41Z",
+    "packet_sha256": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8",
+    "path": "data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json",
+    "source_commit_cited": "680297f3898081789794d20b765a5c908b6b93fe"
+  },
+  "global": {
+    "active_drivers": [
+      "dollar and energy relief, challenged and not retired",
+      "supplied AI-credit and tech-swoon headlines",
+      "warm inflation score levels with mixed impulses",
+      "retained September labor vintages versus Kevin's November 6 employment input"
+    ],
+    "belief_ids": [
+      "wv-global-alt-relief",
+      "wv-global-alt-turn",
+      "wv-global-regime",
+      "wv-global-tail-deleveraging",
+      "wv-global-tension",
+      "wv-meeting-prices-excluded",
+      "wv-score-lineage"
+    ],
+    "competing_explanation_ids": [
+      "wv-global-alt-relief",
+      "wv-global-alt-turn"
+    ],
+    "edge_revision_cited": "rev-edge-portfolio-pass-20260920-04",
+    "foundation_lessons_note": "scope.approved_foundation_and_tail_lessons is not present on this branch's lessons.json or edge profile. Existing lesson ids and the current edge revision are cited and were not replaced.",
+    "hypothesis_refs": [
+      "hyp-chatgpt-cadnok-energy-reversal-20261104",
+      "hyp-chatgpt-corra-2027hz-20260919",
+      "hyp-chatgpt-eurusd-dollar-repricing-20261105",
+      "hyp-chatgpt-rejected-cad-fx-20261002",
+      "hyp-chatgpt-rejected-duration-beta-20261002"
+    ],
+    "lesson_refs": [
+      "les-07c1e2b75c60",
+      "les-17136cf0347b",
+      "les-1c7be27d9b73",
+      "les-47989e7ee0aa",
+      "les-682942ccfdd5",
+      "les-6bf8c8bdcc28",
+      "les-831c4c83a969",
+      "les-8d00ea033612",
+      "les-aea64fbd5841",
+      "les-e0951acbd297",
+      "les-ea1b6026b0df",
+      "les-portfolio-pass-20260920"
+    ],
+    "position_context_readonly": [
+      {
+        "hypothesis_id": "hyp-chatgpt-corra-2027hz-20260919",
+        "note": "Read-only expression of a stored hypothesis. Not a memory filter and not a book mutation.",
+        "summary": "November6 final decision: trusted issue312 reduced the receiver100m to50m at3.0425. Retain moderate-conviction exposure to a still-rising priced2027 path versus retained softer dom"
+      },
+      {
+        "hypothesis_id": "hyp-chatgpt-eurusd-dollar-repricing-20261105",
+        "note": "Read-only expression of a stored hypothesis. Not a memory filter and not a book mutation.",
+        "summary": "November6 closeout: retain the existing USD5m-equivalent EURUSD long, entry1.1267, position pm-chatgpt-aef5bacd43d3. Frozen November5close1.1224 is adverse versus entry. Dollar reb"
+      }
+    ],
+    "regime_belief_id": "wv-global-regime",
+    "tail_belief_ids": [
+      "wv-global-tail-deleveraging"
+    ],
+    "tension_belief_id": "wv-global-tension"
+  },
+  "latest_change_id": "wvc-0001",
+  "meeting_calendars": {
+    "calendars": {
+      "AU": {
+        "dates": [
+          {
+            "decision_date": "2026-12-08",
+            "effective_date": "2026-12-09"
+          },
+          {
+            "decision_date": "2027-02-09",
+            "effective_date": "2027-02-10"
+          },
+          {
+            "decision_date": "2027-03-23",
+            "effective_date": "2027-03-24"
+          },
+          {
+            "decision_date": "2027-05-04",
+            "effective_date": "2027-05-05"
+          },
+          {
+            "decision_date": "2027-06-22",
+            "effective_date": "2027-06-23"
+          },
+          {
+            "decision_date": "2027-08-10",
+            "effective_date": "2027-08-11"
+          },
+          {
+            "decision_date": "2027-09-28",
+            "effective_date": "2027-09-29"
+          },
+          {
+            "decision_date": "2027-11-02",
+            "effective_date": "2027-11-03"
+          },
+          {
+            "decision_date": "2027-12-14",
+            "effective_date": "2027-12-15"
+          }
+        ],
+        "empty_means": null,
+        "levels_excluded": true
+      },
+      "CA": {
+        "dates": [
+          {
+            "decision_date": "2026-12-09",
+            "effective_date": "2026-12-10"
+          },
+          {
+            "decision_date": "2027-01-27",
+            "effective_date": "2027-01-28"
+          },
+          {
+            "decision_date": "2027-03-03",
+            "effective_date": "2027-03-04"
+          },
+          {
+            "decision_date": "2027-04-28",
+            "effective_date": "2027-04-29"
+          },
+          {
+            "decision_date": "2027-06-02",
+            "effective_date": "2027-06-03"
+          },
+          {
+            "decision_date": "2027-07-21",
+            "effective_date": "2027-07-22"
+          },
+          {
+            "decision_date": "2027-09-08",
+            "effective_date": "2027-09-09"
+          },
+          {
+            "decision_date": "2027-10-27",
+            "effective_date": "2027-10-28"
+          },
+          {
+            "decision_date": "2027-12-08",
+            "effective_date": "2027-12-09"
+          }
+        ],
+        "empty_means": null,
+        "levels_excluded": true
+      },
+      "EA": {
+        "dates": [
+          {
+            "decision_date": "2026-12-17",
+            "effective_date": "2026-12-23"
+          },
+          {
+            "decision_date": "2027-02-04",
+            "effective_date": "2027-02-10"
+          },
+          {
+            "decision_date": "2027-03-18",
+            "effective_date": "2027-03-24"
+          },
+          {
+            "decision_date": "2027-04-29",
+            "effective_date": "2027-05-05"
+          },
+          {
+            "decision_date": "2027-06-10",
+            "effective_date": "2027-06-16"
+          },
+          {
+            "decision_date": "2027-07-22",
+            "effective_date": "2027-07-28"
+          },
+          {
+            "decision_date": "2027-09-09",
+            "effective_date": "2027-09-15"
+          },
+          {
+            "decision_date": "2027-10-28",
+            "effective_date": "2027-11-03"
+          },
+          {
+            "decision_date": "2027-12-16",
+            "effective_date": "2027-12-22"
+          },
+          {
+            "decision_date": "2028-02-03",
+            "effective_date": "2028-02-09"
+          },
+          {
+            "decision_date": "2028-03-23",
+            "effective_date": "2028-03-29"
+          },
+          {
+            "decision_date": "2028-05-04",
+            "effective_date": "2028-05-10"
+          },
+          {
+            "decision_date": "2028-06-08",
+            "effective_date": "2028-06-14"
+          },
+          {
+            "decision_date": "2028-07-20",
+            "effective_date": "2028-07-26"
+          },
+          {
+            "decision_date": "2028-09-07",
+            "effective_date": "2028-09-13"
+          },
+          {
+            "decision_date": "2028-10-12",
+            "effective_date": "2028-10-18"
+          },
+          {
+            "decision_date": "2028-12-07",
+            "effective_date": "2028-12-13"
+          }
+        ],
+        "empty_means": null,
+        "levels_excluded": true
+      },
+      "JP": {
+        "dates": [
+          {
+            "decision_date": "2026-12-18",
+            "effective_date": "2026-12-21"
+          },
+          {
+            "decision_date": "2027-01-22",
+            "effective_date": "2027-01-25"
+          },
+          {
+            "decision_date": "2027-03-18",
+            "effective_date": "2027-03-19"
+          },
+          {
+            "decision_date": "2027-04-28",
+            "effective_date": "2027-04-29"
+          },
+          {
+            "decision_date": "2027-06-11",
+            "effective_date": "2027-06-14"
+          },
+          {
+            "decision_date": "2027-07-22",
+            "effective_date": "2027-07-23"
+          },
+          {
+            "decision_date": "2027-09-22",
+            "effective_date": "2027-09-23"
+          },
+          {
+            "decision_date": "2027-10-29",
+            "effective_date": "2027-11-01"
+          },
+          {
+            "decision_date": "2027-12-17",
+            "effective_date": "2027-12-20"
+          }
+        ],
+        "empty_means": null,
+        "levels_excluded": true
+      },
+      "NZ": {
+        "dates": [],
+        "empty_means": "unverified_event_timing_not_absence_of_events",
+        "levels_excluded": true
+      },
+      "US": {
+        "dates": [
+          {
+            "decision_date": "2026-12-09",
+            "effective_date": "2026-12-10"
+          },
+          {
+            "decision_date": "2027-01-27",
+            "effective_date": "2027-01-28"
+          },
+          {
+            "decision_date": "2027-03-17",
+            "effective_date": "2027-03-18"
+          },
+          {
+            "decision_date": "2027-04-28",
+            "effective_date": "2027-04-29"
+          },
+          {
+            "decision_date": "2027-06-09",
+            "effective_date": "2027-06-10"
+          },
+          {
+            "decision_date": "2027-07-28",
+            "effective_date": "2027-07-29"
+          },
+          {
+            "decision_date": "2027-09-15",
+            "effective_date": "2027-09-16"
+          },
+          {
+            "decision_date": "2027-10-27",
+            "effective_date": "2027-10-28"
+          },
+          {
+            "decision_date": "2027-12-08",
+            "effective_date": "2027-12-09"
+          }
+        ],
+        "empty_means": null,
+        "levels_excluded": true
+      }
+    },
+    "exclusion_reason": "Kevin flagged the frozen front Fed meeting estimate as materially wrong, about 8bp. Derived meeting-price levels are excluded. Calendar metadata is retained. Later repairs are not imported.",
+    "levels_copied": false
+  },
+  "persisted_at": null,
+  "provenance": {
+    "kind": "provisional_seed",
+    "note": "Versioned provisional views awaiting PM acceptance. Not a learned or validated edge."
+  },
+  "research_questions": [
+    {
+      "priority": 1,
+      "question": "Once an authorized post-freeze packet exists, what did US and Canadian employment do relative to the retained September score vintages? Do not answer from this seed.",
+      "question_id": "wv-q-employment-vintage"
+    },
+    {
+      "priority": 2,
+      "question": "Which US and Canadian inflation releases did Kevin's undated 'next week' input refer to, once a verified calendar is authorized?",
+      "question_id": "wv-q-inflation-date"
+    },
+    {
+      "priority": 3,
+      "question": "Do the AI-credit and tech-swoon headlines change the dollar and energy relief mechanism, or only risk appetite? Benchmark the marks before judging them.",
+      "question_id": "wv-q-relief-challenge"
+    },
+    {
+      "priority": 4,
+      "question": "What is New Zealand's meeting timing? The frozen derived calendar list is empty, which means unverified timing, not the absence of meetings.",
+      "question_id": "wv-q-nz-calendar"
+    },
+    {
+      "priority": 5,
+      "question": "How do consumer and corporate cash flows actually transmit the stored activity, labor, and inflation scores? No transmission estimate is seeded.",
+      "question_id": "wv-q-transmission"
+    }
+  ],
+  "schema_version": 1,
+  "seeded_at": "2026-11-06T20:00:00-05:00",
+  "signposts": [
+    {
+      "as_of_input": "2026-11-06",
+      "pending_at_later_apply": false,
+      "signpost_id": "wv-signpost-employment-20261106",
+      "statement": "Dated direct input from Kevin on 2026-11-06: Canadian and US employment were the immediate risk that day. Stored labor scores are still the September vintages (Canada unemployment transform 6.5, US unemployment transform 4.2). This sentence is not a pending future event at a later apply time, and it does not record the print outcome.",
+      "verified_date": null
+    },
+    {
+      "as_of_input": "2026-11-06",
+      "pending_at_later_apply": false,
+      "signpost_id": "wv-signpost-inflation-kevin-20261106",
+      "statement": "Dated direct input from Kevin on 2026-11-06: US and Canadian inflation is next week. That is not a packet-verified calendar date. Empty or unverified dates do not mean there is no release. At a later apply time this sentence must not be treated as still in the future solely because it says next week.",
+      "verified_date": null
+    }
+  ],
+  "type": "CHATGPT_WORLDVIEW_STATE",
+  "updated_at": "2026-11-06T20:00:00-05:00",
+  "watchlist": [
+    {
+      "belief_id": "wv-watch-iran",
+      "links_to": [
+        "US",
+        "EA",
+        "CA",
+        "AU"
+      ],
+      "mechanisms": [
+        "Energy supply and risk premium could later connect to core inflation and the dollar narrative if authorized evidence arrives."
+      ],
+      "support": "insufficient_authorized_current_evidence",
+      "topic": "Iran",
+      "watch_id": "wv-watch-iran"
+    },
+    {
+      "belief_id": "wv-watch-ukraine",
+      "links_to": [
+        "EA",
+        "US"
+      ],
+      "mechanisms": [
+        "European energy and risk channels could later connect to the euro area and the dollar narrative if authorized evidence arrives."
+      ],
+      "support": "insufficient_authorized_current_evidence",
+      "topic": "Ukraine",
+      "watch_id": "wv-watch-ukraine"
+    },
+    {
+      "belief_id": "wv-watch-brazil",
+      "links_to": [
+        "US",
+        "AU",
+        "CA"
+      ],
+      "mechanisms": [
+        "Commodity and risk channels could later connect to core terms of trade if authorized evidence arrives."
+      ],
+      "support": "insufficient_authorized_current_evidence",
+      "topic": "Brazil",
+      "watch_id": "wv-watch-brazil"
+    }
+  ],
+  "worldview_revision_id": "rev-worldview-0001"
+}

@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-06T12:59:26.961077-05:00",
+  "as_of": "2026-11-06T20:00:00-05:00",
   "boundaries": {
     "does_not_mutate_books": true,
     "not_a_trade": true,
@@ -67,7 +67,7 @@
   ],
   "owner_id": "chatgpt",
   "owner_type": "pm",
-  "research_sha256": "417903ac1b527e23c36d0c985c7bc500471c3048c6a24ae2997dc7f8ce726f6b",
+  "research_sha256": "c5f6db2b33bba70a8632ed8a652c9dfc539fed584a7f0ea8f9730a530d1b9565",
   "retrieval": {
     "entrypoint_doc": "docs/CHATGPT_RESEARCH_MEMORY_V1.md",
     "paths": {
@@ -77,9 +77,33 @@
       "hypothesis_current": "data/trading/pm/chatgpt/research/hypotheses/<hypothesis_id>.json",
       "index": "data/trading/pm/chatgpt/research/index.json",
       "migration": "data/trading/pm/chatgpt/research/migration.json",
-      "receipts": "data/trading/pm/chatgpt/research/receipts/<fingerprint>.json"
-    }
+      "receipts": "data/trading/pm/chatgpt/research/receipts/<fingerprint>.json",
+      "worldview_archive": "data/trading/pm/chatgpt/research/worldview/archive/<revision_id>.json",
+      "worldview_change": "data/trading/pm/chatgpt/research/worldview/changes/<change_id>.json",
+      "worldview_state": "data/trading/pm/chatgpt/research/worldview/state.json"
+    },
+    "worldview_doc": "docs/CHATGPT_WORLDVIEW_V1.md"
   },
   "schema_version": 1,
-  "type": "CHATGPT_RESEARCH_INDEX"
+  "type": "CHATGPT_RESEARCH_INDEX",
+  "worldview": {
+    "acceptance": "awaiting_pm",
+    "countries": [
+      "AU",
+      "CA",
+      "EA",
+      "JP",
+      "NZ",
+      "US"
+    ],
+    "current_revision_id": "rev-worldview-0001",
+    "provisional": true,
+    "summary": "Provisional and awaiting PM acceptance. The standing dollar-and-energy relief view, stored as hypothesis hyp-chatgpt-eurusd-dollar-repricing-20261105, is challenged by Kevin's dire",
+    "updated_at": "2026-11-06T20:00:00-05:00",
+    "watchlist_ids": [
+      "wv-watch-brazil",
+      "wv-watch-iran",
+      "wv-watch-ukraine"
+    ]
+  }
 }
