@@ -11,12 +11,17 @@ from scripts.prima_pressure.contract import (
     GALLONS_PER_BARREL,
     GASOLINE_CRACK_FORMULA,
     HEAT_CRACK_FORMULA,
+    HORIZON_ROLES,
+    MAX_HORIZON_ACTUAL_MONTHS,
+    MIN_HORIZON_ACTUAL_MONTHS,
+    MIN_HORIZON_SEPARATION_MONTHS,
     OIL_CONTRACTS,
     REFINERY_CONTRACTS,
     STABLE_USD,
     TARGET_MATURITY_MONTHS,
     YAHOO_CHART_URL,
     add_months,
+    calendar_months_from_front,
     contract_symbol,
     iso_date,
     period_key,
@@ -359,6 +364,366 @@ def _build_point(
     return point, None
 
 
+def _is_unlisted_contract_error(message: str | None) -> bool:
+    if not message:
+        return False
+    lower = message.lower()
+    if "filenotfounderror" in lower:
+        return True
+    if "404" in message:
+        return True
+    if "not found" in lower:
+        return True
+    return False
+
+
+def _is_symbol_mismatch_error(message: str | None) -> bool:
+    if not message:
+        return False
+    lower = message.lower()
+    return "meta.symbol" in lower or "continuous" in lower or "=f" in lower
+
+
+def _gated_fetch_history(
+    root: str,
+    year: int,
+    month: int,
+    as_of: date,
+    opener: Opener,
+) -> tuple[list[tuple[date, float]] | None, str | None, bool]:
+    """Fetch history only if contract is active before the request. Returns (history, err, stop_search)."""
+    try:
+        if not contract_is_active(root, year, month, as_of):
+            return None, "expired_contract", False
+    except ExpiryError as exc:
+        return None, exc.reason, False
+    history, err = contract_history(root, year, month, as_of, opener)
+    if err:
+        return None, err, _stop_on_fetch_error(err)
+    if not history:
+        return None, "missing_quote", False
+    return history, None, False
+
+
+def _horizon_search_order(role: int, front_year: int, front_month: int) -> list[tuple[int, int, int]]:
+    """Yield (year, month, delta_from_role_target) in search order: exact, then ±1, ±2, ... within window."""
+    target_y, target_m = add_months(front_year, front_month, role)
+    out: list[tuple[int, int, int]] = []
+    seen: set[tuple[int, int]] = set()
+    lo = MIN_HORIZON_ACTUAL_MONTHS[role]
+    hi = MAX_HORIZON_ACTUAL_MONTHS[role]
+    max_d = max(abs(lo - role), abs(hi - role))
+    for d in range(0, max_d + 1):
+        if d == 0:
+            candidates = [(target_y, target_m, 0)]
+        else:
+            earlier_y, earlier_m = add_months(target_y, target_m, -d)
+            later_y, later_m = add_months(target_y, target_m, d)
+            candidates = [(earlier_y, earlier_m, -d), (later_y, later_m, d)]
+        for cy, cm, delta in candidates:
+            key = (cy, cm)
+            if key in seen:
+                continue
+            ay = calendar_months_from_front(front_year, front_month, cy, cm)
+            if ay < lo or ay > hi:
+                continue
+            seen.add(key)
+            out.append((cy, cm, delta))
+    return out
+
+
+def _target_status_for_exact_error(err: str | None) -> str:
+    if err == "expired_contract":
+        return "expired_contract"
+    if err == "stale_active_quote":
+        return "stale_active_quote"
+    if err == "missing_quote" or not err:
+        return "missing_quote"
+    if _is_unlisted_contract_error(err):
+        return "unlisted"
+    if _is_symbol_mismatch_error(err):
+        return "symbol_mismatch"
+    return "missing_quote"
+
+
+def _select_brent_horizon_point(
+    role: int,
+    *,
+    root: str,
+    as_of: date,
+    opener: Opener,
+    unit: str,
+    front_year: int,
+    front_month: int,
+    maturity_12_actual: int | None,
+) -> tuple[dict[str, Any] | None, str | None, dict[str, Any]]:
+    """Select 12m or 24m Brent horizon with optional listed fallback."""
+    target_y, target_m = add_months(front_year, front_month, role)
+    exact_point: dict[str, Any] | None = None
+    exact_was_stale = False
+    saw_any_fresh = False
+    saw_fresh_no_1m = False
+    stop_search = False
+    horizon_meta: dict[str, Any] = {
+        "role": role,
+        "status": "unavailable",
+        "symbol": None,
+        "contract_month": None,
+        "actual_maturity_months": None,
+        "target_contract_month": period_key(target_y, target_m),
+        "selection": None,
+        "selection_reason": None,
+        "coverage_shortfall_months": None,
+        "reason": None,
+    }
+
+    for cy, cm, delta in _horizon_search_order(role, front_year, front_month):
+        if stop_search:
+            break
+        try:
+            gated_active = contract_is_active(root, cy, cm, as_of)
+        except ExpiryError:
+            gated_active = False
+        if not gated_active:
+            continue
+        history, err, stop = _gated_fetch_history(root, cy, cm, as_of, opener)
+        if stop:
+            horizon_meta["reason"] = "quote_fetch_error"
+            return None, "quote_fetch_error", horizon_meta
+        if err:
+            if delta == 0:
+                horizon_meta["reason"] = _target_status_for_exact_error(err)
+            continue
+        if not history:
+            continue
+        point = _point_from_history(
+            maturity_months=role,
+            year=cy,
+            month=cm,
+            root=root,
+            as_of=as_of,
+            unit=unit,
+            history=history,
+        )
+        if point is None:
+            if delta == 0:
+                exact_was_stale = True
+                horizon_meta["reason"] = "stale_active_quote"
+            continue
+
+        saw_any_fresh = True
+        has_1m = point["changes"].get("1m") is not None
+        if not has_1m and point["quote_fresh"]:
+            saw_fresh_no_1m = True
+
+        if delta == 0:
+            exact_point = point
+            if has_1m:
+                out = _enrich_horizon_point(
+                    point,
+                    role=role,
+                    front_year=front_year,
+                    front_month=front_month,
+                    target_year=target_y,
+                    target_month=target_m,
+                    selected_year=cy,
+                    selected_month=cm,
+                    fallback=False,
+                    selection="exact",
+                    selection_reason="exact_listed_contract",
+                    target_status=None,
+                )
+                horizon_meta.update(
+                    {
+                        "status": "selected",
+                        "symbol": out["symbol"],
+                        "contract_month": out["contract_month"],
+                        "actual_maturity_months": out["actual_maturity_months"],
+                        "selection": "exact",
+                        "selection_reason": "exact_listed_contract",
+                        "coverage_shortfall_months": out["coverage_shortfall_months"],
+                        "reason": None,
+                    }
+                )
+                return out, None, horizon_meta
+            continue
+
+        if not has_1m:
+            continue
+
+        actual_m = calendar_months_from_front(front_year, front_month, cy, cm)
+        if role == 24 and maturity_12_actual is not None:
+            if actual_m < maturity_12_actual + MIN_HORIZON_SEPARATION_MONTHS:
+                continue
+
+        # Closest viable month; at equal distance the earlier month is tried first.
+        # When the exact month is unlisted, this earlier contract is the best
+        # listed observation. Actual term and coverage_shortfall_months record
+        # the shortened horizon. Later months are not fetched once this qualifies.
+        selection = "nearest_listed"
+        selection_reason = (
+            "nearest_earlier_listed" if delta < 0 else "nearest_later_listed"
+        )
+
+        out = _enrich_horizon_point(
+            point,
+            role=role,
+            front_year=front_year,
+            front_month=front_month,
+            target_year=target_y,
+            target_month=target_m,
+            selected_year=cy,
+            selected_month=cm,
+            fallback=True,
+            selection=selection,
+            selection_reason=selection_reason,
+            target_status=horizon_meta.get("reason"),
+        )
+        horizon_meta.update(
+            {
+                "status": "selected",
+                "symbol": out["symbol"],
+                "contract_month": out["contract_month"],
+                "actual_maturity_months": out["actual_maturity_months"],
+                "selection": selection,
+                "selection_reason": selection_reason,
+                "coverage_shortfall_months": out["coverage_shortfall_months"],
+                "reason": None,
+            }
+        )
+        return out, None, horizon_meta
+
+    if exact_point is not None:
+        out = _enrich_horizon_point(
+            exact_point,
+            role=role,
+            front_year=front_year,
+            front_month=front_month,
+            target_year=target_y,
+            target_month=target_m,
+            selected_year=target_y,
+            selected_month=target_m,
+            fallback=False,
+            selection="exact",
+            selection_reason="exact_listed_contract",
+            target_status=None,
+        )
+        horizon_meta.update(
+            {
+                "status": "selected",
+                "symbol": out["symbol"],
+                "contract_month": out["contract_month"],
+                "actual_maturity_months": out["actual_maturity_months"],
+                "selection": "exact",
+                "selection_reason": "exact_listed_contract",
+                "coverage_shortfall_months": out["coverage_shortfall_months"],
+                "reason": None,
+            }
+        )
+        return out, None, horizon_meta
+
+    if exact_was_stale:
+        miss = "stale_active_quote"
+    elif saw_any_fresh and saw_fresh_no_1m and exact_point is None:
+        miss = "insufficient_1m_history"
+    elif role == 12:
+        miss = "missing_maturity_contract"
+    elif role == 24:
+        miss = "no_economically_meaningful_long_maturity"
+    else:
+        miss = "missing_maturity_contract"
+
+    horizon_meta["reason"] = miss
+    return None, miss, horizon_meta
+
+
+def _point_from_history(
+    *,
+    maturity_months: int,
+    year: int,
+    month: int,
+    root: str,
+    as_of: date,
+    unit: str,
+    history: list[tuple[date, float]],
+) -> dict[str, Any] | None:
+    """Build point dict from already-fetched history (contract must be active)."""
+    symbol = contract_symbol(root, year, month)
+    try:
+        expiry = _expiry_fields(root, year, month, as_of)
+    except ExpiryError:
+        return None
+    if not history:
+        return None
+    obs_date, price = history[-1]
+    age_days = (as_of - obs_date).days
+    if not quote_is_fresh(obs_date, as_of):
+        return None
+    url = YAHOO_CHART_URL.format(symbol=symbol)
+    return {
+        "maturity_months": maturity_months,
+        "contract_month": period_key(year, month),
+        "symbol": symbol,
+        "price": price,
+        "unit": unit,
+        "observation_date": iso_date(obs_date),
+        "source_url": url,
+        "source_kind": "specific_listed_contract",
+        "staleness": "ok" if age_days <= QUOTE_STALE_AFTER_DAYS else "stale",
+        "age_days": age_days,
+        "quote_fresh": True,
+        "freshness_max_age_days": QUOTE_FRESHNESS_MAX_AGE_DAYS,
+        "changes": {
+            "1d": _change_block(history, obs_date, price, mode="1d"),
+            "1w": _change_block(history, obs_date, price, mode="1w"),
+            "1m": _change_block(history, obs_date, price, mode="1m"),
+        },
+        **expiry,
+    }
+
+
+def _enrich_horizon_point(
+    point: dict[str, Any],
+    *,
+    role: int,
+    front_year: int,
+    front_month: int,
+    target_year: int,
+    target_month: int,
+    selected_year: int,
+    selected_month: int,
+    fallback: bool,
+    selection: str,
+    selection_reason: str,
+    target_status: str | None,
+) -> dict[str, Any]:
+    target_cm = period_key(target_year, target_month)
+    actual_months = calendar_months_from_front(
+        front_year, front_month, selected_year, selected_month
+    )
+    months_from_target = actual_months - role
+    coverage_shortfall = max(0, role - actual_months)
+    if actual_months == role:
+        coverage = "exact"
+    elif actual_months < role:
+        coverage = "shortened"
+    else:
+        coverage = "extended"
+    point["horizon_role_months"] = role
+    point["actual_maturity_months"] = actual_months
+    point["target_contract_month"] = target_cm
+    point["selection"] = selection
+    point["selection_reason"] = selection_reason
+    point["months_from_target"] = months_from_target
+    point["coverage_shortfall_months"] = coverage_shortfall
+    point["coverage"] = coverage
+    point["fallback"] = fallback
+    if target_status is not None:
+        point["target_status"] = target_status
+    point["front_contract_month"] = period_key(front_year, front_month)
+    return point
+
+
 def _public_selection(selected: dict[str, Any]) -> dict[str, Any]:
     """JSON-safe front selection record. Quote history is not repeated here."""
     prior = selected.get("prior_contract")
@@ -435,7 +800,38 @@ def build_curve(curve_id: str, as_of: date, opener: Opener) -> dict[str, Any]:
     points: list[dict[str, Any]] = []
     missing: list[int] = []
     missing_reasons: dict[str, str] = {}
+    horizon_selection: dict[str, Any] = {}
+    maturity_12_actual: int | None = None
+
     for maturity in TARGET_MATURITY_MONTHS:
+        if curve_id == "brent_last_day" and maturity in HORIZON_ROLES:
+            if maturity == 24:
+                role_12_meta = horizon_selection.get("12") or {}
+                if role_12_meta.get("status") == "selected":
+                    mature = role_12_meta.get("actual_maturity_months")
+                    if mature is not None:
+                        maturity_12_actual = int(mature)
+            h_point, h_reason, h_meta = _select_brent_horizon_point(
+                maturity,
+                root=root,
+                as_of=as_of,
+                opener=opener,
+                unit=unit,
+                front_year=fy,
+                front_month=fm,
+                maturity_12_actual=maturity_12_actual,
+            )
+            horizon_selection[str(maturity)] = h_meta
+            if h_point is None:
+                missing.append(maturity)
+                miss_reason = h_reason or h_meta.get("reason") or "missing_maturity_contract"
+                if miss_reason == "quote_fetch_error":
+                    miss_reason = "quote_fetch_error"
+                missing_reasons[str(maturity)] = miss_reason
+            else:
+                points.append(h_point)
+            continue
+
         cy, cm = add_months(fy, fm, maturity)
         reused = selected.get("history") if maturity == 0 else None
         point, reason = _build_point(
@@ -452,9 +848,24 @@ def build_curve(curve_id: str, as_of: date, opener: Opener) -> dict[str, Any]:
             missing.append(maturity)
             missing_reasons[str(maturity)] = reason or "missing_maturity_contract"
         else:
-            point["selection"] = "active_front_plus_maturity"
+            if maturity == 0:
+                point["selection"] = "active_front"
+            else:
+                point["selection"] = "exact"
+            point["actual_maturity_months"] = maturity
+            point["horizon_role_months"] = maturity
+            cy_t, cm_t = add_months(fy, fm, maturity)
+            point["target_contract_month"] = period_key(cy_t, cm_t)
+            point["fallback"] = False
+            point["coverage"] = "exact"
+            point["coverage_shortfall_months"] = 0
+            point["months_from_target"] = 0
+            point["selection_reason"] = "exact_listed_contract"
             point["front_contract_month"] = period_key(fy, fm)
             points.append(point)
+
+    if curve_id == "brent_last_day":
+        base["horizon_selection"] = horizon_selection
 
     base["points"] = points
     base["missing_maturities"] = missing
