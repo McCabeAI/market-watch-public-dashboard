@@ -52,6 +52,7 @@ _EXPRESSION_FAMILY = {
     "treasury_future": "treasury_future",
     "forward_swap": "other",
     "outright": "stir_outright",
+    "policy_meeting": "policy_meeting",
 }
 
 _ASSESSOR_PATHS = {
@@ -853,6 +854,11 @@ def assess_expression(
     if expr_type == "treasury_future":
         return _delegate_assessor("treasury_future", normalized, expression, market_state, notional_usd)
 
+    if expr_type == "policy_meeting":
+        from scripts.policy_meeting_book import assess_policy_meeting
+
+        return assess_policy_meeting(expression, market_state, notional_usd)
+
     if normalized and is_sovereign_instrument(normalized):
         return _assess_government_yield(normalized, expression, market_state)
 
@@ -1244,6 +1250,61 @@ def _recipe(expression_type: str, schema: Mapping[str, Any], verdict: Mapping[st
     }
 
 
+_POLICY_MEETING_SCHEMA: dict[str, Any] = {
+    "type": "object",
+    "required": ["type", "construction_version", "kind", "side"],
+    "properties": {
+        "type": {"const": "policy_meeting"},
+        "construction_version": {"const": "policy_meeting_v1"},
+        "kind": {"enum": ["meeting", "cumulative", "calendar_spread", "cross_country"]},
+        "bank": {"enum": ["US", "CA", "AU", "JP"]},
+        "side": {"enum": ["long", "short"]},
+    },
+    "description": "Synthetic policy-meeting rate. long profits when the quote falls. NZ and EA are not bookable without a strip.",
+}
+
+
+def _policy_meeting_representative(market_state: Mapping[str, Any] | None) -> dict[str, Any]:
+    banks = ((market_state or {}).get("policy_meeting_prices") or {}).get("banks") or {}
+    expression = {
+        "type": "policy_meeting",
+        "construction_version": "policy_meeting_v1",
+        "kind": "meeting",
+        "bank": "US",
+        "decision_dates": ["2026-12-09"],
+        "side": "long",
+    }
+    instrument = "PM:US:2026-12-09"
+    for code in ("US", "CA", "AU", "JP"):
+        block = banks.get(code) or {}
+        for row in block.get("meetings") or []:
+            if row.get("method") in {"identified", "equal_step"} and row.get("post_rate") is not None:
+                expression = {
+                    "type": "policy_meeting",
+                    "construction_version": "policy_meeting_v1",
+                    "kind": "meeting",
+                    "bank": code,
+                    "decision_dates": [row["decision_date"]],
+                    "side": "long",
+                }
+                instrument = str(row.get("instrument_id") or instrument)
+                break
+        else:
+            continue
+        break
+    verdict = dict(
+        assess_expression(
+            instrument,
+            expression=expression,
+            market_state=market_state,
+            notional_usd=1_000_000,
+        )
+    )
+    verdict["instrument"] = instrument
+    verdict["expression"] = expression
+    return verdict
+
+
 def build_executable_catalog(market_state: Mapping[str, Any] | None) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     for curve_id in _CURVE_ORDER:
@@ -1335,6 +1396,7 @@ def build_executable_catalog(market_state: Mapping[str, Any] | None) -> dict[str
         _recipe("outright_rv", _OUTRIGHT_RV_SCHEMA, outright_rv),
         _recipe("curve_rv", _CURVE_RV_SCHEMA, curve_rv),
         _recipe("futures_strip_average", _FOUR_QUARTER_STRIP_SCHEMA, four_quarter),
+        _recipe("policy_meeting", _POLICY_MEETING_SCHEMA, _policy_meeting_representative(market_state)),
     ]
     for verdict in (calendar, butterfly, outright_rv, curve_rv, four_quarter):
         if verdict.get("bookable"):

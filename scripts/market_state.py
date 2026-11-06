@@ -1928,8 +1928,10 @@ def build_snapshot(
     if fx_error and fx_status != "ok":
         fx_source["error"] = fx_error
 
+    policy_meeting_prices = _policy_meeting_prices(today, policy_paths)
     return {
         "policy_paths": policy_paths,
+        "policy_meeting_prices": policy_meeting_prices,
         "tradable_rate_curves": tradable_rate_curves,
         "official_curves": official_curves,
         "australia_housing": australia_housing,
@@ -2173,6 +2175,55 @@ def validate_snapshot(s: Mapping) -> None:
         raise MarketStateError("generated_at missing")
 
 
+def _policy_meeting_prices(today: date, policy_paths: dict) -> dict:
+    """Price meetings from the in-memory futures strip and the stored calendar.
+
+    A missing calendar or a bank failure leaves that bank unavailable. It does
+    not fail the rest of the snapshot.
+    """
+    root = Path(__file__).resolve().parents[1]
+    try:
+        from scripts.policy_calendar import load_calendar
+        from scripts.policy_meeting_book import attach_outcomes
+        from scripts.policy_meeting_pricing import build_policy_meeting_prices, load_history
+        from scripts.policy_state import load_policy_state
+
+        calendar = load_calendar(root) or {"banks": {}}
+        policy_state = load_policy_state(root) or {"countries": {}}
+        history = load_history(root)
+        block = build_policy_meeting_prices(
+            as_of=today,
+            calendar=calendar,
+            policy_state=policy_state,
+            policy_paths=policy_paths,
+            history_doc=history,
+        )
+        return attach_outcomes(block, policy_state, today, calendar)
+    except Exception as exc:
+        return {
+            "schema_version": 1,
+            "construction_version": "policy_meeting_v1",
+            "as_of": today.isoformat(),
+            "status": "unavailable",
+            "error": str(exc),
+            "banks": {},
+        }
+
+
+def _refresh_meeting_calendars() -> None:
+    """Best-effort official calendars. One bank failure keeps that bank's last schedule."""
+    root = Path(__file__).resolve().parents[1]
+    try:
+        from scripts.policy_calendar import load_calendar, refresh_calendars
+
+        def fetch(url: str) -> str:
+            return fetch_bytes(url, retries=1).decode("utf-8", "replace")
+
+        refresh_calendars(fetch, load_calendar(root), save=True, root=root)
+    except Exception as exc:
+        print(f"policy calendar refresh skipped: {exc}", file=sys.stderr)
+
+
 def _refresh_policy_state() -> None:
     """Best-effort official policy-state refresh during market-state acquisition.
 
@@ -2201,6 +2252,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     nz_workbook = Path(args.nz_workbook) if args.nz_workbook else None
     if nz_workbook and not nz_workbook.is_file():
         raise MarketStateError(f"RBNZ workbook not found: {nz_workbook}")
+    _refresh_meeting_calendars()
+    _refresh_policy_state()
     snapshot = build_snapshot(today=today, nz_workbook=nz_workbook)
     validate_snapshot(snapshot)
     if args.public:
@@ -2209,7 +2262,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(snapshot, indent=2, sort_keys=True) + "\n")
-    _refresh_policy_state()
+    try:
+        from scripts.policy_meeting_pricing import append_history
+
+        root = Path(__file__).resolve().parents[1]
+        prices = snapshot.get("policy_meeting_prices")
+        if isinstance(prices, dict) and prices.get("as_of"):
+            append_history(root, date.fromisoformat(str(prices["as_of"])), prices)
+            sidecar = root / "data" / "policy_meeting_prices.json"
+            sidecar.write_text(json.dumps(prices, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    except Exception as exc:
+        print(f"policy meeting history skipped: {exc}", file=sys.stderr)
     print(
         json.dumps(
             {

@@ -74,7 +74,33 @@ def run_data_only_catch_up(
         write_health=True,
     )
 
-    sections = render_dashboard_sections(root, observations_dir=obs_dir)
+    from scripts.apply_country_detail import load_policy_meeting_view
+    from scripts.policy_calendar import load_calendar, refresh_calendars
+
+    calendar = load_calendar(root)
+    if mode == "live":
+        def _fetch(url: str) -> str:
+            from urllib.request import Request, urlopen
+
+            request = Request(url, headers={"User-Agent": "MarketWatchPolicyCalendar/1.0"})
+            with urlopen(request, timeout=30) as response:
+                return response.read().decode("utf-8", "replace")
+
+        try:
+            calendar = refresh_calendars(_fetch, calendar, save=False)
+        except Exception:
+            calendar = calendar or load_calendar(root)
+        builders_preview = output_dir / "research_builders"
+        builders_preview.mkdir(parents=True, exist_ok=True)
+        (builders_preview / "policy_meetings.json").write_text(
+            json.dumps(calendar or {"banks": {}}, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    sections = render_dashboard_sections(
+        root,
+        observations_dir=obs_dir,
+        policy_meetings=load_policy_meeting_view(root, calendar=calendar),
+    )
     builders_dir = output_dir / "research_builders"
     builders_dir.mkdir(parents=True, exist_ok=True)
     (builders_dir / "country_detail_sections.json").write_text(

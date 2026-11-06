@@ -887,6 +887,77 @@ def apply_book_resize(
             "lots_added": added,
             "remaining_lots": old_lots + added,
         }
+
+    if position.get("valuation_method") == "policy_meeting_dv01" and position.get("contracts") is not None:
+        old_lots = int(position["contracts"])
+        face_local = float(position.get("face_notional") or 0.0)
+        entry_fx = float(position.get("entry_fx_usd_per_unit") or 1.0)
+        face_usd = face_local * entry_fx
+        if face_usd <= 0:
+            return {"legacy": True}
+        local_dv01 = float(position.get("local_dv01") or 0.0)
+        quote_unit = position.get("quote_unit")
+
+        def _policy_meeting_pnl(lots: int) -> float | None:
+            if lots <= 0:
+                return 0.0
+            entry = position.get("entry_price")
+            mark = position.get("mark_price")
+            if entry in (None, "") or mark in (None, ""):
+                return None
+            scale = 100.0 if quote_unit == "percent" else 1.0
+            delta = (float(mark) - float(entry)) * scale
+            sign = 1.0 if position.get("side") == "long" else -1.0
+            return -sign * int(lots) * local_dv01 * delta * entry_fx
+
+        if reducing:
+            remaining, closed, zero = split_lots(old_lots, old_notional, new_notional)
+            if zero:
+                return _zero_lot(remaining_lots=old_lots)
+            if marks_block_fill(position):
+                return _pending()
+            realized = _policy_meeting_pnl(closed)
+            if realized is None:
+                return _pending()
+            position["contracts"] = remaining
+            position["_closed_lots"] = closed
+            position["dv01_usd"] = round(remaining * local_dv01 * entry_fx, 2)
+            _stamp_outright_residual(position, _unrounded_remaining(old_lots, old_notional, new_notional))
+            return {
+                "legacy": False,
+                "zero_lot": False,
+                "pending_mark": False,
+                "realized_pnl_usd": round(realized, 2),
+                "lots_closed": closed,
+                "lots_added": 0,
+                "remaining_lots": remaining,
+            }
+        added_notional = new_notional - old_notional
+        added, raw_added, zero = added_lots_from_face(added_notional, face_usd_per_lot=face_usd)
+        if zero:
+            return _zero_lot(remaining_lots=old_lots)
+        if marks_block_fill(position):
+            return _pending()
+        price = add_price if add_price is not None else position.get("mark_price")
+        if price in (None, ""):
+            return _pending()
+        if position.get("entry_price") not in (None, "") and old_lots > 0:
+            position["entry_price"] = (float(position["entry_price"]) * old_lots + float(price) * added) / (old_lots + added)
+            position["entry_price_source"] = "weighted_average_of_actual_lots"
+        position["mark_price"] = price
+        position["contracts"] = old_lots + added
+        position["dv01_usd"] = round(int(position["contracts"]) * local_dv01 * entry_fx, 2)
+        _stamp_outright_residual(position, old_lots + raw_added)
+        return {
+            "legacy": False,
+            "zero_lot": False,
+            "pending_mark": False,
+            "realized_pnl_usd": 0.0,
+            "lots_closed": 0,
+            "lots_added": added,
+            "remaining_lots": old_lots + added,
+        }
+
     return {"legacy": True}
 
 

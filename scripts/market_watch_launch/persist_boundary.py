@@ -26,6 +26,9 @@ ACP_ALLOWLIST: tuple[str, ...] = (
     "data/overnight/latest.json",
     "data/pm",
     "data/trading",
+    "data/policy_meetings.json",
+    "data/policy_meeting_history.json",
+    "data/policy_meeting_prices.json",
     *CANONICAL_OBSERVATION_STORE_PATHS,
 )
 
@@ -48,6 +51,9 @@ def finalization_persist_allowlist() -> tuple[str, ...]:
         *histories,
         "data/temperature_history/score_paths.json",
         "data/country_detail/attention_snapshot.json",
+        "data/policy_meetings.json",
+        "data/policy_meeting_history.json",
+        "data/policy_meeting_prices.json",
     )
 
 

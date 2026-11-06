@@ -422,7 +422,18 @@ def collect_inputs(
         market_notes.append("offline collect: market_state not fetched")
     else:
         try:
-            from scripts.market_state import build_snapshot, validate_snapshot
+            from scripts.market_state import build_snapshot, fetch_bytes, validate_snapshot
+            from scripts.overnight.constants import ROOT as REPO_ROOT
+            from scripts.policy_calendar import load_calendar, refresh_calendars
+
+            try:
+
+                def _calendar_fetch(url: str) -> str:
+                    return fetch_bytes(url, retries=1).decode("utf-8", "replace")
+
+                refresh_calendars(_calendar_fetch, load_calendar(REPO_ROOT), save=True, root=REPO_ROOT)
+            except Exception:
+                pass
 
             market_payload = build_snapshot()
             validate_snapshot(market_payload)
@@ -441,6 +452,23 @@ def collect_inputs(
             fx_block = market_payload.get("fx")
             if isinstance(fx_block, dict) and fx_block.get("error"):
                 market_notes.append(str(fx_block["error"]))
+            try:
+                from datetime import date
+
+                from scripts.overnight.constants import ROOT
+                from scripts.policy_meeting_pricing import append_history
+
+                prices = market_payload.get("policy_meeting_prices")
+                if isinstance(prices, dict) and prices.get("as_of"):
+                    append_history(ROOT, date.fromisoformat(str(prices["as_of"])), prices)
+                    prices_path = ROOT / "data" / "policy_meeting_prices.json"
+                    prices_path.parent.mkdir(parents=True, exist_ok=True)
+                    prices_path.write_text(
+                        json.dumps(prices, indent=2, sort_keys=True) + "\n",
+                        encoding="utf-8",
+                    )
+            except Exception as exc:
+                market_notes.append(f"policy meeting history skipped: {exc}")
         except Exception as exc:
             market_status = "unavailable"
             market_as_of = None

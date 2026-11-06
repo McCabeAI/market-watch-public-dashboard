@@ -404,6 +404,26 @@ jobs:
               sys.exit(1)
           PY
 
+      - name: Set up Python for market-state packet
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Generate market-state JSON for Pages
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --disable-pip-version-check -r requirements-market-state.txt
+          PYTHONPATH=. python scripts/market_state.py --output _site/market-state.json --public
+          PYTHONPATH=. python - <<'PY'
+          import json
+          from pathlib import Path
+          from scripts.market_state import validate_snapshot
+          packet = json.loads(Path("_site/market-state.json").read_text())
+          validate_snapshot(packet)
+          PY
+
       - name: Apply Country Detail
         shell: bash
         run: |
@@ -424,26 +444,6 @@ jobs:
             exit 1
           fi
           grep -Eq 'class="wmn-quiet"|class="wmn-finding"' _site/index.html
-
-      - name: Set up Python for market-state packet
-        uses: actions/setup-python@v6
-        with:
-          python-version: "3.12"
-
-      - name: Generate market-state JSON for Pages
-        continue-on-error: true
-        shell: bash
-        run: |
-          set -euo pipefail
-          python -m pip install --disable-pip-version-check -r requirements-market-state.txt
-          PYTHONPATH=. python scripts/market_state.py --output _site/market-state.json --public
-          PYTHONPATH=. python - <<'PY'
-          import json
-          from pathlib import Path
-          from scripts.market_state import validate_snapshot
-          packet = json.loads(Path("_site/market-state.json").read_text())
-          validate_snapshot(packet)
-          PY
 
       - name: Add Market Data tab
         shell: bash

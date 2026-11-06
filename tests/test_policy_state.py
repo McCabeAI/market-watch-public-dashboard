@@ -75,6 +75,18 @@ def _prior_decision(**overrides: object) -> dict:
 
 
 class PolicyStateParseTest(unittest.TestCase):
+    def test_hold_statement_uses_at_range(self) -> None:
+        from scripts.policy_state import parse_fomc_statement
+
+        held = """
+        <p class="article__time">October 28, 2026</p>
+        <p>The Committee decided to maintain the target range for the federal funds rate at 3-3/4 to 4 percent.</p>
+        """
+        parsed = parse_fomc_statement(held)
+        self.assertEqual(parsed["lower"], 3.75)
+        self.assertEqual(parsed["upper"], 4.0)
+        self.assertEqual(parsed["decision_date"], "2026-10-28")
+
     def test_feed_selects_latest_fomc_statement_not_projections(self) -> None:
         self.assertEqual(latest_fomc_statement_url(FEED), STATEMENT_URL)
 
@@ -214,26 +226,45 @@ class CommittedPolicyStateTest(unittest.TestCase):
         state = load_policy_state(ROOT)
         self.assertIsNotNone(state)
         assert state is not None
-        us = state["countries"]["US"]["decisions"]
+        us = [row for row in state["countries"]["US"]["decisions"] if row.get("status") == "current"]
         self.assertEqual(len(us), 1)
         decision = us[0]
         self.assertEqual(decision["lower"], 3.75)
         self.assertEqual(decision["upper"], 4.0)
-        self.assertEqual(decision["decision_date"], "2026-09-16")
-        self.assertEqual(decision["effective_date"], "2026-09-17")
-        self.assertEqual(decision["source_url"], STATEMENT_URL)
+        self.assertEqual(decision["decision_date"], "2026-10-28")
+        self.assertEqual(decision["effective_date"], "2026-10-29")
+        self.assertTrue(str(decision["source_url"]).startswith("https://www.federalreserve.gov/"))
         self.assertEqual(decision["source_name"], "Federal Reserve")
-        self.assertEqual(decision["status"], "current")
         self.assertNotIn("sofr", json.dumps(decision).lower())
-        resolved = resolve_country(state, "US", date(2026, 9, 30))
+        resolved = resolve_country(state, "US", date(2026, 11, 5))
         self.assertEqual(resolved["status"], "current")
-        for code in ("CA", "AU", "NZ", "EA", "JP"):
+        self.assertEqual(resolved["decision"]["decision_date"], "2026-10-28")
+        # CA and EA stamps are the latest official series observation, so the
+        # calendar day moves when the source reprints the same rate. AU is the
+        # cash-rate announcement date and only moves when the target changes.
+        # The rate and the https source stay checked; the day is not pinned.
+        for code, rate, earliest in (
+            ("CA", 2.5, date(2026, 11, 4)),
+            ("AU", 4.85, date(2026, 11, 4)),
+            ("EA", 2.5, date(2026, 11, 5)),
+        ):
+            block = state["countries"][code]
+            self.assertEqual(block["status"], "current", code)
+            current = [row for row in block["decisions"] if row.get("status") == "current"]
+            self.assertEqual(len(current), 1, code)
+            self.assertEqual(current[0]["rate"], rate, code)
+            observed = date.fromisoformat(str(current[0]["decision_date"]))
+            self.assertGreaterEqual(observed, earliest, code)
+            self.assertLessEqual(observed, date.today(), code)
+            self.assertTrue(str(current[0]["source_url"]).startswith("https://"), code)
+            self.assertNotIn("corra", json.dumps(current[0]).lower(), code)
+            self.assertNotIn("aonia", json.dumps(current[0]).lower(), code)
+            self.assertNotIn("estr", json.dumps(current[0]).lower(), code)
+        for code in ("NZ", "JP"):
             block = state["countries"][code]
             self.assertEqual(block["status"], "unavailable", code)
             self.assertEqual(block["decisions"], [], code)
-            self.assertTrue(block.get("gap"), code)
-            self.assertNotIn("lower", block)
-            self.assertNotIn("rate", block)
+            self.assertTrue(block.get("gap") or block.get("last_refresh_error"), code)
 
 
 if __name__ == "__main__":

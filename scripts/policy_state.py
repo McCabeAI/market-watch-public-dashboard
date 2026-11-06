@@ -18,6 +18,8 @@ countries stay ``unavailable`` until a real decision source is wired.
 from __future__ import annotations
 
 import argparse
+import csv
+import io
 import json
 import re
 from copy import deepcopy
@@ -33,6 +35,13 @@ ROOT = Path(__file__).resolve().parents[1]
 POLICY_STATE_PATH = Path("data") / "policy_state.json"
 SCHEMA_VERSION = 1
 FED_MONETARY_FEED = "https://www.federalreserve.gov/feeds/press_monetary.xml"
+BOC_TARGET_URL = "https://www.bankofcanada.ca/valet/observations/V39079/json?recent=30"
+RBA_CASH_RATE_URL = "https://www.rba.gov.au/statistics/tables/csv/a2-data.csv"
+ECB_DFR_URL = (
+    "https://data-api.ecb.europa.eu/service/data/FM/D.U2.EUR.4F.KR.DFR.LEV"
+    "?lastNObservations=5&format=csvdata"
+)
+BOJ_STATEMENT_INDEX = "https://www.boj.or.jp/en/mopo/mpmdeci/state_all/index.htm"
 USER_AGENT = "MarketWatchPolicyState/1.0"
 COUNTRY_CODES = ("US", "CA", "AU", "NZ", "EA", "JP")
 
@@ -59,6 +68,10 @@ _DATE_TEXT = (
 _NUMBER = r"(?:\d+-\d+/\d+|\d+\.\d+|\d+)"
 _STATEMENT_RANGE = re.compile(
     rf"target range for the federal funds rate\b.*?to\s+({_NUMBER})\s+to\s+({_NUMBER})\s+percent",
+    re.I,
+)
+_STATEMENT_RANGE_AT = re.compile(
+    rf"target range for the federal funds rate\b.{{0,80}}?\bat\s+({_NUMBER})\s+to\s+({_NUMBER})\s+percent",
     re.I,
 )
 _IMPLEMENTATION_RANGE = re.compile(
@@ -283,7 +296,7 @@ def parse_fomc_statement(statement_html: str) -> dict[str, Any]:
     if not date_match:
         raise PolicyStateError("FOMC statement has no article date")
     text = html_to_text(statement_html)
-    range_match = _STATEMENT_RANGE.search(text)
+    range_match = _STATEMENT_RANGE.search(text) or _STATEMENT_RANGE_AT.search(text)
     if not range_match:
         raise PolicyStateError("FOMC statement has no federal funds target range")
     lower = parse_fed_percent(range_match.group(1))
@@ -469,6 +482,219 @@ def _merge_us_decisions(previous: list[dict[str, Any]], new: dict[str, Any]) -> 
     return merged
 
 
+def _single_rate_block(
+    spec: dict[str, str],
+    decisions: list[dict[str, Any]],
+    *,
+    error: str | None,
+    as_of_status: str,
+) -> dict[str, Any]:
+    return {
+        "central_bank": spec["central_bank"],
+        "instrument": spec["instrument"],
+        "rate_type": spec["rate_type"],
+        "status": as_of_status,
+        "decisions": decisions,
+        "gap": spec["gap"] if not decisions else None,
+        "last_refresh_error": error,
+    }
+
+
+def acquire_ca_decision(fetch: Fetch, retrieved_at: str) -> dict[str, Any]:
+    payload = json.loads(fetch(BOC_TARGET_URL))
+    observations = payload.get("observations") or []
+    if not observations:
+        raise PolicyStateError("Bank of Canada target series has no observations")
+    latest = max(observations, key=lambda row: str(row.get("d") or ""))
+    observation_date = str(latest.get("d") or "")
+    series = latest.get("V39079") or {}
+    rate_token = series.get("v")
+    if not observation_date or rate_token is None:
+        raise PolicyStateError("Bank of Canada target observation is incomplete")
+    rate = float(rate_token)
+    return {
+        "rate": rate,
+        "decision_date": observation_date,
+        "effective_date": observation_date,
+        "source_name": "Bank of Canada",
+        "source_url": BOC_TARGET_URL,
+        "retrieved_at": retrieved_at,
+        "status": "current",
+        "provenance": "official_boc_target",
+    }
+
+
+def acquire_au_decision(fetch: Fetch, retrieved_at: str) -> dict[str, Any]:
+    raw = fetch(RBA_CASH_RATE_URL)
+    reader = csv.reader(io.StringIO(raw))
+    rows = list(reader)
+    header_index = None
+    for index, row in enumerate(rows):
+        if row and row[0] == "Publication date":
+            header_index = index
+            break
+    if header_index is None:
+        raise PolicyStateError("RBA A2 table has no publication rows")
+    data_rows = [row for row in rows[header_index + 1 :] if row and re.fullmatch(r"\d{2}-[A-Za-z]{3}-\d{4}", row[0])]
+    if not data_rows:
+        raise PolicyStateError("RBA A2 table has no cash-rate announcements")
+    latest = data_rows[-1]
+    announcement = datetime.strptime(latest[0], "%d-%b-%Y").date().isoformat()
+    rate = float(latest[2])
+    return {
+        "rate": rate,
+        "decision_date": announcement,
+        "effective_date": announcement,
+        "source_name": "Reserve Bank of Australia",
+        "source_url": RBA_CASH_RATE_URL,
+        "retrieved_at": retrieved_at,
+        "status": "current",
+        "provenance": "official_rba_cash_rate_target",
+    }
+
+
+def acquire_ea_decision(fetch: Fetch, retrieved_at: str) -> dict[str, Any]:
+    raw = fetch(ECB_DFR_URL)
+    reader = csv.DictReader(io.StringIO(raw))
+    rows = [row for row in reader if row.get("TIME_PERIOD") and row.get("OBS_VALUE")]
+    if not rows:
+        raise PolicyStateError("ECB deposit facility series has no observations")
+    latest = rows[-1]
+    decision_date = str(latest["TIME_PERIOD"])
+    rate = float(latest["OBS_VALUE"])
+    return {
+        "rate": rate,
+        "decision_date": decision_date,
+        "effective_date": decision_date,
+        "source_name": "European Central Bank",
+        "source_url": ECB_DFR_URL,
+        "retrieved_at": retrieved_at,
+        "status": "current",
+        "provenance": "official_ecb_dfr",
+    }
+
+
+_BOJ_GUIDELINE = re.compile(
+    r"encourage the uncollateralized overnight call rate to remain at around\s+([\d.]+)\s*(?:percent|%)",
+    re.I,
+)
+_BOJ_STATEMENT_LINK = re.compile(r'href="(/en/mopo/mpmdeci/[^"]+\.htm)"')
+
+
+def _boj_decision_stamps(page_html: str) -> tuple[str, str]:
+    """Return (latest HTML statement stamp, latest PDF decision stamp) as yymmdd."""
+    html_stamps = re.findall(r"k(\d{6})[a-z]\.htm", page_html, flags=re.I)
+    pdf_stamps = re.findall(r"k(\d{6})[a-z]\.pdf", page_html, flags=re.I)
+    return (max(html_stamps) if html_stamps else "", max(pdf_stamps) if pdf_stamps else "")
+
+
+def latest_boj_statement_url(index_html: str) -> str:
+    links = _BOJ_STATEMENT_LINK.findall(index_html)
+    candidates = [link for link in links if "/state_" in link or "/state/" in link]
+    if not candidates:
+        candidates = [link for link in links if re.search(r"/k\d+[a-z]\.htm$", link)]
+    if not candidates:
+        raise PolicyStateError("Bank of Japan index has no monetary policy statement links")
+
+    def sort_key(link: str) -> str:
+        match = re.search(r"k(\d+)", link)
+        return match.group(1) if match else link
+
+    chosen = sorted(set(candidates), key=sort_key)[-1]
+    if not chosen.startswith("https://"):
+        chosen = urljoin(BOJ_STATEMENT_INDEX, chosen)
+    return chosen
+
+
+def acquire_jp_decision(fetch: Fetch, retrieved_at: str) -> dict[str, Any]:
+    index_html = fetch(BOJ_STATEMENT_INDEX)
+    year_links = re.findall(r'href="(/en/mopo/mpmdeci/state_(\d{4})/index\.htm)"', index_html)
+    if not year_links:
+        raise PolicyStateError("Bank of Japan index has no statement year links")
+    year_links.sort(key=lambda item: item[1])
+    year_url = urljoin(BOJ_STATEMENT_INDEX, year_links[-1][0])
+    year_html = fetch(year_url)
+    html_stamp, pdf_stamp = _boj_decision_stamps(year_html)
+    if pdf_stamp and pdf_stamp > html_stamp:
+        raise PolicyStateError(
+            "A later Bank of Japan decision is published only as a PDF, so the older HTML "
+            "guideline is not used as the current target."
+        )
+    statement_url = latest_boj_statement_url(year_html)
+    statement_html = fetch(statement_url)
+    text = html_to_text(statement_html)
+    match = _BOJ_GUIDELINE.search(text)
+    if not match:
+        raise PolicyStateError("Bank of Japan statement has no overnight call-rate guideline")
+    rate = float(match.group(1))
+    date_match = re.search(_DATE_TEXT, text)
+    if not date_match:
+        raise PolicyStateError("Bank of Japan statement has no decision date")
+    decision_date = _parse_date(*date_match.groups())
+    return {
+        "rate": rate,
+        "decision_date": decision_date,
+        "effective_date": decision_date,
+        "source_name": "Bank of Japan",
+        "source_url": statement_url,
+        "retrieved_at": retrieved_at,
+        "status": "current",
+        "provenance": "official_boj_statement",
+    }
+
+
+def _merge_single_decisions(previous: list[dict[str, Any]], new: dict[str, Any]) -> list[dict[str, Any]]:
+    merged: list[dict[str, Any]] = []
+    for old in previous:
+        if not isinstance(old, dict):
+            continue
+        if old.get("decision_date") == new["decision_date"] and old.get("source_url") == new["source_url"]:
+            continue
+        if old.get("status") != "superseded" and str(old.get("decision_date") or "") < str(new["decision_date"]):
+            old = {**old, "status": "superseded"}
+        merged.append(old)
+    merged.append(new)
+    merged.sort(key=_sort_key)
+    return merged
+
+
+def _refresh_single_country(
+    base: dict[str, Any],
+    code: str,
+    fetch: Fetch,
+    retrieved_at: str,
+    previous: dict[str, Any] | None,
+    acquire: Callable[[Fetch, str], dict[str, Any]],
+) -> None:
+    spec = EXPLICIT_GAPS[code]
+    prior: list[dict[str, Any]] = []
+    if previous and isinstance(previous.get("countries"), dict):
+        prior_block = previous["countries"].get(code) or {}
+        if isinstance(prior_block, dict):
+            prior = deepcopy(prior_block.get("decisions") or [])
+    try:
+        decision = acquire(fetch, retrieved_at)
+    except Exception as exc:
+        if prior:
+            base["countries"][code] = _single_rate_block(
+                spec,
+                prior,
+                error=str(exc),
+                as_of_status="current",
+            )
+        else:
+            base["countries"][code] = _gap_country(spec)
+            base["countries"][code]["last_refresh_error"] = str(exc)
+        return
+    decisions = _merge_single_decisions(prior, decision)
+    base["countries"][code] = _single_rate_block(
+        spec,
+        decisions,
+        error=None,
+        as_of_status="current",
+    )
+
+
 def refresh_policy_state(
     previous: dict[str, Any] | None,
     fetch: Fetch,
@@ -494,16 +720,20 @@ def refresh_policy_state(
             error=str(exc),
             as_of_status="current" if any(item.get("status") != "superseded" for item in prior_us) else "unavailable",
         )
-        return base
     except PolicyStateError as exc:
         base["countries"]["US"] = _us_block(
             prior_us,
             error=str(exc),
             as_of_status="current" if any(item.get("status") != "superseded" for item in prior_us) else "unavailable",
         )
-        return base
-    decisions = _merge_us_decisions(prior_us, decision)
-    base["countries"]["US"] = _us_block(decisions, error=None, as_of_status="current")
+    else:
+        decisions = _merge_us_decisions(prior_us, decision)
+        base["countries"]["US"] = _us_block(decisions, error=None, as_of_status="current")
+
+    _refresh_single_country(base, "CA", fetch, retrieved_at, previous, acquire_ca_decision)
+    _refresh_single_country(base, "AU", fetch, retrieved_at, previous, acquire_au_decision)
+    _refresh_single_country(base, "EA", fetch, retrieved_at, previous, acquire_ea_decision)
+    _refresh_single_country(base, "JP", fetch, retrieved_at, previous, acquire_jp_decision)
     return base
 
 

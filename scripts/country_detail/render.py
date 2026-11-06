@@ -33,6 +33,7 @@ from scripts.country_detail.indicator import (
     rationale,
     score_usage,
 )
+from scripts.country_detail.policy_meetings import render_policy_meetings
 from scripts.country_detail.present import (
     _movement_pair,
     bucket_label,
@@ -1180,12 +1181,26 @@ def _render_score_drilldown(
     return "".join(parts)
 
 
+def _policy_meeting_bank_block(
+    container: Mapping[str, Any] | None,
+    country_code: str,
+) -> Mapping[str, Any] | None:
+    if not container:
+        return None
+    banks = container.get("banks")
+    if isinstance(banks, Mapping):
+        block = banks.get(country_code)
+        return block if isinstance(block, Mapping) else None
+    return None
+
+
 def render_country_detail(
     country_code: str,
     projection_country: Mapping[str, Any],
     attention_country: Mapping[str, Any],
     score_state: Mapping[str, Any],
     score_windows: Mapping[str, Any] | None = None,
+    policy_meetings: Mapping | None = None,
 ) -> str:
     """Render the Country Detail fragment for one economy."""
     code = str(country_code)
@@ -1198,6 +1213,23 @@ def render_country_detail(
         f'<section class="country-detail" data-country="{_esc(code)}">',
         _score_header(score_state),
         _render_score_compact(code, score_state),
+    ]
+    if policy_meetings is not None:
+        prices_root = policy_meetings.get("prices") if isinstance(policy_meetings, Mapping) else None
+        calendar_root = policy_meetings.get("calendar") if isinstance(policy_meetings, Mapping) else None
+        chunks.append(
+            render_policy_meetings(
+                code,
+                _policy_meeting_bank_block(prices_root, code)
+                if isinstance(prices_root, Mapping)
+                else None,
+                _policy_meeting_bank_block(calendar_root, code)
+                if isinstance(calendar_root, Mapping)
+                else None,
+            )
+        )
+    chunks.extend(
+        [
         _render_wmn(attention_country, obs_map, code, score_state),
         _render_score_drilldown(
             code,
@@ -1220,7 +1252,8 @@ def render_country_detail(
             shown_ids=wmn_ids,
         ),
         "</section>",
-    ]
+        ]
+    )
     return "".join(chunks)
 
 

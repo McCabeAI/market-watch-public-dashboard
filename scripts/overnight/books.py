@@ -129,7 +129,7 @@ def _projected_risk_capital(
         projected = deepcopy(position)
         old_n = float(position["notional_usd"])
         new_n = old_n + _money(action.get("notional_usd"), "notional_usd")
-        if position.get("legs") or position.get("valuation_method") == "instrument_dv01":
+        if position.get("legs") or position.get("valuation_method") in {"instrument_dv01", "policy_meeting_dv01"}:
             from scripts.overnight.paper_marks import refresh_positions
             from scripts.rates.lifecycle import apply_book_resize
 
@@ -1016,6 +1016,13 @@ def _install_rates_economics(
 
     expr_type = expression.get("type") if isinstance(expression, Mapping) else None
 
+    if expr_type == "policy_meeting" and isinstance(expression, Mapping):
+        from scripts.policy_meeting_book import install_policy_meeting
+
+        install_policy_meeting(position, market_state)
+        stamp_open_valuation(position, market_state)
+        return
+
     if expr_type == STRIP_TYPE and isinstance(expression, Mapping):
         try:
             built = build_strip(
@@ -1198,7 +1205,10 @@ def _open_position(
 
 
 def _refresh_live_marks(position: dict[str, Any], market_state: dict[str, Any] | None) -> None:
-    stamped = position.get("legs") or position.get("valuation_method") == "instrument_dv01"
+    stamped = (
+        position.get("legs")
+        or position.get("valuation_method") in {"instrument_dv01", "policy_meeting_dv01"}
+    )
     if not stamped:
         return
     from scripts.overnight.paper_marks import clear_unresolved_mark, refresh_positions
@@ -1213,7 +1223,10 @@ def _refresh_live_marks(position: dict[str, Any], market_state: dict[str, Any] |
 def _instrument_position(position: dict[str, Any]) -> bool:
     if position.get("legs"):
         return True
-    if position.get("valuation_method") != "instrument_dv01":
+    method = position.get("valuation_method")
+    if method in {"instrument_dv01", "policy_meeting_dv01"} and position.get("contracts") is not None:
+        return True
+    if method != "instrument_dv01":
         return False
     if position.get("contracts") is not None:
         return True
