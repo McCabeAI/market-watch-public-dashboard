@@ -127,6 +127,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: write
 
 concurrency:
   # Pull-request previews cancel each other. Production dispatches queue in
@@ -144,6 +145,43 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Restore official release cache (side path)
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        uses: actions/cache/restore@v4
+        with:
+          path: .mw-cache-restore/official_release_cache.json
+          key: mw-release-dates-v1-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}-${{ github.run_id }}
+          restore-keys: |
+            mw-release-dates-v1-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}-
+
+      - name: Overlay restored official release cache on seed
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          RESTORED=".mw-cache-restore/official_release_cache.json"
+          TARGET="data/dashboard_repair/official_release_cache.json"
+          if [[ ! -f "$RESTORED" ]]; then
+            echo "No cache artifact at $RESTORED; keeping committed seed."
+            exit 0
+          fi
+          python - <<'PY'
+          import json
+          import pathlib
+          import sys
+
+          restored = pathlib.Path(".mw-cache-restore/official_release_cache.json")
+          target = pathlib.Path("data/dashboard_repair/official_release_cache.json")
+          try:
+              obj = json.loads(restored.read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError):
+              sys.exit(0)
+          if not isinstance(obj, dict) or obj.get("version") != 1:
+              sys.exit(0)
+          target.parent.mkdir(parents=True, exist_ok=True)
+          target.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
+          PY
 
       - name: Bind authorized Pages dispatch to this checkout
         id: dataset
@@ -539,7 +577,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_dashboard_repair
+          python -m pip install --disable-pip-version-check 'pypdf==6.0.0'
+          PYTHONPATH=. python -m unittest tests.test_dashboard_repair tests.test_release_calendar_contract tests.test_release_calendar_us tests.test_release_calendar_ca tests.test_release_calendar_ea tests.test_release_calendar_au tests.test_release_calendar_nz tests.test_release_calendar_jp tests.test_release_calendar_pipeline tests.test_release_calendar_pdf
           MARKET=()
           if [ -s _site/market-state.json ]; then
             MARKET=(--market-state _site/market-state.json)
@@ -601,7 +640,37 @@ jobs:
           failed = [row for row in health["rows"] if row.get("bucket") == "failure"]
           if any(row.get("last_successful_check") for row in failed):
               raise SystemExit("failed source was given a successful check time")
+          cache_path = Path("data/dashboard_repair/official_release_cache.json")
+          try:
+              cache_obj = json.loads(cache_path.read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError) as exc:
+              raise SystemExit(f"official_release_cache.json not readable: {exc}") from exc
+          if not isinstance(cache_obj, dict):
+              raise SystemExit("official_release_cache.json must be an object")
+          if cache_obj.get("version") != 1:
+              raise SystemExit("official_release_cache.json version must be 1")
+          ccountries = cache_obj.get("countries")
+          if not isinstance(ccountries, dict):
+              raise SystemExit("official_release_cache.json countries missing")
+          for code in ("US", "CA", "EA", "AU", "NZ", "JP"):
+              if code not in ccountries:
+                  raise SystemExit(f"official_release_cache.json missing country {code}")
           PY
+
+      - name: Save official release cache for next run
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .mw-cache-restore
+          cp data/dashboard_repair/official_release_cache.json .mw-cache-restore/official_release_cache.json
+
+      - name: Write official release cache to Actions cache
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        uses: actions/cache/save@v4
+        with:
+          path: .mw-cache-restore/official_release_cache.json
+          key: mw-release-dates-v1-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}-${{ github.run_id }}
 
       - name: Stamp final publication edition
         env:

@@ -57,6 +57,7 @@ _RELEASE_FAMILY_TITLES = {
     "us_empsit": "US Nonfarm Payrolls (NFP) — BLS Employment Situation",
     "us_cpi": "Consumer Price Index",
     "nz_cpi": "Consumers Price Index",
+    "ca_lfs": "Labour Force Survey",
 }
 
 
@@ -188,6 +189,26 @@ def _nz_quoted_release() -> dict[str, str] | None:
     return None
 
 
+def _shell_from_slot(slot: dict[str, Any], *, series_id: str, row: dict[str, Any] | None) -> dict[str, Any]:
+    """Minimal catalog row so :func:`_stamp_event` can build a release row."""
+    country = str(slot.get("country") or (row or {}).get("country") or "")
+    return {
+        "id": series_id,
+        "country": country,
+        "dimension": str((row or {}).get("dimension") or ""),
+        "component": str((row or {}).get("component") or ""),
+        "role": str((row or {}).get("role") or "scored"),
+        "weight": float((row or {}).get("weight") or 0),
+        "canonical_name": str((row or {}).get("canonical_name") or (row or {}).get("component") or slot.get("name") or "Release"),
+        "publisher": str((row or {}).get("publisher") or ""),
+        "release_rule": (row or {}).get("release_rule") or {},
+        "registry_urls": (row or {}).get("registry_urls") or [],
+        "endpoint": (row or {}).get("endpoint") or "",
+        "retrieval_method": (row or {}).get("retrieval_method") or "",
+        "employment_section": (row or {}).get("employment_section") or "",
+    }
+
+
 def _candidate_slots(row: dict[str, Any]) -> list[dict[str, Any]]:
     rule = row.get("release_rule") if isinstance(row.get("release_rule"), dict) else {}
     timezone_name = str(rule.get("timezone") or row.get("timezone") or "UTC")
@@ -304,10 +325,19 @@ def _release_family_key(series_id: str) -> str:
 
 def _event_title(item: dict[str, Any]) -> str:
     names = [str(name) for name in (item.get("names") or [item.get("name")]) if name]
-    series_ids = [str(series_id) for series_id in (item.get("series_ids") or [item.get("series_id")]) if series_id]
+    series_ids = [
+        str(series_id)
+        for series_id in (item.get("series_ids") or [item.get("series_id")])
+        if series_id is not None and str(series_id) != ""
+    ]
     if len(names) == 1:
         return names[0]
-    families = {_release_family_key(series_id) for series_id in series_ids}
+    families: set[str] = set()
+    ef = str(item.get("event_family") or "").strip()
+    if ef:
+        families.add(ef)
+    for series_id in series_ids:
+        families.add(_release_family_key(series_id))
     if len(families) == 1:
         family = next(iter(families))
         titled = _RELEASE_FAMILY_TITLES.get(family)
@@ -350,6 +380,13 @@ def _row_shell(row: dict[str, Any], slot: dict[str, Any] | None, *, clock: str, 
     }
 
 
+def _group_family_key(row: dict[str, Any]) -> str:
+    ef = str(row.get("event_family") or "").strip()
+    if ef:
+        return ef
+    return _release_family_key(str(row.get("series_id") or ""))
+
+
 def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     grouped: dict[tuple[Any, ...], dict[str, Any]] = {}
     for row in rows:
@@ -357,7 +394,7 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             row["country"],
             row["instant"].isoformat() if row["instant"] is not None else f"tba:{row['local_date']}",
             row["clock"],
-            _release_family_key(str(row.get("series_id") or "")),
+            _group_family_key(row),
         )
         current = grouped.get(key)
         if current is None:
@@ -365,13 +402,19 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             current["impacts"] = [row["impact"]]
             current["names"] = [row["name"]]
             current["series_ids"] = [row["series_id"]]
+            current["_seen_series"] = {str(row["series_id"])} if str(row.get("series_id") or "") else set()
             grouped[key] = current
             continue
         if row["impact"] not in current["impacts"]:
             current["impacts"].append(row["impact"])
         if row["name"] not in current["names"]:
             current["names"].append(row["name"])
-        current["series_ids"].append(row["series_id"])
+        sid = str(row.get("series_id") or "")
+        seen: set[str] = current.setdefault("_seen_series", set())  # type: ignore[assignment]
+        token = sid if sid else "__empty_series__"
+        if token not in seen:
+            seen.add(token)
+            current["series_ids"].append(row["series_id"])
         if row["actual"] != "not observed in the score ledger" and current["actual"] == "not observed in the score ledger":
             current["actual"] = row["actual"]
         if row["source_url"] and not current["source_url"]:
@@ -380,19 +423,38 @@ def _group(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
             current["reference_period"] = row["reference_period"]
         if str(row.get("publisher") or "") == "BLS":
             current["publisher"] = "BLS"
-    return list(grouped.values())
+    out = list(grouped.values())
+    for item in out:
+        item.pop("_seen_series", None)
+    return out
 
 
 def _stamp_event(row: dict[str, Any], slot: dict[str, Any], *, clock_now: datetime) -> dict[str, Any]:
     clock = str(slot.get("clock") or "tba")
-    if clock == "verified" and slot.get("stamp"):
+    if clock in {"verified", "standing"} and slot.get("stamp"):
         instant = _parse_stamp(str(slot["stamp"]), str(slot.get("timezone") or "America/New_York"))
-        built = _row_shell(row, {"instant": instant, "reference_period": slot.get("reference_period") or "", "source_url": slot.get("source_url") or "", "provenance": slot.get("provenance") or ""}, clock="verified", local_date=instant.date())
+        built = _row_shell(
+            row,
+            {
+                "instant": instant,
+                "reference_period": slot.get("reference_period") or "",
+                "source_url": slot.get("source_url") or "",
+                "provenance": slot.get("provenance") or "",
+            },
+            clock=clock,
+            local_date=instant.date(),
+        )
         built["et_date"] = instant.astimezone(ET).date()
         built["local_display"] = instant.strftime("%Y-%m-%d %H:%M %Z")
         built["et_display"] = instant.astimezone(ET).strftime("%Y-%m-%d %H:%M ET")
+        if clock == "standing":
+            built["local_display"] += " standing clock"
+            built["et_display"] += " if the standing clock holds"
         built["name"] = str(slot.get("name") or built["name"])
         built["publisher"] = str(slot.get("publisher") or built["publisher"])
+        for key in ("event_family", "event_id", "date_confidence"):
+            if slot.get(key) is not None:
+                built[key] = slot.get(key)
         return built
     local = date.fromisoformat(str(slot["local_date"]))
     built = _row_shell(row, None, clock="tba", local_date=local)
@@ -401,6 +463,11 @@ def _stamp_event(row: dict[str, Any], slot: dict[str, Any], *, clock_now: dateti
     built["provenance"] = str(slot.get("provenance") or "")
     built["name"] = str(slot.get("name") or built["name"])
     built["publisher"] = str(slot.get("publisher") or built["publisher"])
+    built["local_display"] = local.isoformat()
+    built["et_display"] = "ET time TBA"
+    for key in ("event_family", "event_id", "date_confidence"):
+        if slot.get(key) is not None:
+            built[key] = slot.get(key)
     built["actual"] = "not observed in the score ledger"
     return built
 
@@ -469,14 +536,27 @@ def build_release_model(
             if slot["clock"] == "standing":
                 built["et_display"] += " if the standing clock holds"
                 built["local_display"] += " standing clock"
+            built["event_family"] = _release_family_key(str(row.get("id") or ""))
             if recent_start <= et_date <= end and instant <= clock:
                 recent.append(built)
             elif start <= et_date <= end and instant > clock:
                 upcoming.append(built)
             elif instant > clock:
                 later_rows.append(built)
+        fetched_covers_nz_cpi = False
+        for _slot in fetched_slots or []:
+            for _sid in _slot.get("series_ids") or []:
+                if str(_sid) in {"NZ.Inflation.headline", "NZ.Inflation.underlying"}:
+                    fetched_covers_nz_cpi = True
+                    break
+            if fetched_covers_nz_cpi:
+                break
         quoted = _nz_quoted_release()
-        if quoted and str(row.get("id") or "") in {"NZ.Inflation.headline", "NZ.Inflation.underlying"}:
+        if (
+            quoted
+            and str(row.get("id") or "") in {"NZ.Inflation.headline", "NZ.Inflation.underlying"}
+            and not fetched_covers_nz_cpi
+        ):
             local = date.fromisoformat(quoted["local_date"])
             built = _row_shell(row, None, clock="tba", local_date=local)
             built["reference_period"] = quoted["reference_period"]
@@ -485,6 +565,9 @@ def build_release_model(
             built["actual"] = "not observed in the score ledger"
             built["name"] = "Consumers price index"
             built["publisher"] = "Stats NZ"
+            built["event_family"] = "nz_cpi"
+            built["local_display"] = local.isoformat()
+            built["et_display"] = "ET time TBA"
             if recent_start <= local < start:
                 recent.append(built)
             elif start <= local <= end:
@@ -498,21 +581,48 @@ def build_release_model(
         seen_dates.add((item["series_id"], item.get("local_date")))
     by_id = {str(row.get("id") or ""): row for row in rows}
     for slot in fetched_slots or []:
-        for series_id in slot.get("series_ids") or []:
-            spec = by_id.get(str(series_id))
-            if spec is None:
-                continue
+        raw_ids = [str(s) for s in (slot.get("series_ids") or []) if str(s)]
+        catalog_hits = [sid for sid in raw_ids if sid in by_id]
+        if catalog_hits:
+            emit_ids = catalog_hits
+        elif raw_ids:
+            emit_ids = [raw_ids[0]]
+        else:
+            emit_ids = [""]
+
+        for series_id in emit_ids:
+            spec = (
+                by_id.get(series_id)
+                if series_id
+                else _shell_from_slot(slot, series_id="", row=None)
+            ) or _shell_from_slot(slot, series_id=series_id, row=None)
             built = _stamp_event(spec, slot, clock_now=clock)
             days = [built.get("et_date"), built.get("local_date")]
-            if any((built["series_id"], day) in seen_dates for day in days if day is not None):
+            dedupe_key = str(built.get("series_id") or "") or str(slot.get("event_id") or slot.get("event_family") or "")
+            if dedupe_key and any((dedupe_key, day) in seen_dates for day in days if day is not None):
                 continue
-            for day in days:
-                seen_dates.add((built["series_id"], day))
-            _place_event(built, clock_now=clock, start=start, end=end, recent_start=recent_start, upcoming=upcoming, recent=recent, later_rows=later_rows)
+            if dedupe_key:
+                for day in days:
+                    seen_dates.add((dedupe_key, day))
+            _place_event(
+                built,
+                clock_now=clock,
+                start=start,
+                end=end,
+                recent_start=recent_start,
+                upcoming=upcoming,
+                recent=recent,
+                later_rows=later_rows,
+            )
 
     unscheduled = []
     seen_ids: set[str] = set()
-    scheduled_ids = {item["series_id"] for item in upcoming + later_rows}
+    scheduled_ids = set()
+    for item in upcoming + recent + later_rows:
+        for sid in item.get("series_ids") or [item.get("series_id")]:
+            text = str(sid or "")
+            if text:
+                scheduled_ids.add(text)
     for row in rows:
         series_id = str(row.get("id") or "")
         try:
@@ -577,7 +687,7 @@ def build_release_model(
         "later": _annotate(next_later[:40]),
         "unscheduled_scored": unscheduled,
         "schedule_fetch": schedule_fetch
-        or {"attempted": False, "pages": [], "errors": [], "retrieved_at": ""},
+        or {"attempted": False, "pages": [], "errors": [], "retrieved_at": "", "countries": {}, "cache": []},
     }
 
 
@@ -742,8 +852,44 @@ def _fetch_note(model: dict[str, Any]) -> str:
     failed = [page for page in pages if page.get("status") != "ok"]
     note = (
         f"Live official schedule fetch at {report.get('retrieved_at') or 'unknown time'}: "
-        f"{ok} page(s) read, {len(failed)} failed. Failed pages add no dates."
+        f"{ok} page(s) read, {len(failed)} failed. Failed pages add no newly parsed dates."
     )
+    countries_report = report.get("countries") or {}
+    order = ("US", "CA", "EA", "AU", "NZ", "JP")
+    country_bits: list[str] = []
+    any_retained = False
+    for code in order:
+        diag = countries_report.get(code)
+        if not isinstance(diag, dict):
+            continue
+        status = str(diag.get("status") or "")
+        count = int(diag.get("event_count") or 0)
+        if status == "ok":
+            country_bits.append(f"{code} ok {count}")
+        elif status == "retained":
+            any_retained = True
+            cf = str(diag.get("cache_fetched_at") or "").replace("T", " ")[:10]
+            country_bits.append(f"{code} retained {count} from {cf or 'cache'}")
+        elif status == "failed":
+            country_bits.append(f"{code} failed")
+        elif status == "empty":
+            country_bits.append(f"{code} empty")
+        else:
+            country_bits.append(f"{code} {status or 'unknown'}")
+    if country_bits:
+        note += " " + " · ".join(country_bits) + "."
+    if any_retained:
+        note += " Some countries retained schedule dates from the committed cache after a failed or empty live fetch."
+    gap_bits: list[str] = []
+    for code in order:
+        diag = countries_report.get(code)
+        if not isinstance(diag, dict):
+            continue
+        gaps = [str(item).strip() for item in (diag.get("gaps") or []) if str(item).strip()]
+        if gaps:
+            gap_bits.append(f"{code}: {gaps[0]}")
+    if gap_bits:
+        note += " Gaps: " + "; ".join(gap_bits[:6]) + "."
     if failed:
         note += " Failures: " + "; ".join(
             f"{page.get('url')} ({page.get('error') or 'failed'})" for page in failed[:4]
