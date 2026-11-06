@@ -491,6 +491,77 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "Reduce CORRA receiver100m to50m; retain EURUSD long5m; no new trade. Moderate remaining rates conviction, scheduled adverse event risk, and a larger but less likely favorable scenario justify retaining direction at half size."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pm-chatgpt-595561a1b90f",
+          "rationale": "Memory-only persistence of Kevin's explicitly approved sixteen foundation/regime/tail lessons. Retain current exposure and prior management instructions; no additional order, resizing, stop widening or change of thesis clock.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pm-chatgpt-aef5bacd43d3",
+          "rationale": "Memory-only persistence of Kevin's explicitly approved sixteen foundation/regime/tail lessons. Retain current exposure and prior management instructions; no additional order, resizing, stop widening or change of thesis clock.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-06T15:16:52.277529-05:00",
+      "conviction": 50,
+      "decision_fingerprint": "afe03d29442ee2568b0c204b0e6c6031bdceb2febe3edda0982a3c6068a04803",
+      "event_id": "jde-7cb0ccb0fad247ac",
+      "funding_view": null,
+      "invalidation": "Preserve prior CORRA average review/exit3.16125 and EURUSD daily-close exit/review1.1179, earlier fundamental reassessment and original horizons. Saved management rules are not resting orders.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-chatgpt-595561a1b90f",
+        "pm-chatgpt-aef5bacd43d3"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "be2781ab4331639be297c00bb4b2789d861c2ffb9aa3efa005bb675d2d9794db",
+      "outcome_links": [],
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": null
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-06T06:25:49.281876-05:00",
+        "evidence_hash": "38600c7403116e7424016de9ef8e99677c045d3e22213c06043ad08a95c98459",
+        "overnight_run_id": "overnight-20261106",
+        "review_id": null,
+        "review_packet_id": "prp-chatgpt-overnight-20261106-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Kevin explicitly said 'Add all16 lessons' after reviewing the eight foundation lessons and eight regime/tail/risk-taking additions. Reinforce existing related lesson records to preserve all prior learning and the12-active-lesson cap; do not create16 records that would retire existing lessons. Every numbered lesson is included verbatim in substance and the complete ordered set will also be stored in the research-edge profile. Lessons are adopted coaching/process, not validated trading performance. No analysis run or new market retrieval is authorized or performed.",
+      "run_id": "overnight-20261106",
+      "schema_version": 1,
+      "thesis": "Memory-only update: retain50m CORRA2027 H/M/U/Z receive and5m EURUSD long under the previously approved management plans. Add all sixteen approved research-foundation and regime/tail lessons without new risk."
     }
   ],
   "schema_version": 1,
