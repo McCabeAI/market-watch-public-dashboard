@@ -2200,7 +2200,7 @@ def _policy_meeting_prices(today: date, policy_paths: dict) -> dict:
             policy_paths=policy_paths,
             history_doc=history,
         )
-        return attach_outcomes(block, policy_state, today)
+        return attach_outcomes(block, policy_state, today, calendar)
     except Exception as exc:
         return {
             "schema_version": 1,

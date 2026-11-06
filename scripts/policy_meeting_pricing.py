@@ -517,6 +517,68 @@ def _lookup_history_changes(
     return chg_1d, chg_1w
 
 
+def _overnight_fixing(country_paths: dict, as_of: date) -> float | None:
+    benchmark = country_paths.get("benchmark") or {}
+    if not isinstance(benchmark, dict):
+        return None
+    if str(benchmark.get("status") or "") == "unavailable":
+        return None
+    if benchmark.get("rate") is None:
+        return None
+    as_of_raw = benchmark.get("as_of")
+    if as_of_raw not in (None, ""):
+        try:
+            bench_day = _parse_date(str(as_of_raw))
+            if (as_of - bench_day).days > 21:
+                return None
+        except ValueError:
+            pass
+    return float(benchmark["rate"])
+
+
+def _filter_contracts(contracts: list[dict], as_of: date) -> list[dict]:
+    as_of_ym = (as_of.year, as_of.month)
+    kept: list[dict] = []
+    for row in contracts:
+        if row.get("implied_rate") is None:
+            continue
+        expiry = str(row.get("expiry") or "")
+        if len(expiry) != 7 or expiry[4] != "-":
+            continue
+        try:
+            year = int(expiry[:4])
+            month = int(expiry[5:7])
+        except ValueError:
+            continue
+        if (year, month) < as_of_ym:
+            continue
+        kept.append(row)
+    return kept
+
+
+def _unavailable_meeting_rows_for_bank(code: str, meetings_cal: list[dict], as_of: date) -> list[dict]:
+    rows: list[dict] = []
+    for meeting in meetings_cal:
+        if _parse_date(meeting["effective_date"]) <= as_of:
+            continue
+        decision_date = meeting["decision_date"]
+        rows.append(
+            {
+                "instrument_id": f"PM:{code}:{decision_date}",
+                "decision_date": decision_date,
+                "effective_date": meeting["effective_date"],
+                "post_rate": None,
+                "incremental_bp": None,
+                "cumulative_bp": None,
+                "method": "unavailable",
+                "contracts": [],
+                "chg_1d_bp": None,
+                "chg_1w_bp": None,
+            }
+        )
+    return rows
+
+
 def build_policy_meeting_prices(
     *,
     as_of: date,
@@ -536,11 +598,12 @@ def build_policy_meeting_prices(
         contract_list, contract_reason = _contracts_for_bank(
             code, country_paths, paths_ok=paths_ok
         )
+        if paths_status == "unavailable":
+            contract_list = []
 
-        fixing = None
-        benchmark = country_paths.get("benchmark") or {}
-        if isinstance(benchmark, dict) and benchmark.get("rate") is not None:
-            fixing = float(benchmark["rate"])
+        contract_list = _filter_contracts(contract_list, as_of)
+
+        fixing = _overnight_fixing(country_paths, as_of)
 
         basis_bp: float | None = None
         basis = 0.0
@@ -649,14 +712,33 @@ def build_policy_meeting_prices(
             continue
 
         if fixing is None:
-            status = "unavailable"
-            reason = "No overnight fixing"
-        elif not contract_list:
-            status = "unavailable"
-            reason = contract_reason or "No contracts"
-        else:
-            status = "ok"
-            reason = None
+            banks_out[code] = {
+                "status": "unavailable",
+                "reason": "No overnight fixing",
+                "anchor": anchor,
+                "fixing": None,
+                "basis_bp": None,
+                "futures_as_of": futures_as_of,
+                "calendar_retrieved_at": calendar_retrieved_at,
+                "meetings": _unavailable_meeting_rows_for_bank(code, meetings_cal, as_of),
+            }
+            continue
+
+        if not contract_list:
+            banks_out[code] = {
+                "status": "unavailable",
+                "reason": contract_reason or "No contracts",
+                "anchor": anchor,
+                "fixing": fixing,
+                "basis_bp": basis_bp,
+                "futures_as_of": futures_as_of,
+                "calendar_retrieved_at": calendar_retrieved_at,
+                "meetings": _unavailable_meeting_rows_for_bank(code, meetings_cal, as_of),
+            }
+            continue
+
+        status = "ok"
+        reason = None
 
         hist = _history_from_policy(policy_state, code, as_of)
         try:

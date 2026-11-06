@@ -373,5 +373,149 @@ class AccrualWindowTest(unittest.TestCase):
         self.assertEqual(end, date(2027, 3, 17))
 
 
+class AttachOutcomesTest(unittest.TestCase):
+    def test_ca_series_observation_maps_to_calendar_decision(self) -> None:
+        from scripts.policy_meeting_book import attach_outcomes
+
+        calendar = {
+            "banks": {
+                "CA": {
+                    "decisions": [
+                        {"decision_date": "2026-12-09", "effective_date": "2026-12-10"},
+                    ]
+                }
+            }
+        }
+        early = attach_outcomes(
+            {"banks": {}},
+            {"countries": {"CA": {"decisions": [{"decision_date": "2026-11-04", "rate": 2.5}]}}},
+            date(2026, 11, 5),
+            calendar,
+        )
+        self.assertNotIn("2026-12-09", (early.get("outcomes") or {}).get("CA") or {})
+
+        late = attach_outcomes(
+            {"banks": {}},
+            {"countries": {"CA": {"decisions": [{"decision_date": "2026-12-10", "rate": 2.5}]}}},
+            date(2026, 12, 10),
+            calendar,
+        )
+        self.assertEqual(late["outcomes"]["CA"]["2026-12-09"]["rate"], 2.5)
+        self.assertEqual(late["outcomes"]["CA"]["2026-12-09"]["effective_date"], "2026-12-10")
+
+    def test_us_fomc_midpoint_still_settles_on_decision_date(self) -> None:
+        from scripts.policy_meeting_book import attach_outcomes
+
+        calendar = {"banks": {"US": {"decisions": []}}}
+        policy_state = {
+            "countries": {
+                "US": {
+                    "decisions": [
+                        {
+                            "decision_date": "2026-10-28",
+                            "effective_date": "2026-10-29",
+                            "lower": 3.75,
+                            "upper": 4.0,
+                            "provenance": "official_fomc_statement",
+                        }
+                    ]
+                }
+            }
+        }
+        block = attach_outcomes({"banks": {}}, policy_state, date(2026, 10, 29), calendar)
+        self.assertEqual(block["outcomes"]["US"]["2026-10-28"]["rate"], 3.875)
+
+
+class NoInventedBasisTest(unittest.TestCase):
+    def test_missing_fixing_leaves_meetings_unpriced_while_peer_prices(self) -> None:
+        calendar = {
+            "banks": {
+                "US": {
+                    "decisions": [
+                        {"decision_date": "2026-12-09", "effective_date": "2026-12-10"},
+                    ]
+                },
+                "CA": {
+                    "decisions": [
+                        {"decision_date": "2026-12-09", "effective_date": "2026-12-10"},
+                    ]
+                },
+            }
+        }
+        policy_state = {
+            "countries": {
+                "US": {
+                    "decisions": [
+                        {
+                            "decision_date": "2026-10-28",
+                            "effective_date": "2026-10-29",
+                            "lower": 3.75,
+                            "upper": 4.0,
+                            "status": "current",
+                            "provenance": "official_fomc_statement",
+                            "source_name": "Federal Reserve",
+                            "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm",
+                            "retrieved_at": "2026-10-28T20:00:00Z",
+                        }
+                    ]
+                },
+                "CA": {
+                    "decisions": [
+                        {
+                            "decision_date": "2026-10-28",
+                            "effective_date": "2026-10-29",
+                            "rate": 2.5,
+                            "status": "current",
+                            "source_name": "Bank of Canada",
+                            "source_url": "https://www.bankofcanada.ca/",
+                            "retrieved_at": "2026-10-28T20:00:00Z",
+                        }
+                    ]
+                },
+            }
+        }
+        snapshot = build_policy_meeting_prices(
+            as_of=date(2026, 11, 5),
+            calendar=calendar,
+            policy_state=policy_state,
+            policy_paths={
+                "countries": {
+                    "US": {
+                        "status": "ok",
+                        "benchmark": {"rate": None},
+                        "contracts_1m": [{"expiry": "2026-12", "implied_rate": 4.10}],
+                    },
+                    "CA": {
+                        "status": "ok",
+                        "benchmark": {"rate": 2.29, "as_of": "2026-11-04"},
+                        "contracts_3m": [{"expiry": "2027-03", "implied_rate": 2.40}],
+                    },
+                }
+            },
+        )
+        us = snapshot["banks"]["US"]
+        self.assertEqual(us["status"], "unavailable")
+        self.assertEqual(us["reason"], "No overnight fixing")
+        self.assertTrue(us["meetings"])
+        self.assertTrue(all(row["post_rate"] is None for row in us["meetings"]))
+        ca = snapshot["banks"]["CA"]
+        self.assertIn(ca["status"], {"ok", "partial"})
+        self.assertTrue(any(row.get("post_rate") is not None for row in ca["meetings"]))
+
+
+class FinalizationAllowlistTest(unittest.TestCase):
+    def test_policy_meeting_artifacts_on_finalization_allowlist(self) -> None:
+        from scripts.market_watch_launch.persist_boundary import finalization_persist_allowlist, path_allowed
+
+        allowlist = finalization_persist_allowlist()
+        for rel in (
+            "data/policy_meetings.json",
+            "data/policy_meeting_history.json",
+            "data/policy_meeting_prices.json",
+        ):
+            self.assertIn(rel, allowlist)
+            self.assertTrue(path_allowed(rel, allowlist))
+
+
 if __name__ == "__main__":
     unittest.main()

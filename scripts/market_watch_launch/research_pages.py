@@ -630,6 +630,14 @@ def build_research_release(contract: dict[str, Any], *, channel: str) -> dict[st
 # --------------------------------------------------------------- overlay
 
 OVERLAY_SKIP = frozenset({".git", "_site", "__pycache__", ".pytest_cache"})
+OVERLAY_DATA_COPIES = frozenset(
+    {
+        "policy_state.json",
+        "policy_meetings.json",
+        "policy_meeting_history.json",
+        "policy_meeting_prices.json",
+    }
+)
 
 
 def prepare_overlay(source_root: Path, work_root: Path, contract: dict[str, Any]) -> Path:
@@ -656,11 +664,13 @@ def prepare_overlay(source_root: Path, work_root: Path, contract: dict[str, Any]
     data_dst = work / "data"
     data_dst.mkdir()
     for child in data_src.iterdir():
-        if child.name in {"temperature_scores.json", "temperature_history", "policy_state.json"}:
+        if child.name in {"temperature_scores.json", "temperature_history", *OVERLAY_DATA_COPIES}:
             continue
         (data_dst / child.name).symlink_to(child)
-    if (data_src / "policy_state.json").is_file():
-        shutil.copy2(data_src / "policy_state.json", data_dst / "policy_state.json")
+    for name in OVERLAY_DATA_COPIES:
+        src = data_src / name
+        if src.is_file():
+            shutil.copy2(src, data_dst / name)
     lineage = source / LAUNCHES_REL / contract["launch_id"] / "lineage"
     shutil.copyfile(lineage / "temperature_scores.json", data_dst / "temperature_scores.json")
     hist_src = data_src / "temperature_history"
@@ -753,13 +763,28 @@ def build_research_site(
         with tempfile.TemporaryDirectory() as tmp:
             _run(work, ["-c", _SCORES_CHECK, str(Path(tmp) / "temperature_scores.json")], label="staged scores")
         _run(work, ["scripts/apply_temperature_scores.py", str(index)], label="temperature scores")
-        _run(work, ["scripts/apply_country_detail.py", str(index)], label="country detail")
 
         packet = require_snapshot(OvernightStore(root=work), contract["overnight_run_id"], contract["review_id"])
         if packet.get("packet_sha256") != contract["packet_sha256"]:
             raise _fail("frozen_packet_hash_mismatch")
         family = _market_family(packet)
         frozen_market = family.get("data") if isinstance(family, dict) else None
+        overlay_prices = work / "data" / "policy_meeting_prices.json"
+        frozen_prices = frozen_market.get("policy_meeting_prices") if isinstance(frozen_market, dict) else None
+        if isinstance(frozen_prices, dict):
+            overlay_prices.parent.mkdir(parents=True, exist_ok=True)
+            if overlay_prices.is_symlink():
+                overlay_prices.unlink()
+            overlay_prices.write_text(
+                json.dumps(frozen_prices, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
+        elif overlay_prices.is_file() and not overlay_prices.is_symlink():
+            # An older frozen packet has no meeting block. Drop the copied canonical
+            # file so the research edition does not show prices from after the freeze.
+            overlay_prices.unlink()
+        _run(work, ["scripts/apply_country_detail.py", str(index)], label="country detail")
+
         if isinstance(frozen_market, dict) and frozen_market.get("generated_at"):
             try:
                 validate_snapshot(frozen_market)

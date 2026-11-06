@@ -48,6 +48,9 @@ def finalization_persist_allowlist() -> tuple[str, ...]:
         *histories,
         "data/temperature_history/score_paths.json",
         "data/country_detail/attention_snapshot.json",
+        "data/policy_meetings.json",
+        "data/policy_meeting_history.json",
+        "data/policy_meeting_prices.json",
     )
 
 

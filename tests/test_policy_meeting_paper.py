@@ -185,7 +185,26 @@ class PolicyMeetingPaperTest(unittest.TestCase):
         )
         self.assertNotEqual(added.get("result"), "blocked_mark")
         self.assertEqual(position["notional_usd"], 2_000_000)
+        self.assertEqual(position["contracts"], 2)
         self.assertAlmostEqual(position["entry_price"], (4.1875 + 4.0875) / 2)
+
+        tiny_add = apply_action(
+            seat,
+            {
+                "action": "ADD",
+                "position_id": position["position_id"],
+                "notional_usd": 1_000.0,
+                "price": 4.0875,
+                "expression_memo": _memo("PM:US:2026-12-09"),
+                "thesis": "Sub-lot add.",
+            },
+            families=_families(market),
+            run_id="pm-add-sub",
+            when=WHEN,
+            market_state=market,
+        )
+        self.assertEqual(seat["history"][-1]["result"], "zero_lot")
+        self.assertEqual(position["contracts"], 2)
 
         reduced = apply_action(
             seat,
@@ -203,6 +222,7 @@ class PolicyMeetingPaperTest(unittest.TestCase):
             market_state=market,
         )
         self.assertEqual(position["notional_usd"], 1_000_000)
+        self.assertEqual(position["contracts"], 1)
         self.assertGreater(seat["realized_pnl_usd"], 0)
 
         market["policy_meeting_prices"]["banks"]["US"]["meetings"] = [

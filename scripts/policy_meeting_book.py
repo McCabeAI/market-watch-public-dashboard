@@ -88,8 +88,54 @@ def _official_rate(decision: Mapping[str, Any]) -> float | None:
     return None
 
 
-def attach_outcomes(block: dict[str, Any], policy_state: Mapping[str, Any] | None, as_of: date) -> dict[str, Any]:
+def attach_outcomes(
+    block: dict[str, Any],
+    policy_state: Mapping[str, Any] | None,
+    as_of: date,
+    calendar: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Copy official outcomes onto the price block so settlement does not reread a file."""
+    from datetime import date as date_cls
+
+    def _parse_day(value: str) -> date_cls | None:
+        try:
+            return date_cls.fromisoformat(str(value)[:10])
+        except ValueError:
+            return None
+
+    cal_banks = (calendar or {}).get("banks") if isinstance(calendar, Mapping) else {}
+    if not isinstance(cal_banks, Mapping):
+        cal_banks = {}
+
+    def _calendar_decisions(code: str) -> list[Mapping[str, Any]]:
+        bank_cal = cal_banks.get(code) if isinstance(cal_banks, Mapping) else None
+        if not isinstance(bank_cal, Mapping):
+            return []
+        rows = bank_cal.get("decisions") or []
+        return [row for row in rows if isinstance(row, Mapping)]
+
+    def _us_own_decision_key(decision: Mapping[str, Any]) -> bool:
+        if decision.get("lower") is not None and decision.get("upper") is not None:
+            return True
+        return str(decision.get("provenance") or "") == "official_fomc_statement"
+
+    def _map_to_calendar_decision(code: str, series_day: str) -> tuple[str, str] | None:
+        series = _parse_day(series_day)
+        if series is None:
+            return None
+        best: tuple[str, str, date_cls] | None = None
+        for row in _calendar_decisions(code):
+            eff_text = str(row.get("effective_date") or "")
+            eff = _parse_day(eff_text)
+            dec = str(row.get("decision_date") or "")
+            if eff is None or not dec:
+                continue
+            if eff <= series and (best is None or eff > best[2]):
+                best = (dec, eff_text, eff)
+        if best is None:
+            return None
+        return best[0], best[1]
+
     countries = (policy_state or {}).get("countries") if isinstance(policy_state, Mapping) else {}
     outcomes: dict[str, dict[str, Any]] = {}
     if isinstance(countries, Mapping):
@@ -104,9 +150,17 @@ def attach_outcomes(block: dict[str, Any], policy_state: Mapping[str, Any] | Non
                 decided = str(decision.get("decision_date") or "")
                 if rate is None or not decided:
                     continue
-                bucket[decided] = {
+                if str(code) == "US" and _us_own_decision_key(decision):
+                    outcome_key = decided
+                    effective = str(decision.get("effective_date") or decided)
+                else:
+                    mapped = _map_to_calendar_decision(str(code), decided)
+                    if mapped is None:
+                        continue
+                    outcome_key, effective = mapped
+                bucket[outcome_key] = {
                     "rate": round(rate, 4),
-                    "effective_date": decision.get("effective_date") or decided,
+                    "effective_date": effective,
                 }
             if bucket:
                 outcomes[str(code)] = bucket

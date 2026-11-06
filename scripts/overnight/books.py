@@ -129,7 +129,7 @@ def _projected_risk_capital(
         projected = deepcopy(position)
         old_n = float(position["notional_usd"])
         new_n = old_n + _money(action.get("notional_usd"), "notional_usd")
-        if position.get("legs") or position.get("valuation_method") == "instrument_dv01":
+        if position.get("legs") or position.get("valuation_method") in {"instrument_dv01", "policy_meeting_dv01"}:
             from scripts.overnight.paper_marks import refresh_positions
             from scripts.rates.lifecycle import apply_book_resize
 
@@ -1223,7 +1223,10 @@ def _refresh_live_marks(position: dict[str, Any], market_state: dict[str, Any] |
 def _instrument_position(position: dict[str, Any]) -> bool:
     if position.get("legs"):
         return True
-    if position.get("valuation_method") != "instrument_dv01":
+    method = position.get("valuation_method")
+    if method in {"instrument_dv01", "policy_meeting_dv01"} and position.get("contracts") is not None:
+        return True
+    if method != "instrument_dv01":
         return False
     if position.get("contracts") is not None:
         return True
