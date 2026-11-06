@@ -888,6 +888,35 @@ def _accept_fresh_sr3_rows(rows: list[dict[str, Any]], today: date) -> None:
         raise ValueError(f"SR3 observation {observed} is after the session date")
 
 
+def _accept_fresh_sr1_rows(rows: list[dict[str, Any]], today: date) -> None:
+    """SR1 observation vintage: same window as SR3."""
+    if not rows:
+        raise ValueError("SR1 source returned no contracts")
+    observed_raw = rows[0].get("observation_date") or rows[0].get("as_of")
+    observed = _iso_calendar_date(observed_raw)
+    if not observed:
+        raise ValueError("SR1 source missing verified observation date")
+    delta = (today - date.fromisoformat(observed)).days
+    if delta > 8:
+        raise ValueError(f"SR1 observation {observed} is older than 8 days")
+    if delta < -1:
+        raise ValueError(f"SR1 observation {observed} is after the session date")
+
+
+def stamp_sr1_contract_observation(
+    rows: list[dict[str, Any]],
+    *,
+    observation_date: str,
+    source_url: str | None = None,
+) -> list[dict[str, Any]]:
+    """Attach observation_date / as_of / source_url to parsed SR1 rows (test hook)."""
+    return _stamp_sr3_contract_metadata(
+        rows,
+        observation_date=observation_date,
+        source_url=source_url,
+    )
+
+
 def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     """Parse delayed ICE One-Month SOFR index futures chain from eSignal."""
     parser = _TableParser()
@@ -1205,29 +1234,67 @@ def _fetch_text(fetch_bytes: FetchBytes, url: str, **kwargs: Any) -> str:
 def _acquire_sr1_contracts(
     fetch_bytes: FetchBytes,
     *,
+    today: date,
     benchmark: float,
 ) -> tuple[list[dict[str, Any]], str, str]:
     """SR1 policy context. Failures stay local and never discard NY Fed SOFR."""
     errors: list[str] = []
+
+    def _finalize(
+        rows: list[dict[str, Any]],
+        url: str,
+        method: str,
+        *,
+        observation_date: str,
+    ) -> tuple[list[dict[str, Any]], str, str]:
+        stamped = _stamp_sr3_contract_metadata(
+            rows,
+            observation_date=observation_date,
+            source_url=url,
+        )
+        stamped = _filter_sr3_expired_contracts(stamped, observation_date)
+        if not stamped:
+            raise ValueError("SR1 strip contained no contracts after expiry filtering")
+        _accept_fresh_sr1_rows(stamped, today)
+        return stamped, url, method
+
     try:
         bulletin = fetch_bytes(
             CME_SOFR_BULLETIN_URL,
             user_agent=_BROWSER_UA,
             referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
         )
-        return (
-            parse_cme_sofr_bulletin_pdf(bulletin, benchmark=benchmark),
+        try:
+            from pypdf import PdfReader
+        except ImportError as exc:
+            raise ValueError("pypdf required for CME Daily Bulletin") from exc
+        reader = PdfReader(io.BytesIO(bulletin))
+        text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        observation_date = _extract_cme_bulletin_trade_date(text)
+        if not observation_date:
+            raise ValueError("CME Daily Bulletin SR1 block missing verified trade date")
+        rows = parse_cme_sofr_bulletin_text(text, benchmark=benchmark)
+        return _finalize(
+            rows,
             CME_SOFR_BULLETIN_URL,
             "CME Daily Bulletin SR1 settlements",
+            observation_date=observation_date,
         )
     except Exception as exc:
         errors.append(f"CME bulletin: {exc}")
     try:
         html = _fetch_text(fetch_bytes, ESIGNAL_SOFR_CHAIN_URL, user_agent=_BROWSER_UA)
-        return (
-            parse_esignal_sofr_html(html, benchmark=benchmark),
+        observation_date = _extract_esignal_delayed_observation_date(html)
+        if not observation_date:
+            raise ValueError(
+                "eSignal SR1 page missing delayed data observation timestamp"
+            )
+        rows = parse_esignal_sofr_html(html, benchmark=benchmark)
+        return _finalize(
+            rows,
             ESIGNAL_SOFR_CHAIN_URL,
             "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners",
+            observation_date=observation_date,
         )
     except Exception as exc:
         errors.append(f"eSignal SR1: {exc}")
@@ -1384,6 +1451,7 @@ def collect_policy_paths(
         try:
             contracts, us_curve_source, us_curve_method = _acquire_sr1_contracts(
                 fetch_bytes,
+                today=today,
                 benchmark=benchmark_rate,
             )
         except Exception as exc:

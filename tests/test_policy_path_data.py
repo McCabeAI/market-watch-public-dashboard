@@ -4,10 +4,14 @@ from __future__ import annotations
 import json
 import unittest
 
+from datetime import date
+
 from scripts.policy_path_data import (
     _expiry_from_sr3_code,
     _extract_esignal_delayed_observation_date,
+    _acquire_sr1_contracts,
     build_tradable_rate_curves,
+    stamp_sr1_contract_observation,
     parse_asx_cash_futures_html,
     parse_boc_corra_html,
     parse_boc_corra_json,
@@ -308,6 +312,34 @@ TOTAL SR3 FUT 0 460000 3500000 + 500
         self.assertEqual(rows[0]["expiry"], "2026-10")
         self.assertEqual(rows[1]["implied_rate"], 4.2)
         self.assertEqual(rows[2]["change_from_overnight_bps"], 57.0)
+
+    def test_stamp_sr1_esignal_banner_nov_5_2026(self):
+        html = """
+        <p>Delayed data retrieved on Nov 5 2026</p>
+        <table>
+          <tr><td>ICE ONE MONTH SOFR INDEX FUTURE - ICUS (SR1 Z26)</td><td>Dec'26</td><td>95.800 s</td></tr>
+        </table>
+        """
+        rows = parse_esignal_sofr_html(html, benchmark=3.85)
+        stamped = stamp_sr1_contract_observation(
+            rows,
+            observation_date="2026-11-05",
+            source_url="https://quotes.esignal.com/esignalprod/quote.action?symbol=SR1",
+        )
+        self.assertEqual(stamped[0]["observation_date"], "2026-11-05")
+        self.assertEqual(stamped[0]["as_of"], "2026-11-05")
+
+    def test_acquire_sr1_esignal_requires_delayed_banner(self):
+        html_no_banner = "<html><body><table><tr><td>SR1 Z26</td><td>95.80</td></tr></table></body></html>"
+
+        def fetch(url: str, **_kwargs):
+            if "esignal" in url:
+                return html_no_banner.encode()
+            raise AssertionError("unexpected fetch")
+
+        with self.assertRaises(ValueError) as ctx:
+            _acquire_sr1_contracts(fetch, today=date(2026, 11, 6), benchmark=3.85)
+        self.assertIn("delayed data observation timestamp", str(ctx.exception).lower())
 
     def test_cme_one_month_sofr(self):
         html = """

@@ -119,6 +119,154 @@ def _round_bp(value: float) -> float:
     return round(value, 2)
 
 
+US_SR1_STEP_MEANING = (
+    "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. "
+    "It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound."
+)
+
+
+def _expiry_month_key(expiry: str) -> tuple[int, int]:
+    year_s, month_s = expiry.split("-")
+    return int(year_s), int(month_s)
+
+
+def _prior_month_expiry(expiry: str) -> str:
+    y, m = _expiry_month_key(expiry)
+    py, pm = _add_months(y, m, -1)
+    return f"{py:04d}-{pm:02d}"
+
+
+def _sorted_sofr_fixings(
+    fixings: list[tuple[date, float]] | None,
+) -> list[tuple[date, float]]:
+    if not fixings:
+        return []
+    return sorted(fixings, key=lambda item: item[0])
+
+
+def _sofr_print_for_elapsed_day(
+    day: date,
+    observation_date: date,
+    fixings_sorted: list[tuple[date, float]],
+) -> float | None:
+    """Rate applicable to calendar day D when D < observation_date; None if gap or no print."""
+    if day >= observation_date:
+        return None
+    best: tuple[date, float] | None = None
+    for eff, rate in fixings_sorted:
+        if eff <= day:
+            best = (eff, rate)
+        else:
+            break
+    if best is None:
+        return None
+    eff, rate = best
+    if (day - eff).days > 4:
+        return None
+    return rate
+
+
+def _accrual_window_meeting_free(
+    start: date,
+    end: date,
+    unresolved_meetings: list[dict],
+) -> bool:
+    """True when no unresolved (future) meeting has effective_date in [start, end)."""
+    for m in unresolved_meetings:
+        eff = _parse_date(m["effective_date"])
+        if start <= eff < end:
+            return False
+    return True
+
+
+def _sr1_contract_live(row_expiry: str, as_of: date) -> bool:
+    _s, acc_end = accrual_window(row_expiry, "1m")
+    return acc_end > as_of
+
+
+def _fixed_day_rates_before_observation(
+    expiry: str,
+    observation_date: date,
+    fixings_sorted: list[tuple[date, float]],
+) -> tuple[list[float], bool]:
+    """Calendar days in the contract month with D < observation_date; fail if any gap."""
+    start, acc_end = accrual_window(expiry, "1m")
+    fixed: list[float] = []
+    current = start
+    while current < acc_end and current < observation_date:
+        r = _sofr_print_for_elapsed_day(current, observation_date, fixings_sorted)
+        if r is None:
+            return [], False
+        fixed.append(r)
+        current += timedelta(days=1)
+    return fixed, True
+
+
+def _forward_baseline_rate(
+    implied: float,
+    n_calendar: int,
+    fixed_rates: list[float],
+) -> float:
+    """F_baseline = (N * F - sum(fixed)) / forward_days, or mean(fixed) if forward_days == 0."""
+    fixed_sum = sum(fixed_rates)
+    forward_days = n_calendar - len(fixed_rates)
+    if forward_days == 0:
+        if not fixed_rates:
+            raise ValueError("no fixed days for baseline")
+        return fixed_sum / len(fixed_rates)
+    return (n_calendar * implied - fixed_sum) / forward_days
+
+
+def _sr1_month_pre_meeting_known_sum(
+    *,
+    month_start: date,
+    month_end: date,
+    k_eff: date,
+    observation_date: date,
+    fixings_sorted: list[tuple[date, float]],
+    f_baseline: float,
+    prev_meeting_eff: date | None,
+    prev_f_sofr_post: float | None,
+) -> tuple[float, bool]:
+    """Sum SOFR accrual factors for calendar days in [month_start, k_eff)."""
+    total = 0.0
+    d = month_start
+    while d < k_eff and d < month_end:
+        if d < observation_date:
+            r = _sofr_print_for_elapsed_day(d, observation_date, fixings_sorted)
+            if r is None:
+                return 0.0, False
+            total += r
+        elif prev_meeting_eff is not None and d >= prev_meeting_eff:
+            total += prev_f_sofr_post if prev_f_sofr_post is not None else 0.0
+        else:
+            total += f_baseline
+        d += timedelta(days=1)
+    return total, True
+
+
+def _contract_dict_for_output(row: dict, *, weight: float, role: str | None = None) -> dict:
+    out: dict[str, Any] = {
+        "product": row["product"],
+        "expiry": row["expiry"],
+        "weight": weight,
+    }
+    if role:
+        out["role"] = role
+    for key in (
+        "price",
+        "implied_rate",
+        "source",
+        "source_url",
+        "observation_date",
+        "as_of",
+        "code",
+    ):
+        if key in row and row[key] is not None:
+            out[key] = row[key]
+    return out
+
+
 def price_meetings(
     *,
     bank: str,
@@ -128,6 +276,11 @@ def price_meetings(
     meetings: list[dict],
     contracts: list[dict],
     history: list[tuple[date, float]] | None = None,
+    sofr_fixings: list[tuple[date, float]] | None = None,
+    observation_date: date | None = None,
+    calendar_meetings_us: list[dict] | None = None,
+    contracts_zq: list[dict] | None = None,
+    policy_state_us: dict | None = None,
 ) -> list[dict]:
     history = list(history or [])
     sorted_meetings = sorted(meetings, key=lambda m: _parse_date(m["effective_date"]))
@@ -135,7 +288,26 @@ def price_meetings(
 
     rows: list[dict] = []
     solved: list[tuple[date, float]] = []
+    solved_sofr: list[tuple[date, float]] = []
     previous_post: float | None = None
+    sr1_baseline_path_started = False
+
+    fixings_sorted = _sorted_sofr_fixings(sofr_fixings)
+    cal_for_meeting_free = (
+        calendar_meetings_us if (bank == "US" and calendar_meetings_us) else sorted_meetings
+    )
+    unresolved_cal = [m for m in cal_for_meeting_free if _parse_date(m["effective_date"]) > as_of]
+
+    sr1_by_expiry: dict[str, dict] = {}
+    if bank == "US":
+        for c in contracts:
+            if (
+                c.get("product") == "SR1"
+                and c.get("period") == "1m"
+                and c.get("implied_rate") is not None
+                and isinstance(c.get("expiry"), str)
+            ):
+                sr1_by_expiry[str(c["expiry"])] = c
 
     def emit_unavailable(from_idx: int) -> None:
         for meeting in unresolved[from_idx:]:
@@ -148,8 +320,9 @@ def price_meetings(
         cumulative: float | None,
         method: str,
         contracts_used: list[dict],
+        extras: dict | None = None,
     ) -> dict:
-        return {
+        out = {
             "decision_date": meeting["decision_date"],
             "effective_date": meeting["effective_date"],
             "post_rate": _round_rate(post) if post is not None else None,
@@ -158,6 +331,9 @@ def price_meetings(
             "method": method,
             "contracts": contracts_used,
         }
+        if extras:
+            out.update(extras)
+        return out
 
     def incremental_for(post: float) -> float:
         nonlocal previous_post
@@ -205,6 +381,246 @@ def price_meetings(
             )
         )
 
+        used_sr1_forward = False
+        sr1_for_meeting: list[tuple[dict, date, date, int, date]] = []
+        if (
+            bank == "US"
+            and observation_date is not None
+            and fixings_sorted
+            and sr1_by_expiry
+        ):
+            obs_date = observation_date
+            sr1_for_meeting = [
+                item
+                for item in contract_rows
+                if item[0].get("product") == "SR1"
+                and item[0].get("period") == "1m"
+                and _sr1_contract_live(str(item[0].get("expiry") or ""), as_of)
+            ]
+            if sr1_for_meeting:
+                meeting_contract, start, end, _, _ = min(
+                    sr1_for_meeting,
+                    key=lambda item: item[2],
+                )
+                expiry_s = str(meeting_contract["expiry"])
+                month_start, month_end = accrual_window(expiry_s, "1m")
+                n_cal = (month_end - month_start).days
+                f_month = float(meeting_contract["implied_rate"])
+
+                prior_exp = _prior_month_expiry(expiry_s)
+                prior_row = sr1_by_expiry.get(prior_exp)
+                prior_ok = (
+                    prior_row is not None
+                    and prior_row.get("implied_rate") is not None
+                    and _sr1_contract_live(prior_exp, as_of)
+                )
+
+                _mt_fixed, meeting_fixed_ok = _fixed_day_rates_before_observation(
+                    expiry_s, obs_date, fixings_sorted
+                )
+                realized_pre_meeting: list[float] = []
+                for d in _iter_days(month_start, min(k_eff, obs_date)):
+                    if d >= obs_date:
+                        break
+                    r = _sofr_print_for_elapsed_day(d, obs_date, fixings_sorted)
+                    if r is not None:
+                        realized_pre_meeting.append(r)
+
+                use_sr1_forward = False
+                f_baseline: float | None = None
+                baseline_source_expiry: str | None = None
+                baseline_contract_row: dict | None = None
+                prior_fixed: list[float] = []
+                n_prior_cal = 0
+
+                if prior_ok and prior_row is not None:
+                    pb_start, pb_end = accrual_window(prior_exp, "1m")
+                    if _accrual_window_meeting_free(pb_start, pb_end, unresolved_cal):
+                        prior_fixed, prior_ok_rates = _fixed_day_rates_before_observation(
+                            prior_exp, obs_date, fixings_sorted
+                        )
+                        if prior_ok_rates:
+                            n_prior_cal = (pb_end - pb_start).days
+                            f_baseline = _forward_baseline_rate(
+                                float(prior_row["implied_rate"]),
+                                n_prior_cal,
+                                prior_fixed,
+                            )
+                            baseline_source_expiry = prior_exp
+                            baseline_contract_row = prior_row
+                            use_sr1_forward = True
+
+                if not use_sr1_forward and not prior_ok:
+                    pre_days = [
+                        d for d in _iter_days(month_start, k_eff) if d < obs_date
+                    ]
+                    rates_pre: list[float] = []
+                    ok_pre = True
+                    for d in pre_days:
+                        r = _sofr_print_for_elapsed_day(d, obs_date, fixings_sorted)
+                        if r is None:
+                            ok_pre = False
+                            break
+                        rates_pre.append(r)
+                    if ok_pre and rates_pre:
+                        f_baseline = sum(rates_pre) / len(rates_pre)
+                        use_sr1_forward = True
+
+                prev_m = idx - 1
+                prev_meeting_eff: date | None = None
+                prev_f_post: float | None = None
+                if prev_m >= 0:
+                    prev_meeting_eff = _parse_date(unresolved[prev_m]["effective_date"])
+                    for eff_d, f_v in solved_sofr:
+                        if eff_d == prev_meeting_eff:
+                            prev_f_post = f_v
+                            break
+
+                sum_known_m, sk_ok = _sr1_month_pre_meeting_known_sum(
+                    month_start=month_start,
+                    month_end=month_end,
+                    k_eff=k_eff,
+                    observation_date=obs_date,
+                    fixings_sorted=fixings_sorted,
+                    f_baseline=f_baseline if f_baseline is not None else 0.0,
+                    prev_meeting_eff=prev_meeting_eff,
+                    prev_f_sofr_post=prev_f_post,
+                )
+
+                n_pre = sum(
+                    1 for d in _iter_days(month_start, month_end) if d < k_eff
+                )
+                n_post = n_cal - n_pre
+
+                if (
+                    use_sr1_forward
+                    and f_baseline is not None
+                    and sk_ok
+                    and meeting_fixed_ok
+                    and n_post >= 7
+                ):
+                    f_post_sofr = (n_cal * f_month - sum_known_m) / n_post
+                    if not solved_sofr:
+                        step_sofr = f_post_sofr - f_baseline
+                        policy_post = anchor + step_sofr
+                    else:
+                        prev_f_sofr = solved_sofr[-1][1]
+                        step_sofr = f_post_sofr - prev_f_sofr
+                        pol_prev = (
+                            previous_post if previous_post is not None else anchor
+                        )
+                        policy_post = pol_prev + step_sofr
+                    inc = _round_bp(step_sofr * 100.0)
+                    cum = _round_bp((policy_post - anchor) * 100.0)
+                    previous_post = policy_post
+
+                    contracts_out = [
+                        _contract_dict_for_output(
+                            meeting_contract, weight=1.0, role="meeting_month"
+                        ),
+                    ]
+                    if baseline_contract_row is not None and baseline_source_expiry:
+                        contracts_out.append(
+                            _contract_dict_for_output(
+                                baseline_contract_row,
+                                weight=0.0,
+                                role="forward_baseline",
+                            )
+                        )
+
+                    if baseline_contract_row is not None:
+                        fwd_days = n_prior_cal - len(prior_fixed)
+                        fxd_days_ct = len(prior_fixed)
+                        baseline_month_average = _round_rate(
+                            float(baseline_contract_row["implied_rate"])
+                        )
+                    else:
+                        fwd_days = None
+                        fxd_days_ct = len(realized_pre_meeting)
+                        baseline_month_average = None
+
+                    extras: dict[str, Any] = {
+                        "sofr_post_rate": _round_rate(f_post_sofr),
+                        "zq_cross_check": None,
+                        "baseline": {
+                            "kind": "sr1_forward",
+                            "rate": _round_rate(f_baseline),
+                            "source_expiry": baseline_source_expiry,
+                            "fixed_days": fxd_days_ct,
+                            "forward_days": fwd_days,
+                            "monthly_average": baseline_month_average,
+                            "meeting_month_average": _round_rate(f_month),
+                            "turn_adjustment_bp": None,
+                        },
+                        "step_meaning": US_SR1_STEP_MEANING,
+                    }
+                    if policy_state_us:
+                        lower = policy_state_us.get("lower")
+                        upper = policy_state_us.get("upper")
+                        if lower is not None and upper is not None:
+                            extras["target_lower"] = float(lower)
+                            extras["target_upper"] = float(upper)
+
+                    if contracts_zq:
+                        zq_by_exp: dict[str, dict] = {}
+                        zq_obs: set[str] = set()
+                        for zrow in contracts_zq:
+                            ex = str(zrow.get("expiry") or "")
+                            od = zrow.get("observation_date")
+                            if zrow.get("implied_rate") is None or not od:
+                                continue
+                            zq_by_exp[ex] = zrow
+                            zq_obs.add(str(od))
+                        if (
+                            len(zq_obs) == 1
+                            and str(next(iter(zq_obs))) == obs_date.isoformat()
+                        ):
+                            zq_prior = zq_by_exp.get(prior_exp)
+                            zq_meet = zq_by_exp.get(expiry_s)
+                            if (
+                                zq_prior is not None
+                                and zq_meet is not None
+                                and n_post > 0
+                            ):
+                                f_nov_z = float(zq_prior["implied_rate"])
+                                f_dec_z = float(zq_meet["implied_rate"])
+                                implied_chg = (
+                                    (f_dec_z - f_nov_z) * (n_cal / n_post) * 100.0
+                                )
+                                extras["zq_cross_check"] = {
+                                    "implied_change_bp": _round_bp(implied_chg),
+                                    "method": "adjacent_month_average",
+                                    "note": (
+                                        "ZQ is 30-day federal funds futures on EFFR, not SOFR. "
+                                        "Not an input to the SR1 solve."
+                                    ),
+                                }
+
+                    solved.append((k_eff, policy_post))
+                    solved_sofr.append((k_eff, f_post_sofr))
+                    rows.append(
+                        _row(
+                            meeting,
+                            policy_post,
+                            inc,
+                            cum,
+                            "identified",
+                            contracts_out,
+                            extras=extras,
+                        )
+                    )
+                    idx += 1
+                    used_sr1_forward = True
+                    sr1_baseline_path_started = True
+
+            if sr1_for_meeting and not used_sr1_forward:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                idx += 1
+                continue
+
+        if used_sr1_forward:
+            continue
+
         if contract_rows:
             contract, start, end, _, _ = contract_rows[0]
             total = 0.0
@@ -219,10 +635,23 @@ def price_meetings(
                     assert pol is not None
                     known_sum += pol
             f = float(contract["implied_rate"])
-            x = (total * (f - basis) - known_sum) / unknown_count
+            sr1_skip_basis = (
+                bank == "US"
+                and str(contract.get("product")) == "SR1"
+                and (
+                    sr1_baseline_path_started
+                    or (
+                        observation_date is not None and bool(fixings_sorted)
+                    )
+                )
+            )
+            adj = 0.0 if sr1_skip_basis else basis
+            x = (total * (f - adj) - known_sum) / unknown_count
             inc = incremental_for(x)
             cum = (x - anchor) * 100.0
             solved.append((k_eff, x))
+            if bank == "US" and str(contract.get("product")) == "SR1":
+                solved_sofr.append((k_eff, x))
             rows.append(
                 _row(
                     meeting,
@@ -303,7 +732,16 @@ def price_meetings(
         if sum_m == 0:
             emit_unavailable(idx)
             break
-        step = (total * (f - basis) - sum_base) / sum_m
+        sr1_skip_basis_es = (
+            bank == "US"
+            and str(contract.get("product")) == "SR1"
+            and (
+                sr1_baseline_path_started
+                or (observation_date is not None and bool(fixings_sorted))
+            )
+        )
+        adj_es = 0.0 if sr1_skip_basis_es else basis
+        step = (total * (f - adj_es) - sum_base) / sum_m
 
         contract_used = [
             {
@@ -381,14 +819,23 @@ def _contracts_for_bank(
     contracts: list[dict] = []
     if code == "US":
         for row in country_paths.get("contracts_1m") or []:
-            contracts.append(
-                {
-                    "product": "SR1",
-                    "expiry": row["expiry"],
-                    "period": "1m",
-                    "implied_rate": float(row["implied_rate"]),
-                }
-            )
+            base_c: dict[str, Any] = {
+                "product": "SR1",
+                "expiry": row["expiry"],
+                "period": "1m",
+                "implied_rate": float(row["implied_rate"]),
+            }
+            for key in (
+                "price",
+                "source",
+                "source_url",
+                "observation_date",
+                "as_of",
+                "code",
+            ):
+                if row.get(key) is not None:
+                    base_c[key] = row[key]
+            contracts.append(base_c)
         for row in country_paths.get("contracts_3m") or []:
             contracts.append(
                 {
@@ -556,6 +1003,90 @@ def _filter_contracts(contracts: list[dict], as_of: date) -> list[dict]:
     return kept
 
 
+def _sofr_fixings_from_country_paths(country_paths: dict) -> list[tuple[date, float]]:
+    benchmark = country_paths.get("benchmark") or {}
+    if not isinstance(benchmark, dict):
+        return []
+    history = benchmark.get("history")
+    if not isinstance(history, list):
+        return []
+    out: list[tuple[date, float]] = []
+    for item in history:
+        if not isinstance(item, dict):
+            continue
+        eff_s = item.get("effective_date")
+        if eff_s is None or item.get("percent_rate") is None:
+            continue
+        try:
+            eff = _parse_date(str(eff_s))
+        except ValueError:
+            continue
+        out.append((eff, float(item["percent_rate"])))
+    out.sort(key=lambda p: p[0])
+    return out
+
+
+def _us_filter_sr1_contracts(country_paths: dict, as_of: date) -> list[dict]:
+    rows: list[dict] = []
+    for row in country_paths.get("contracts_1m") or []:
+        if not isinstance(row, dict) or row.get("implied_rate") is None:
+            continue
+        base: dict[str, Any] = {
+            "product": "SR1",
+            "expiry": row["expiry"],
+            "period": "1m",
+            "implied_rate": float(row["implied_rate"]),
+        }
+        for key in (
+            "price",
+            "source",
+            "source_url",
+            "observation_date",
+            "as_of",
+            "code",
+        ):
+            if row.get(key) is not None:
+                base[key] = row[key]
+        rows.append(base)
+    return _filter_contracts(rows, as_of)
+
+
+def _us_sr1_vintage_gate(sr1_rows: list[dict], as_of: date) -> tuple[date | None, str | None]:
+    if not sr1_rows:
+        return None, "US policy path has no SR1 (contracts_1m) contracts"
+    obs_dates: list[date] = []
+    for row in sr1_rows:
+        raw = row.get("observation_date")
+        if raw in (None, ""):
+            return None, "SR1 futures are missing observation_date"
+        try:
+            obs_dates.append(_parse_date(str(raw)))
+        except ValueError:
+            return None, "SR1 futures have invalid observation_date"
+    if len(set(obs_dates)) != 1:
+        return None, "SR1 futures observation_date is mixed vintage"
+    obs = obs_dates[0]
+    if obs > as_of:
+        return None, "SR1 futures observation_date is after as_of"
+    if (as_of - obs).days > 8:
+        return None, "SR1 futures observation is stale (older than 8 days)"
+    return obs, None
+
+
+def _us_current_target_bounds(policy_state: dict | None, as_of: date) -> dict | None:
+    if not policy_state:
+        return None
+    resolved = resolve_country(policy_state, "US", as_of)
+    if resolved.get("status") != "current":
+        return None
+    decision = resolved.get("decision") or {}
+    lower = decision.get("lower")
+    upper = decision.get("upper")
+    if lower is None or upper is None:
+        return None
+    return {"lower": float(lower), "upper": float(upper)}
+
+
 def _unavailable_meeting_rows_for_bank(code: str, meetings_cal: list[dict], as_of: date) -> list[dict]:
     rows: list[dict] = []
     for meeting in meetings_cal:
@@ -612,6 +1143,22 @@ def build_policy_meeting_prices(
             basis_bp = _round_bp(basis * 100.0)
 
         futures_as_of = country_paths.get("futures_as_of") or policy_paths.get("as_of")
+
+        us_sr1_gate_reason: str | None = None
+        us_obs_date: date | None = None
+        if code == "US" and paths_status in {"ok", "partial"}:
+            raw_sr1 = country_paths.get("contracts_1m")
+            if not isinstance(raw_sr1, list) or not raw_sr1:
+                us_sr1_gate_reason = (
+                    "US policy path has no SR1 (contracts_1m) contracts"
+                )
+            else:
+                sr1_for_gate = _us_filter_sr1_contracts(country_paths, as_of)
+                us_obs_date, us_sr1_gate_reason = _us_sr1_vintage_gate(
+                    sr1_for_gate, as_of
+                )
+            if not us_sr1_gate_reason and us_obs_date is not None:
+                futures_as_of = us_obs_date.isoformat()
         cal_block = (calendar.get("banks") or {}).get(code) or {}
         calendar_retrieved_at = cal_block.get("retrieved_at")
 
@@ -724,6 +1271,21 @@ def build_policy_meeting_prices(
             }
             continue
 
+        if code == "US" and us_sr1_gate_reason:
+            banks_out[code] = {
+                "status": "unavailable",
+                "reason": us_sr1_gate_reason,
+                "anchor": anchor,
+                "fixing": fixing,
+                "basis_bp": basis_bp,
+                "futures_as_of": futures_as_of,
+                "calendar_retrieved_at": calendar_retrieved_at,
+                "meetings": _unavailable_meeting_rows_for_bank(
+                    code, meetings_cal, as_of
+                ),
+            }
+            continue
+
         if not contract_list:
             banks_out[code] = {
                 "status": "unavailable",
@@ -741,6 +1303,11 @@ def build_policy_meeting_prices(
         reason = None
 
         hist = _history_from_policy(policy_state, code, as_of)
+        cal_us = _calendar_meetings(calendar, "US")
+        policy_us_bounds = _us_current_target_bounds(policy_state, as_of)
+        contracts_zq = country_paths.get("contracts_zq")
+        if not isinstance(contracts_zq, list):
+            contracts_zq = None
         try:
             priced_rows = price_meetings(
                 bank=code,
@@ -750,6 +1317,13 @@ def build_policy_meeting_prices(
                 meetings=meetings_cal,
                 contracts=contract_list,
                 history=hist,
+                sofr_fixings=_sofr_fixings_from_country_paths(country_paths)
+                if code == "US"
+                else None,
+                observation_date=us_obs_date if code == "US" else None,
+                calendar_meetings_us=cal_us if code == "US" else None,
+                contracts_zq=contracts_zq if code == "US" else None,
+                policy_state_us=policy_us_bounds if code == "US" else None,
             )
         except Exception as exc:
             banks_out[code] = {
@@ -773,20 +1347,29 @@ def build_policy_meeting_prices(
                 row["decision_date"],
                 row.get("cumulative_bp"),
             )
-            meetings_out.append(
-                {
-                    "instrument_id": f"PM:{code}:{row['decision_date']}",
-                    "decision_date": row["decision_date"],
-                    "effective_date": row["effective_date"],
-                    "post_rate": row["post_rate"],
-                    "incremental_bp": row["incremental_bp"],
-                    "cumulative_bp": row["cumulative_bp"],
-                    "method": row["method"],
-                    "contracts": row["contracts"],
-                    "chg_1d_bp": chg_1d,
-                    "chg_1w_bp": chg_1w,
-                }
-            )
+            mt: dict[str, Any] = {
+                "instrument_id": f"PM:{code}:{row['decision_date']}",
+                "decision_date": row["decision_date"],
+                "effective_date": row["effective_date"],
+                "post_rate": row["post_rate"],
+                "incremental_bp": row["incremental_bp"],
+                "cumulative_bp": row["cumulative_bp"],
+                "method": row["method"],
+                "contracts": row["contracts"],
+                "chg_1d_bp": chg_1d,
+                "chg_1w_bp": chg_1w,
+            }
+            for optional_key in (
+                "baseline",
+                "sofr_post_rate",
+                "step_meaning",
+                "target_lower",
+                "target_upper",
+                "zq_cross_check",
+            ):
+                if optional_key in row:
+                    mt[optional_key] = row[optional_key]
+            meetings_out.append(mt)
 
         if status != "ok" and meetings_out:
             for row in meetings_out:
@@ -795,7 +1378,7 @@ def build_policy_meeting_prices(
                     reason = None
                     break
 
-        banks_out[code] = {
+        bank_block: dict[str, Any] = {
             "status": status,
             "reason": reason,
             "anchor": anchor,
@@ -805,6 +1388,22 @@ def build_policy_meeting_prices(
             "calendar_retrieved_at": calendar_retrieved_at,
             "meetings": meetings_out,
         }
+        if code == "US":
+            for mt in meetings_out:
+                if not isinstance(mt, dict):
+                    continue
+                if mt.get("step_meaning"):
+                    bank_block["step_meaning"] = mt["step_meaning"]
+                if mt.get("target_lower") is not None:
+                    bank_block["target_lower"] = mt["target_lower"]
+                if mt.get("target_upper") is not None:
+                    bank_block["target_upper"] = mt["target_upper"]
+                zq = mt.get("zq_cross_check")
+                if zq is not None:
+                    bank_block["zq_cross_check"] = zq
+                if bank_block.get("step_meaning"):
+                    break
+        banks_out[code] = bank_block
 
     return {
         "schema_version": SCHEMA_VERSION,
