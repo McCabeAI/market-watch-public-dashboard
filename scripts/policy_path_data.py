@@ -22,7 +22,7 @@ from typing import Any, Callable
 FetchBytes = Callable[..., bytes]
 
 BOC_CORRA_PAGE = "https://www.bankofcanada.ca/rates/interest-rates/corra/"
-BOC_CORRA_JSON = "https://www.bankofcanada.ca/valet/observations/group/CORRA/json?recent=10"
+BOC_CORRA_JSON = "https://www.bankofcanada.ca/valet/observations/group/CORRA/json?recent=45"
 MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations"
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/90.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
@@ -171,12 +171,29 @@ def _contract_row(
 def parse_boc_corra_json(text: str) -> dict[str, Any]:
     payload = json.loads(text)
     observations = payload.get("observations") or []
+    points: list[tuple[date, float]] = []
     for row in observations:
         cell = row.get("AVG.INTWO")
         rate = _num(cell.get("v") if isinstance(cell, dict) else cell)
-        if rate is not None:
-            return {"rate": rate, "as_of": row.get("d")}
-    raise ValueError("BoC CORRA group did not expose AVG.INTWO")
+        d_raw = row.get("d")
+        if rate is None or d_raw is None:
+            continue
+        d_iso = _iso_calendar_date(d_raw)
+        if d_iso is None:
+            continue
+        points.append((date.fromisoformat(d_iso), rate))
+    if not points:
+        raise ValueError("BoC CORRA group did not expose AVG.INTWO")
+    points.sort(key=lambda p: p[0])
+    latest = points[-1]
+    history = [
+        {"effective_date": d.isoformat(), "percent_rate": r} for d, r in points
+    ]
+    return {
+        "rate": latest[1],
+        "as_of": latest[0].isoformat(),
+        "history": history,
+    }
 
 
 def parse_boc_corra_html(text: str) -> dict[str, Any]:
@@ -888,6 +905,35 @@ def _accept_fresh_sr3_rows(rows: list[dict[str, Any]], today: date) -> None:
         raise ValueError(f"SR3 observation {observed} is after the session date")
 
 
+def _accept_fresh_sr1_rows(rows: list[dict[str, Any]], today: date) -> None:
+    """SR1 observation vintage: same window as SR3."""
+    if not rows:
+        raise ValueError("SR1 source returned no contracts")
+    observed_raw = rows[0].get("observation_date") or rows[0].get("as_of")
+    observed = _iso_calendar_date(observed_raw)
+    if not observed:
+        raise ValueError("SR1 source missing verified observation date")
+    delta = (today - date.fromisoformat(observed)).days
+    if delta > 8:
+        raise ValueError(f"SR1 observation {observed} is older than 8 days")
+    if delta < -1:
+        raise ValueError(f"SR1 observation {observed} is after the session date")
+
+
+def stamp_sr1_contract_observation(
+    rows: list[dict[str, Any]],
+    *,
+    observation_date: str,
+    source_url: str | None = None,
+) -> list[dict[str, Any]]:
+    """Attach observation_date / as_of / source_url to parsed SR1 rows (test hook)."""
+    return _stamp_sr3_contract_metadata(
+        rows,
+        observation_date=observation_date,
+        source_url=source_url,
+    )
+
+
 def parse_esignal_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     """Parse delayed ICE One-Month SOFR index futures chain from eSignal."""
     parser = _TableParser()
@@ -1042,6 +1088,16 @@ def parse_cme_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     return rows
 
 
+def _parse_rba_f1_day(raw: str) -> date | None:
+    raw = raw.strip()
+    if not re.match(r"\d{2}-[A-Za-z]{3}-\d{4}$", raw):
+        return None
+    try:
+        return datetime.strptime(raw, "%d-%b-%Y").date()
+    except ValueError:
+        return None
+
+
 def parse_rba_f1_csv(text: str) -> dict[str, Any]:
     rows = list(csv.reader(io.StringIO(text.lstrip("\ufeff"))))
     titles: list[str] | None = None
@@ -1081,7 +1137,7 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
         if not row:
             continue
         d = row[0].strip()
-        if not re.match(r"\d{2}-[A-Za-z]{3}-\d{4}$", d):
+        if _parse_rba_f1_day(d) is None:
             continue
         for key, idx in columns.items():
             if idx >= len(row):
@@ -1100,6 +1156,19 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
 
     aonia = latest("aonia")
     assert aonia is not None
+    aonia_series = series["aonia"]
+    if aonia_series:
+        last_day = _parse_rba_f1_day(aonia_series[-1][0])
+        cutoff = last_day - timedelta(days=90) if last_day else None
+        history_fm: list[dict[str, Any]] = []
+        for d_raw, val in aonia_series:
+            day = _parse_rba_f1_day(d_raw)
+            if cutoff is not None and day is not None and day < cutoff:
+                continue
+            history_fm.append(
+                {"effective_date": day.isoformat() if day else d_raw, "percent_rate": val}
+            )
+        aonia = {**aonia, "history": history_fm}
     ois = {tenor: latest(f"ois_{tenor}") for tenor in ("1m", "3m", "6m")}
     bills = {tenor: latest(f"bill_{tenor}") for tenor in ("1m", "3m", "6m")}
     basis: dict[str, Any] = {}
@@ -1205,29 +1274,67 @@ def _fetch_text(fetch_bytes: FetchBytes, url: str, **kwargs: Any) -> str:
 def _acquire_sr1_contracts(
     fetch_bytes: FetchBytes,
     *,
+    today: date,
     benchmark: float,
 ) -> tuple[list[dict[str, Any]], str, str]:
     """SR1 policy context. Failures stay local and never discard NY Fed SOFR."""
     errors: list[str] = []
+
+    def _finalize(
+        rows: list[dict[str, Any]],
+        url: str,
+        method: str,
+        *,
+        observation_date: str,
+    ) -> tuple[list[dict[str, Any]], str, str]:
+        stamped = _stamp_sr3_contract_metadata(
+            rows,
+            observation_date=observation_date,
+            source_url=url,
+        )
+        stamped = _filter_sr3_expired_contracts(stamped, observation_date)
+        if not stamped:
+            raise ValueError("SR1 strip contained no contracts after expiry filtering")
+        _accept_fresh_sr1_rows(stamped, today)
+        return stamped, url, method
+
     try:
         bulletin = fetch_bytes(
             CME_SOFR_BULLETIN_URL,
             user_agent=_BROWSER_UA,
             referer="https://www.cmegroup.com/market-data/daily-bulletin.html",
         )
-        return (
-            parse_cme_sofr_bulletin_pdf(bulletin, benchmark=benchmark),
+        try:
+            from pypdf import PdfReader
+        except ImportError as exc:
+            raise ValueError("pypdf required for CME Daily Bulletin") from exc
+        reader = PdfReader(io.BytesIO(bulletin))
+        text = "\n".join(page.extract_text() or "" for page in reader.pages)
+        observation_date = _extract_cme_bulletin_trade_date(text)
+        if not observation_date:
+            raise ValueError("CME Daily Bulletin SR1 block missing verified trade date")
+        rows = parse_cme_sofr_bulletin_text(text, benchmark=benchmark)
+        return _finalize(
+            rows,
             CME_SOFR_BULLETIN_URL,
             "CME Daily Bulletin SR1 settlements",
+            observation_date=observation_date,
         )
     except Exception as exc:
         errors.append(f"CME bulletin: {exc}")
     try:
         html = _fetch_text(fetch_bytes, ESIGNAL_SOFR_CHAIN_URL, user_agent=_BROWSER_UA)
-        return (
-            parse_esignal_sofr_html(html, benchmark=benchmark),
+        observation_date = _extract_esignal_delayed_observation_date(html)
+        if not observation_date:
+            raise ValueError(
+                "eSignal SR1 page missing delayed data observation timestamp"
+            )
+        rows = parse_esignal_sofr_html(html, benchmark=benchmark)
+        return _finalize(
+            rows,
             ESIGNAL_SOFR_CHAIN_URL,
             "delayed ICE One-Month SOFR futures chain via eSignal fallback because CME blocks hosted runners",
+            observation_date=observation_date,
         )
     except Exception as exc:
         errors.append(f"eSignal SR1: {exc}")
@@ -1384,6 +1491,7 @@ def collect_policy_paths(
         try:
             contracts, us_curve_source, us_curve_method = _acquire_sr1_contracts(
                 fetch_bytes,
+                today=today,
                 benchmark=benchmark_rate,
             )
         except Exception as exc:
@@ -1454,6 +1562,10 @@ def collect_policy_paths(
                 ).decode("utf-8", errors="replace")
                 asx_rows = parse_asx_cash_futures_html(body, benchmark=benchmark)
                 asx_url = url
+                report_day = d.isoformat()
+                for r in asx_rows:
+                    r["observation_date"] = report_day
+                    r["as_of"] = report_day
                 break
             except Exception as exc:
                 last_error = exc

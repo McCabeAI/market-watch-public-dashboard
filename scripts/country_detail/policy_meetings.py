@@ -189,6 +189,23 @@ def _render_source(
         basis = prices.get("basis_bp")
         if basis is not None:
             parts.append(f"basis {_fmt_bp(basis)} bp")
+        step_meaning = prices.get("step_meaning")
+        if step_meaning:
+            parts.append(str(step_meaning))
+        lo = prices.get("target_lower")
+        hi = prices.get("target_upper")
+        anchor = prices.get("anchor")
+        if lo is not None and hi is not None and anchor is not None:
+            try:
+                mid = float(anchor)
+                lo_f = float(lo)
+                hi_f = float(hi)
+            except (TypeError, ValueError):
+                pass
+            else:
+                parts.append(
+                    f"Fed target range {lo_f:.2f}–{hi_f:.2f}% (midpoint {mid:.2f}%)"
+                )
 
     calendar_retrieved = None
     if prices:

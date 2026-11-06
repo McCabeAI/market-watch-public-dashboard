@@ -205,6 +205,7 @@ def build_demand_inputs(as_of: date, opener: Opener) -> dict[str, Any]:
             status="ok",
             rate=parsed.get("rate"),
             as_of=parsed.get("as_of"),
+            history=parsed.get("history"),
         )
     except Exception as exc:
         out["corra"]["error"] = str(exc)
