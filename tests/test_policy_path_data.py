@@ -36,7 +36,11 @@ class PolicyPathParserTests(unittest.TestCase):
         payload = '{"observations":[{"d":"2026-09-17","AVG.INTWO":{"v":"2.2900"}}]}'
         self.assertEqual(
             parse_boc_corra_json(payload),
-            {"rate": 2.29, "as_of": "2026-09-17"},
+            {
+                "rate": 2.29,
+                "as_of": "2026-09-17",
+                "history": [{"effective_date": "2026-09-17", "percent_rate": 2.29}],
+            },
         )
 
     def test_boc_corra(self):
@@ -363,6 +367,10 @@ Series ID,FIRMMCRTD,FIRMMCRID,FIRMMBAB30D,FIRMMBAB90D,FIRMMBAB180D,FIRMMOIS1D,FI
 """
         result = parse_rba_f1_csv(csv_text)
         self.assertEqual(result["benchmark"]["rate"], 4.35)
+        self.assertEqual(
+            result["benchmark"]["history"],
+            [{"effective_date": "2026-09-17", "percent_rate": 4.35}],
+        )
         self.assertEqual(result["ois"]["3m"]["rate"], 4.62)
         self.assertAlmostEqual(result["bank_bill_minus_ois"]["3m"]["bank_bill_minus_ois_bps"], 6.0)
 

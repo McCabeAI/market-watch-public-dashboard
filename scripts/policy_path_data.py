@@ -22,7 +22,7 @@ from typing import Any, Callable
 FetchBytes = Callable[..., bytes]
 
 BOC_CORRA_PAGE = "https://www.bankofcanada.ca/rates/interest-rates/corra/"
-BOC_CORRA_JSON = "https://www.bankofcanada.ca/valet/observations/group/CORRA/json?recent=10"
+BOC_CORRA_JSON = "https://www.bankofcanada.ca/valet/observations/group/CORRA/json?recent=45"
 MX_EXPECTATIONS_URL = "https://www.m-x.ca/en/trading/tools/canadian-interest-rate-expectations"
 NYFED_SOFR_URL = "https://markets.newyorkfed.org/api/rates/secured/sofr/last/90.json"
 NYFED_SOFR_PAGE = "https://www.newyorkfed.org/markets/reference-rates/sofr"
@@ -171,12 +171,29 @@ def _contract_row(
 def parse_boc_corra_json(text: str) -> dict[str, Any]:
     payload = json.loads(text)
     observations = payload.get("observations") or []
+    points: list[tuple[date, float]] = []
     for row in observations:
         cell = row.get("AVG.INTWO")
         rate = _num(cell.get("v") if isinstance(cell, dict) else cell)
-        if rate is not None:
-            return {"rate": rate, "as_of": row.get("d")}
-    raise ValueError("BoC CORRA group did not expose AVG.INTWO")
+        d_raw = row.get("d")
+        if rate is None or d_raw is None:
+            continue
+        d_iso = _iso_calendar_date(d_raw)
+        if d_iso is None:
+            continue
+        points.append((date.fromisoformat(d_iso), rate))
+    if not points:
+        raise ValueError("BoC CORRA group did not expose AVG.INTWO")
+    points.sort(key=lambda p: p[0])
+    latest = points[-1]
+    history = [
+        {"effective_date": d.isoformat(), "percent_rate": r} for d, r in points
+    ]
+    return {
+        "rate": latest[1],
+        "as_of": latest[0].isoformat(),
+        "history": history,
+    }
 
 
 def parse_boc_corra_html(text: str) -> dict[str, Any]:
@@ -1071,6 +1088,16 @@ def parse_cme_sofr_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     return rows
 
 
+def _parse_rba_f1_day(raw: str) -> date | None:
+    raw = raw.strip()
+    if not re.match(r"\d{2}-[A-Za-z]{3}-\d{4}$", raw):
+        return None
+    try:
+        return datetime.strptime(raw, "%d-%b-%Y").date()
+    except ValueError:
+        return None
+
+
 def parse_rba_f1_csv(text: str) -> dict[str, Any]:
     rows = list(csv.reader(io.StringIO(text.lstrip("\ufeff"))))
     titles: list[str] | None = None
@@ -1110,7 +1137,7 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
         if not row:
             continue
         d = row[0].strip()
-        if not re.match(r"\d{2}-[A-Za-z]{3}-\d{4}$", d):
+        if _parse_rba_f1_day(d) is None:
             continue
         for key, idx in columns.items():
             if idx >= len(row):
@@ -1129,6 +1156,19 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
 
     aonia = latest("aonia")
     assert aonia is not None
+    aonia_series = series["aonia"]
+    if aonia_series:
+        last_day = _parse_rba_f1_day(aonia_series[-1][0])
+        cutoff = last_day - timedelta(days=90) if last_day else None
+        history_fm: list[dict[str, Any]] = []
+        for d_raw, val in aonia_series:
+            day = _parse_rba_f1_day(d_raw)
+            if cutoff is not None and day is not None and day < cutoff:
+                continue
+            history_fm.append(
+                {"effective_date": day.isoformat() if day else d_raw, "percent_rate": val}
+            )
+        aonia = {**aonia, "history": history_fm}
     ois = {tenor: latest(f"ois_{tenor}") for tenor in ("1m", "3m", "6m")}
     bills = {tenor: latest(f"bill_{tenor}") for tenor in ("1m", "3m", "6m")}
     basis: dict[str, Any] = {}
@@ -1522,6 +1562,10 @@ def collect_policy_paths(
                 ).decode("utf-8", errors="replace")
                 asx_rows = parse_asx_cash_futures_html(body, benchmark=benchmark)
                 asx_url = url
+                report_day = d.isoformat()
+                for r in asx_rows:
+                    r["observation_date"] = report_day
+                    r["as_of"] = report_day
                 break
             except Exception as exc:
                 last_error = exc

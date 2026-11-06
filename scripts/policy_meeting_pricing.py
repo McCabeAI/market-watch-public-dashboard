@@ -124,6 +124,469 @@ US_SR1_STEP_MEANING = (
     "It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound."
 )
 
+CA_COA_STEP_MEANING = (
+    "COA/CRA step is the change in overnight CORRA from the compounded futures curve. "
+    "It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target."
+)
+
+AU_IB_STEP_MEANING = (
+    "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. "
+    "It is not the RBA cash-rate target or the spot AONIA fixing."
+)
+
+
+def _easter_sunday_western(year: int) -> date:
+    """Anonymous Gregorian algorithm (Meeus/Jones/Butcher)."""
+    a = year % 19
+    b = year // 100
+    c = year % 100
+    d = b // 4
+    e = b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i = c // 4
+    k = c % 4
+    ell = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * ell) // 451
+    month = (h + ell - 7 * m + 114) // 31
+    day = ((h + ell - 7 * m + 114) % 31) + 1
+    return date(year, month, day)
+
+
+def _boc_statutory_holidays(year: int) -> list[date]:
+    """Calendar dates of statutory holidays (before weekend substitution)."""
+    easter = _easter_sunday_western(year)
+    gf = easter - timedelta(days=2)
+    # Victoria Day: Monday on or before May 24.
+    may24 = date(year, 5, 24)
+    victoria = may24 - timedelta(days=may24.weekday())
+    labour = date(year, 9, 1)
+    while labour.weekday() != 0:
+        labour += timedelta(days=1)
+    thanks = date(year, 10, 1)
+    while thanks.weekday() != 0:
+        thanks += timedelta(days=1)
+    thanks += timedelta(days=7)
+    return [
+        date(year, 1, 1),
+        gf,
+        victoria,
+        date(year, 7, 1),
+        labour,
+        date(year, 9, 30),
+        thanks,
+        date(year, 11, 11),
+        date(year, 12, 25),
+        date(year, 12, 26),
+    ]
+
+
+def _boc_weekend_substitute(h: date) -> date:
+    if h.weekday() == 5:
+        return h - timedelta(days=1)
+    if h.weekday() == 6:
+        return h + timedelta(days=1)
+    return h
+
+
+def _boc_observed_nonbusiness_days(year: int) -> set[date]:
+    """Dates that are non-business due to a statutory holiday (after substitution rules)."""
+    out: set[date] = set()
+    holidays = _boc_statutory_holidays(year)
+    christmas = date(year, 12, 25)
+    boxing = date(year, 12, 26)
+    for h in holidays:
+        if h == boxing and christmas.weekday() == 4:
+            out.add(date(year, 12, 28))
+            continue
+        out.add(_boc_weekend_substitute(h))
+    return out
+
+
+def boc_business_day(d: date) -> bool:
+    """True when d is a Bank of Canada business day.
+
+    Weekends plus observed New Year's Day, Good Friday, Victoria Day, Canada Day,
+    Labour Day (first Monday of September), National Day for Truth and Reconciliation,
+    Thanksgiving (second Monday of October), Remembrance Day, Christmas, Boxing Day.
+    Observance: Saturday→Friday and Sunday→Monday; when Christmas is Friday, Boxing Day is
+    observed the following Monday (e.g. 2026-12-28), not on Saturday.
+    """
+    if d.weekday() >= 5:
+        return False
+    observed: set[date] = set()
+    for y in (d.year - 1, d.year, d.year + 1):
+        observed |= _boc_observed_nonbusiness_days(y)
+    return d not in observed
+
+
+def _first_boc_business_day_of_month(year: int, month: int) -> date:
+    cur = date(year, month, 1)
+    while not boc_business_day(cur):
+        cur += timedelta(days=1)
+    return cur
+
+
+def coa_accrual_window(expiry: str) -> tuple[date, date]:
+    """COA [start, end): first BoC business day of month through first BoC B.D. of next month, exclusive."""
+    year_s, month_s = expiry.split("-")
+    y, m = int(year_s), int(month_s)
+    ny, nm = _add_months(y, m, 1)
+    start = _first_boc_business_day_of_month(y, m)
+    end = _first_boc_business_day_of_month(ny, nm)
+    return start, end
+
+
+def _coa_business_days_in_window(start: date, end: date) -> list[date]:
+    out: list[date] = []
+    cur = start
+    while cur < end:
+        if boc_business_day(cur):
+            out.append(cur)
+        cur += timedelta(days=1)
+    return out
+
+
+def _coa_segment_weights(start: date, end: date) -> list[tuple[date, int]]:
+    """(business_day_start, n_calendar_days) for COA compounding; end is exclusive."""
+    bds = _coa_business_days_in_window(start, end)
+    if not bds:
+        return []
+    segs: list[tuple[date, int]] = []
+    for i, bd in enumerate(bds):
+        n_i = (bds[i + 1] - bd).days if i + 1 < len(bds) else (end - bd).days
+        segs.append((bd, n_i))
+    return segs
+
+
+def _pct_to_dec(c_pct: float) -> float:
+    return c_pct / 100.0
+
+
+def _coa_compound_factor_flat(
+    start: date,
+    end: date,
+    overnight_pct: float,
+) -> float:
+    dec = _pct_to_dec(overnight_pct)
+    prod = 1.0
+    for _bd, n_i in _coa_segment_weights(start, end):
+        prod *= 1.0 + dec * n_i / 365.0
+    return prod
+
+
+def coa_implied_percent_from_flat_overnight(start: date, end: date, overnight_pct: float) -> float:
+    """Quoted implied R (percent) from constant overnight CORRA (percent), compounded BoC-segment ACT/365."""
+    d_cal = (end - start).days
+    if d_cal <= 0:
+        raise ValueError("invalid COA window")
+    prod = _coa_compound_factor_flat(start, end, overnight_pct)
+    r_dec = (prod - 1.0) * 365.0 / float(d_cal)
+    return r_dec * 100.0
+
+
+def _bisect_generic(
+    fn: Any,
+    target: float,
+    lo: float,
+    hi: float,
+    *,
+    tol: float = 1e-10,
+    expand_rounds: int = 80,
+) -> float:
+    def err(x: float) -> float:
+        return float(fn(x)) - target
+
+    e_lo, e_hi = err(lo), err(hi)
+    er = 0
+    while e_lo * e_hi > 0 and er < expand_rounds:
+        lo -= 2.0
+        hi += 2.0
+        e_lo, e_hi = err(lo), err(hi)
+        er += 1
+    if e_lo * e_hi > 0:
+        raise ValueError("bisection bracket failed")
+    a, b = lo, hi
+    for _ in range(200):
+        mid = (a + b) / 2.0
+        fm = err(mid)
+        if abs(fm) < tol:
+            return mid
+        if err(a) * fm <= 0:
+            b = mid
+        else:
+            a = mid
+    return (a + b) / 2.0
+
+
+def _bisect_solve_coa_flat(implied_target_pct: float, start: date, end: date) -> float:
+    return _bisect_generic(
+        lambda c: coa_implied_percent_from_flat_overnight(start, end, c),
+        implied_target_pct,
+        -5.0,
+        50.0,
+    )
+
+
+def _split_segment_at_effective(bd: date, n_i: int, k_eff: date) -> list[tuple[int, str]]:
+    """(n_days, 'pre'|'post') within one COA segment; calendar days."""
+    out: list[tuple[int, str]] = []
+    d = bd
+    for _ in range(n_i):
+        phase = "post" if d >= k_eff else "pre"
+        if out and out[-1][1] == phase:
+            out[-1] = (out[-1][0] + 1, phase)
+        else:
+            out.append((1, phase))
+        d += timedelta(days=1)
+    return out
+
+
+def _coa_compound_product_pre_post(
+    start: date,
+    end: date,
+    k_eff: date,
+    pre_pct: float,
+    post_pct: float,
+) -> float:
+    pre_d = _pct_to_dec(pre_pct)
+    post_d = _pct_to_dec(post_pct)
+    prod = 1.0
+    for bd, n_i in _coa_segment_weights(start, end):
+        for n_sub, phase in _split_segment_at_effective(bd, n_i, k_eff):
+            r = pre_d if phase == "pre" else post_d
+            prod *= 1.0 + r * n_sub / 365.0
+    return prod
+
+
+def coa_implied_percent_pre_post(
+    start: date,
+    end: date,
+    k_eff: date,
+    pre_pct: float,
+    post_pct: float,
+) -> float:
+    d_cal = (end - start).days
+    prod = _coa_compound_product_pre_post(start, end, k_eff, pre_pct, post_pct)
+    r_dec = (prod - 1.0) * 365.0 / float(d_cal)
+    return r_dec * 100.0
+
+
+def _solve_coa_post_overnight(
+    implied_target_pct: float,
+    start: date,
+    end: date,
+    k_eff: date,
+    pre_pct: float,
+) -> float:
+    return _bisect_generic(
+        lambda post: coa_implied_percent_pre_post(start, end, k_eff, pre_pct, post),
+        implied_target_pct,
+        -5.0,
+        50.0,
+    )
+
+
+def _coa_implied_percent_daily_piecewise(
+    start: date,
+    end: date,
+    *,
+    k_eff: date | None,
+    observation_date: date | None,
+    fixings_sorted: list[tuple[date, float]],
+    pre_pct: float,
+    post_pct: float | None,
+) -> float:
+    """Calendar-day ACT/365 compounding (same n_i=1 pattern as SR1 fixing strip)."""
+    d_cal = (end - start).days
+    if d_cal <= 0:
+        raise ValueError("invalid window")
+    prod = 1.0
+    for d in _iter_calendar_days(start, end):
+        if observation_date is not None and d < observation_date:
+            r_pct = _sofr_print_for_elapsed_day(d, observation_date, fixings_sorted)
+            if r_pct is None:
+                raise ValueError("gap in CORRA fixings strip")
+        elif k_eff is not None and d >= k_eff:
+            if post_pct is None:
+                raise ValueError("missing post overnight")
+            r_pct = post_pct
+        else:
+            r_pct = pre_pct
+        prod *= 1.0 + _pct_to_dec(float(r_pct)) / 365.0
+    r_dec = (prod - 1.0) * 365.0 / float(d_cal)
+    return r_dec * 100.0
+
+
+def _solve_coa_overnight_month_strip(
+    implied_target_pct: float,
+    start: date,
+    end: date,
+    observation_date: date,
+    fixings_sorted: list[tuple[date, float]],
+) -> float:
+    """Constant forward overnight (percent) on D>=observation so implied matches the quote."""
+
+    def err(g: float) -> float:
+        return (
+            _coa_implied_percent_daily_piecewise(
+                start,
+                end,
+                k_eff=None,
+                observation_date=observation_date,
+                fixings_sorted=fixings_sorted,
+                pre_pct=g,
+                post_pct=None,
+            )
+            - implied_target_pct
+        )
+
+    return _bisect_generic(err, 0.0, -2.0, 50.0)
+
+
+def _solve_coa_post_daily_strip(
+    implied_target_pct: float,
+    start: date,
+    end: date,
+    k_eff: date,
+    observation_date: date,
+    fixings_sorted: list[tuple[date, float]],
+    pre_pct: float,
+) -> float:
+
+    def err(post: float) -> float:
+        return (
+            _coa_implied_percent_daily_piecewise(
+                start,
+                end,
+                k_eff=k_eff,
+                observation_date=observation_date,
+                fixings_sorted=fixings_sorted,
+                pre_pct=pre_pct,
+                post_pct=post,
+            )
+            - implied_target_pct
+        )
+
+    return _bisect_generic(err, 0.0, -2.0, 50.0)
+
+
+def cra_implied_percent_piecewise_overnight(
+    start: date,
+    end: date,
+    k_effs: list[date],
+    levels_pct: list[float],
+) -> float:
+    """CRA quoted implied R (percent) from piecewise-constant overnight levels (same compounding as COA)."""
+    if len(levels_pct) != len(k_effs) + 1:
+        raise ValueError("levels_pct must align with meeting effective dates")
+    d_cal = (end - start).days
+    if d_cal <= 0:
+        raise ValueError("invalid CRA window")
+    prod = 1.0
+    for bd, n_i in _coa_segment_weights(start, end):
+        pos = 0
+        d = bd
+        for _ in range(n_i):
+            while pos < len(k_effs) and k_effs[pos] <= d:
+                pos += 1
+            c_pct = levels_pct[pos]
+            r = _pct_to_dec(c_pct)
+            prod *= 1.0 + r / 365.0
+            d += timedelta(days=1)
+    r_dec = (prod - 1.0) * 365.0 / float(d_cal)
+    return r_dec * 100.0
+
+
+def _iter_calendar_days(start: date, end: date):
+    d = start
+    while d < end:
+        yield d
+        d += timedelta(days=1)
+
+
+def _ib_forward_baseline(
+    implied: float,
+    n_cal: int,
+    fixed_rates: list[float],
+) -> float:
+    fixed_sum = sum(fixed_rates)
+    fwd = n_cal - len(fixed_rates)
+    if fwd <= 0:
+        return implied
+    return (n_cal * implied - fixed_sum) / fwd
+
+
+def _ib_monthly_from_levels(
+    month_start: date,
+    month_end: date,
+    k_eff: date,
+    f_prior: float | None,
+    f_post: float,
+) -> float:
+    total = 0.0
+    s = 0.0
+    for d in _iter_calendar_days(month_start, month_end):
+        total += 1
+        if k_eff is None or d >= k_eff:
+            s += f_post
+        else:
+            s += f_prior if f_prior is not None else f_post
+    return s / total
+
+
+def _ib_solve_post_for_meeting(
+    implied_month: float,
+    month_start: date,
+    month_end: date,
+    k_eff: date,
+    *,
+    pre_sum: float,
+    n_pre: int,
+    f_fwd_pre: float,
+) -> float:
+    """Solve arithmetic monthly average given pre days (fixed + forward flat) then post flat."""
+    n_tot = (month_end - month_start).days
+    if n_tot <= 0:
+        raise ValueError("invalid IB window")
+    n_post = n_tot - n_pre
+    if n_post <= 0:
+        raise ValueError("no post-meeting IB days")
+    implied_sum = implied_month * n_tot
+    return (implied_sum - pre_sum) / n_post
+
+
+def _ca_au_observation_gate(contracts: list[dict]) -> tuple[date | None, str | None]:
+    obs_dates: list[date] = []
+    has_missing = False
+    for row in contracts:
+        if row.get("implied_rate") is None:
+            continue
+        raw = row.get("observation_date")
+        if raw in (None, ""):
+            has_missing = True
+            continue
+        try:
+            obs_dates.append(_parse_date(str(raw)))
+        except ValueError:
+            return None, "invalid observation_date on policy path futures"
+    if not obs_dates:
+        return None, None
+    if has_missing:
+        return None, "policy path futures mix dated and undated observation_date"
+    if len(set(obs_dates)) != 1:
+        return None, "policy path futures observation_date is mixed vintage"
+    return obs_dates[0], None
+
+
+def _sorted_pct_fixings(
+    fixings: list[tuple[date, float]] | None,
+) -> list[tuple[date, float]]:
+    if not fixings:
+        return []
+    return sorted(fixings, key=lambda item: item[0])
+
 
 def _expiry_month_key(expiry: str) -> tuple[int, int]:
     year_s, month_s = expiry.split("-")
@@ -293,21 +756,11 @@ def price_meetings(
     sr1_baseline_path_started = False
 
     fixings_sorted = _sorted_sofr_fixings(sofr_fixings)
+    corra_fixings_sorted = _sorted_pct_fixings(sofr_fixings)
     cal_for_meeting_free = (
         calendar_meetings_us if (bank == "US" and calendar_meetings_us) else sorted_meetings
     )
     unresolved_cal = [m for m in cal_for_meeting_free if _parse_date(m["effective_date"]) > as_of]
-
-    sr1_by_expiry: dict[str, dict] = {}
-    if bank == "US":
-        for c in contracts:
-            if (
-                c.get("product") == "SR1"
-                and c.get("period") == "1m"
-                and c.get("implied_rate") is not None
-                and isinstance(c.get("expiry"), str)
-            ):
-                sr1_by_expiry[str(c["expiry"])] = c
 
     def emit_unavailable(from_idx: int) -> None:
         for meeting in unresolved[from_idx:]:
@@ -341,6 +794,538 @@ def price_meetings(
         inc = (post - base) * 100.0
         previous_post = post
         return inc
+
+    sr1_by_expiry: dict[str, dict] = {}
+    if bank == "US":
+        for c in contracts:
+            if (
+                c.get("product") == "SR1"
+                and c.get("period") == "1m"
+                and c.get("implied_rate") is not None
+                and isinstance(c.get("expiry"), str)
+            ):
+                sr1_by_expiry[str(c["expiry"])] = c
+
+    if bank == "CA":
+        coa_rows = [
+            c
+            for c in contracts
+            if c.get("product") == "COA"
+            and c.get("period") == "1m"
+            and c.get("implied_rate") is not None
+        ]
+        cra_rows = [
+            c
+            for c in contracts
+            if c.get("product") == "CRA"
+            and c.get("period") == "3m"
+            and c.get("implied_rate") is not None
+        ]
+        ca_obs, ca_gate_reason = _ca_au_observation_gate(coa_rows + cra_rows)
+        if ca_gate_reason:
+            return [_row(m, None, None, None, "unavailable", []) for m in unresolved]
+
+        def _coa_live(expiry_s: str) -> bool:
+            _s, acc_end = coa_accrual_window(expiry_s)
+            return acc_end > as_of
+
+        def _cra_live(expiry_s: str) -> bool:
+            _s, acc_end = accrual_window(expiry_s, "3m")
+            return acc_end > as_of
+
+        coa_by_expiry = {str(r["expiry"]): r for r in coa_rows if _coa_live(str(r["expiry"]))}
+        cra_by_expiry = {str(r["expiry"]): r for r in cra_rows if _cra_live(str(r["expiry"]))}
+
+        solved_overnight_pre: float | None = None
+
+        i_ca = 0
+        while i_ca < len(unresolved):
+            meeting = unresolved[i_ca]
+            k_eff = _parse_date(meeting["effective_date"])
+
+            coa_candidates: list[tuple[dict, date, date]] = []
+            for expiry_s, row in coa_by_expiry.items():
+                c_start, c_end = coa_accrual_window(expiry_s)
+                if not (c_start <= k_eff < c_end):
+                    continue
+                if (c_end - k_eff).days < 1:
+                    continue
+                coa_candidates.append((row, c_start, c_end))
+
+            used_coa = False
+            if coa_candidates:
+                chosen_coa, win_start, win_end = min(
+                    coa_candidates, key=lambda item: item[0]["expiry"]
+                )
+                exp_key = str(chosen_coa["expiry"])
+                y_m, m_m = _expiry_month_key(exp_key)
+                cand_y, cand_m = y_m, m_m
+                prior_coa: dict | None = None
+                prior_exp: str | None = None
+                prior_start: date | None = None
+                prior_end: date | None = None
+                for _ in range(24):
+                    cand_y, cand_m = _add_months(cand_y, cand_m, -1)
+                    prior_exp_try = f"{cand_y:04d}-{cand_m:02d}"
+                    prow = coa_by_expiry.get(prior_exp_try)
+                    if prow is None:
+                        continue
+                    ps, pe = coa_accrual_window(prior_exp_try)
+                    if not _coa_live(prior_exp_try):
+                        continue
+                    if not _accrual_window_meeting_free(ps, pe, unresolved_cal):
+                        continue
+                    prior_coa = prow
+                    prior_exp = prior_exp_try
+                    prior_start, prior_end = ps, pe
+                    break
+                prior_ok = prior_coa is not None and prior_start is not None and prior_end is not None
+
+                pre_o: float | None = None
+                post_o: float | None = None
+                method_ca = "estimated"
+                estimate_note: str | None = None
+                baseline_row: dict | None = None
+                contracts_out: list[dict] = [
+                    _contract_dict_for_output(chosen_coa, weight=1.0, role="meeting_month")
+                ]
+
+                if prior_ok or solved_overnight_pre is not None:
+                    pass
+                else:
+                    rows.append(_row(meeting, None, None, None, "unavailable", []))
+                    i_ca += 1
+                    continue
+
+                if solved_overnight_pre is not None:
+                    pre_o = solved_overnight_pre
+                    post_o = _solve_coa_post_overnight(
+                        float(chosen_coa["implied_rate"]),
+                        win_start,
+                        win_end,
+                        k_eff,
+                        pre_o,
+                    )
+                    method_ca = "estimated"
+                    estimate_note = (
+                        "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step."
+                    )
+                    baseline_row = coa_by_expiry.get(_prior_month_expiry(exp_key))
+                    if baseline_row is not None:
+                        contracts_out.append(
+                            _contract_dict_for_output(
+                                baseline_row, weight=0.0, role="forward_baseline"
+                            )
+                        )
+                    step_o = post_o - pre_o
+                    pol_prev = previous_post if previous_post is not None else anchor
+                    policy_post = pol_prev + step_o
+                    inc = _round_bp(step_o * 100.0)
+                    previous_post = policy_post
+                    cum = _round_bp((policy_post - anchor) * 100.0)
+                    extras_ca: dict[str, Any] = {
+                        "overnight_pre": _round_rate(pre_o),
+                        "overnight_post": _round_rate(post_o),
+                        "step_meaning": CA_COA_STEP_MEANING,
+                    }
+                    if estimate_note:
+                        extras_ca["estimate_note"] = estimate_note
+                    rows.append(
+                        _row(
+                            meeting,
+                            policy_post,
+                            inc,
+                            cum,
+                            method_ca,
+                            contracts_out,
+                            extras=extras_ca,
+                        )
+                    )
+                    solved_overnight_pre = post_o
+                    used_coa = True
+                    i_ca += 1
+                    continue
+
+                if ca_obs is not None and corra_fixings_sorted:
+                    fixed_prior: list[float] = []
+                    ok_strip = True
+                    for d in _iter_calendar_days(prior_start, min(prior_end, ca_obs)):
+                        r = _sofr_print_for_elapsed_day(d, ca_obs, corra_fixings_sorted)
+                        if r is None:
+                            ok_strip = False
+                            break
+                        fixed_prior.append(r)
+                    if not ok_strip:
+                        rows.append(_row(meeting, None, None, None, "unavailable", []))
+                        i_ca += 1
+                        continue
+                    if not fixed_prior:
+                        pre_o = _bisect_solve_coa_flat(
+                            float(prior_coa["implied_rate"]), prior_start, prior_end
+                        )
+                        post_o = _solve_coa_post_overnight(
+                            float(chosen_coa["implied_rate"]),
+                            win_start,
+                            win_end,
+                            k_eff,
+                            pre_o,
+                        )
+                        method_ca = "estimated"
+                        estimate_note = (
+                            "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step."
+                        )
+                    else:
+                        n_prior = (prior_end - prior_start).days
+                        g = _solve_coa_overnight_month_strip(
+                            float(prior_coa["implied_rate"]),
+                            prior_start,
+                            prior_end,
+                            ca_obs,
+                            corra_fixings_sorted,
+                        )
+                        pre_o = g
+                        post_o = _solve_coa_post_daily_strip(
+                            float(chosen_coa["implied_rate"]),
+                            win_start,
+                            win_end,
+                            k_eff,
+                            ca_obs,
+                            corra_fixings_sorted,
+                            g,
+                        )
+                        method_ca = "identified"
+                    baseline_row = prior_coa
+                else:
+                    pre_o = _bisect_solve_coa_flat(
+                        float(prior_coa["implied_rate"]), prior_start, prior_end
+                    )
+                    post_o = _solve_coa_post_overnight(
+                        float(chosen_coa["implied_rate"]),
+                        win_start,
+                        win_end,
+                        k_eff,
+                        pre_o,
+                    )
+                    method_ca = "estimated"
+                    estimate_note = (
+                        "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step."
+                    )
+                    baseline_row = prior_coa
+
+                if baseline_row is not None:
+                    contracts_out.append(
+                        _contract_dict_for_output(
+                            baseline_row, weight=0.0, role="forward_baseline"
+                        )
+                    )
+
+                step_o = post_o - pre_o
+                pol_prev = previous_post if previous_post is not None else anchor
+                policy_post = pol_prev + step_o
+                inc = _round_bp(step_o * 100.0)
+                previous_post = policy_post
+                cum = _round_bp((policy_post - anchor) * 100.0)
+
+                extras_ca: dict[str, Any] = {
+                    "overnight_pre": _round_rate(pre_o),
+                    "overnight_post": _round_rate(post_o),
+                    "step_meaning": CA_COA_STEP_MEANING,
+                }
+                if estimate_note:
+                    extras_ca["estimate_note"] = estimate_note
+
+                rows.append(
+                    _row(
+                        meeting,
+                        policy_post,
+                        inc,
+                        cum,
+                        method_ca,
+                        contracts_out,
+                        extras=extras_ca,
+                    )
+                )
+                solved_overnight_pre = post_o
+                used_coa = True
+                i_ca += 1
+
+            if used_coa:
+                continue
+
+            cra_candidates: list[tuple[date, dict, date, date]] = []
+            for cra_row in cra_by_expiry.values():
+                cs, ce = accrual_window(str(cra_row["expiry"]), "3m")
+                days_after = sum(1 for day in _iter_days(cs, ce) if day >= k_eff)
+                if days_after < 7:
+                    continue
+                skip_cra = False
+                for day in _iter_days(cs, ce):
+                    if day <= as_of and not _is_known_on_day(
+                        day, as_of, anchor, history, solved, sorted_meetings
+                    ):
+                        skip_cra = True
+                        break
+                if skip_cra:
+                    continue
+                cra_candidates.append((ce, cra_row, cs, ce))
+            if not cra_candidates:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                i_ca += 1
+                continue
+            cra_candidates.sort(key=lambda item: item[0])
+            _, cra_row, cs, ce = cra_candidates[0]
+            group_slice: list[dict] = []
+            for m in unresolved[i_ca:]:
+                eff_m = _parse_date(m["effective_date"])
+                if eff_m < ce:
+                    group_slice.append(m)
+                else:
+                    break
+            if not group_slice:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                i_ca += 1
+                continue
+
+            effs_sorted = sorted(_parse_date(m["effective_date"]) for m in group_slice)
+            f_cra = float(cra_row["implied_rate"])
+
+            pre_o_lvl = solved_overnight_pre if solved_overnight_pre is not None else anchor
+
+            if len(effs_sorted) == 1:
+                post_o = _bisect_generic(
+                    lambda x: cra_implied_percent_piecewise_overnight(
+                        cs, ce, effs_sorted, [pre_o_lvl, x]
+                    ),
+                    f_cra,
+                    pre_o_lvl - 2.0,
+                    pre_o_lvl + 5.0,
+                )
+                method_cr = "identified"
+                posts = [post_o]
+            else:
+                n_m = len(effs_sorted)
+
+                def pack(s_step: float) -> list[float]:
+                    levels = [pre_o_lvl]
+                    cur = pre_o_lvl
+                    for _ in range(n_m):
+                        cur += s_step
+                        levels.append(cur)
+                    return levels
+
+                def err_st(s_step: float) -> float:
+                    return (
+                        cra_implied_percent_piecewise_overnight(
+                            cs, ce, effs_sorted, pack(s_step)
+                        )
+                        - f_cra
+                    )
+
+                try:
+                    s_hat = _bisect_generic(err_st, 0.0, -1.0, 1.0)
+                except ValueError:
+                    for meeting_bad in group_slice:
+                        rows.append(
+                            _row(meeting_bad, None, None, None, "unavailable", [])
+                        )
+                    i_ca += len(group_slice)
+                    continue
+                method_cr = "equal_step"
+                levels_full = pack(s_hat)
+                posts = levels_full[1:]
+
+            contract_cra = [
+                _contract_dict_for_output(cra_row, weight=1.0, role="meeting_month")
+            ]
+            for j, gm in enumerate(group_slice):
+                post_on = posts[j]
+                pre_step = pre_o_lvl if j == 0 else posts[j - 1]
+                step_o = post_on - pre_step
+                pol_prev = previous_post if previous_post is not None else anchor
+                policy_post = pol_prev + step_o
+                inc = _round_bp(step_o * 100.0)
+                previous_post = policy_post
+                cum = _round_bp((policy_post - anchor) * 100.0)
+                solved_overnight_pre = post_on
+                pre_o_lvl = post_on
+                extras_cr: dict[str, Any] = {
+                    "overnight_pre": _round_rate(pre_step),
+                    "overnight_post": _round_rate(post_on),
+                    "step_meaning": CA_COA_STEP_MEANING,
+                }
+                rows.append(
+                    _row(
+                        gm,
+                        policy_post,
+                        inc,
+                        cum,
+                        method_cr,
+                        contract_cra,
+                        extras=extras_cr,
+                    )
+                )
+            i_ca += len(group_slice)
+
+        return rows
+
+    if bank == "AU":
+        ib_rows = [
+            c
+            for c in contracts
+            if c.get("product") == "IB"
+            and c.get("period") == "1m"
+            and c.get("implied_rate") is not None
+        ]
+        au_obs, au_gate_reason = _ca_au_observation_gate(ib_rows)
+        if au_gate_reason:
+            return [_row(m, None, None, None, "unavailable", []) for m in unresolved]
+
+        ib_by_expiry = {
+            str(r["expiry"]): r
+            for r in ib_rows
+            if accrual_window(str(r["expiry"]), "1m")[1] > as_of
+        }
+
+        for meeting in unresolved:
+            k_eff = _parse_date(meeting["effective_date"])
+            ib_candidates: list[tuple[dict, date, date]] = []
+            for expiry_s, row in ib_by_expiry.items():
+                ms, me = accrual_window(expiry_s, "1m")
+                if not (ms <= k_eff < me):
+                    continue
+                if (me - ms).days < 7:
+                    continue
+                ib_candidates.append((row, ms, me))
+            if not ib_candidates:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                continue
+            meeting_ib, month_start, month_end = min(ib_candidates, key=lambda x: x[0]["expiry"])
+            n_tot = (month_end - month_start).days
+            implied_m = float(meeting_ib["implied_rate"])
+            y_m, m_m = _expiry_month_key(str(meeting_ib["expiry"]))
+            cy, cm = y_m, m_m
+            prior_ib: dict | None = None
+            prior_start: date | None = None
+            prior_end: date | None = None
+            for _ in range(24):
+                cy, cm = _add_months(cy, cm, -1)
+                prior_exp_try = f"{cy:04d}-{cm:02d}"
+                pib = ib_by_expiry.get(prior_exp_try)
+                if pib is None:
+                    continue
+                ps, pe = accrual_window(prior_exp_try, "1m")
+                if pe <= as_of:
+                    continue
+                if not _accrual_window_meeting_free(ps, pe, unresolved_cal):
+                    continue
+                prior_ib = pib
+                prior_start, prior_end = ps, pe
+                break
+            if prior_ib is None or prior_start is None or prior_end is None:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                continue
+
+            method_au = "estimated"
+            estimate_note_au: str | None = None
+            f_fwd_pre: float | None = None
+            pre_sum = 0.0
+            n_pre = 0
+
+            if au_obs is not None and corra_fixings_sorted:
+                fixed_prior: list[float] = []
+                ok_au = True
+                for d in _iter_calendar_days(prior_start, min(prior_end, au_obs)):
+                    r = _sofr_print_for_elapsed_day(d, au_obs, corra_fixings_sorted)
+                    if r is None:
+                        ok_au = False
+                        break
+                    fixed_prior.append(r)
+                if not ok_au:
+                    rows.append(_row(meeting, None, None, None, "unavailable", []))
+                    continue
+                if not fixed_prior:
+                    f_fwd_pre = float(prior_ib["implied_rate"])
+                    n_pre = sum(
+                        1 for d in _iter_calendar_days(month_start, month_end) if d < k_eff
+                    )
+                    pre_sum = n_pre * f_fwd_pre
+                    method_au = "estimated"
+                    estimate_note_au = (
+                        "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step."
+                    )
+                else:
+                    n_prior = (prior_end - prior_start).days
+                    f_fwd_pre = _ib_forward_baseline(
+                        float(prior_ib["implied_rate"]),
+                        n_prior,
+                        fixed_prior,
+                    )
+                    obs_cap = min(au_obs, k_eff, month_end)
+                    pre_sum = 0.0
+                    n_pre = 0
+                    for d in _iter_calendar_days(month_start, obs_cap):
+                        r = _sofr_print_for_elapsed_day(d, au_obs, corra_fixings_sorted)
+                        if r is None:
+                            rows.append(
+                                _row(meeting, None, None, None, "unavailable", [])
+                            )
+                            ok_au = False
+                            break
+                        pre_sum += r
+                        n_pre += 1
+                    if not ok_au:
+                        continue
+                    for _d in _iter_calendar_days(obs_cap, min(k_eff, month_end)):
+                        pre_sum += f_fwd_pre
+                        n_pre += 1
+                    method_au = "identified"
+            else:
+                f_fwd_pre = float(prior_ib["implied_rate"])
+                n_pre = sum(
+                    1 for d in _iter_calendar_days(month_start, month_end) if d < k_eff
+                )
+                pre_sum = n_pre * f_fwd_pre
+                method_au = "estimated"
+                estimate_note_au = (
+                    "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step."
+                )
+
+            n_post = n_tot - n_pre
+            if n_post <= 0:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                continue
+
+            f_post_ib = (implied_m * n_tot - pre_sum) / n_post
+            step_ib = f_post_ib - f_fwd_pre
+            pol_prev = previous_post if previous_post is not None else anchor
+            policy_post = pol_prev + step_ib
+            inc = _round_bp(step_ib * 100.0)
+            previous_post = policy_post
+            cum = _round_bp((policy_post - anchor) * 100.0)
+
+            contracts_au = [
+                _contract_dict_for_output(meeting_ib, weight=1.0, role="meeting_month"),
+                _contract_dict_for_output(prior_ib, weight=0.0, role="forward_baseline"),
+            ]
+            extras_au: dict[str, Any] = {
+                "ib_prior_forward": _round_rate(f_fwd_pre),
+                "ib_post_level": _round_rate(f_post_ib),
+                "step_meaning": AU_IB_STEP_MEANING,
+            }
+            if estimate_note_au:
+                extras_au["estimate_note"] = estimate_note_au
+            rows.append(
+                _row(
+                    meeting,
+                    policy_post,
+                    inc,
+                    cum,
+                    method_au,
+                    contracts_au,
+                    extras=extras_au,
+                )
+            )
+        return rows
 
     idx = 0
     while idx < len(unresolved):
@@ -848,34 +1833,61 @@ def _contracts_for_bank(
         return contracts, None
     if code == "CA":
         for row in country_paths.get("contracts_1m") or []:
-            contracts.append(
-                {
-                    "product": "COA",
-                    "expiry": row["expiry"],
-                    "period": "1m",
-                    "implied_rate": float(row["implied_rate"]),
-                }
-            )
+            base = {
+                "product": "COA",
+                "expiry": row["expiry"],
+                "period": "1m",
+                "implied_rate": float(row["implied_rate"]),
+            }
+            for key in (
+                "price",
+                "source",
+                "source_url",
+                "observation_date",
+                "as_of",
+                "code",
+            ):
+                if row.get(key) is not None:
+                    base[key] = row[key]
+            contracts.append(base)
         for row in country_paths.get("contracts_3m") or []:
-            contracts.append(
-                {
-                    "product": "CRA",
-                    "expiry": row["expiry"],
-                    "period": "3m",
-                    "implied_rate": float(row["implied_rate"]),
-                }
-            )
+            base3 = {
+                "product": "CRA",
+                "expiry": row["expiry"],
+                "period": "3m",
+                "implied_rate": float(row["implied_rate"]),
+            }
+            for key in (
+                "price",
+                "source",
+                "source_url",
+                "observation_date",
+                "as_of",
+                "code",
+            ):
+                if row.get(key) is not None:
+                    base3[key] = row[key]
+            contracts.append(base3)
         return contracts, None
     if code == "AU":
         for row in country_paths.get("contracts_1m") or []:
-            contracts.append(
-                {
-                    "product": "IB",
-                    "expiry": row["expiry"],
-                    "period": "1m",
-                    "implied_rate": float(row["implied_rate"]),
-                }
-            )
+            base = {
+                "product": "IB",
+                "expiry": row["expiry"],
+                "period": "1m",
+                "implied_rate": float(row["implied_rate"]),
+            }
+            for key in (
+                "price",
+                "source",
+                "source_url",
+                "observation_date",
+                "as_of",
+                "code",
+            ):
+                if row.get(key) is not None:
+                    base[key] = row[key]
+            contracts.append(base)
         return contracts, None
     if code == "JP":
         if not paths_ok:
@@ -1004,6 +2016,10 @@ def _filter_contracts(contracts: list[dict], as_of: date) -> list[dict]:
 
 
 def _sofr_fixings_from_country_paths(country_paths: dict) -> list[tuple[date, float]]:
+    return _overnight_history_fixings(country_paths)
+
+
+def _overnight_history_fixings(country_paths: dict) -> list[tuple[date, float]]:
     benchmark = country_paths.get("benchmark") or {}
     if not isinstance(benchmark, dict):
         return []
@@ -1159,6 +2175,25 @@ def build_policy_meeting_prices(
                 )
             if not us_sr1_gate_reason and us_obs_date is not None:
                 futures_as_of = us_obs_date.isoformat()
+
+        ca_au_gate_reason: str | None = None
+        ca_au_obs_date: date | None = None
+        if code in {"CA", "AU"} and paths_status in {"ok", "partial"}:
+            ca_au_rows: list[dict] = []
+            if code == "CA":
+                for row in country_paths.get("contracts_1m") or []:
+                    if isinstance(row, dict) and row.get("implied_rate") is not None:
+                        ca_au_rows.append(row)
+                for row in country_paths.get("contracts_3m") or []:
+                    if isinstance(row, dict) and row.get("implied_rate") is not None:
+                        ca_au_rows.append(row)
+            else:
+                for row in country_paths.get("contracts_1m") or []:
+                    if isinstance(row, dict) and row.get("implied_rate") is not None:
+                        ca_au_rows.append(row)
+            ca_au_obs_date, ca_au_gate_reason = _ca_au_observation_gate(ca_au_rows)
+            if not ca_au_gate_reason and ca_au_obs_date is not None:
+                futures_as_of = ca_au_obs_date.isoformat()
         cal_block = (calendar.get("banks") or {}).get(code) or {}
         calendar_retrieved_at = cal_block.get("retrieved_at")
 
@@ -1286,6 +2321,21 @@ def build_policy_meeting_prices(
             }
             continue
 
+        if code in {"CA", "AU"} and ca_au_gate_reason:
+            banks_out[code] = {
+                "status": "unavailable",
+                "reason": ca_au_gate_reason,
+                "anchor": anchor,
+                "fixing": fixing,
+                "basis_bp": basis_bp,
+                "futures_as_of": futures_as_of,
+                "calendar_retrieved_at": calendar_retrieved_at,
+                "meetings": _unavailable_meeting_rows_for_bank(
+                    code, meetings_cal, as_of
+                ),
+            }
+            continue
+
         if not contract_list:
             banks_out[code] = {
                 "status": "unavailable",
@@ -1309,6 +2359,11 @@ def build_policy_meeting_prices(
         if not isinstance(contracts_zq, list):
             contracts_zq = None
         try:
+            ca_au_hist = (
+                _overnight_history_fixings(country_paths)
+                if code in {"CA", "AU"}
+                else []
+            )
             priced_rows = price_meetings(
                 bank=code,
                 as_of=as_of,
@@ -1319,8 +2374,14 @@ def build_policy_meeting_prices(
                 history=hist,
                 sofr_fixings=_sofr_fixings_from_country_paths(country_paths)
                 if code == "US"
-                else None,
-                observation_date=us_obs_date if code == "US" else None,
+                else ca_au_hist,
+                observation_date=(
+                    us_obs_date
+                    if code == "US"
+                    else ca_au_obs_date
+                    if code in {"CA", "AU"}
+                    else None
+                ),
                 calendar_meetings_us=cal_us if code == "US" else None,
                 contracts_zq=contracts_zq if code == "US" else None,
                 policy_state_us=policy_us_bounds if code == "US" else None,
@@ -1366,6 +2427,11 @@ def build_policy_meeting_prices(
                 "target_lower",
                 "target_upper",
                 "zq_cross_check",
+                "overnight_pre",
+                "overnight_post",
+                "ib_prior_forward",
+                "ib_post_level",
+                "estimate_note",
             ):
                 if optional_key in row:
                     mt[optional_key] = row[optional_key]
@@ -1388,7 +2454,7 @@ def build_policy_meeting_prices(
             "calendar_retrieved_at": calendar_retrieved_at,
             "meetings": meetings_out,
         }
-        if code == "US":
+        if code in {"US", "CA", "AU"}:
             for mt in meetings_out:
                 if not isinstance(mt, dict):
                     continue
