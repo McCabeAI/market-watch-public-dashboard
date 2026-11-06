@@ -539,7 +539,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_dashboard_repair
+          PYTHONPATH=. python -m unittest tests.test_dashboard_repair tests.test_release_calendar_contract tests.test_release_calendar_us tests.test_release_calendar_ca tests.test_release_calendar_ea tests.test_release_calendar_au tests.test_release_calendar_nz tests.test_release_calendar_jp tests.test_release_calendar_pipeline
           MARKET=()
           if [ -s _site/market-state.json ]; then
             MARKET=(--market-state _site/market-state.json)

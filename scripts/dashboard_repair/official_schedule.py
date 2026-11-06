@@ -1,5 +1,9 @@
 """Bounded official schedule pages. Parsers never invent a date.
 
+``fetch_official_schedules`` runs the six-economy adapter pipeline
+(``release_pipeline``). Legacy BLS/ABS/NZ-only behavior is retained as
+``fetch_legacy_official_schedules`` for reference.
+
 A page that does not contain a release date contributes nothing. Failures are
 recorded and the pinned calendar is left unchanged.
 """
@@ -9,11 +13,13 @@ from __future__ import annotations
 import re
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
+from pathlib import Path
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
 
+from scripts.dashboard_repair import release_pipeline
 from scripts.macro_ingestion.us_employment.schedule import (
     parse_bls_month_schedule,
     parse_chicago_fed_schedule,
@@ -159,8 +165,26 @@ def fetch_official_schedules(
     *,
     timeout: float = 6.0,
     getter: Callable[[str, float], str] | None = None,
+    cache_path: Path | str | None = None,
+    write_cache: bool = True,
 ) -> dict[str, Any]:
-    """Read a fixed set of official schedule pages. Network errors add no dates."""
+    """Read official schedules via the six-country adapter pipeline."""
+    return release_pipeline.fetch_official_schedules(
+        now,
+        timeout=timeout,
+        getter=getter,
+        cache_path=cache_path,
+        write_cache=write_cache,
+    )
+
+
+def fetch_legacy_official_schedules(
+    now: datetime,
+    *,
+    timeout: float = 6.0,
+    getter: Callable[[str, float], str] | None = None,
+) -> dict[str, Any]:
+    """Read the older fixed BLS / Chicago Fed / ABS / Stats NZ URL set only."""
     fetch = getter or _default_get
     if now.tzinfo is None:
         now = now.replace(tzinfo=ET)
@@ -298,4 +322,6 @@ def fetch_official_schedules(
         "pages": report_pages,
         "errors": [page["error"] for page in report_pages if page["status"] != "ok"],
         "slots": slots,
+        "countries": {},
+        "cache": ["legacy fetch"],
     }
