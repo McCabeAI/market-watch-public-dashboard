@@ -1,0 +1,36 @@
+{
+  "paths": {
+    "source_map": "source/source_map.json",
+    "book_judgment": "book/judgment.json",
+    "fx_judgment": "fx/judgment.json",
+    "rates_judgment": "rates/judgment.json"
+  },
+  "bindings_echo": {
+    "embedded_packet_sha256_in_snapshot": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8",
+    "agent_packet_sha256": "2e2b6a923502895d6478c0d4c3ca5aea94fb9ca9e46b5ca07b540a615e8f879c"
+  },
+  "identities_used": {
+    "corra_book": "dv01_usd_per_bp = 10000 * notional/1e8",
+    "sr3": "dv01_usd_per_bp = 25 * notional/1e6"
+  },
+  "carry_series_last": {
+    "US_2Y": {
+      "bp": 446.0,
+      "as_of": "2026-11-05"
+    },
+    "EA_2Y": {
+      "bp": 295.0,
+      "as_of": "2026-11-06"
+    }
+  },
+  "noncanonical_inputs": {
+    "corra_contracts_mean": 3.05125,
+    "eurusd_spot_last": 1.1224
+  },
+  "financing_rate_percent_used": 3.94,
+  "financing_horizon_days": 70.0,
+  "sofr_funding_context": {
+    "percent_rate": 3.94,
+    "effective_date": "2026-11-04"
+  }
+}
