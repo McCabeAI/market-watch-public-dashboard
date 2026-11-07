@@ -52,7 +52,19 @@ Code commit `23fe556ae82aa098d7286fc8351f4afd5bcfa8f1`. The report sentence nami
 - `python3 scripts/overnight_pipeline.py dry-run --suffix ci --state-root /tmp/overnight-ci-state --site-dir /tmp/overnight-site --as-of 2026-09-18T12:00:00-04:00` — exit 0, all seven stages succeeded. Run `overnight-20260918-dryrun-ci`. Pin is 14 traders, budget 20/18/2, chart-guy absent. The frozen packet contains `fx_technical` type `FX_TECHNICAL_RESEARCH` with `vetoes_unrelated_trades` false and `trade_recommendation` null. Published trader books have 14 seats.
 - Frozen `data/overnight/runs/overnight-20261106/reviews/review-001/evidence_snapshot.json` is unmodified: 14 traders, budget 20, no `chart-guy`, and no `fx_technical`.
 
-GitHub Actions on this repair commit had not been re-checked at the time this section was written. The prior head `f790fc554405c23e60305114c90c39eac33b70a6` failed Macro ingestion, Validate Trader Room, Overnight Deterministic Pipeline, Validate PM Layer, and Deploy Market Watch Dashboard. Daily Market State and Launch Market Watch were green. This repair targets those failures. Do not treat them as passed until the workflows finish on the final SHA.
+GitHub Actions on `84304b1c50898afe5335efa97b1905bf7e90aca7` concluded success for all seven required workflows. The prior head `f790fc554405c23e60305114c90c39eac33b70a6` had failed the first five.
+
+| Workflow | Run | Conclusion |
+| --- | --- | --- |
+| Macro ingestion | [42393429398](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429398) | success |
+| Validate Trader Room | [42393429438](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429438) | success |
+| Overnight Deterministic Pipeline | [42393429429](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429429) | success |
+| Validate PM Layer | [42393429449](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429449) | success |
+| Deploy Market Watch Dashboard | [42393429422](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429422) | success |
+| Daily Market State | [42393429462](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429462) | success |
+| Launch Market Watch | [42393429461](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42393429461) | success |
+
+On the deploy workflow the `build` job passed. The `deploy` and `Reconcile Stage 08` jobs were skipped, so nothing was deployed. Launch orchestration jobs were skipped. Apply ChatGPT PM Decision also concluded success on the same SHA and did not apply a decision. This paragraph is a later documentation commit. Its own checks are separate from the seven results above.
 
 Two pre-existing market-state tests still error on a missing `openpyxl` import (`test_rbnz_workbook_ignores_collapsed_dimension`, `test_rbnz_workbook_parser`). They do not import this feature.
 
