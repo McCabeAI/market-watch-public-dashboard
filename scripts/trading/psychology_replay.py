@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -13,6 +15,18 @@ from scripts.trading.psychology import fold_cycle, replay, seed_state
 from scripts.trading.psychology_events import detect_cycle_events
 from scripts.trading.psychology_profiles import is_not_applicable, profile_for
 from scripts.trading.store import TradingStore
+
+
+_RUN_DATE_RE = re.compile(r"overnight-(\d{8})")
+
+
+def _latest_run_date(run_names: list[str]):
+    found = []
+    for name in run_names:
+        match = _RUN_DATE_RE.match(name)
+        if match:
+            found.append(datetime.strptime(match.group(1), "%Y%m%d").date())
+    return max(found) if found else None
 
 
 def _load(path: Path) -> dict[str, Any]:
@@ -70,15 +84,14 @@ def shadow_report(repo_root: Path | None = None) -> dict[str, Any]:
     if trades_dir.is_dir():
         for path in sorted(trades_dir.glob("*.json")):
             trades.append(_load(path))
-    # Standing identities that actually appear in this root. A seat activated
-    # after the replay, such as chart-guy on an October fixture, is not folded
-    # in. Seats that appear and have no trades stay at baseline.
+    # Standing identities for this root's latest session date. A seat activated
+    # later, such as chart-guy on an October fixture, is not folded in. Seats
+    # that are already live and have no trades stay at baseline.
     states = {
         owner_id: seed_state(owner_type, owner_id)
         for owner_type, owner_id in ALL_IDENTITIES
         if not is_not_applicable(owner_id)
     }
-    seen_owners = {str(trade.get("owner_id")) for trade in trades if trade.get("owner_id")}
     owner_type_of = {owner_id: owner_type for owner_type, owner_id in ALL_IDENTITIES if owner_id in states}
     run_names = sorted(path.name for path in runs_root.iterdir() if path.is_dir()) if runs_root.is_dir() else []
     for run_name in run_names:
@@ -97,10 +110,6 @@ def shadow_report(repo_root: Path | None = None) -> dict[str, Any]:
         prior_traders = _seat_rows(snapshot.get("prior_books"), "seats")
         current_pms = _seat_rows(review.get("pm_books"), "pms")
         prior_pms = _seat_rows(snapshot.get("prior_pm_books"), "pms")
-        seen_owners.update(current_traders)
-        seen_owners.update(prior_traders)
-        seen_owners.update(current_pms)
-        seen_owners.update(prior_pms)
         trader_ranks = _ranked(current_traders, "net_pnl_usd")
         prior_trader_ranks = _ranked(prior_traders, "net_pnl_usd") if prior_traders else {}
         pm_ranks = _ranked(current_pms, "net_after_funding_pnl_usd")
@@ -161,7 +170,16 @@ def shadow_report(repo_root: Path | None = None) -> dict[str, Any]:
                 annotations=notes,
             )
             states[owner_id] = state
-    states = {owner_id: state for owner_id, state in states.items() if owner_id in seen_owners}
+    as_of = _latest_run_date(run_names)
+    if as_of is not None:
+        from scripts.trader_room.agent_config import head_traders
+
+        live = {str(row["id"]) for row in head_traders(as_of=as_of)}
+        states = {
+            owner_id: state
+            for owner_id, state in states.items()
+            if owner_type_of.get(owner_id) != "trader" or owner_id in live
+        }
     identities = {}
     max_distance = 0.0
     level_flags: list[str] = []
