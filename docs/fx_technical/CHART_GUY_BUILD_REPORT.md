@@ -44,7 +44,7 @@ The 15-seat live pin is not in force. It is covered by `ChartGuySeatTests` on a 
 
 ## Validation
 
-Commands were run from the repo root with `PYTHONPATH=.` on 2026-11-07. Parent model for this repair is Grok 4.7. Composer 2.5 was not able to sit a new exam or a read-only review: both Task launches were denied by the hook above.
+Repair commit `23fe556ae82aa098d7286fc8351f4afd5bcfa8f1`. The commit that adds this sentence is the branch head recorded on PR #320. Commands were run from the repo root with `PYTHONPATH=.` on 2026-11-07. Parent model for this repair is Grok 4.7. Composer 2.5 was not able to sit a new exam or a read-only review: both Task launches were denied by the hook above.
 
 - `python3 scripts/validate_trader_room.py` — exit 0. It reports 14 grok-4.7 advocates. `docs/TRADER_ROOM_PROTOCOL.md` names `chart-guy` and allows that seat to return no trade.
 - `python3 -m scripts.trader_room.agent_config check-agents` — exit 0.
