@@ -97,6 +97,20 @@ Composer 2.5 inspected the uncommitted diff and approved the hook, smoke gate, h
 
 Two tests still fail for reasons that predate this activation and were not repaired by editing books or inventing marks. `tests.test_trader_book_lifecycle.TraderBookLifecycleTests.test_no_trade_skeptic_cap` blocks `SOFR_2027-03` with `implied rate missing for SOFR_2027-03 on frozen SOFR curve`. `tests.test_profit_harvest.ProfitHarvestTests.test_dollar_king_usdcad_replay_reviews_before_the_giveback` looks for an open dollar-king USDCAD position; the canonical book, unchanged for that seat, has USDJPY only.
 
+GitHub Actions on `eefcd9aa93cf8be54dc247598f3d0bf8a2a06e13` concluded success for all seven required workflows. The learning shard and the overnight aggregate both passed. On deploy, `build` passed and `deploy` was skipped, so nothing was published.
+
+| Workflow | Run | Conclusion |
+| --- | --- | --- |
+| Macro ingestion | [42412556173](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556173) | success |
+| Validate Trader Room | [42412556149](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556149) | success |
+| Overnight Deterministic Pipeline | [42412556156](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556156) | success |
+| Validate PM Layer | [42412556157](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556157) | success |
+| Deploy Market Watch Dashboard | [42412556150](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556150) | success (`build` passed, `deploy` skipped) |
+| Daily Market State | [42412556215](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556215) | success |
+| Launch Market Watch | [42412556212](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556212) | success |
+
+Apply ChatGPT PM Decision also concluded success on that SHA: [42412556169](https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42412556169). It did not apply a decision.
+
 ## Not in this change
 
 True OHLC, ATR, candlesticks, and Kronos remain future work. No new warehouse, cron, database, or vendor feed was added. No Market Watch or Trader Room production run was started. Nothing was merged or deployed. ACP was not edited. `chart-guy` is active on this branch only. His paper results are prospective. The old blind exam was not marked as a pass.
