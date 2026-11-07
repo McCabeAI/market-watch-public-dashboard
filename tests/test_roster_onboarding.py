@@ -130,7 +130,7 @@ class RosterOnboardingTests(unittest.TestCase):
         pending = [t for t in cfg["roster"]["traders"] if t["id"] == "synthetic-fifteenth"]
         self.assertEqual(len(pending), 1)
         self.assertEqual(pending[0]["status"], "pending")
-        self.assertEqual(len(head_traders(cfg)), 14)
+        self.assertEqual(len(head_traders(cfg)), len(head_traders()))
         agent_path = self.tmp / ".cursor" / "agents" / "synthetic-fifteenth.md"
         self.assertTrue(agent_path.is_file())
         agent_text = agent_path.read_text(encoding="utf-8")
@@ -226,7 +226,7 @@ class RosterOnboardingTests(unittest.TestCase):
         )
         self.assertTrue(summary.get("written"))
         cfg = load_config(self.tmp / "scripts" / "trader_room" / "model_registry.json", honor_env=False)
-        self.assertEqual(len(head_traders(cfg)), 15)
+        self.assertEqual(len(head_traders(cfg)), len(head_traders()) + 1)
         books_after = json.loads(books_path.read_text(encoding="utf-8"))
         for seat, digest in seat_hashes_before.items():
             self.assertEqual(sha256_json(books_after["seats"][seat]), digest)
@@ -306,22 +306,23 @@ class RosterOnboardingTests(unittest.TestCase):
         cfg["roster"]["traders"] = traders
         cfg_path = self.tmp / "fifteen-seat-config.json"
         cfg_path.write_text(json.dumps({k: v for k, v in cfg.items() if k != "_source"}, indent=2) + "\n", encoding="utf-8")
+        seat_count = len(traders)
         code = (
             "from scripts.trader_room.constants import STANDING_ADVOCATES; "
             "from scripts.overnight.constants import STANDING_SEATS; "
             "from scripts.overnight.books import empty_books; "
             "from scripts.trader_room.agent_config import daily_budget, ondemand_budget, build_pin; "
             "from scripts.trader_room.runners import build_launch_plan; "
-            "assert len(STANDING_ADVOCATES)==15; "
-            "assert len(STANDING_SEATS)==15; "
-            "assert len(empty_books()['seats'])==15; "
-            "assert daily_budget(15)['total_calls']==21; "
-            "assert ondemand_budget(15)['total_calls']==61; "
+            f"assert len(STANDING_ADVOCATES)=={seat_count}; "
+            f"assert len(STANDING_SEATS)=={seat_count}; "
+            f"assert len(empty_books()['seats'])=={seat_count}; "
+            f"assert daily_budget({seat_count})['total_calls']=={seat_count + 6}; "
+            f"assert ondemand_budget({seat_count})['total_calls']=={4 * seat_count + 1}; "
             "pin=build_pin('daily'); "
             "assert pin['config_override'] is True; "
             "plan=build_launch_plan({'run_id':'tr-test','as_of':'2026-11-02','packet_sha256':'abc'}, pin=build_pin('ondemand')); "
-            "assert plan['ceilings']['acp_parent_inclusive_total_ceiling']==61; "
-            "assert plan['ceilings']['acp_parent_inclusive_grok_ceiling']==31"
+            f"assert plan['ceilings']['acp_parent_inclusive_total_ceiling']=={4 * seat_count + 1}; "
+            f"assert plan['ceilings']['acp_parent_inclusive_grok_ceiling']=={2 * seat_count + 1}"
         )
         proc = subprocess.run(
             ["python3", "-c", code],
@@ -333,8 +334,8 @@ class RosterOnboardingTests(unittest.TestCase):
         self.assertEqual(proc.returncode, 0, proc.stderr or proc.stdout)
 
     def test_historical_fourteen_books_validate_against_legacy_pin(self) -> None:
-        books = empty_books()
         legacy = legacy_pin("daily")
+        books = empty_books(roster=pin_trader_ids(legacy))
         validate_books(books, roster=pin_trader_ids(legacy), entries=legacy["traders"])
         cfg = load_config(self.tmp / "scripts" / "trader_room" / "model_registry.json", honor_env=False)
         traders = list(cfg["roster"]["traders"])
@@ -433,7 +434,10 @@ class RosterOnboardingTests(unittest.TestCase):
         packet = freeze_snapshot(store, run_id=run_id, when=when, reuse_open=False)
         self.assertIn("agent_roster_pin", packet)
         pin = packet["agent_roster_pin"]
-        self.assertEqual(tuple(t["id"] for t in pin["traders"]), tuple(t["id"] for t in head_traders()))
+        self.assertEqual(tuple(t["id"] for t in pin["traders"]), tuple(t["id"] for t in head_traders(as_of=when)))
+        self.assertNotIn("chart-guy", [row["id"] for row in pin["traders"]])
+        self.assertIn("fx_technical", packet)
+        self.assertFalse(packet["fx_technical"]["vetoes_unrelated_trades"])
         expected = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
         self.assertEqual(packet["packet_sha256"], expected)
 
@@ -468,20 +472,22 @@ class RosterOnboardingTests(unittest.TestCase):
         )
         cfg_path.write_text(json.dumps(cfg, indent=2) + "\n", encoding="utf-8")
         cfg_loaded = load_config(cfg_path, honor_env=False)
-        pin14 = build_pin("daily", config=cfg_loaded, as_of=date(2026, 11, 30))
-        self.assertEqual(len(pin14["traders"]), 14)
-        self.assertEqual(pin14["budget"]["total_calls"], 20)
-        self.assertEqual(pin14["budget"]["grok_family_calls"], 18)
-        self.assertEqual(pin14["budget"]["composer_calls"], 2)
-        pin15 = build_pin("daily", config=cfg_loaded, as_of=date(2026, 12, 1))
-        self.assertEqual(len(pin15["traders"]), 15)
-        self.assertEqual(pin15["budget"]["total_calls"], 21)
-        self.assertEqual(pin15["budget"]["grok_family_calls"], 19)
-        self.assertEqual(pin15["budget"]["composer_calls"], 2)
+        live = len([row for row in cfg_loaded["roster"]["traders"] if row["id"] != "synthetic-fifteenth" and row.get("status") == "active"])
+        pin_before = build_pin("daily", config=cfg_loaded, as_of=date(2026, 11, 30))
+        self.assertEqual(len(pin_before["traders"]), live)
+        self.assertEqual(pin_before["budget"]["total_calls"], live + 6)
+        self.assertEqual(pin_before["budget"]["grok_family_calls"], live + 4)
+        self.assertEqual(pin_before["budget"]["composer_calls"], 2)
+        self.assertTrue(all(row["id"] != "synthetic-fifteenth" for row in pin_before["traders"]))
+        pin_on = build_pin("daily", config=cfg_loaded, as_of=date(2026, 12, 1))
+        self.assertEqual(len(pin_on["traders"]), live + 1)
+        self.assertEqual(pin_on["budget"]["total_calls"], live + 7)
+        self.assertEqual(pin_on["budget"]["grok_family_calls"], live + 5)
+        self.assertEqual(pin_on["budget"]["composer_calls"], 2)
         ondemand = build_pin("ondemand", config=cfg_loaded, as_of=date(2026, 12, 1))
-        self.assertEqual(ondemand["budget"]["total_calls"], 61)
-        self.assertEqual(ondemand["budget"]["grok_family_calls"], 31)
-        self.assertEqual(ondemand["budget"]["composer_calls"], 30)
+        self.assertEqual(ondemand["budget"]["total_calls"], 4 * (live + 1) + 1)
+        self.assertEqual(ondemand["budget"]["grok_family_calls"], 2 * (live + 1) + 1)
+        self.assertEqual(ondemand["budget"]["composer_calls"], 2 * (live + 1))
 
     def test_fault_injection_leaves_root_unchanged(self) -> None:
         for stage in ("identity", "books", "agent", "config"):
@@ -593,7 +599,7 @@ class RosterOnboardingTests(unittest.TestCase):
         with mock.patch.object(ac, "CONFIG_PATH", config_path):
             with self.assertRaisesRegex(AgentConfigError, "future activation_date"):
                 ac.load_config(config_path)
-        self.assertEqual(len(ac.build_pin("daily", config=ac.load_config(config_path))["traders"]), 14)
+        self.assertEqual(len(ac.build_pin("daily", config=ac.load_config(config_path))["traders"]), len(head_traders()))
 
     def test_leftover_checkpoint_is_reported_before_state_checks(self) -> None:
         (self.tmp / onboard_mod._CHECKPOINT_NAME).write_text("{}", encoding="utf-8")

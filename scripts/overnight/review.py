@@ -18,6 +18,23 @@ from scripts.overnight.store import OvernightStore
 from scripts.trader_room.rates_scan import synthetic_rates_tenor_scan
 
 
+def _empty_books_for_packet(packet: dict[str, Any], *, run_id: str, when: datetime | None) -> dict[str, Any]:
+    pin = packet.get("agent_roster_pin") if isinstance(packet, dict) else None
+    traders = pin.get("traders") if isinstance(pin, dict) else None
+    roster = [str(row["id"]) for row in traders] if isinstance(traders, list) and traders else None
+    return empty_books(overnight_run_id=run_id, when=when, roster=roster)
+
+
+def _books_for_frozen_run(packet: dict[str, Any], books: dict[str, Any]) -> dict[str, Any]:
+    """Validate books against the run's own pin, so a later seat does not rewrite a 14-seat snapshot."""
+    pin = packet.get("agent_roster_pin")
+    traders = pin.get("traders") if isinstance(pin, dict) else None
+    if isinstance(traders, list) and traders:
+        roster = [str(row["id"]) for row in traders]
+        return validate_books(books, roster=roster, entries=traders)
+    return validate_books(books)
+
+
 def _pm_memory_hashes(packet: dict[str, Any]) -> dict[str, str]:
     block = packet.get("pm_memory") or {}
     return dict(block.get("hashes") or {})
@@ -555,11 +572,11 @@ def run_trader_review(
             assert_review_acceptable(store, meta)
             meta = mark_accepting(store, meta)
     if isinstance(packet.get("prior_books"), dict):
-        books = validate_books(packet["prior_books"])
+        books = _books_for_frozen_run(packet, packet["prior_books"])
     elif store.books_path().is_file():
-        books = validate_books(store.read_books())
+        books = _books_for_frozen_run(packet, store.read_books())
     else:
-        books = empty_books(overnight_run_id=run_id, when=when)
+        books = _empty_books_for_packet(packet, run_id=run_id, when=when)
 
     if dry_run:
         reviews = dry_run_reviews(scenario=scenario)
@@ -627,7 +644,7 @@ def run_trader_review(
                 market_state=(packet.get("families", {}).get("market_state", {}) or {}).get("data"),
             )
         except ReviewAlreadyApplied:
-            updated = validate_books(store.read_books())
+            updated = _books_for_frozen_run(packet, store.read_books())
         updated["review_status"] = "fresh"
         updated["last_successful_review_run_id"] = run_id
         if review_id:
@@ -700,11 +717,11 @@ def record_missing_live_review(
     packet = require_snapshot(store, run_id, review_id)
     review_id = packet.get("review_id") or review_id
     if isinstance(packet.get("prior_books"), dict):
-        books = validate_books(packet["prior_books"])
+        books = _books_for_frozen_run(packet, packet["prior_books"])
     elif store.books_path().is_file():
-        books = validate_books(store.read_books())
+        books = _books_for_frozen_run(packet, store.read_books())
     else:
-        books = empty_books(overnight_run_id=run_id, when=when)
+        books = _empty_books_for_packet(packet, run_id=run_id, when=when)
     books["review_status"] = "stale"
     store.write_books(books)
     _overlay_automated_pm_stale(store)

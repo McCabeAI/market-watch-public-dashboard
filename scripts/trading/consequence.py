@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from scripts.overnight.constants import MAX_DRAWDOWN_USD, RISK_CAPITAL_LIMIT_USD, STARTING_NAV_USD, STANDING_SEATS
+from scripts.overnight.constants import MAX_DRAWDOWN_USD, RISK_CAPITAL_LIMIT_USD, STARTING_NAV_USD
 from scripts.overnight.store import OvernightStore
 from scripts.pm.constants import CASH_CAPITAL_USD, MAX_DRAWDOWN_USD as PM_MAX_DRAWDOWN_USD, PM_IDS
 from scripts.pm.store import PMStore
@@ -69,8 +69,7 @@ def _rank_rows(rows: list[tuple[str, float]]) -> dict[str, int]:
 
 def trader_competition_ranks(books: dict[str, Any]) -> dict[str, int]:
     rows: list[tuple[str, float]] = []
-    for seat in STANDING_SEATS:
-        item = books["seats"][seat]
+    for seat, item in (books.get("seats") or {}).items():
         if item.get("pnl_unavailable") or item.get("net_pnl_usd") is None:
             continue
         rows.append((seat, float(item["net_pnl_usd"])))
@@ -159,11 +158,12 @@ def build_trader_consequence(
     from scripts.trading.learning import read_learning_state
 
     eligible = bool(read_learning_state(store, "trader", owner_id).get("competition_eligible", True))
+    cohort = list((books.get("seats") or {}).keys())
     eligible_rows = [
         (seat, score)
         for seat, score in (
             (item_seat, float(books["seats"][item_seat]["net_pnl_usd"]))
-            for item_seat in STANDING_SEATS
+            for item_seat in cohort
             if not books["seats"][item_seat].get("pnl_unavailable") and books["seats"][item_seat].get("net_pnl_usd") is not None
         )
         if read_learning_state(store, "trader", seat).get("competition_eligible", True)
@@ -194,7 +194,7 @@ def build_trader_consequence(
         "raw_pnl_rank": rank,
         "competition_eligible": eligible,
         "competitive_rank": competitive_rank,
-        "competition_cohort_size": len(STANDING_SEATS),
+        "competition_cohort_size": len(books.get("seats") or {}),
         "prior_competition_rank": prior_rank,
         "rank_change": rank_change,
         "recent_pattern": _pattern_label(net_f, drawdown, threshold),
@@ -215,8 +215,7 @@ def _best_trader(books: dict[str, Any] | None) -> dict[str, Any] | None:
         return None
     best_seat = None
     best_pnl: float | None = None
-    for seat in STANDING_SEATS:
-        item = books["seats"][seat]
+    for seat, item in (books.get("seats") or {}).items():
         if item.get("pnl_unavailable") or item.get("net_pnl_usd") is None:
             continue
         pnl = float(item["net_pnl_usd"])

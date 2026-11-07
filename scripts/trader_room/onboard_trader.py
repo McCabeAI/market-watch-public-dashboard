@@ -119,8 +119,18 @@ def _render_agent_md(
     agent_model: str,
     subagent_model: str,
     may_no_trade: bool,
+    technical_only: bool = False,
 ) -> str:
     mandate = _expression_mandate(specialty)
+    if technical_only:
+        mandate += (
+            "\n\nTechnical-only constraint: do not express a macro or fundamental view as the reason "
+            "for risk. Spot G10 FX is the only executable. Rates, equities, and commodities are context "
+            "only and are never the booked instrument. Primary horizons are the 5-session and 20-session "
+            "daily marks; 1-session and 10-session reads are context. Explicit no-trade is a complete "
+            "decision. Do not use candlestick patterns, ATR, or invented OHLC. An RSI above 70 is not "
+            "automatically bearish."
+        )
     body = persona.rstrip()
     closing = (
         "You may explicitly submit no-trade."
@@ -446,6 +456,7 @@ def onboard_pending(
     persona: str,
     may_no_trade: bool,
     dry_run: bool,
+    technical_only: bool = False,
 ) -> dict[str, Any]:
     _refuse_if_checkpoint(root)
     config_path = _config_path(root)
@@ -465,6 +476,7 @@ def onboard_pending(
         agent_model=debate_model,
         subagent_model=profile["roles"]["advocate_subagent"],
         may_no_trade=may_no_trade,
+        technical_only=technical_only,
     )
     daily_text = _daily_text_or_none(profile, agent_path, agent_text, trader_id)
     candidate = _build_pending_config(
@@ -524,6 +536,7 @@ def onboard_activate(
     may_no_trade: bool,
     dry_run: bool,
     today: date | None = None,
+    technical_only: bool = False,
 ) -> dict[str, Any]:
     _refuse_if_checkpoint(root)
     config_path = _config_path(root)
@@ -571,6 +584,7 @@ def onboard_activate(
         agent_model=debate_model,
         subagent_model=profile["roles"]["advocate_subagent"],
         may_no_trade=may_no_trade,
+        technical_only=technical_only,
     )
     base_text = agent_text if write_agent else agent_path.read_text(encoding="utf-8")
     daily_text = _daily_text_or_none(profile, agent_path, base_text, trader_id)
@@ -687,6 +701,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--description", help="one-line agent description")
     parser.add_argument("--persona-file", type=Path)
     parser.add_argument("--may-no-trade", action="store_true")
+    parser.add_argument(
+        "--technical-only",
+        action="store_true",
+        help="spot seat whose macro language must not override the close-only technical read",
+    )
     parser.add_argument("--activate", action="store_true")
     parser.add_argument("--confirm-live-activation", action="store_true")
     parser.add_argument("--recover", action="store_true", help="restore state from checkpoint")
@@ -761,6 +780,7 @@ def main(argv: list[str] | None = None) -> int:
                 persona=persona,
                 may_no_trade=args.may_no_trade,
                 dry_run=args.dry_run,
+                technical_only=args.technical_only,
             )
         else:
             summary = onboard_pending(
@@ -773,6 +793,7 @@ def main(argv: list[str] | None = None) -> int:
                 persona=persona,
                 may_no_trade=args.may_no_trade,
                 dry_run=args.dry_run,
+                technical_only=args.technical_only,
             )
         print(json.dumps({"ok": True, **summary}, indent=2))
         return 0

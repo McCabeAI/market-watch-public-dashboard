@@ -34,7 +34,7 @@ def _prepare_prior_books(
         raw = store.read_books()
     else:
         raw = empty_books(overnight_run_id=run_id, when=when, roster=roster_ids)
-    merged = ensure_roster_books(raw, pin["traders"])
+    merged = ensure_roster_books(raw, pin["traders"], when=when)
     return validate_books(merged, roster=roster_ids, entries=pin["traders"])
 
 
@@ -187,6 +187,11 @@ def freeze_snapshot(
 
         packet["prior_pm_books"] = validate_pm_books(pm_store.read_books())
     packet["agent_roster_pin"] = pin
+    from scripts.fx_technical.packet import fx_technical_from_market_state
+
+    packet["fx_technical"] = fx_technical_from_market_state(
+        market_state if isinstance(market_state, dict) else None
+    )
     digest = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
     packet["packet_sha256"] = digest
     if snapshot_path.is_file():

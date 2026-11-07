@@ -9,7 +9,6 @@ from typing import Any
 from scripts.overnight.books import apply_review, validate_books
 from scripts.overnight.errors import ReviewAlreadyApplied
 from scripts.overnight.clock import isoformat, now_ny
-from scripts.overnight.constants import STANDING_SEATS
 from scripts.pm.books import apply_decision as apply_pm_book_decision
 from scripts.trading.gate import (
     action_rationale,
@@ -502,7 +501,8 @@ def apply_trader_review_with_memory(
     stamp = now_ny(when)
     hashes = memory_hashes or {}
     prepared = deepcopy(reviews)
-    fingerprints = {seat: decision_fingerprint(prepared[seat]) for seat in STANDING_SEATS}
+    seats = tuple((books.get("seats") or {}).keys())
+    fingerprints = {seat: decision_fingerprint(prepared[seat]) for seat in seats}
     existing = {
         seat: find_event(
             store,
@@ -513,7 +513,7 @@ def apply_trader_review_with_memory(
             review_id=review_id,
             decision_fingerprint=None if review_id else fingerprints[seat],
         )
-        for seat in STANDING_SEATS
+        for seat in seats
     }
     if review_id and all(existing.values()):
         raise ReviewAlreadyApplied(review_id)
@@ -522,7 +522,7 @@ def apply_trader_review_with_memory(
 
     blocked_by_seat: dict[str, list[dict[str, Any]]] = {}
     reserved_ids: dict[str, str] = {}
-    for seat in STANDING_SEATS:
+    for seat in seats:
         reserved_ids[seat] = (existing[seat] or {}).get("event_id") or new_event_id()
         if existing[seat]:
             blocked_by_seat[seat] = []
@@ -538,10 +538,10 @@ def apply_trader_review_with_memory(
             when=stamp,
             positions=list(books["seats"][seat].get("positions") or []),
         )
-    hist_lens = {seat: len(books["seats"][seat].get("history") or []) for seat in STANDING_SEATS}
+    hist_lens = {seat: len(books["seats"][seat].get("history") or []) for seat in seats}
     prior_positions = {
         seat: {p["position_id"]: deepcopy(p) for p in books["seats"][seat].get("positions") or []}
-        for seat in STANDING_SEATS
+        for seat in seats
     }
     updated = apply_review(
         books,
@@ -553,7 +553,7 @@ def apply_trader_review_with_memory(
         market_state=market_state,
     )
     overnight_run_id, trader_room_run_id = _run_ids(run_id)
-    for seat in STANDING_SEATS:
+    for seat in seats:
         decision = prepared[seat]
         seat_book = updated["seats"][seat]
         if not existing[seat]:

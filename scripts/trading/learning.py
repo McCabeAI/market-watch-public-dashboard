@@ -110,6 +110,7 @@ def empty_scope() -> dict[str, Any]:
         "catalyst_type": None,
         "failure_mode": None,
         "decision_dimension": None,
+        "technical_setup": None,
     }
 
 
@@ -142,6 +143,10 @@ def normalize_scope(value: Any) -> dict[str, Any]:
     dimension = _text(value.get("decision_dimension"))
     if dimension in DECISION_QUALITY_ATTRIBUTION:
         scope["decision_dimension"] = dimension
+    if "technical_setup" in value:
+        from scripts.fx_technical.learning_ext import normalize_technical_setup
+
+        scope["technical_setup"] = normalize_technical_setup(value.get("technical_setup"))
     return scope
 
 
