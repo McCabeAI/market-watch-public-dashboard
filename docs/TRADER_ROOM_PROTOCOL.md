@@ -24,6 +24,7 @@ The locked standing advocates are:
 12. `catalyst-junkie`
 13. `vol-convexity`
 14. `no-trade-skeptic`
+15. `chart-guy`
 
 All standing advocates use the pinned advocate model (`grok-4.7` on the active profile). Initial advocates alone may use up to two `composer-2.5` subagents on the same frozen packet. Each advocate receives only its own frozen learning-memory sidecar; the common evidence hash stays identical. See `docs/TRADING_LEDGER_MEMORY_V1.md`.
 
@@ -39,6 +40,7 @@ The room has a strong preference for rates expressions when the same macro discr
 - Rates are the default choice when the two expressions are comparably clean. A rates-first seat may choose spot only when spot is genuinely the cleaner expression and it explicitly states why the selected rates candidate is inferior or not executable from the frozen packet.
 - A rates-first seat may choose options only when unusually compelling versus both rates and spot and must say why.
 - `no-trade-skeptic` may still submit no trade without manufacturing the tenor scan. If it endorses a trade, the same tenor scan and rates-first comparison apply.
+- `chart-guy` is close-only G10 spot technical analysis. Spot is the only executable. Rates, equities, and commodities are context and are never the booked instrument. Primary horizons are the 5-session and 20-session daily marks; 1-session and 10-session reads are context. Explicit no-trade is a complete decision. The seat does not use candlesticks, ATR, or invented OHLC, and an RSI above 70 is not automatically bearish. It does not express a macro or fundamental view as the reason for risk, and it is not rates-first. Its operative playbook is part of the seat instruction, so the seat does not open a file after the evidence freeze.
 
 Every non-null trade carries `asset_class` and `expression_comparison`. For rates-capable seats the comparison records a complete `rates_tenor_scan`, a rates candidate, a spot candidate, the selected expression family, and the rationale. When `selected_bucket` is not `none`, `rates_candidate` must be an object whose `instrument` and `asset_class` equal that bucket; free-text cannot prove the linkage. Deterministic validation fails closed when a rates-capable submission omits or malforms the tenor scan, skips either candidate, or carries a rates candidate that does not bind to the selected bucket.
 
@@ -74,15 +76,15 @@ The standing seats are paper portfolio managers competing for **highest cumulati
 
 ## Evidence contract
 
-Every run uses one common frozen evidence packet. All 14 advocates receive the exact same packet and cutoff. After freeze, advocates and rebuttals may not browse, search, fetch, or acquire new evidence; the deterministic finalizer only reads the saved structured artifacts.
+Every run uses one common frozen evidence packet. Every standing advocate receives the exact same packet and cutoff. After freeze, advocates and rebuttals may not browse, search, fetch, or acquire new evidence; the deterministic finalizer only reads the saved structured artifacts.
 
 The packet follows `docs/TRADER_ROOM_EVIDENCE_CONTRACT.md` and includes current temperature gauges/hard inputs, central-bank and news research, deterministic market state, durable research method, provenance and known gaps. Missing essential evidence must fail closed before the expensive debate.
 
 ## Round 1
 
-Launch all 14 standing advocates concurrently and independently. Do not show them one another's work.
+Launch every standing advocate concurrently and independently. Do not show them one another's work.
 
-Every advocate except `no-trade-skeptic` must return one actionable primary debate trade. The skeptic may return `trade: null`. That single debate trade is not a one-position limit.
+Every advocate except `no-trade-skeptic` and `chart-guy` must return one actionable primary debate trade. Those two seats may return `trade: null`. That single debate trade is not a one-position limit.
 
 Before submitting, each advocate must read only its own frozen memory sidecar/current `open_positions`. Every submission must include a non-empty final `paper_actions` list for its competition book. The list may manage any number of simultaneous positions within the $10m trusted standard-shock risk-capital ceiling. Existing positions are managed by `position_id`; the advocate should `ADD`, `REDUCE`, `CLOSE`, `HEDGE`, or explicitly `HOLD` rather than opening a duplicate position by default. Notional is descriptive and may exceed $100m when shocked risk remains inside the cap.
 

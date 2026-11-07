@@ -314,6 +314,8 @@ class _FrozenObligationCase(unittest.TestCase):
         }
         packet["packet_sha256"] = sha256_json(packet)
         pin = snapshot_pin(self.base)
+        from scripts.trader_room.agent_config import pin_trader_ids
+
         return {
             "schema_version": 1,
             "type": "OVERNIGHT_SCHEDULED_OUTPUT",
@@ -324,7 +326,7 @@ class _FrozenObligationCase(unittest.TestCase):
             "agent_packet": packet,
             "decisions": {
                 seat: _hold_decision(seat, self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
-                for seat in STANDING_SEATS
+                for seat in pin_trader_ids(pin)
             },
             "pm_decisions": _pm_block(
                 self.run_id,
@@ -711,7 +713,7 @@ class DeRiskWithDebtTests(unittest.TestCase):
                 "memory_context_sha256": packet["seat_memory"]["hashes"][seat],
                 "actions": [{"action": "HOLD"}],
             }
-            for seat in STANDING_SEATS
+            for seat in prior["seats"]
         }
         dollar_king_actions = [
             {"action": "HOLD"},

@@ -227,7 +227,7 @@ def main() -> None:
     assert "service_role" not in mcp_path.read_text(encoding="utf-8").lower()
 
     print(
-        f"Trader Room configuration validated: 14 {ADVOCATE_MODEL} advocates, deterministic conflict mapping and final handoff, "
+        f"Trader Room configuration validated: {len(ACTIVE_ADVOCATES)} {ADVOCATE_MODEL} advocates, deterministic conflict mapping and final handoff, "
         "composer-2.5-only internal subagents, mandatory Market Watch evidence, "
         "on-demand go entrypoint, and repository artifact handoff."
     )

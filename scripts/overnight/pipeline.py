@@ -23,7 +23,10 @@ from scripts.overnight.store import OvernightStore
 
 def ensure_seed_books(store: OvernightStore, run_id: str, when: datetime | None = None) -> None:
     if not store.books_path().is_file():
-        store.write_books(empty_books(overnight_run_id=run_id, when=when))
+        from scripts.trader_room.agent_config import head_traders
+
+        roster = tuple(str(row["id"]) for row in head_traders(as_of=when))
+        store.write_books(empty_books(overnight_run_id=run_id, when=when, roster=roster))
 
 
 def run_stage(

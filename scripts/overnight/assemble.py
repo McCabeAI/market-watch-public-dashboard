@@ -167,6 +167,7 @@ def assemble_dataset(
         else (agent_packet or {}).get("research_supplement"),
         "agent_research_cutoff": (agent_packet or {}).get("evidence_cutoff"),
         "trader_books": public_books_view(books),
+        "agent_roster_pin": snapshot.get("agent_roster_pin") if isinstance(snapshot, dict) else None,
         "publication": decision,
         "stage_ledger": {name: run["stages"][name]["status"] for name in run["stages"]},
         "artifacts": artifact_index(run),
@@ -226,6 +227,22 @@ def validate_dataset(dataset: dict[str, Any]) -> dict[str, Any]:
     if "may_publish" not in pub or "core_status" not in pub:
         raise SchemaError("assembled dataset missing publication decision")
     books = dataset.get("trader_books") or {}
-    if books.get("seat_count") != 14:
-        raise SchemaError("assembled dataset must surface all 14 seats")
+    pin = dataset.get("agent_roster_pin")
+    pinned = pin.get("traders") if isinstance(pin, dict) else None
+    if isinstance(pinned, list) and pinned:
+        expected = len(pinned)
+    else:
+        from scripts.overnight.constants import STANDING_SEATS
+        from scripts.trader_room.agent_config import legacy_pin
+
+        expected_choices = {len(STANDING_SEATS), len(legacy_pin("daily")["traders"])}
+        count = books.get("seat_count")
+        if count not in expected_choices:
+            raise SchemaError(
+                "assembled dataset seat_count "
+                f"{count} is not a known pinned roster {sorted(expected_choices)}"
+            )
+        return dataset
+    if books.get("seat_count") != expected:
+        raise SchemaError(f"assembled dataset must surface all {expected} pinned seats")
     return dataset

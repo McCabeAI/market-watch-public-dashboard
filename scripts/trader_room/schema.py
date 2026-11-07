@@ -12,6 +12,7 @@ from scripts.trader_room.constants import (
     EXPRESSION_SELECTIONS,
     FORBIDDEN_RANKING_KEYS,
     HANDOFF_MARKER,
+    MAY_NO_TRADE_SEATS,
     NO_TRADE_AGENT,
     NULLABLE_LEVEL_FIELDS,
     RATES_FIRST_SEATS,
@@ -359,7 +360,7 @@ def validate_trade(
     packet: dict[str, Any],
 ) -> None:
     if trade is None:
-        if agent != NO_TRADE_AGENT:
+        if agent not in MAY_NO_TRADE_SEATS:
             raise SchemaError(f"{agent} must submit one actionable trade; trade is null")
         return
     if not isinstance(trade, dict):

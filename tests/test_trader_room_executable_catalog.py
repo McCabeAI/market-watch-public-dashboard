@@ -84,6 +84,7 @@ class TraderRoomExecutableCatalogTests(unittest.TestCase):
         self.assertIsNone(catalog["preference"])
         self.assertGreaterEqual(len(catalog["recipes"]), 4)
         self.assertEqual(len(STANDING_ADVOCATES), 14)
+        self.assertNotIn("chart-guy", STANDING_ADVOCATES)
         self.assertGreaterEqual(len(RATES_FIRST_SEATS), 11)
         text = (REPO_ROOT / ".cursor" / "commands" / "trader-room.md").read_text(encoding="utf-8")
         self.assertIn("eligible rates-first seats", text)

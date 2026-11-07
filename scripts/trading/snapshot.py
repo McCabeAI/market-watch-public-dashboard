@@ -85,6 +85,13 @@ def snapshot_overnight_pms(
     )
 
 
+def _book_owner_ids(trader_books: dict[str, Any] | None) -> tuple[str, ...]:
+    seats = (trader_books or {}).get("seats") if isinstance(trader_books, dict) else None
+    if seats:
+        return tuple(str(seat) for seat in seats)
+    return tuple(STANDING_SEATS)
+
+
 def snapshot_overnight_traders(
     store: TradingStore,
     *,
@@ -98,7 +105,7 @@ def snapshot_overnight_traders(
     return snapshot_identities(
         store,
         owner_type="trader",
-        owner_ids=STANDING_SEATS,
+        owner_ids=_book_owner_ids(trader_books),
         dest_dir=run_dir / "memory",
         run_id=run_id,
         common_evidence_sha256=common_evidence_sha256,
@@ -124,7 +131,7 @@ def snapshot_trader_room(
     return snapshot_identities(
         store,
         owner_type="trader",
-        owner_ids=STANDING_SEATS,
+        owner_ids=_book_owner_ids(trader_books),
         dest_dir=run_dir / "memory",
         run_id=run_id,
         common_evidence_sha256=common_evidence_sha256,

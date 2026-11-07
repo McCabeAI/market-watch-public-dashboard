@@ -250,7 +250,12 @@ def record_event(
         },
     }
     if extra:
-        event["payload"] = extra
+        payload = dict(extra)
+        if "technical_setup" in payload:
+            from scripts.fx_technical.learning_ext import normalize_technical_setup
+
+            payload["technical_setup"] = normalize_technical_setup(payload.get("technical_setup"))
+        event["payload"] = payload
     journal = store.read_journal(owner_type, owner_id)
     rows = journal.setdefault("events", [])
     if existing:

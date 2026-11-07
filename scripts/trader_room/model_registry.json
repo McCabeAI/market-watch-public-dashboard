@@ -50,7 +50,10 @@
         "learning_examiner": "composer-2.5",
         "advocate_subagent": "composer-2.5"
       },
-      "pm_subagent_models": ["grok-4.6", "composer-2.5"]
+      "pm_subagent_models": [
+        "grok-4.6",
+        "composer-2.5"
+      ]
     },
     "candidate-grok-4.7": {
       "status": "active",
@@ -64,7 +67,10 @@
         "learning_examiner": "composer-2.5",
         "advocate_subagent": "composer-2.5"
       },
-      "pm_subagent_models": ["grok-4.7", "composer-2.5"]
+      "pm_subagent_models": [
+        "grok-4.7",
+        "composer-2.5"
+      ]
     }
   },
   "roster": {
@@ -180,8 +186,20 @@
         "may_no_trade": true,
         "activation_date": "2026-09-18",
         "status": "active"
+      },
+      {
+        "id": "chart-guy",
+        "remit": "close-only G10 spot FX technical structure on 5-session and 20-session daily marks; rates and cross-assets are context only",
+        "expression_specialty": "spot_only",
+        "may_no_trade": true,
+        "activation_date": "2026-11-07",
+        "status": "pending"
       }
     ],
-    "automated_pms": ["swinger", "pragmatist", "grinder"]
+    "automated_pms": [
+      "swinger",
+      "pragmatist",
+      "grinder"
+    ]
   }
 }

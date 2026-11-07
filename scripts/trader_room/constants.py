@@ -27,11 +27,20 @@ if len(_vol_specialists) != 1:
 VOL_SPECIALIST_SEAT = _vol_specialists[0]
 
 _no_trade = [t["id"] for t in _HEAD if t["may_no_trade"]]
-if len(_no_trade) != 1:
-    raise RuntimeError(f"expected exactly one may_no_trade seat, found {len(_no_trade)}: {_no_trade}")
-NO_TRADE_AGENT = _no_trade[0]
+if "no-trade-skeptic" in _no_trade:
+    NO_TRADE_AGENT = "no-trade-skeptic"
+elif len(_no_trade) == 1:
+    NO_TRADE_AGENT = _no_trade[0]
+elif not _no_trade:
+    raise RuntimeError("expected a may_no_trade seat")
+else:
+    raise RuntimeError(
+        "multiple may_no_trade seats but no-trade-skeptic is not among them: "
+        + ", ".join(_no_trade)
+    )
+MAY_NO_TRADE_SEATS = tuple(_no_trade)
 
-TRADE_REQUIRED_AGENTS = tuple(a for a in STANDING_ADVOCATES if a != NO_TRADE_AGENT)
+TRADE_REQUIRED_AGENTS = tuple(a for a in STANDING_ADVOCATES if a not in MAY_NO_TRADE_SEATS)
 RATES_FIRST_SEATS = tuple(
     a for a in STANDING_ADVOCATES if a not in (*SPOT_ONLY_SEATS, VOL_SPECIALIST_SEAT)
 )

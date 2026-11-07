@@ -196,7 +196,11 @@ def manifest_from_frozen_review(
 ) -> dict[str, Any]:
     """Read freeze-time sidecars and bind each obligation to that sidecar hash."""
     obligations: list[dict[str, Any]] = []
-    for owner_type, owner_id in obligation_identities():
+    # The frozen hashes are the session pin, not whoever is standing today.
+    session_identities = tuple(("trader", seat) for seat in seat_hashes) + tuple(
+        ("pm", pm_id) for pm_id in pm_hashes
+    )
+    for owner_type, owner_id in session_identities:
         expected = (seat_hashes if owner_type == "trader" else pm_hashes).get(owner_id)
         path = _sidecar_path(store, run_id, review_id, owner_type, owner_id)
         if not expected or not path.is_file():

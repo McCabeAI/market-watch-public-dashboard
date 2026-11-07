@@ -1085,6 +1085,7 @@ class BookTransitionTests(unittest.TestCase):
         validated = validate_books(deepcopy(raw))
         view = public_books_view(deepcopy(raw))
         self.assertEqual(len(validated["seats"]), 14)
+        self.assertNotIn("chart-guy", validated["seats"])
         for seat, item in validated["seats"].items():
             orig = before["seats"][seat]
             self.assertEqual(item["risk_capital_limit_usd"], 10_000_000)
@@ -1476,7 +1477,9 @@ class PipelineDryRunTests(unittest.TestCase):
         self.assertFalse(review["full_trader_room"])
         self.assertEqual(review["model_calls"], 0)
         books = store.read_books()
-        self.assertEqual(set(books["seats"]), set(STANDING_SEATS))
+        pinned = {row["id"] for row in snapshot["agent_roster_pin"]["traders"]}
+        self.assertEqual(set(books["seats"]), pinned)
+        self.assertNotIn("chart-guy", pinned)
         self.assertGreater(len(books["seats"]["dollar-king"]["positions"]), 0)
         self.assertEqual(books["seats"]["dollar-king"]["positions"][0]["asset_class"], "spot_fx")
         self.assertEqual(books["seats"]["rate-hawk"]["positions"][0]["asset_class"], "rates")
@@ -1588,7 +1591,10 @@ class PipelineDryRunTests(unittest.TestCase):
         run_id = "overnight-20260918-dryrun-bound"
         for stage in ("collect", "pre_trader_delta", "freeze_evidence"):
             run_stage(stage, root=ROOT, state_root=self.tmp, run_id=run_id, when=AS_OF, dry_run=True)
-        reviews = dry_run_reviews()
+        store = OvernightStore(root=ROOT, state_root=self.tmp)
+        snapshot = store.read_artifact(run_id, "evidence_snapshot.json")
+        pinned = {row["id"] for row in snapshot["agent_roster_pin"]["traders"]}
+        reviews = {seat: payload for seat, payload in dry_run_reviews().items() if seat in pinned}
         reviews["dollar-king"]["web_search"] = True
         with self.assertRaises(EvidenceBoundaryError):
             run_stage(
