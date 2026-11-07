@@ -271,12 +271,20 @@ def curate_cases(
     }
 
 
+_EXAM_LABELS = ("setup_class", "split", "synthetic", "provenance", "conflict")
+
+
 def blind_view(case: dict) -> dict:
-    """Deep copy of a case with no forward path or forward-looking fields."""
+    """Deep copy of a case with the answer key and exam labels removed.
+
+    The examinee sees the decision-date indicators. Subsequent closes, the
+    curator class, the holdout split, and the conflict label stay in the
+    answer key only.
+    """
     out = copy.deepcopy(case)
     out.pop("subsequent_path", None)
     for key in list(out.keys()):
-        if "forward" in key.lower():
+        if key in _EXAM_LABELS or "forward" in key.lower():
             out.pop(key, None)
     sp = out.get("indicators") or {}
     cleaned = {k: v for k, v in sp.items() if "forward" not in k.lower()}

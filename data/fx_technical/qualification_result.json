@@ -1,247 +1,250 @@
 {
-  "schema_version": 1,
-  "exam_model": "composer-2.5",
-  "prompt_inputs": [
-    "docs/fx_technical/CHART_GUY_PLAYBOOK.md",
-    "data/fx_technical/blind_holdout.json"
-  ],
-  "answer_key": "data/fx_technical/case_bank.json",
-  "held_out": true,
-  "summary": {
-    "n": 8,
-    "passed": 8,
-    "failed": 0,
-    "pass_rate": 1.0,
-    "failed_ids": [],
-    "gate": "pass",
-    "conflict_case_failures": []
+  "schema_version": 2,
+  "gate": "pending",
+  "production_exam": {
+    "model": null,
+    "ran": false,
+    "reason": "A nested grok-4.7 exam was denied by the repository hook: Active Market Watch agent run is missing its run-policy marker. No Market Watch or Trader Room cycle was launched to bypass that hook. The parent selecting replacement cases had already seen setup classes, so a parent self-exam would not be blind. chart-guy stays pending."
   },
-  "results": [
-    {
-      "case_id": "NOKJPY-2019-10-11",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "failed_breakout",
-      "decision": "NO_TRADE",
-      "horizon": null
+  "rehearsal": {
+    "exam_model": "composer-2.5",
+    "qualifies_production_seat": false,
+    "prompt_inputs": [
+      "docs/fx_technical/CHART_GUY_PLAYBOOK.md",
+      "data/fx_technical/blind_holdout.json"
+    ],
+    "limitation": "The file given to Composer still contained setup_class, conflict, and split. That rehearsal is not a blind Grok 4.7 qualification. Re-scored under the current gate, which requires at least three passing TRADE decisions.",
+    "summary": {
+      "n": 8,
+      "passed": 8,
+      "failed": 0,
+      "pass_rate": 1.0,
+      "failed_ids": [],
+      "gate": "fail",
+      "conflict_case_failures": [],
+      "passed_trade_ids": [
+        "USDNOK-2019-11-27"
+      ]
     },
-    {
-      "case_id": "GBPNZD-2019-11-05",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "disagreement",
-      "decision": "NO_TRADE",
-      "horizon": null
-    },
-    {
-      "case_id": "GBPSEK-2019-11-22",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "range",
-      "decision": "NO_TRADE",
-      "horizon": null
-    },
-    {
-      "case_id": "USDNOK-2019-11-27",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "trend_continuation",
-      "decision": "TRADE",
-      "horizon": "20D"
-    },
-    {
-      "case_id": "NZDUSD-2019-11-29",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "range",
-      "decision": "NO_TRADE",
-      "horizon": null
-    },
-    {
-      "case_id": "EURJPY-2019-12-04",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "range",
-      "decision": "NO_TRADE",
-      "horizon": null
-    },
-    {
-      "case_id": "EURNZD-2020-02-18",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "range",
-      "decision": "NO_TRADE",
-      "horizon": null
-    },
-    {
-      "case_id": "NZDNOK-2020-03-17",
-      "passed": true,
-      "score": 1.0,
-      "failures": [],
-      "setup_class": "range",
-      "decision": "NO_TRADE",
-      "horizon": null
-    }
-  ],
-  "responses": [
-    {
-      "case_id": "NOKJPY-2019-10-11",
-      "decision": "NO_TRADE",
-      "pair": "NOKJPY",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "down",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": false,
-        "conflict": "trend_down_macd_positive_after_failed_breakout_down"
+    "results": [
+      {
+        "case_id": "NOKJPY-2019-10-11",
+        "setup_class": "failed_breakout",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Structure is labeled down with a flagged failed breakdown through the 20-close floor, and the decision close sits mid-band rather than on a fresh break. Momentum disagrees: the MACD histogram is barely positive while trend is down, so there is no clean short continuation and no mandate to fade the failure into a long. Standing aside matches the failed-break playbook when direction and momentum do not align."
-    },
-    {
-      "case_id": "GBPNZD-2019-11-05",
-      "decision": "NO_TRADE",
-      "pair": "GBPNZD",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "up",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": false,
-        "conflict": "trend_up_macd_negative"
+      {
+        "case_id": "GBPNZD-2019-11-05",
+        "setup_class": "disagreement",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "The packet is an explicit disagreement setup: swing structure reads up but the MACD histogram is negative, so momentum is cooling against the trend label. Expanded realized volatility adds noise without a close-defined breakout. Disagreement cases require no expression; fading or forcing a long would ignore the conflict flag."
-    },
-    {
-      "case_id": "GBPSEK-2019-11-22",
-      "decision": "NO_TRADE",
-      "pair": "GBPSEK",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "range",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": null,
-        "conflict": null
+      {
+        "case_id": "GBPSEK-2019-11-22",
+        "setup_class": "range",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Swings overlap without sustained higher highs or lower lows, so trend is range and the close sits in the lower third of the 20-close band. There is no breakout flag and compressed vol only lowers conviction for directional bets. Without up or down structure plus histogram agreement, the correct output is no-trade."
-    },
-    {
-      "case_id": "USDNOK-2019-11-27",
-      "decision": "TRADE",
-      "pair": "USDNOK",
-      "direction": "long_base",
-      "horizon": "20D",
-      "entry": 9.176129,
-      "invalidation": 9.092,
-      "target": 9.260748,
-      "indicator_read": {
-        "trend": "up",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": true,
-        "conflict": null
+      {
+        "case_id": "USDNOK-2019-11-27",
+        "setup_class": "trend_continuation",
+        "decision": "TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Higher swing lows and a close above the rising 20- and 50-session averages support an uptrend continuation template. RSI near the midzone is not a reversal signal in itself; the MACD histogram is positive, matching structure. Entry is the decision close; invalidation is a close back through the 20-close support at 9.092263, with target at the 60-close range high for reward modestly above that risk distance."
-    },
-    {
-      "case_id": "NZDUSD-2019-11-29",
-      "decision": "NO_TRADE",
-      "pair": "NZDUSD",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "range",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": null,
-        "conflict": null
+      {
+        "case_id": "NZDUSD-2019-11-29",
+        "setup_class": "range",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Swing highs and lows chop inside a band near the top of the 20-close range without a labeled breakout. Trend is range, so trend-following long or short lacks playbook support despite a slightly positive histogram. Compressed volatility favors patience over forcing a 5D or 20D expression."
-    },
-    {
-      "case_id": "EURJPY-2019-12-04",
-      "decision": "NO_TRADE",
-      "pair": "EURJPY",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "range",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": null,
-        "conflict": null
+      {
+        "case_id": "EURJPY-2019-12-04",
+        "setup_class": "range",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Confirmed swings show overlapping extremes and the close remains inside the 20-close bounds, so structure is range not trend. The MACD histogram is marginally negative without a down trend label to pair it with. No break flags and compressed vol mean no close-only plan with clear agreement."
-    },
-    {
-      "case_id": "EURNZD-2020-02-18",
-      "decision": "NO_TRADE",
-      "pair": "EURNZD",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "range",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": null,
-        "conflict": null
+      {
+        "case_id": "EURNZD-2020-02-18",
+        "setup_class": "range",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Price oscillates between recent swing highs near 1.7108 and lows near 1.6684 with trend classified as range. Expanded realized volatility widens session noise without a decisive close through the 20-close bounds. Negative MACD histogram does not justify a short when trend is not down; no-trade is the disciplined read."
-    },
-    {
-      "case_id": "NZDNOK-2020-03-17",
-      "decision": "NO_TRADE",
-      "pair": "NZDNOK",
-      "direction": null,
-      "horizon": null,
-      "entry": null,
-      "invalidation": null,
-      "target": null,
-      "indicator_read": {
-        "trend": "range",
-        "rsi_not_automatically_reversal": true,
-        "macd_agrees_with_trend": null,
-        "conflict": null
+      {
+        "case_id": "NZDNOK-2020-03-17",
+        "setup_class": "range",
+        "decision": "NO_TRADE",
+        "passed": true,
+        "score": 1.0,
+        "failures": []
+      }
+    ],
+    "responses": [
+      {
+        "case_id": "NOKJPY-2019-10-11",
+        "decision": "NO_TRADE",
+        "pair": "NOKJPY",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "down",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": false,
+          "conflict": "trend_down_macd_positive_after_failed_breakout_down"
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Structure is labeled down with a flagged failed breakdown through the 20-close floor, and the decision close sits mid-band rather than on a fresh break. Momentum disagrees: the MACD histogram is barely positive while trend is down, so there is no clean short continuation and no mandate to fade the failure into a long. Standing aside matches the failed-break playbook when direction and momentum do not align."
       },
-      "uses_ohlc_atr_candles": false,
-      "cites_post_cutoff": false,
-      "rationale": "Despite a sharp rally into the top of the 20-close band and RSI near 68, the trend label remains range because swing sequence has not resolved into sustained progression. Elevated RSI in a non-trend label is extension context, not an automatic sell. Expanded vol and absent breakout flags leave MACD agreement without directional trend\u2014stand aside."
-    }
-  ]
+      {
+        "case_id": "GBPNZD-2019-11-05",
+        "decision": "NO_TRADE",
+        "pair": "GBPNZD",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "up",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": false,
+          "conflict": "trend_up_macd_negative"
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "The packet is an explicit disagreement setup: swing structure reads up but the MACD histogram is negative, so momentum is cooling against the trend label. Expanded realized volatility adds noise without a close-defined breakout. Disagreement cases require no expression; fading or forcing a long would ignore the conflict flag."
+      },
+      {
+        "case_id": "GBPSEK-2019-11-22",
+        "decision": "NO_TRADE",
+        "pair": "GBPSEK",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "range",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": null,
+          "conflict": null
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Swings overlap without sustained higher highs or lower lows, so trend is range and the close sits in the lower third of the 20-close band. There is no breakout flag and compressed vol only lowers conviction for directional bets. Without up or down structure plus histogram agreement, the correct output is no-trade."
+      },
+      {
+        "case_id": "USDNOK-2019-11-27",
+        "decision": "TRADE",
+        "pair": "USDNOK",
+        "direction": "long_base",
+        "horizon": "20D",
+        "entry": 9.176129,
+        "invalidation": 9.092,
+        "target": 9.260748,
+        "indicator_read": {
+          "trend": "up",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": true,
+          "conflict": null
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Higher swing lows and a close above the rising 20- and 50-session averages support an uptrend continuation template. RSI near the midzone is not a reversal signal in itself; the MACD histogram is positive, matching structure. Entry is the decision close; invalidation is a close back through the 20-close support at 9.092263, with target at the 60-close range high for reward modestly above that risk distance."
+      },
+      {
+        "case_id": "NZDUSD-2019-11-29",
+        "decision": "NO_TRADE",
+        "pair": "NZDUSD",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "range",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": null,
+          "conflict": null
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Swing highs and lows chop inside a band near the top of the 20-close range without a labeled breakout. Trend is range, so trend-following long or short lacks playbook support despite a slightly positive histogram. Compressed volatility favors patience over forcing a 5D or 20D expression."
+      },
+      {
+        "case_id": "EURJPY-2019-12-04",
+        "decision": "NO_TRADE",
+        "pair": "EURJPY",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "range",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": null,
+          "conflict": null
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Confirmed swings show overlapping extremes and the close remains inside the 20-close bounds, so structure is range not trend. The MACD histogram is marginally negative without a down trend label to pair it with. No break flags and compressed vol mean no close-only plan with clear agreement."
+      },
+      {
+        "case_id": "EURNZD-2020-02-18",
+        "decision": "NO_TRADE",
+        "pair": "EURNZD",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "range",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": null,
+          "conflict": null
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Price oscillates between recent swing highs near 1.7108 and lows near 1.6684 with trend classified as range. Expanded realized volatility widens session noise without a decisive close through the 20-close bounds. Negative MACD histogram does not justify a short when trend is not down; no-trade is the disciplined read."
+      },
+      {
+        "case_id": "NZDNOK-2020-03-17",
+        "decision": "NO_TRADE",
+        "pair": "NZDNOK",
+        "direction": null,
+        "horizon": null,
+        "entry": null,
+        "invalidation": null,
+        "target": null,
+        "indicator_read": {
+          "trend": "range",
+          "rsi_not_automatically_reversal": true,
+          "macd_agrees_with_trend": null,
+          "conflict": null
+        },
+        "uses_ohlc_atr_candles": false,
+        "cites_post_cutoff": false,
+        "rationale": "Despite a sharp rally into the top of the 20-close band and RSI near 68, the trend label remains range because swing sequence has not resolved into sustained progression. Elevated RSI in a non-trend label is extension context, not an automatic sell. Expanded vol and absent breakout flags leave MACD agreement without directional trend\u2014stand aside."
+      }
+    ]
+  }
 }

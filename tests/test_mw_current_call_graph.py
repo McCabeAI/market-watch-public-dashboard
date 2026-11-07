@@ -54,17 +54,17 @@ class CurrentGraphContractTests(unittest.TestCase):
             {
                 "parent": 1,
                 "synthesis": 1,
-                "traders": 15,
+                "traders": 14,
                 "automated_pms": 3,
                 "learning_examiner": 1,
             },
         )
-        self.assertEqual(sum(nodes.values()), 21)
-        self.assertEqual(nodes["parent"] + nodes["traders"] + nodes["automated_pms"], 19)
+        self.assertEqual(sum(nodes.values()), 20)
+        self.assertEqual(nodes["parent"] + nodes["traders"] + nodes["automated_pms"], 18)
         self.assertEqual(nodes["synthesis"] + nodes["learning_examiner"], 2)
         self.assertEqual(
             (graph["total_calls"], graph["grok_family_calls"], graph["composer_calls"]),
-            (21, 19, 2),
+            (20, 18, 2),
         )
         self.assertIn("learning_examiner", nodes)
 
@@ -80,7 +80,7 @@ class CurrentGraphContractTests(unittest.TestCase):
         budget = request["budget"]
         self.assertEqual(
             (budget["total_model_cap"], budget["grok_cap"], budget["composer_cap"]),
-            (21, 19, 2),
+            (20, 18, 2),
         )
         self.assertEqual(budget["current_graph"], current_graph())
         self.assertEqual(budget["launch_command"], ".cursor/commands/manual-market-watch-review.md")
@@ -91,7 +91,7 @@ class CurrentGraphContractTests(unittest.TestCase):
 
     def test_launch_text_states_twenty_and_has_no_stale_nineteen_ceiling(self) -> None:
         marker = current_graph_marker()
-        self.assertIn('"total_calls":21', marker)
+        self.assertIn('"total_calls":20', marker)
         self.assertIn('"learning_examiner":1', marker)
         for path in LAUNCH_TEXTS:
             text = path.read_text(encoding="utf-8")
@@ -105,7 +105,7 @@ class CurrentGraphContractTests(unittest.TestCase):
             self.assertNotIn("MW_OVERNIGHT_RUN_POLICY={", text)
             self.assertIn("markers --kind daily --snapshot", text)
         authority = (ROOT / "docs" / "ACP_ONE_SHOT_AUTHORITY.md").read_text(encoding="utf-8")
-        self.assertIn("1 parent + 1 synthesis + 15 traders + 3 automated PMs + 1 learning examiner", authority)
+        self.assertIn("1 parent + 1 synthesis + 14 traders + 3 automated PMs + 1 learning examiner", authority)
         self.assertIn('"learning_examiner": 1', authority)
 
     def test_validator_and_budget_hook_reject_a_nineteen_ceiling_and_excess_calls(self) -> None:

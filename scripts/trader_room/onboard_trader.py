@@ -88,7 +88,18 @@ def _validate_persona(text: str) -> None:
         raise AgentConfigError("persona must not contain TODO/TBD/placeholder/lorem markers")
 
 
-def _expression_mandate(specialty: str) -> str:
+def _expression_mandate(specialty: str, *, technical_only: bool = False) -> str:
+    if technical_only:
+        return (
+            "Expression mandate: technical-only close-based G10 spot FX. Do not express a macro "
+            "or fundamental view as the reason for risk. Spot G10 FX is the only executable. "
+            "Rates, equities, and commodities are context only and are never the booked instrument. "
+            "Primary horizons are the 5-session and 20-session daily marks; 1-session and 10-session "
+            "reads are context. Explicit no-trade is a complete decision. Do not use candlestick "
+            "patterns, ATR, or invented OHLC, and do not assume an intraday fill. An RSI above 70 "
+            "is not automatically bearish. The operative playbook is included in this instruction. "
+            "Do not open or fetch a playbook file after the evidence freeze."
+        )
     if specialty == "spot_only":
         return (
             "Expression mandate: you are a dedicated spot-FX seat. Express macro views through "
@@ -121,17 +132,17 @@ def _render_agent_md(
     may_no_trade: bool,
     technical_only: bool = False,
 ) -> str:
-    mandate = _expression_mandate(specialty)
-    if technical_only:
-        mandate += (
-            "\n\nTechnical-only constraint: do not express a macro or fundamental view as the reason "
-            "for risk. Spot G10 FX is the only executable. Rates, equities, and commodities are context "
-            "only and are never the booked instrument. Primary horizons are the 5-session and 20-session "
-            "daily marks; 1-session and 10-session reads are context. Explicit no-trade is a complete "
-            "decision. Do not use candlestick patterns, ATR, or invented OHLC. An RSI above 70 is not "
-            "automatically bearish."
-        )
+    mandate = _expression_mandate(specialty, technical_only=technical_only)
     body = persona.rstrip()
+    if technical_only:
+        playbook_path = Path(__file__).resolve().parents[2] / "docs" / "fx_technical" / "CHART_GUY_PLAYBOOK.md"
+        if playbook_path.is_file():
+            body += (
+                "\n\n## Operative playbook\n\n"
+                "The following playbook is part of this instruction. Do not open the source file "
+                "after the evidence freeze.\n\n"
+                + playbook_path.read_text(encoding="utf-8").strip()
+            )
     closing = (
         "You may explicitly submit no-trade."
         if may_no_trade

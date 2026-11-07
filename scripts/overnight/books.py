@@ -396,7 +396,12 @@ def empty_books(
     roster: tuple[str, ...] | list[str] | None = None,
 ) -> dict[str, Any]:
     stamp = isoformat(now_ny(when))
-    seats = tuple(roster) if roster is not None else STANDING_SEATS
+    if roster is not None:
+        seats = tuple(roster)
+    else:
+        from scripts.trader_room.agent_config import head_traders
+
+        seats = tuple(str(row["id"]) for row in head_traders(as_of=when))
     return {
         "schema_version": SCHEMA_VERSION,
         "starting_nav_usd": STARTING_NAV_USD,
@@ -1471,8 +1476,13 @@ def apply_review(
     roster: tuple[str, ...] | list[str] | None = None,
 ) -> dict[str, Any]:
     seats = _roster_tuple(roster) if roster is not None else tuple((books.get("seats") or {}).keys())
-    if set(reviews) != set(seats):
-        raise SchemaError(f"review must include every standing seat; missing/extra {set(reviews) ^ set(seats)}")
+    seat_set = set(seats)
+    review_ids = set(reviews)
+    if roster is None and seat_set <= review_ids:
+        reviews = {seat: payload for seat, payload in reviews.items() if seat in seat_set}
+        review_ids = set(reviews)
+    if review_ids != seat_set:
+        raise SchemaError(f"review must include every pinned seat; missing/extra {sorted(review_ids ^ seat_set)}")
     out = deepcopy(books)
     prepared_reviews = deepcopy(reviews)
     if market_state is not None:

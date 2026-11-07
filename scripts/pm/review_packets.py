@@ -296,6 +296,26 @@ def resolve_overnight_artifact_dir(run_dir) -> Path:
     return run_dir
 
 
+def _pinned_trader_ids(run_dir: Path) -> set[str] | None:
+    """Seat ids from the evidence snapshot pinned to this session, when one exists."""
+    candidates = (
+        run_dir / "evidence_snapshot.json",
+        run_dir.parent / "evidence_snapshot.json",
+    )
+    for path in candidates:
+        if not path.is_file():
+            continue
+        try:
+            snap = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        pin = snap.get("agent_roster_pin") if isinstance(snap, dict) else None
+        traders = pin.get("traders") if isinstance(pin, dict) else None
+        if isinstance(traders, list) and traders:
+            return {str(row["id"]) for row in traders if isinstance(row, dict) and row.get("id")}
+    return None
+
+
 def overnight_review_errors(run_dir) -> list[str]:
     """Return why an overnight run is not a successful 14-seat production review."""
     run_dir = Path(run_dir)
@@ -315,8 +335,11 @@ def overnight_review_errors(run_dir) -> list[str]:
     if review.get("overnight_run_id") not in (None, session_name):
         errors.append(f"review overnight_run_id {review.get('overnight_run_id')!r} does not match {session_name}")
     seats = review.get("reviews")
-    if not isinstance(seats, dict) or set(seats) != set(STANDING_SEATS):
-        errors.append("trader_review.json does not contain exactly the locked 14 seats")
+    expected_seats = _pinned_trader_ids(run_dir) or set(STANDING_SEATS)
+    if not isinstance(seats, dict) or set(seats) != expected_seats:
+        errors.append(
+            f"trader_review.json does not contain exactly the pinned {len(expected_seats)} seats"
+        )
     agent_path = run_dir / "agent_evidence_packet.json"
     if not agent_path.is_file():
         errors.append("missing agent_evidence_packet.json")
@@ -355,8 +378,11 @@ def _clip_text(value: Any, limit: int = 320) -> str | None:
 
 def compact_overnight_decisions(review: dict[str, Any]) -> dict[str, Any]:
     rows = []
-    for seat in STANDING_SEATS:
-        decision = (review.get("reviews") or {}).get(seat) or {}
+    present = review.get("reviews") or {}
+    ordered = [seat for seat in STANDING_SEATS if seat in present]
+    ordered.extend(seat for seat in present if seat not in ordered)
+    for seat in ordered:
+        decision = present.get(seat) or {}
         actions = []
         for action in decision.get("actions") or []:
             if not isinstance(action, dict):

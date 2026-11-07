@@ -188,6 +188,8 @@ class TestBlindViewAndLookahead(unittest.TestCase):
         blind = blind_view(case)
         self.assertNotIn("subsequent_path", blind)
         self.assertEqual(blind["indicators"], case["indicators"])
+        for label in ("setup_class", "split", "synthetic", "provenance", "conflict"):
+            self.assertNotIn(label, blind)
 
     @unittest.skipUnless(INDICATORS_AVAILABLE, "indicators module not present")
     def test_assert_no_lookahead_passes_on_real_prefix(self) -> None:

@@ -578,8 +578,28 @@ def run_trader_review(
     else:
         books = _empty_books_for_packet(packet, run_id=run_id, when=when)
 
+    pinned_ids = [
+        str(row["id"])
+        for row in ((packet.get("agent_roster_pin") or {}).get("traders") or [])
+        if isinstance(row, dict) and row.get("id")
+    ]
+    roster_ids = pinned_ids or [str(seat) for seat in (books.get("seats") or {})]
+    roster_set = set(roster_ids)
     if dry_run:
         reviews = dry_run_reviews(scenario=scenario)
+        reviews = {seat: payload for seat, payload in reviews.items() if seat in roster_set}
+        for seat in roster_ids:
+            reviews.setdefault(
+                seat,
+                {
+                    "seat": seat,
+                    "conviction": 35,
+                    "thesis": f"{seat} finds no incremental edge in the frozen packet.",
+                    "invalidation": "A fresh official print that reopens the seat's remit.",
+                    "expression_memo": _hold_memo(seat),
+                    "actions": [{"action": "HOLD", "expression_memo": _hold_memo(seat)}],
+                },
+            )
         model_calls = 0
         source = f"dry-run:{scenario}"
     else:
@@ -597,8 +617,11 @@ def run_trader_review(
 
     if "model_calls" in reviews:
         reviews = {k: v for k, v in reviews.items() if k != "model_calls"}
-    if set(reviews) != set(STANDING_SEATS):
-        raise SchemaError("trader review must cover the locked 14-seat roster")
+    if set(reviews) != roster_set:
+        raise SchemaError(
+            "trader review must cover the pinned roster "
+            f"({len(roster_ids)} seats); missing/extra {sorted(set(reviews) ^ roster_set)}"
+        )
     for seat, payload in reviews.items():
         assert_frozen_only(
             {

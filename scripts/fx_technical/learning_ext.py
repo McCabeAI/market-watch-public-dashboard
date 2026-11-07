@@ -169,12 +169,15 @@ def classify_signal_vs_execution(
     """Classify whether a closed technical idea failed on signal quality or execution.
 
     Returns ``not_yet_observed`` when the distinction does not apply, including target
-    hits, open trades, no-trade outcomes, and missing marks. ``weak_signal`` means the
-    idea lost while the invalidation level was on the correct side of entry and, when
-    relevant, was not breached before the horizon expired. ``bad_execution`` means the
-    stop was on the wrong side of entry, entry equals invalidation, an invalidation
-    outcome occurred without price respecting the level, or a horizon expiry left the
-    position adverse after price had already traded through the invalidation level.
+    hits, open trades, no-trade outcomes, and missing marks. The only price compared
+    with entry and invalidation is ``actual_mark``, the recorded daily close. This
+    function does not observe or infer an intraday print. ``weak_signal`` means the
+    idea lost while the invalidation level was on the correct side of entry and the
+    recorded close had not finished through that level before the horizon expired.
+    ``bad_execution`` means the stop was on the wrong side of entry, entry equals
+    invalidation, an invalidation outcome was recorded without the daily close
+    finishing through the level, or a horizon expiry left the position adverse after
+    the daily close had already finished through the invalidation level.
     """
     if outcome in (None, "open", "no_trade", "target") or actual_mark is None:
         return "not_yet_observed"

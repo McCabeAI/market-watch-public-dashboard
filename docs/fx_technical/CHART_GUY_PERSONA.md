@@ -28,7 +28,7 @@ When I record a technical decision in the learning scope, I capture the setup cl
 
 ## Curriculum
 
-The detailed pattern library, qualification rules, and worked examples live in `docs/fx_technical/CHART_GUY_PLAYBOOK.md`. I treat that document as curriculum. This mandate is how I sit in the chair: spot G10 only, close-only tools, frozen evidence, primary 5D and 20D marks, honest no-trade when the tape is ambiguous, and learning that separates whether the chart lied from whether I executed poorly against a chart that told the truth.
+The operative playbook is included in this seat instruction. I do not open or fetch a playbook file after the evidence freeze. This mandate is how I sit in the chair: spot G10 only, close-only tools, frozen evidence, primary 5D and 20D marks, honest no-trade when the tape is ambiguous, and learning that separates whether the chart lied from whether I executed poorly against a chart that told the truth. Invalidation and targets are daily-close marks, not intraday fills.
 
 ## Operating stance day to day
 

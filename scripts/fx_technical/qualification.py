@@ -118,6 +118,17 @@ def score_response(case: dict, response: dict) -> dict:
     if setup_class in SETUP_NO_TRADE_CLASSES and decision != "NO_TRADE":
         failures.append("forced_trade_on_conflict")
 
+    conflict = case.get("conflict") or indicators.get("conflict")
+    macd_agrees = _macd_agrees_expected(trend, histogram) is True
+    clean_actionable = (
+        setup_class in ("trend_continuation", "breakout")
+        and trend in ("up", "down")
+        and macd_agrees
+        and not conflict
+    )
+    if clean_actionable and decision != "TRADE":
+        failures.append("missed_actionable_setup")
+
     if decision == "NO_TRADE":
         for field in ("horizon", "direction", "entry", "invalidation", "target"):
             if response.get(field) is not None:
@@ -172,6 +183,8 @@ def score_response(case: dict, response: dict) -> dict:
     score = 1.0 if passed else 0.0
     return {
         "case_id": case_id,
+        "setup_class": setup_class,
+        "decision": decision,
         "passed": passed,
         "score": score,
         "failures": failures,
@@ -191,8 +204,13 @@ def summarize_qualification(results: list[dict]) -> dict:
         if r.get("setup_class") in SETUP_NO_TRADE_CLASSES and not r.get("passed")
     ]
 
+    passed_trades = [
+        r["case_id"]
+        for r in results
+        if r.get("passed") and r.get("decision") == "TRADE"
+    ]
     gate = "pass"
-    if n < 8 or pass_rate < 0.75 or conflict_failures:
+    if n < 8 or pass_rate < 0.75 or conflict_failures or len(passed_trades) < 3:
         gate = "fail"
 
     return {
@@ -203,4 +221,5 @@ def summarize_qualification(results: list[dict]) -> dict:
         "failed_ids": failed_ids,
         "gate": gate,
         "conflict_case_failures": conflict_failures,
+        "passed_trade_ids": passed_trades,
     }

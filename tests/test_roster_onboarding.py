@@ -306,7 +306,7 @@ class RosterOnboardingTests(unittest.TestCase):
         cfg["roster"]["traders"] = traders
         cfg_path = self.tmp / "fifteen-seat-config.json"
         cfg_path.write_text(json.dumps({k: v for k, v in cfg.items() if k != "_source"}, indent=2) + "\n", encoding="utf-8")
-        seat_count = len(traders)
+        seat_count = sum(1 for row in traders if row.get("status") == "active")
         code = (
             "from scripts.trader_room.constants import STANDING_ADVOCATES; "
             "from scripts.overnight.constants import STANDING_SEATS; "

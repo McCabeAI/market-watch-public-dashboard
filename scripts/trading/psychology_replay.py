@@ -70,6 +70,8 @@ def shadow_report(repo_root: Path | None = None) -> dict[str, Any]:
     if trades_dir.is_dir():
         for path in sorted(trades_dir.glob("*.json")):
             trades.append(_load(path))
+    # Standing identities only. A pending seat such as chart-guy is not folded
+    # into a historical shadow, and seats with no trades stay at baseline.
     states = {
         owner_id: seed_state(owner_type, owner_id)
         for owner_type, owner_id in ALL_IDENTITIES

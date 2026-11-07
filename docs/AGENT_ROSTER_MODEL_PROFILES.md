@@ -2,9 +2,12 @@
 
 **Status:** stage 2 cutover. The active profile is `candidate-grok-4.7`.
 `current-production-grok-4.6` is retired and kept for rollback. The live roster
-is 15 seats once `chart-guy` is active (activation 2026-11-07) and three automated PMs.
-Derived caps are 21/19/2 daily and 61/31/30 on-demand. Pins dated before
-2026-11-07 and the legacy 14-seat pin stay on the previous roster. The pre-cutover
+is 14 active seats and three automated PMs. `chart-guy` is on the roster with
+status `pending` and is not in any pin until a blind Grok 4.7 qualification
+passes and `onboard_trader --activate` is run. Derived caps for the live 14-seat
+pin are 20/18/2 daily and 57/29/28 on-demand. An active 15-seat pin, when that
+gate is met, derives 21/19/2 and 61/31/30. Pins dated before 2026-11-07 and the
+legacy 14-seat pin stay on the previous roster. The pre-cutover
 note below still describes the 14-seat shape those historical pins use: 20/18/2 and
 57/29/28. Grok roles use `grok-4.7`. Synthesis, the learning examiner, and
 the advocate subagent stay on `composer-2.5`. This Market Watch PR must not

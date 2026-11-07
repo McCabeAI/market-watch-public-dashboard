@@ -1,11 +1,9 @@
 {
-  "type": "FX_TECHNICAL_BLIND_CASES",
-  "note": "Inputs stop at the decision close. Subsequent 5D and 20D paths are withheld.",
+  "type": "FX_TECHNICAL_BLIND_HOLDOUT",
+  "note": "Examinee view. Subsequent closes, setup class, holdout split, and conflict label are withheld. Indicators are the decision-date close-only packet.",
   "cases": [
     {
       "case_id": "NOKJPY-2019-10-11",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "NOKJPY",
       "decision_date": "2019-10-11",
       "decision_close": 11.930262,
@@ -95,15 +93,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "failed_breakout",
-      "conflict": null,
-      "split": "holdout"
+      }
     },
     {
       "case_id": "GBPNZD-2019-11-05",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "GBPNZD",
       "decision_date": "2019-11-05",
       "decision_close": 2.013517,
@@ -193,15 +186,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "disagreement",
-      "conflict": "trend_up_macd_negative",
-      "split": "holdout"
+      }
     },
     {
       "case_id": "GBPSEK-2019-11-22",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "GBPSEK",
       "decision_date": "2019-11-22",
       "decision_close": 12.35927,
@@ -291,15 +279,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "range",
-      "conflict": null,
-      "split": "holdout"
+      }
     },
     {
       "case_id": "USDNOK-2019-11-27",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "USDNOK",
       "decision_date": "2019-11-27",
       "decision_close": 9.176129,
@@ -389,15 +372,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "trend_continuation",
-      "conflict": null,
-      "split": "holdout"
+      }
     },
     {
       "case_id": "NZDUSD-2019-11-29",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "NZDUSD",
       "decision_date": "2019-11-29",
       "decision_close": 0.642598,
@@ -487,15 +465,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "range",
-      "conflict": null,
-      "split": "holdout"
+      }
     },
     {
       "case_id": "EURJPY-2019-12-04",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "EURJPY",
       "decision_date": "2019-12-04",
       "decision_close": 120.45,
@@ -585,15 +558,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "range",
-      "conflict": null,
-      "split": "holdout"
+      }
     },
     {
       "case_id": "EURNZD-2020-02-18",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "EURNZD",
       "decision_date": "2020-02-18",
       "decision_close": 1.6921,
@@ -683,15 +651,10 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "range",
-      "conflict": null,
-      "split": "holdout"
+      }
     },
     {
       "case_id": "NZDNOK-2020-03-17",
-      "provenance": "ecb_euro_reference_crosses",
-      "synthetic": false,
       "pair": "NZDNOK",
       "decision_date": "2020-03-17",
       "decision_close": 6.246634,
@@ -781,10 +744,7 @@
           }
         ],
         "null_reasons": {}
-      },
-      "setup_class": "range",
-      "conflict": null,
-      "split": "holdout"
+      }
     }
   ]
 }

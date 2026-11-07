@@ -243,7 +243,7 @@ class PsychologyIntegrationTests(unittest.TestCase):
 
     def _books(self) -> dict:
         books = empty_books(overnight_run_id="overnight-20260926", when=AS_OF)
-        for seat in STANDING_SEATS:
+        for seat in books["seats"]:
             mark_to_market(books["seats"][seat], when=AS_OF)
         return books
 
