@@ -1066,8 +1066,8 @@ def _agent_plan(cfg: dict[str, Any]) -> tuple[dict[str, str], dict[str, str]]:
         base[str(pm_id)] = pm_fm
     daily: dict[str, str] = {}
     if split_daily_agents(roles):
-        for seat in _roster_agent_ids(cfg):
-            daily[daily_agent_name(seat)] = seat
+        for seat in head_traders(cfg):
+            daily[daily_agent_name(str(seat["id"]))] = str(seat["id"])
     return base, daily
 
 

@@ -1,0 +1,750 @@
+{
+  "type": "FX_TECHNICAL_BLIND_HOLDOUT",
+  "note": "Examinee view. Subsequent closes, setup class, holdout split, and conflict label are withheld. Indicators are the decision-date close-only packet.",
+  "cases": [
+    {
+      "case_id": "NOKJPY-2019-10-11",
+      "pair": "NOKJPY",
+      "decision_date": "2019-10-11",
+      "decision_close": 11.930262,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2019-10-11",
+        "sample_count": 200,
+        "age_days": 0,
+        "status": "ok",
+        "close": 11.930262,
+        "sma_20": 11.872448,
+        "sma_50": 11.8533,
+        "sma_200": 12.51358,
+        "rsi_14": 54.93,
+        "macd": -0.042104,
+        "macd_signal": -0.043936,
+        "macd_histogram": 0.001831,
+        "bollinger_mid": 11.872448,
+        "bollinger_upper": 12.128293,
+        "bollinger_lower": 11.616603,
+        "bollinger_bandwidth": 0.0431,
+        "bollinger_percent_b": 0.613,
+        "rv_5": 8.1666,
+        "rv_10": 8.9593,
+        "rv_20": 9.3575,
+        "rv_60": 10.0908,
+        "vol_regime": "neutral",
+        "ret_1d": 1.1989,
+        "ret_5d": 1.6815,
+        "ret_10d": 0.0715,
+        "ret_20d": -1.2236,
+        "sma20_slope_5": -0.4814,
+        "close_range_high_20": 12.086345,
+        "close_range_low_20": 11.690393,
+        "close_range_high_60": 12.57128,
+        "close_range_low_60": 11.582992,
+        "range_position_20": 0.6058,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": true,
+        "trend": "down",
+        "swing_highs": [
+          {
+            "price": 11.843855,
+            "observation_date": "2019-08-14",
+            "confirmed_on": "2019-08-16"
+          },
+          {
+            "price": 11.91179,
+            "observation_date": "2019-08-21",
+            "confirmed_on": "2019-08-23"
+          },
+          {
+            "price": 12.086345,
+            "observation_date": "2019-09-18",
+            "confirmed_on": "2019-09-20"
+          },
+          {
+            "price": 11.921739,
+            "observation_date": "2019-09-27",
+            "confirmed_on": "2019-10-01"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 11.839796,
+            "observation_date": "2019-09-23",
+            "confirmed_on": "2019-09-25"
+          },
+          {
+            "price": 11.863758,
+            "observation_date": "2019-09-26",
+            "confirmed_on": "2019-09-30"
+          },
+          {
+            "price": 11.697699,
+            "observation_date": "2019-10-03",
+            "confirmed_on": "2019-10-07"
+          },
+          {
+            "price": 11.690393,
+            "observation_date": "2019-10-08",
+            "confirmed_on": "2019-10-10"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "GBPNZD-2019-11-05",
+      "pair": "GBPNZD",
+      "decision_date": "2019-11-05",
+      "decision_close": 2.013517,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2019-11-05",
+        "sample_count": 217,
+        "age_days": 0,
+        "status": "ok",
+        "close": 2.013517,
+        "sma_20": 2.008573,
+        "sma_50": 1.971642,
+        "sma_200": 1.928561,
+        "rsi_14": 56.92,
+        "macd": 0.014265,
+        "macd_signal": 0.017335,
+        "macd_histogram": -0.00307,
+        "bollinger_mid": 2.008573,
+        "bollinger_upper": 2.063386,
+        "bollinger_lower": 1.953761,
+        "bollinger_bandwidth": 0.0546,
+        "bollinger_percent_b": 0.5451,
+        "rv_5": 5.8278,
+        "rv_10": 5.5586,
+        "rv_20": 12.7927,
+        "rv_60": 10.0368,
+        "vol_regime": "expanded",
+        "ret_1d": 0.1863,
+        "ret_5d": -0.5647,
+        "ret_10d": -0.1651,
+        "ret_20d": 4.0717,
+        "sma20_slope_5": 0.7846,
+        "close_range_high_20": 2.039395,
+        "close_range_low_20": 1.93245,
+        "close_range_high_60": 2.039395,
+        "close_range_low_60": 1.87757,
+        "range_position_20": 0.758,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "up",
+        "swing_highs": [
+          {
+            "price": 1.970434,
+            "observation_date": "2019-10-01",
+            "confirmed_on": "2019-10-03"
+          },
+          {
+            "price": 2.039395,
+            "observation_date": "2019-10-16",
+            "confirmed_on": "2019-10-18"
+          },
+          {
+            "price": 2.028628,
+            "observation_date": "2019-10-21",
+            "confirmed_on": "2019-10-23"
+          },
+          {
+            "price": 2.030626,
+            "observation_date": "2019-10-30",
+            "confirmed_on": "2019-11-01"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 1.91543,
+            "observation_date": "2019-09-12",
+            "confirmed_on": "2019-09-16"
+          },
+          {
+            "price": 1.956387,
+            "observation_date": "2019-09-26",
+            "confirmed_on": "2019-09-30"
+          },
+          {
+            "price": 1.93245,
+            "observation_date": "2019-10-10",
+            "confirmed_on": "2019-10-14"
+          },
+          {
+            "price": 2.009189,
+            "observation_date": "2019-10-23",
+            "confirmed_on": "2019-10-25"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "GBPSEK-2019-11-22",
+      "pair": "GBPSEK",
+      "decision_date": "2019-11-22",
+      "decision_close": 12.35927,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2019-11-22",
+        "sample_count": 230,
+        "age_days": 0,
+        "status": "ok",
+        "close": 12.35927,
+        "sma_20": 12.44635,
+        "sma_50": 12.31441,
+        "sma_200": 12.090734,
+        "rsi_14": 46.77,
+        "macd": 0.03253,
+        "macd_signal": 0.049428,
+        "macd_histogram": -0.016898,
+        "bollinger_mid": 12.44635,
+        "bollinger_upper": 12.560238,
+        "bollinger_lower": 12.332462,
+        "bollinger_bandwidth": 0.0183,
+        "bollinger_percent_b": 0.1177,
+        "rv_5": 7.1704,
+        "rv_10": 6.6952,
+        "rv_20": 7.3276,
+        "rv_60": 9.7976,
+        "vol_regime": "compressed",
+        "ret_1d": -0.7853,
+        "ret_5d": -0.6088,
+        "ret_10d": -0.5046,
+        "ret_20d": -0.3874,
+        "sma20_slope_5": 0.0164,
+        "close_range_high_20": 12.530162,
+        "close_range_low_20": 12.291826,
+        "close_range_high_60": 12.530162,
+        "close_range_low_60": 11.833297,
+        "range_position_20": 0.283,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "range",
+        "swing_highs": [
+          {
+            "price": 12.488188,
+            "observation_date": "2019-10-21",
+            "confirmed_on": "2019-10-23"
+          },
+          {
+            "price": 12.530162,
+            "observation_date": "2019-10-30",
+            "confirmed_on": "2019-11-01"
+          },
+          {
+            "price": 12.51784,
+            "observation_date": "2019-11-13",
+            "confirmed_on": "2019-11-15"
+          },
+          {
+            "price": 12.493027,
+            "observation_date": "2019-11-18",
+            "confirmed_on": "2019-11-20"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 12.025401,
+            "observation_date": "2019-10-10",
+            "confirmed_on": "2019-10-14"
+          },
+          {
+            "price": 12.396046,
+            "observation_date": "2019-10-24",
+            "confirmed_on": "2019-10-28"
+          },
+          {
+            "price": 12.291826,
+            "observation_date": "2019-11-07",
+            "confirmed_on": "2019-11-11"
+          },
+          {
+            "price": 12.434975,
+            "observation_date": "2019-11-15",
+            "confirmed_on": "2019-11-19"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "USDNOK-2019-11-27",
+      "pair": "USDNOK",
+      "decision_date": "2019-11-27",
+      "decision_close": 9.176129,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2019-11-27",
+        "sample_count": 233,
+        "age_days": 0,
+        "status": "ok",
+        "close": 9.176129,
+        "sma_20": 9.144927,
+        "sma_50": 9.13087,
+        "sma_200": 8.81459,
+        "rsi_14": 53.44,
+        "macd": 0.007882,
+        "macd_signal": 0.007116,
+        "macd_histogram": 0.000766,
+        "bollinger_mid": 9.144927,
+        "bollinger_upper": 9.214585,
+        "bollinger_lower": 9.075269,
+        "bollinger_bandwidth": 0.0152,
+        "bollinger_percent_b": 0.724,
+        "rv_5": 6.7533,
+        "rv_10": 8.6482,
+        "rv_20": 7.7268,
+        "rv_60": 7.2343,
+        "vol_regime": "neutral",
+        "ret_1d": 0.1515,
+        "ret_5d": 0.0235,
+        "ret_10d": -0.3921,
+        "ret_20d": -0.5639,
+        "sma20_slope_5": -0.1148,
+        "close_range_high_20": 9.212248,
+        "close_range_low_20": 9.092263,
+        "close_range_high_60": 9.260748,
+        "close_range_low_60": 8.93693,
+        "range_position_20": 0.699,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "up",
+        "swing_highs": [
+          {
+            "price": 9.138986,
+            "observation_date": "2019-11-05",
+            "confirmed_on": "2019-11-07"
+          },
+          {
+            "price": 9.212248,
+            "observation_date": "2019-11-13",
+            "confirmed_on": "2019-11-15"
+          },
+          {
+            "price": 9.173976,
+            "observation_date": "2019-11-20",
+            "confirmed_on": "2019-11-22"
+          },
+          {
+            "price": 9.18105,
+            "observation_date": "2019-11-25",
+            "confirmed_on": "2019-11-27"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 9.109274,
+            "observation_date": "2019-10-24",
+            "confirmed_on": "2019-10-28"
+          },
+          {
+            "price": 9.111669,
+            "observation_date": "2019-11-04",
+            "confirmed_on": "2019-11-06"
+          },
+          {
+            "price": 9.092263,
+            "observation_date": "2019-11-07",
+            "confirmed_on": "2019-11-11"
+          },
+          {
+            "price": 9.094163,
+            "observation_date": "2019-11-15",
+            "confirmed_on": "2019-11-19"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "NZDUSD-2019-11-29",
+      "pair": "NZDUSD",
+      "decision_date": "2019-11-29",
+      "decision_close": 0.642598,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2019-11-29",
+        "sample_count": 235,
+        "age_days": 0,
+        "status": "ok",
+        "close": 0.642598,
+        "sma_20": 0.639914,
+        "sma_50": 0.635611,
+        "sma_200": 0.655287,
+        "rsi_14": 57.08,
+        "macd": 0.00168,
+        "macd_signal": 0.001544,
+        "macd_histogram": 0.000137,
+        "bollinger_mid": 0.639914,
+        "bollinger_upper": 0.645738,
+        "bollinger_lower": 0.634091,
+        "bollinger_bandwidth": 0.0182,
+        "bollinger_percent_b": 0.7304,
+        "rv_5": 2.4886,
+        "rv_10": 2.7248,
+        "rv_20": 5.2178,
+        "rv_60": 7.3154,
+        "vol_regime": "compressed",
+        "ret_1d": 0.0596,
+        "ret_5d": 0.1611,
+        "ret_10d": 0.4897,
+        "ret_20d": -0.048,
+        "sma20_slope_5": 0.1682,
+        "close_range_high_20": 0.643367,
+        "close_range_low_20": 0.633192,
+        "close_range_high_60": 0.644112,
+        "close_range_low_60": 0.621748,
+        "range_position_20": 0.9244,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "range",
+        "swing_highs": [
+          {
+            "price": 0.641203,
+            "observation_date": "2019-10-22",
+            "confirmed_on": "2019-10-24"
+          },
+          {
+            "price": 0.642907,
+            "observation_date": "2019-11-01",
+            "confirmed_on": "2019-11-05"
+          },
+          {
+            "price": 0.643367,
+            "observation_date": "2019-11-21",
+            "confirmed_on": "2019-11-25"
+          },
+          {
+            "price": 0.643012,
+            "observation_date": "2019-11-27",
+            "confirmed_on": "2019-11-29"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 0.62454,
+            "observation_date": "2019-10-16",
+            "confirmed_on": "2019-10-18"
+          },
+          {
+            "price": 0.634195,
+            "observation_date": "2019-10-28",
+            "confirmed_on": "2019-10-30"
+          },
+          {
+            "price": 0.633192,
+            "observation_date": "2019-11-08",
+            "confirmed_on": "2019-11-12"
+          },
+          {
+            "price": 0.640484,
+            "observation_date": "2019-11-25",
+            "confirmed_on": "2019-11-27"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "EURJPY-2019-12-04",
+      "pair": "EURJPY",
+      "decision_date": "2019-12-04",
+      "decision_close": 120.45,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2019-12-04",
+        "sample_count": 238,
+        "age_days": 0,
+        "status": "ok",
+        "close": 120.45,
+        "sma_20": 120.2755,
+        "sma_50": 119.8194,
+        "sma_200": 121.55575,
+        "rsi_14": 52.89,
+        "macd": 0.106833,
+        "macd_signal": 0.107406,
+        "macd_histogram": -0.000573,
+        "bollinger_mid": 120.2755,
+        "bollinger_upper": 120.967439,
+        "bollinger_lower": 119.583561,
+        "bollinger_bandwidth": 0.0115,
+        "bollinger_percent_b": 0.6261,
+        "rv_5": 3.3755,
+        "rv_10": 3.7976,
+        "rv_20": 4.3658,
+        "rv_60": 6.2872,
+        "vol_regime": "compressed",
+        "ret_1d": 0.0498,
+        "ret_5d": 0.2247,
+        "ret_10d": 0.4085,
+        "ret_20d": -0.3557,
+        "sma20_slope_5": -0.0573,
+        "close_range_high_20": 120.9,
+        "close_range_low_20": 119.49,
+        "close_range_high_60": 121.29,
+        "close_range_low_60": 117.17,
+        "range_position_20": 0.6809,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "range",
+        "swing_highs": [
+          {
+            "price": 121.29,
+            "observation_date": "2019-10-21",
+            "confirmed_on": "2019-10-23"
+          },
+          {
+            "price": 120.99,
+            "observation_date": "2019-10-30",
+            "confirmed_on": "2019-11-01"
+          },
+          {
+            "price": 120.55,
+            "observation_date": "2019-11-18",
+            "confirmed_on": "2019-11-20"
+          },
+          {
+            "price": 120.75,
+            "observation_date": "2019-12-02",
+            "confirmed_on": "2019-12-04"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 120.43,
+            "observation_date": "2019-11-01",
+            "confirmed_on": "2019-11-05"
+          },
+          {
+            "price": 119.49,
+            "observation_date": "2019-11-14",
+            "confirmed_on": "2019-11-18"
+          },
+          {
+            "price": 119.96,
+            "observation_date": "2019-11-20",
+            "confirmed_on": "2019-11-22"
+          },
+          {
+            "price": 119.88,
+            "observation_date": "2019-11-25",
+            "confirmed_on": "2019-11-27"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "EURNZD-2020-02-18",
+      "pair": "EURNZD",
+      "decision_date": "2020-02-18",
+      "decision_close": 1.6921,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2020-02-18",
+        "sample_count": 289,
+        "age_days": 0,
+        "status": "ok",
+        "close": 1.6921,
+        "sma_20": 1.69313,
+        "sma_50": 1.685804,
+        "sma_200": 1.710991,
+        "rsi_14": 50.31,
+        "macd": 0.001153,
+        "macd_signal": 0.002717,
+        "macd_histogram": -0.001564,
+        "bollinger_mid": 1.69313,
+        "bollinger_upper": 1.718511,
+        "bollinger_lower": 1.667749,
+        "bollinger_bandwidth": 0.03,
+        "bollinger_percent_b": 0.4797,
+        "rv_5": 9.3959,
+        "rv_10": 7.9878,
+        "rv_20": 7.6072,
+        "rv_60": 6.0729,
+        "vol_regime": "expanded",
+        "ret_1d": 0.338,
+        "ret_5d": -0.7857,
+        "ret_10d": -1.0584,
+        "ret_20d": 0.6543,
+        "sma20_slope_5": 0.0748,
+        "close_range_high_20": 1.7108,
+        "close_range_low_20": 1.6684,
+        "close_range_high_60": 1.7236,
+        "close_range_low_60": 1.6638,
+        "range_position_20": 0.559,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "range",
+        "swing_highs": [
+          {
+            "price": 1.6905,
+            "observation_date": "2020-01-15",
+            "confirmed_on": "2020-01-17"
+          },
+          {
+            "price": 1.6811,
+            "observation_date": "2020-01-21",
+            "confirmed_on": "2020-01-23"
+          },
+          {
+            "price": 1.7106,
+            "observation_date": "2020-02-03",
+            "confirmed_on": "2020-02-05"
+          },
+          {
+            "price": 1.7108,
+            "observation_date": "2020-02-10",
+            "confirmed_on": "2020-02-12"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 1.6769,
+            "observation_date": "2020-01-16",
+            "confirmed_on": "2020-01-20"
+          },
+          {
+            "price": 1.6684,
+            "observation_date": "2020-01-24",
+            "confirmed_on": "2020-01-28"
+          },
+          {
+            "price": 1.6994,
+            "observation_date": "2020-02-06",
+            "confirmed_on": "2020-02-10"
+          },
+          {
+            "price": 1.6832,
+            "observation_date": "2020-02-12",
+            "confirmed_on": "2020-02-14"
+          }
+        ],
+        "null_reasons": {}
+      }
+    },
+    {
+      "case_id": "NZDNOK-2020-03-17",
+      "pair": "NZDNOK",
+      "decision_date": "2020-03-17",
+      "decision_close": 6.246634,
+      "indicators": {
+        "schema_version": 1,
+        "pair": null,
+        "source": "ecb_euro_reference_crosses",
+        "observation_date": "2020-03-17",
+        "sample_count": 309,
+        "age_days": 0,
+        "status": "ok",
+        "close": 6.246634,
+        "sma_20": 5.975871,
+        "sma_50": 5.950591,
+        "sma_200": 5.832455,
+        "rsi_14": 68.29,
+        "macd": 0.068021,
+        "macd_signal": 0.029863,
+        "macd_histogram": 0.038158,
+        "bollinger_mid": 5.975871,
+        "bollinger_upper": 6.240215,
+        "bollinger_lower": 5.711527,
+        "bollinger_bandwidth": 0.0885,
+        "bollinger_percent_b": 1.0121,
+        "rv_5": 28.0516,
+        "rv_10": 23.3225,
+        "rv_20": 18.6884,
+        "rv_60": 11.9841,
+        "vol_regime": "expanded",
+        "ret_1d": 0.6897,
+        "ret_5d": 3.7294,
+        "ret_10d": 7.1736,
+        "ret_20d": 4.7741,
+        "sma20_slope_5": 0.9172,
+        "close_range_high_20": 6.255544,
+        "close_range_low_20": 5.82852,
+        "close_range_high_60": 6.255544,
+        "close_range_low_60": 5.82852,
+        "range_position_20": 0.9791,
+        "breakout_up_20": false,
+        "breakout_down_20": false,
+        "failed_breakout_up_20": false,
+        "failed_breakout_down_20": false,
+        "trend": "range",
+        "swing_highs": [
+          {
+            "price": 5.962,
+            "observation_date": "2020-02-18",
+            "confirmed_on": "2020-02-20"
+          },
+          {
+            "price": 5.927347,
+            "observation_date": "2020-02-24",
+            "confirmed_on": "2020-02-26"
+          },
+          {
+            "price": 5.94009,
+            "observation_date": "2020-02-27",
+            "confirmed_on": "2020-03-02"
+          },
+          {
+            "price": 6.255544,
+            "observation_date": "2020-03-12",
+            "confirmed_on": "2020-03-16"
+          }
+        ],
+        "swing_lows": [
+          {
+            "price": 5.91466,
+            "observation_date": "2020-02-10",
+            "confirmed_on": "2020-02-12"
+          },
+          {
+            "price": 5.94509,
+            "observation_date": "2020-02-14",
+            "confirmed_on": "2020-02-18"
+          },
+          {
+            "price": 5.893171,
+            "observation_date": "2020-02-20",
+            "confirmed_on": "2020-02-24"
+          },
+          {
+            "price": 5.82852,
+            "observation_date": "2020-03-03",
+            "confirmed_on": "2020-03-05"
+          }
+        ],
+        "null_reasons": {}
+      }
+    }
+  ]
+}

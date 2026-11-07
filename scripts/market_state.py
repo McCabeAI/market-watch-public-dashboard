@@ -1929,6 +1929,17 @@ def build_snapshot(
         fx_source["error"] = fx_error
 
     policy_meeting_prices = _policy_meeting_prices(today, policy_paths)
+    from scripts.fx_technical.packet import technical_research_for_snapshot
+
+    us10 = (rates_raw.get("US") or {}).get("10Y") or {}
+    fx_technical = technical_research_for_snapshot(
+        fx_series=fx_numeric,
+        as_of=today,
+        clock=today,
+        cross_asset_series=cross_raw,
+        cross_asset_meta=cross_meta,
+        rate_series={"US10Y": us10} if us10 else None,
+    )
     return {
         "policy_paths": policy_paths,
         "policy_meeting_prices": policy_meeting_prices,
@@ -1962,6 +1973,7 @@ def build_snapshot(
             "pairs": fx,
             **({"error": fx_error} if fx_error else {}),
         },
+        "fx_technical": fx_technical,
         "sources": {
             "US_rates": _sovereign_rate_source(
                 name="U.S. Treasury daily par yield curve",

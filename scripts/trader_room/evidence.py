@@ -419,6 +419,9 @@ def assemble_packet(
     from scripts.trader_room.executable_catalog_section import attach_executable_catalog
 
     attach_executable_catalog(packet)
+    from scripts.fx_technical.packet import ensure_fx_technical
+
+    ensure_fx_technical(packet)
     return packet
 
 
@@ -435,4 +438,7 @@ def load_synthetic_packet(path: Path, *, topic: str | None = None) -> dict[str, 
     from scripts.trader_room.executable_catalog_section import attach_executable_catalog
 
     attach_executable_catalog(packet, skip_if_present=True)
+    from scripts.fx_technical.packet import ensure_fx_technical
+
+    ensure_fx_technical(packet)
     return packet

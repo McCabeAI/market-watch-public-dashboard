@@ -2,8 +2,13 @@
 
 **Status:** stage 2 cutover. The active profile is `candidate-grok-4.7`.
 `current-production-grok-4.6` is retired and kept for rollback. The live roster
-is still the same 14 seats and three automated PMs, with the same 20/18/2 and
-57/29/28 caps. Grok roles use `grok-4.7`. Synthesis, the learning examiner, and
+is 15 active seats and three automated PMs. `chart-guy` is active as of
+2026-11-07 after the operational smoke gate. The retired 75%/3-trade blind exam
+remains archival and is not an activation gate. Derived caps for the live
+15-seat pin are 21/19/2 daily and 61/31/30 on-demand. Pins dated before
+2026-11-07 and the legacy 14-seat pin stay on the previous roster. The pre-cutover
+note below still describes the 14-seat shape those historical pins use: 20/18/2 and
+57/29/28. Grok roles use `grok-4.7`. Synthesis, the learning examiner, and
 the advocate subagent stay on `composer-2.5`. This Market Watch PR must not
 merge until ACP PR #395 has set the one-shot `parent_model` to `grok-4.7`.
 Do not file a `[launch-market-watch]` request between those merges.

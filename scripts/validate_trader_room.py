@@ -173,7 +173,9 @@ def main() -> None:
     assert "context -> what changed -> what is priced -> historical comparison" in method
 
     command = (ROOT / ".cursor" / "commands" / "trader-room.md").read_text(encoding="utf-8")
-    assert "all 14 standing advocates concurrently" in command
+    assert "every standing advocate on the on-demand pin concurrently" in command
+    assert "chart-guy" in command
+    assert "technical-only close-based G10 spot" in command
     assert "You are not the arbiter" in command
     assert "STATUS: AWAITING_CHATGPT_ARBITRATION" in command
     assert "Cursor Cloud" in command
@@ -195,6 +197,9 @@ def main() -> None:
     assert "SOFR/CORRA/AONIA" in command
     assert "Do **not** launch `final-aggregator`" in command
     assert "scripts/trader_room_finalize.py" in command
+    assert "total Grok ceiling 31" in command
+    assert "total model ceiling 61" in command
+    assert "Composer ceiling 30" in command
     assert "total Grok ceiling 29" in command
     assert "FINAL_INPUT.json" in command
     assert "trader-room/outbox" not in command
@@ -227,7 +232,7 @@ def main() -> None:
     assert "service_role" not in mcp_path.read_text(encoding="utf-8").lower()
 
     print(
-        f"Trader Room configuration validated: 14 {ADVOCATE_MODEL} advocates, deterministic conflict mapping and final handoff, "
+        f"Trader Room configuration validated: {len(ACTIVE_ADVOCATES)} {ADVOCATE_MODEL} advocates, deterministic conflict mapping and final handoff, "
         "composer-2.5-only internal subagents, mandatory Market Watch evidence, "
         "on-demand go entrypoint, and repository artifact handoff."
     )

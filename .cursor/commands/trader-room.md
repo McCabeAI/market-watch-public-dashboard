@@ -31,14 +31,15 @@ Freeze the packet and SHA-256. Every downstream model receives the exact same fr
 
 ## 2. Round 1
 
-Launch all 14 standing advocates concurrently on the pinned advocate model, through each seat's `.cursor/agents/<seat>.md` custom agent. The frontmatter model must equal that pinned id. Keep the standing remits unchanged. Seat count and model come from the on-demand pin (`agent_config agents --kind ondemand`).
+Launch every standing advocate on the on-demand pin concurrently, on the pinned advocate model, through each seat's `.cursor/agents/<seat>.md` custom agent. The frontmatter model must equal that pinned id. Keep the standing remits unchanged. Seat count and model come from the on-demand pin (`agent_config agents --kind ondemand`). The live pin on or after 2026-11-07 includes `chart-guy`. A packet frozen before that date stays on its own 14-seat pin.
 
 Expression selection is mandatory before submission:
 - `dollar-king` and `cross-merchant` remain spot-only;
+- `chart-guy` is technical-only close-based G10 spot. Spot is the only executable. He is not rates-first, does not book rates, equities, or commodities, and does not use candlesticks, ATR, or invented OHLC. Primary horizons are the 5-session and 20-session daily closes. Explicit no-trade is a complete decision;
 - `vol-convexity` remains the options specialist and is not forced through a rates tenor scan;
 - every other seat is rates-first when it submits a trade: read the frozen packet's `executable_catalog` **before** `rates_tenor_scan` and before trade selection. All eligible rates-first seats read that same catalog; it does not rank, recommend, or choose a strategy. Each catalog row is `assess_expression` bookability on the frozen `market_state`, identical to deterministic booking. Do not substitute one 2Y family for another (government yield, TU/ZT, USD SOFR OIS spot 2Y, USD SOFR OIS 1y1y, and the eight-consecutive-quarter SOFR futures strip are separate). Dated FV/TY are not TU. A four-contract strip is not named 2Y. Structure recipes (calendar, butterfly, outright RV, four-leg curve RV) are not live trades until the selected expression and size pass `assess_expression`. A row with status `missing_input` is a documented gap, not permission to invent a price or mark;
 - every other rates-capable seat then completes `rates_tenor_scan` across STIR/policy path, 2Y, 5Y, 10Y, curve, and cross-market rates RV (each bucket a concrete candidate or an explicit unavailable/not-compelling reason), then choose the best rates expression and compare it with a spot candidate. The selected bucket’s canonical `instrument`/`asset_class` must equal `expression_comparison.rates_candidate`; free-text cannot prove that linkage. Prefer rates when comparably clean, and select spot only with an explicit reason the selected rates candidate is inferior or unavailable. Do not force a tenor and do not force rates over spot;
-- `no-trade-skeptic` may still return no trade without manufacturing the scan.
+- `no-trade-skeptic` and `chart-guy` may return no trade. `chart-guy` does not manufacture a rates tenor scan. `no-trade-skeptic` may still return no trade without manufacturing the scan.
 
 Each initial advocate must build the idea in this order: context -> what changed -> what is priced -> historical comparison -> discrepancy -> expression -> sizing. A percentile/z-score is a discovery flag, not a thesis. Complete the validated `context_build` before selecting risk. For rates, use `policy_paths` to understand what is priced, then choose the actual expression from `tradable_rate_curves` (SOFR=`SR3`, CORRA=`CRA`, AONIA=`IB`) or from the sovereign bond curve when that is cleaner. Use the packet's historical move analogs and explicitly state both similarities and regime differences.
 
@@ -57,7 +58,7 @@ Each initial advocate:
 - must read exactly its own immutable sidecar at the path recorded for that seat in the frozen launch plan (normally `trader-room/runs/<run_id>/memory/<seat>.json`) before making any book decision;
 - must treat `open_positions` in that sidecar as its current book and use the existing `position_id` for `ADD`, `REDUCE`, or `CLOSE`;
 - must return one validated `TRADER_ROOM_CONTRIBUTION`;
-- except `no-trade-skeptic`, must return one actionable debate trade;
+- except `no-trade-skeptic` and `chart-guy`, must return one actionable debate trade;
 - must include the complete compact `conflict_synopsis` required by `docs/TRADER_ROOM_ON_DEMAND.md`;
 - must include a non-empty final `paper_actions` list for its own competition book. The list may contain zero risk changes via `[{"action":"HOLD"}]`, or any number of independent `OPEN` / `ADD` / `REDUCE` / `CLOSE` / `HEDGE` actions. There is no one-trade limit. The single `trade` field remains the primary debate pitch only;
 - must not rely on legacy `paper_capital` for a new live run. That field remains compatibility-only;
@@ -140,11 +141,13 @@ Before any book decision, read your own frozen sidecar (`memory/<seat>.json`). I
 
 ## Hard limits
 
-The run-policy marker emitted at the top of this command is the ceiling. On the current 14-seat roster that ceiling is:
+The run-policy marker emitted at the top of this command is the ceiling. On the live 15-seat pin (`chart-guy` active on or after 2026-11-07) that ceiling is:
 
-- total Grok ceiling 29 including the ACP parent (Grok-family calls on the pinned model);
-- Composer ceiling 28;
-- total model ceiling 57;
+- total Grok ceiling 31 including the ACP parent (Grok-family calls on the pinned model);
+- Composer ceiling 30;
+- total model ceiling 61;
+
+A historical 14-seat pin stays at total Grok ceiling 29, Composer ceiling 28, and total model ceiling 57. Do not apply the 15-seat ceiling to a packet that was frozen at 14 seats.
 
 Each child task must contain exactly one `MW_ROLE` tag: `MW_ROLE=advocate:<seat>`, `MW_ROLE=rebuttal:<seat>` (both through the seat's `.cursor/agents/<seat>.md` custom agent), or (nested under an advocate) optional `MW_ROLE=advocate_subagent`. Put that tag alone on its own line and do not mention `MW_ROLE` again. A trailing period or comma, surrounding parentheses, backticks, or asterisks on that single line are accepted. A glued suffix (`.bad`, `/extra`), a repeated tag, an unknown role, or a mismatched seat is denied. Seats and exact models come from the pinned roster in preflight `agent_roster_pin`.
 

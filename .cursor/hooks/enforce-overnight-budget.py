@@ -321,6 +321,47 @@ def load_active(path: Path) -> dict[str, Any] | None:
         respond("deny", f"Existing budget state {path} is unreadable.")
 
 
+def active_budget_binds_parent(active: dict[str, Any] | None, parent_id: str) -> bool:
+    """True when this conversation is the live run that owns the budget file.
+
+    A file left by another conversation is a stale dev-session budget. It must
+    not be deleted here and it must not be treated as this invocation. The live
+    run is the recorded root, a direct child, or a parent already charged in
+    that file.
+    """
+    if not isinstance(active, dict) or not parent_id:
+        return False
+    if str(active.get("root_parent_conversation_id") or "") == parent_id:
+        return True
+    direct = active.get("direct_children")
+    if isinstance(direct, dict) and parent_id in {str(key) for key in direct}:
+        return True
+    children = active.get("children")
+    if isinstance(children, list):
+        for child in children:
+            if not isinstance(child, dict):
+                continue
+            if str(child.get("subagent_id") or "") == parent_id:
+                return True
+            if str(child.get("parent_conversation_id") or "") == parent_id:
+                return True
+    return False
+
+
+def deny_if_live_run_missing_marker(parent_id: str) -> None:
+    """Deny a live run whose transcript lost its marker.
+
+    An unreadable budget file still denies: staleness cannot be shown. A
+    readable file that belongs to another conversation does not.
+    """
+    for spec in POLICIES.values():
+        active = load_active(spec["active"])
+        if active is None:
+            continue
+        if active_budget_binds_parent(active, parent_id):
+            respond("deny", "Active Market Watch agent run is missing its run-policy marker.")
+
+
 def _mw_role_occurrence_count(task: str) -> int:
     return len(_MW_ROLE_OCCURRENCE_RE.findall(task))
 
@@ -687,8 +728,7 @@ def main() -> None:
 
     parsed = parse_policy(transcript_text(event))
     if parsed is None:
-        if any(spec["active"].is_file() for spec in POLICIES.values()):
-            respond("deny", "Active Market Watch agent run is missing its run-policy marker.")
+        deny_if_live_run_missing_marker(parent_id)
         respond("allow")
 
     kind, policy, spec = parsed

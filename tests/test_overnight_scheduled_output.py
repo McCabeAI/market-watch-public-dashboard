@@ -204,7 +204,7 @@ class ScheduledOutputTests(unittest.TestCase):
             "agent_packet": packet,
             "decisions": {
                 seat: _hold_decision(seat, self.run_id, packet["packet_sha256"], packet["evidence_cutoff"])
-                for seat in STANDING_SEATS
+                for seat in agent_config.pin_trader_ids(pin)
             },
             "pm_decisions": _pm_block(
                 self.run_id,
@@ -222,7 +222,8 @@ class ScheduledOutputTests(unittest.TestCase):
         self.assertEqual(review["model_calls"], 19)
         self.assertIn("pm_books", review)
         self.assertIn("pm_packets", review)
-        self.assertEqual(set(review["reviews"]), set(STANDING_SEATS))
+        self.assertEqual(set(review["reviews"]), set(agent_config.pin_trader_ids(snapshot_pin(self.base))))
+        self.assertNotIn("chart-guy", review["reviews"])
 
     def test_apply_writes_books_and_marks_trader_stage(self) -> None:
         review = apply_output(self.store, self.payload)
@@ -430,6 +431,7 @@ class ScheduledOutputTests(unittest.TestCase):
             },
         }
         packet["packet_sha256"] = sha256_json(packet)
+        session_pin = snapshot_pin(base)
         payload = {
             "schema_version": 1,
             "type": "OVERNIGHT_SCHEDULED_OUTPUT",
@@ -440,7 +442,7 @@ class ScheduledOutputTests(unittest.TestCase):
             "agent_packet": packet,
             "decisions": {
                 seat_id: _hold_decision(seat_id, run_id, packet["packet_sha256"], packet["evidence_cutoff"])
-                for seat_id in STANDING_SEATS
+                for seat_id in agent_config.pin_trader_ids(session_pin)
             },
             "pm_decisions": _pm_block(run_id, packet["packet_sha256"], packet["evidence_cutoff"]),
             "execution": self.payload["execution"],

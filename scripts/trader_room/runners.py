@@ -213,6 +213,12 @@ def _expression_comparison(agent: str, spec: dict[str, Any]) -> tuple[str, dict[
 def _trade_from_spec(agent: str, packet: dict[str, Any]) -> dict[str, Any] | None:
     if agent == NO_TRADE_AGENT:
         return None
+    if agent not in MOCK_SPECS:
+        from scripts.trader_room.constants import MAY_NO_TRADE_SEATS
+
+        if agent in MAY_NO_TRADE_SEATS:
+            return None
+        raise ModelPolicyError(f"no mock specification for {agent}")
     spec = MOCK_SPECS[agent]
     ref = first_packet_ref(packet)
     asset_class, expression_comparison = _expression_comparison(agent, spec)

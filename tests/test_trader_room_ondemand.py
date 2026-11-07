@@ -26,6 +26,7 @@ from scripts.trader_room.constants import (
     COMPOSER_CEILING,
     GROK_CEILING,
     HANDOFF_MARKER,
+    MAY_NO_TRADE_SEATS,
     NO_TRADE_AGENT,
     RATES_FIRST_SEATS,
     SPOT_ONLY_SEATS,
@@ -570,7 +571,7 @@ class ConflictRoutingTests(unittest.TestCase):
         self.assertNotIn("winner", conflict_map)
         self.assertNotIn("house_view", conflict_map)
         assignments = rebuttal_assignments(conflict_map)
-        self.assertLessEqual(len(assignments), 14)
+        self.assertLessEqual(len(assignments), len(STANDING_ADVOCATES))
         self.assertIn("perma-bull", assignments)
         self.assertIn("perma-bear", assignments)
         self.assertIn("perma-bear", assignments["perma-bull"]["opponents"])
@@ -604,8 +605,12 @@ class OrchestratorDryRunTests(unittest.TestCase):
                         True,
                     )
             for agent in SPOT_ONLY_SEATS:
-                self.assertEqual(result["originals"][agent]["trade"]["asset_class"], "spot_fx")
-                self.assertNotIn("rates_tenor_scan", result["originals"][agent]["trade"]["expression_comparison"])
+                trade = result["originals"][agent]["trade"]
+                if trade is None:
+                    self.assertIn(agent, MAY_NO_TRADE_SEATS)
+                    continue
+                self.assertEqual(trade["asset_class"], "spot_fx")
+                self.assertNotIn("rates_tenor_scan", trade["expression_comparison"])
             self.assertNotIn(
                 "rates_tenor_scan",
                 result["originals"]["vol-convexity"]["trade"]["expression_comparison"],
@@ -613,9 +618,10 @@ class OrchestratorDryRunTests(unittest.TestCase):
             self.assertIsNone(result["originals"][NO_TRADE_AGENT]["trade"])
             self.assertLessEqual(result["budget"]["grok"], GROK_CEILING)
             self.assertLessEqual(result["budget"]["composer"], COMPOSER_CEILING)
-            self.assertEqual(result["budget"]["composer"], 28)
-            self.assertEqual(result["budget"]["grok"], 14 + result["budget"]["rebuttals"])
-            self.assertLessEqual(result["budget"]["rebuttals"], 14)
+            seat_count = len(STANDING_ADVOCATES)
+            self.assertEqual(result["budget"]["composer"], 2 * seat_count)
+            self.assertEqual(result["budget"]["grok"], seat_count + result["budget"]["rebuttals"])
+            self.assertLessEqual(result["budget"]["rebuttals"], seat_count)
             retrieved = retrieve(artifact_root, result["run_id"], "submission", "dollar-king")
             self.assertEqual(retrieved["agent"], "dollar-king")
             rebuttal = retrieve(artifact_root, result["run_id"], "rebuttal", "perma-bull")

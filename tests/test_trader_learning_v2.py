@@ -100,7 +100,7 @@ class TraderLearningV2Tests(unittest.TestCase):
 
     def _books(self) -> dict:
         books = empty_books(overnight_run_id="overnight-20260919", when=AS_OF)
-        for seat in STANDING_SEATS:
+        for seat in books["seats"]:
             mark_to_market(books["seats"][seat], when=AS_OF)
         self.overnight.write_books(validate_books(books))
         return books
@@ -108,20 +108,23 @@ class TraderLearningV2Tests(unittest.TestCase):
     def _due_reflection(self) -> str:
         books = self._books()
         books["seats"]["dollar-king"]["realized_pnl_usd"] = -2_100_000.0
-        for seat in STANDING_SEATS:
+        for seat in books["seats"]:
             mark_to_market(books["seats"][seat], when=AS_OF)
         self.overnight.write_books(validate_books(books))
         context = build_memory_context(self.store, "trader", "dollar-king")
         return context["reflections_due"][0]["reflection_due_id"]
 
     def _hold_reviews(self, hashes: dict[str, str]) -> dict:
+        # Historical books keep the seats frozen for that as-of. A later seat
+        # such as chart-guy is not inserted into a 2026-09 replay.
+        seats = list(self.overnight.read_books()["seats"])
         return {
             seat: {
                 "seat": seat,
                 "memory_context_sha256": hashes.get(seat),
                 "actions": [{"action": "HOLD"}],
             }
-            for seat in STANDING_SEATS
+            for seat in seats
         }
 
     def test_prior_debt_is_mandatory_on_hold_and_shallow_text_does_not_clear_it(self) -> None:

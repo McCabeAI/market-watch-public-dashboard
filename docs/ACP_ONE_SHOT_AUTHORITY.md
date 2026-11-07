@@ -23,7 +23,7 @@ ACP must, **without a shared secret**, read:
 
 ACP then:
 
-1. Runs the locked current graph for that frozen packet: **1 parent + 1 synthesis + 14 traders + 3 automated PMs + 1 learning examiner** (20 total calls, 18 grok-family, 2 composer). The learning examiner stays in the graph. A 19-call ceiling is the pre-examiner contract and is not valid. Read `budget.current_graph` on the delegation request and the `MW_CURRENT_GRAPH` marker in the launch command. Do not drop the examiner to shrink the graph. Child tasks must carry `MW_ROLE=…` tags; caps and models are derived from the evidence snapshot `agent_roster_pin` when present (see `docs/AGENT_ROSTER_MODEL_PROFILES.md`).
+1. Runs the locked current graph for that frozen packet. A packet frozen before Chart Guy's activation date stays **1 parent + 1 synthesis + 14 traders + 3 automated PMs + 1 learning examiner** (20 total calls, 18 grok-family, 2 composer). The learning examiner stays in the graph. A 19-call ceiling is the pre-examiner contract and is not valid. Read `budget.current_graph` on the delegation request and the `MW_CURRENT_GRAPH` marker in the launch command. Do not drop the examiner to shrink the graph. Child tasks must carry `MW_ROLE=…` tags; caps and models are derived from the evidence snapshot `agent_roster_pin` when present (see `docs/AGENT_ROSTER_MODEL_PROFILES.md`). `chart-guy` is an active paper seat as of 2026-11-07. The next separately authorized freeze on or after that date derives 21/19/2 from the 15-seat pin. That activation is not retroactive: accepted snapshots stay on the roster they froze, and the retired 75%/3-trade blind exam is archival history rather than the activation gate.
 2. Opens a **data-only** `[overnight-output]` pull request bound to the same `launch_id`, `review_id`, and `base_packet_sha256`.
 3. Sends a **single-use** `repository_dispatch` event:
 
@@ -75,21 +75,21 @@ Weekday schedule `market-watch-weekday-0205` remains disabled. No bot `[agent-ru
   "budget": {
     "launcher_id": "manual-market-watch-launch-v1",
     "legacy_schedule_id_inactive": "market-watch-weekday-0205",
-    "total_model_cap": 20,
-    "grok_cap": 18,
+    "total_model_cap": 21,
+    "grok_cap": 19,
     "composer_cap": 2,
     "parent_model": "grok-4.7",
     "frozen_command": ".cursor/commands/overnight-scheduled.md",
     "launch_command": ".cursor/commands/manual-market-watch-review.md",
     "current_graph": {
       "version": 1,
-      "total_calls": 20,
-      "grok_family_calls": 18,
+      "total_calls": 21,
+      "grok_family_calls": 19,
       "composer_calls": 2,
       "nodes": {
         "parent": 1,
         "synthesis": 1,
-        "traders": 14,
+        "traders": 15,
         "automated_pms": 3,
         "learning_examiner": 1
       }

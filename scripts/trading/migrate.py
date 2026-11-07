@@ -114,7 +114,8 @@ def backfill_from_books(
     stamp = now_ny(when)
     store.ensure_initialized(when=stamp)
     if trader_books:
-        for seat in STANDING_SEATS:
+        seat_ids = tuple((trader_books.get("seats") or {}).keys()) or STANDING_SEATS
+        for seat in seat_ids:
             item = (trader_books.get("seats") or {}).get(seat) or {}
             _backfill_open_positions(
                 store,

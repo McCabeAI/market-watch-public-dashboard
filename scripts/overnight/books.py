@@ -396,7 +396,12 @@ def empty_books(
     roster: tuple[str, ...] | list[str] | None = None,
 ) -> dict[str, Any]:
     stamp = isoformat(now_ny(when))
-    seats = tuple(roster) if roster is not None else STANDING_SEATS
+    if roster is not None:
+        seats = tuple(roster)
+    else:
+        from scripts.trader_room.agent_config import head_traders
+
+        seats = tuple(str(row["id"]) for row in head_traders(as_of=when))
     return {
         "schema_version": SCHEMA_VERSION,
         "starting_nav_usd": STARTING_NAV_USD,
@@ -423,6 +428,22 @@ def _entries_by_id(
     return {str(entry["id"]): entry for entry in entries}
 
 
+def _seats_activated_after(seats: set[str], when: datetime | None) -> set[str]:
+    """Seats present in the book file whose roster activation is after this run."""
+    from scripts.trader_room.agent_config import load_config, today_ny
+
+    as_of = today_ny(when).isoformat()
+    later: set[str] = set()
+    for row in load_config()["roster"]["traders"]:
+        seat = str(row.get("id") or "")
+        if seat not in seats or str(row.get("status") or "") != "active":
+            continue
+        activation = str(row.get("activation_date") or "")
+        if activation and activation > as_of:
+            later.add(seat)
+    return later
+
+
 def ensure_roster_books(
     books: dict[str, Any],
     roster_entries: list[dict[str, Any]] | tuple[dict[str, Any], ...],
@@ -435,7 +456,12 @@ def ensure_roster_books(
     seat_keys = set(out.get("seats") or {})
     unknown = seat_keys - roster_set
     if unknown:
-        raise SchemaError(f"books contain seats not in roster: {sorted(unknown)}")
+        later = _seats_activated_after(unknown, when)
+        for seat in later:
+            del out["seats"][seat]
+        still_unknown = sorted(unknown - later)
+        if still_unknown:
+            raise SchemaError(f"books contain seats not in roster: {still_unknown}")
     by_id = _entries_by_id(roster_entries)
     for tid in roster_ids:
         if tid in out["seats"]:
@@ -1449,9 +1475,14 @@ def apply_review(
     market_state: dict[str, Any] | None = None,
     roster: tuple[str, ...] | list[str] | None = None,
 ) -> dict[str, Any]:
-    seats = _roster_tuple(roster)
-    if set(reviews) != set(seats):
-        raise SchemaError(f"review must include every standing seat; missing/extra {set(reviews) ^ set(seats)}")
+    seats = _roster_tuple(roster) if roster is not None else tuple((books.get("seats") or {}).keys())
+    seat_set = set(seats)
+    review_ids = set(reviews)
+    if roster is None and seat_set <= review_ids:
+        reviews = {seat: payload for seat, payload in reviews.items() if seat in seat_set}
+        review_ids = set(reviews)
+    if review_ids != seat_set:
+        raise SchemaError(f"review must include every pinned seat; missing/extra {sorted(review_ids ^ seat_set)}")
     out = deepcopy(books)
     prepared_reviews = deepcopy(reviews)
     if market_state is not None:
@@ -1520,12 +1551,23 @@ def validate_books(
 ) -> dict[str, Any]:
     if books.get("schema_version") != SCHEMA_VERSION:
         raise SchemaError("books schema_version mismatch")
+    explicit_roster = roster is not None
     seats = _roster_tuple(roster)
-    if set(books.get("seats") or {}) != set(seats):
+    book_ids = set(books.get("seats") or {})
+    entry_map = _entries_by_id(entries)
+    if not explicit_roster and book_ids != set(seats):
+        from scripts.trader_room.agent_config import legacy_pin
+
+        legacy = legacy_pin("daily")
+        legacy_ids = tuple(str(row["id"]) for row in legacy["traders"])
+        if book_ids == set(legacy_ids):
+            seats = legacy_ids
+            if not entry_map:
+                entry_map = _entries_by_id(legacy["traders"])
+    if book_ids != set(seats):
         raise SchemaError("books must contain every locked seat")
     if books.get("starting_nav_usd") != STARTING_NAV_USD:
         raise SchemaError(f"starting_nav_usd must be {STARTING_NAV_USD}")
-    entry_map = _entries_by_id(entries)
     for seat, item in books["seats"].items():
         if item.get("seat") != seat:
             raise SchemaError(f"seat key/name mismatch for {seat}")
@@ -1611,8 +1653,7 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
     validate_books(books)
     seats = []
     changes = []
-    for seat in STANDING_SEATS:
-        item = books["seats"][seat]
+    for seat, item in books["seats"].items():
         seats.append(
             {
                 "seat": seat,

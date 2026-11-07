@@ -140,7 +140,11 @@ class TradingMemoryTests(unittest.TestCase):
             pm_books=empty_pm_books(),
             when=AS_OF,
         )
-        self.assertEqual(len(index["identities"]), 18)
+        self.assertEqual(len(index["identities"]), len(ALL_IDENTITIES))
+        self.assertEqual(len(empty_trader_books(when=AS_OF)["seats"]), 14)
+        self.assertEqual(len(empty_trader_books(when=datetime(2026, 11, 7, tzinfo=ZoneInfo("America/New_York")))["seats"]), 15)
+        self.assertIn("chart-guy", empty_trader_books(when=datetime(2026, 11, 7, tzinfo=ZoneInfo("America/New_York")))["seats"])
+        self.assertNotIn("chart-guy", empty_trader_books(when=AS_OF)["seats"])
         self.assertEqual(index["trade_ids"], [])
         for owner_type, owner_id in ALL_IDENTITIES:
             context = build_memory_context(self.store, owner_type, owner_id)
@@ -861,7 +865,9 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             store = OvernightStore(root=ROOT, state_root=state)
             snapshot = store.read_artifact(run_id, "evidence_snapshot.json")
             hashes = snapshot["seat_memory"]["hashes"]
-            self.assertEqual(set(hashes), set(STANDING_SEATS))
+            pinned = {row["id"] for row in snapshot["agent_roster_pin"]["traders"]}
+            self.assertEqual(set(hashes), pinned)
+            self.assertNotIn("chart-guy", hashes)
             review_dir = store.review_dir(run_id, snapshot["review_id"])
             dollar = json.loads((review_dir / "memory" / "dollar-king.json").read_text(encoding="utf-8"))
             bear = json.loads((review_dir / "memory" / "perma-bear.json").read_text(encoding="utf-8"))
@@ -912,7 +918,8 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
             }
             packet["packet_sha256"] = sha256_json(packet)
             decisions = {}
-            for seat in STANDING_SEATS:
+            pinned_seats = [row["id"] for row in (base.get("agent_roster_pin") or {}).get("traders") or []]
+            for seat in pinned_seats:
                 decisions[seat] = {
                     "seat": seat,
                     "overnight_run_id": run_id,

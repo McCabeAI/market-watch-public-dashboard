@@ -14,7 +14,6 @@ from scripts.overnight.constants import EVIDENCE_FAMILIES, STANDING_SEATS
 from scripts.overnight.errors import SchemaError
 from scripts.overnight.expression import expression_rule
 from scripts.overnight.store import OvernightStore, write_json
-from scripts.trader_room.constants import STANDING_ADVOCATES
 from scripts.trader_room.agent_config import pin_from_artifact, pin_trader_ids
 from scripts.trader_room.errors import SchemaError as TraderSchemaError
 from scripts.trading.apply import apply_trader_review_with_memory
@@ -218,7 +217,13 @@ def _learning_fields(contribution: dict[str, Any], rebuttal: dict[str, Any] | No
     return out
 
 
-def _advocates_for_run(run_dir: Path | None, packet: dict[str, Any]) -> tuple[str, ...]:
+def _pinned_advocates(run_dir: Path | None, packet: dict[str, Any]) -> tuple[str, ...] | None:
+    """Return the run's pinned seats, or None when the packet did not pin a roster.
+
+    A missing pin follows the book being written. That book is already the
+    roster effective at its as-of, so a later seat is not required on an older
+    replay and is not dropped from a book that already contains him.
+    """
     for source in (run_dir,):
         if source is None:
             continue
@@ -229,7 +234,7 @@ def _advocates_for_run(run_dir: Path | None, packet: dict[str, Any]) -> tuple[st
                 return pin_trader_ids(pin_from_artifact(artifact, kind="ondemand"))
     if packet.get("agent_roster_pin"):
         return pin_trader_ids(pin_from_artifact(packet, kind="ondemand"))
-    return STANDING_ADVOCATES
+    return None
 
 
 def reviews_from_run(
@@ -296,7 +301,9 @@ def persist_ondemand_trader_books(
     hashes = memory_hashes
     if hashes is None:
         hashes = ((packet.get("seat_memory") or {}).get("hashes") or {})
-    advocates = _advocates_for_run(run_dir, packet)
+    advocates = _pinned_advocates(run_dir, packet)
+    if advocates is None:
+        advocates = tuple(books["seats"])
     families = overnight_families_from_packet(packet)
     reviews = reviews_from_run(originals, rebuttals, hashes, packet, advocates=advocates)
     stamp = now_ny(when)
