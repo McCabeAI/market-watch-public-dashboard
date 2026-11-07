@@ -154,7 +154,7 @@ class ReconcileScheduleTests(unittest.TestCase):
 
 class ExpressionRuleTests(unittest.TestCase):
     def test_spot_seats_and_rates_first_partition(self):
-        self.assertEqual(set(SPOT_SEATS), {"dollar-king", "cross-merchant"})
+        self.assertEqual(set(SPOT_SEATS), {"dollar-king", "cross-merchant", "chart-guy"})
         for seat in STANDING_SEATS:
             rule = expression_rule(seat)
             if seat in SPOT_SEATS:
@@ -1084,8 +1084,13 @@ class BookTransitionTests(unittest.TestCase):
         before = deepcopy(raw)
         validated = validate_books(deepcopy(raw))
         view = public_books_view(deepcopy(raw))
-        self.assertEqual(len(validated["seats"]), 14)
-        self.assertNotIn("chart-guy", validated["seats"])
+        self.assertEqual(len(validated["seats"]), 15)
+        chart = validated["seats"]["chart-guy"]
+        self.assertEqual(chart["nav_usd"], 100_000_000)
+        self.assertEqual(chart["positions"], [])
+        self.assertEqual(chart["history"], [])
+        self.assertEqual(chart["realized_pnl_usd"], 0.0)
+        self.assertEqual(before["seats"]["chart-guy"]["nav_usd"], 100_000_000)
         for seat, item in validated["seats"].items():
             orig = before["seats"][seat]
             self.assertEqual(item["risk_capital_limit_usd"], 10_000_000)

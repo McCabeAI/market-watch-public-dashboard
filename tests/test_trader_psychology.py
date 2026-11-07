@@ -84,7 +84,7 @@ class TraderPsychologyTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def _write_trader_books(self, books: dict) -> None:
-        for seat in STANDING_SEATS:
+        for seat in books["seats"]:
             mark_to_market(books["seats"][seat], when=AS_OF)
         self.overnight.write_books(validate_books(books))
 

@@ -12,7 +12,7 @@ from pathlib import Path
 from scripts.apply_overnight_news_refresh import apply_overnight_news_refresh
 from scripts.overnight.accepted_news import overlay_accepted_research
 from scripts.overnight.clock import isoformat, now_ny, parse_iso
-from scripts.overnight.constants import ROOT, STANDING_SEATS
+from scripts.overnight.constants import ROOT
 from scripts.overnight.errors import PublicationError
 from scripts.overnight.freshness import publication_decision
 from scripts.overnight.pipeline import run_stage
@@ -239,7 +239,7 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
                 "alerts": [],
                 **({"funding_view": _skeptic_funding_view()} if seat == "no-trade-skeptic" else {}),
             }
-            for seat in STANDING_SEATS
+            for seat in agent_config.pin_trader_ids(pin)
         }
         decisions["dollar-king"] = {
             **decisions["dollar-king"],
@@ -253,6 +253,12 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
                 "price": 1.36,
                 "asset_class": "spot_fx",
                 "expression_memo": memo,
+                "lifecycle": {
+                    "framing": "tactical",
+                    "horizon_days": 10,
+                    "realization_logic": "Fixture spot gap pays if USDCAD extends inside the tactical window.",
+                    "catalyst_logic": "The next frozen official US or Canada print inside that window.",
+                },
             }],
         }
         pm = {
@@ -310,7 +316,7 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
         self.assertEqual(len(seat["positions"]), 1)
         self.assertNotEqual(seat["history"][-1]["result"], "blocked_freshness")
 
-    def test_stale_market_state_still_blocks_open(self) -> None:
+    def test_stale_market_state_does_not_blanket_block_a_marked_spot_open(self) -> None:
         tmp = tempfile.TemporaryDirectory()
         state_root = Path(tmp.name)
         run_id = "overnight-20260922-news-overlay-stale-ms"
@@ -346,8 +352,10 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
             payload = self._payload_for(base, run_id)
             review = simulate_output(store, payload)
             seat = review["books"]["seats"]["dollar-king"]
-            self.assertEqual(seat["positions"], [])
-            self.assertEqual(seat["history"][-1]["result"], "blocked_freshness")
+            # Stale market-state is a quote-leg check, not a blanket OPEN veto.
+            # This USDCAD mark is present, so the open is not blocked_freshness.
+            self.assertEqual(len(seat["positions"]), 1)
+            self.assertNotEqual(seat["history"][-1]["result"], "blocked_freshness")
         finally:
             if artifact_backup is not None:
                 ACCEPTED_ARTIFACT.write_text(artifact_backup, encoding="utf-8")

@@ -409,6 +409,84 @@ class RoleGuardTests(unittest.TestCase):
         )
         self.assertEqual(allowed.returncode, 0)
 
+    def _plain_hook(self, parent: str) -> subprocess.CompletedProcess:
+        self.transcript.write_text("plain coding session\n", encoding="utf-8")
+        return subprocess.run(
+            ["python3", str(self.script)],
+            input=json.dumps(
+                {
+                    "subagent_id": "child-plain",
+                    "subagent_type": "generalPurpose",
+                    "task": "inspect the diff",
+                    "parent_conversation_id": parent,
+                    "tool_call_id": "tc",
+                    "subagent_model": "composer-2.5",
+                    "transcript_path": str(self.transcript),
+                }
+            ),
+            text=True,
+            capture_output=True,
+            cwd=ROOT,
+            check=False,
+        )
+
+    def test_stale_budget_file_does_not_bind_another_conversation(self) -> None:
+        self.overnight_active.write_text(
+            json.dumps(
+                {
+                    "kind": "overnight",
+                    "root_parent_conversation_id": "finished-dev-session",
+                    "total": 4,
+                    "grok": 3,
+                    "composer": 1,
+                    "direct_children": {"old-child": {"role": "trader"}},
+                    "children": [
+                        {
+                            "parent_conversation_id": "finished-dev-session",
+                            "subagent_id": "old-child",
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        allowed = self._plain_hook("coding-parent")
+        self.assertEqual(allowed.returncode, 0, allowed.stdout)
+        self.assertEqual(
+            json.loads(self.overnight_active.read_text(encoding="utf-8"))["root_parent_conversation_id"],
+            "finished-dev-session",
+        )
+
+    def test_live_run_missing_marker_still_denies_its_own_parent_and_child(self) -> None:
+        self.overnight_active.write_text(
+            json.dumps(
+                {
+                    "kind": "overnight",
+                    "root_parent_conversation_id": "live-parent",
+                    "direct_children": {"live-trader": {"role": "trader", "seat": "dollar-king"}},
+                    "children": [
+                        {
+                            "parent_conversation_id": "live-parent",
+                            "subagent_id": "live-trader",
+                        }
+                    ],
+                }
+            ),
+            encoding="utf-8",
+        )
+        for parent in ("live-parent", "live-trader"):
+            blocked = self._plain_hook(parent)
+            self.assertNotEqual(blocked.returncode, 0, parent)
+            self.assertIn("missing its run-policy marker", blocked.stdout)
+        unrelated = self._plain_hook("other-coding-parent")
+        self.assertEqual(unrelated.returncode, 0, unrelated.stdout)
+
+    def test_unreadable_budget_file_still_denies(self) -> None:
+        self.overnight_active.write_text("{not-json", encoding="utf-8")
+        blocked = self._plain_hook("coding-parent")
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("unreadable", blocked.stdout)
+
     def test_ondemand_14_max_57(self) -> None:
         repo = self._seed_tr_repo()
         pin = self._committed_ondemand_pin(repo)
@@ -424,12 +502,13 @@ class RoleGuardTests(unittest.TestCase):
         self.assertNotEqual(blocked_v1.returncode, 0)
         self.tr_active.unlink(missing_ok=True)
         self._write_marker(agent_config.trader_room_policy_marker(pin))
+        live_seats = agent_config.pin_trader_ids(pin)
         advocates = []
-        for seat in ONDEMAND_TRADERS:
+        for seat in live_seats:
             child = f"adv-{seat}"
             advocates.append(child)
             self._hook(repo=repo, parent="root", model=advocate, task=f"MW_ROLE=advocate:{seat}", child=child)
-        for seat in ONDEMAND_TRADERS:
+        for seat in live_seats:
             self._hook(
                 repo=repo,
                 parent="root",
@@ -653,7 +732,7 @@ class RoleGuardTests(unittest.TestCase):
         self.assertEqual(set(budget.keys()), expected_keys)
         self.assertEqual(
             (budget["total_model_cap"], budget["grok_cap"], budget["composer_cap"], budget["parent_model"]),
-            (20, 18, 2, "grok-4.7"),
+            (21, 19, 2, "grok-4.7"),
         )
 
     def test_repeated_identical_mw_role_tag_denied(self) -> None:

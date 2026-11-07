@@ -142,7 +142,9 @@ class TradingMemoryTests(unittest.TestCase):
         )
         self.assertEqual(len(index["identities"]), len(ALL_IDENTITIES))
         self.assertEqual(len(empty_trader_books(when=AS_OF)["seats"]), 14)
-        self.assertEqual(len(empty_trader_books(when=datetime(2026, 11, 7, tzinfo=ZoneInfo("America/New_York")))["seats"]), 14)
+        self.assertEqual(len(empty_trader_books(when=datetime(2026, 11, 7, tzinfo=ZoneInfo("America/New_York")))["seats"]), 15)
+        self.assertIn("chart-guy", empty_trader_books(when=datetime(2026, 11, 7, tzinfo=ZoneInfo("America/New_York")))["seats"])
+        self.assertNotIn("chart-guy", empty_trader_books(when=AS_OF)["seats"])
         self.assertEqual(index["trade_ids"], [])
         for owner_type, owner_id in ALL_IDENTITIES:
             context = build_memory_context(self.store, owner_type, owner_id)

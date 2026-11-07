@@ -604,18 +604,25 @@ class ActivationDateTests(unittest.TestCase):
 
 
 class ChartGuySeatTests(unittest.TestCase):
-    def test_pending_chart_guy_stays_out_of_both_session_pins(self) -> None:
+    def test_chart_guy_is_active_only_on_and_after_his_activation_date(self) -> None:
         raw = _raw_config()
         row = next(item for item in raw["roster"]["traders"] if item["id"] == "chart-guy")
-        self.assertEqual(row["status"], "pending")
-        for day in ("2026-11-06", "2026-11-07"):
-            pin = build_pin("daily", as_of=day)
-            self.assertEqual(len(pin["traders"]), 14)
-            self.assertNotIn("chart-guy", [item["id"] for item in pin["traders"]])
-            self.assertEqual(
-                (pin["budget"]["total_calls"], pin["budget"]["grok_family_calls"], pin["budget"]["composer_calls"]),
-                (20, 18, 2),
-            )
+        self.assertEqual(row["status"], "active")
+        self.assertEqual(row["activation_date"], "2026-11-07")
+        before = build_pin("daily", as_of="2026-11-06")
+        self.assertEqual(len(before["traders"]), 14)
+        self.assertNotIn("chart-guy", [item["id"] for item in before["traders"]])
+        self.assertEqual(
+            (before["budget"]["total_calls"], before["budget"]["grok_family_calls"], before["budget"]["composer_calls"]),
+            (20, 18, 2),
+        )
+        on_day = build_pin("daily", as_of="2026-11-07")
+        self.assertEqual(len(on_day["traders"]), 15)
+        self.assertEqual([item["id"] for item in on_day["traders"]].count("chart-guy"), 1)
+        self.assertEqual(
+            (on_day["budget"]["total_calls"], on_day["budget"]["grok_family_calls"], on_day["budget"]["composer_calls"]),
+            (21, 19, 2),
+        )
         legacy = legacy_pin("daily")
         self.assertEqual(len(legacy["traders"]), 14)
         self.assertNotIn("chart-guy", [item["id"] for item in legacy["traders"]])

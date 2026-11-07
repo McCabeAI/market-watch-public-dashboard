@@ -1,4 +1,4 @@
-"""The live Market Watch launch contract is the 20-call current graph."""
+"""The live Market Watch launch contract follows the head pin. Chart Guy makes it 21 calls."""
 
 from __future__ import annotations
 
@@ -15,6 +15,7 @@ from scripts.market_watch_launch.call_graph import (
 )
 from scripts.overnight.constants import ROOT
 from scripts.overnight.errors import SchemaError
+from scripts.trader_room.agent_config import build_pin
 from scripts.overnight.scheduled_output import validate_execution
 
 LAUNCH_TEXTS = (
@@ -46,7 +47,7 @@ def _budget_hook():
 
 
 class CurrentGraphContractTests(unittest.TestCase):
-    def test_nodes_are_twenty_calls_with_eighteen_grok_and_two_composer(self) -> None:
+    def test_nodes_are_twenty_one_calls_with_nineteen_grok_and_two_composer(self) -> None:
         graph = current_graph()
         nodes = graph["nodes"]
         self.assertEqual(
@@ -54,18 +55,19 @@ class CurrentGraphContractTests(unittest.TestCase):
             {
                 "parent": 1,
                 "synthesis": 1,
-                "traders": 14,
+                "traders": 15,
                 "automated_pms": 3,
                 "learning_examiner": 1,
             },
         )
-        self.assertEqual(sum(nodes.values()), 20)
-        self.assertEqual(nodes["parent"] + nodes["traders"] + nodes["automated_pms"], 18)
+        self.assertEqual(sum(nodes.values()), 21)
+        self.assertEqual(nodes["parent"] + nodes["traders"] + nodes["automated_pms"], 19)
         self.assertEqual(nodes["synthesis"] + nodes["learning_examiner"], 2)
         self.assertEqual(
             (graph["total_calls"], graph["grok_family_calls"], graph["composer_calls"]),
-            (20, 18, 2),
+            (21, 19, 2),
         )
+        self.assertIn("chart-guy", [row["id"] for row in build_pin("daily")["traders"]])
         self.assertIn("learning_examiner", nodes)
 
     def test_delegation_budget_carries_the_current_graph_and_rejects_nineteen(self) -> None:
@@ -80,7 +82,7 @@ class CurrentGraphContractTests(unittest.TestCase):
         budget = request["budget"]
         self.assertEqual(
             (budget["total_model_cap"], budget["grok_cap"], budget["composer_cap"]),
-            (20, 18, 2),
+            (21, 19, 2),
         )
         self.assertEqual(budget["current_graph"], current_graph())
         self.assertEqual(budget["launch_command"], ".cursor/commands/manual-market-watch-review.md")
@@ -91,7 +93,8 @@ class CurrentGraphContractTests(unittest.TestCase):
 
     def test_launch_text_states_twenty_and_has_no_stale_nineteen_ceiling(self) -> None:
         marker = current_graph_marker()
-        self.assertIn('"total_calls":20', marker)
+        self.assertIn('"total_calls":21', marker)
+        self.assertIn('"traders":15', marker)
         self.assertIn('"learning_examiner":1', marker)
         for path in LAUNCH_TEXTS:
             text = path.read_text(encoding="utf-8")

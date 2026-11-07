@@ -13,7 +13,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from scripts.rates.executable_catalog import assess_expression, build_executable_catalog
-from scripts.trader_room.constants import RATES_FIRST_SEATS, ROOT as REPO_ROOT, STANDING_ADVOCATES
+from scripts.trader_room.constants import RATES_FIRST_SEATS, ROOT as REPO_ROOT, SPOT_ONLY_SEATS, STANDING_ADVOCATES
 from scripts.trader_room.evidence import assemble_packet, freeze_packet, load_synthetic_packet, validate_preflight, assess_families
 from scripts.trader_room.executable_catalog_section import _CATALOG_KNOWN_GAP, attach_executable_catalog
 from tests.test_rates_engine import MARKET
@@ -83,8 +83,9 @@ class TraderRoomExecutableCatalogTests(unittest.TestCase):
         self.assertIsNone(catalog["ranking"])
         self.assertIsNone(catalog["preference"])
         self.assertGreaterEqual(len(catalog["recipes"]), 4)
-        self.assertEqual(len(STANDING_ADVOCATES), 14)
-        self.assertNotIn("chart-guy", STANDING_ADVOCATES)
+        self.assertEqual(len(STANDING_ADVOCATES), 15)
+        self.assertIn("chart-guy", STANDING_ADVOCATES)
+        self.assertIn("chart-guy", SPOT_ONLY_SEATS)
         self.assertGreaterEqual(len(RATES_FIRST_SEATS), 11)
         text = (REPO_ROOT / ".cursor" / "commands" / "trader-room.md").read_text(encoding="utf-8")
         self.assertIn("eligible rates-first seats", text)

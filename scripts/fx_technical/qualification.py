@@ -192,7 +192,13 @@ def score_response(case: dict, response: dict) -> dict:
 
 
 def summarize_qualification(results: list[dict]) -> dict:
-    """Summarize scorer results and apply the qualification gate."""
+    """Score an archival blind exam. This is not the production activation gate.
+
+    The 75% pass rate and three passing trades record how a historical exam
+    was graded. Kevin retired that exam as an activation gate on 2026-11-07.
+    Production readiness is ``scripts.fx_technical.smoke.run_smoke_gate``.
+    Do not rewrite a stored rehearsal into a pass.
+    """
     n = len(results)
     passed_n = sum(1 for r in results if r.get("passed"))
     failed_ids = [r["case_id"] for r in results if not r.get("passed")]

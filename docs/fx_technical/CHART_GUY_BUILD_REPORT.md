@@ -1,6 +1,16 @@
 # Chart Guy build report
 
-Close-only G10 FX technical research, a shared pre-freeze evidence block, an original playbook, and a real ECB case bank. The 15th paper seat is **pending**. A blind Grok 4.7 qualification did not run, so the seat was not left active. No production Market Watch or Trader Room run was launched. The accepted 2026-11-06 snapshot was not rewritten.
+Close-only G10 FX technical research, a shared pre-freeze evidence block, an original playbook, and a real ECB case bank. Chart Guy is an **active** paper seat on this branch as of 2026-11-07, with a separate `$100m` book and empty learning identity. Participation starts on the next separately authorized freeze on or after that date. The accepted 2026-11-06 snapshot was not rewritten, and no Market Watch or Trader Room run was launched.
+
+## Activation on 2026-11-07
+
+Kevin retired the 75%/3-trade blind exam as an activation gate. The stored rehearsal stays a fail (`passed_trade_ids` is only `USDNOK-2019-11-27`, `qualifies_production_seat` is false, `production_exam.ran` is false). That file was not re-scored into a pass. Learning happens on future authorized paper runs through Trader Lessons.
+
+The earlier hook denial, `Active Market Watch agent run is missing its run-policy marker`, fired when any `/tmp/mw-*-active.json` budget file existed and the transcript had no marker. A leftover file from another conversation was treated as this run. The hook now denies only when that file's recorded root or child conversation is the current parent. An unreadable budget file still denies. The file is not deleted and no marker is invented.
+
+`scripts/fx_technical/smoke.py` is the activation gate: agent routing to `grok-4.7` with `composer-2.5` subagents, one no-trade learning scope, one in-memory close-only EURUSD mark and realized P&L, no lookahead past the decision date, stale versus unavailable closes, shared `FX_TECHNICAL_RESEARCH` with `vetoes_unrelated_trades` false, 15-seat budgets 21/19/2 and 61/31/30, and the frozen 14-seat 2026-11-06 replay. The on-demand command now launches every pin seat, keeps Chart Guy technical-only and allowed to no-trade, and states the 61/31/30 ceiling without applying it to a 14-seat packet.
+
+`onboard_trader --activate --confirm-live-activation` wrote the cold book and identity after that gate passed. Incumbent seat hashes and identity files were unchanged. The agent instruction file was already present and was not rewritten.
 
 ## What landed
 
@@ -8,7 +18,7 @@ Close-only G10 FX technical research, a shared pre-freeze evidence block, an ori
 - `scripts/fx_technical/research.py` builds one `FX_TECHNICAL_RESEARCH` block during `build_snapshot` while the ECB series are still in memory. `scripts/fx_technical/packet.py` copies that block into the overnight freeze and the on-demand packet. `vetoes_unrelated_trades` is forced false, including when the feed is missing. `trade_recommendation` stays null.
 - `docs/fx_technical/CHART_GUY_PLAYBOOK.md` is the original close-only curriculum. RSI above 70 is not treated as automatically bearish. Candlestick and ATR methods are excluded until real OHLC exists.
 - `data/fx_technical/case_bank.json` holds 40 authentic ECB episodes. `data/fx_technical/blind_holdout.json` is the examinee view of the eight holdout cases. Subsequent closes, setup class, holdout split, and the conflict label are removed.
-- `chart-guy` remains on the roster with status `pending`, model file `grok-4.7[]`, spot G10 only, and `may_no_trade`. He is not in the live pin, `latest.json`, or the trading index. The cold book and identity written by the earlier activation were removed. Incumbent seat rows match the pre-activation books and index. Pins on 2026-11-06 and 2026-11-07 stay at 14 seats until a real qualification passes and `onboard_trader --activate` is run.
+- `chart-guy` is on the roster with status `active`, activation date `2026-11-07`, model file `grok-4.7[]`, spot G10 only, and `may_no_trade`. Pins dated before that day stay at 14 seats. The cold `$100m` book and empty identity are the activation written by `onboard_trader --activate` after the smoke gate. Incumbent seat rows were not rewritten.
 - Learning records an optional `technical_setup` on the existing journal and scope path (`scripts/fx_technical/learning_ext.py`, `scripts/trading/learning.py`, `scripts/trading/journal.py`). Absent keys leave old lessons unchanged. Outcome classification compares the recorded daily close (`actual_mark`) with the invalidation level. It does not infer an intraday fill.
 
 ## Indicators and provenance
@@ -25,24 +35,25 @@ Holdout, withheld from the exam prompt: NOKJPY-2019-10-11 (failed breakout), GBP
 
 The first exam was not a qualification of the production seat. Composer 2.5 answered the original eight holdout cases. That file still contained `setup_class`, `conflict`, and `split`, so the rehearsal was not blind. The mix was seven `NO_TRADE` decisions and one `TRADE` (USDNOK long base, 20D). Re-scored with the current gate, which requires at least three passing trades plus no failed disagreement or no-trade case, the individual scores are 8/8 and the gate is `fail` because `passed_trade_ids` is only `USDNOK-2019-11-27`. That result is stored under `rehearsal` in `data/fx_technical/qualification_result.json` with `qualifies_production_seat: false`.
 
-A Grok 4.7 exam was not run. A nested `grok-4.7` task was denied by the repository hook: `Active Market Watch agent run is missing its run-policy marker.` No Market Watch or Trader Room cycle was started to get around that hook. The same hook denied a later Composer 2.5 read-only review task. The parent that selected a replacement case list had already seen setup classes, so a self-graded exam would not have been blind. The production gate in the qualification file is `pending`, `production_exam.ran` is false, and the seat stays pending.
+A Grok 4.7 exam was not run. A nested `grok-4.7` task was denied by the repository hook: `Active Market Watch agent run is missing its run-policy marker.` No Market Watch or Trader Room cycle was started to get around that hook. The same hook denied a later Composer 2.5 read-only review task. The parent that selected a replacement case list had already seen setup classes, so a self-graded exam would not have been blind. The production gate in the qualification file remains `pending`, `production_exam.ran` is false, and that rehearsal was not re-scored into a pass. Kevin retired that exam as an activation gate on 2026-11-07. The smoke gate above is what activated the seat.
 
 ## Seat, books, and budgets
 
 The registry row and `.cursor/agents/chart-guy.md` remain. The agent instruction no longer says to express macro views through USD or cross spot. It states a technical-only spot G10 mandate, 5D/20D primary and 1D/10D context, daily-close invalidation, and it embeds `docs/fx_technical/CHART_GUY_PLAYBOOK.md` so the seat does not open a file after the freeze. The shared evidence-closed closing used by the other seats is unchanged.
 
-The cold `$100m` book, the trading-index row, and `data/trading/trader/chart-guy/` from the earlier activation were removed. `data/overnight/books/latest.json` and `data/trading/index.json` match the parent of `f790fc55` for those files. Incumbent seats were not rewritten.
+The cold `$100m` book, the trading-index row, and `data/trading/trader/chart-guy/` are present on this branch. They are the `onboard_trader --activate` result. Incumbent seat objects and identity files are unchanged from the parent of this activation. The accepted 2026-11-06 snapshot was not rewritten.
 
 | Pin | Traders | Daily calls | On-demand calls |
 | --- | ---: | --- | --- |
-| live pin, 2026-11-06 and 2026-11-07, chart-guy pending | 14 | 20 total, 18 Grok, 2 Composer | 57 / 29 / 28 |
+| live pin on 2026-11-06, chart-guy not yet effective | 14 | 20 total, 18 Grok, 2 Composer | 57 / 29 / 28 |
+| live pin on 2026-11-07, chart-guy active | 15, including chart-guy | 21 / 19 / 2 | 61 / 31 / 30 |
 | fixture with chart-guy status active, as of 2026-11-06 | 14 | 20 / 18 / 2 | 57 / 29 / 28 |
 | fixture with chart-guy status active, as of 2026-11-07 | 15, including chart-guy | 21 / 19 / 2 | 61 / 31 / 30 |
 | legacy grok-4.6 pin | 14, chart-guy excluded | 20 / 18 / 2 | unchanged legacy shape |
 
-The 15-seat live pin is not in force. It is covered by `ChartGuySeatTests` on a temporary registry copy. Review coverage, assembled seat count, scheduled-output checks, memory sidecars, and public books follow the session pin or the seats in the book being replayed. A historical 14-seat freeze does not require a chart-guy memory sidecar.
+The live head pin on 2026-11-07 is 15 seats, 21/19/2 daily and 61/31/30 on-demand. A session dated 2026-11-06 stays at 14 seats and 20/18/2. Review coverage, assembled seat count, scheduled-output checks, memory sidecars, and public books follow the session pin or the seats in the book being replayed. A historical 14-seat freeze does not require a chart-guy memory sidecar.
 
-## Validation
+## Validation before this activation
 
 Code commit `23fe556ae82aa098d7286fc8351f4afd5bcfa8f1`. The report sentence naming that commit is `8bf7b511b4741af3c2b52c7be36b9108c12276e3`. PR #320 head is the commit that records both hashes. Commands were run from the repo root with `PYTHONPATH=.` on 2026-11-07. Parent model for this repair is Grok 4.7. Composer 2.5 was not able to sit a new exam or a read-only review: both Task launches were denied by the hook above.
 
@@ -68,6 +79,24 @@ On the deploy workflow the `build` job passed. The `deploy` and `Reconcile Stage
 
 Two pre-existing market-state tests still error on a missing `openpyxl` import (`test_rbnz_workbook_ignores_collapsed_dimension`, `test_rbnz_workbook_parser`). They do not import this feature.
 
+## Validation of the 2026-11-07 activation
+
+Commands were run from the repo root with `PYTHONPATH=.` on 2026-11-07. Parent model is Grok 4.7. No Market Watch or Trader Room production run was started. Both dry-runs used temp state roots and made zero model calls.
+
+- `python3 scripts/validate_trader_room.py` — exit 0. It reports 15 grok-4.7 advocates.
+- `python3 -m scripts.trader_room.agent_config check-agents` — exit 0.
+- `tests.test_fx_technical_smoke` — pass. The stored exam stays `fail` and is not the activation gate. Paper P&L on the in-memory EURUSD close is positive and matches realized increment. No-trade scope stays `no_trade`. Budgets are 20/18/2 before 2026-11-07, 21/19/2 on that date, and on-demand 61/31/30.
+- Hook regressions in `tests.test_mw_role_guards`: a budget file owned by another conversation does not deny; a live run whose own parent or child is in that file still denies when the marker is missing; an unreadable file still denies. The v1 required caps stay 20/18/2.
+- `tests.test_agent_config.ChartGuySeatTests`, `tests.test_mw_current_call_graph`, `tests.test_trading_memory.TradingMemoryTests.test_empty_books_initialize_all_eighteen_identities`, `tests.test_overnight_pipeline.ExpressionRuleTests`, and `tests.test_trader_learning_v2` — pass. September books stay 14 seats. A 2026-11-07 empty book has 15, including chart-guy.
+- Psychology, learning obligations, trader-room on-demand, overnight pipeline, PM scheduled output, and PM overnight packets were re-run after the roster helpers stopped indexing today's standing list into a historical book. The October psychology shadow fixture matches its stored report. A September on-demand persist follows the seats in that book and does not require chart-guy.
+- `python3 scripts/overnight_pipeline.py dry-run --suffix ci --state-root /tmp/overnight-ci-state --site-dir /tmp/overnight-site --as-of 2026-09-18T12:00:00-04:00` — exit 0, seven stages, `model_calls` 0, run `overnight-20260918-dryrun-ci`. Pin is 14 traders, budget 20/18/2, chart-guy absent. `fx_technical` is present with status `unavailable`, `vetoes_unrelated_trades` false, and no pairs, because the fixture has no technical feed. Temp books have 14 seats.
+- The same command with `--suffix ci15`, `--state-root /tmp/overnight-ci-15`, `--site-dir /tmp/overnight-site-15`, and `--as-of 2026-11-07T12:00:00-05:00` — exit 0, seven stages, `model_calls` 0, run `overnight-20261107-dryrun-ci15`. Pin is 15 traders, budget 21/19/2, chart-guy included. His temp book is `$100m`, flat, `spot_only`. `vetoes_unrelated_trades` is false.
+- Canonical incumbent seat objects and identity files match the parent commit. `qualification_result.json`, the 2026-11-06 evidence snapshot, and `.cursor/agents/chart-guy.md` are byte-unchanged.
+
+Composer 2.5 inspected the uncommitted diff and approved the hook, smoke gate, historical book roster, October shadow fixture, activation artifacts, and trader-room command. The reviewer did not re-run the full suite or the dry-runs. One gap the reviewer noted is now closed: the smoke gate fails if the committed registry row is not `status: active`. A live psychology shadow of this repo still omits chart-guy until a run book lists him. That is prospective, not a rewrite of the October fixture.
+
+Two tests still fail for reasons that predate this activation and were not repaired by editing books or inventing marks. `tests.test_trader_book_lifecycle.TraderBookLifecycleTests.test_no_trade_skeptic_cap` blocks `SOFR_2027-03` with `implied rate missing for SOFR_2027-03 on frozen SOFR curve`. `tests.test_profit_harvest.ProfitHarvestTests.test_dollar_king_usdcad_replay_reviews_before_the_giveback` looks for an open dollar-king USDCAD position; the canonical book, unchanged for that seat, has USDJPY only.
+
 ## Not in this change
 
-True OHLC, ATR, candlesticks, and Kronos remain future work. No new warehouse, cron, database, or vendor feed was added. No Market Watch or Trader Room production run was started. Nothing was merged or deployed. ACP was not edited. `chart-guy` is not active. The unmet gate is a blind Grok 4.7 exam that this provider call could not run.
+True OHLC, ATR, candlesticks, and Kronos remain future work. No new warehouse, cron, database, or vendor feed was added. No Market Watch or Trader Room production run was started. Nothing was merged or deployed. ACP was not edited. `chart-guy` is active on this branch only. His paper results are prospective. The old blind exam was not marked as a pass.
