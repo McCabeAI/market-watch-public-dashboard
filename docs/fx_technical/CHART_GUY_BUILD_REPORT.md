@@ -81,7 +81,7 @@ Two pre-existing market-state tests still error on a missing `openpyxl` import (
 
 ## Validation of the 2026-11-07 activation
 
-Commands were run from the repo root with `PYTHONPATH=.` on 2026-11-07. Parent model is Grok 4.7. No Market Watch or Trader Room production run was started. Both dry-runs used temp state roots and made zero model calls.
+Activation commit `052577af28154452845717ef7cd7fe637d5021f7`. Commands were run from the repo root with `PYTHONPATH=.` on 2026-11-07. Parent model is Grok 4.7. No Market Watch or Trader Room production run was started. Both dry-runs used temp state roots and made zero model calls.
 
 - `python3 scripts/validate_trader_room.py` — exit 0. It reports 15 grok-4.7 advocates.
 - `python3 -m scripts.trader_room.agent_config check-agents` — exit 0.
