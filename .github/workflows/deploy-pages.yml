@@ -556,21 +556,21 @@ jobs:
           TARGET="data/dashboard_repair/official_release_cache.json"
           if [[ -f "$RESTORED" ]]; then
             python - <<'PY'
-import json
-import pathlib
-import sys
+          import json
+          import pathlib
+          import sys
 
-restored = pathlib.Path(".mw-cache-restore/official_release_cache.json")
-target = pathlib.Path("data/dashboard_repair/official_release_cache.json")
-try:
-    obj = json.loads(restored.read_text(encoding="utf-8"))
-except (OSError, json.JSONDecodeError):
-    sys.exit(0)
-if not isinstance(obj, dict) or obj.get("version") != 1:
-    sys.exit(0)
-target.parent.mkdir(parents=True, exist_ok=True)
-target.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
-PY
+          restored = pathlib.Path(".mw-cache-restore/official_release_cache.json")
+          target = pathlib.Path("data/dashboard_repair/official_release_cache.json")
+          try:
+              obj = json.loads(restored.read_text(encoding="utf-8"))
+          except (OSError, json.JSONDecodeError):
+              sys.exit(0)
+          if not isinstance(obj, dict) or obj.get("version") != 1:
+              sys.exit(0)
+          target.parent.mkdir(parents=True, exist_ok=True)
+          target.write_text(json.dumps(obj, indent=2) + "\n", encoding="utf-8")
+          PY
           else
             echo "No cache artifact at $RESTORED; keeping committed seed."
           fi
