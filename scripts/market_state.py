@@ -1954,6 +1954,9 @@ def build_snapshot(
     )
     return {
         "policy_paths": policy_paths,
+        "futures_basis": policy_paths.get("futures_basis")
+        if isinstance(policy_paths, dict)
+        else {"status": "unavailable", "reason": "policy paths missing", "curves": {}},
         "policy_meeting_prices": policy_meeting_prices,
         "tradable_rate_curves": tradable_rate_curves,
         "official_curves": official_curves,

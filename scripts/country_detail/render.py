@@ -1194,6 +1194,71 @@ def _policy_meeting_bank_block(
     return None
 
 
+def render_stir_strips(country_code: str, stir: Mapping[str, Any] | None) -> str:
+    """Futures strips and basis for one economy. Omitted when no packet is supplied."""
+    if not isinstance(stir, Mapping):
+        return ""
+    code = str(country_code)
+    strips = stir.get("strips") if isinstance(stir.get("strips"), Mapping) else {}
+    curves = stir.get("curves") if isinstance(stir.get("curves"), Mapping) else {}
+    if code == "US":
+        strip = strips.get("ZQ") if isinstance(strips.get("ZQ"), Mapping) else {}
+        rows = strip.get("rows") if isinstance(strip.get("rows"), list) else stir.get("contracts_zq")
+        basis = curves.get("US_EFFR_MINUS_SOFR") if isinstance(curves.get("US_EFFR_MINUS_SOFR"), Mapping) else {}
+        title = "Federal funds futures (ZQ) and EFFR minus SOFR"
+    elif code == "EA":
+        strip = strips.get("EURIBOR") if isinstance(strips.get("EURIBOR"), Mapping) else {}
+        rows = strip.get("rows") if isinstance(strip.get("rows"), list) else stir.get("contracts_euribor")
+        basis = curves.get("EA_EURIBOR_MINUS_ESTR") if isinstance(curves.get("EA_EURIBOR_MINUS_ESTR"), Mapping) else {}
+        title = "EURIBOR futures and EURIBOR minus €STR"
+    else:
+        return ""
+    if not isinstance(rows, list):
+        rows = []
+    chunks = [
+        '<details class="policy-meetings stir-strips">',
+        f"<summary>{_esc(title)}</summary>",
+    ]
+    if rows:
+        chunks.append('<table class="policy-meetings-table"><thead><tr><th>Contract</th><th>Month</th><th>Price</th><th>Implied %</th><th>Session</th><th>Kind</th></tr></thead><tbody>')
+        for row in rows:
+            if not isinstance(row, Mapping):
+                continue
+            chunks.append(
+                "<tr>"
+                f"<td>{_esc(row.get('code'))}</td>"
+                f"<td>{_esc(row.get('expiry'))}</td>"
+                f"<td>{_esc(row.get('price'))}</td>"
+                f"<td>{_esc(row.get('implied_rate'))}</td>"
+                f"<td>{_esc(row.get('observation_date') or row.get('as_of'))}</td>"
+                f"<td>{_esc(row.get('mark_kind'))}</td>"
+                "</tr>"
+            )
+        chunks.append("</tbody></table>")
+    else:
+        reason = strip.get("reason") or stir.get("reason") or basis.get("reason") or "Strip unavailable"
+        chunks.append(f"<p>{_esc(reason)}</p>")
+    if isinstance(basis, Mapping):
+        chunks.append(
+            f"<p class=\"policy-meetings-source\">{_esc(basis.get('formula') or '')} "
+            f"Status {_esc(basis.get('status'))}. {_esc(basis.get('limitation') or basis.get('reason') or '')}</p>"
+        )
+        for point in basis.get("points") or []:
+            if not isinstance(point, Mapping) or point.get("basis_bp") is None:
+                continue
+            chunks.append(
+                "<p class=\"policy-meetings-source\">"
+                f"{_esc(point.get('expiry'))}: {_esc(point.get('basis_bp'))} bp "
+                f"({_esc(point.get('status'))}, {_esc(point.get('observation_date'))}). "
+                f"{_esc(point.get('zq_code') or point.get('euribor_code') or '')} / "
+                f"{_esc(point.get('sr1_code') or point.get('esr_code') or '')}. "
+                f"{_esc(point.get('reason') or '')}"
+                "</p>"
+            )
+    chunks.append("</details>")
+    return "".join(chunks)
+
+
 def render_country_detail(
     country_code: str,
     projection_country: Mapping[str, Any],
@@ -1201,6 +1266,7 @@ def render_country_detail(
     score_state: Mapping[str, Any],
     score_windows: Mapping[str, Any] | None = None,
     policy_meetings: Mapping | None = None,
+    stir_strips: Mapping[str, Any] | None = None,
 ) -> str:
     """Render the Country Detail fragment for one economy."""
     code = str(country_code)
@@ -1228,6 +1294,9 @@ def render_country_detail(
                 else None,
             )
         )
+    stir_html = render_stir_strips(code, stir_strips)
+    if stir_html:
+        chunks.append(stir_html)
     chunks.extend(
         [
         _render_wmn(attention_country, obs_map, code, score_state),

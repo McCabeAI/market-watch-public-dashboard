@@ -253,7 +253,9 @@ class PolicyPathIsolationTests(unittest.TestCase):
         bench = (ea.get("benchmark") or {}).get("rate")
         ea_err = str(ea.get("error") or "")
         self.assertTrue(bench is None or "timeout" in ea_err.lower(), ea)
-        self.assertFalse(any("eurex.com" in url for url in calls))
+        self.assertFalse(any("FST3" in url.upper() for url in calls))
+        eurex_calls = [url for url in calls if "eurex.com" in url]
+        self.assertTrue(all("FEU3" in url for url in eurex_calls), eurex_calls)
 
     def test_esr_fail_us_ok_estr_unavailable(self) -> None:
         fetch = _policy_fetch(

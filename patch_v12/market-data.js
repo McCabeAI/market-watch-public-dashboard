@@ -81,9 +81,34 @@
       ${irRows?`<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Expiry</th><th>Code</th><th>Implied %</th><th>Listing</th><th>As of</th><th>Status</th></tr></thead><tbody>${irRows}</tbody></table></div>`:'<p class="md-muted">IR strip unavailable in this packet.</p>'}
       ${basisHtml}`;
   }
+  function futuresBasisSection(){
+    const basis=packet.futures_basis||packet.policy_paths?.futures_basis;
+    const us=packet.policy_paths?.countries?.US, ea=packet.policy_paths?.countries?.EA;
+    const zq=us?.contracts_zq||us?.listed_contracts_zq||[];
+    const eur=ea?.contracts_euribor||ea?.listed_contracts_euribor||[];
+    const curves=basis?.curves||{};
+    const usBasis=curves.US_EFFR_MINUS_SOFR||{};
+    const eaBasis=curves.EA_EURIBOR_MINUS_ESTR||{};
+    const stripTable=(rows,empty)=>rows.length?`<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Contract</th><th>Month</th><th>Price</th><th>Implied %</th><th>Session</th><th>Kind</th><th>OI</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r.code)}</td><td>${esc(r.expiry)}</td><td>${fmt(r.price,4)}</td><td>${fmt(r.implied_rate,4)}</td><td>${esc(r.observation_date||r.as_of||'')}</td><td>${esc(r.mark_kind||'')} ${esc(r.freshness||'')}</td><td>${esc(r.open_interest??'')}</td></tr>`).join('')}</tbody></table></div>`:`<p class="md-muted">${esc(empty)}</p>`;
+    const ch=(point,h)=>{const row=point?.changes?.[h]; if(!row||row.status!=='observed'||!num(row.bp)) return '—'; return `${fmt(row.bp,2)} bp vs ${esc(row.compared_to)}`;};
+    const basisTable=(block,empty)=>{
+      const points=(block.points||[]).filter(p=>p&&p.expiry);
+      if(!points.length) return `<p class="md-muted">${esc(block.reason||block.limitation||empty)}</p>`;
+      return `<p class="md-muted">${esc(block.formula||'')} ${esc(block.limitation||'')}</p><div class="md-table-wrap"><table class="md-table"><thead><tr><th>Month</th><th>Basis bp</th><th>Legs</th><th>Session</th><th>Status</th><th>1D</th><th>5D</th><th>20D</th></tr></thead><tbody>${points.map(p=>`<tr><td>${esc(p.expiry)}</td><td>${p.basis_bp==null?'—':fmt(p.basis_bp,2)}</td><td>${esc(p.zq_code||p.euribor_code||'')} / ${esc(p.sr1_code||p.esr_code||'')}</td><td>${esc(p.observation_date||'')}</td><td>${esc(p.status||'')} ${p.execution_eligible?badge('executable'):badge('evidence')}</td><td>${ch(p,'1d')}</td><td>${ch(p,'5d')}</td><td>${ch(p,'20d')}</td></tr>`).join('')}</tbody></table></div>`;
+    };
+    return `<div class="md-section-head"><div><h3>Fed funds and EURIBOR strips</h3><p>ZQ is 30-day EFFR. EURIBOR is separate from ESR €STR. Basis is a futures quote, not a recommendation.</p></div></div>
+      <h4>CME ZQ 30-day federal funds</h4>
+      ${stripTable(zq, us?.zq_error||'ZQ strip unavailable in this packet.')}
+      <h4>EFFR minus one-month SOFR</h4>
+      ${basisTable(usBasis,'US basis unavailable.')}
+      <h4>Three-month EURIBOR</h4>
+      ${stripTable(eur, ea?.euribor_error||'EURIBOR strip unavailable in this packet.')}
+      <h4>EURIBOR minus compounded €STR</h4>
+      ${basisTable(eaBasis,'European basis unavailable.')}`;
+  }
   function curves(){
     const rows=series().filter(s=>['Curves','Relative rates','Rates'].includes(s.category)&&matches(s));
-    return asxStirSection()+['Curves','Relative rates','Rates'].map(cat=>`<div class="md-section-head"><div><h3>${cat==='Curves'?'Curve shape & belly':cat==='Rates'?'Outright yield stretches':'Cross-market spreads'}</h3><p>${cat==='Curves'?'Slopes and 2s5s10s flies. A positive fly means the 5Y yield is above the average of its wings.':cat==='Relative rates'?'First country minus second, on exact common observation dates.':'Yield history provides context; it is not a fair-value estimate.'}</p></div></div>${table(rows.filter(s=>s.category===cat))}`).join('');
+    return asxStirSection()+futuresBasisSection()+['Curves','Relative rates','Rates'].map(cat=>`<div class="md-section-head"><div><h3>${cat==='Curves'?'Curve shape & belly':cat==='Rates'?'Outright yield stretches':'Cross-market spreads'}</h3><p>${cat==='Curves'?'Slopes and 2s5s10s flies. A positive fly means the 5Y yield is above the average of its wings.':cat==='Relative rates'?'First country minus second, on exact common observation dates.':'Yield history provides context; it is not a fair-value estimate.'}</p></div></div>${table(rows.filter(s=>s.category===cat))}`).join('');
   }
   function crossAssets(){
     const rels=packet.opportunities.relationships.filter(matches);

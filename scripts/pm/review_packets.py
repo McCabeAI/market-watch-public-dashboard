@@ -92,6 +92,31 @@ def _compact_policy(block: Any) -> Any:
                 for c in (row.get("contracts_3m") or [])[:8]
                 if isinstance(c, dict)
             ],
+            "contracts_zq": [
+                {
+                    "code": c.get("code"),
+                    "implied_rate": c.get("implied_rate"),
+                    "expiry": c.get("expiry"),
+                    "observation_date": c.get("observation_date"),
+                    "mark_kind": c.get("mark_kind"),
+                }
+                for c in (row.get("contracts_zq") or [])[:12]
+                if isinstance(c, dict)
+            ],
+            "contracts_euribor": [
+                {
+                    "code": c.get("code"),
+                    "implied_rate": c.get("implied_rate"),
+                    "expiry": c.get("expiry"),
+                    "observation_date": c.get("observation_date"),
+                    "mark_kind": c.get("mark_kind"),
+                }
+                for c in (row.get("contracts_euribor") or [])[:12]
+                if isinstance(c, dict)
+            ],
+            "zq_freshness": row.get("zq_freshness"),
+            "euribor_status": row.get("euribor_status"),
+            "euribor_error": row.get("euribor_error"),
         }
     return {"status": block.get("status"), "countries": countries}
 
@@ -148,6 +173,9 @@ def compact_market_state(evidence: dict[str, Any]) -> dict[str, Any]:
         "rates": _compact_rates(market.get("rates")),
         "rate_rv": market.get("rate_rv") if isinstance(market.get("rate_rv"), dict) else {},
         "policy_paths": _compact_policy(market.get("policy_paths")),
+        "futures_basis": market.get("futures_basis")
+        if isinstance(market.get("futures_basis"), dict)
+        else {"status": "unavailable", "reason": "futures basis was not in the frozen packet", "curves": {}},
         "tradable_rate_curves": _compact_curves(market.get("tradable_rate_curves"), label="SOFR/CORRA/AONIA curves"),
         "official_curves": _compact_curves(market.get("official_curves"), label="official sovereign curves"),
         "cross_assets": compact_cross_assets(market),

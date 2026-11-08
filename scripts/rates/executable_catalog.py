@@ -53,6 +53,7 @@ _EXPRESSION_FAMILY = {
     "forward_swap": "other",
     "outright": "stir_outright",
     "policy_meeting": "policy_meeting",
+    "futures_basis_package": "futures_basis",
 }
 
 _ASSESSOR_PATHS = {
@@ -65,7 +66,7 @@ _TWO_YEAR_FAMILIES = frozenset({"government_yield", "treasury_future", "usd_sofr
 _TWO_YEAR_STRIP_CONTRACTS = 8
 _FOUR_QUARTER_STRIP_CONTRACTS = 4
 _STRUCTURE_PROBE_NOTIONAL_USD = 5_000_000
-_CURVE_ORDER = ("SOFR", "CORRA", "AONIA", "BBSW")
+_CURVE_ORDER = ("SOFR", "CORRA", "AONIA", "BBSW", "EFFR")
 _TREASURY_PRODUCTS = ("TU", "FV", "TY")
 _TREASURY_CANONICAL = {"TU": "TU", "ZT": "TU", "FV": "FV", "ZF": "FV", "TY": "TY", "ZN": "TY"}
 _OIS_TENORS = ((0, 2, "USD_SOFR_OIS_2Y"), (1, 1, "USD_SOFR_OIS_1Y1Y"))
@@ -863,6 +864,75 @@ def _assess_forward_swap(expression: Mapping[str, Any]) -> dict[str, Any]:
     )
 
 
+def _assess_futures_basis_package(
+    expression: Mapping[str, Any] | None,
+    market_state: Mapping[str, Any] | None,
+) -> dict[str, Any]:
+    """US EFFR-SOFR basis is bookable only when the frozen point says so.
+
+    European EURIBOR-€STR evidence is never an executable fill. ESR stays
+    observe_only and EURIBOR economics are not assumed.
+    """
+    expr = expression if isinstance(expression, Mapping) else {}
+    curve_id = str(expr.get("curve_id") or "")
+    expiry = str(expr.get("expiry") or "")
+    if curve_id != "US_EFFR_MINUS_SOFR":
+        return _verdict(
+            status="unavailable",
+            reason=(
+                "EURIBOR-€STR basis is evidence only. ESR remains observe_only and "
+                "EURIBOR contract economics are not verified for a paper fill."
+                if curve_id == "EA_EURIBOR_MINUS_ESTR"
+                else f"futures basis curve {curve_id or 'missing'} is not executable"
+            ),
+            family="futures_basis",
+            instrument=f"{curve_id}:{expiry}" if curve_id else None,
+            expression_type="futures_basis_package",
+            mark_status="not_applicable",
+        )
+    basis = market_state.get("futures_basis") if isinstance(market_state, Mapping) else None
+    curves = basis.get("curves") if isinstance(basis, Mapping) else None
+    block = curves.get(curve_id) if isinstance(curves, Mapping) else None
+    points = block.get("points") if isinstance(block, Mapping) else None
+    point = None
+    if isinstance(points, list):
+        for row in points:
+            if isinstance(row, Mapping) and str(row.get("expiry") or "") == expiry:
+                point = row
+                break
+    if not isinstance(point, Mapping):
+        return _verdict(
+            status="missing_input",
+            reason=f"no frozen US basis point for {expiry}",
+            family="futures_basis",
+            instrument=f"US_EFFR_MINUS_SOFR:{expiry}",
+            expression_type="futures_basis_package",
+            missing_inputs=[f"futures_basis.curves.US_EFFR_MINUS_SOFR.points.{expiry}"],
+            mark_status="missing",
+        )
+    if point.get("execution_eligible") is not True or point.get("status") != "current":
+        return _verdict(
+            status="unavailable",
+            reason=str(point.get("reason") or "basis point is not a current official same-session pair"),
+            family="futures_basis",
+            instrument=f"US_EFFR_MINUS_SOFR:{expiry}",
+            expression_type="futures_basis_package",
+            mark_status=str(point.get("freshness") or "unavailable"),
+        )
+    return _verdict(
+        status="executable",
+        reason=(
+            f"US EFFR-SOFR {expiry} basis package is executable on frozen official "
+            f"ZQ {point.get('zq_code')} and SR1 {point.get('sr1_code')} marks"
+        ),
+        family="futures_basis",
+        instrument=f"US_EFFR_MINUS_SOFR:{expiry}",
+        expression_type="futures_basis_package",
+        mark_status="ok",
+        mark_source="futures_basis.curves.US_EFFR_MINUS_SOFR",
+    )
+
+
 def assess_expression(
     instrument: str | None,
     *,
@@ -898,6 +968,9 @@ def assess_expression(
         from scripts.policy_meeting_book import assess_policy_meeting
 
         return assess_policy_meeting(expression, market_state, notional_usd)
+
+    if expr_type == "futures_basis_package":
+        return _assess_futures_basis_package(expression, market_state)
 
     if normalized and is_sovereign_instrument(normalized):
         return _assess_government_yield(normalized, expression, market_state)
@@ -952,7 +1025,7 @@ _CALENDAR_SCHEMA: dict[str, Any] = {
     "required": ["type", "curve_id", "near_expiry", "far_expiry"],
     "properties": {
         "type": {"const": "calendar_spread"},
-        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
         "near_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$", "description": "YYYY-MM earlier than far_expiry"},
         "far_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$", "description": "YYYY-MM"},
     },
@@ -963,7 +1036,7 @@ _BUTTERFLY_SCHEMA: dict[str, Any] = {
     "required": ["type", "curve_id", "wing1_expiry", "body_expiry", "wing2_expiry"],
     "properties": {
         "type": {"const": "butterfly"},
-        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
         "wing1_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
         "body_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
         "wing2_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$", "description": "wing1 < body < wing2"},
@@ -979,7 +1052,7 @@ _OUTRIGHT_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
                 "expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
         },
@@ -987,7 +1060,7 @@ _OUTRIGHT_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
                 "expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
         },
@@ -1004,7 +1077,7 @@ _CURVE_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "near_expiry", "far_expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
                 "near_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
                 "far_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
@@ -1013,7 +1086,7 @@ _CURVE_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "near_expiry", "far_expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
                 "near_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
                 "far_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
@@ -1027,7 +1100,7 @@ _FOUR_QUARTER_STRIP_SCHEMA: dict[str, Any] = {
     "required": ["type", "curve_id", "expiries"],
     "properties": {
         "type": {"const": "futures_strip_average"},
-        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
+        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW", "EFFR"]},
         "expiries": {
             "type": "array",
             "minItems": 4,

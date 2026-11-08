@@ -139,6 +139,18 @@ def contract_pnl_for_lots(position: Mapping[str, Any], lots: int, *, mark: float
 
         side = str(position.get("side") or "long")
         return float(ir_pnl_usd(float(entry), float(px), int(lots), side, fx))
+    if parsed.spec.product_code in {"ZQ", "SR1"}:
+        from scripts.rates.zq_valuation import monthly_rate_pnl_usd
+
+        side = str(position.get("side") or "long")
+        return monthly_rate_pnl_usd(
+            float(entry),
+            float(px),
+            int(lots),
+            side,
+            year=parsed.year,
+            month=parsed.month,
+        )
     local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
     if local is None:
         return None

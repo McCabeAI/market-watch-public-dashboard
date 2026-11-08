@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import json
 from pathlib import Path
 
 from datetime import date, datetime
@@ -126,6 +127,20 @@ def load_policy_meeting_view(root: Path | None = None, calendar: dict | None = N
     return {"prices": prices, "calendar": calendar}
 
 
+def load_stir_strip_view(root: Path | None) -> dict | None:
+    """Optional frozen ZQ/EURIBOR strip. Missing file leaves country pages unchanged."""
+    if root is None:
+        return None
+    path = Path(root) / "data" / "rates" / "futures_basis_latest.json"
+    if not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return payload if isinstance(payload, dict) else None
+
+
 def render_dashboard_sections(
     root: Path | None = None,
     context: dict | None = None,
@@ -139,6 +154,7 @@ def render_dashboard_sections(
     scores = ctx["scores"]
     windows = ctx.get("score_windows") or {}
     meetings = policy_meetings if policy_meetings is not None else load_policy_meeting_view(root)
+    stir = load_stir_strip_view(root)
     sections: dict[str, str] = {}
     for code in COUNTRY_CODES:
         sections[code] = render_country_detail(
@@ -148,6 +164,7 @@ def render_dashboard_sections(
             scores,
             score_windows=windows.get(code),
             policy_meetings=meetings,
+            stir_strips=stir,
         )
     return sections
 
