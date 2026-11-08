@@ -345,8 +345,8 @@ def collect_ea_policy_path(
         "tradable_curve": tradable_curve,
         "terminal": contracts_3m[-1] if contracts_3m else None,
         "method": (
-            "Overnight: ECB €STR. Policy futures: Eurex FST3 (3M €STR) when a public "
-            "settlement feed is available; implied_rate = 100 - price per Eurex STIR quoting."
+            "Overnight: ECB €STR. CME ESR final settlements collected for research; "
+            "curve stays observe_only. Eurex FST3 is not a mark."
         ),
         "sources": {
             "benchmark_url": ECB_ESTR_PAGE,
@@ -355,6 +355,47 @@ def collect_ea_policy_path(
         },
         "errors": errors,
     }
+
+
+def merge_esr_into_ea_policy_path(
+    ea: dict[str, Any],
+    *,
+    esr_block: dict[str, Any],
+) -> dict[str, Any]:
+    """Attach isolated CME ESR strip to an EA policy-path block (€STR benchmark unchanged)."""
+    out = dict(ea)
+    status = str(esr_block.get("status") or "unavailable")
+    freshness = str(esr_block.get("freshness") or status)
+    rows = esr_block.get("rows") if status in {"ok", "stale"} else []
+    if not isinstance(rows, list):
+        rows = []
+
+    if rows:
+        out["contracts_3m"] = rows
+        out["terminal"] = rows[-1]
+        out["futures_as_of"] = esr_block.get("as_of")
+    out["esr_freshness"] = freshness if freshness in {"fresh", "stale"} else (
+        "fresh" if status == "ok" else "stale" if status == "stale" else "unavailable"
+    )
+    out["esr_error"] = esr_block.get("error")
+    out["mark_kind"] = esr_block.get("mark_kind")
+    if esr_block.get("source_url"):
+        out["esr_source_url"] = esr_block.get("source_url")
+    tradable = dict(out.get("tradable_curve") or {})
+    tradable["observe_only_note"] = (
+        "CME ESR research marks; Eurex FST3 is not used as a tradable curve mark"
+    )
+    out["tradable_curve"] = tradable
+
+    benchmark = out.get("benchmark")
+    bench_ok = isinstance(benchmark, dict) and benchmark.get("rate") is not None
+    if not bench_ok:
+        out["status"] = "unavailable"
+    elif out["esr_freshness"] == "fresh" and rows:
+        out["status"] = "ok"
+    elif bench_ok:
+        out["status"] = "partial"
+    return out
 
 
 def parse_ecb_yc_spot_csv(text: str) -> dict[date, float]:

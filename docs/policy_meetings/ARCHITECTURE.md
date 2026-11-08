@@ -99,7 +99,7 @@ Solve meetings in effective-date order. For unresolved meeting `k`, with earlier
 ## 6. Gaps
 
 - NZ: no short-rate strip in the repo, and the RBNZ site returned 403 here. Calendar and prices stay unavailable until a fetch succeeds. No bank-bill proxy.
-- EA: €STR exists. FST3 still has no reliable public settlement feed. Sovereign Bunds are not a meeting anchor. Calendar and DFR can publish. Prices stay unavailable until `contracts_3m` actually parses. Do not add a feed.
+- EA: €STR exists. Sovereign Bunds are not a meeting anchor. Calendar and DFR can publish. CME ESR (product 10247) settlements can price a meeting only when one verified reference quarter identifies it; two meetings in one quarter stay unavailable. EA remains not bookable. Eurex FST3 is not a mark.
 - JP prices only when TONA `contracts_3m` and the BoJ anchor both exist. Two meetings in a quarter will usually be `equal_step`.
 - A bank with no anchor is unavailable even if futures exist. Never substitute the fixing for the target.
 

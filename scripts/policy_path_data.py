@@ -10,6 +10,7 @@ Exchange/web prices are delayed research/reference data, never executable marks.
 
 from __future__ import annotations
 
+import copy
 import csv
 import html
 import io
@@ -17,6 +18,7 @@ import json
 import re
 from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
+from pathlib import Path
 from typing import Any, Callable
 
 FetchBytes = Callable[..., bytes]
@@ -1438,10 +1440,20 @@ def _acquire_sr3_contracts(
     )
 
 
+def _short_rate_rows(block: dict[str, Any]) -> list[dict[str, Any]]:
+    status = block.get("status")
+    if status in {"ok", "stale"}:
+        rows = block.get("rows")
+        if isinstance(rows, list):
+            return rows
+    return []
+
+
 def collect_policy_paths(
     *,
     today: date,
     fetch_bytes: FetchBytes,
+    short_rate_store: Path | None = None,
 ) -> dict[str, Any]:
     countries: dict[str, Any] = {}
     sources: dict[str, Any] = {}
@@ -1470,8 +1482,20 @@ def collect_policy_paths(
         countries["CA"] = {"status": "unavailable", "error": str(exc)}
         sources["CA_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": BOC_CORRA_PAGE, "path_url": MX_EXPECTATIONS_URL}
 
+    ea_prefetch: dict[str, Any] | None = None
+    benchmark_eur: float | None = None
+    try:
+        from scripts.euro_area_rates_data import collect_ea_policy_path
+
+        ea_prefetch = collect_ea_policy_path(today, fetch_bytes=fetch_bytes)
+        bench_ea = ea_prefetch.get("benchmark") or {}
+        if bench_ea.get("rate") is not None:
+            benchmark_eur = float(bench_ea["rate"])
+    except Exception:
+        ea_prefetch = None
+
     # United States. NY Fed SOFR is authoritative for funding and is kept even
-    # when SR1 or SR3 futures acquisition fails.
+    # when SR1 or SR3 futures acquisition fails. ESR collection is isolated.
     try:
         sofr_payload = fetch_bytes(NYFED_SOFR_URL).decode("utf-8", errors="replace")
         sofr = parse_nyfed_sofr_json(sofr_payload)
@@ -1484,34 +1508,91 @@ def collect_policy_paths(
             "path_url": CME_SOFR_URL,
         }
         sofr = None
+
+    benchmark_usd = float(sofr["rate"]) if sofr is not None else None
+
+    from scripts.rates.short_rate_isolation import collect_usd_eur_short_rates
+    from scripts.rates.short_rate_store import load_store
+
+    esr_last_official: list[dict[str, Any]] | None = None
+    if short_rate_store is not None:
+        try:
+            seeded = load_store(short_rate_store)
+        except ValueError:
+            seeded = {"version": 1, "curves": {}}
+        esr_record = (seeded.get("curves") or {}).get("ESR")
+        if esr_record and isinstance(esr_record.get("rows"), list):
+            esr_last_official = copy.deepcopy(esr_record["rows"])
+
+    def acquire_sr1_wrapped(fb: FetchBytes, *, today: date, benchmark: float, last_official=None):
+        if benchmark_usd is None:
+            raise ValueError("NY Fed SOFR unavailable")
+        return _acquire_sr1_contracts(fb, today=today, benchmark=benchmark_usd)
+
+    def acquire_sr3_wrapped(fb: FetchBytes, *, today: date, benchmark: float, last_official=None):
+        if benchmark_usd is None:
+            raise ValueError("NY Fed SOFR unavailable")
+        return _acquire_sr3_contracts(fb, today=today, benchmark=benchmark_usd)
+
+    def acquire_esr_wrapped(
+        fb: FetchBytes,
+        *,
+        today: date,
+        benchmark: float | None,
+        last_official=None,
+    ):
+        from scripts.rates.cme_esr import acquire_esr_contracts
+
+        return acquire_esr_contracts(
+            fb,
+            today=today,
+            benchmark=benchmark,
+            last_official=esr_last_official if last_official is None else last_official,
+        )
+
+    isolated = collect_usd_eur_short_rates(
+        today=today,
+        fetch_bytes=fetch_bytes,
+        benchmark_usd=benchmark_usd,
+        benchmark_eur=benchmark_eur,
+        store_path=short_rate_store,
+        acquire_sr1=acquire_sr1_wrapped,
+        acquire_sr3=acquire_sr3_wrapped,
+        acquire_esr=acquire_esr_wrapped,
+    )
+    esr_block = isolated["ESR"]
+
     if sofr is not None:
         benchmark_rate = float(sofr["rate"])
-        sr1_error = None
-        sr3_error = None
-        try:
-            contracts, us_curve_source, us_curve_method = _acquire_sr1_contracts(
-                fetch_bytes,
-                today=today,
-                benchmark=benchmark_rate,
-            )
-        except Exception as exc:
-            contracts = []
-            us_curve_source = CME_SOFR_URL
-            us_curve_method = "SR1 unavailable"
-            sr1_error = str(exc)
-        try:
-            contracts_3m, sr3_source, sr3_method = _acquire_sr3_contracts(
-                fetch_bytes,
-                today=today,
-                benchmark=benchmark_rate,
-            )
-        except Exception as exc:
-            contracts_3m = []
-            sr3_source = ESIGNAL_SR3_CHAIN_URL
-            sr3_method = "SR3 unavailable"
-            sr3_error = str(exc)
+        sr1_block = isolated["SR1"]
+        sr3_block = isolated["SR3"]
+        contracts = _short_rate_rows(sr1_block)
+        contracts_3m = _short_rate_rows(sr3_block)
+        sr1_error = None if sr1_block.get("status") == "ok" else sr1_block.get("error")
+        sr3_error = None if sr3_block.get("status") == "ok" else sr3_block.get("error")
+        sr1_freshness = (
+            "fresh"
+            if sr1_block.get("status") == "ok"
+            else "stale"
+            if sr1_block.get("status") == "stale"
+            else "unavailable"
+        )
+        sr3_freshness = (
+            "fresh"
+            if sr3_block.get("status") == "ok"
+            else "stale"
+            if sr3_block.get("status") == "stale"
+            else "unavailable"
+        )
+        us_curve_source = sr1_block.get("source_url") or CME_SOFR_URL
+        sr3_source = sr3_block.get("source_url") or ESIGNAL_SR3_CHAIN_URL
+        us_curve_method = sr1_block.get("method") or "SR1 unavailable"
+        sr3_method = sr3_block.get("method") or "SR3 unavailable"
         futures_errors = [item for item in (sr1_error, sr3_error) if item]
-        us_status = "ok" if contracts_3m else "partial"
+        if sr3_freshness == "fresh" and contracts_3m:
+            us_status = "ok"
+        else:
+            us_status = "partial"
         countries["US"] = {
             "status": us_status,
             "benchmark": {
@@ -1522,6 +1603,8 @@ def collect_policy_paths(
             },
             "contracts_1m": contracts,
             "contracts_3m": contracts_3m,
+            "sr1_freshness": sr1_freshness,
+            "sr3_freshness": sr3_freshness,
             "terminal": _terminal_summary(contracts or contracts_3m),
             "method": f"Policy context: 100 minus {us_curve_method}. Tradable curve: 100 minus {sr3_method}.",
         }
@@ -1595,15 +1678,20 @@ def collect_policy_paths(
         sources["AU_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": RBA_F1_PAGE, "path_url": ASX_IR_HISTORY}
 
     try:
-        from scripts.euro_area_rates_data import collect_ea_policy_path
+        from scripts.euro_area_rates_data import collect_ea_policy_path, merge_esr_into_ea_policy_path
 
-        ea = collect_ea_policy_path(today, fetch_bytes=fetch_bytes)
+        ea = ea_prefetch if ea_prefetch is not None else collect_ea_policy_path(
+            today, fetch_bytes=fetch_bytes
+        )
+        ea = merge_esr_into_ea_policy_path(ea, esr_block=esr_block)
         countries["EA"] = ea
         sources["EA_policy"] = {
             "status": ea.get("status"),
             **(ea.get("sources") or {}),
             **({"error": ea.get("error")} if ea.get("status") == "unavailable" else {}),
         }
+        if ea.get("esr_source_url"):
+            sources["EA_policy"]["esr_curve_url"] = ea.get("esr_source_url")
     except Exception as exc:
         countries["EA"] = {"status": "unavailable", "error": str(exc), "country": "EA"}
         sources["EA_policy"] = {"status": "unavailable", "error": str(exc)}
@@ -1674,6 +1762,24 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
                 "error": strip_error,
             }
             continue
+        if curve_id == "SOFR" and block.get("sr3_freshness") == "stale":
+            retained_as_of = None
+            if isinstance(rows[0], dict):
+                retained_as_of = rows[0].get("as_of") or rows[0].get("observation_date")
+            curves[curve_id] = {
+                "status": "stale",
+                "country": country,
+                "benchmark": block.get("benchmark"),
+                "instrument": instrument,
+                "product_code": product_code,
+                "contract_period_months": period_months,
+                "contracts": rows,
+                "source_url": source_url,
+                "mark_convention": "implied_rate = 100 - futures price",
+                "as_of": retained_as_of,
+                "error": str(block.get("sr3_error") or "retained SR3 marks; fetch failed"),
+            }
+            continue
         curve_block: dict[str, Any] = {
             "status": "ok",
             "country": country,
@@ -1696,26 +1802,55 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
         curves[curve_id] = curve_block
 
     ea = countries.get("EA") or {}
-    ea_tradable = ea.get("tradable_curve") if isinstance(ea.get("tradable_curve"), dict) else {}
+    esr_rows = ea.get("contracts_3m") if isinstance(ea.get("contracts_3m"), list) else []
+    esr_fresh = str(ea.get("esr_freshness") or "")
+    esr_as_of = ea.get("futures_as_of")
+    esr_error = ea.get("esr_error")
+    esr_url = ea.get("esr_source_url") or (ea.get("sources") or {}).get("esr_curve_url")
+    mark_kind = ea.get("mark_kind")
+
+    estr_status = "unavailable"
+    estr_error: str | None = None
+    if esr_fresh == "fresh" and esr_rows:
+        verified_official = mark_kind == "official_settlement" and any(
+            row.get("trade_date_verified") is True for row in esr_rows if isinstance(row, dict)
+        )
+        delayed_ok = mark_kind == "delayed_quote" and any(
+            row.get("trade_date_verified") is True for row in esr_rows if isinstance(row, dict)
+        )
+        if verified_official or delayed_ok:
+            estr_status = "ok"
+        else:
+            estr_status = "unavailable"
+            estr_error = "ESR strip lacks verified official settlement for tradable curve"
+    elif esr_fresh == "stale" and esr_rows:
+        estr_status = "stale"
+        estr_error = (
+            f"retained CME ESR marks from {esr_as_of or 'prior session'}; "
+            f"fetch failed: {esr_error or 'unknown'}"
+        )
+
+    if estr_status == "unavailable" and not estr_error:
+        estr_error = esr_error or "CME ESR settlements unavailable; FST3 is not the mark"
+
     curves["ESTR"] = {
-        "status": (ea_tradable.get("status") if ea_tradable else None) or "unavailable",
+        "status": estr_status,
         "country": "EA",
         "benchmark": ea.get("benchmark"),
-        "instrument": "Eurex Three-Month €STR futures",
-        "product_code": "FST3",
+        "instrument": "CME Three-Month €STR futures",
+        "product_code": "ESR",
         "contract_period_months": 3,
-        "contracts": ea_tradable.get("contracts") or [],
-        "source_url": None,
-        "source_urls_tried": ea_tradable.get("source_urls_tried"),
-        "mark_convention": ea_tradable.get("mark_convention")
-        or "implied_rate = 100 - futures_price (Eurex STIR convention)",
-        "error": ea_tradable.get("error")
-        or ("ESTR tradable curve not collected" if not ea_tradable else None),
+        "contracts": esr_rows if esr_rows else [],
+        "source_url": esr_url,
+        "mark_convention": (
+            "implied_rate = 100 - price; named-month starts the reference quarter "
+            "(CME Rulebook Ch.480)"
+        ),
+        "paper_trading": "observe_only",
+        "as_of": esr_as_of,
+        "mark_kind": mark_kind,
+        "error": estr_error,
     }
-    if curves["ESTR"]["status"] != "ok":
-        curves["ESTR"]["status"] = "unavailable"
-        if not curves["ESTR"].get("error"):
-            curves["ESTR"]["error"] = "No credential-free FST3 settlement feed"
 
     jp = countries.get("JP") or {}
     jp_tradable = jp.get("tradable_curve") if isinstance(jp.get("tradable_curve"), dict) else {}
@@ -1778,12 +1913,19 @@ def validate_tradable_rate_curves(payload: dict[str, Any]) -> None:
     if not required.issubset(set(curves)):
         raise ValueError("tradable_rate_curves must contain SOFR, CORRA and AONIA")
     for curve_id, block in curves.items():
-        if block.get("status") == "unavailable":
+        status = block.get("status")
+        if status == "unavailable":
             if not block.get("error"):
                 raise ValueError(f"{curve_id} unavailable without error")
             continue
+        if status == "stale":
+            rows = block.get("contracts")
+            if not isinstance(rows, list) or not rows:
+                raise ValueError(f"{curve_id} stale without retained contracts")
+            if not block.get("error"):
+                raise ValueError(f"{curve_id} stale without error")
         rows = block.get("contracts")
-        if not isinstance(rows, list) or not rows:
+        if status == "ok" and (not isinstance(rows, list) or not rows):
             raise ValueError(f"{curve_id} has no contracts")
         for row in rows:
             implied = _num(row.get("implied_rate"))

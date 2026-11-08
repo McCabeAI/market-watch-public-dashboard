@@ -1905,16 +1905,30 @@ def _contracts_for_bank(
     if code == "EA":
         rows = country_paths.get("contracts_3m") or []
         if not rows:
-            return [], "FST3 is absent"
+            return [], "ESR settlements unavailable"
         for row in rows:
-            contracts.append(
-                {
-                    "product": "FST3",
-                    "expiry": row["expiry"],
-                    "period": "3m",
-                    "implied_rate": float(row["implied_rate"]),
-                }
-            )
+            base: dict[str, Any] = {
+                "product": "ESR",
+                "expiry": row.get("expiry"),
+                "period": "3m",
+                "implied_rate": float(row["implied_rate"]),
+            }
+            for key in (
+                "code",
+                "price",
+                "reference_start",
+                "reference_end",
+                "mark_kind",
+                "trade_date_verified",
+                "open_interest",
+                "source",
+                "source_url",
+                "observation_date",
+                "as_of",
+            ):
+                if row.get(key) is not None:
+                    base[key] = row[key]
+            contracts.append(base)
         return contracts, None
     if code == "NZ":
         return [], "No NZD short-rate futures strip"
@@ -2164,7 +2178,9 @@ def build_policy_meeting_prices(
         us_obs_date: date | None = None
         if code == "US" and paths_status in {"ok", "partial"}:
             raw_sr1 = country_paths.get("contracts_1m")
-            if not isinstance(raw_sr1, list) or not raw_sr1:
+            if str(country_paths.get("sr1_freshness") or "") == "stale":
+                us_sr1_gate_reason = "SR1 futures are retained stale"
+            elif not isinstance(raw_sr1, list) or not raw_sr1:
                 us_sr1_gate_reason = (
                     "US policy path has no SR1 (contracts_1m) contracts"
                 )
@@ -2229,9 +2245,13 @@ def build_policy_meeting_prices(
             }
             continue
 
-        if contract_reason == "FST3 is absent":
+        if contract_reason in {"ESR settlements unavailable", "FST3 is absent"}:
             status = "unavailable"
-            reason = contract_reason
+            reason = (
+                "ESR settlements unavailable"
+                if contract_reason == "FST3 is absent"
+                else contract_reason
+            )
             priced: list[dict] = []
             for m in meetings_cal:
                 if _parse_date(m["effective_date"]) > as_of:
@@ -2303,6 +2323,85 @@ def build_policy_meeting_prices(
                 "futures_as_of": futures_as_of,
                 "calendar_retrieved_at": calendar_retrieved_at,
                 "meetings": _unavailable_meeting_rows_for_bank(code, meetings_cal, as_of),
+            }
+            continue
+
+        if code == "EA":
+            from scripts.rates.ecb_meeting_pricing import ECB_METHOD_NOTE, price_ecb_meetings
+
+            hist_fixings: list[tuple[date, float]] = []
+            benchmark = country_paths.get("benchmark") or {}
+            for item in benchmark.get("history") or []:
+                if not isinstance(item, dict):
+                    continue
+                eff = item.get("effective_date")
+                rate = item.get("percent_rate")
+                if eff and rate is not None:
+                    hist_fixings.append((_parse_date(str(eff)), float(rate)))
+            esr_fresh = str(country_paths.get("esr_freshness") or "unavailable")
+            if esr_fresh not in {"fresh", "stale"}:
+                esr_fresh = "unavailable"
+            futures_as_of = country_paths.get("futures_as_of") or futures_as_of
+            priced_rows, bank_reason = price_ecb_meetings(
+                as_of=as_of,
+                anchor=anchor,
+                fixing=fixing,
+                history=hist_fixings,
+                meetings=meetings_cal,
+                contracts=contract_list,
+                futures_freshness=esr_fresh,
+            )
+            meetings_out = []
+            for row in priced_rows:
+                chg_1d, chg_1w = _lookup_history_changes(
+                    history_doc,
+                    as_of,
+                    code,
+                    row["decision_date"],
+                    row.get("cumulative_bp"),
+                )
+                mt = {
+                    "instrument_id": f"PM:{code}:{row['decision_date']}",
+                    "decision_date": row["decision_date"],
+                    "effective_date": row["effective_date"],
+                    "post_rate": row.get("post_rate"),
+                    "incremental_bp": row.get("incremental_bp"),
+                    "cumulative_bp": row.get("cumulative_bp"),
+                    "method": row.get("method"),
+                    "contracts": row.get("contracts") or [],
+                    "chg_1d_bp": chg_1d,
+                    "chg_1w_bp": chg_1w,
+                }
+                if row.get("reason"):
+                    mt["reason"] = row["reason"]
+                meetings_out.append(mt)
+            future_rows = [
+                row
+                for row in meetings_out
+                if _parse_date(str(row["effective_date"])) > as_of
+            ]
+            if not future_rows:
+                ea_status = "unavailable"
+                ea_reason = bank_reason or "No future ECB meetings"
+            elif all(row.get("method") == "identified" for row in future_rows):
+                ea_status = "ok"
+                ea_reason = None
+            elif any(row.get("method") == "identified" for row in future_rows):
+                ea_status = "partial"
+                ea_reason = bank_reason
+            else:
+                ea_status = "unavailable"
+                ea_reason = bank_reason or "ESR windows do not identify meetings"
+            banks_out[code] = {
+                "status": ea_status,
+                "reason": ea_reason,
+                "anchor": anchor,
+                "fixing": fixing,
+                "basis_bp": basis_bp,
+                "futures_as_of": futures_as_of,
+                "calendar_retrieved_at": calendar_retrieved_at,
+                "meetings": meetings_out,
+                "step_meaning": ECB_METHOD_NOTE,
             }
             continue
 
