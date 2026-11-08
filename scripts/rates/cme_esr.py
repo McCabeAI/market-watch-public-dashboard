@@ -5,10 +5,17 @@ from __future__ import annotations
 import json
 import re
 import statistics
+import urllib.error
 from calendar import monthrange
 from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
 from typing import Any, Callable
+
+from scripts.rates.cme_session import (
+    FRESH_MAX_AGE_DAYS,
+    classify_mark_freshness,
+    latest_expected_cme_session,
+)
 
 FetchBytes = Callable[..., bytes]
 
@@ -19,8 +26,6 @@ CME_ESR_SETTLEMENTS_TEMPLATE = (
 )
 CME_ESR_PAGE = "https://www.cmegroup.com/markets/interest-rates/stirs/euro-short-term-rate.html"
 ESIGNAL_ESR_CHAIN_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=ESR-CME"
-FRESH_MAX_AGE_DAYS = 8
-
 UA = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
@@ -684,12 +689,26 @@ def acquire_esr_contracts(
             )
             _accept_fresh_esr_rows(rows, today)
             trade_iso = rows[0]["observation_date"]
+            obs_date = date.fromisoformat(str(trade_iso))
+            session_expected = latest_expected_cme_session(today).isoformat()
+            freshness_hint = classify_mark_freshness(
+                curve_key="ESR",
+                observation=obs_date,
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=True,
+            )
+            for row in rows:
+                row["session_expected"] = session_expected
+                row["freshness"] = freshness_hint
             provenance = {
                 "attempts": attempts,
                 "mark_kind": "official_settlement",
                 "report_type": rows[0].get("report_type"),
                 "trade_date": trade_iso,
                 "via": attempt.get("via"),
+                "freshness_hint": freshness_hint,
+                "session_expected": session_expected,
             }
             attempts.append(attempt)
             return rows, url, "CME ESR settlements API", provenance
@@ -709,12 +728,27 @@ def acquire_esr_contracts(
             delayed = _comparable_fallback(delayed, last_official)
         else:
             _accept_delayed_without_official(delayed, today=today, retrieved_on=retrieved_on)
+        session_expected = latest_expected_cme_session(today).isoformat()
+        obs_raw = delayed[0].get("observation_date")
+        obs_date = date.fromisoformat(str(obs_raw)) if obs_raw else None
+        freshness_hint = classify_mark_freshness(
+            curve_key="ESR",
+            observation=obs_date,
+            today=today,
+            mark_kind="delayed_quote",
+            trade_date_verified=False,
+        )
+        for row in delayed:
+            row["session_expected"] = session_expected
+            row["freshness"] = freshness_hint
         provenance = {
             "attempts": attempts,
             "mark_kind": "delayed_quote",
             "report_type": None,
             "trade_date": delayed[0].get("observation_date"),
             "via": attempt.get("via"),
+            "freshness_hint": freshness_hint,
+            "session_expected": session_expected,
         }
         return delayed, delayed_url, "delayed CME ESR futures chain via eSignal", provenance
     except Exception as exc:
@@ -773,4 +807,6 @@ def probe_cme_esr(fetch_bytes: FetchBytes, *, session_date: date) -> dict:
             out["error"] = f"unexpected payload type {type(payload)!r}"
     except Exception as exc:
         out["error"] = str(exc)
+        if isinstance(exc, urllib.error.HTTPError):
+            out["http_status"] = exc.code
     return out

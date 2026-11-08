@@ -8,6 +8,7 @@ from datetime import date
 from pathlib import Path
 from typing import Any, Callable
 
+from scripts.rates.cme_session import classify_mark_freshness
 from scripts.rates.short_rate_store import (
     CURVE_KEYS,
     remember_fresh,
@@ -102,6 +103,94 @@ def _ok_block(
         "mark_fresh": True,
         "provenance": provenance,
     }
+
+
+def _stale_block(
+    *,
+    rows: list[dict[str, Any]],
+    as_of: date,
+    source: str,
+    source_url: str | None,
+    method: str,
+    mark_kind: str,
+    provenance: dict[str, Any],
+    retained: bool = False,
+    error: str | None = None,
+) -> dict[str, Any]:
+    return {
+        "status": "stale",
+        "freshness": "stale",
+        "rows": rows,
+        "as_of": as_of.isoformat(),
+        "source": source,
+        "source_url": source_url,
+        "method": method,
+        "mark_kind": mark_kind,
+        "error": error,
+        "retained": retained,
+        "mark_fresh": False,
+        "provenance": provenance,
+    }
+
+
+def _stored_as_of(store: dict[str, Any], curve_key: str) -> date | None:
+    record = (store.get("curves") or {}).get(curve_key)
+    if not record:
+        return None
+    raw = record.get("as_of")
+    if raw is None:
+        return None
+    try:
+        return date.fromisoformat(str(raw).strip()[:10])
+    except ValueError:
+        return None
+
+
+def _block_from_store_record(record: dict[str, Any], *, retained: bool, error: str | None) -> dict[str, Any]:
+    as_of = date.fromisoformat(str(record["as_of"]).strip()[:10])
+    return _stale_block(
+        rows=record.get("rows") or [],
+        as_of=as_of,
+        source=str(record.get("source") or ""),
+        source_url=record.get("source_url"),
+        method=str(record.get("source") or ""),
+        mark_kind=str(record.get("mark_kind") or ""),
+        provenance=record.get("provenance") or {},
+        retained=retained,
+        error=error,
+    )
+
+
+def _trade_date_verified(rows: list[dict[str, Any]], *, mark_kind: str) -> bool:
+    if not rows or not isinstance(rows[0], dict):
+        return False
+    flag = rows[0].get("trade_date_verified")
+    if flag is True:
+        return True
+    if flag is False:
+        return False
+    return mark_kind == "official_settlement"
+
+
+def _freshness_class(
+    *,
+    curve_key: str,
+    observation: date,
+    today: date,
+    mark_kind: str,
+    trade_date_verified: bool,
+    provenance: dict[str, Any],
+) -> str:
+    hint = provenance.get("freshness_hint") if isinstance(provenance, dict) else None
+    if hint in ("fresh", "stale", "unavailable"):
+        return str(hint)
+    return classify_mark_freshness(
+        curve_key=curve_key,
+        observation=observation,
+        today=today,
+        mark_kind=mark_kind,
+        trade_date_verified=trade_date_verified,
+    )
 
 
 def _fallback_block(
@@ -200,25 +289,148 @@ def _process_task_result(
         prov_kind = provenance.get("mark_kind") if isinstance(provenance, dict) else None
         mark_kind = str(prov_kind or row_kind or _mark_kind_from_method(method))
         source = method
-        try:
-            working_store = remember_fresh(
-                working_store,
-                curve_key,
-                rows=rows,
-                as_of=obs,
-                source=source,
-                source_url=source_url,
-                mark_kind=mark_kind,
-                provenance=provenance,
-            )
-        except ValueError as exc:
+        verified = _trade_date_verified(rows, mark_kind=mark_kind)
+        freshness = _freshness_class(
+            curve_key=curve_key,
+            observation=obs,
+            today=today,
+            mark_kind=mark_kind,
+            trade_date_verified=verified,
+            provenance=provenance,
+        )
+
+        if curve_key in ("SR1", "SR3"):
+            if freshness != "fresh":
+                return (
+                    working_store,
+                    _unavailable_fetch_block(
+                        error=(
+                            f"{curve_key}: observation as_of {obs.isoformat()} "
+                            "outside freshness window; not remembered"
+                        ),
+                    ),
+                )
+            try:
+                working_store = remember_fresh(
+                    working_store,
+                    curve_key,
+                    rows=rows,
+                    as_of=obs,
+                    source=source,
+                    source_url=source_url,
+                    mark_kind=mark_kind,
+                    provenance=provenance,
+                )
+            except ValueError as exc:
+                return (
+                    working_store,
+                    _unavailable_fetch_block(error=str(exc)),
+                )
             return (
                 working_store,
-                _unavailable_fetch_block(error=str(exc)),
+                _ok_block(
+                    rows=rows,
+                    as_of=obs,
+                    source=source,
+                    source_url=source_url,
+                    method=method,
+                    mark_kind=mark_kind,
+                    provenance=provenance,
+                ),
             )
+
+        # ESR
+        stored_as_of = _stored_as_of(working_store, curve_key)
+        stored_record = (working_store.get("curves") or {}).get("ESR")
+        is_delayed = mark_kind == "delayed_quote"
+
+        if freshness == "fresh":
+            try:
+                working_store = remember_fresh(
+                    working_store,
+                    curve_key,
+                    rows=rows,
+                    as_of=obs,
+                    source=source,
+                    source_url=source_url,
+                    mark_kind=mark_kind,
+                    provenance=provenance,
+                )
+            except ValueError as exc:
+                return (
+                    working_store,
+                    _unavailable_fetch_block(error=str(exc)),
+                )
+            return (
+                working_store,
+                _ok_block(
+                    rows=rows,
+                    as_of=obs,
+                    source=source,
+                    source_url=source_url,
+                    method=method,
+                    mark_kind=mark_kind,
+                    provenance=provenance,
+                ),
+            )
+
+        if freshness == "unavailable":
+            recalled = recall(working_store, curve_key, today=today)
+            return (
+                working_store,
+                _fallback_block(
+                    recalled,
+                    fetch_error=(
+                        f"{curve_key}: mark unavailable "
+                        f"(observation {obs.isoformat()})"
+                    ),
+                    store_corrupt_note=store_corrupt_note,
+                ),
+            )
+
+        # freshness == "stale"
+        if is_delayed and stored_record and stored_as_of is not None:
+            recalled = recall(working_store, curve_key, today=today)
+            return (
+                working_store,
+                _fallback_block(
+                    recalled,
+                    fetch_error=f"{curve_key}: delayed quote not promoted over stored official mark",
+                    store_corrupt_note=store_corrupt_note,
+                ),
+            )
+
+        if stored_as_of is not None and stored_as_of > obs:
+            return (
+                working_store,
+                _block_from_store_record(
+                    stored_record,
+                    retained=True,
+                    error=None,
+                ),
+            )
+
+        if not is_delayed and (stored_as_of is None or stored_as_of <= obs):
+            try:
+                working_store = remember_fresh(
+                    working_store,
+                    curve_key,
+                    rows=rows,
+                    as_of=obs,
+                    source=source,
+                    source_url=source_url,
+                    mark_kind=mark_kind,
+                    provenance=provenance,
+                )
+            except ValueError as exc:
+                return (
+                    working_store,
+                    _unavailable_fetch_block(error=str(exc)),
+                )
+
         return (
             working_store,
-            _ok_block(
+            _stale_block(
                 rows=rows,
                 as_of=obs,
                 source=source,

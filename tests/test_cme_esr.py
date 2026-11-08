@@ -15,6 +15,7 @@ from scripts.rates.cme_esr import (
     reference_quarter,
     third_wednesday,
 )
+from scripts.rates.cme_session import classify_mark_freshness, latest_expected_cme_session
 
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "cme_esr"
 NOV6_BODY = (FIXTURE_DIR / "settlement_final_2026-11-06.json").read_text(encoding="utf-8")
@@ -284,6 +285,112 @@ class AcquireTests(unittest.TestCase):
                 last_official=official,
             )
         self.assertIn("diverges", str(ctx.exception))
+
+
+class CmeSessionFreshnessTests(unittest.TestCase):
+    def test_latest_expected_session_sunday(self) -> None:
+        self.assertEqual(latest_expected_cme_session(date(2026, 11, 8)), date(2026, 11, 6))
+
+    def test_esr_fresh_only_on_expected_session(self) -> None:
+        today = date(2026, 11, 8)
+        expected = latest_expected_cme_session(today)
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="ESR",
+                observation=expected,
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=True,
+            ),
+            "fresh",
+        )
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="ESR",
+                observation=date(2026, 11, 3),
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=True,
+            ),
+            "stale",
+        )
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="ESR",
+                observation=date(2026, 10, 30),
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=True,
+            ),
+            "unavailable",
+        )
+
+    def test_sr3_style_acquire_within_eight_days_is_fresh(self) -> None:
+        today = date(2026, 11, 8)
+        obs = today - __import__("datetime").timedelta(days=3)
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="SR3",
+                observation=obs,
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=False,
+            ),
+            "fresh",
+        )
+
+    def test_esignal_weekend_not_fresh(self) -> None:
+        html = ESIGNAL_WEEKDAY.replace("Nov 6 2026", "Nov 8 2026")
+        rows = parse_esignal_esr_html(html, benchmark=2.5)
+        today = date(2026, 11, 8)
+        self.assertFalse(rows[0]["trade_date_verified"])
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="ESR",
+                observation=None,
+                today=today,
+                mark_kind="delayed_quote",
+                trade_date_verified=False,
+            ),
+            "unavailable",
+        )
+
+
+class SundayAcquireTests(unittest.TestCase):
+    def test_sunday_nov6_official_fresh_stamps(self) -> None:
+        def fetch(url: str, **_kwargs) -> bytes:
+            if "11/06/2026" in url:
+                return NOV6_BODY.encode()
+            if "11/07/2026" in url or "11/08/2026" in url:
+                return b'{"reportType":"Final","tradeDate":"11/06/2026"}'
+            raise AssertionError(url)
+
+        rows, _url, _method, prov = acquire_esr_contracts(
+            fetch, today=date(2026, 11, 8), benchmark=2.0
+        )
+        self.assertEqual(rows[0]["observation_date"], "2026-11-06")
+        self.assertEqual(rows[0]["as_of"], "2026-11-06")
+        self.assertEqual(rows[0]["freshness"], "fresh")
+        self.assertEqual(prov["freshness_hint"], "fresh")
+        self.assertEqual(rows[0]["session_expected"], "2026-11-06")
+
+    def test_stale_session_inside_lookback_still_returned(self) -> None:
+        body = json.loads(NOV6_BODY)
+        body["tradeDate"] = "11/03/2026"
+        body["updateTime"] = "Monday, 03 Nov 2026 11:55 PM"
+        nov3 = json.dumps(body).encode()
+
+        def fetch(url: str, **_kwargs) -> bytes:
+            if "11/03/2026" in url:
+                return nov3
+            return b"{}"
+
+        rows, _url, _method, prov = acquire_esr_contracts(
+            fetch, today=date(2026, 11, 8), benchmark=2.0
+        )
+        self.assertEqual(rows[0]["observation_date"], "2026-11-03")
+        self.assertEqual(prov["freshness_hint"], "stale")
+        self.assertEqual(rows[0]["freshness"], "stale")
 
 
 class ProbeTests(unittest.TestCase):

@@ -36,7 +36,12 @@ def _rows(obs: str = "2026-11-05", rate: float = 4.0) -> list[dict]:
 def _acquire_ok(obs: str = "2026-11-05", method: str = "test official"):
     def _inner(_fetch, *, today, benchmark, last_official=None):
         prov = {"bench": benchmark, "last": last_official is not None}
-        return (_rows(obs), f"https://example/{obs}", method, prov)
+        rows = _rows(obs)
+        if method.upper().startswith("ESR"):
+            for row in rows:
+                row["mark_kind"] = "official_settlement"
+                row["trade_date_verified"] = True
+        return (rows, f"https://example/{obs}", method, prov)
 
     return _inner
 
@@ -66,7 +71,7 @@ class ShortRateIsolationTests(unittest.TestCase):
             store_path=self.store_path,
             acquire_sr1=sr1 or _acquire_ok("2026-11-05", "SR1 official"),
             acquire_sr3=sr3 or _acquire_ok("2026-11-05", "SR3 official"),
-            acquire_esr=esr or _acquire_ok("2026-11-05", "ESR official"),
+            acquire_esr=esr or _acquire_ok("2026-11-06", "ESR official"),
         )
 
     def test_both_usd_and_eur_succeed(self):
@@ -77,12 +82,12 @@ class ShortRateIsolationTests(unittest.TestCase):
         self.assertEqual(out["SR1"]["freshness"], "fresh")
         self.assertEqual(out["ESR"]["freshness"], "fresh")
         self.assertEqual(out["SR1"]["as_of"], "2026-11-05")
-        self.assertEqual(out["ESR"]["as_of"], "2026-11-05")
+        self.assertEqual(out["ESR"]["as_of"], "2026-11-06")
         store = load_store(self.store_path)
         self.assertIn("SR1", store["curves"])
         self.assertIn("ESR", store["curves"])
         self.assertEqual(store["curves"]["SR1"]["as_of"], "2026-11-05")
-        self.assertEqual(store["curves"]["ESR"]["as_of"], "2026-11-05")
+        self.assertEqual(store["curves"]["ESR"]["as_of"], "2026-11-06")
 
     def test_esr_raises_sr_fresh_retains_esr(self):
         save_store(
@@ -264,6 +269,59 @@ class ShortRateIsolationTests(unittest.TestCase):
         out = self._collect(sr1=sr1_three)
         self.assertEqual(out["SR1"]["status"], "ok")
         self.assertEqual(out["SR1"]["provenance"], {})
+
+    def test_esr_sunday_nov6_fresh(self):
+        out = self._collect(
+            today=date(2026, 11, 8),
+            esr=_acquire_ok("2026-11-06", "ESR official"),
+        )
+        self.assertEqual(out["ESR"]["freshness"], "fresh")
+        self.assertEqual(out["ESR"]["as_of"], "2026-11-06")
+        self.assertTrue(out["ESR"]["mark_fresh"])
+
+    def test_esr_sunday_nov3_stale_not_fresh(self):
+        out = self._collect(
+            today=date(2026, 11, 8),
+            esr=_acquire_ok("2026-11-03", "ESR official"),
+        )
+        self.assertEqual(out["ESR"]["freshness"], "stale")
+        self.assertEqual(out["ESR"]["as_of"], "2026-11-03")
+        self.assertFalse(out["ESR"]["mark_fresh"])
+        self.assertEqual(out["ESR"]["status"], "stale")
+
+    def test_esr_fetch_fail_recalls_nov6_stale_sunday(self):
+        save_store(
+            self.store_path,
+            remember_fresh(
+                {"version": 1, "curves": {}},
+                "ESR",
+                rows=_rows("2026-11-06"),
+                as_of="2026-11-06",
+                source="seed",
+                source_url="https://seed",
+                mark_kind="official_settlement",
+                provenance={},
+            ),
+        )
+
+        def esr_fail(*_a, **_k):
+            raise ValueError("ESR down")
+
+        out = self._collect(esr=esr_fail, today=date(2026, 11, 8))
+        self.assertEqual(out["ESR"]["status"], "stale")
+        self.assertEqual(out["ESR"]["as_of"], "2026-11-06")
+        self.assertFalse(out["ESR"]["mark_fresh"])
+        self.assertEqual(out["ESR"]["freshness"], "stale")
+
+    def test_sr3_three_days_before_today_still_fresh(self):
+        obs = (date(2026, 11, 8) - __import__("datetime").timedelta(days=3)).isoformat()
+        out = self._collect(
+            today=date(2026, 11, 8),
+            sr3=_acquire_ok(obs, "SR3 official"),
+        )
+        self.assertEqual(out["SR3"]["freshness"], "fresh")
+        self.assertEqual(out["SR3"]["status"], "ok")
+        self.assertEqual(out["SR3"]["as_of"], obs)
 
 
 if __name__ == "__main__":
