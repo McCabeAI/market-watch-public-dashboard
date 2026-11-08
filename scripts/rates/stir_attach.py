@@ -18,8 +18,9 @@ from scripts.rates.futures_basis import (
     remember_basis_snapshot,
     save_basis_history,
 )
+from scripts.rates.cme_eus import acquire_eus_contracts
 from scripts.rates.cme_zq import acquire_zq_contracts
-from scripts.rates.short_rate_isolation import collect_zq_and_euribor
+from scripts.rates.short_rate_isolation import collect_zq_and_euribor, run_isolated
 
 FetchBytes = Callable[..., bytes]
 
@@ -53,11 +54,39 @@ def attach_zq_euribor_and_basis(
     )
     zq_block = isolated["ZQ"]
     euribor_block = isolated["EURIBOR"]
-    qualification = qualification_for_publication(qualify_euribor_sources(fetch_bytes, today=today))
+    eus_isolated = run_isolated({"EUS": lambda: acquire_eus_contracts(fetch_bytes, today=today)})
+    eus_result = eus_isolated["EUS"]
+    if eus_result.get("status") == "ok":
+        value = eus_result.get("value")
+        rows, source_url, method, provenance = value if isinstance(value, tuple) and len(value) == 4 else ([], None, "", {})
+        eus_block = {
+            "status": "ok" if provenance.get("freshness_hint") == "fresh" else "stale",
+            "freshness": provenance.get("freshness_hint") or "stale",
+            "rows": list(rows),
+            "as_of": provenance.get("trade_date"),
+            "source_url": source_url,
+            "source": method,
+            "mark_kind": "official_settlement",
+            "provenance": provenance,
+            "error": None,
+        }
+    else:
+        eus_block = {
+            "status": "unavailable",
+            "freshness": "unavailable",
+            "rows": [],
+            "error": eus_result.get("error") or "CME EUS unavailable",
+        }
+    nested = None
     if euribor_block.get("provenance") and isinstance(euribor_block["provenance"], dict):
-        nested = euribor_block["provenance"].get("qualification")
-        if isinstance(nested, dict):
-            qualification = qualification_for_publication(nested)
+        candidate = euribor_block["provenance"].get("qualification")
+        if isinstance(candidate, dict):
+            nested = candidate
+    qualification = (
+        qualification_for_publication(nested)
+        if nested is not None
+        else qualification_for_publication(qualify_euribor_sources(fetch_bytes, today=today))
+    )
 
     us = countries.get("US")
     if isinstance(us, dict):
@@ -93,6 +122,13 @@ def attach_zq_euribor_and_basis(
             else None
         )
         ea["euribor_source_probe"] = qualification
+        ea["contracts_eus"] = list(eus_block.get("rows") or [])
+        ea["eus_status"] = eus_block.get("status")
+        ea["eus_freshness"] = eus_block.get("freshness")
+        ea["eus_as_of"] = eus_block.get("as_of")
+        ea["eus_source_url"] = eus_block.get("source_url")
+        ea["eus_error"] = eus_block.get("error")
+        ea["ice_er3_cross_check"] = (euribor_block.get("provenance") or {}).get("ice_er3_cross_check")
 
     history_path = history_path_for(store_path)
     history_corrupt = False
@@ -106,11 +142,14 @@ def attach_zq_euribor_and_basis(
         sr1_block=sr1_block,
         euribor_block=euribor_block,
         esr_block=esr_block,
+        eus_block=eus_block,
         history=history,
         qualification=qualification,
     )
     updated = remember_basis_snapshot(history, basis["curves"]["US_EFFR_MINUS_SOFR"])
     updated = remember_basis_snapshot(updated, basis["curves"]["EA_EURIBOR_MINUS_ESTR"])
+    if "EA_CME_EUS" in basis["curves"]:
+        updated = remember_basis_snapshot(updated, basis["curves"]["EA_CME_EUS"])
     if history_path is not None:
         save_basis_history(history_path, updated)
     basis["curves"]["US_EFFR_MINUS_SOFR"] = build_futures_basis(
@@ -126,9 +165,19 @@ def attach_zq_euribor_and_basis(
         sr1_block=None,
         euribor_block=euribor_block,
         esr_block=esr_block,
+        eus_block=eus_block,
         history=updated,
         qualification=qualification,
     )["curves"]["EA_EURIBOR_MINUS_ESTR"]
+    basis["curves"]["EA_CME_EUS"] = build_futures_basis(
+        zq_block=None,
+        sr1_block=None,
+        euribor_block=euribor_block,
+        esr_block=None,
+        eus_block=eus_block,
+        history=updated,
+        qualification=qualification,
+    )["curves"]["EA_CME_EUS"]
     if history_corrupt:
         basis["history_status"] = "corrupt_cache_ignored"
         basis["history_reason"] = "basis history cache was unreadable and was not used to fill changes"

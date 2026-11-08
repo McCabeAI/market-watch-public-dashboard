@@ -1201,6 +1201,7 @@ def render_stir_strips(country_code: str, stir: Mapping[str, Any] | None) -> str
     code = str(country_code)
     strips = stir.get("strips") if isinstance(stir.get("strips"), Mapping) else {}
     curves = stir.get("curves") if isinstance(stir.get("curves"), Mapping) else {}
+    eus_rows: list = []
     if code == "US":
         strip = strips.get("ZQ") if isinstance(strips.get("ZQ"), Mapping) else {}
         rows = strip.get("rows") if isinstance(strip.get("rows"), list) else stir.get("contracts_zq")
@@ -1209,12 +1210,16 @@ def render_stir_strips(country_code: str, stir: Mapping[str, Any] | None) -> str
     elif code == "EA":
         strip = strips.get("EURIBOR") if isinstance(strips.get("EURIBOR"), Mapping) else {}
         rows = strip.get("rows") if isinstance(strip.get("rows"), list) else stir.get("contracts_euribor")
-        basis = curves.get("EA_EURIBOR_MINUS_ESTR") if isinstance(curves.get("EA_EURIBOR_MINUS_ESTR"), Mapping) else {}
-        title = "EURIBOR futures and EURIBOR minus €STR"
+        eus_strip = strips.get("EUS") if isinstance(strips.get("EUS"), Mapping) else {}
+        eus_rows = eus_strip.get("rows") if isinstance(eus_strip.get("rows"), list) else []
+        basis = curves.get("EA_CME_EUS") if isinstance(curves.get("EA_CME_EUS"), Mapping) else curves.get("EA_EURIBOR_MINUS_ESTR") if isinstance(curves.get("EA_EURIBOR_MINUS_ESTR"), Mapping) else {}
+        title = "EURIBOR futures and EURIBOR-€STR basis"
     else:
         return ""
     if not isinstance(rows, list):
         rows = []
+    if code == "EA" and eus_rows:
+        rows = list(rows) + list(eus_rows)
     chunks = [
         '<details class="policy-meetings stir-strips">',
         f"<summary>{_esc(title)}</summary>",

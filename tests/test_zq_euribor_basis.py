@@ -651,6 +651,9 @@ class BasisTests(unittest.TestCase):
         ), mock.patch(
             "scripts.rates.stir_attach.qualify_euribor_sources",
             return_value={"status": "unavailable", "blocker": "probe failed", "compared": []},
+        ), mock.patch(
+            "scripts.rates.stir_attach.acquire_eus_contracts",
+            side_effect=RuntimeError("eus down"),
         ):
             basis = attach_zq_euribor_and_basis(
                 countries,
@@ -724,6 +727,109 @@ class BasisTests(unittest.TestCase):
         compact = compact_market_state({"market_state": market})
         self.assertEqual(packet_basis, compact["futures_basis"])
         self.assertIsNone(packet_basis["curves"]["EA_EURIBOR_MINUS_ESTR"]["points"][0]["basis_bp"])
+
+    def test_ice_last_is_dated_in_the_body_and_priced_in_eur(self) -> None:
+        from scripts.rates.ice_euribor import (
+            ice_i_pnl_eur,
+            ice_i_pnl_usd,
+            parse_ice_contract_data,
+            parse_ice_expiry_csv,
+            same_label_cross_check,
+        )
+
+        payload = [
+            {
+                "marketId": 1,
+                "marketStrip": "Dec26",
+                "endDate": 1798704000000,
+                "lastPrice": 97.145,
+                "volume": 162329,
+                "lastTime": "11/06/2026 08:59 PM GMT",
+                "change": 0.0,
+            },
+            {
+                "marketId": 2,
+                "marketStrip": "Dec31",
+                "endDate": 1956528000000,
+                "lastPrice": None,
+                "volume": 16,
+                "lastTime": None,
+            },
+        ]
+        expiries = parse_ice_expiry_csv(
+            '"CONTRACT SYMBOL","FTD","LTD","FND","LND","FDD","LDD","FSD"\n'
+            '"=""Dec26""","12/15/2020","12/14/2026","12/14/2026","12/14/2026","","","12/14/2026",\n'
+        )
+        parsed = parse_ice_contract_data(
+            payload,
+            expiries=expiries,
+            source_url="https://www.ice.com/marketdata/api/productguide/charting/contract-data?productId=15275&hubId=17455",
+            retrieved_at="2026-11-08T21:00:00+00:00",
+        )
+        row = parsed["rows"][0]
+        self.assertEqual(row["code"], "IZ26")
+        self.assertEqual(row["product"], "I")
+        self.assertEqual(row["observation_date"], "2026-11-06")
+        self.assertEqual(row["quote_time"], "11/06/2026 08:59 PM GMT")
+        self.assertNotEqual(row["observation_date"], "2026-11-08")
+        self.assertEqual(row["mark_kind"], "delayed_last")
+        self.assertFalse(row["trade_date_verified"])
+        self.assertEqual(row["ltd"], "2026-12-14")
+        self.assertFalse(row["eligible_for_basis"])
+        self.assertEqual(len(parsed["rows"]), 1)
+        self.assertEqual(ice_i_pnl_eur(97.145, 97.155, 1, "long"), 25.0)
+        self.assertEqual(ice_i_pnl_eur(97.145, 97.150, 1, "long"), 12.5)
+        self.assertEqual(ice_i_pnl_usd(97.145, 97.155, 1, "long", 1.08), 27.0)
+        self.assertIsNone(ice_i_pnl_usd(97.145, 97.155, 1, "long", None))
+        er3 = dict(row)
+        er3["market_strip"] = "Dec26"
+        er3["price"] = 97.3425
+        er3["code"] = "ER3Z26"
+        cross = same_label_cross_check(
+            [row],
+            [er3],
+            {"Dec26": {"ltd": "2027-03-16", "fsd": "2027-03-17", "symbol": "Dec26"}},
+        )
+        point = cross["points"][0]
+        self.assertEqual(point["status"], "unavailable")
+        self.assertIsNone(point["basis_bp"])
+        self.assertAlmostEqual(point["unaligned_price_gap_bp"], 19.75, places=4)
+        self.assertIn("not the same contract period", point["reason"])
+
+    def test_eus_settlement_is_a_direct_basis_not_an_outright(self) -> None:
+        from scripts.rates.cme_eus import parse_cme_eus_settlements_json
+
+        payload = json.dumps(
+            {
+                "dsHeader": "Euro Short-Term Rate (€STR) - Three-Month Single Contract Basis Spread Futures",
+                "reportType": "Final",
+                "tradeDate": "11/06/2026",
+                "settlements": [
+                    {"month": "DEC 26", "settle": ".17000", "volume": "0", "openInterest": "154"},
+                    {"month": "NOV 26", "settle": "-.52500", "volume": "0", "openInterest": "0"},
+                    {"month": "Total", "settle": "-", "volume": "0", "openInterest": "350"},
+                ],
+            }
+        )
+        rows = parse_cme_eus_settlements_json(payload, session_date=date(2026, 11, 6), source_url="https://example.test/eus")
+        dec = next(row for row in rows if row["code"] == "EUSZ26")
+        self.assertEqual(dec["observation_date"], "2026-11-06")
+        self.assertAlmostEqual(dec["settlement"], 0.17, places=6)
+        self.assertAlmostEqual(dec["basis_bp"], 17.0, places=6)
+        self.assertIsNone(dec["implied_rate"])
+        self.assertFalse(dec["execution_eligible"])
+        nov = next(row for row in rows if row["expiry"] == "2026-11")
+        self.assertAlmostEqual(nov["basis_bp"], -52.5, places=6)
+        curve = build_futures_basis(
+            zq_block=None,
+            sr1_block=None,
+            euribor_block=None,
+            esr_block=None,
+            eus_block={"rows": rows, "freshness": "fresh", "as_of": "2026-11-06", "source_url": "https://example.test/eus"},
+        )["curves"]["EA_CME_EUS"]
+        self.assertEqual(curve["status"], "ok")
+        self.assertFalse(curve["execution_eligible"])
+        self.assertAlmostEqual(curve["points"][0]["basis_bp"], -52.5, places=6)
 
 
 if __name__ == "__main__":

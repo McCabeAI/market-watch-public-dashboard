@@ -501,12 +501,80 @@ def save_basis_history(path: Path | str, history: Mapping[str, Any]) -> None:
         raise
 
 
+EUS_DEFINITION = "cme_eus_direct_basis_v1"
+EUS_FORMULA = "basis_bp = 100 * EUS settlement; settlement is the quoted basis in index points, not 100 minus a rate"
+
+
+def build_eus_basis(
+    *,
+    rows: list[Mapping[str, Any]] | None,
+    freshness: str,
+    as_of: str | None,
+    source: str | None,
+    history: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
+    points: list[dict[str, Any]] = []
+    for row in rows or []:
+        if not isinstance(row, Mapping) or row.get("basis_bp") is None:
+            continue
+        session = _iso(row.get("observation_date") or as_of)
+        basis = float(row["basis_bp"])
+        worse = "current" if freshness == "fresh" else "stale" if freshness == "stale" else "unavailable"
+        if worse == "unavailable" or session is None:
+            points.append(
+                {
+                    "expiry": row.get("expiry"),
+                    "code": row.get("code"),
+                    "basis_bp": None,
+                    "status": "unavailable",
+                    "reason": "EUS quote has no verified session",
+                    "execution_eligible": False,
+                }
+            )
+            continue
+        points.append(
+            {
+                "expiry": row.get("expiry"),
+                "code": row.get("code"),
+                "settlement": row.get("settlement"),
+                "basis_bp": round(basis, 6),
+                "formula": EUS_FORMULA,
+                "observation_date": session,
+                "status": "current" if worse == "current" else "stale",
+                "freshness": freshness,
+                "mark_kind": row.get("mark_kind"),
+                "source": source,
+                "execution_eligible": False,
+                "economics": "unverified_tick",
+                "exact_fra_ois": False,
+                "reason": row.get("period_note"),
+                "changes": _changes(history, EUS_DEFINITION, str(row.get("expiry") or ""), session, basis),
+            }
+        )
+    numeric = [row for row in points if row.get("basis_bp") is not None]
+    return {
+        "curve_id": "EA_CME_EUS",
+        "definition_id": EUS_DEFINITION,
+        "status": "ok" if any(row.get("status") == "current" for row in points) else "stale" if numeric else "unavailable",
+        "formula": EUS_FORMULA,
+        "unit": "bp",
+        "quote_unit": "index_points",
+        "not_interpolated": True,
+        "recommendation": None,
+        "execution_eligible": False,
+        "paper_trading": "not_offered",
+        "points": points,
+        "reason": None if numeric else "CME EUS basis settlements unavailable",
+    }
+
+
 def build_futures_basis(
     *,
     zq_block: Mapping[str, Any] | None,
     sr1_block: Mapping[str, Any] | None,
     euribor_block: Mapping[str, Any] | None,
     esr_block: Mapping[str, Any] | None,
+    eus_block: Mapping[str, Any] | None = None,
     history: Mapping[str, Any] | None = None,
     qualification: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -540,7 +608,19 @@ def build_futures_basis(
         history=history,
         qualification=qualification,
     )
-    statuses = [us.get("status"), eu.get("status")]
+    eus_block = eus_block or {}
+    eus = build_eus_basis(
+        rows=list(eus_block.get("rows") or []),
+        freshness=str(eus_block.get("freshness") or "unavailable"),
+        as_of=eus_block.get("as_of"),
+        source=eus_block.get("source_url") or eus_block.get("source"),
+        history=history,
+    )
+    cross = None
+    provenance = euribor_block.get("provenance") if isinstance(euribor_block, Mapping) else None
+    if isinstance(provenance, Mapping):
+        cross = provenance.get("ice_er3_cross_check")
+    statuses = [us.get("status"), eu.get("status"), eus.get("status")]
     if any(item == "ok" for item in statuses) and any(item == "unavailable" for item in statuses):
         overall = "partial"
     elif any(item == "ok" for item in statuses):
@@ -557,6 +637,12 @@ def build_futures_basis(
         "curves": {
             "US_EFFR_MINUS_SOFR": us,
             "EA_EURIBOR_MINUS_ESTR": eu,
+            "EA_CME_EUS": eus,
+            **(
+                {"EA_ICE_ER3_MINUS_I": cross}
+                if isinstance(cross, Mapping)
+                else {}
+            ),
         },
     }
 

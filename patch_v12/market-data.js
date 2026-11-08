@@ -101,10 +101,13 @@
       ${stripTable(zq, us?.zq_error||'ZQ strip unavailable in this packet.')}
       <h4>EFFR minus one-month SOFR</h4>
       ${basisTable(usBasis,'US basis unavailable.')}
-      <h4>Three-month EURIBOR</h4>
+      <h4>ICE three-month EURIBOR (product I, delayed last)</h4>
       ${stripTable(eur, ea?.euribor_error||'EURIBOR strip unavailable in this packet.')}
-      <h4>EURIBOR minus compounded €STR</h4>
-      ${basisTable(eaBasis,'European basis unavailable.')}`;
+      <h4>CME EUS direct EURIBOR-€STR basis</h4>
+      ${basisTable(curves.EA_CME_EUS||{},'CME EUS settlements unavailable. The quote is the basis itself, not 100 minus a rate.')}
+      <h4>EURIBOR minus compounded €STR from outright futures</h4>
+      ${basisTable(eaBasis,'Outright EURIBOR-minus-€STR basis unavailable until both periods and sessions match.')}
+      ${(curves.EA_ICE_ER3_MINUS_I&&curves.EA_ICE_ER3_MINUS_I.reason)?`<p class="md-muted">${esc(curves.EA_ICE_ER3_MINUS_I.reason)}</p>`:''}`;
   }
   function curves(){
     const rows=series().filter(s=>['Curves','Relative rates','Rates'].includes(s.category)&&matches(s));

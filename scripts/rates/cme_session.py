@@ -46,7 +46,7 @@ def classify_mark_freshness(
     # ZQ and EURIBOR use the same official-versus-delayed rule as ESR.
     # A weekday CME holiday is still an expected session: this repo has no
     # verified holiday calendar, so a pre-holiday print is stale, not fresh.
-    if curve_key in ("ESR", "ZQ", "EURIBOR"):
+    if curve_key in ("ESR", "ZQ", "EURIBOR", "EUS"):
         if (
             mark_kind == "official_settlement"
             and trade_date_verified

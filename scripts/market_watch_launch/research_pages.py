@@ -803,6 +803,10 @@ def build_research_site(
                             "rows": (ea or {}).get("contracts_euribor") or [],
                             "reason": (ea or {}).get("euribor_error"),
                         },
+                        "EUS": {
+                            "rows": (ea or {}).get("contracts_eus") or [],
+                            "reason": (ea or {}).get("eus_error"),
+                        },
                     },
                 }
                 stir_path.write_text(json.dumps(stir_view, indent=2, sort_keys=True) + "\n", encoding="utf-8")

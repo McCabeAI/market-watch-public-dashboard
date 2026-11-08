@@ -446,30 +446,29 @@ def acquire_euribor_contracts(
 ) -> tuple[list, str, str, dict]:
     """Return a verified strip, or raise when no exchange document is accessible."""
     del benchmark, last_official
+    try:
+        from scripts.rates.ice_euribor import acquire_ice_euribor_contracts
+
+        return acquire_ice_euribor_contracts(fetch_bytes, today=today)
+    except Exception as ice_exc:
+        ice_error = str(ice_exc)
     qualification = qualify_euribor_sources(fetch_bytes, today=today)
     body = qualification.pop("_body", None)
     delayed_rows = qualification.pop("_delayed_rows", None)
+    qualification["ice_contract_data_error"] = ice_error
+    qualification["feU3_is_not_ice_i"] = True
     provenance = {
         "qualification": qualification,
         "mark_kind": None,
         "filled_from_other_curve": False,
         "eus_used": False,
     }
-    if qualification.get("status") == "delayed_only" and delayed_rows:
-        provenance["mark_kind"] = "delayed_quote"
-        provenance["retrieval_date"] = delayed_rows[0].get("retrieval_date")
-        provenance["trade_date"] = None
-        provenance["freshness_hint"] = "stale"
-        provenance["execution_eligible"] = False
-        provenance["note"] = "Delayed retrieval is not an official settlement and is not executable."
-        return (
-            delayed_rows,
-            ESIGNAL_FEU3_URL,
-            "delayed Eurex FEU3 board via eSignal",
-            provenance,
-        )
     if body is None or qualification.get("status") != "ok":
-        raise ValueError(qualification.get("blocker") or "EURIBOR strip unavailable")
+        raise ValueError(
+            ice_error
+            or qualification.get("blocker")
+            or "ICE EURIBOR contract-data unavailable; Eurex FEU3 is not used as ICE I"
+        )
     session = today
     trade_date = None
     try:
