@@ -429,6 +429,16 @@ jobs:
           restore-keys: |
             short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-
 
+      - name: Restore futures basis history (side path)
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: .mw-cache-restore/futures_basis_history.json
+          key: futures-basis-history-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+          restore-keys: |
+            futures-basis-history-v1-${{ github.workflow }}-${{ github.ref }}-
+
       - name: Restore ASX futures last-good cache (side path)
         continue-on-error: true
         uses: actions/cache/restore@v4
@@ -478,6 +488,14 @@ jobs:
         with:
           path: .mw-cache-restore/short_rate_last_good.json
           key: short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+
+      - name: Save futures basis history for next run
+        if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .mw-cache-restore/futures_basis_history.json
+          key: futures-basis-history-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
 
       - name: Apply Country Detail
         shell: bash

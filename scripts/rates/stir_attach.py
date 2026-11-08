@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from datetime import date
 from pathlib import Path
 from typing import Any, Callable
@@ -86,14 +87,20 @@ def attach_zq_euribor_and_basis(
         ea["euribor_as_of"] = euribor_block.get("as_of")
         ea["euribor_source_url"] = euribor_block.get("source_url")
         ea["euribor_mark_kind"] = euribor_block.get("mark_kind")
-        ea["euribor_error"] = euribor_block.get("error") or qualification.get("blocker")
+        ea["euribor_error"] = (
+            euribor_block.get("error") or qualification.get("blocker")
+            if not rows
+            else None
+        )
         ea["euribor_source_probe"] = qualification
 
     history_path = history_path_for(store_path)
+    history_corrupt = False
     try:
         history = load_basis_history(history_path)
-    except ValueError:
+    except (ValueError, OSError, json.JSONDecodeError):
         history = {"version": 1, "definitions": {}}
+        history_corrupt = True
     basis = build_futures_basis(
         zq_block=zq_block,
         sr1_block=sr1_block,
@@ -122,4 +129,7 @@ def attach_zq_euribor_and_basis(
         history=updated,
         qualification=qualification,
     )["curves"]["EA_EURIBOR_MINUS_ESTR"]
+    if history_corrupt:
+        basis["history_status"] = "corrupt_cache_ignored"
+        basis["history_reason"] = "basis history cache was unreadable and was not used to fill changes"
     return basis

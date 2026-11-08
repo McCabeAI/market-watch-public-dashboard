@@ -107,30 +107,49 @@ def _leg_session(row: Mapping[str, Any] | None, block_as_of: str | None) -> str 
     return _iso(row.get("observation_date") or row.get("as_of") or block_as_of)
 
 
-def _changes(history: Mapping[str, Any] | None, definition_id: str, expiry: str, as_of: str | None) -> dict[str, Any]:
+def _changes(
+    history: Mapping[str, Any] | None,
+    definition_id: str,
+    expiry: str,
+    as_of: str | None,
+    current_bp: float | None = None,
+) -> dict[str, Any]:
+    """Signed change is current basis minus the stored basis on that exact date.
+
+    ``bp`` is the change. ``prior_basis_bp`` stays the stored level. A missing
+    same-definition observation is unavailable and is not filled from a neighbor.
+    """
     out: dict[str, Any] = {}
     definitions = (history or {}).get("definitions") if isinstance(history, Mapping) else None
     series = definitions.get(definition_id) if isinstance(definitions, Mapping) else None
     anchor = _iso(as_of)
     for horizon in _HORIZONS:
         key = f"{horizon}d"
-        if anchor is None or not isinstance(series, Mapping):
-            out[key] = {"bp": None, "status": "unavailable", "compared_to": None, "reason": "no stored same-definition observation"}
+        empty = {
+            "bp": None,
+            "prior_basis_bp": None,
+            "current_basis_bp": None if current_bp is None else round(float(current_bp), 6),
+            "status": "unavailable",
+            "compared_to": None,
+            "reason": "no stored same-definition observation",
+        }
+        if anchor is None or current_bp is None or not isinstance(series, Mapping):
+            out[key] = empty
             continue
         prior = (date.fromisoformat(anchor) - timedelta(days=horizon)).isoformat()
         snapshot = series.get(prior)
         point = snapshot.get(expiry) if isinstance(snapshot, Mapping) else None
         if not isinstance(point, Mapping) or point.get("basis_bp") is None:
-            out[key] = {
-                "bp": None,
-                "status": "unavailable",
-                "compared_to": prior,
-                "reason": f"no stored {definition_id} observation for {expiry} on {prior}",
-            }
+            empty["compared_to"] = prior
+            empty["reason"] = f"no stored {definition_id} observation for {expiry} on {prior}"
+            out[key] = empty
             continue
+        prior_bp = round(float(point["basis_bp"]), 6)
+        current = round(float(current_bp), 6)
         out[key] = {
-            "bp": round(float(point["basis_bp"]), 6),
-            "prior_basis_bp": round(float(point["basis_bp"]), 6),
+            "bp": round(current - prior_bp, 6),
+            "prior_basis_bp": prior_bp,
+            "current_basis_bp": current,
             "status": "observed",
             "compared_to": prior,
             "prior_freshness": point.get("status"),
@@ -140,7 +159,7 @@ def _changes(history: Mapping[str, Any] | None, definition_id: str, expiry: str,
 
 
 def _empty_changes() -> dict[str, Any]:
-    return _changes(None, "", "", None)
+    return _changes(None, "", "", None, None)
 
 
 def build_us_effr_sofr_basis(
@@ -230,7 +249,7 @@ def build_us_effr_sofr_basis(
                     if worse == "fresh" and not unverified
                     else "unverified or stale leg is shown and is not today's execution price"
                 ),
-                "changes": _changes(history, US_DEFINITION, expiry, left_session),
+                "changes": _changes(history, US_DEFINITION, expiry, left_session, basis),
                 "reference_start": left.get("reference_start"),
                 "reference_end": left.get("reference_end"),
                 "underlying_zq": "EFFR monthly average",
@@ -335,6 +354,14 @@ def build_eu_euribor_estr_basis(
             point["reason"] = "one futures leg is missing; expiry label alone is not a join"
             points.append(point)
             continue
+        if left.get("date_role") == "retrieval_banner_not_trade_date" or left.get("trade_date_verified") is False:
+            point["reason"] = (
+                "EURIBOR print is not a verified trade-date settlement; "
+                "a retrieval banner is not used as the session"
+            )
+            point["retrieval_date"] = left.get("retrieval_date")
+            points.append(point)
+            continue
         if left.get("eligible_for_basis") is False:
             point["reason"] = "EURIBOR row has no explicit fixing and accrual window"
             points.append(point)
@@ -382,7 +409,7 @@ def build_eu_euribor_estr_basis(
                 "freshness": worse,
                 "execution_eligible": False,
                 "reason": EU_LIMITATION,
-                "changes": _changes(history, EU_DEFINITION, expiry, left_session),
+                "changes": _changes(history, EU_DEFINITION, expiry, left_session, euribor_minus_estr_bp(e_rate, s_rate)),
             }
         )
         points.append(point)
@@ -443,9 +470,15 @@ def load_basis_history(path: Path | str | None) -> dict[str, Any]:
     file = Path(path)
     if not file.is_file():
         return {"version": 1, "definitions": {}}
-    data = json.loads(file.read_text(encoding="utf-8"))
+    try:
+        data = json.loads(file.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise ValueError(f"corrupt basis history at {file}: {exc}") from exc
     if not isinstance(data, dict) or data.get("version") != 1:
         raise ValueError(f"corrupt basis history at {file}")
+    definitions = data.get("definitions")
+    if definitions is not None and not isinstance(definitions, dict):
+        raise ValueError(f"corrupt basis history at {file}: definitions must be an object")
     return data
 
 
@@ -528,13 +561,50 @@ def build_futures_basis(
     }
 
 
+def basis_package_pnl_usd(
+    *,
+    entry_zq: float,
+    exit_zq: float,
+    entry_sr1: float,
+    exit_sr1: float,
+    lots: int,
+    side: str,
+    year: int,
+    month: int,
+) -> float | None:
+    """Paper PnL of one same-month package. Each leg uses that month's own BPV.
+
+    Long the basis is short ZQ and long SR1, because the quote is
+    (100 - ZQ) - (100 - SR1) = SR1 price - ZQ price. A wider quote is a gain
+    for that package. ZQ and SR1 share the month length, so the bp values
+    match; they are still computed separately and are not a flat $41.67.
+    """
+    from scripts.rates.zq_valuation import monthly_index_pnl_usd
+
+    package_side = str(side).lower()
+    if package_side not in {"long", "short"}:
+        return None
+    zq_side = "short" if package_side == "long" else "long"
+    sr1_side = "long" if package_side == "long" else "short"
+    zq_pnl = monthly_index_pnl_usd(entry_zq, exit_zq, lots, zq_side, year=year, month=month)
+    sr1_pnl = monthly_index_pnl_usd(entry_sr1, exit_sr1, lots, sr1_side, year=year, month=month)
+    if zq_pnl is None or sr1_pnl is None:
+        return None
+    return round(zq_pnl + sr1_pnl, 2)
+
+
 def basis_package_legs(
     point: Mapping[str, Any],
     *,
     lots: int,
     side: str,
 ) -> dict[str, Any]:
-    """Equal-lot ZQ versus SR1 package. EUR packages are not offered."""
+    """Equal-lot ZQ versus SR1 package. EUR packages are not offered.
+
+    Long the EFFR-minus-SOFR quote is short ZQ and long SR1. Short the quote
+    reverses both legs. Lot counts stay whole and equal; day-count value is
+    applied per leg at the shared contract month.
+    """
     if lots < 1:
         return {"status": "unavailable", "reason": "basis package size is below one lot", "legs": []}
     if point.get("execution_eligible") is not True or point.get("status") != "current":
@@ -546,14 +616,19 @@ def basis_package_legs(
         }
     if not point.get("zq_code") or not point.get("sr1_code"):
         return {"status": "unavailable", "reason": "basis package is missing a contract id", "legs": []}
-    long_effr = str(side).lower() != "short"
-    zq_side = "long" if long_effr else "short"
-    sr1_side = "short" if long_effr else "long"
+    package_side = str(side).lower()
+    if package_side not in {"long", "short"}:
+        return {"status": "unavailable", "reason": "basis package side must be long or short", "legs": []}
+    zq_side = "short" if package_side == "long" else "long"
+    sr1_side = "long" if package_side == "long" else "short"
     return {
         "status": "executable",
         "execution_eligible": True,
         "structure": "futures_basis_package",
         "definition_id": US_DEFINITION,
+        "quote": "100 * ((100 - ZQ price) - (100 - SR1 price))",
+        "package_side": package_side,
+        "direction_note": "long basis is short ZQ and long SR1; widening EFFR-minus-SOFR is a gain",
         "lots": int(lots),
         "rounding_policy": "whole_lot",
         "legs": [

@@ -923,7 +923,8 @@ def _assess_futures_basis_package(
         status="executable",
         reason=(
             f"US EFFR-SOFR {expiry} basis package is executable on frozen official "
-            f"ZQ {point.get('zq_code')} and SR1 {point.get('sr1_code')} marks"
+            f"ZQ {point.get('zq_code')} and SR1 {point.get('sr1_code')} marks. "
+            "Buying the quote is short ZQ and long SR1."
         ),
         family="futures_basis",
         instrument=f"US_EFFR_MINUS_SOFR:{expiry}",

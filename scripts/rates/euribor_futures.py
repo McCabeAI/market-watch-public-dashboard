@@ -13,6 +13,7 @@ an unavailable EURIBOR status. No settlement is invented.
 from __future__ import annotations
 
 import json
+import re
 from datetime import date, datetime
 from typing import Any, Callable
 
@@ -20,14 +21,25 @@ FetchBytes = Callable[..., bytes]
 
 ICE_PRODUCT_CODE = "I"
 EUREX_PRODUCT_CODE = "FEU3"
-ICE_PRODUCT_URL = "https://www.ice.com/products/37650330/Three-Month-Euribor-Futures"
+ICE_PRODUCT_URL = "https://www.ice.com/products/38527986/three-month-euribor-futures"
 ICE_REPORTS_URL = "https://www.theice.com/marketdata/reports/176"
 EUREX_FEU3_URL = "https://www.eurex.com/api/v1/overallstatistics/FEU3"
 EUREX_PAGE = "https://www.eurex.com/ex-en/markets/productSearch"
-ESIGNAL_PROBE_URLS = (
-    "https://quotes.esignal.com/esignalprod/quote.action?symbol=I",
-    "https://quotes.esignal.com/esignalprod/quote.action?symbol=FEU3",
-)
+ESIGNAL_FEU3_URL = "https://quotes.esignal.com/esignalprod/quote.action?symbol=FEU3-EUX"
+_MONTH_CODES = {
+    "F": 1,
+    "G": 2,
+    "H": 3,
+    "J": 4,
+    "K": 5,
+    "M": 6,
+    "N": 7,
+    "Q": 8,
+    "U": 9,
+    "V": 10,
+    "X": 11,
+    "Z": 12,
+}
 UA = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
@@ -49,7 +61,7 @@ _PROBES = (
     {
         "venue": "ICE",
         "product_code": ICE_PRODUCT_CODE,
-        "role": "authoritative_exchange_candidate",
+        "role": "contract_specs_not_a_settlement_feed",
         "url": ICE_PRODUCT_URL,
     },
     {
@@ -66,15 +78,9 @@ _PROBES = (
     },
     {
         "venue": "ESIGNAL",
-        "product_code": ICE_PRODUCT_CODE,
-        "role": "delayed_alternative",
-        "url": ESIGNAL_PROBE_URLS[0],
-    },
-    {
-        "venue": "ESIGNAL",
         "product_code": EUREX_PRODUCT_CODE,
         "role": "delayed_alternative",
-        "url": ESIGNAL_PROBE_URLS[1],
+        "url": ESIGNAL_FEU3_URL,
     },
 )
 
@@ -88,6 +94,88 @@ def _invoke(fetch_bytes: FetchBytes, url: str) -> bytes:
 
 def _excerpt(body: bytes) -> str:
     return body[:240].decode("utf-8", errors="replace").replace("\n", " ")
+
+
+def _banner_date(text: str) -> str | None:
+    match = re.search(
+        r"Delayed data retrieved on\s+([A-Za-z]+\s+\d{1,2}\s+\d{4})",
+        text,
+        re.I,
+    )
+    if not match:
+        return None
+    try:
+        return datetime.strptime(match.group(1), "%b %d %Y").date().isoformat()
+    except ValueError:
+        return None
+
+
+def parse_esignal_feu3_html(text: str) -> list[dict[str, Any]]:
+    """Parse the delayed Eurex FEU3 board. The banner date is a retrieval, not a trade date.
+
+    The page names three-month EURIBOR and the contract month. It does not stamp
+    the fixing day or the deposit window, so rows are evidence only and are not
+    eligible for the EURIBOR-minus-€STR join.
+    """
+    retrieved_on = _banner_date(text)
+    if not retrieved_on:
+        raise ValueError("eSignal FEU3 page missing delayed retrieval banner")
+    if "not a valid ticker" in text.lower():
+        raise ValueError("eSignal FEU3 symbol was rejected")
+    pattern = re.compile(
+        r"FEU3\s+([FGHJKMNQUVXZ])(\d{2})-EUX[\s\S]{0,700}?(\d{2}\.\d+)",
+        re.I,
+    )
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for match in pattern.finditer(text):
+        letter = match.group(1).upper()
+        year = 2000 + int(match.group(2))
+        month = _MONTH_CODES[letter]
+        named_month = f"{year:04d}-{month:02d}"
+        if named_month in seen:
+            continue
+        price = float(match.group(3))
+        if not (70.0 < price < 100.25):
+            continue
+        seen.add(named_month)
+        rows.append(
+            {
+                "product": EUREX_PRODUCT_CODE,
+                "exchange": "EUREX",
+                "code": f"FEU3{letter}{int(match.group(2)):02d}",
+                "expiry": named_month,
+                "named_month": named_month,
+                "price": round(price, 6),
+                "implied_rate": round(100.0 - price, 6),
+                "volume": None,
+                "open_interest": None,
+                "observation_date": retrieved_on,
+                "as_of": retrieved_on,
+                "retrieval_date": retrieved_on,
+                "date_role": "retrieval_banner_not_trade_date",
+                "source": "ESIGNAL_EUREX_FEU3_DELAYED",
+                "mark_kind": "delayed_quote",
+                "trade_date_verified": False,
+                "session_verified": False,
+                "source_url": ESIGNAL_FEU3_URL,
+                "underlying": "EURIBOR_3M",
+                "eligible_for_basis": False,
+                "listing": "quarterly" if month in {3, 6, 9, 12} else "serial",
+                "period_note": (
+                    "Board labels the contract three-month EURIBOR and a delivery month. "
+                    "It does not stamp the fixing date or the deposit start and end, so the "
+                    "month label is not treated as the accrual window."
+                ),
+                "reference_start": None,
+                "reference_end": None,
+                "fixing_date": None,
+            }
+        )
+    if not rows:
+        raise ValueError("eSignal FEU3 board contained no priced contracts")
+    rows.sort(key=lambda row: row["expiry"])
+    return rows
 
 
 def _body_has_stamped_strip(body: bytes, product_code: str) -> bool:
@@ -110,9 +198,14 @@ def _body_has_stamped_strip(body: bytes, product_code: str) -> bool:
 
 
 def qualify_euribor_sources(fetch_bytes: FetchBytes, *, today: date) -> dict[str, Any]:
-    """Compare ICE and Eurex paths. Select a canonical source only when a body proves it."""
+    """Compare ICE and Eurex paths. Official status requires a stamped settlement body.
+
+    A delayed eSignal FEU3-EUX board can be shown as dated evidence. It does not
+    become the official settlement source and it is not mixed with ICE product I.
+    """
     compared: list[dict[str, Any]] = []
     selected: dict[str, Any] | None = None
+    delayed: dict[str, Any] | None = None
     for probe in _PROBES:
         record: dict[str, Any] = {
             "venue": probe["venue"],
@@ -121,7 +214,9 @@ def qualify_euribor_sources(fetch_bytes: FetchBytes, *, today: date) -> dict[str
             "url": probe["url"],
             "http_status": None,
             "usable_strip": False,
+            "official_settlement": False,
             "trade_date_in_body": False,
+            "retrieval_date": None,
             "body_excerpt": None,
             "error": None,
         }
@@ -129,19 +224,41 @@ def qualify_euribor_sources(fetch_bytes: FetchBytes, *, today: date) -> dict[str
             raw = _invoke(fetch_bytes, probe["url"])
             record["http_status"] = 200
             record["body_excerpt"] = _excerpt(raw)
-            record["usable_strip"] = _body_has_stamped_strip(raw, probe["product_code"])
-            record["trade_date_in_body"] = record["usable_strip"]
-            if (
-                selected is None
-                and record["usable_strip"]
-                and probe["role"] == "authoritative_exchange_candidate"
-            ):
-                selected = {
-                    "venue": probe["venue"],
-                    "product_code": probe["product_code"],
-                    "url": probe["url"],
-                    "body": raw,
-                }
+            text = raw.decode("utf-8", errors="replace")
+            if probe["role"] == "delayed_alternative":
+                try:
+                    rows = parse_esignal_feu3_html(text)
+                except ValueError as exc:
+                    record["error"] = str(exc)
+                    rows = []
+                if rows:
+                    record["usable_strip"] = True
+                    record["official_settlement"] = False
+                    record["retrieval_date"] = rows[0].get("retrieval_date")
+                    record["trade_date_in_body"] = False
+                    record["contract_count"] = len(rows)
+                    delayed = {"url": probe["url"], "rows": rows, "retrieval_date": rows[0].get("retrieval_date")}
+            else:
+                record["usable_strip"] = _body_has_stamped_strip(raw, probe["product_code"])
+                record["official_settlement"] = record["usable_strip"]
+                record["trade_date_in_body"] = record["usable_strip"]
+                if (
+                    selected is None
+                    and record["usable_strip"]
+                    and probe["role"] == "authoritative_exchange_candidate"
+                ):
+                    selected = {
+                        "venue": probe["venue"],
+                        "product_code": probe["product_code"],
+                        "url": probe["url"],
+                        "body": raw,
+                    }
+            if probe["venue"] == "ICE" and "Unit of Trading" in text:
+                record["specs_in_body"] = True
+                record["note"] = (
+                    "ICE product page states contract symbol I and EDSP conventions. "
+                    "It does not include a dated settlement strip."
+                )
         except Exception as exc:
             code = getattr(exc, "code", None)
             record["http_status"] = code
@@ -156,7 +273,20 @@ def qualify_euribor_sources(fetch_bytes: FetchBytes, *, today: date) -> dict[str
                 record["body_excerpt"] = _excerpt(body)
         compared.append(record)
 
-    if selected is None:
+    delayed_public = None
+    if delayed is not None:
+        delayed_public = {
+            "exchange": "EUREX",
+            "product_code": EUREX_PRODUCT_CODE,
+            "url": delayed["url"],
+            "mark_kind": "delayed_quote",
+            "retrieval_date": delayed["retrieval_date"],
+            "trade_date_verified": False,
+            "execution_eligible": False,
+            "note": "Retrieval banner is not an official trade date.",
+        }
+    official = selected is not None
+    if not official and delayed is None:
         return {
             "status": "unavailable",
             "as_of": today.isoformat(),
@@ -164,26 +294,36 @@ def qualify_euribor_sources(fetch_bytes: FetchBytes, *, today: date) -> dict[str
             "canonical_product_code": None,
             "primary_settlement_source": None,
             "delayed_alternative": None,
+            "execution_eligible": False,
             "compared": compared,
             "eus": EUS_NOT_USED,
             "blocker": (
-                "No body-stamped ICE Three-Month Euribor (I) or Eurex FEU3 "
-                "settlement strip was accessible. Delayed pages that lack a "
-                "demonstrable observation date are not used. US ZQ is independent."
+                "No body-stamped ICE Three-Month Euribor (I) settlement strip and no "
+                "dated Eurex FEU3 board were accessible. "
+                f"ICE specs page {ICE_PRODUCT_URL} is not a settlement file. "
+                f"Eurex {EUREX_FEU3_URL} did not resolve product FEU3. "
+                "US ZQ is independent."
             ),
         }
-
     return {
-        "status": "ok",
+        "status": "ok" if official else "delayed_only",
         "as_of": today.isoformat(),
-        "canonical_exchange": selected["venue"],
-        "canonical_product_code": selected["product_code"],
-        "primary_settlement_source": selected["url"],
-        "delayed_alternative": None,
+        "canonical_exchange": selected["venue"] if official else None,
+        "canonical_product_code": selected["product_code"] if official else None,
+        "primary_settlement_source": selected["url"] if official else None,
+        "delayed_alternative": delayed_public,
+        "execution_eligible": False,
         "compared": compared,
         "eus": EUS_NOT_USED,
-        "blocker": None,
-        "_body": selected["body"],
+        "blocker": None
+        if official
+        else (
+            "Official ICE and Eurex settlement files were not available. "
+            "The eSignal FEU3-EUX board is a delayed retrieval, not an official settlement, "
+            "and it does not stamp the three-month accrual window."
+        ),
+        "_body": None if not official else selected["body"],
+        "_delayed_rows": None if delayed is None else delayed["rows"],
     }
 
 
@@ -308,12 +448,26 @@ def acquire_euribor_contracts(
     del benchmark, last_official
     qualification = qualify_euribor_sources(fetch_bytes, today=today)
     body = qualification.pop("_body", None)
+    delayed_rows = qualification.pop("_delayed_rows", None)
     provenance = {
         "qualification": qualification,
         "mark_kind": None,
         "filled_from_other_curve": False,
         "eus_used": False,
     }
+    if qualification.get("status") == "delayed_only" and delayed_rows:
+        provenance["mark_kind"] = "delayed_quote"
+        provenance["retrieval_date"] = delayed_rows[0].get("retrieval_date")
+        provenance["trade_date"] = None
+        provenance["freshness_hint"] = "stale"
+        provenance["execution_eligible"] = False
+        provenance["note"] = "Delayed retrieval is not an official settlement and is not executable."
+        return (
+            delayed_rows,
+            ESIGNAL_FEU3_URL,
+            "delayed Eurex FEU3 board via eSignal",
+            provenance,
+        )
     if body is None or qualification.get("status") != "ok":
         raise ValueError(qualification.get("blocker") or "EURIBOR strip unavailable")
     session = today
@@ -348,4 +502,5 @@ def qualification_for_publication(qualification: dict[str, Any]) -> dict[str, An
     """Drop any raw body before the object is stored on a market snapshot."""
     out = dict(qualification)
     out.pop("_body", None)
+    out.pop("_delayed_rows", None)
     return out

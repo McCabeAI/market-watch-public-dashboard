@@ -16,12 +16,15 @@ from scripts.rates.cme_zq import (
 )
 from scripts.rates.contract_economics import dv01_per_contract, parse_contract_id
 from scripts.rates.euribor_futures import (
+    ICE_PRODUCT_URL,
+    parse_esignal_feu3_html,
     parse_euribor_settlement_document,
     qualify_euribor_sources,
 )
 from scripts.rates.executable_catalog import assess_expression
 from scripts.rates.futures_basis import (
     basis_package_legs,
+    basis_package_pnl_usd,
     build_futures_basis,
     effr_minus_sofr_bp,
     euribor_minus_estr_bp,
@@ -328,8 +331,11 @@ class BasisTests(unittest.TestCase):
         basis = build_futures_basis(zq_block=zq, sr1_block=sr1, euribor_block=None, esr_block=None, history=history)
         changes = basis["curves"]["US_EFFR_MINUS_SOFR"]["points"][0]["changes"]
         self.assertEqual(changes["1d"]["status"], "observed")
-        self.assertAlmostEqual(changes["1d"]["bp"], 4.0, places=6)
+        self.assertAlmostEqual(changes["1d"]["bp"], 1.0, places=6)
+        self.assertAlmostEqual(changes["1d"]["prior_basis_bp"], 4.0, places=6)
+        self.assertAlmostEqual(changes["1d"]["current_basis_bp"], 5.0, places=6)
         self.assertEqual(changes["5d"]["status"], "unavailable")
+        self.assertIsNone(changes["5d"]["bp"])
 
     def test_euribor_proxy_is_not_exact_and_not_executable(self) -> None:
         self.assertAlmostEqual(euribor_minus_estr_bp(2.10, 2.00), 10.0, places=6)
@@ -389,7 +395,44 @@ class BasisTests(unittest.TestCase):
         }
         package = basis_package_legs(point, lots=2, side="long")
         self.assertEqual(package["status"], "executable")
-        self.assertEqual([leg["side"] for leg in package["legs"]], ["long", "short"])
+        self.assertEqual([leg["side"] for leg in package["legs"]], ["short", "long"])
+        self.assertEqual(package["legs"][0]["product_code"], "ZQ")
+        self.assertEqual(package["legs"][1]["product_code"], "SR1")
+        widened = basis_package_pnl_usd(
+            entry_zq=96.00,
+            exit_zq=96.00,
+            entry_sr1=96.05,
+            exit_sr1=96.06,
+            lots=1,
+            side="long",
+            year=2026,
+            month=11,
+        )
+        self.assertEqual(widened, 41.67)
+        narrowed = basis_package_pnl_usd(
+            entry_zq=96.00,
+            exit_zq=96.00,
+            entry_sr1=96.05,
+            exit_sr1=96.04,
+            lots=1,
+            side="long",
+            year=2026,
+            month=11,
+        )
+        self.assertEqual(narrowed, -41.67)
+        short_package = basis_package_pnl_usd(
+            entry_zq=96.00,
+            exit_zq=96.00,
+            entry_sr1=96.05,
+            exit_sr1=96.06,
+            lots=1,
+            side="short",
+            year=2026,
+            month=12,
+        )
+        self.assertLess(short_package, 0)
+        self.assertNotEqual(monthly_bp_value_usd(2026, 11)["days"], monthly_bp_value_usd(2027, 2)["days"])
+        self.assertNotEqual(monthly_bp_value_usd(2026, 12)["unrounded_usd_per_bp"], monthly_bp_value_usd(2028, 2)["unrounded_usd_per_bp"])
         self.assertEqual(basis_package_legs(point, lots=0, side="long")["status"], "unavailable")
         market = {
             "futures_basis": {
@@ -517,6 +560,170 @@ class BasisTests(unittest.TestCase):
         )
         self.assertIn("ZQ unavailable", fragment)
         self.assertIn('class="country-detail"', fragment)
+
+    def test_change_is_current_minus_prior_not_the_prior_level(self) -> None:
+        history = remember_basis_snapshot(
+            {"version": 1, "definitions": {}},
+            {
+                "definition_id": "us_effr_minus_sofr_monthly_v1",
+                "points": [
+                    {
+                        "expiry": "2026-12",
+                        "observation_date": "2026-11-01",
+                        "basis_bp": 4.0,
+                        "status": "current",
+                    }
+                ],
+            },
+        )
+        zq = {
+            "freshness": "fresh",
+            "mark_kind": "official_settlement",
+            "rows": [
+                {
+                    "code": "ZQZ26",
+                    "expiry": "2026-12",
+                    "price": 96.0,
+                    "implied_rate": 4.0,
+                    "observation_date": "2026-11-06",
+                    "trade_date_verified": True,
+                }
+            ],
+        }
+        sr1 = {
+            "freshness": "fresh",
+            "mark_kind": "official_settlement",
+            "rows": [
+                {
+                    "code": "SR1Z26",
+                    "expiry": "2026-12",
+                    "price": 96.05,
+                    "implied_rate": 3.95,
+                    "observation_date": "2026-11-06",
+                    "trade_date_verified": True,
+                }
+            ],
+        }
+        basis = build_futures_basis(zq_block=zq, sr1_block=sr1, euribor_block=None, esr_block=None, history=history)
+        change = basis["curves"]["US_EFFR_MINUS_SOFR"]["points"][0]["changes"]["5d"]
+        self.assertEqual(change["status"], "observed")
+        self.assertAlmostEqual(change["prior_basis_bp"], 4.0, places=6)
+        self.assertAlmostEqual(change["current_basis_bp"], 5.0, places=6)
+        self.assertAlmostEqual(change["bp"], 1.0, places=6)
+        self.assertEqual(basis["curves"]["US_EFFR_MINUS_SOFR"]["points"][0]["changes"]["1d"]["status"], "unavailable")
+
+    def test_history_file_survives_a_clean_directory_and_corrupt_cache_is_ignored(self) -> None:
+        import tempfile
+        from unittest import mock
+
+        from scripts.rates.stir_attach import attach_zq_euribor_and_basis, history_path_for
+
+        run1 = Path(tempfile.mkdtemp())
+        store1 = run1 / "short_rate_last_good.json"
+        store1.write_text('{"version": 1, "curves": {}}\n', encoding="utf-8")
+        saved = remember_basis_snapshot(
+            None,
+            {
+                "definition_id": "us_effr_minus_sofr_monthly_v1",
+                "points": [
+                    {"expiry": "2026-12", "observation_date": "2026-11-05", "basis_bp": 4.0, "status": "current"}
+                ],
+            },
+        )
+        save_basis_history(history_path_for(store1), saved)
+        run2 = Path(tempfile.mkdtemp())
+        store2 = run2 / "short_rate_last_good.json"
+        store2.write_text('{"version": 1, "curves": {"SR1": {"as_of": "2026-11-06"}}}\n', encoding="utf-8")
+        history_path_for(store2).write_bytes(history_path_for(store1).read_bytes())
+        loaded = load_basis_history(history_path_for(store2))
+        self.assertEqual(
+            loaded["definitions"]["us_effr_minus_sofr_monthly_v1"]["2026-11-05"]["2026-12"]["basis_bp"],
+            4.0,
+        )
+        history_path_for(store2).write_text("{", encoding="utf-8")
+        countries = {"US": {"status": "ok", "contracts_1m": [{"code": "SR1Z26"}]}, "EA": {"status": "ok"}}
+        with mock.patch(
+            "scripts.rates.stir_attach.collect_zq_and_euribor",
+            return_value={
+                "ZQ": {"status": "unavailable", "rows": [], "freshness": "unavailable"},
+                "EURIBOR": {"status": "unavailable", "rows": [], "freshness": "unavailable"},
+            },
+        ), mock.patch(
+            "scripts.rates.stir_attach.qualify_euribor_sources",
+            return_value={"status": "unavailable", "blocker": "probe failed", "compared": []},
+        ):
+            basis = attach_zq_euribor_and_basis(
+                countries,
+                today=date(2026, 11, 6),
+                fetch_bytes=lambda *_a, **_k: b"",
+                store_path=store2,
+                sr1_block={"status": "ok", "rows": [], "freshness": "fresh"},
+                esr_block={"status": "ok", "rows": [], "freshness": "fresh"},
+            )
+        self.assertEqual(basis["history_status"], "corrupt_cache_ignored")
+        self.assertEqual(json.loads(store2.read_text())["curves"]["SR1"]["as_of"], "2026-11-06")
+        self.assertIsNone(basis["curves"]["US_EFFR_MINUS_SOFR"]["points"][0]["changes"]["1d"]["bp"] if basis["curves"]["US_EFFR_MINUS_SOFR"]["points"] else None)
+        root = Path(__file__).resolve().parents[1]
+        daily_text = (root / ".github/workflows/daily-market-state.yml").read_text(encoding="utf-8")
+        deploy_text = (root / ".github/workflows/deploy-pages.yml").read_text(encoding="utf-8")
+        self.assertIn("tests.test_zq_euribor_basis", daily_text)
+        self.assertIn("futures-basis-history-v1-", daily_text)
+        self.assertIn("/tmp/market-state/futures_basis_history.json", daily_text)
+        self.assertIn("/tmp/market-state/short_rate_last_good.json", daily_text)
+        self.assertIn(".mw-cache-restore/futures_basis_history.json", deploy_text)
+        self.assertIn(".mw-cache-restore/short_rate_last_good.json", deploy_text)
+
+    def test_delayed_feu3_board_is_not_an_official_settlement_or_a_basis(self) -> None:
+        html = """
+        Delayed data retrieved on Nov 8 2026 16:17:41 EST
+        <a href="/quote?symbol=FEU3+Z26-EUX">FEU3 Z26-EUX</a>
+        THREE-MONTH EURIBOR FUTURES Dec'26
+        <td>97.905</td><span class="settle">s</span>
+        <a href="/quote?symbol=FEU3+Z26-EUX">FEU3 Z26-EUX</a>
+        <td>97.905</td>
+        """
+        rows = parse_esignal_feu3_html(html)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["code"], "FEU3Z26")
+        self.assertEqual(rows[0]["exchange"], "EUREX")
+        self.assertEqual(rows[0]["retrieval_date"], "2026-11-08")
+        self.assertFalse(rows[0]["trade_date_verified"])
+        self.assertFalse(rows[0]["eligible_for_basis"])
+        self.assertIsNone(rows[0]["reference_start"])
+        self.assertIn("38527986", ICE_PRODUCT_URL)
+        self.assertNotIn("37650330", ICE_PRODUCT_URL)
+        esr = {
+            "status": "ok",
+            "freshness": "fresh",
+            "rows": [
+                {
+                    "code": "ESRZ6",
+                    "expiry": "2026-12",
+                    "price": 98.0,
+                    "implied_rate": 2.0,
+                    "observation_date": "2026-11-08",
+                    "reference_start": "2026-12-16",
+                    "reference_end": "2027-03-16",
+                }
+            ],
+        }
+        basis = build_futures_basis(
+            zq_block=None,
+            sr1_block=None,
+            euribor_block={"status": "stale", "freshness": "stale", "rows": rows},
+            esr_block=esr,
+        )
+        point = basis["curves"]["EA_EURIBOR_MINUS_ESTR"]["points"][0]
+        self.assertIsNone(point["basis_bp"])
+        self.assertIn("not a verified trade-date", point["reason"])
+        from scripts.pm.review_packets import compact_market_state
+        from scripts.trader_room.evidence import _futures_basis_section
+
+        market = {"futures_basis": basis, "status": "partial"}
+        packet_basis = _futures_basis_section(market)
+        compact = compact_market_state({"market_state": market})
+        self.assertEqual(packet_basis, compact["futures_basis"])
+        self.assertIsNone(packet_basis["curves"]["EA_EURIBOR_MINUS_ESTR"]["points"][0]["basis_bp"])
 
 
 if __name__ == "__main__":
