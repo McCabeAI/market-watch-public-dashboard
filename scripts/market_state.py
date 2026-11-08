@@ -2265,6 +2265,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="optional local official RBNZ B2 xlsx (same file as the public download URL)",
     )
     ap.add_argument("--public", action="store_true", help="Omit restricted index observations from the public read model")
+    ap.add_argument(
+        "--short-rate-store",
+        help="optional path for short-rate last-good persistence (default: beside --output)",
+    )
     args = ap.parse_args(argv)
     today = date.fromisoformat(args.today) if args.today else None
     nz_workbook = Path(args.nz_workbook) if args.nz_workbook else None
@@ -2272,7 +2276,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise MarketStateError(f"RBNZ workbook not found: {nz_workbook}")
     _refresh_meeting_calendars()
     _refresh_policy_state()
-    store_path = Path(args.output).parent / "short_rate_last_good.json"
+    if args.short_rate_store:
+        store_path = Path(args.short_rate_store)
+    else:
+        store_path = Path(args.output).parent / "short_rate_last_good.json"
     snapshot = build_snapshot(
         today=today,
         nz_workbook=nz_workbook,
