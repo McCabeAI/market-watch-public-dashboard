@@ -3,13 +3,16 @@ from __future__ import annotations
 
 import tempfile
 import unittest
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from scripts.asx_eod import (
     ASX_EOD_TEMPLATE,
+    SYDNEY,
     acquire_asx_cash_futures,
     bbsw_ois_basis_evidence,
+    expected_latest_published_session,
     ib_last_trading_day,
     ir_last_trading_day,
     ir_settlement_day,
@@ -24,6 +27,36 @@ FIXTURES = Path(__file__).resolve().parent / "fixtures" / "asx"
 
 def _load(name: str) -> str:
     return FIXTURES.joinpath(name).read_bytes().decode("utf-8", errors="replace")
+
+
+class ExpectedPublishedSessionTests(unittest.TestCase):
+    def test_sunday_noon_expects_friday(self) -> None:
+        now = datetime(2026, 11, 8, 12, 0, tzinfo=SYDNEY)
+        self.assertEqual(expected_latest_published_session(now), date(2026, 11, 6))
+
+    def test_friday_holiday_expects_thursday(self) -> None:
+        now = datetime(2026, 11, 8, 12, 0, tzinfo=SYDNEY)
+        extra = frozenset({date(2026, 11, 6)})
+        self.assertEqual(
+            expected_latest_published_session(now, extra_holidays=extra),
+            date(2026, 11, 5),
+        )
+
+    def test_monday_morning_still_friday(self) -> None:
+        now = datetime(2026, 11, 9, 5, 30, tzinfo=SYDNEY)
+        self.assertEqual(expected_latest_published_session(now), date(2026, 11, 6))
+
+    def test_tuesday_morning_before_monday_publication(self) -> None:
+        now = datetime(2026, 11, 10, 5, 30, tzinfo=SYDNEY)
+        self.assertEqual(expected_latest_published_session(now), date(2026, 11, 6))
+
+    def test_tuesday_after_monday_publication(self) -> None:
+        now = datetime(2026, 11, 10, 7, 0, tzinfo=SYDNEY)
+        self.assertEqual(expected_latest_published_session(now), date(2026, 11, 9))
+
+    def test_monday_evening_still_friday(self) -> None:
+        now = datetime(2026, 11, 9, 18, 0, tzinfo=SYDNEY)
+        self.assertEqual(expected_latest_published_session(now), date(2026, 11, 6))
 
 
 class AsxEodParserTests(unittest.TestCase):
@@ -113,7 +146,66 @@ class AsxEodParserTests(unittest.TestCase):
             )
         self.assertEqual(result["session_date"], "2026-11-06")
         self.assertEqual(result["products"]["IR"]["freshness"], "current")
+        self.assertTrue(result["products"]["IR"]["execution_eligible"])
         self.assertEqual(result["products"]["IR"]["as_of"], "2026-11-06")
+
+    def test_sunday_thursday_only_is_stale(self) -> None:
+        thursday_url = ASX_EOD_TEMPLATE.format(yymmdd="261105")
+
+        def fetch_bytes(url: str, **kwargs: object) -> bytes:
+            if url == thursday_url:
+                return _load("EODWebMarketSummary261105SFD.htm").encode()
+            raise FileNotFoundError(url)
+
+        with tempfile.TemporaryDirectory() as tmp:
+            result = acquire_asx_cash_futures(
+                fetch_bytes,
+                today=date(2026, 11, 8),
+                cache_path=f"{tmp}/cache.json",
+            )
+        ir = result["products"]["IR"]
+        self.assertEqual(ir["status"], "stale")
+        self.assertEqual(ir["freshness"], "stale")
+        self.assertFalse(ir["execution_eligible"])
+        self.assertEqual(ir["as_of"], "2026-11-05")
+        dec = next(r for r in ir["contracts"] if r["expiry"] == "2026-12")
+        self.assertAlmostEqual(dec["implied_rate"], 4.97)
+
+    def test_friday_cache_on_sunday_stays_stale_not_current(self) -> None:
+        def fetch_bytes(url: str, **kwargs: object) -> bytes:
+            raise ConnectionError("down")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            path = f"{tmp}/cache.json"
+            for product in ("IB", "IR"):
+                save_product(
+                    path,
+                    product,
+                    {
+                        "session_date": "2026-11-06",
+                        "as_of": "2026-11-06",
+                        "source_url": "https://example.test",
+                        "contracts": [
+                            {
+                                "expiry": "2026-12",
+                                "price": 95.05 if product == "IR" else 95.6,
+                                "implied_rate": 4.95 if product == "IR" else 4.4,
+                                "as_of": "2026-11-06",
+                            }
+                        ],
+                    },
+                )
+            result = acquire_asx_cash_futures(
+                fetch_bytes,
+                today=date(2026, 11, 8),
+                cache_path=path,
+            )
+        for product in ("IB", "IR"):
+            block = result["products"][product]
+            self.assertEqual(block["status"], "stale")
+            self.assertEqual(block["freshness"], "stale")
+            self.assertFalse(block["execution_eligible"])
+            self.assertEqual(block["provenance"], "last_good_cache")
 
     def test_expired_contract(self) -> None:
         html = _load("EODWebMarketSummary261106SFD.htm")
@@ -241,6 +333,7 @@ class AsxEodParserTests(unittest.TestCase):
                 cache_path=path,
             )
         self.assertEqual(result["products"]["IB"]["status"], "stale")
+        self.assertFalse(result["products"]["IB"]["execution_eligible"])
         self.assertEqual(result["products"]["IB"]["provenance"], "last_good_cache")
         self.assertEqual(result["products"]["IR"]["status"], "unavailable")
         self.assertEqual(result["products"]["IR"]["contracts"], [])

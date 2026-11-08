@@ -117,8 +117,41 @@ class AsxIrIntegrationTests(unittest.TestCase):
         paths = _collect(asx_name="EODWebMarketSummary261105SFD.htm")
         au = paths["countries"]["AU"]
         self.assertEqual(au["contracts_3m_as_of"], "2026-11-05")
+        self.assertEqual(au["contracts_3m_freshness"], "stale")
+        self.assertFalse(au["contracts_3m_execution_eligible"])
         dec = next(r for r in au["contracts_3m"] if r["expiry"] == "2026-12")
         self.assertAlmostEqual(dec["implied_rate"], 4.97)
+
+    def test_sunday_thursday_only_bbsw_not_executable(self) -> None:
+        paths = _collect(asx_name="EODWebMarketSummary261105SFD.htm")
+        curves = build_tradable_rate_curves(paths)
+        self.assertEqual(curves["curves"]["BBSW"]["status"], "stale")
+        self.assertFalse(curves["curves"]["BBSW"]["execution_eligible"])
+        fx = {
+            "status": "ok",
+            "pairs": {"AUDUSD": {"status": "ok", "spot": 0.65, "as_of": "2026-11-05"}},
+        }
+        packet = {"tradable_rate_curves": curves, "policy_paths": paths, "fx": fx}
+        for expr in ("IRZ26", "BBSW_2026-12"):
+            verdict = assess_expression(expr, market_state=packet)
+            self.assertNotEqual(verdict.get("status"), "executable")
+        dec = next(
+            r for r in curves["curves"]["BBSW"]["contracts"] if r["expiry"] == "2026-12"
+        )
+        self.assertAlmostEqual(float(dec["implied_rate"]), 4.97, places=2)
+
+    def test_sunday_friday_bbsw_executable(self) -> None:
+        paths = _collect()
+        curves = build_tradable_rate_curves(paths)
+        self.assertEqual(curves["curves"]["BBSW"]["status"], "ok")
+        curves["status"] = "ok"
+        fx = {
+            "status": "ok",
+            "pairs": {"AUDUSD": {"status": "ok", "spot": 0.65, "as_of": "2026-11-06"}},
+        }
+        packet = {"tradable_rate_curves": curves, "policy_paths": paths, "fx": fx}
+        verdict = assess_expression("BBSW_2026-12", market_state=packet)
+        self.assertEqual(verdict.get("status"), "executable")
 
     def test_ib_only_ir_unavailable_country_ok(self) -> None:
         html = _strip_product(_load("EODWebMarketSummary261106SFD.htm").decode("utf-8", errors="replace"), "IR - 90-Day Bank Bills")

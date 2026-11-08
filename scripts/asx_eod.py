@@ -13,9 +13,10 @@ from __future__ import annotations
 
 import html
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta
 from html.parser import HTMLParser
 from typing import Any, Callable, FrozenSet
+from zoneinfo import ZoneInfo
 
 from scripts.asx_futures_cache import (
     default_cache_path,
@@ -29,8 +30,10 @@ FetchBytes = Callable[..., bytes]
 ASX_EOD_TEMPLATE = (
     "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary{yymmdd}SFD.htm"
 )
-CURRENT_MAX_CALENDAR_DAYS = 4
 STALE_MAX_CALENDAR_DAYS = 10
+
+SYDNEY = ZoneInfo("Australia/Sydney")
+_ASX_EOD_PUBLICATION_TIME = time(6, 0)
 
 _BROWSER_UA = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
@@ -179,6 +182,48 @@ def _parse_expiry(label: str) -> str | None:
         return None
     month = MONTHS[match.group(1)]
     return f"{match.group(2)}-{month:02d}"
+
+
+def _sydney_datetime(dt: datetime) -> datetime:
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=SYDNEY)
+    return dt.astimezone(SYDNEY)
+
+
+def expected_latest_published_session(
+    now: datetime,
+    extra_holidays: FrozenSet[date] = frozenset(),
+) -> date | None:
+    """Return the latest ASX session whose EOD file should be available at ``now``.
+
+    Trade date D is treated as published at 06:00 Australia/Sydney on D+1 (not on
+    session day). A Monday session is therefore not expected on Monday evening —
+    publication is Tuesday 06:00 — so Friday remains the expected session until
+    that instant.
+    """
+    now_sydney = _sydney_datetime(now)
+    cursor = now_sydney.date() - timedelta(days=1)
+    for _ in range(14):
+        if _is_business_day(cursor, extra_holidays):
+            publication = datetime.combine(
+                cursor + timedelta(days=1),
+                _ASX_EOD_PUBLICATION_TIME,
+                tzinfo=SYDNEY,
+            )
+            if publication <= now_sydney:
+                return cursor
+        cursor -= timedelta(days=1)
+    return None
+
+
+def _resolve_asx_clock(
+    *,
+    today: date,
+    as_of: datetime | None,
+) -> datetime:
+    if as_of is not None:
+        return _sydney_datetime(as_of)
+    return datetime.combine(today, time(12, 0), tzinfo=SYDNEY)
 
 
 def _is_business_day(d: date, extra_holidays: FrozenSet[date] = frozenset()) -> bool:
@@ -593,30 +638,22 @@ def legacy_ib_rows(text: str, *, benchmark: float) -> list[dict[str, Any]]:
     return legacy
 
 
-def _product_freshness(session_date: date, today: date) -> tuple[str, bool, str] | None:
-    age = (today - session_date).days
-    if age < -1:
-        return None
-    if age > STALE_MAX_CALENDAR_DAYS:
-        return None
-    if age <= CURRENT_MAX_CALENDAR_DAYS:
-        return "ok", True, "current"
-    return "stale", False, "stale"
+def _session_age_ok(session_date: date, clock_date: date) -> bool:
+    age = (clock_date - session_date).days
+    return -1 <= age <= STALE_MAX_CALENDAR_DAYS
 
 
 def _cache_product_block(
     record: dict[str, Any],
     *,
-    today: date,
+    clock_date: date,
     product: str,
 ) -> dict[str, Any] | None:
     if not validate_record(record, product=product):
         return None
     session_date = date.fromisoformat(record["session_date"])
-    fresh = _product_freshness(session_date, today)
-    if fresh is None:
+    if not _session_age_ok(session_date, clock_date):
         return None
-    _status, _eligible, _fresh = fresh
     status = "stale"
     execution_eligible = False
     freshness = "stale"
@@ -640,7 +677,9 @@ def _cache_product_block(
 def _report_product_block(
     block: dict[str, Any],
     *,
-    today: date,
+    session_date: date,
+    expected: date | None,
+    clock_date: date,
     product: str,
 ) -> dict[str, Any] | None:
     if block.get("status") != "ok":
@@ -648,11 +687,18 @@ def _report_product_block(
     session_s = block.get("session_date")
     if not session_s:
         return None
-    session_date = date.fromisoformat(session_s)
-    fresh = _product_freshness(session_date, today)
-    if fresh is None:
+    if date.fromisoformat(session_s) != session_date:
         return None
-    status, execution_eligible, freshness = fresh
+    if expected is None:
+        return None
+    if not _session_age_ok(session_date, clock_date):
+        return None
+    if session_date > expected:
+        return None
+    if session_date == expected:
+        status, execution_eligible, freshness = "ok", True, "current"
+    else:
+        status, execution_eligible, freshness = "stale", False, "stale"
     return {
         "status": status,
         "freshness": freshness,
@@ -701,17 +747,24 @@ def acquire_asx_cash_futures(
     benchmark: float | None = None,
     cache_path: str | None = None,
     lookback_days: int = 8,
+    as_of: datetime | None = None,
+    extra_holidays: FrozenSet[date] = frozenset(),
 ) -> dict[str, Any]:
     path = cache_path or default_cache_path()
     cache = load_cache(path)
 
+    clock = _resolve_asx_clock(today=today, as_of=as_of)
+    clock_date = _sydney_datetime(clock).date()
+    expected = expected_latest_published_session(clock, extra_holidays=extra_holidays)
+
     accepted: dict[str, Any] | None = None
     accepted_url: str | None = None
+    accepted_session: date | None = None
     fetch_error: str | None = None
     errors: list[str] = []
 
     for offset in range(lookback_days):
-        candidate = today - timedelta(days=offset)
+        candidate = clock_date - timedelta(days=offset)
         url = ASX_EOD_TEMPLATE.format(yymmdd=candidate.strftime("%y%m%d"))
         try:
             raw = fetch_bytes(
@@ -743,12 +796,18 @@ def acquire_asx_cash_futures(
             errors.append(f"{url}: session {session_s} != candidate {candidate.isoformat()}")
             continue
         session_date = date.fromisoformat(session_s)
-        age = (today - session_date).days
-        if age < -1 or age > STALE_MAX_CALENDAR_DAYS:
+        if expected is not None and session_date > expected:
+            errors.append(
+                f"{url}: session {session_s} is after expected {expected.isoformat()}; skipping"
+            )
+            continue
+        if not _session_age_ok(session_date, clock_date):
+            age = (clock_date - session_date).days
             errors.append(f"{url}: freshness age {age} out of range")
             continue
         accepted = parsed
         accepted_url = url
+        accepted_session = session_date
         break
 
     if accepted is None:
@@ -760,19 +819,29 @@ def acquire_asx_cash_futures(
 
     for product in ("IB", "IR"):
         block: dict[str, Any] | None = None
-        if accepted is not None:
+        if accepted is not None and accepted_session is not None:
             src_block = accepted["products"][product]
-            block = _report_product_block(src_block, today=today, product=product)
+            block = _report_product_block(
+                src_block,
+                session_date=accepted_session,
+                expected=expected,
+                clock_date=clock_date,
+                product=product,
+            )
             if block is None and src_block.get("status") != "ok":
                 block = None
-            elif block is not None:
+            elif block is not None and block.get("freshness") == "current":
                 record = _build_cache_record(src_block, product)
                 if record and validate_record(record, product=product):
                     save_product(path, product, record)
 
         if block is None:
             cached = cache.get("products", {}).get(product)
-            block = _cache_product_block(cached, today=today, product=product) if cached else None
+            block = (
+                _cache_product_block(cached, clock_date=clock_date, product=product)
+                if cached
+                else None
+            )
 
         if block is None:
             block = {

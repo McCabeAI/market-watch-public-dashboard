@@ -1500,6 +1500,7 @@ def collect_policy_paths(
     today: date,
     fetch_bytes: FetchBytes,
     short_rate_store: Path | None = None,
+    as_of: datetime | None = None,
 ) -> dict[str, Any]:
     countries: dict[str, Any] = {}
     sources: dict[str, Any] = {}
@@ -1689,6 +1690,7 @@ def collect_policy_paths(
             today=today,
             benchmark=benchmark_rate,
             cache_path=cache_path,
+            as_of=as_of,
         )
         asx_url = asx.get("source_url")
         ib_product = asx["products"]["IB"]
