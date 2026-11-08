@@ -23,6 +23,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Mapping, Sequence
@@ -1426,6 +1427,7 @@ def build_snapshot(
     include_fragmentation: bool | None = None,
     short_rate_store: Path | None = None,
 ) -> dict:
+    caller_supplied_today = today is not None
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
     nz_bytes = nz_workbook.read_bytes() if nz_workbook else None
@@ -1695,6 +1697,11 @@ def build_snapshot(
                 today=today,
                 fetch_bytes=fetch_bytes,
                 short_rate_store=short_rate_store,
+                as_of=(
+                    None
+                    if caller_supplied_today
+                    else datetime.now(ZoneInfo("Australia/Sydney"))
+                ),
             )
         except Exception as exc:
             policy_paths = {

@@ -126,12 +126,19 @@ def contract_pnl_for_lots(position: Mapping[str, Any], lots: int, *, mark: float
     px = position.get("mark_price") if mark is None else mark
     if entry in (None, "") or px in (None, ""):
         return None
+    if position.get("mark_status") in ("stale", "unavailable"):
+        return None
     if parsed.spec.currency == "USD":
         fx = 1.0
     else:
         if position.get("mark_fx_status") not in (None, "ok") or position.get("mark_fx_usd_per_unit") in (None, ""):
             return None
         fx = float(position["mark_fx_usd_per_unit"])
+    if parsed.spec.product_code == "IR":
+        from scripts.rates.bbsw_valuation import ir_pnl_usd
+
+        side = str(position.get("side") or "long")
+        return float(ir_pnl_usd(float(entry), float(px), int(lots), side, fx))
     local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
     if local is None:
         return None

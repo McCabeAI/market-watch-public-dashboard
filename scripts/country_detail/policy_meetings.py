@@ -243,6 +243,15 @@ def render_policy_meetings(
         source = _render_source(bank_code, price_block, calendar_block)
         if source:
             chunks.append(source)
+        if bank_code == "AU":
+            chunks.append(
+                "<p class=\"policy-meetings-source\">"
+                + _esc(
+                    "RBA meeting prices use 30-day interbank cash-rate futures (AONIA/IB) only. "
+                    "90-day bank bill futures (BBSW/IR) are a separate bank-funding curve and are not meeting odds."
+                )
+                + "</p>"
+            )
     elif reason:
         chunks.append(f"<p>{_esc(reason)}</p>")
     chunks.append("</details>")

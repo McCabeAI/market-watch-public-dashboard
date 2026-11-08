@@ -20,6 +20,8 @@ _CURVE = {
     "SR3": {"currency": "USD", "country": "US", "family": "sofr"},
     "CRA": {"currency": "CAD", "country": "CA", "family": "corra"},
     "IB": {"currency": "AUD", "country": "AU", "family": "aonia"},
+    "BBSW": {"currency": "AUD", "country": "AU", "family": "bbsw"},
+    "IR": {"currency": "AUD", "country": "AU", "family": "bbsw"},
 }
 
 

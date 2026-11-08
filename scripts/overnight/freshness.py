@@ -173,6 +173,14 @@ def expression_dependencies(
         deps.add("CORRA_curve")
     if re.search(_bounded_token("AONIA"), upper):
         deps.add("AONIA_curve")
+    if re.search(rf"(?<![A-Z]){_bounded_token('BBSW')}(?![A-Z])", upper):
+        deps.add("BBSW_curve")
+    if re.search(r"(?<![A-Z])BBSW[_-]\d{4}-\d{2}(?![A-Z])", upper):
+        deps.add("BBSW_curve")
+    if re.search(r"(?<![A-Z])IR[FGHJKMNQUVXZ]\d{1,2}(?![A-Z0-9])", upper):
+        deps.add("BBSW_curve")
+    if re.search(r"(?<![A-Z])IR[_-]\d{4}-\d{2}(?![A-Z])", upper):
+        deps.add("BBSW_curve")
     # USD and AUD in a spot pair are not a sovereign-curve dependency.
     # US and AU cash legs apply only to the sovereign instrument itself.
     _sovereign_tenor = r"(?:2Y|5Y|10Y|30Y|LONG|2S10S|5S10S)"
@@ -200,7 +208,7 @@ def _named_status(block: Any, *source_lists: Any, source_key: str) -> str:
     return "ok"
 
 
-_CURVE_POLICY_COUNTRY = {"SOFR": "US", "CORRA": "CA", "AONIA": "AU"}
+_CURVE_POLICY_COUNTRY = {"SOFR": "US", "CORRA": "CA", "AONIA": "AU", "BBSW": "AU"}
 
 
 def _policy_country(packet: dict[str, Any], code: str) -> dict[str, Any] | None:
@@ -254,7 +262,12 @@ def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
         return _named_status(rates.get(rate_country), stale, unavailable, source_key=dependency)
     if dependency.startswith("FX_") and len(dependency) == 9:
         return _fx_pair_status(packet, dependency[3:])
-    curve_ids = {"SOFR_curve": "SOFR", "CORRA_curve": "CORRA", "AONIA_curve": "AONIA"}
+    curve_ids = {
+        "SOFR_curve": "SOFR",
+        "CORRA_curve": "CORRA",
+        "AONIA_curve": "AONIA",
+        "BBSW_curve": "BBSW",
+    }
     curve_id = curve_ids.get(dependency)
     if curve_id:
         curve_status = _named_status(
@@ -263,6 +276,8 @@ def _dependency_status(packet: dict[str, Any], dependency: str) -> str:
             source_key=f"{curve_id}_tradable_curve",
         )
         if curve_status in _BLOCKING_SOURCE_STATUSES:
+            return curve_status
+        if curve_id == "BBSW":
             return curve_status
         policy = _policy_country(packet, _CURVE_POLICY_COUNTRY[curve_id])
         if policy is not None:

@@ -65,7 +65,7 @@ _TWO_YEAR_FAMILIES = frozenset({"government_yield", "treasury_future", "usd_sofr
 _TWO_YEAR_STRIP_CONTRACTS = 8
 _FOUR_QUARTER_STRIP_CONTRACTS = 4
 _STRUCTURE_PROBE_NOTIONAL_USD = 5_000_000
-_CURVE_ORDER = ("SOFR", "CORRA", "AONIA")
+_CURVE_ORDER = ("SOFR", "CORRA", "AONIA", "BBSW")
 _TREASURY_PRODUCTS = ("TU", "FV", "TY")
 _TREASURY_CANONICAL = {"TU": "TU", "ZT": "TU", "FV": "FV", "ZF": "FV", "TY": "TY", "ZN": "TY"}
 _OIS_TENORS = ((0, 2, "USD_SOFR_OIS_2Y"), (1, 1, "USD_SOFR_OIS_1Y1Y"))
@@ -199,18 +199,27 @@ def _contract_implied_rate(
 ) -> tuple[float | None, str | None, str | None]:
     """Return (rate, mark_source, missing_path)."""
     cid = curve_id.upper()
+    path = f"tradable_rate_curves.{cid}.contracts.{expiry}.implied_rate"
+    curves = market_state.get("tradable_rate_curves") if isinstance(market_state, Mapping) else None
+    curve_map = curves.get("curves") if isinstance(curves, Mapping) else None
+    block = curve_map.get(cid) if isinstance(curve_map, Mapping) else None
+    if not isinstance(block, Mapping):
+        return None, None, path
+    if str(block.get("status") or "") != "ok":
+        return None, None, path
+    if block.get("execution_eligible") is False:
+        return None, None, path
     for row in _curve_contract_rows(cid, market_state):
         if str(row.get("expiry")) == expiry:
+            if row.get("tradable") is False:
+                return None, None, path
             rate = row.get("implied_rate")
             if rate is None:
-                path = f"tradable_rate_curves.{cid}.contracts.{expiry}.implied_rate"
                 return None, None, path
             try:
                 return float(rate), f"tradable_rate_curves.{cid}.contracts.{expiry}.implied_rate", None
             except (TypeError, ValueError):
-                path = f"tradable_rate_curves.{cid}.contracts.{expiry}.implied_rate"
                 return None, None, path
-    path = f"tradable_rate_curves.{cid}.contracts.{expiry}.implied_rate"
     return None, None, path
 
 
@@ -662,16 +671,21 @@ def _assess_stir_outright(
             missing_inputs=missing,
             mark_status="not_applicable",
         )
-    local_dv01 = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
-    if local_dv01 is None:
+    curves = market_state.get("tradable_rate_curves") if isinstance(market_state, Mapping) else None
+    curve_map = curves.get("curves") if isinstance(curves, Mapping) else None
+    curve_block = curve_map.get(parsed.spec.curve_id) if isinstance(curve_map, Mapping) else None
+    curve_status = str((curve_block or {}).get("status") or "")
+    if curve_status == "stale":
         return _verdict(
-            status="missing_input",
-            reason=f"verified DV01 unavailable for {alias}",
+            status="unavailable",
+            reason=(
+                f"{alias} STIR mark is stale on frozen {parsed.spec.curve_id} curve; "
+                "stale settlement is not today's execution price"
+            ),
             family="stir_outright",
             instrument=alias,
             expression_type=expr_type,
-            missing_inputs=[f"contract_economics.{parsed.spec.product_code}.dv01"],
-            mark_status="not_applicable",
+            mark_status="stale",
         )
     if notional_usd is not None:
         sized = lots_from_face_usd(parsed.spec, abs(float(notional_usd)), float(fx["usd_per_unit"]))
@@ -686,6 +700,16 @@ def _assess_stir_outright(
             )
     rate, mark_source, missing_path = _contract_implied_rate(market_state, parsed.spec.curve_id, parsed.expiry)
     if rate is None:
+        if curve_status == "unavailable":
+            return _verdict(
+                status="unavailable",
+                reason=f"implied rate unavailable for {alias} on frozen {parsed.spec.curve_id} curve",
+                family="stir_outright",
+                instrument=alias,
+                expression_type=expr_type,
+                missing_inputs=[missing_path or f"tradable_rate_curves.{parsed.spec.curve_id}.contracts.{parsed.expiry}.implied_rate"],
+                mark_status="unavailable",
+            )
         return _verdict(
             status="missing_input",
             reason=f"implied rate missing for {alias} on frozen {parsed.spec.curve_id} curve",
@@ -694,6 +718,22 @@ def _assess_stir_outright(
             expression_type=expr_type,
             missing_inputs=[missing_path or f"tradable_rate_curves.{parsed.spec.curve_id}.contracts.{parsed.expiry}.implied_rate"],
             mark_status="missing",
+        )
+    local_dv01 = dv01_per_contract(
+        parsed.spec,
+        year=parsed.year,
+        month=parsed.month,
+        implied_rate=rate if parsed.spec.product_code == "IR" else None,
+    )
+    if local_dv01 is None:
+        return _verdict(
+            status="missing_input",
+            reason=f"verified DV01 unavailable for {alias}",
+            family="stir_outright",
+            instrument=alias,
+            expression_type=expr_type,
+            missing_inputs=[f"contract_economics.{parsed.spec.product_code}.dv01"],
+            mark_status="not_applicable",
         )
     return _verdict(
         status="executable",
@@ -912,7 +952,7 @@ _CALENDAR_SCHEMA: dict[str, Any] = {
     "required": ["type", "curve_id", "near_expiry", "far_expiry"],
     "properties": {
         "type": {"const": "calendar_spread"},
-        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
         "near_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$", "description": "YYYY-MM earlier than far_expiry"},
         "far_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$", "description": "YYYY-MM"},
     },
@@ -923,7 +963,7 @@ _BUTTERFLY_SCHEMA: dict[str, Any] = {
     "required": ["type", "curve_id", "wing1_expiry", "body_expiry", "wing2_expiry"],
     "properties": {
         "type": {"const": "butterfly"},
-        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
         "wing1_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
         "body_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
         "wing2_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$", "description": "wing1 < body < wing2"},
@@ -939,7 +979,7 @@ _OUTRIGHT_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
                 "expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
         },
@@ -947,7 +987,7 @@ _OUTRIGHT_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
                 "expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
         },
@@ -964,7 +1004,7 @@ _CURVE_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "near_expiry", "far_expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
                 "near_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
                 "far_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
@@ -973,7 +1013,7 @@ _CURVE_RV_SCHEMA: dict[str, Any] = {
             "type": "object",
             "required": ["curve_id", "near_expiry", "far_expiry"],
             "properties": {
-                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+                "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
                 "near_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
                 "far_expiry": {"type": "string", "pattern": r"^\d{4}-\d{2}$"},
             },
@@ -987,12 +1027,15 @@ _FOUR_QUARTER_STRIP_SCHEMA: dict[str, Any] = {
     "required": ["type", "curve_id", "expiries"],
     "properties": {
         "type": {"const": "futures_strip_average"},
-        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA"]},
+        "curve_id": {"enum": ["SOFR", "CORRA", "AONIA", "BBSW"]},
         "expiries": {
             "type": "array",
             "minItems": 4,
-            "maxItems": 4,
-            "description": "Exactly four consecutive quarter-year expiries. Instrument is {curve_id}_STRIP, never SOFR_STRIP_2Y.",
+            "maxItems": 12,
+            "description": (
+                "Four, eight, or twelve consecutive quarter-year expiries "
+                "(1Y pack, 2Y bundle, or 3Y bundle). Instrument is {curve_id}_STRIP, never SOFR_STRIP_2Y."
+            ),
         },
     },
     "optional": ["weights", "target_dv01_usd"],
