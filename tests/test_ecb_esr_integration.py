@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import json
 import tempfile
+import threading
+import time
 import unittest
+from concurrent.futures import Future, ThreadPoolExecutor
 from datetime import date, timedelta
 from pathlib import Path
 from unittest import mock
@@ -13,16 +16,21 @@ from scripts.policy_path_data import (
     CME_SR3_QUOTES_V2_URL,
     CME_SR3_URL,
     CME_SOFR_BULLETIN_URL,
+    EA_ESTR_BENCHMARK_DEADLINE_SEC,
     ESIGNAL_SR3_CHAIN_URL,
     build_tradable_rate_curves,
     collect_policy_paths,
+    join_ea_benchmark,
 )
 from scripts.rates.cme_esr import reference_quarter
+from scripts.rates.cme_session import classify_mark_freshness, latest_expected_cme_session
 from scripts.rates.ecb_meeting_pricing import compound_growth, price_ecb_meetings
 from scripts.rates.short_rate_store import remember_fresh, save_store
 
 FIXTURE_DIR = Path(__file__).resolve().parent / "fixtures" / "cme_esr"
+EA_FIXTURES = Path(__file__).resolve().parent / "fixtures" / "ea_rates"
 NOV6_ESR = (FIXTURE_DIR / "settlement_final_2026-11-06.json").read_text(encoding="utf-8")
+_ECB_ESTR_SAMPLE = (EA_FIXTURES / "ecb_estr_sample.csv").read_bytes()
 
 
 def _minimal_sofr_json() -> bytes:
@@ -181,7 +189,72 @@ class EcbCompoundTests(unittest.TestCase):
                 self.assertNotEqual(row["post_rate"], implied)
 
 
+class JoinEaBenchmarkTests(unittest.TestCase):
+    def test_join_uses_done_future_past_deadline(self) -> None:
+        payload = {
+            "status": "ok",
+            "country": "EA",
+            "benchmark": {"name": "€STR", "rate": 1.91},
+            "contracts_3m": [],
+        }
+        future: Future[dict] = Future()
+        future.set_result(payload)
+        elapsed = EA_ESTR_BENCHMARK_DEADLINE_SEC + 5.0
+        self.assertIs(join_ea_benchmark(future, elapsed=elapsed), payload)
+
+    def test_join_not_done_past_deadline_unavailable_without_blocking(self) -> None:
+        gate = threading.Event()
+        executor = ThreadPoolExecutor(max_workers=1)
+
+        def slow_collect() -> dict:
+            gate.wait(timeout=60)
+            return {"status": "ok", "country": "EA"}
+
+        try:
+            pending = executor.submit(slow_collect)
+            started = time.perf_counter()
+            out = join_ea_benchmark(
+                pending,
+                elapsed=EA_ESTR_BENCHMARK_DEADLINE_SEC + 1.0,
+            )
+            elapsed = time.perf_counter() - started
+            self.assertLess(elapsed, 1.0)
+            self.assertEqual(out["status"], "unavailable")
+            self.assertIn("timed out", str(out.get("error", "")).lower())
+        finally:
+            gate.set()
+            executor.shutdown(wait=False)
+
+
 class PolicyPathIsolationTests(unittest.TestCase):
+    def test_slow_ecb_does_not_block_sr3(self) -> None:
+        base = _policy_fetch(
+            settlement_by_trade_date={"10/15/2026": _sr3_final("10/15/2026")},
+        )
+        calls: list[str] = []
+
+        def fetch(url: str, **_kwargs: object) -> bytes:
+            calls.append(url)
+            if "data-api.ecb.europa.eu" in url or "/service/data/EST" in url:
+                time.sleep(30)
+                return _ECB_ESTR_SAMPLE
+            return base(url, **_kwargs)
+
+        started = time.perf_counter()
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=date(2026, 10, 16), fetch_bytes=fetch)
+        elapsed = time.perf_counter() - started
+
+        us = paths["countries"]["US"]
+        self.assertLess(elapsed, 25.0, f"collect_policy_paths took {elapsed:.2f}s")
+        self.assertIn(us["status"], {"ok", "partial"})
+        self.assertTrue(us["contracts_3m"])
+        ea = paths["countries"]["EA"]
+        bench = (ea.get("benchmark") or {}).get("rate")
+        ea_err = str(ea.get("error") or "")
+        self.assertTrue(bench is None or "timeout" in ea_err.lower(), ea)
+        self.assertFalse(any("eurex.com" in url for url in calls))
+
     def test_esr_fail_us_ok_estr_unavailable(self) -> None:
         fetch = _policy_fetch(
             settlement_by_trade_date={"10/15/2026": _sr3_final("10/15/2026")},
@@ -192,9 +265,15 @@ class PolicyPathIsolationTests(unittest.TestCase):
         us = paths["countries"]["US"]
         self.assertEqual(us["status"], "ok")
         self.assertTrue(us["contracts_3m"])
+        self.assertIsNone(us.get("sr3_error"))
+        us_err = us.get("error")
+        if us_err:
+            self.assertNotRegex(str(us_err), r"^\s*ESR\b", msg=us_err)
         self.assertFalse(any("ESR" in str(us.get(k)) for k in us if "error" in str(k)))
         curves = build_tradable_rate_curves(paths)
         self.assertEqual(curves["curves"]["ESTR"]["status"], "unavailable")
+        ea = paths["countries"]["EA"]
+        self.assertNotEqual(ea.get("esr_freshness"), "ok")
 
     def test_sr3_fail_esr_still_attempted(self) -> None:
         esr_body = json.loads(NOV6_ESR)
@@ -297,6 +376,76 @@ class PolicyPathIsolationTests(unittest.TestCase):
                 )
             us = paths["countries"]["US"]
             self.assertEqual(us["contracts_3m"], [])
+
+    def test_stale_official_esr_refuses_identified_meetings(self) -> None:
+        rq = reference_quarter("2027-03")
+        meetings = [
+            {
+                "decision_date": "2027-03-10",
+                "effective_date": rq["reference_start"],
+            }
+        ]
+        contracts = [
+            {
+                "reference_start": rq["reference_start"],
+                "reference_end": rq["reference_end"],
+                "implied_rate": 2.45,
+                "expiry": "2027-03",
+                "code": "ESRH7",
+                "mark_kind": "official_settlement",
+                "trade_date_verified": True,
+                "observation_date": "2026-11-03",
+                "as_of": "2026-11-03",
+                "open_interest": 100,
+            }
+        ]
+        rows, _reason = price_ecb_meetings(
+            as_of=date(2026, 11, 8),
+            anchor=2.0,
+            fixing=1.9,
+            history=None,
+            meetings=meetings,
+            contracts=contracts,
+            futures_freshness="stale",
+        )
+        for row in rows:
+            self.assertNotEqual(row.get("method"), "identified")
+
+    def test_sunday_nov6_esr_mark_fresh(self) -> None:
+        today = date(2026, 11, 8)
+        expected = latest_expected_cme_session(today)
+        self.assertEqual(expected, date(2026, 11, 6))
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="ESR",
+                observation=expected,
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=True,
+            ),
+            "fresh",
+        )
+        self.assertEqual(
+            classify_mark_freshness(
+                curve_key="ESR",
+                observation=date(2026, 11, 3),
+                today=today,
+                mark_kind="official_settlement",
+                trade_date_verified=True,
+            ),
+            "stale",
+        )
+        esr_body = json.loads(NOV6_ESR)
+        esr_body["tradeDate"] = "11/06/2026"
+        esr_payload = json.dumps(esr_body).encode()
+        fetch = _policy_fetch(
+            settlement_by_trade_date={"11/06/2026": _sr3_final("11/06/2026")},
+            esr_by_trade_date={"11/06/2026": esr_payload},
+        )
+        with mock.patch("scripts.policy_path_data._curl_cffi_get", side_effect=AssertionError):
+            paths = collect_policy_paths(today=today, fetch_bytes=fetch)
+        ea = paths["countries"]["EA"]
+        self.assertEqual(ea.get("esr_freshness"), "fresh")
 
     def test_duplicate_trade_date_not_todays_mark(self) -> None:
         payload = json.loads(NOV6_ESR)

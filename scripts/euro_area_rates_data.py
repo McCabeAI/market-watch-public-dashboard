@@ -200,7 +200,11 @@ def fetch_estr_history(
     fetch_bytes: FetchBytes = default_fetch_bytes,
 ) -> dict[date, float]:
     url = ecb_estr_url(start, end)
-    text = fetch_bytes(url).decode("utf-8", errors="replace")
+    try:
+        raw = fetch_bytes(url, timeout=15, retries=1)
+    except TypeError:
+        raw = fetch_bytes(url)
+    text = raw.decode("utf-8", errors="replace")
     parsed = parse_ecb_estr_csv(text)
     return {d: v for d, v in parsed.items() if start <= d <= end}
 
@@ -285,14 +289,19 @@ def collect_ea_policy_path(
     today: date,
     fetch_bytes: FetchBytes = default_fetch_bytes,
 ) -> dict[str, Any]:
+    """ECB €STR benchmark plus observe-only futures context for the euro-area policy path.
+
+    Does not contact Eurex FST3 hosts or sleep-retry dead futures URLs; CME ESR is
+    merged separately via ``merge_esr_into_ea_policy_path``.
+    """
     start = today - timedelta(days=120)
     errors: list[str] = []
     benchmark: dict[str, Any] | None = None
     contracts_3m: list[dict[str, Any]] = []
     fst3_status = "unavailable"
     fst3_error = (
-        "No credential-free machine-readable FST3 settlement feed responded reliably "
-        f"(tried: {', '.join(FST3_URLS_TRIED)})"
+        "Tradable €STR futures curve unavailable: Eurex FST3 hosts are not contacted "
+        "by this collector; CME ESR is the research futures source."
     )
 
     try:
@@ -302,23 +311,13 @@ def collect_ea_policy_path(
     except Exception as exc:
         errors.append(f"€STR: {exc}")
 
-    # FST3: document attempts; do not mark tradable without a working public settlement feed.
-    for url in FST3_URLS_TRIED:
-        try:
-            body = fetch_bytes(url)
-            text = body.decode("utf-8", errors="replace")
-            if "settlement" in text.lower() and text.count(",") > 5:
-                # Heuristic only; hosted runners did not return a parseable CSV in validation.
-                pass
-        except Exception:
-            continue
-
     tradable_curve = {
         "curve_id": "ESTR",
         "status": fst3_status,
         "error": fst3_error,
         "mark_convention": "implied_rate = 100 - futures_price (Eurex STIR convention)",
-        "source_urls_tried": list(FST3_URLS_TRIED),
+        "source_urls_tried": [],
+        "fst3_contacted": False,
         "contracts": contracts_3m,
     }
 
@@ -332,7 +331,7 @@ def collect_ea_policy_path(
             "tradable_curve": tradable_curve,
             "sources": {
                 "benchmark_url": ECB_ESTR_PAGE,
-                "futures_urls_tried": list(FST3_URLS_TRIED),
+                "futures_urls_tried": [],
             },
         }
 
@@ -351,7 +350,7 @@ def collect_ea_policy_path(
         "sources": {
             "benchmark_url": ECB_ESTR_PAGE,
             "estr_series_key": ECB_ESTR_SERIES_KEY,
-            "futures_urls_tried": list(FST3_URLS_TRIED),
+            "futures_urls_tried": [],
         },
         "errors": errors,
     }

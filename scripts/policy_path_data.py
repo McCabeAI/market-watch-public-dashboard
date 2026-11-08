@@ -16,6 +16,8 @@ import html
 import io
 import json
 import re
+import time
+from concurrent.futures import Future, ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
 from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
 from pathlib import Path
@@ -66,6 +68,54 @@ MONTHS = {
     "JULY": 7, "AUGUST": 8, "SEPTEMBER": 9, "OCTOBER": 10,
     "NOVEMBER": 11, "DECEMBER": 12,
 }
+
+EA_ESTR_BENCHMARK_DEADLINE_SEC = 20.0
+
+
+def join_ea_benchmark(
+    ea_future: Future[dict[str, Any]],
+    *,
+    elapsed: float,
+    deadline_sec: float = EA_ESTR_BENCHMARK_DEADLINE_SEC,
+) -> dict[str, Any]:
+    """Join the background €STR benchmark collect with a wall-clock budget.
+
+    If the future already completed, its result is used even when ``elapsed``
+    exceeds ``deadline_sec``. A still-running future past the deadline yields an
+    unavailable EA block without blocking for the full remaining budget.
+    """
+    from scripts.euro_area_rates_data import ECB_ESTR_PAGE
+
+    remaining = deadline_sec - elapsed
+    try:
+        if ea_future.done():
+            return ea_future.result()
+        if remaining <= 0:
+            raise TimeoutError(
+                f"€STR benchmark timed out after {deadline_sec:.0f}s"
+            )
+        return ea_future.result(timeout=remaining)
+    except (FuturesTimeoutError, TimeoutError) as exc:
+        err = str(exc) if "€STR benchmark" in str(exc) else (
+            f"€STR benchmark timed out after {deadline_sec:.0f}s"
+        )
+        return {
+            "status": "unavailable",
+            "country": "EA",
+            "error": err,
+            "benchmark": None,
+            "contracts_3m": [],
+            "sources": {"benchmark_url": ECB_ESTR_PAGE},
+        }
+    except Exception as exc:
+        return {
+            "status": "unavailable",
+            "country": "EA",
+            "error": f"€STR benchmark failed: {exc}",
+            "benchmark": None,
+            "contracts_3m": [],
+            "sources": {"benchmark_url": ECB_ESTR_PAGE},
+        }
 
 
 def _num(value: Any) -> float | None:
@@ -1482,17 +1532,11 @@ def collect_policy_paths(
         countries["CA"] = {"status": "unavailable", "error": str(exc)}
         sources["CA_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": BOC_CORRA_PAGE, "path_url": MX_EXPECTATIONS_URL}
 
-    ea_prefetch: dict[str, Any] | None = None
-    benchmark_eur: float | None = None
-    try:
-        from scripts.euro_area_rates_data import collect_ea_policy_path
+    from scripts.euro_area_rates_data import collect_ea_policy_path
 
-        ea_prefetch = collect_ea_policy_path(today, fetch_bytes=fetch_bytes)
-        bench_ea = ea_prefetch.get("benchmark") or {}
-        if bench_ea.get("rate") is not None:
-            benchmark_eur = float(bench_ea["rate"])
-    except Exception:
-        ea_prefetch = None
+    ea_started_monotonic = time.monotonic()
+    ea_executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="ea_estr")
+    ea_future = ea_executor.submit(collect_ea_policy_path, today, fetch_bytes=fetch_bytes)
 
     # United States. NY Fed SOFR is authoritative for funding and is kept even
     # when SR1 or SR3 futures acquisition fails. ESR collection is isolated.
@@ -1554,7 +1598,7 @@ def collect_policy_paths(
         today=today,
         fetch_bytes=fetch_bytes,
         benchmark_usd=benchmark_usd,
-        benchmark_eur=benchmark_eur,
+        benchmark_eur=None,
         store_path=short_rate_store,
         acquire_sr1=acquire_sr1_wrapped,
         acquire_sr3=acquire_sr3_wrapped,
@@ -1678,11 +1722,14 @@ def collect_policy_paths(
         sources["AU_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": RBA_F1_PAGE, "path_url": ASX_IR_HISTORY}
 
     try:
-        from scripts.euro_area_rates_data import collect_ea_policy_path, merge_esr_into_ea_policy_path
+        from scripts.euro_area_rates_data import merge_esr_into_ea_policy_path
 
-        ea = ea_prefetch if ea_prefetch is not None else collect_ea_policy_path(
-            today, fetch_bytes=fetch_bytes
-        )
+        elapsed = time.monotonic() - ea_started_monotonic
+        try:
+            ea = join_ea_benchmark(ea_future, elapsed=elapsed)
+        finally:
+            ea_executor.shutdown(wait=False)
+
         ea = merge_esr_into_ea_policy_path(ea, esr_block=esr_block)
         countries["EA"] = ea
         sources["EA_policy"] = {
