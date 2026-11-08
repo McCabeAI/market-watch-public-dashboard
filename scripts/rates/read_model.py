@@ -11,7 +11,7 @@ from typing import Any, Mapping
 from scripts.rates.contract_economics import CURVE_SPEC, fx_usd_per_unit
 from scripts.trader_room.constants import STANDING_ADVOCATES
 
-SUPPORTED_CURVES = ("SOFR", "CORRA", "AONIA")
+SUPPORTED_CURVES = ("SOFR", "CORRA", "AONIA", "BBSW")
 ADVISORY = (
     "Observed spreads and flies are market levels with contract units. "
     "They are not trade recommendations, disclosed edges, or default preferences. "
@@ -69,11 +69,35 @@ def build_relative_analytics(market_state: Mapping[str, Any] | None) -> dict[str
         spec = CURVE_SPEC[curve_id]
         fx, pair = fx_usd_per_unit(spec.currency, state)
         if not isinstance(block, Mapping) or block.get("status") != "ok":
+            reason = (block or {}).get("error") if isinstance(block, Mapping) else "tradable curve missing"
+            if curve_id == "BBSW":
+                if isinstance(block, Mapping) and block.get("status") == "stale":
+                    reason = (
+                        (block.get("error") or "BBSW curve stale")
+                        + "; IR is 3m BBSW bank bills, not AONIA overnight"
+                    )
+                else:
+                    reason = (
+                        (reason or "BBSW curve unavailable")
+                        + "; IR is 3m BBSW bank bills, not AONIA overnight"
+                    )
             missing.append(
                 {
                     "curve_id": curve_id,
                     "status": "unavailable",
-                    "reason": (block or {}).get("error") if isinstance(block, Mapping) else "tradable curve missing",
+                    "reason": reason,
+                }
+            )
+            continue
+        if block.get("execution_eligible") is False:
+            missing.append(
+                {
+                    "curve_id": curve_id,
+                    "status": "unavailable",
+                    "reason": (
+                        (block.get("error") or f"{curve_id} curve not execution eligible")
+                        + ("; IR is 3m BBSW, not AONIA" if curve_id == "BBSW" else "")
+                    ),
                 }
             )
             continue

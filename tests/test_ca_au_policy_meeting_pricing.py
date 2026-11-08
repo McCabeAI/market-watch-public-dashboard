@@ -178,3 +178,20 @@ class SnapshotHeadlineRegressionTest(unittest.TestCase):
             round(float(base[0]["post_rate"] or 0) + 0.05, 4),
             float(shifted[0]["post_rate"] or 0),
         )
+
+    def test_au_meeting_contracts_ignore_ir_strip(self) -> None:
+        from scripts.policy_meeting_pricing import _contracts_for_bank
+
+        country = {
+            "status": "ok",
+            "contracts_1m": [
+                {"product": "IB", "expiry": "2026-12", "period": "1m", "implied_rate": 4.855},
+            ],
+            "contracts_3m": [
+                {"product": "IR", "expiry": "2026-12", "period": "3m", "implied_rate": 4.95},
+            ],
+        }
+        rows, err = _contracts_for_bank("AU", country, paths_ok=True)
+        self.assertIsNone(err)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["product"], "IB")

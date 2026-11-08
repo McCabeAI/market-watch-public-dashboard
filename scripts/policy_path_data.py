@@ -3,7 +3,7 @@
 This module keeps the policy benchmark separate from the sovereign curve:
 - Canada: BoC CORRA + Montréal Exchange 1M/3M CORRA futures.
 - United States: NY Fed SOFR + 1M SOFR futures (CME preferred; delayed ICE/eSignal hosted-runner fallback).
-- Australia: RBA F1 AONIA/OIS/BAB data + ASX 30-day cash-rate futures.
+- Australia: RBA F1 AONIA/OIS/BAB data, ASX 30-day cash-rate futures (IB), and ASX 90-day bank-bill futures (IR / BBSW).
 
 Exchange/web prices are delayed research/reference data, never executable marks.
 """
@@ -15,6 +15,7 @@ import csv
 import html
 import io
 import json
+import os
 import re
 import time
 from concurrent.futures import Future, ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
@@ -22,6 +23,9 @@ from datetime import date, datetime, timedelta
 from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any, Callable
+
+from scripts.asx_eod import acquire_asx_cash_futures, bbsw_ois_basis_evidence, legacy_ib_rows
+from scripts.asx_futures_cache import default_cache_path
 
 FetchBytes = Callable[..., bytes]
 
@@ -1254,44 +1258,34 @@ def parse_rba_f1_csv(text: str) -> dict[str, Any]:
 
 
 def parse_asx_cash_futures_html(text: str, *, benchmark: float) -> list[dict[str, Any]]:
-    parser = _TableParser()
-    parser.feed(text)
-    out: list[dict[str, Any]] = []
-    for table in parser.tables:
-        in_ib = False
-        for row in table:
-            joined = " ".join(row).upper()
-            if "IB - 30 DAY INTERBANK CASH RATE" in joined:
-                in_ib = True
-                continue
-            if in_ib and re.match(r"^[A-Z]{1,3} - ", joined) and "30 DAY INTERBANK CASH RATE" not in joined:
-                in_ib = False
-            if not in_ib or not row:
-                continue
-            expiry = _parse_expiry(row[0])
-            if not expiry:
-                continue
-            # ASX EOD product rows: Expiry Open High Low Last Sett Sett Chg OI OI Chg Volume.
-            price = _num(row[5]) if len(row) > 5 else None
-            if price is None or not 90.0 < price < 100.5:
-                continue
-            oi = _num(row[7]) if len(row) > 7 else None
-            volume = _num(row[9]) if len(row) > 9 else None
-            out.append(
-                _contract_row(
-                    expiry=expiry,
-                    code=None,
-                    price=price,
-                    benchmark=benchmark,
-                    source="ASX_30D_AONIA",
-                    volume=volume,
-                    open_interest=oi,
-                )
-            )
-    rows = sorted({row["expiry"]: row for row in out}.values(), key=lambda row: row["expiry"])
-    if not rows:
-        raise ValueError("ASX EOD report did not expose 30-day cash-rate futures")
-    return rows
+    """Legacy policy-path entry point; delegates to the shared ASX EOD IB parser."""
+    return legacy_ib_rows(text, benchmark=benchmark)
+
+
+def _asx_contracts_meta(product: dict[str, Any], stem: str) -> dict[str, Any]:
+    return {
+        f"contracts_{stem}_status": product.get("status"),
+        f"contracts_{stem}_as_of": product.get("as_of"),
+        f"contracts_{stem}_freshness": product.get("freshness"),
+        f"contracts_{stem}_execution_eligible": product.get("execution_eligible"),
+        f"contracts_{stem}_error": product.get("error"),
+        f"contracts_{stem}_provenance": product.get("provenance"),
+    }
+
+
+def _asx_product_unavailable(error: str | None) -> dict[str, Any]:
+    return {
+        "status": "unavailable",
+        "freshness": None,
+        "execution_eligible": False,
+        "error": error,
+        "contracts": [],
+        "raw_contracts": [],
+        "as_of": None,
+        "observation_date": None,
+        "source_url": None,
+        "provenance": None,
+    }
 
 
 def _terminal_summary(contracts: list[dict[str, Any]]) -> dict[str, Any] | None:
@@ -1303,11 +1297,13 @@ def _terminal_summary(contracts: list[dict[str, Any]]) -> dict[str, Any] | None:
     if not usable:
         return None
     terminal = usable[-1]
-    return {
+    out: dict[str, Any] = {
         "expiry": terminal["expiry"],
         "implied_rate": terminal["implied_rate"],
-        "change_from_overnight_bps": terminal["change_from_overnight_bps"],
     }
+    if terminal.get("change_from_overnight_bps") is not None:
+        out["change_from_overnight_bps"] = terminal["change_from_overnight_bps"]
+    return out
 
 
 _BROWSER_UA = (
@@ -1667,59 +1663,124 @@ def collect_policy_paths(
         if futures_errors:
             sources["US_policy"]["error"] = "; ".join(futures_errors)
 
-    # Australia
+    # Australia — RBA F1 and ASX IB/IR are independent; one failure must not discard the other.
+    f1: dict[str, Any] | None = None
+    f1_error: str | None = None
     try:
         f1_text = fetch_bytes(RBA_F1_URL).decode("utf-8-sig", errors="replace")
         f1 = parse_rba_f1_csv(f1_text)
-        benchmark = float(f1["benchmark"]["rate"])
-        asx_rows: list[dict[str, Any]] = []
-        asx_url = None
-        last_error: Exception | None = None
-        for offset in range(0, 8):
-            d = today - timedelta(days=offset)
-            url = ASX_EOD_TEMPLATE.format(yymmdd=d.strftime("%y%m%d"))
-            try:
-                body = fetch_bytes(
-                    url,
-                    user_agent=(
-                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
-                        "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
-                    ),
-                    referer="https://www.asx.com.au/",
-                ).decode("utf-8", errors="replace")
-                asx_rows = parse_asx_cash_futures_html(body, benchmark=benchmark)
-                asx_url = url
-                report_day = d.isoformat()
-                for r in asx_rows:
-                    r["observation_date"] = report_day
-                    r["as_of"] = report_day
-                break
-            except Exception as exc:
-                last_error = exc
-        if not asx_rows:
-            raise ValueError(f"no usable ASX 30-day cash futures report in 8-day lookback: {last_error}")
-        countries["AU"] = {
-            "status": "ok",
-            "benchmark": f1["benchmark"],
-            "ois": f1["ois"],
-            "bank_bills": f1["bank_bills"],
-            "bank_bill_minus_ois": f1["bank_bill_minus_ois"],
-            "contracts_1m": asx_rows,
-            "terminal": _terminal_summary(asx_rows),
-            "method": (
-                "RBA F1 official AONIA/OIS/BAB context plus 100 minus ASX 30-day "
-                "interbank cash-rate futures settlement; bank-bill-minus-OIS is a credit/basis proxy, not exact FRA-OIS"
-            ),
-        }
-        sources["AU_policy"] = {
-            "status": "ok",
-            "benchmark_url": RBA_F1_PAGE,
-            "path_url": asx_url,
-            "settlement_history_url": ASX_IR_HISTORY,
-        }
     except Exception as exc:
-        countries["AU"] = {"status": "unavailable", "error": str(exc)}
-        sources["AU_policy"] = {"status": "unavailable", "error": str(exc), "benchmark_url": RBA_F1_PAGE, "path_url": ASX_IR_HISTORY}
+        f1_error = str(exc)
+
+    benchmark_rate: float | None = None
+    if f1 is not None:
+        bm = f1.get("benchmark") if isinstance(f1.get("benchmark"), dict) else {}
+        raw = _num((bm or {}).get("rate"))
+        if raw is not None:
+            benchmark_rate = float(raw)
+
+    cache_path = os.environ.get("MW_ASX_FUTURES_CACHE") or default_cache_path()
+    asx_url: str | None = None
+    ib_product: dict[str, Any] = _asx_product_unavailable(None)
+    ir_product: dict[str, Any] = _asx_product_unavailable(None)
+    try:
+        asx = acquire_asx_cash_futures(
+            fetch_bytes,
+            today=today,
+            benchmark=benchmark_rate,
+            cache_path=cache_path,
+        )
+        asx_url = asx.get("source_url")
+        ib_product = asx["products"]["IB"]
+        ir_product = asx["products"]["IR"]
+    except Exception as exc:
+        err = str(exc)
+        ib_product = _asx_product_unavailable(err)
+        ir_product = _asx_product_unavailable(err)
+
+    au_block: dict[str, Any] = {
+        "contracts_1m": list(ib_product.get("contracts") or []),
+        "contracts_3m": list(ir_product.get("contracts") or []),
+        "listed_contracts_3m": list(ir_product.get("raw_contracts") or []),
+        **_asx_contracts_meta(ib_product, "1m"),
+        **_asx_contracts_meta(ir_product, "3m"),
+        "method": (
+            "RBA F1 AONIA/OIS/bank-bill cash context; ASX IB is 30-day interbank cash "
+            "(monthly average AONIA), cash settled; ASX IR is 90-day bank bills (3m BBSW), "
+            "cash settled and not an overnight future; RBA meeting odds use IB only, not IR"
+        ),
+    }
+    if f1 is not None:
+        au_block["benchmark"] = f1["benchmark"]
+        au_block["ois"] = f1["ois"]
+        au_block["bank_bills"] = f1["bank_bills"]
+        au_block["bank_bill_minus_ois"] = f1["bank_bill_minus_ois"]
+    if f1_error:
+        au_block["f1_error"] = f1_error
+    if ib_product.get("error"):
+        au_block["ib_error"] = str(ib_product["error"])
+    if ir_product.get("error"):
+        au_block["ir_error"] = str(ir_product["error"])
+
+    cash_basis = None
+    if isinstance(f1, dict):
+        basis_map = f1.get("bank_bill_minus_ois")
+        if isinstance(basis_map, dict):
+            cash_basis = basis_map.get("3m")
+    au_block["bbsw_ois_basis"] = bbsw_ois_basis_evidence(
+        cash_basis=cash_basis if isinstance(cash_basis, dict) else None,
+        ir_product=ir_product,
+        ib_product=ib_product,
+    )
+    au_block["terminal"] = _terminal_summary(au_block.get("contracts_1m") or [])
+
+    failures: list[str] = []
+    if f1_error:
+        failures.append(f1_error)
+    if ib_product.get("status") not in ("ok", None):
+        if ib_product.get("error"):
+            failures.append(str(ib_product["error"]))
+        elif ib_product.get("status") == "unavailable":
+            failures.append("ASX IB unavailable")
+        elif ib_product.get("freshness") == "stale":
+            failures.append("ASX IB settlements are stale")
+    if ir_product.get("status") == "unavailable" and ir_product.get("error"):
+        failures.append(str(ir_product["error"]))
+
+    has_f1_benchmark = f1 is not None and benchmark_rate is not None
+    ib_ok = (
+        ib_product.get("status") == "ok"
+        and ib_product.get("freshness") == "current"
+        and bool(au_block.get("contracts_1m"))
+    )
+    has_usable = has_f1_benchmark or au_block.get("contracts_1m") or au_block.get("contracts_3m")
+
+    if has_f1_benchmark and ib_ok:
+        au_status = "ok"
+    elif has_usable:
+        au_status = "partial"
+        au_block["error"] = "; ".join(failures) if failures else "AU policy path partially available"
+    else:
+        au_status = "unavailable"
+        au_block["error"] = "; ".join(failures) if failures else "AU policy path unavailable"
+
+    au_block["status"] = au_status
+    countries["AU"] = au_block
+
+    path_url = ib_product.get("source_url") or asx_url or ASX_IR_HISTORY
+    sources["AU_policy"] = {
+        "status": au_status,
+        "benchmark_url": RBA_F1_PAGE,
+        "path_url": path_url,
+        "tradable_curve_url": ir_product.get("source_url") or asx_url or path_url,
+        "settlement_history_url": ASX_IR_HISTORY,
+        "ib_status": ib_product.get("status"),
+        "ir_status": ir_product.get("status"),
+        "ib_as_of": ib_product.get("as_of"),
+        "ir_as_of": ir_product.get("as_of"),
+    }
+    if au_status != "ok" and au_block.get("error"):
+        sources["AU_policy"]["error"] = au_block["error"]
 
     try:
         from scripts.euro_area_rates_data import merge_esr_into_ea_policy_path
@@ -1784,7 +1845,8 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
     """Select the three curve families the paper traders can actually trade.
 
     Policy-path instruments remain context. This block is the rates trading universe:
-    USD = CME SR3, CAD = MX CRA, AUD = ASX IB.
+    USD = CME SR3, CAD = MX CRA, AUD overnight = ASX IB, AUD 90-day bank bills = ASX IR.
+    AONIA stays the AU preflight curve. BBSW is an additional curve.
     """
     countries = policy_paths.get("countries") or {}
     sources = policy_paths.get("sources") or {}
@@ -1838,6 +1900,34 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
             "source_url": source_url,
             "mark_convention": "implied_rate = 100 - futures price",
         }
+        if curve_id == "AONIA" and country == "AU":
+            ib_status = block.get("contracts_1m_status")
+            curve_block["as_of"] = block.get("contracts_1m_as_of")
+            curve_block["freshness"] = block.get("contracts_1m_freshness")
+            curve_block["provenance"] = block.get("contracts_1m_provenance")
+            execution_eligible = block.get("contracts_1m_execution_eligible")
+            if execution_eligible is not None:
+                curve_block["execution_eligible"] = bool(execution_eligible)
+            if ib_status == "stale":
+                curve_block["status"] = "stale"
+                curve_block["execution_eligible"] = False
+                curve_block["error"] = (
+                    block.get("contracts_1m_error")
+                    or "ASX IB settlements are stale; not today's execution price"
+                )
+            elif ib_status == "unavailable":
+                curves[curve_id] = {
+                    "status": "unavailable",
+                    "country": country,
+                    "error": block.get("contracts_1m_error") or "AONIA IB tradable strip unavailable",
+                }
+                continue
+            elif ib_status == "ok" and block.get("contracts_1m_freshness") == "stale":
+                curve_block["status"] = "stale"
+                curve_block["execution_eligible"] = False
+                curve_block["error"] = (
+                    "ASX IB settlements are stale; not today's execution price"
+                )
         if curve_id == "SOFR":
             missing_targets = [
                 maturity
@@ -1847,6 +1937,62 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
             if missing_targets:
                 curve_block["missing_target_maturities"] = missing_targets
         curves[curve_id] = curve_block
+
+    au = countries.get("AU") or {}
+    ir_rows = au.get("contracts_3m") if au.get("status") in {"ok", "partial"} else None
+    if not isinstance(ir_rows, list):
+        ir_rows = []
+    listed_ir = au.get("listed_contracts_3m") if isinstance(au.get("listed_contracts_3m"), list) else ir_rows
+    ir_status = au.get("contracts_3m_status")
+    ir_source = (sources.get("AU_policy") or {}).get("tradable_curve_url") or (sources.get("AU_policy") or {}).get("path_url")
+    bbsw_block: dict[str, Any] = {
+        "country": "AU",
+        "benchmark": {
+            "name": "BBSW_3M",
+            "note": (
+                "Canonical mark is 100 minus ASX IR settlement (90-day BBSW), "
+                "not RBA F1 AONIA or IB monthly interbank cash"
+            ),
+        },
+        "instrument": "ASX 90-Day Bank Bill futures",
+        "product_code": "IR",
+        "contract_period_months": 3,
+        "contracts": ir_rows,
+        "listed_contracts": listed_ir,
+        "source_url": ir_source,
+        "provenance": au.get("contracts_3m_provenance"),
+        "freshness": au.get("contracts_3m_freshness"),
+        "as_of": au.get("contracts_3m_as_of"),
+        "execution_eligible": au.get("contracts_3m_execution_eligible"),
+        "valuation": (
+            "P = 1_000_000 * 365 / (365 + yield * 90/100), yield = 100 - futures index, "
+            "cent-rounded; variable AUD per bp; not fixed 25 and not IB 24.66"
+        ),
+        "mark_convention": (
+            "implied_rate = 100 - IR settlement (90-day BBSW); cash-settled bill price "
+            "with variable cent-rounded tick value per contract yield"
+        ),
+    }
+    if ir_status == "ok" and ir_rows:
+        bbsw_block["status"] = "ok"
+        if au.get("contracts_3m_execution_eligible") is False:
+            bbsw_block["execution_eligible"] = False
+    elif ir_status == "stale" and ir_rows:
+        bbsw_block["status"] = "stale"
+        bbsw_block["execution_eligible"] = False
+        bbsw_block["error"] = (
+            au.get("contracts_3m_error")
+            or "ASX IR settlements are stale; not today's execution price"
+        )
+    else:
+        bbsw_block["status"] = "unavailable"
+        bbsw_block["contracts"] = ir_rows
+        bbsw_block["error"] = (
+            au.get("contracts_3m_error")
+            or au.get("ir_error")
+            or "BBSW IR tradable strip unavailable"
+        )
+    curves["BBSW"] = bbsw_block
 
     ea = countries.get("EA") or {}
     esr_rows = ea.get("contracts_3m") if isinstance(ea.get("contracts_3m"), list) else []
@@ -1999,14 +2145,22 @@ def validate_policy_paths(payload: dict[str, Any]) -> None:
             raise ValueError(f"{country} invalid policy path status")
         benchmark = block.get("benchmark") or {}
         rate = _num(benchmark.get("rate"))
-        if rate is None or not -2.0 < rate < 25.0:
+        if block.get("status") == "ok":
+            if rate is None or not -2.0 < rate < 25.0:
+                raise ValueError(f"{country} implausible overnight benchmark {rate}")
+        elif rate is not None and not -2.0 < rate < 25.0:
             raise ValueError(f"{country} implausible overnight benchmark {rate}")
         if country in {"US", "CA", "AU"}:
             contracts = list(block.get("contracts_1m") or []) + list(block.get("contracts_3m") or [])
             if block.get("status") == "ok" and not contracts:
                 raise ValueError(f"{country} available policy path has no futures contracts")
             if block.get("status") == "partial" and not (
-                block.get("error") or block.get("sr1_error") or block.get("sr3_error")
+                block.get("error")
+                or block.get("sr1_error")
+                or block.get("sr3_error")
+                or block.get("f1_error")
+                or block.get("ib_error")
+                or block.get("ir_error")
             ):
                 raise ValueError(f"{country} partial policy path missing error")
             for row in contracts:

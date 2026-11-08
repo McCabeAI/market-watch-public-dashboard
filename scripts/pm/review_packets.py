@@ -135,7 +135,10 @@ def compact_market_state(evidence: dict[str, Any]) -> dict[str, Any]:
     market = evidence.get("market_state") if isinstance(evidence.get("market_state"), dict) else {}
     warnings = []
     if "tradable_rate_curves" not in market:
-        warnings.append("SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet.")
+        warnings.append(
+            "SOFR/CORRA/AONIA tradable futures curves are missing from this frozen packet "
+            "(optional BBSW may also be absent on older packets)."
+        )
     if "official_curves" not in market:
         warnings.append("Official sovereign zero/forward curves are missing from this frozen packet.")
     return {

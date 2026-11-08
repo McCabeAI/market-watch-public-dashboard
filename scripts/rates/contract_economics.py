@@ -96,6 +96,28 @@ IB = ContractSpec(
     ),
 )
 
+IR = ContractSpec(
+    product_code="IR",
+    venue="ASX",
+    curve_id="BBSW",
+    currency="AUD",
+    quote="imm_index_100_minus_rate",
+    canonical_mark="implied_rate_percent",
+    bp_per_price_unit=100.0,
+    face_notional=1_000_000.0,
+    face_currency="AUD",
+    day_count="365 fixed",
+    period="90_day_discounted_bill",
+    source=(
+        "ASX 90 Day Bank Bill futures (IR): A$1,000,000 face; cash settled to "
+        "3-month BBSW; price = 1,000,000 * 365 / (365 + yield * 90/100) where "
+        "yield = 100 - index; variable tick value, about A$24 per 0.01 near "
+        "current yields, not a fixed SR3-style A$25 and not the IB A$24.66 "
+        "overnight contract. "
+        "https://www.asx.com.au/markets/trade-our-derivatives-market/overview/interest-rate-derivatives/short-term-derivatives"
+    ),
+)
+
 # ASX states "1 basis point move of 0.01% = A$24.66". The unrounded 30/365
 # identity is 3,000,000 × 0.0001 × 30/365 = 24.6575..., which the exchange
 # publishes as A$24.66. Valuation uses the published figure for every month.
@@ -107,8 +129,8 @@ LOT_ROUNDING_POLICY = "floor_toward_zero"
 HEDGE_LOT_ROUNDING_POLICY = "nearest_integer_half_up"
 _FX_BLOCKING_STATUSES = frozenset({"stale", "missing", "unavailable", "invalid"})
 
-SPECS = {"SR3": SR3, "CRA": CRA, "IB": IB}
-CURVE_SPEC = {"SOFR": SR3, "CORRA": CRA, "AONIA": IB}
+SPECS = {"SR3": SR3, "CRA": CRA, "IB": IB, "IR": IR}
+CURVE_SPEC = {"SOFR": SR3, "CORRA": CRA, "AONIA": IB, "BBSW": IR}
 ALIASES = {
     "SOFR": "SR3",
     "SR3": "SR3",
@@ -116,6 +138,8 @@ ALIASES = {
     "CRA": "CRA",
     "AONIA": "IB",
     "IB": "IB",
+    "BBSW": "IR",
+    "IR": "IR",
 }
 
 _CME_MONTH = {
@@ -133,8 +157,9 @@ _CME_MONTH = {
     "Z": 12,
 }
 
-_DATED = re.compile(r"^(SOFR|SR3|CORRA|CRA|AONIA|IB)[_-](20\d{2})-(\d{2})$")
+_DATED = re.compile(r"^(SOFR|SR3|CORRA|CRA|AONIA|IB|BBSW|IR)[_-](20\d{2})-(\d{2})$")
 _CODED = re.compile(r"^(SR3|CRA|IB)([FGHJKMNQUVXZ])(\d)$")
+_CODED_IR = re.compile(r"^IR([FGHJKMNQUVXZ])(\d{1,2})$")
 
 SOVEREIGN_RE = re.compile(
     r"^(US|CA|AU|NZ|EA|JP)[_\s-]?(2Y|5Y|10Y|30Y|LONG)$",
@@ -174,13 +199,20 @@ class ParsedContract:
         }
 
 
-def dv01_per_contract(spec: ContractSpec, *, year: int | None = None, month: int | None = None) -> float | None:
+def dv01_per_contract(
+    spec: ContractSpec,
+    *,
+    year: int | None = None,
+    month: int | None = None,
+    implied_rate: float | None = None,
+) -> float | None:
     """Local-currency P&L for a one-basis-point futures price increase.
 
     A long futures position gains this amount when the implied rate falls 1bp,
     because the quoted index is 100 minus the rate. IB uses the published
-    A$24.66 basis-point value for every expiry month. ``year`` and ``month``
-    identify the contract; they do not change the IB BPV.
+    A$24.66 basis-point value for every expiry month. IR (BBSW) needs
+    ``implied_rate`` and uses the cent-rounded 1bp yield-decline gain.
+    ``year`` and ``month`` identify the contract; they do not change the IB BPV.
     """
     del year, month
     if spec.product_code == "SR3":
@@ -189,6 +221,13 @@ def dv01_per_contract(spec: ContractSpec, *, year: int | None = None, month: int
         return 25.0
     if spec.product_code == "IB":
         return IB_PUBLISHED_BPV_AUD
+    if spec.product_code == "IR":
+        if implied_rate is None:
+            return None
+        from scripts.rates.bbsw_valuation import variable_bp_value_aud
+
+        row = variable_bp_value_aud(implied_rate)
+        return float(row["long_pnl_yield_down_1bp_aud"])
     return None
 
 
@@ -217,6 +256,14 @@ def parse_contract_id(instrument: str | None) -> ParsedContract | None:
         if month < 1 or month > 12:
             return None
         spec = SPECS[code]
+        expiry = _expiry(year, month)
+        return ParsedContract(spec=spec, year=year, month=month, expiry=expiry, alias=f"{spec.curve_id}_{expiry}")
+    coded_ir = _CODED_IR.fullmatch(raw)
+    if coded_ir:
+        month = _CME_MONTH[coded_ir.group(1)]
+        year_digits = coded_ir.group(2)
+        year = 2000 + int(year_digits) if len(year_digits) == 2 else 2020 + int(year_digits)
+        spec = IR
         expiry = _expiry(year, month)
         return ParsedContract(spec=spec, year=year, month=month, expiry=expiry, alias=f"{spec.curve_id}_{expiry}")
     coded = _CODED.fullmatch(raw)

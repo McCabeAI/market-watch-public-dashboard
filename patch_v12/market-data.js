@@ -61,9 +61,29 @@
     const hChange=`${horizon} change`;
     return `<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Market / expression</th><th>${horizon} change</th><th>Move z</th><th>Historical position</th><th>Level z</th><th>Observed</th></tr></thead><tbody>${rows.map(s=>`<tr><td data-label="Market / expression"><details><summary>${esc(s.label)} ${status(s)!=='ok'?badge(status(s)) : ''}</summary>${evidence(s)}</details></td><td data-label="${esc(hChange)}">${move(s)}</td><td data-label="Move z" class="${Math.abs(s.moves?.[horizon]?.z)>=2?'md-extreme':''}">${signed(s.moves?.[horizon]?.z,1)}σ</td><td data-label="Historical position">${percentile(s)}</td><td data-label="Level z" class="${Math.abs(s.z)>=1.5?'md-extreme':''}">${signed(s.z,1)}σ</td><td data-label="Observed">${esc(s.as_of||'Unavailable')}</td></tr>`).join('')}</tbody></table></div>`;
   }
+  function asxStirSection(){
+    const curves=packet.tradable_rate_curves?.curves, au=packet.policy_paths?.countries?.AU;
+    if(!curves && !au) return '';
+    const aonia=curves?.AONIA, bbsw=curves?.BBSW;
+    const staleBadge=(row,staleExec)=>((row?.freshness==='stale'||staleExec===false)?`${badge('STALE','hot')} <span class="md-muted">Not today's execution price.</span>`:'');
+    const roleText=(row)=>row.listing_role||(row.tradable===false?'excluded':'tradable');
+    const rowHtml=(row,extra='')=>`<tr><td>${esc(row.expiry||'')}</td><td>${esc(row.code||'')}</td><td>${fmt(row.implied_rate,3)}</td><td>${esc(roleText(row))}</td><td>${esc(row.as_of||row.observation_date||'')}</td><td>${esc(row.freshness||'')}${extra}</td></tr>`;
+    const ibRows=(au?.contracts_1m||aonia?.contracts||[]).map(r=>rowHtml(r,staleBadge(au,aonia?.execution_eligible))).join('');
+    const irListed=(au?.listed_contracts_3m&&au.listed_contracts_3m.length)?au.listed_contracts_3m:(bbsw?.listed_contracts||bbsw?.contracts||[]);
+    const irRows=irListed.map(r=>{const excl=r.exclusion_reason?` · ${esc(r.exclusion_reason)}`:'';const trad=r.tradable===false?badge('not tradable'):badge('tradable');return rowHtml(r,`${trad}${excl} ${staleBadge(au,bbsw?.execution_eligible)}`);}).join('');
+    const basis=au?.bbsw_ois_basis;
+    const basisHtml=basis&&basis.reason?`<p class="md-muted">${esc(basis.reason)}</p>`:'';
+    if(!ibRows && !irRows && !basisHtml) return '';
+    return `<div class="md-section-head"><div><h3>ASX STIR settlements (policy packet)</h3><p>Overnight AONIA (IB) vs 3-month BBSW bank bills (IR); not interchangeable marks.</p></div></div>
+      <h4>AONIA overnight (ASX IB, 30-day interbank cash)</h4>
+      ${ibRows?`<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Expiry</th><th>Code</th><th>Implied %</th><th>Role</th><th>As of</th><th>Status</th></tr></thead><tbody>${ibRows}</tbody></table></div>`:'<p class="md-muted">IB strip unavailable in this packet.</p>'}
+      <h4>BBSW 3-month bank bills (ASX IR)</h4>
+      ${irRows?`<div class="md-table-wrap"><table class="md-table"><thead><tr><th>Expiry</th><th>Code</th><th>Implied %</th><th>Listing</th><th>As of</th><th>Status</th></tr></thead><tbody>${irRows}</tbody></table></div>`:'<p class="md-muted">IR strip unavailable in this packet.</p>'}
+      ${basisHtml}`;
+  }
   function curves(){
     const rows=series().filter(s=>['Curves','Relative rates','Rates'].includes(s.category)&&matches(s));
-    return ['Curves','Relative rates','Rates'].map(cat=>`<div class="md-section-head"><div><h3>${cat==='Curves'?'Curve shape & belly':cat==='Rates'?'Outright yield stretches':'Cross-market spreads'}</h3><p>${cat==='Curves'?'Slopes and 2s5s10s flies. A positive fly means the 5Y yield is above the average of its wings.':cat==='Relative rates'?'First country minus second, on exact common observation dates.':'Yield history provides context; it is not a fair-value estimate.'}</p></div></div>${table(rows.filter(s=>s.category===cat))}`).join('');
+    return asxStirSection()+['Curves','Relative rates','Rates'].map(cat=>`<div class="md-section-head"><div><h3>${cat==='Curves'?'Curve shape & belly':cat==='Rates'?'Outright yield stretches':'Cross-market spreads'}</h3><p>${cat==='Curves'?'Slopes and 2s5s10s flies. A positive fly means the 5Y yield is above the average of its wings.':cat==='Relative rates'?'First country minus second, on exact common observation dates.':'Yield history provides context; it is not a fair-value estimate.'}</p></div></div>${table(rows.filter(s=>s.category===cat))}`).join('');
   }
   function crossAssets(){
     const rels=packet.opportunities.relationships.filter(matches);

@@ -10,6 +10,14 @@ on:
       - "scripts/us_housing_data.py"
       - "scripts/canada_housing_data.py"
       - "scripts/policy_path_data.py"
+      - "scripts/asx_eod.py"
+      - "scripts/asx_eod_runner_probe.py"
+      - "scripts/asx_futures_cache.py"
+      - "scripts/rates/bbsw_valuation.py"
+      - "tests/test_asx_eod.py"
+      - "tests/test_asx_futures_cache.py"
+      - "tests/test_bbsw_valuation.py"
+      - "tests/test_asx_ir_integration.py"
       - "scripts/official_curve_data.py"
       - "scripts/positioning_data.py"
       - "scripts/market_opportunities.py"
@@ -75,9 +83,22 @@ jobs:
           path: /tmp/cme-esr-probe.json
           if-no-files-found: warn
 
+      - name: ASX EOD runner probe
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: PYTHONPATH=. python scripts/asx_eod_runner_probe.py --session 2026-11-06 --output /tmp/asx-eod-probe.json
+
+      - name: Upload ASX EOD probe artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: asx-eod-probe
+          path: /tmp/asx-eod-probe.json
+          if-no-files-found: warn
+
       - name: Deterministic parser and calculation tests
         if: github.event_name == 'pull_request'
-        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry tests.test_cme_esr tests.test_short_rate_isolation tests.test_short_rate_cache_runs tests.test_ecb_esr_integration -v
+        run: PYTHONPATH=. python -m unittest tests.test_asx_eod tests.test_asx_futures_cache tests.test_bbsw_valuation tests.test_asx_ir_integration tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry tests.test_cme_esr tests.test_short_rate_isolation tests.test_short_rate_cache_runs tests.test_ecb_esr_integration -v
 
       - name: Live official-source smoke test
         if: github.event_name == 'workflow_dispatch'
@@ -110,10 +131,24 @@ jobs:
           restore-keys: |
             short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-
 
+      - name: Restore ASX futures last-good cache (side path)
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: .mw-cache-restore/asx_futures_last_good.json
+          key: mw-asx-futures-v1-${{ github.run_id }}
+          restore-keys: |
+            mw-asx-futures-v1-
+
       - name: Generate market-state packet
         run: |
           set -euo pipefail
-          mkdir -p /tmp/market-state
+          mkdir -p /tmp/market-state data/cache
+          RESTORED=".mw-cache-restore/asx_futures_last_good.json"
+          if [ -f "$RESTORED" ]; then
+            cp "$RESTORED" data/cache/asx_futures_last_good.json
+            export MW_ASX_FUTURES_CACHE="data/cache/asx_futures_last_good.json"
+          fi
           PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json --short-rate-store /tmp/market-state/short_rate_last_good.json
           python - <<'PY'
           import json
@@ -178,6 +213,17 @@ jobs:
               "official_curve_status": packet["official_curves"]["status"],
           })
           PY
+          mkdir -p .mw-cache-restore
+          if [ -f data/cache/asx_futures_last_good.json ]; then
+            cp data/cache/asx_futures_last_good.json .mw-cache-restore/asx_futures_last_good.json
+          fi
+
+      - name: Save ASX futures last-good cache for next run
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .mw-cache-restore/asx_futures_last_good.json
+          key: mw-asx-futures-v1-${{ github.run_id }}
 
       - name: Save short-rate last-good cache for next run
         continue-on-error: true

@@ -1870,6 +1870,8 @@ def _contracts_for_bank(
             contracts.append(base3)
         return contracts, None
     if code == "AU":
+        # RBA meeting path: ASX IB (30-day interbank cash / AONIA monthly average) only.
+        # contracts_3m IR settlements are 90-day BBSW and are not meeting-pricing inputs.
         for row in country_paths.get("contracts_1m") or []:
             base = {
                 "product": "IB",

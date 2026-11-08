@@ -27,7 +27,7 @@ FAMILY = "futures_strip"
 def _curve_contract(curve_id: str, expiry: str) -> ParsedContract:
     curve = str(curve_id or "").upper()
     if curve not in CURVE_SPEC:
-        raise StructureError(f"unsupported curve_id {curve_id!r}; supported curves are SOFR, CORRA, AONIA")
+        raise StructureError(f"unsupported curve_id {curve_id!r}; supported curves are SOFR, CORRA, AONIA, BBSW")
     parsed = parse_contract_id(f"{curve}_{expiry}")
     if parsed is None:
         raise StructureError(f"{curve} expiry {expiry!r} is not a contract month")
@@ -87,7 +87,13 @@ def _leg(
     mark_rate: float,
     mark_status: str,
 ) -> dict[str, Any]:
-    local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
+    ir_rate = mark_rate if parsed.spec.product_code == "IR" else None
+    local = dv01_per_contract(
+        parsed.spec,
+        year=parsed.year,
+        month=parsed.month,
+        implied_rate=ir_rate,
+    )
     if local is None:
         raise StructureError(f"DV01 unavailable for {parsed.alias}")
     if int(contracts) != contracts or contracts < 0:
@@ -199,7 +205,13 @@ def build_strip(
         entry_rate = float(rates[parsed.alias]) if parsed.alias in rates else mark_rate
         fx_quote = _fx_for(parsed, market_state)
         fx_rate = float(fx_quote["usd_per_unit"])
-        local = dv01_per_contract(parsed.spec, year=parsed.year, month=parsed.month)
+        ir_rate = mark_rate if parsed.spec.product_code == "IR" else None
+        local = dv01_per_contract(
+            parsed.spec,
+            year=parsed.year,
+            month=parsed.month,
+            implied_rate=ir_rate,
+        )
         if local is None:
             raise StructureError(f"DV01 unavailable for {parsed.alias}")
 

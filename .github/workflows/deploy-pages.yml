@@ -429,13 +429,27 @@ jobs:
           restore-keys: |
             short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-
 
+      - name: Restore ASX futures last-good cache (side path)
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: .mw-cache-restore/asx_futures_last_good.json
+          key: mw-asx-futures-v1-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}-${{ github.run_id }}
+          restore-keys: |
+            mw-asx-futures-v1-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}-
+
       - name: Generate market-state JSON for Pages
         continue-on-error: true
         shell: bash
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check -r requirements-market-state.txt
-          mkdir -p .mw-cache-restore
+          mkdir -p .mw-cache-restore data/cache
+          RESTORED=".mw-cache-restore/asx_futures_last_good.json"
+          if [ -f "$RESTORED" ]; then
+            cp "$RESTORED" data/cache/asx_futures_last_good.json
+            export MW_ASX_FUTURES_CACHE="data/cache/asx_futures_last_good.json"
+          fi
           PYTHONPATH=. python scripts/market_state.py --output _site/market-state.json --public --short-rate-store .mw-cache-restore/short_rate_last_good.json
           PYTHONPATH=. python - <<'PY'
           import json
@@ -444,6 +458,18 @@ jobs:
           packet = json.loads(Path("_site/market-state.json").read_text())
           validate_snapshot(packet)
           PY
+          mkdir -p .mw-cache-restore
+          if [ -f data/cache/asx_futures_last_good.json ]; then
+            cp data/cache/asx_futures_last_good.json .mw-cache-restore/asx_futures_last_good.json
+          fi
+
+      - name: Save ASX futures last-good cache for next run
+        if: success() || failure()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: .mw-cache-restore/asx_futures_last_good.json
+          key: mw-asx-futures-v1-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}-${{ github.run_id }}
 
       - name: Save short-rate last-good cache for next run
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
