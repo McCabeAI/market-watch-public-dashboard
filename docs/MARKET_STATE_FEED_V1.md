@@ -115,6 +115,7 @@ Each sub-feed preserves its own observation date, age, status and source URL. A 
 - **Canada:** Bank of Canada CORRA plus Montréal Exchange COA/CRA context.
 - **United States:** New York Fed SOFR plus One-Month SOFR (`SR1`) context.
 - **Australia:** RBA F1 AONIA, short OIS/bank-bill context and ASX cash-rate data.
+- **Euro area:** ECB €STR fixing plus isolated CME ESR (`10247`) settlements for research context (observe_only; FST3 is not the mark).
 
 This block is not the definition of the paper trading universe.
 
@@ -125,6 +126,7 @@ This block is not the definition of the paper trading universe.
 - **SOFR:** CME Three-Month SOFR futures, product `SR3`.
 - **CORRA:** Montréal Exchange Three-Month CORRA futures, product `CRA`.
 - **AONIA:** ASX 30-Day Interbank Cash Rate futures, product `IB`.
+- **ESTR (observe_only):** CME Three-Month €STR futures, product `ESR`, when official final settlements verify. A failed refresh may display that curve's own last-good marks for 8 calendar days, with the original as-of, and does not treat them as a fresh mark. The CLI keeps the file beside `--output`.
 
 Each contract is marked in implied-rate space as `100 - futures price`. Public settlement/reference data are sufficient for the paper book; they are not represented as executable bid/offer quotes.
 

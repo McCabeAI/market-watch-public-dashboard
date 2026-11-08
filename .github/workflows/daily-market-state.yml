@@ -62,9 +62,22 @@ jobs:
       - name: Install generator dependency
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
+      - name: CME ESR runner probe
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: PYTHONPATH=. python scripts/rates/cme_esr_runner_probe.py --session 2026-11-06 --output /tmp/cme-esr-probe.json
+
+      - name: Upload CME ESR probe artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: cme-esr-probe
+          path: /tmp/cme-esr-probe.json
+          if-no-files-found: warn
+
       - name: Deterministic parser and calculation tests
         if: github.event_name == 'pull_request'
-        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry -v
+        run: PYTHONPATH=. python -m unittest tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry tests.test_cme_esr tests.test_short_rate_isolation tests.test_short_rate_cache_runs tests.test_ecb_esr_integration -v
 
       - name: Live official-source smoke test
         if: github.event_name == 'workflow_dispatch'
@@ -88,11 +101,20 @@ jobs:
       - name: Install generator dependency
         run: python -m pip install --disable-pip-version-check -r requirements-market-state.txt
 
+      - name: Restore short-rate last-good cache
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/market-state/short_rate_last_good.json
+          key: short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+          restore-keys: |
+            short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-
+
       - name: Generate market-state packet
         run: |
           set -euo pipefail
           mkdir -p /tmp/market-state
-          PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json
+          PYTHONPATH=. python scripts/market_state.py --output /tmp/market-state/market-state.json --short-rate-store /tmp/market-state/short_rate_last_good.json
           python - <<'PY'
           import json
           from pathlib import Path
@@ -156,6 +178,13 @@ jobs:
               "official_curve_status": packet["official_curves"]["status"],
           })
           PY
+
+      - name: Save short-rate last-good cache for next run
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/market-state/short_rate_last_good.json
+          key: short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
 
       - name: Upload market-state artifact
         uses: actions/upload-artifact@v4

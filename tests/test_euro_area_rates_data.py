@@ -10,6 +10,7 @@ from scripts.euro_area_rates_data import (
     BUNDESBANK_API_BASE,
     EuroAreaRatesError,
     collect_ea_fragmentation,
+    collect_ea_policy_path,
     compute_fragmentation_spreads,
     compute_mcby_fragmentation_spreads,
     fetch_ea_bund_rates,
@@ -117,6 +118,67 @@ class EuroAreaRatesParserTests(unittest.TestCase):
         })
         self.assertAlmostEqual(spreads["2024-01-02"], 4.10 - 2.45)
         self.assertNotIn("2024-01-06", spreads)
+
+    def test_collect_ea_policy_path_does_not_contact_eurex(self):
+        estr_csv = (FIXTURES / "ecb_estr_sample.csv").read_bytes()
+        recorded_urls: list[str] = []
+        fetch_call_count = 0
+
+        def mock_fetch(url: str, **kwargs) -> bytes:
+            nonlocal fetch_call_count
+            fetch_call_count += 1
+            recorded_urls.append(url)
+            if "eurex.com" in url.lower():
+                raise AssertionError(f"must not fetch Eurex FST3 URL: {url}")
+            if "data-api.ecb.europa.eu" in url and "EST" in url:
+                return estr_csv
+            raise AssertionError(f"unexpected url {url}")
+
+        today = date(2024, 1, 10)
+        out = collect_ea_policy_path(today, fetch_bytes=mock_fetch)
+        self.assertEqual(out["status"], "partial")
+        self.assertIsNotNone(out["benchmark"])
+        self.assertEqual(out["benchmark"]["name"], "€STR")
+        self.assertAlmostEqual(out["benchmark"]["rate"], 3.906)
+        self.assertTrue(all("eurex.com" not in u.lower() for u in recorded_urls))
+        self.assertEqual(fetch_call_count, 1)
+        tradable = out["tradable_curve"]
+        self.assertEqual(tradable["status"], "unavailable")
+        self.assertEqual(tradable["source_urls_tried"], [])
+        self.assertIs(tradable["fst3_contacted"], False)
+        self.assertIn("not contacted", tradable["error"].lower())
+        self.assertEqual(out["sources"]["futures_urls_tried"], [])
+
+    def test_collect_ea_policy_path_estr_failure_no_eurex(self):
+        recorded_urls: list[str] = []
+
+        def mock_fetch(url: str, **kwargs) -> bytes:
+            recorded_urls.append(url)
+            if "eurex.com" in url.lower():
+                raise AssertionError(f"must not fetch Eurex FST3 URL: {url}")
+            raise RuntimeError("€STR feed down")
+
+        out = collect_ea_policy_path(date(2024, 1, 10), fetch_bytes=mock_fetch)
+        self.assertEqual(out["status"], "unavailable")
+        self.assertIsNone(out["benchmark"])
+        self.assertIn("€STR", out["error"])
+        self.assertTrue(all("eurex.com" not in u.lower() for u in recorded_urls))
+
+    def test_collect_ea_policy_path_passes_bounded_estr_fetch_kwargs(self):
+        estr_csv = (FIXTURES / "ecb_estr_sample.csv").read_bytes()
+        seen_kwargs: list[dict] = []
+
+        def mock_fetch(url: str, **kwargs) -> bytes:
+            if kwargs:
+                seen_kwargs.append(dict(kwargs))
+            if "data-api.ecb.europa.eu" in url:
+                return estr_csv
+            raise AssertionError(url)
+
+        collect_ea_policy_path(date(2024, 1, 10), fetch_bytes=mock_fetch)
+        self.assertEqual(len(seen_kwargs), 1)
+        self.assertEqual(seen_kwargs[0].get("timeout"), 15)
+        self.assertEqual(seen_kwargs[0].get("retries"), 1)
 
     def test_validate_ea_rates_bundle_fail_loud(self):
         with self.assertRaises(EuroAreaRatesError):

@@ -1424,6 +1424,7 @@ def build_snapshot(
     include_us_housing: bool | None = None,
     include_canada_housing: bool | None = None,
     include_fragmentation: bool | None = None,
+    short_rate_store: Path | None = None,
 ) -> dict:
     today = today or datetime.now(timezone.utc).date()
     start = today - timedelta(days=366 * 5 + 15)
@@ -1690,7 +1691,11 @@ def build_snapshot(
         include_policy_paths = include_cross_assets
     if include_policy_paths:
         try:
-            policy_paths = collect_policy_paths(today=today, fetch_bytes=fetch_bytes)
+            policy_paths = collect_policy_paths(
+                today=today,
+                fetch_bytes=fetch_bytes,
+                short_rate_store=short_rate_store,
+            )
         except Exception as exc:
             policy_paths = {
                 "status": "unavailable",
@@ -2058,7 +2063,8 @@ def build_snapshot(
                 "Cross-country spreads use exact common observation dates only. "
                 "Policy-path context uses official overnight benchmarks plus public money-market data. "
                 "The required tradable paper rates universe remains SOFR via CME SR3, CORRA via MX CRA, and AONIA via ASX IB. "
-                "TONA is included when JPX OSE 3M settlements pass identity checks; FST3/€STR stays observe_only until a public settlement feed is reliable. "
+                "TONA is included when JPX OSE 3M settlements pass identity checks. "
+                "CME ESR final settlements are collected for research; the €STR curve stays observe_only; Eurex FST3 is not a mark. "
                 "Official government zero/forward curves are supplemental bond-curve inputs and are not required to manufacture a swap curve. "
                 "Euro-area sovereign fragmentation (IT/FR/ES vs Bund) is market context, never an EA temperature input. "
                 "Housing context is collected for the US, Canada and Australia from free maintained public sources: FHFA/Census/Fed/Freddie Mac via FRED for the US, Statistics Canada/CMHC/Bank of Canada for Canada, and ABS/RBA for Australia. "
@@ -2259,6 +2265,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         help="optional local official RBNZ B2 xlsx (same file as the public download URL)",
     )
     ap.add_argument("--public", action="store_true", help="Omit restricted index observations from the public read model")
+    ap.add_argument(
+        "--short-rate-store",
+        help="optional path for short-rate last-good persistence (default: beside --output)",
+    )
     args = ap.parse_args(argv)
     today = date.fromisoformat(args.today) if args.today else None
     nz_workbook = Path(args.nz_workbook) if args.nz_workbook else None
@@ -2266,7 +2276,15 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise MarketStateError(f"RBNZ workbook not found: {nz_workbook}")
     _refresh_meeting_calendars()
     _refresh_policy_state()
-    snapshot = build_snapshot(today=today, nz_workbook=nz_workbook)
+    if args.short_rate_store:
+        store_path = Path(args.short_rate_store)
+    else:
+        store_path = Path(args.output).parent / "short_rate_last_good.json"
+    snapshot = build_snapshot(
+        today=today,
+        nz_workbook=nz_workbook,
+        short_rate_store=store_path,
+    )
     validate_snapshot(snapshot)
     if args.public:
         from scripts.cross_asset_data import public_snapshot
