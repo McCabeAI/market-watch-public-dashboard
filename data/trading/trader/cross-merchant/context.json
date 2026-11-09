@@ -25,7 +25,8 @@
           "AUDCAD"
         ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20260930",
       "status": "active",
@@ -59,7 +60,8 @@
           "AUDCAD"
         ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20260930",
       "status": "active",
@@ -88,7 +90,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20261027",
       "status": "active",
@@ -98,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-06T06:25:49.281876-05:00",
+  "as_of": "2026-11-09T05:37:50.499948-05:00",
   "calibration": {
     "average_holding_seconds": 960070,
     "average_realized_pnl_usd": 22901.3,
@@ -134,16 +137,16 @@
   },
   "capital_owner": null,
   "consequence": {
-    "competition_cohort_size": 14,
+    "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 5,
     "competitive_rank": 5,
-    "drawdown_usd": 50789.62,
-    "giveback_usd": 50789.62,
+    "drawdown_usd": 63676.88,
+    "giveback_usd": 63676.88,
     "high_water_nav_usd": 100135818.43,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100085028.81,
-    "net_pnl_usd": 85028.81,
+    "nav_usd": 100072141.55,
+    "net_pnl_usd": 72141.55,
     "pressure_flags": [],
     "prior_competition_rank": 5,
     "rank_change": 0,
@@ -152,7 +155,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 12887.26,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -163,7 +166,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "107841058fa016353d2533307f2e043c055e56677fbc7a6a32335f5835485b6d",
+  "memory_context_sha256": "b0621157677c23211510b0e7f5e1f1cd981875d262e69eae6fa5405854eac005",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -174,15 +177,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The edge is the extreme cross location versus a 3.5-percentile NZDUSD that mixes in the dollar; it is exhausted if AUDNZD holds a new high through 1.2456 or if a New Zealand cash or policy gap starts paying Australia as hard as the listed Australia-Canada cash wedge.",
-        "current_mark": 1.2445053234543302,
+        "current_mark": 1.2453065552298384,
         "current_notional_usd": 20000000.0,
         "entry_mark": 1.2455636090977256,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 44936.61,
-        "holding_seconds": 252172,
-        "horizon_elapsed_fraction": 0.0649,
+        "giveback_usd": 57801.98,
+        "holding_seconds": 508493,
+        "horizon_elapsed_fraction": 0.1308,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 45,
@@ -196,16 +199,16 @@
         "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 61929.49,
-        "retained_mfe_fraction": 0.2744,
+        "retained_mfe_fraction": 0.0666,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 200000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 16992.88,
+        "total_pnl_usd": 4127.51,
         "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
-        "unrealized_pnl_usd": 16992.88
+        "unrealized_pnl_usd": 4127.51
       },
       "instrument": "AUDNZD",
       "opened_at": "2026-11-03T08:22:57.179127-05:00",

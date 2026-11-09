@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-06T06:25:49.281876-05:00",
+  "as_of": "2026-11-09T05:37:50.499948-05:00",
   "calibration": {
     "average_holding_seconds": 4088939,
     "average_realized_pnl_usd": 250.0,
@@ -36,25 +36,25 @@
   },
   "capital_owner": null,
   "consequence": {
-    "competition_cohort_size": 14,
+    "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 9,
-    "competitive_rank": 9,
-    "drawdown_usd": 10457.43,
-    "giveback_usd": 10457.43,
+    "competition_rank": 10,
+    "competitive_rank": 10,
+    "drawdown_usd": 4462.9,
+    "giveback_usd": 4462.9,
     "high_water_nav_usd": 100003871.66,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99993414.23,
-    "net_pnl_usd": -6585.77,
+    "nav_usd": 99999408.76,
+    "net_pnl_usd": -591.24,
     "pressure_flags": [],
     "prior_competition_rank": 9,
-    "rank_change": 0,
-    "raw_pnl_rank": 9,
+    "rank_change": 1,
+    "raw_pnl_rank": 10,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": -5994.53,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -64,8 +64,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "d64bc2b7842e73e4fd2fe74f155916e0d239b602e4e4ca950f7bf6e04defabc4",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-a5f512bc204e",
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "reference": "trd-trader-mean-reverter-pos-1477172adb86",
+      "source_run_id": "overnight-20261106"
+    }
+  ],
+  "memory_context_sha256": "a1088557fbd78d32347f6b37d9101c2db28bd908cd0719634d201fd1200ec605",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -78,20 +87,20 @@
         "catalyst_logic": "The cross at 1.2453 has left a flat Australian policy path behind, and kiwi-dollar at the 3rd percentile confirms the cheap leg.",
         "current_mark": 1.2453065552298384,
         "current_notional_usd": 5000000.0,
-        "entry_mark": 1.25,
-        "expected_mark_direction": null,
+        "entry_mark": 1.2453065552298384,
+        "expected_mark_direction": "lower",
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 256321,
+        "horizon_elapsed_fraction": 0.2967,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 10,
         "mae_usd": -0.0,
         "mechanical_order": false,
         "mfe_usd": -0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-9a020b7cffca",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
@@ -119,7 +128,31 @@
   ],
   "owner_id": "mean-reverter",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-06T06:25:49.281876-05:00",
+      "created_run_id": "overnight-20261106",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-06T06:25:49.281876-05:00",
+        "conviction": 56,
+        "entry_mark": 4.58,
+        "exit_mark": 4.24,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 4088939,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Another clearly delivered 25bp into the Dec-26 window with SR3H7 implied holding at or above the packet Jun-27 4.72 mid, or hotter US labor/inflation with a re-widening oil tail.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-a5f512bc204e",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
