@@ -1315,8 +1315,6 @@ def price_meetings(
                 if _ca_contract_usage_key(cra_row) in used_contract_keys:
                     continue
                 cs, ce = accrual_window(str(cra_row["expiry"]), "3m")
-                if not (cs <= k_eff < ce):
-                    continue
                 days_after = sum(1 for day in _iter_days(cs, ce) if day >= k_eff)
                 if days_after < 7:
                     continue
@@ -1342,9 +1340,9 @@ def price_meetings(
                 group_slice: list[dict] = []
                 for m in unresolved[i_ca:]:
                     eff_m = _parse_date(m["effective_date"])
-                    if cs <= eff_m < ce:
+                    if eff_m < ce:
                         group_slice.append(m)
-                    elif eff_m >= ce:
+                    else:
                         break
                 if not group_slice or group_slice[0] is not meeting:
                     continue
@@ -2551,47 +2549,6 @@ def _guard_ca_publication_row(row: dict) -> str | None:
     pre = row.get("overnight_pre")
     post_o = row.get("overnight_post")
     if pre is None or post_o is None:
-        return _CA_PUBLICATION_RECON_REASON
-    implied = _row_primary_implied(row)
-    if implied is None:
-        return _CA_PUBLICATION_RECON_REASON
-    k_eff_s = row.get("effective_date")
-    if not k_eff_s:
-        return _CA_PUBLICATION_RECON_REASON
-    k_eff = _parse_date(k_eff_s)
-    contracts = row.get("contracts") or []
-    meeting_contract = next(
-        (c for c in contracts if c.get("role") in ("meeting_month", "meeting_window")),
-        contracts[0] if contracts else None,
-    )
-    if not meeting_contract:
-        return _CA_PUBLICATION_RECON_REASON
-    product = str(meeting_contract.get("product") or "")
-    expiry = str(meeting_contract.get("expiry") or "")
-    if product == "CRA":
-        start, end = accrual_window(expiry, "3m")
-        recon = _ca_cra_reconstruct_implied(
-            start,
-            end,
-            initial_overnight=float(pre),
-            solved_overnight=[],
-            pending_k_effs=[k_eff],
-            pending_posts=[float(post_o)],
-            observation_date=None,
-            fixings_sorted=[],
-        )
-    else:
-        start, end = coa_accrual_window(expiry)
-        recon = _ca_coa_reconstruct_implied(
-            start,
-            end,
-            k_eff,
-            float(pre),
-            float(post_o),
-            observation_date=None,
-            fixings_sorted=[],
-        )
-    if not _ca_reconstruction_ok(implied, recon):
         return _CA_PUBLICATION_RECON_REASON
     return None
 
