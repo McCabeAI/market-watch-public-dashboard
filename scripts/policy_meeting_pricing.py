@@ -557,6 +557,33 @@ def _ib_solve_post_for_meeting(
     return (implied_sum - pre_sum) / n_post
 
 
+def _ib_pre_meeting_sum(
+    *,
+    month_start: date,
+    month_end: date,
+    k_eff: date,
+    observation_date: date,
+    fixings_sorted: list[tuple[date, float]],
+    f_fwd_pre: float,
+) -> tuple[float, int, bool]:
+    """Sum pre-meeting day rates inside the meeting month only (fixings then forward flat)."""
+    n_tot = (month_end - month_start).days
+    pre_end = min(k_eff, month_end)
+    n_pre = (pre_end - month_start).days
+    if n_pre < 0 or n_pre > n_tot:
+        return 0.0, 0, False
+    pre_sum = 0.0
+    for d in _iter_calendar_days(month_start, pre_end):
+        if d < observation_date:
+            r = _sofr_print_for_elapsed_day(d, observation_date, fixings_sorted)
+            if r is None:
+                return 0.0, 0, False
+            pre_sum += r
+        else:
+            pre_sum += f_fwd_pre
+    return pre_sum, n_pre, True
+
+
 def _ca_au_observation_gate(contracts: list[dict]) -> tuple[date | None, str | None]:
     obs_dates: list[date] = []
     has_missing = False
@@ -1186,6 +1213,8 @@ def price_meetings(
             if accrual_window(str(r["expiry"]), "1m")[1] > as_of
         }
 
+        solved_ib_post: float | None = None
+
         for meeting in unresolved:
             k_eff = _parse_date(meeting["effective_date"])
             ib_candidates: list[tuple[dict, date, date]] = []
@@ -1228,6 +1257,7 @@ def price_meetings(
             method_au = "estimated"
             estimate_note_au: str | None = None
             f_fwd_pre: float | None = None
+            f_pre_flat: float | None = None
             pre_sum = 0.0
             n_pre = 0
 
@@ -1245,10 +1275,13 @@ def price_meetings(
                     continue
                 if not fixed_prior:
                     f_fwd_pre = float(prior_ib["implied_rate"])
+                    f_pre_flat = (
+                        solved_ib_post if solved_ib_post is not None else f_fwd_pre
+                    )
                     n_pre = sum(
                         1 for d in _iter_calendar_days(month_start, month_end) if d < k_eff
                     )
-                    pre_sum = n_pre * f_fwd_pre
+                    pre_sum = n_pre * f_pre_flat
                     method_au = "estimated"
                     estimate_note_au = (
                         "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step."
@@ -1260,31 +1293,28 @@ def price_meetings(
                         n_prior,
                         fixed_prior,
                     )
-                    obs_cap = min(au_obs, k_eff, month_end)
-                    pre_sum = 0.0
-                    n_pre = 0
-                    for d in _iter_calendar_days(month_start, obs_cap):
-                        r = _sofr_print_for_elapsed_day(d, au_obs, corra_fixings_sorted)
-                        if r is None:
-                            rows.append(
-                                _row(meeting, None, None, None, "unavailable", [])
-                            )
-                            ok_au = False
-                            break
-                        pre_sum += r
-                        n_pre += 1
-                    if not ok_au:
+                    f_pre_flat = (
+                        solved_ib_post if solved_ib_post is not None else f_fwd_pre
+                    )
+                    pre_sum, n_pre, ok_strip = _ib_pre_meeting_sum(
+                        month_start=month_start,
+                        month_end=month_end,
+                        k_eff=k_eff,
+                        observation_date=au_obs,
+                        fixings_sorted=corra_fixings_sorted,
+                        f_fwd_pre=f_pre_flat,
+                    )
+                    if not ok_strip:
+                        rows.append(_row(meeting, None, None, None, "unavailable", []))
                         continue
-                    for _d in _iter_calendar_days(obs_cap, min(k_eff, month_end)):
-                        pre_sum += f_fwd_pre
-                        n_pre += 1
                     method_au = "identified"
             else:
                 f_fwd_pre = float(prior_ib["implied_rate"])
+                f_pre_flat = solved_ib_post if solved_ib_post is not None else f_fwd_pre
                 n_pre = sum(
                     1 for d in _iter_calendar_days(month_start, month_end) if d < k_eff
                 )
-                pre_sum = n_pre * f_fwd_pre
+                pre_sum = n_pre * f_pre_flat
                 method_au = "estimated"
                 estimate_note_au = (
                     "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step."
@@ -1295,8 +1325,30 @@ def price_meetings(
                 rows.append(_row(meeting, None, None, None, "unavailable", []))
                 continue
 
-            f_post_ib = (implied_m * n_tot - pre_sum) / n_post
-            step_ib = f_post_ib - f_fwd_pre
+            if f_pre_flat is None:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                continue
+
+            try:
+                f_post_ib = _ib_solve_post_for_meeting(
+                    implied_m,
+                    month_start,
+                    month_end,
+                    k_eff,
+                    pre_sum=pre_sum,
+                    n_pre=n_pre,
+                    f_fwd_pre=f_pre_flat,
+                )
+            except ValueError:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                continue
+
+            recon = (pre_sum + n_post * f_post_ib) / n_tot
+            if abs(recon - implied_m) > 0.0005:
+                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                continue
+
+            step_ib = f_post_ib - f_pre_flat
             pol_prev = previous_post if previous_post is not None else anchor
             policy_post = pol_prev + step_ib
             inc = _round_bp(step_ib * 100.0)
@@ -1308,7 +1360,7 @@ def price_meetings(
                 _contract_dict_for_output(prior_ib, weight=0.0, role="forward_baseline"),
             ]
             extras_au: dict[str, Any] = {
-                "ib_prior_forward": _round_rate(f_fwd_pre),
+                "ib_prior_forward": _round_rate(f_pre_flat),
                 "ib_post_level": _round_rate(f_post_ib),
                 "step_meaning": AU_IB_STEP_MEANING,
             }
@@ -1325,6 +1377,7 @@ def price_meetings(
                     extras=extras_au,
                 )
             )
+            solved_ib_post = f_post_ib
         return rows
 
     idx = 0
