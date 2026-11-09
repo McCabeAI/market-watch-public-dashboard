@@ -13,7 +13,7 @@ import re
 from datetime import date, datetime, timedelta
 from typing import Any, Callable
 
-from scripts.rates.cme_session import classify_mark_freshness, latest_expected_cme_session
+from scripts.rates.cme_session import stamp_cme_publication_fields
 from scripts.rates.cme_zq import CME_ZQ_PAGE, _fetch_bytes
 
 FetchBytes = Callable[..., bytes]
@@ -217,6 +217,7 @@ def acquire_eus_contracts(
     fetch_bytes: FetchBytes,
     *,
     today: date,
+    now: datetime | None = None,
 ) -> tuple[list, str, str, dict]:
     last_error: Exception | None = None
     for offset in range(0, 8):
@@ -229,25 +230,24 @@ def acquire_eus_contracts(
                 session_date=session,
                 source_url=url,
             )
-            obs = date.fromisoformat(rows[0]["observation_date"])
-            freshness = classify_mark_freshness(
+            freshness, pub = stamp_cme_publication_fields(
                 curve_key="EUS",
-                observation=obs,
+                rows=rows,
                 today=today,
                 mark_kind="official_settlement",
                 trade_date_verified=True,
+                now=now,
             )
-            session_expected = latest_expected_cme_session(today).isoformat()
-            for row in rows:
-                row["freshness"] = freshness
-                row["session_expected"] = session_expected
             provenance = {
                 "mark_kind": "official_settlement",
                 "trade_date": rows[0]["observation_date"],
                 "freshness_hint": freshness,
+                "session_expected": pub["expected_session_if_published"],
+                "publishable_session": pub["publishable_session"],
+                "publication_status": pub,
                 "ds_header": rows[0]["ds_header"],
                 "via": attempt.get("via"),
-                "execution_eligible": False,
+                "execution_eligible": pub["execution_eligible"],
                 "economics": "ser_9059_eur_25_per_bp",
                 "economics_source": EUS_ECONOMICS_SOURCE,
                 "paper_trading": "observe_only",

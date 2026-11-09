@@ -313,6 +313,28 @@ class ShortRateIsolationTests(unittest.TestCase):
         self.assertFalse(out["ESR"]["mark_fresh"])
         self.assertEqual(out["ESR"]["freshness"], "stale")
 
+    def test_fetch_failure_store_file_bytes_unchanged(self):
+        save_store(
+            self.store_path,
+            remember_fresh(
+                {"version": 1, "curves": {}},
+                "ESR",
+                rows=_rows("2026-11-06"),
+                as_of="2026-11-06",
+                source="seed",
+                source_url="https://seed",
+                mark_kind="official_settlement",
+                provenance={},
+            ),
+        )
+        before = self.store_path.read_bytes()
+
+        def boom(*_a, **_k):
+            raise ValueError("all down")
+
+        self._collect(sr1=boom, sr3=boom, esr=boom)
+        self.assertEqual(self.store_path.read_bytes(), before)
+
     def test_sr3_three_days_before_today_still_fresh(self):
         obs = (date(2026, 11, 8) - __import__("datetime").timedelta(days=3)).isoformat()
         out = self._collect(
