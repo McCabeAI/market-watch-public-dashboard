@@ -2494,6 +2494,9 @@ _PUBLICATION_NUMERIC_METHODS = frozenset({"identified", "equal_step", "estimated
 _US_PUBLICATION_CASCADE_REASON = (
     "prior FOMC step unavailable; path underdetermined"
 )
+_CA_PUBLICATION_CASCADE_REASON = (
+    "prior BoC step unavailable; cumulative path underdetermined"
+)
 _CA_PUBLICATION_RECON_REASON = (
     "COA/CRA row missing overnight reconstruction proof or implied mismatch"
 )
@@ -2540,17 +2543,181 @@ def _row_primary_implied(row: dict) -> float | None:
     return None
 
 
-def _guard_ca_publication_row(row: dict) -> str | None:
-    method = row.get("method")
-    if method not in _PUBLICATION_NUMERIC_METHODS:
-        return None
-    if not _publication_row_has_finite_post(row):
-        return _FINITE_POST_REASON
-    pre = row.get("overnight_pre")
-    post_o = row.get("overnight_post")
-    if pre is None or post_o is None:
-        return _CA_PUBLICATION_RECON_REASON
+def _ca_publication_lead_contract(row: dict) -> dict | None:
+    for contract in row.get("contracts") or []:
+        if contract.get("implied_rate") is None:
+            continue
+        weight = contract.get("weight")
+        if weight is not None and float(weight) > 0:
+            return contract
     return None
+
+
+def _ca_publication_row_recon_ok(
+    row: dict,
+    *,
+    initial_overnight: float,
+    overnight_path: list[tuple[date, float]],
+    group: list[dict] | None = None,
+) -> bool:
+    rows = group if group is not None else [row]
+    row0 = rows[0]
+    pre = row0.get("overnight_pre")
+    post_o = row0.get("overnight_post")
+    if pre is None or post_o is None:
+        return False
+    lead = _ca_publication_lead_contract(row0)
+    if lead is None:
+        return False
+    product = lead.get("product")
+    expiry = str(lead.get("expiry"))
+    implied = float(lead["implied_rate"])
+    try:
+        if product == "COA":
+            win_start, win_end = coa_accrual_window(expiry)
+            k_eff = _parse_date(str(row0["effective_date"]))
+            recon = _ca_coa_reconstruct_implied(
+                win_start,
+                win_end,
+                k_eff,
+                float(pre),
+                float(post_o),
+                observation_date=None,
+                fixings_sorted=[],
+            )
+            return _ca_reconstruction_ok(implied, recon)
+        if product == "CRA":
+            cs, ce = accrual_window(expiry, "3m")
+            if len(rows) > 1 or row0.get("method") == "equal_step":
+                k_effs = sorted(_parse_date(r["effective_date"]) for r in rows)
+                posts = [float(r["overnight_post"]) for r in rows]
+                recon = _ca_cra_reconstruct_implied(
+                    cs,
+                    ce,
+                    initial_overnight=initial_overnight,
+                    solved_overnight=[
+                        t for t in overnight_path if t[0] < k_effs[0]
+                    ],
+                    pending_k_effs=k_effs,
+                    pending_posts=posts,
+                    observation_date=None,
+                    fixings_sorted=[],
+                )
+                return _ca_reconstruction_ok(implied, recon)
+            k_eff = _parse_date(str(row0["effective_date"]))
+            post_on = float(post_o)
+            recon = _ca_cra_reconstruct_implied(
+                cs,
+                ce,
+                initial_overnight=initial_overnight,
+                solved_overnight=[t for t in overnight_path if t[0] < k_eff],
+                pending_k_effs=[k_eff],
+                pending_posts=[post_on],
+                observation_date=None,
+                fixings_sorted=[],
+            )
+            return _ca_reconstruction_ok(implied, recon)
+    except (ValueError, TypeError, KeyError):
+        return False
+    return False
+
+
+def _guard_ca_publication_meetings(bank: dict) -> None:
+    meetings = bank.get("meetings")
+    if not isinstance(meetings, list):
+        return
+    anchor = bank.get("anchor")
+    fixing = bank.get("fixing")
+    initial_overnight: float | None
+    if anchor is None or fixing is None:
+        initial_overnight = None
+    else:
+        initial_overnight = float(anchor) + (float(fixing) - float(anchor))
+
+    ordered = sorted(meetings, key=lambda row: row.get("effective_date") or "")
+    overnight_path: list[tuple[date, float]] = []
+    cascade = False
+    idx = 0
+    while idx < len(ordered):
+        row = ordered[idx]
+        if not isinstance(row, dict):
+            idx += 1
+            continue
+        if cascade:
+            if row.get("method") in _PUBLICATION_NUMERIC_METHODS and _publication_row_has_finite_post(
+                row
+            ):
+                _downgrade_publication_meeting_row(row, _CA_PUBLICATION_CASCADE_REASON)
+            idx += 1
+            continue
+        if row.get("method") == "unavailable":
+            cascade = True
+            idx += 1
+            continue
+        if row.get("method") not in _PUBLICATION_NUMERIC_METHODS:
+            idx += 1
+            continue
+        if not _publication_row_has_finite_post(row):
+            _downgrade_publication_meeting_row(row, _FINITE_POST_REASON)
+            cascade = True
+            idx += 1
+            continue
+        if initial_overnight is None:
+            _downgrade_publication_meeting_row(row, _CA_PUBLICATION_RECON_REASON)
+            cascade = True
+            idx += 1
+            continue
+
+        if row.get("method") == "equal_step":
+            lead = _ca_publication_lead_contract(row)
+            if lead is None:
+                _downgrade_publication_meeting_row(row, _CA_PUBLICATION_RECON_REASON)
+                cascade = True
+                idx += 1
+                continue
+            expiry = str(lead["expiry"])
+            group: list[dict] = []
+            j = idx
+            while j < len(ordered):
+                candidate = ordered[j]
+                if candidate.get("method") != "equal_step":
+                    break
+                lead2 = _ca_publication_lead_contract(candidate)
+                if lead2 is None or str(lead2.get("expiry")) != expiry:
+                    break
+                group.append(candidate)
+                j += 1
+            if not _ca_publication_row_recon_ok(
+                row,
+                initial_overnight=initial_overnight,
+                overnight_path=overnight_path,
+                group=group,
+            ):
+                for member in group:
+                    _downgrade_publication_meeting_row(
+                        member, _CA_PUBLICATION_RECON_REASON
+                    )
+                cascade = True
+                idx = j
+                continue
+            for member in group:
+                k_eff = _parse_date(str(member["effective_date"]))
+                overnight_path.append((k_eff, float(member["overnight_post"])))
+            idx = j
+            continue
+
+        if not _ca_publication_row_recon_ok(
+            row,
+            initial_overnight=initial_overnight,
+            overnight_path=overnight_path,
+        ):
+            _downgrade_publication_meeting_row(row, _CA_PUBLICATION_RECON_REASON)
+            cascade = True
+            idx += 1
+            continue
+        k_eff = _parse_date(str(row["effective_date"]))
+        overnight_path.append((k_eff, float(row["overnight_post"])))
+        idx += 1
 
 
 def _guard_au_publication_row(row: dict) -> str | None:
@@ -2633,13 +2800,14 @@ def guard_policy_meeting_prices_for_publication(block: dict | None) -> dict | No
             continue
         if code == "US":
             _guard_us_publication_meetings(meetings)
+        elif code == "CA":
+            _guard_ca_publication_meetings(bank)
+            continue
         for row in meetings:
             if not isinstance(row, dict):
                 continue
             reason: str | None = None
-            if code == "CA":
-                reason = _guard_ca_publication_row(row)
-            elif code == "AU":
+            if code == "AU":
                 reason = _guard_au_publication_row(row)
             elif row.get("method") in _PUBLICATION_NUMERIC_METHODS:
                 if not _publication_row_has_finite_post(row):
