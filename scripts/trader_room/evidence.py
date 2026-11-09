@@ -415,6 +415,7 @@ def assemble_packet(
     compact = compact_cross_assets(market)
     packet["cross_assets"] = compact
     packet["cross_asset"] = list(compact.get("marks") or [])
+    packet["futures_basis"] = _futures_basis_section(market)
     packet["source_index"] = source_index_from_packet(packet)
     from scripts.trader_room.executable_catalog_section import attach_executable_catalog
 
@@ -423,6 +424,25 @@ def assemble_packet(
 
     ensure_fx_technical(packet)
     return packet
+
+
+def _futures_basis_section(market: dict[str, Any]) -> dict[str, Any]:
+    basis = market.get("futures_basis") if isinstance(market, dict) else None
+    if isinstance(basis, dict):
+        return basis
+    nested = None
+    paths = market.get("policy_paths") if isinstance(market, dict) else None
+    if isinstance(paths, dict):
+        nested = paths.get("futures_basis")
+    if isinstance(nested, dict):
+        return nested
+    return {
+        "version": 1,
+        "status": "unavailable",
+        "recommendation": None,
+        "curves": {},
+        "reason": "futures basis was not in the frozen market state",
+    }
 
 
 def load_synthetic_packet(path: Path, *, topic: str | None = None) -> dict[str, Any]:
@@ -441,4 +461,6 @@ def load_synthetic_packet(path: Path, *, topic: str | None = None) -> dict[str, 
     from scripts.fx_technical.packet import ensure_fx_technical
 
     ensure_fx_technical(packet)
+    market = packet.get("market_state") if isinstance(packet.get("market_state"), dict) else {}
+    packet.setdefault("futures_basis", _futures_basis_section(market))
     return packet

@@ -129,8 +129,48 @@ LOT_ROUNDING_POLICY = "floor_toward_zero"
 HEDGE_LOT_ROUNDING_POLICY = "nearest_integer_half_up"
 _FX_BLOCKING_STATUSES = frozenset({"stale", "missing", "unavailable", "invalid"})
 
-SPECS = {"SR3": SR3, "CRA": CRA, "IB": IB, "IR": IR}
-CURVE_SPEC = {"SOFR": SR3, "CORRA": CRA, "AONIA": IB, "BBSW": IR}
+ZQ = ContractSpec(
+    product_code="ZQ",
+    venue="CME",
+    curve_id="EFFR",
+    currency="USD",
+    quote="imm_index_100_minus_rate",
+    canonical_mark="implied_rate_percent",
+    bp_per_price_unit=100.0,
+    face_notional=5_000_000.0,
+    face_currency="USD",
+    day_count="ACT/360 on calendar days in the contract month",
+    period="calendar_month",
+    source=(
+        "CME 30-Day Federal Funds futures (ZQ), product 305, Globex ZQ: "
+        "USD 5,000,000 face; price = 100 - monthly average EFFR; "
+        "value of 0.01 index = 5,000,000 * 0.0001 * days/360 "
+        "(30-day month is 41.6666... USD, quoted $41.67). "
+        "https://www.cmegroup.com/markets/interest-rates/stirs/30-day-federal-fund.contractSpecs.html"
+    ),
+)
+
+SR1 = ContractSpec(
+    product_code="SR1",
+    venue="CME",
+    curve_id="SR1",
+    currency="USD",
+    quote="imm_index_100_minus_rate",
+    canonical_mark="implied_rate_percent",
+    bp_per_price_unit=100.0,
+    face_notional=5_000_000.0,
+    face_currency="USD",
+    day_count="ACT/360 on calendar days in the contract month",
+    period="calendar_month",
+    source=(
+        "CME One-Month SOFR futures (SR1), product 8463: USD 5,000,000 face; "
+        "price = 100 - monthly average SOFR; same month-count value identity as ZQ. "
+        "SR1 is not the tradable SOFR curve (that remains SR3) and is not a Fed-meeting input."
+    ),
+)
+
+SPECS = {"SR3": SR3, "CRA": CRA, "IB": IB, "IR": IR, "ZQ": ZQ, "SR1": SR1}
+CURVE_SPEC = {"SOFR": SR3, "CORRA": CRA, "AONIA": IB, "BBSW": IR, "EFFR": ZQ}
 ALIASES = {
     "SOFR": "SR3",
     "SR3": "SR3",
@@ -140,6 +180,9 @@ ALIASES = {
     "IB": "IB",
     "BBSW": "IR",
     "IR": "IR",
+    "EFFR": "ZQ",
+    "ZQ": "ZQ",
+    "SR1": "SR1",
 }
 
 _CME_MONTH = {
@@ -157,9 +200,10 @@ _CME_MONTH = {
     "Z": 12,
 }
 
-_DATED = re.compile(r"^(SOFR|SR3|CORRA|CRA|AONIA|IB|BBSW|IR)[_-](20\d{2})-(\d{2})$")
+_DATED = re.compile(r"^(SOFR|SR3|CORRA|CRA|AONIA|IB|BBSW|IR|EFFR|ZQ|SR1)[_-](20\d{2})-(\d{2})$")
 _CODED = re.compile(r"^(SR3|CRA|IB)([FGHJKMNQUVXZ])(\d)$")
 _CODED_IR = re.compile(r"^IR([FGHJKMNQUVXZ])(\d{1,2})$")
+_CODED_MONTHLY = re.compile(r"^(ZQ|SR1)([FGHJKMNQUVXZ])(\d{2})$")
 
 SOVEREIGN_RE = re.compile(
     r"^(US|CA|AU|NZ|EA|JP)[_\s-]?(2Y|5Y|10Y|30Y|LONG)$",
@@ -212,9 +256,9 @@ def dv01_per_contract(
     because the quoted index is 100 minus the rate. IB uses the published
     A$24.66 basis-point value for every expiry month. IR (BBSW) needs
     ``implied_rate`` and uses the cent-rounded 1bp yield-decline gain.
-    ``year`` and ``month`` identify the contract; they do not change the IB BPV.
+    ``year`` and ``month`` identify the contract. They change ZQ and SR1 value
+    through the calendar length of the contract month and do not change the IB BPV.
     """
-    del year, month
     if spec.product_code == "SR3":
         return 25.0
     if spec.product_code == "CRA":
@@ -228,6 +272,12 @@ def dv01_per_contract(
 
         row = variable_bp_value_aud(implied_rate)
         return float(row["long_pnl_yield_down_1bp_aud"])
+    if spec.product_code in {"ZQ", "SR1"}:
+        from scripts.rates.zq_valuation import monthly_bp_value_usd
+
+        row = monthly_bp_value_usd(year, month)
+        value = row.get("unrounded_usd_per_bp")
+        return None if value is None else float(value)
     return None
 
 
@@ -255,6 +305,14 @@ def parse_contract_id(instrument: str | None) -> ParsedContract | None:
         month = int(dated.group(3))
         if month < 1 or month > 12:
             return None
+        spec = SPECS[code]
+        expiry = _expiry(year, month)
+        return ParsedContract(spec=spec, year=year, month=month, expiry=expiry, alias=f"{spec.curve_id}_{expiry}")
+    coded_monthly = _CODED_MONTHLY.fullmatch(raw)
+    if coded_monthly:
+        code = coded_monthly.group(1)
+        month = _CME_MONTH[coded_monthly.group(2)]
+        year = 2000 + int(coded_monthly.group(3))
         spec = SPECS[code]
         expiry = _expiry(year, month)
         return ParsedContract(spec=spec, year=year, month=month, expiry=expiry, alias=f"{spec.curve_id}_{expiry}")

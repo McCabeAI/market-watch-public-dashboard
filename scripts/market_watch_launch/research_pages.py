@@ -783,6 +783,33 @@ def build_research_site(
             # An older frozen packet has no meeting block. Drop the copied canonical
             # file so the research edition does not show prices from after the freeze.
             overlay_prices.unlink()
+        if isinstance(frozen_market, dict):
+            basis = frozen_market.get("futures_basis")
+            countries = ((frozen_market.get("policy_paths") or {}).get("countries") or {})
+            us = countries.get("US") if isinstance(countries, dict) else None
+            ea = countries.get("EA") if isinstance(countries, dict) else None
+            if isinstance(basis, dict):
+                stir_path = work / "data" / "rates" / "futures_basis_latest.json"
+                stir_path.parent.mkdir(parents=True, exist_ok=True)
+                stir_view = {
+                    "curves": basis.get("curves") or {},
+                    "reason": basis.get("reason"),
+                    "strips": {
+                        "ZQ": {
+                            "rows": (us or {}).get("contracts_zq") or [],
+                            "reason": (us or {}).get("zq_error"),
+                        },
+                        "EURIBOR": {
+                            "rows": (ea or {}).get("contracts_euribor") or [],
+                            "reason": (ea or {}).get("euribor_error"),
+                        },
+                        "EUS": {
+                            "rows": (ea or {}).get("contracts_eus") or [],
+                            "reason": (ea or {}).get("eus_error"),
+                        },
+                    },
+                }
+                stir_path.write_text(json.dumps(stir_view, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         _run(work, ["scripts/apply_country_detail.py", str(index)], label="country detail")
 
         if isinstance(frozen_market, dict) and frozen_market.get("generated_at"):

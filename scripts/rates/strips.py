@@ -27,7 +27,9 @@ FAMILY = "futures_strip"
 def _curve_contract(curve_id: str, expiry: str) -> ParsedContract:
     curve = str(curve_id or "").upper()
     if curve not in CURVE_SPEC:
-        raise StructureError(f"unsupported curve_id {curve_id!r}; supported curves are SOFR, CORRA, AONIA, BBSW")
+        raise StructureError(
+            f"unsupported curve_id {curve_id!r}; supported curves are {', '.join(CURVE_SPEC)}"
+        )
     parsed = parse_contract_id(f"{curve}_{expiry}")
     if parsed is None:
         raise StructureError(f"{curve} expiry {expiry!r} is not a contract month")

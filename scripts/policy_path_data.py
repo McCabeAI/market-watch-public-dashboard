@@ -1602,6 +1602,7 @@ def collect_policy_paths(
         acquire_esr=acquire_esr_wrapped,
     )
     esr_block = isolated["ESR"]
+    sr1_block = isolated.get("SR1") if isinstance(isolated.get("SR1"), dict) else None
 
     if sofr is not None:
         benchmark_rate = float(sofr["rate"])
@@ -1820,6 +1821,44 @@ def collect_policy_paths(
         countries["JP"] = {"status": "unavailable", "error": str(exc), "country": "JP"}
         sources["JP_policy"] = {"status": "unavailable", "error": str(exc)}
 
+    futures_basis: dict[str, Any] = {
+        "version": 1,
+        "status": "unavailable",
+        "recommendation": None,
+        "curves": {},
+        "reason": "ZQ and EURIBOR basis were not attached",
+    }
+    try:
+        from scripts.rates.stir_attach import attach_zq_euribor_and_basis
+
+        futures_basis = attach_zq_euribor_and_basis(
+            countries,
+            today=today,
+            fetch_bytes=fetch_bytes,
+            store_path=short_rate_store,
+            sr1_block=sr1_block,
+            esr_block=esr_block,
+        )
+    except Exception as exc:
+        futures_basis = {
+            "version": 1,
+            "status": "unavailable",
+            "recommendation": None,
+            "curves": {},
+            "reason": f"ZQ/EURIBOR attach failed: {exc}",
+        }
+        us_existing = countries.get("US")
+        if isinstance(us_existing, dict) and "contracts_zq" not in us_existing:
+            us_existing["contracts_zq"] = []
+            us_existing["zq_status"] = "unavailable"
+            us_existing["zq_freshness"] = "unavailable"
+            us_existing["zq_error"] = str(exc)
+        ea_existing = countries.get("EA")
+        if isinstance(ea_existing, dict) and "euribor_status" not in ea_existing:
+            ea_existing["contracts_euribor"] = []
+            ea_existing["euribor_status"] = "unavailable"
+            ea_existing["euribor_error"] = str(exc)
+
     from scripts.country_registry import required_preflight_countries
 
     required = required_preflight_countries()
@@ -1835,6 +1874,7 @@ def collect_policy_paths(
         "status": status,
         "countries": countries,
         "sources": sources,
+        "futures_basis": futures_basis,
         "method": {
             "model_calls": 0,
             "credentials_required": [],
@@ -2074,6 +2114,53 @@ def build_tradable_rate_curves(policy_paths: dict[str, Any]) -> dict[str, Any]:
             "contract_period_months": 3,
             "contracts": [],
             "mark_convention": "implied_rate = 100 - settlement price",
+        }
+
+    us_zq = countries.get("US") if isinstance(countries.get("US"), dict) else {}
+    zq_rows = us_zq.get("contracts_zq") if isinstance(us_zq.get("contracts_zq"), list) else []
+    zq_fresh = str(us_zq.get("zq_freshness") or "unavailable")
+    zq_mark = us_zq.get("zq_mark_kind")
+    zq_verified = us_zq.get("zq_trade_date_verified") is True
+    zq_source = us_zq.get("zq_source_url")
+    effr_common = {
+        "country": "US",
+        "instrument": "CME 30-Day Federal Funds futures",
+        "product_code": "ZQ",
+        "contract_period_months": 1,
+        "contracts": zq_rows,
+        "source_url": zq_source,
+        "as_of": us_zq.get("zq_as_of"),
+        "freshness": zq_fresh,
+        "mark_kind": zq_mark,
+        "mark_convention": "implied_rate = 100 - ZQ settlement; settlement is the monthly average EFFR",
+        "paper_trading": "catalog_when_official_fresh",
+    }
+    official_fresh = (
+        zq_fresh == "fresh"
+        and zq_mark == "official_settlement"
+        and zq_verified
+        and bool(zq_rows)
+    )
+    if official_fresh:
+        curves["EFFR"] = {
+            **effr_common,
+            "status": "ok",
+            "execution_eligible": True,
+        }
+    elif zq_rows and zq_fresh == "stale":
+        curves["EFFR"] = {
+            **effr_common,
+            "status": "stale",
+            "execution_eligible": False,
+            "error": str(us_zq.get("zq_error") or "ZQ strip is stale or not an official settlement"),
+        }
+    else:
+        curves["EFFR"] = {
+            **effr_common,
+            "status": "unavailable",
+            "contracts": zq_rows,
+            "execution_eligible": False,
+            "error": str(us_zq.get("zq_error") or "CME ZQ strip unavailable"),
         }
 
     from scripts.country_registry import required_tradable_curve_ids

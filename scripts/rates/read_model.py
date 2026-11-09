@@ -240,6 +240,8 @@ def build_relative_analytics(market_state: Mapping[str, Any] | None) -> dict[str
                     )
                 )
 
+    rows.extend(_basis_rows(state))
+
     return {
         "version": 1,
         "advisory": ADVISORY,
@@ -252,6 +254,67 @@ def build_relative_analytics(market_state: Mapping[str, Any] | None) -> dict[str
         "missing": missing,
         "strip_is_not_a_curve_spread": True,
     }
+
+
+def _basis_rows(state: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Same raw basis evidence for every seat. No directional conclusion."""
+    basis = state.get("futures_basis")
+    if not isinstance(basis, Mapping):
+        return []
+    curves = basis.get("curves") if isinstance(basis.get("curves"), Mapping) else {}
+    out: list[dict[str, Any]] = []
+    for curve_id, block in curves.items():
+        if not isinstance(block, Mapping):
+            continue
+        points = block.get("points") if isinstance(block.get("points"), list) else []
+        if not points:
+            out.append(
+                _row(
+                    kind="futures_basis",
+                    curve_id=curve_id,
+                    status=block.get("status") or "unavailable",
+                    basis_bp=None,
+                    formula=block.get("formula"),
+                    reason=block.get("reason") or block.get("limitation"),
+                    recommendation=None,
+                    execution_eligible=False,
+                )
+            )
+            continue
+        for point in points:
+            if not isinstance(point, Mapping):
+                continue
+            out.append(
+                _row(
+                    kind="futures_basis",
+                    curve_id=curve_id,
+                    definition_id=block.get("definition_id"),
+                    expiry=point.get("expiry"),
+                    status=point.get("status"),
+                    freshness=point.get("freshness"),
+                    basis_bp=point.get("basis_bp"),
+                    formula=point.get("formula") or block.get("formula"),
+                    zq_code=point.get("zq_code"),
+                    sr1_code=point.get("sr1_code"),
+                    euribor_code=point.get("euribor_code"),
+                    esr_code=point.get("esr_code"),
+                    zq_price=point.get("zq_price"),
+                    sr1_price=point.get("sr1_price"),
+                    euribor_price=point.get("euribor_price"),
+                    esr_price=point.get("esr_price"),
+                    observation_date=point.get("observation_date"),
+                    changes=point.get("changes"),
+                    execution_eligible=point.get("execution_eligible") is True,
+                    match_quality=point.get("match_quality") or block.get("match_quality"),
+                    exact_fra_ois=point.get("exact_fra_ois", block.get("exact_fra_ois")),
+                    reason=point.get("reason") or block.get("limitation"),
+                    source_zq=point.get("source_zq"),
+                    source_sr1=point.get("source_sr1"),
+                    source_euribor=point.get("source_euribor"),
+                    source_esr=point.get("source_esr"),
+                )
+            )
+    return out
 
 
 def analytics_for_seat(market_state: Mapping[str, Any] | None, seat: str) -> dict[str, Any]:

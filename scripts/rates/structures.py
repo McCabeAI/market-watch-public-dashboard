@@ -36,7 +36,9 @@ class StructureError(SchemaError):
 def _curve_contract(curve_id: str, expiry: str) -> ParsedContract:
     curve = str(curve_id or "").upper()
     if curve not in CURVE_SPEC:
-        raise StructureError(f"unsupported curve_id {curve_id!r}; supported curves are SOFR, CORRA, AONIA, BBSW")
+        raise StructureError(
+            f"unsupported curve_id {curve_id!r}; supported curves are {', '.join(CURVE_SPEC)}"
+        )
     parsed = parse_contract_id(f"{curve}_{expiry}")
     if parsed is None:
         raise StructureError(f"{curve} expiry {expiry!r} is not a contract month")
@@ -475,6 +477,7 @@ def leg_pnl_for_contracts(leg: Mapping[str, Any], contracts: int) -> float | Non
     if contracts == 0:
         return 0.0
     is_ir = leg.get("product_code") == "IR" or leg.get("curve_id") == "BBSW"
+    is_monthly = leg.get("product_code") in {"ZQ", "SR1"}
     if is_ir:
         if leg.get("mark_status") in ("stale", "unavailable"):
             return None
@@ -493,6 +496,21 @@ def leg_pnl_for_contracts(leg: Mapping[str, Any], contracts: int) -> float | Non
         side = str(leg.get("side") or "long")
         return float(
             ir_pnl_usd(entry, mark, int(contracts), side, float(fx))
+        )
+    if is_monthly:
+        from scripts.rates.zq_valuation import monthly_rate_pnl_usd
+
+        expiry = str(leg.get("expiry") or "")
+        if len(expiry) < 7:
+            return None
+        side = str(leg.get("side") or "long")
+        return monthly_rate_pnl_usd(
+            float(entry),
+            float(mark),
+            int(contracts),
+            side,
+            year=int(expiry[:4]),
+            month=int(expiry[5:7]),
         )
     local = leg.get("dv01_per_contract_local")
     if local is None:

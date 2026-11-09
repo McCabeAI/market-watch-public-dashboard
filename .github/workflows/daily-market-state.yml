@@ -75,12 +75,25 @@ jobs:
         continue-on-error: true
         run: PYTHONPATH=. python scripts/rates/cme_esr_runner_probe.py --session 2026-11-06 --output /tmp/cme-esr-probe.json
 
+      - name: ICE EURIBOR and CME EUS runner probe
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: PYTHONPATH=. python scripts/rates/euribor_runner_probe.py --output /tmp/euribor-eus-probe.json
+
       - name: Upload CME ESR probe artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: cme-esr-probe
           path: /tmp/cme-esr-probe.json
+          if-no-files-found: warn
+
+      - name: Upload ICE EURIBOR and CME EUS probe artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: euribor-eus-probe
+          path: /tmp/euribor-eus-probe.json
           if-no-files-found: warn
 
       - name: ASX EOD runner probe
@@ -98,7 +111,7 @@ jobs:
 
       - name: Deterministic parser and calculation tests
         if: github.event_name == 'pull_request'
-        run: PYTHONPATH=. python -m unittest tests.test_asx_eod tests.test_asx_futures_cache tests.test_bbsw_valuation tests.test_asx_ir_integration tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry tests.test_cme_esr tests.test_short_rate_isolation tests.test_short_rate_cache_runs tests.test_ecb_esr_integration -v
+        run: PYTHONPATH=. python -m unittest tests.test_asx_eod tests.test_asx_futures_cache tests.test_bbsw_valuation tests.test_asx_ir_integration tests.test_market_state tests.test_australia_housing_data tests.test_us_canada_housing_data tests.test_policy_path_data tests.test_official_curve_data tests.test_market_opportunities tests.test_positioning_data tests.test_euro_area_rates_data tests.test_japan_rates_data tests.test_country_registry tests.test_cme_esr tests.test_short_rate_isolation tests.test_short_rate_cache_runs tests.test_ecb_esr_integration tests.test_zq_euribor_basis -v
 
       - name: Live official-source smoke test
         if: github.event_name == 'workflow_dispatch'
@@ -130,6 +143,15 @@ jobs:
           key: short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
           restore-keys: |
             short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-
+
+      - name: Restore futures basis history
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/market-state/futures_basis_history.json
+          key: futures-basis-history-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+          restore-keys: |
+            futures-basis-history-v1-${{ github.workflow }}-${{ github.ref }}-
 
       - name: Restore ASX futures last-good cache (side path)
         continue-on-error: true
@@ -231,6 +253,13 @@ jobs:
         with:
           path: /tmp/market-state/short_rate_last_good.json
           key: short-rate-last-good-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
+
+      - name: Save futures basis history for next run
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: /tmp/market-state/futures_basis_history.json
+          key: futures-basis-history-v1-${{ github.workflow }}-${{ github.ref }}-${{ github.run_id }}
 
       - name: Upload market-state artifact
         uses: actions/upload-artifact@v4

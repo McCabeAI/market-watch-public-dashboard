@@ -341,7 +341,7 @@ def _process_task_result(
 
         # ESR
         stored_as_of = _stored_as_of(working_store, curve_key)
-        stored_record = (working_store.get("curves") or {}).get("ESR")
+        stored_record = (working_store.get("curves") or {}).get(curve_key)
         is_delayed = mark_kind == "delayed_quote"
 
         if freshness == "fresh":
@@ -571,3 +571,48 @@ def collect_default_usd_eur_short_rates(
         acquire_sr3=task_sr3,
         acquire_esr=task_esr,
     )
+
+
+def collect_zq_and_euribor(
+    *,
+    today: date,
+    fetch_bytes: FetchBytes,
+    store_path: Path | str | None,
+    acquire_zq: Callable[..., object],
+    acquire_euribor: Callable[..., object],
+) -> dict[str, Any]:
+    """Fault-isolated ZQ and EURIBOR collection on the short-rate last-good store.
+
+    A failure of either acquire leaves SR1, SR3, and ESR records untouched and
+    does not fill one product with the other's rows.
+    """
+    persist = store_path is not None
+    store_corrupt_note: str | None = None
+    if persist:
+        try:
+            store = load_store(store_path)
+        except ValueError as exc:
+            store = {"version": 1, "curves": {}}
+            store_corrupt_note = str(exc)
+    else:
+        store = {"version": 1, "curves": {}}
+
+    def task_zq() -> object:
+        return acquire_zq(fetch_bytes, today=today)
+
+    def task_euribor() -> object:
+        return acquire_euribor(fetch_bytes, today=today)
+
+    isolated = run_isolated({"ZQ": task_zq, "EURIBOR": task_euribor})
+    blocks: dict[str, dict[str, Any]] = {}
+    for key in ("ZQ", "EURIBOR"):
+        store, blocks[key] = _process_task_result(
+            key,
+            isolated[key],
+            store=store,
+            today=today,
+            store_corrupt_note=store_corrupt_note,
+        )
+    if persist:
+        save_store(Path(store_path), store)
+    return {"ZQ": blocks["ZQ"], "EURIBOR": blocks["EURIBOR"]}
