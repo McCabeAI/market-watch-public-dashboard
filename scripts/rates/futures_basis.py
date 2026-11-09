@@ -30,6 +30,9 @@ import tempfile
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Mapping
+from zoneinfo import ZoneInfo
+
+from scripts.rates.cme_session import latest_expected_cme_session
 
 US_DEFINITION = "us_effr_minus_sofr_monthly_v1"
 EU_DEFINITION = "ea_euribor_minus_estr_quarterly_futures_proxy_v1"
@@ -107,12 +110,267 @@ def _leg_session(row: Mapping[str, Any] | None, block_as_of: str | None) -> str 
     return _iso(row.get("observation_date") or row.get("as_of") or block_as_of)
 
 
+def _row_mark_kind(row: Mapping[str, Any] | None, block_mark_kind: object) -> str | None:
+    if row is None:
+        return None
+    kind = row.get("mark_kind") or row.get("quote_kind")
+    if kind not in (None, ""):
+        return str(kind)
+    if block_mark_kind not in (None, ""):
+        return str(block_mark_kind)
+    if row.get("trade_date_verified") is not False:
+        return "official_settlement"
+    return None
+
+
+def _coerce_now(now: datetime | date | None) -> datetime:
+    if now is None:
+        return datetime.now(timezone.utc)
+    if isinstance(now, datetime):
+        return now if now.tzinfo is not None else now.replace(tzinfo=timezone.utc)
+    return datetime.combine(now, datetime.min.time(), tzinfo=timezone.utc)
+
+
+def _is_weekend_or_monday_before_cme_publication(now: datetime | date) -> bool:
+    """Weekend, or Monday before the ~05:37 ET settlement drop (conservative for date-only)."""
+    if isinstance(now, date) and not isinstance(now, datetime):
+        return now.weekday() >= 5 or now.weekday() == 0
+    aware = _coerce_now(now)
+    eastern = aware.astimezone(ZoneInfo("America/New_York"))
+    if eastern.weekday() >= 5:
+        return True
+    if eastern.weekday() == 0:
+        return eastern.hour < 5 or (eastern.hour == 5 and eastern.minute < 37)
+    return False
+
+
+def _latest_authoritative_cme_session(now: datetime | date | None) -> date:
+    """Latest exchange session whose official print is still the authoritative mark at *now*."""
+    ref = _coerce_now(now)
+    today = ref.date()
+    if _is_weekend_or_monday_before_cme_publication(ref):
+        anchor = today
+        while anchor.weekday() >= 5:
+            anchor -= timedelta(days=1)
+        if anchor.weekday() == 0:
+            return anchor - timedelta(days=3)
+        return latest_expected_cme_session(anchor)
+    prior = today - timedelta(days=1)
+    while prior.weekday() >= 5:
+        prior -= timedelta(days=1)
+    return latest_expected_cme_session(prior)
+
+
+def _session_publication_eligible(session: str, now: datetime | date | None) -> bool:
+    try:
+        sess = date.fromisoformat(session)
+    except ValueError:
+        return False
+    ref = _coerce_now(now)
+    if sess > ref.date():
+        return False
+    if sess == ref.date() and isinstance(now, datetime) and ref.date().weekday() == 0:
+        eastern = ref.astimezone(ZoneInfo("America/New_York"))
+        if eastern.hour < 5 or (eastern.hour == 5 and eastern.minute < 37):
+            return False
+    return sess <= _latest_authoritative_cme_session(now)
+
+
+def _rows_for_expiry(rows: list[Mapping[str, Any]] | None, expiry: str) -> list[Mapping[str, Any]]:
+    out: list[Mapping[str, Any]] = []
+    for row in rows or []:
+        if not isinstance(row, Mapping):
+            continue
+        key = str(row.get("expiry") or row.get("named_month") or "")[:7]
+        if key == expiry:
+            out.append(row)
+    return out
+
+
+def _find_latest_matching_us_pair(
+    *,
+    expiry: str,
+    zq_rows: list[Mapping[str, Any]] | None,
+    sr1_rows: list[Mapping[str, Any]] | None,
+    zq_as_of: str | None,
+    sr1_as_of: str | None,
+    history: Mapping[str, Any] | None,
+) -> dict[str, Any] | None:
+    """Latest same-session ZQ/SR1 pair for *expiry* from block rows or stored history."""
+    matching_sessions: dict[str, tuple[Mapping[str, Any] | None, Mapping[str, Any] | None]] = {}
+    for left in _rows_for_expiry(zq_rows, expiry):
+        left_session = _leg_session(left, zq_as_of)
+        if not left_session:
+            continue
+        for right in _rows_for_expiry(sr1_rows, expiry):
+            right_session = _leg_session(right, sr1_as_of)
+            if right_session and left_session == right_session:
+                matching_sessions[left_session] = (left, right)
+    definitions = (history or {}).get("definitions") if isinstance(history, Mapping) else None
+    series = definitions.get(US_DEFINITION) if isinstance(definitions, Mapping) else None
+    if isinstance(series, Mapping):
+        for session, snapshot in series.items():
+            if not isinstance(snapshot, Mapping):
+                continue
+            stored = snapshot.get(expiry)
+            if not isinstance(stored, Mapping) or stored.get("basis_bp") is None:
+                continue
+            if session not in matching_sessions:
+                matching_sessions[session] = (None, None)
+    if not matching_sessions:
+        return None
+    latest_session = max(matching_sessions)
+    left, right = matching_sessions[latest_session]
+    if left is not None and right is not None:
+        zq_price = _price(left)
+        sr1_price = _price(right)
+        if zq_price is None or sr1_price is None:
+            return None
+        basis = effr_minus_sofr_bp(zq_price, sr1_price)
+        return {
+            "expiry": expiry,
+            "definition_id": US_DEFINITION,
+            "observation_date": latest_session,
+            "zq_session": latest_session,
+            "sr1_session": latest_session,
+            "zq_code": left.get("code"),
+            "sr1_code": right.get("code"),
+            "zq_price": zq_price,
+            "sr1_price": sr1_price,
+            "basis_bp": basis,
+            "status": "latest_matching_historical",
+            "freshness": "stale",
+            "execution_eligible": False,
+        }
+    if isinstance(series, Mapping):
+        stored = series.get(latest_session, {}).get(expiry)
+        if isinstance(stored, Mapping) and stored.get("basis_bp") is not None:
+            return {
+                "expiry": expiry,
+                "definition_id": US_DEFINITION,
+                "observation_date": latest_session,
+                "zq_session": latest_session,
+                "sr1_session": latest_session,
+                "zq_code": stored.get("zq_code"),
+                "sr1_code": stored.get("sr1_code"),
+                "basis_bp": round(float(stored["basis_bp"]), 6),
+                "status": "latest_matching_historical",
+                "freshness": "stale",
+                "execution_eligible": False,
+                "from_history": True,
+            }
+    return None
+
+
+def _attach_us_latest_matching(
+    point: dict[str, Any],
+    *,
+    expiry: str,
+    zq_rows: list[Mapping[str, Any]] | None,
+    sr1_rows: list[Mapping[str, Any]] | None,
+    zq_as_of: str | None,
+    sr1_as_of: str | None,
+    zq_mark_kind: str | None,
+    sr1_mark_kind: str | None,
+    history: Mapping[str, Any] | None,
+    now: datetime | date | None,
+) -> None:
+    match = _find_latest_matching_us_pair(
+        expiry=expiry,
+        zq_rows=zq_rows,
+        sr1_rows=sr1_rows,
+        zq_as_of=zq_as_of,
+        sr1_as_of=sr1_as_of,
+        history=history,
+    )
+    if match is None:
+        return
+    latest_session = str(match["observation_date"])
+    left = None
+    right = None
+    for row in _rows_for_expiry(zq_rows, expiry):
+        if _leg_session(row, zq_as_of) == latest_session:
+            left = row
+            break
+    for row in _rows_for_expiry(sr1_rows, expiry):
+        if _leg_session(row, sr1_as_of) == latest_session:
+            right = row
+            break
+    z_kind = _row_mark_kind(left, zq_mark_kind)
+    s_kind = _row_mark_kind(right, sr1_mark_kind)
+    verified = True
+    if left is not None and left.get("trade_date_verified") is False:
+        verified = False
+    if right is not None and right.get("trade_date_verified") is False:
+        verified = False
+    if (
+        z_kind == "official_settlement"
+        and s_kind == "official_settlement"
+        and verified
+        and _session_publication_eligible(latest_session, now)
+    ):
+        match["execution_eligible"] = True
+    match["changes"] = _changes(
+        history,
+        US_DEFINITION,
+        expiry,
+        latest_session,
+        match.get("basis_bp"),
+        point_status=match.get("status"),
+        zq_mark_kind=z_kind,
+        sr1_mark_kind=s_kind,
+    )
+    point["latest_matching"] = match
+
+
+def _eus_official_status(
+    row: Mapping[str, Any],
+    session: str,
+    block_freshness: str,
+    now: datetime | date | None,
+) -> tuple[str, str]:
+    mark_kind = _row_mark_kind(row, row.get("mark_kind") or "official_settlement")
+    verified = row.get("trade_date_verified") is not False
+    try:
+        obs = date.fromisoformat(session)
+    except ValueError:
+        return "unavailable", block_freshness
+    if mark_kind != "official_settlement" or not verified:
+        return ("stale" if block_freshness == "stale" else "unavailable"), block_freshness
+    authoritative = _latest_authoritative_cme_session(now)
+    if obs == authoritative and _is_weekend_or_monday_before_cme_publication(_coerce_now(now)):
+        return "latest_available_official", "stale"
+    if block_freshness == "fresh" and obs == latest_expected_cme_session(_coerce_now(now).date()):
+        return "current", "fresh"
+    if obs == authoritative:
+        return "latest_available_official", "stale"
+    return "stale", block_freshness
+
+
+def _quote_kinds_align(left: Mapping[str, Any], right: Mapping[str, Any], left_block: object, right_block: object) -> str | None:
+    lk = _row_mark_kind(left, left_block)
+    rk = _row_mark_kind(right, right_block)
+    if lk is None and rk is None and left.get("trade_date_verified") is not False and right.get("trade_date_verified") is not False:
+        lk = rk = "official_settlement"
+    if lk is None or rk is None:
+        return "quote kind is missing on a futures leg"
+    if lk != rk:
+        return f"quote kinds differ ({lk} vs {rk}); proxy not built"
+    if lk != "official_settlement":
+        return f"{lk} is indicative only and is not joined to an official settlement leg"
+    return None
+
+
 def _changes(
     history: Mapping[str, Any] | None,
     definition_id: str,
     expiry: str,
     as_of: str | None,
     current_bp: float | None = None,
+    *,
+    point_status: str | None = None,
+    zq_mark_kind: str | None = None,
+    sr1_mark_kind: str | None = None,
 ) -> dict[str, Any]:
     """Signed change is current basis minus the stored basis on that exact date.
 
@@ -142,6 +400,25 @@ def _changes(
         if not isinstance(point, Mapping) or point.get("basis_bp") is None:
             empty["compared_to"] = prior
             empty["reason"] = f"no stored {definition_id} observation for {expiry} on {prior}"
+            out[key] = empty
+            continue
+        if point_status is not None and point.get("status") not in (None, point_status):
+            empty["compared_to"] = prior
+            empty["reason"] = (
+                f"prior stored point status {point.get('status')!r} does not match {point_status!r}"
+            )
+            out[key] = empty
+            continue
+        stored_zq = point.get("zq_mark_kind")
+        stored_sr1 = point.get("sr1_mark_kind")
+        if zq_mark_kind and stored_zq and stored_zq != zq_mark_kind:
+            empty["compared_to"] = prior
+            empty["reason"] = "prior observation quote kind does not match current ZQ mark"
+            out[key] = empty
+            continue
+        if sr1_mark_kind and stored_sr1 and stored_sr1 != sr1_mark_kind:
+            empty["compared_to"] = prior
+            empty["reason"] = "prior observation quote kind does not match current SR1 mark"
             out[key] = empty
             continue
         prior_bp = round(float(point["basis_bp"]), 6)
@@ -175,6 +452,7 @@ def build_us_effr_sofr_basis(
     zq_mark_kind: str | None,
     sr1_mark_kind: str | None,
     history: Mapping[str, Any] | None = None,
+    now: datetime | date | None = None,
 ) -> dict[str, Any]:
     zq = _index(zq_rows)
     sr1 = _index(sr1_rows)
@@ -210,10 +488,27 @@ def build_us_effr_sofr_basis(
             continue
         left_session = _leg_session(left, zq_as_of)
         right_session = _leg_session(right, sr1_as_of)
+        left_kind = _row_mark_kind(left, zq_mark_kind)
+        right_kind = _row_mark_kind(right, sr1_mark_kind)
+        point["zq_mark_kind"] = left_kind
+        point["sr1_mark_kind"] = right_kind
+        mismatch_reason = (
+            f"session mismatch ZQ {left_session} vs SR1 {right_session}; "
+            "not represented as current"
+        )
         if not left_session or not right_session or left_session != right_session:
-            point["reason"] = (
-                f"session mismatch ZQ {left_session} vs SR1 {right_session}; "
-                "not represented as current"
+            point["reason"] = mismatch_reason
+            _attach_us_latest_matching(
+                point,
+                expiry=expiry,
+                zq_rows=zq_rows,
+                sr1_rows=sr1_rows,
+                zq_as_of=zq_as_of,
+                sr1_as_of=sr1_as_of,
+                zq_mark_kind=left_kind,
+                sr1_mark_kind=right_kind,
+                history=history,
+                now=now,
             )
             points.append(point)
             continue
@@ -221,6 +516,18 @@ def build_us_effr_sofr_basis(
         sr1_price = point["sr1_price"]
         if zq_price is None or sr1_price is None:
             point["reason"] = "leg price missing"
+            _attach_us_latest_matching(
+                point,
+                expiry=expiry,
+                zq_rows=zq_rows,
+                sr1_rows=sr1_rows,
+                zq_as_of=zq_as_of,
+                sr1_as_of=sr1_as_of,
+                zq_mark_kind=left_kind,
+                sr1_mark_kind=right_kind,
+                history=history,
+                now=now,
+            )
             points.append(point)
             continue
         unverified = left.get("trade_date_verified") is False or right.get("trade_date_verified") is False
@@ -234,34 +541,55 @@ def build_us_effr_sofr_basis(
             continue
         if unverified:
             worse = "stale"
+        official = left_kind == "official_settlement" and right_kind == "official_settlement"
+        exec_ok = (
+            worse == "fresh"
+            and official
+            and not unverified
+            and _session_publication_eligible(left_session, now)
+        )
         point.update(
             {
                 "basis_bp": basis,
                 "observation_date": left_session,
                 "status": "current" if worse == "fresh" else "stale",
                 "freshness": worse,
-                "execution_eligible": worse == "fresh"
-                and zq_mark_kind == "official_settlement"
-                and sr1_mark_kind == "official_settlement"
-                and not unverified,
+                "execution_eligible": exec_ok,
                 "reason": (
                     None
-                    if worse == "fresh" and not unverified
+                    if worse == "fresh" and not unverified and official
+                    else "unverified or stale leg is shown and is not today's execution price"
+                    if not official
                     else "unverified or stale leg is shown and is not today's execution price"
                 ),
-                "changes": _changes(history, US_DEFINITION, expiry, left_session, basis),
+                "changes": _changes(
+                    history,
+                    US_DEFINITION,
+                    expiry,
+                    left_session,
+                    basis,
+                    point_status="current" if worse == "fresh" else "stale",
+                    zq_mark_kind=left_kind,
+                    sr1_mark_kind=right_kind,
+                ),
                 "reference_start": left.get("reference_start"),
                 "reference_end": left.get("reference_end"),
                 "underlying_zq": "EFFR monthly average",
                 "underlying_sr1": "SOFR monthly average",
             }
         )
+        if not official:
+            point["reason"] = "quote kind is not an official same-session settlement on both legs"
+            point["execution_eligible"] = False
         points.append(point)
     numeric = [row for row in points if row.get("basis_bp") is not None]
+    historical = [row for row in points if row.get("latest_matching")]
     status = "unavailable"
     if any(row.get("status") == "current" for row in points):
         status = "ok"
     elif numeric:
+        status = "stale"
+    elif historical:
         status = "stale"
     return {
         "curve_id": "US_EFFR_MINUS_SOFR",
@@ -273,7 +601,7 @@ def build_us_effr_sofr_basis(
         "not_interpolated": True,
         "recommendation": None,
         "points": points,
-        "reason": None if numeric else "no same-session ZQ and SR1 pair",
+        "reason": None if (numeric or historical) else "no same-session ZQ and SR1 pair",
     }
 
 
@@ -304,6 +632,8 @@ def build_eu_euribor_estr_basis(
     euribor_source: str | None,
     esr_source: str | None,
     euribor_status: str,
+    euribor_mark_kind: str | None = None,
+    esr_mark_kind: str | None = None,
     history: Mapping[str, Any] | None = None,
     qualification: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -381,6 +711,13 @@ def build_eu_euribor_estr_basis(
             point["reason"] = "accrual windows are not both explicit; same expiry is not used"
             points.append(point)
             continue
+        kind_reason = _quote_kinds_align(left, right, euribor_mark_kind, esr_mark_kind)
+        if kind_reason:
+            point["reason"] = kind_reason
+            point["euribor_mark_kind"] = _row_mark_kind(left, euribor_mark_kind)
+            point["esr_mark_kind"] = _row_mark_kind(right, esr_mark_kind)
+            points.append(point)
+            continue
         left_session = _leg_session(left, euribor_as_of)
         right_session = _leg_session(right, esr_as_of)
         if not left_session or left_session != right_session:
@@ -456,11 +793,25 @@ def remember_basis_snapshot(history: dict[str, Any] | None, curve: Mapping[str, 
             "status": point.get("status"),
             "zq_code": point.get("zq_code"),
             "sr1_code": point.get("sr1_code"),
+            "zq_mark_kind": point.get("zq_mark_kind"),
+            "sr1_mark_kind": point.get("sr1_mark_kind"),
             "euribor_code": point.get("euribor_code"),
             "esr_code": point.get("esr_code"),
             "match_quality": point.get("match_quality"),
             "stored_at": datetime.now(timezone.utc).isoformat(),
         }
+        latest = point.get("latest_matching")
+        if isinstance(latest, Mapping) and latest.get("basis_bp") is not None:
+            lm_session = _iso(latest.get("observation_date"))
+            if lm_session:
+                lm_day = bucket.setdefault(lm_session, {})
+                lm_day[expiry] = {
+                    "basis_bp": latest.get("basis_bp"),
+                    "status": latest.get("status"),
+                    "zq_code": latest.get("zq_code"),
+                    "sr1_code": latest.get("sr1_code"),
+                    "stored_at": datetime.now(timezone.utc).isoformat(),
+                }
     return out
 
 
@@ -512,13 +863,15 @@ def build_eus_basis(
     as_of: str | None,
     source: str | None,
     history: Mapping[str, Any] | None = None,
+    now: datetime | date | None = None,
 ) -> dict[str, Any]:
     points: list[dict[str, Any]] = []
     for row in rows or []:
         if not isinstance(row, Mapping) or row.get("basis_bp") is None:
             continue
-        session = _iso(row.get("observation_date") or as_of)
+        session = _iso(row.get("observation_date") or row.get("as_of") or as_of)
         basis = float(row["basis_bp"])
+        mark_kind = _row_mark_kind(row, row.get("mark_kind"))
         worse = "current" if freshness == "fresh" else "stale" if freshness == "stale" else "unavailable"
         if worse == "unavailable" or session is None:
             points.append(
@@ -532,6 +885,7 @@ def build_eus_basis(
                 }
             )
             continue
+        point_status, point_freshness = _eus_official_status(row, session, freshness, now)
         points.append(
             {
                 "expiry": row.get("expiry"),
@@ -540,22 +894,36 @@ def build_eus_basis(
                 "basis_bp": round(basis, 6),
                 "formula": EUS_FORMULA,
                 "observation_date": session,
-                "status": "current" if worse == "current" else "stale",
-                "freshness": freshness,
-                "mark_kind": row.get("mark_kind"),
+                "status": point_status,
+                "freshness": point_freshness,
+                "mark_kind": mark_kind,
+                "trade_date_verified": row.get("trade_date_verified"),
                 "source": source,
                 "execution_eligible": False,
                 "economics": row.get("economics") or "ser_9059_eur_25_per_bp",
                 "exact_fra_ois": False,
                 "reason": row.get("period_note"),
-                "changes": _changes(history, EUS_DEFINITION, str(row.get("expiry") or ""), session, basis),
+                "changes": _changes(
+                    history,
+                    EUS_DEFINITION,
+                    str(row.get("expiry") or ""),
+                    session,
+                    basis,
+                    point_status=point_status,
+                ),
             }
         )
     numeric = [row for row in points if row.get("basis_bp") is not None]
     return {
         "curve_id": "EA_CME_EUS",
         "definition_id": EUS_DEFINITION,
-        "status": "ok" if any(row.get("status") == "current" for row in points) else "stale" if numeric else "unavailable",
+        "status": (
+            "ok"
+            if any(row.get("status") in ("current", "latest_available_official") for row in points)
+            else "stale"
+            if numeric
+            else "unavailable"
+        ),
         "formula": EUS_FORMULA,
         "unit": "bp",
         "quote_unit": "index_points",
@@ -577,6 +945,7 @@ def build_futures_basis(
     eus_block: Mapping[str, Any] | None = None,
     history: Mapping[str, Any] | None = None,
     qualification: Mapping[str, Any] | None = None,
+    now: datetime | date | None = None,
 ) -> dict[str, Any]:
     zq_block = zq_block or {}
     sr1_block = sr1_block or {}
@@ -594,6 +963,7 @@ def build_futures_basis(
         zq_mark_kind=zq_block.get("mark_kind"),
         sr1_mark_kind=sr1_block.get("mark_kind"),
         history=history,
+        now=now,
     )
     eu = build_eu_euribor_estr_basis(
         euribor_rows=list(euribor_block.get("rows") or []),
@@ -605,6 +975,8 @@ def build_futures_basis(
         euribor_source=euribor_block.get("source_url") or euribor_block.get("source"),
         esr_source=esr_block.get("source_url") or esr_block.get("source"),
         euribor_status=str(euribor_block.get("status") or "unavailable"),
+        euribor_mark_kind=euribor_block.get("mark_kind"),
+        esr_mark_kind=esr_block.get("mark_kind"),
         history=history,
         qualification=qualification,
     )
@@ -615,6 +987,7 @@ def build_futures_basis(
         as_of=eus_block.get("as_of"),
         source=eus_block.get("source_url") or eus_block.get("source"),
         history=history,
+        now=now,
     )
     cross = None
     provenance = euribor_block.get("provenance") if isinstance(euribor_block, Mapping) else None
@@ -697,6 +1070,15 @@ def basis_package_legs(
         return {
             "status": "unavailable",
             "reason": point.get("reason") or "basis point is not an executable same-session official pair",
+            "legs": [],
+            "execution_eligible": False,
+        }
+    zq_kind = point.get("zq_mark_kind") or "official_settlement"
+    sr1_kind = point.get("sr1_mark_kind") or "official_settlement"
+    if zq_kind != "official_settlement" or sr1_kind != "official_settlement":
+        return {
+            "status": "unavailable",
+            "reason": "basis package requires official same-session settlements on both legs",
             "legs": [],
             "execution_eligible": False,
         }
