@@ -72,7 +72,6 @@ FREEZE_STAGES = ("00_authenticate", "01_ingest", "02_acquire", "03_quality_gate"
 ACCEPTED_GATE_COVERAGE = frozenset({"COMPLETE", "PARTIAL"})
 REQUIRED_NAV = ("p-front", "p-country", "p-marketdata", "p-traderbook", "p-releases", "p-sources")
 COUNTRY_CODES = ("us", "ca", "au", "nz", "ea", "jp")
-TRADER_SEAT_COUNT = 14
 RETIRED_NAV = ("p-feed", "p-relative", "p-traderroom")
 STALE_TAPE_VALUES = ("4.79%", "1.3790", "0.7210", "0.58755", "98.83", "$92.33", "$97.23")
 
@@ -1093,8 +1092,13 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
         raise _fail("trader_books_not_previous_accepted", str(published_run))
     if trader.get("books_run_id") != books.get("books_run_id") or trader.get("books_as_of") != books.get("as_of"):
         raise _fail("trader_books_dates_mismatch", f"{trader.get('books_run_id')} {trader.get('books_as_of')}")
+    from scripts.overnight.books import published_book_roster, published_room_roster
+
     seats = trader.get("seats")
-    if not isinstance(seats, list) or len(seats) != TRADER_SEAT_COUNT:
+    matched_roster = published_book_roster(seats)
+    if matched_roster is None:
+        raise _fail("trader_books_roster_incomplete")
+    if trader.get("seat_count") is not None and trader.get("seat_count") != len(matched_roster):
         raise _fail("trader_books_roster_incomplete")
     pm = _read_json(site / "pm-books.json")
     if (pm.get("edition") or {}).get("phase") != PHASE_RESEARCH:
@@ -1130,7 +1134,10 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     if any(row.get("bucket") == "failure" and row.get("last_successful_check") for row in rows):
         raise _fail("failed_source_given_success_time")
     room = _read_json(site / "trader-room.json")
-    if room.get("available") is not True or room.get("seat_count") != TRADER_SEAT_COUNT:
+    if room.get("available") is not True:
+        raise _fail("trader_room_packet_incomplete")
+    matched_room = published_room_roster(room)
+    if matched_room is None:
         raise _fail("trader_room_packet_incomplete")
     _ = root
     return release

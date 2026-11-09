@@ -33,7 +33,8 @@ from scripts.market_watch_launch.pages_dispatch import (
 )
 from scripts.market_watch_launch.pages_recovery import workflow_run_decision
 from scripts.market_watch_launch.state import LaunchStateStore
-from scripts.overnight.constants import ROOT
+from scripts.overnight.constants import ROOT, STANDING_SEATS
+from scripts.trader_room.agent_config import legacy_pin
 
 NY = ZoneInfo("America/New_York")
 LAUNCH_ID = "mwl-20261022T110951Z-9a049b03"
@@ -345,8 +346,9 @@ class DispatchConfirmationTests(unittest.TestCase):
         self.assertEqual(ambiguous["reason"], "pages_dispatch_ambiguous")
 
     def test_public_dataset_must_match_the_deployed_run(self) -> None:
+        legacy_ids = tuple(str(row["id"]) for row in legacy_pin("daily")["traders"])
         trader = {
-            "seats": [{"seat": str(i)} for i in range(14)],
+            "seats": [{"seat": sid} for sid in legacy_ids],
             "publication": {"overnight_run_id": "overnight-20261022"},
         }
         pm = {"pms": [{"pm_id": "swinger"}, {"pm_id": "pragmatist"}, {"pm_id": "grinder"}]}
@@ -356,10 +358,28 @@ class DispatchConfirmationTests(unittest.TestCase):
             pm=pm,
             overnight_run_id="overnight-20261022",
         )
+        standing_trader = {
+            "seats": [{"seat": sid} for sid in STANDING_SEATS],
+            "seat_count": len(STANDING_SEATS),
+            "publication": {"overnight_run_id": "overnight-20261022"},
+        }
+        assert_public_dataset(
+            html="<h1>Trader Book</h1>",
+            trader=standing_trader,
+            pm=pm,
+            overnight_run_id="overnight-20261022",
+        )
         with self.assertRaises(SystemExit):
             assert_public_dataset(
                 html="<h1>Trader Book</h1>",
                 trader={**trader, "seats": [{"seat": "only"}]},
+                pm=pm,
+                overnight_run_id="overnight-20261022",
+            )
+        with self.assertRaises(SystemExit):
+            assert_public_dataset(
+                html="<h1>Trader Book</h1>",
+                trader={"seats": [{"seat": str(i)} for i in range(14)], "publication": {"overnight_run_id": "overnight-20261022"}},
                 pm=pm,
                 overnight_run_id="overnight-20261022",
             )

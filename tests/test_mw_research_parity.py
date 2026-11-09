@@ -250,7 +250,7 @@ class FinalWorkflowWiringTests(unittest.TestCase):
     def test_final_publication_contract_is_unchanged(self):
         for needle in (
             "REQUIRE_DATASET=(--require-dataset)",
-            'assert packet.get("seat_count") == 14',
+            "assert_published_trader_room(packet, selected)",
             "validate_public_packet(packet)",
             "pages_dispatch bind-checkout",
             "pages_dispatch verify-public",

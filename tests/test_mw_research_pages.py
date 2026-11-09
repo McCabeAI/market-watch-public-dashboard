@@ -23,6 +23,8 @@ from unittest import mock
 
 from scripts.market_watch_launch import publication_release as pr
 from scripts.market_watch_launch import research_pages as rp
+from scripts.overnight.constants import STANDING_SEATS
+from scripts.trader_room.agent_config import legacy_pin
 
 REPO = Path(__file__).resolve().parents[1]
 FIXTURE_COMMIT = "e9f757d7d6ae83e6c017fd9f95a1da40addda9ad"
@@ -397,9 +399,26 @@ class SiteTests(FixtureCase):
                 mutate(site)
                 self.assertInvalid(site, reason)
 
+        legacy_ids = tuple(str(row["id"]) for row in legacy_pin("daily")["traders"])
+
+        def swap_seat(old: str, new: str):
+            def apply(site: Path) -> None:
+                payload = json.loads((site / "trader-books.json").read_text(encoding="utf-8"))
+                for row in payload["seats"]:
+                    if row.get("seat") == old:
+                        row["seat"] = new
+                        break
+                (site / "trader-books.json").write_text(json.dumps(payload), encoding="utf-8")
+
+            return apply
+
         restamped = [
             ("trader_books_presented_as_current", json_edit("trader-books.json", lambda t: t["publication"].__setitem__("trader_books_status", "fresh"))),
             ("trader_books_roster_incomplete", json_edit("trader-books.json", lambda t: t.__setitem__("seats", t["seats"][:13]))),
+            ("trader_books_roster_incomplete", json_edit("trader-books.json", lambda t: t["seats"].append(t["seats"][0]))),
+            ("trader_books_roster_incomplete", swap_seat(legacy_ids[0], "chart-guy")),
+            ("trader_books_roster_incomplete", json_edit("trader-books.json", lambda t: t["seats"].append({"seat": "unknown-trader-seat"}))),
+            ("trader_books_roster_incomplete", json_edit("trader-books.json", lambda t: t.__setitem__("seat_count", 99))),
             ("trader_books_dates_mismatch", json_edit("trader-books.json", lambda t: t.__setitem__("books_as_of", "2026-10-27T05:00:00-04:00"))),
             ("market_state_not_frozen_packet", json_edit("market-state.json", lambda m: m.__setitem__("generated_at", "2026-10-27T13:00:00Z"))),
             ("source_health_not_this_launch", json_edit("source-health.json", lambda h: h.__setitem__("launch_id", PREV_LAUNCH))),
@@ -451,6 +470,38 @@ class SiteTests(FixtureCase):
         (site / "index.html").write_text(html[:sec_start] + new_block + html[sec_end:], encoding="utf-8")
         self._restamp_site_digest(site)
         self.assertInvalid(site, "headlines_items_mismatch")
+
+    def test_fifteen_seat_previous_books_validate_when_chart_guy_present(self) -> None:
+        site = self.copy_site()
+        trader_path = site / "trader-books.json"
+        trader = json.loads(trader_path.read_text(encoding="utf-8"))
+        seats = {row["seat"] for row in trader["seats"]}
+        if "chart-guy" not in seats:
+            trader["seats"].append({"seat": "chart-guy"})
+        if "seat_count" in trader:
+            trader["seat_count"] = 15
+        trader_path.write_text(json.dumps(trader), encoding="utf-8")
+        self._restamp_site_digest(site)
+        rp.validate_research_site(site, self.contract_)
+
+    def test_trader_room_packet_must_match_authoritative_identity(self) -> None:
+        site = self.copy_site()
+        room = json.loads((site / "trader-room.json").read_text(encoding="utf-8"))
+        room["trades"] = [{"agent": sid} for sid in STANDING_SEATS]
+        room["seat_count"] = len(STANDING_SEATS)
+        room["available"] = True
+        (site / "trader-room.json").write_text(json.dumps(room), encoding="utf-8")
+        self._restamp_site_digest(site)
+        rp.validate_research_site(site, self.contract_)
+
+        site_bad = self.copy_site()
+        room_bad = json.loads((site_bad / "trader-room.json").read_text(encoding="utf-8"))
+        room_bad["trades"] = [{"agent": sid} for sid in STANDING_SEATS]
+        room_bad["seat_count"] = 14
+        room_bad["available"] = True
+        (site_bad / "trader-room.json").write_text(json.dumps(room_bad), encoding="utf-8")
+        self._restamp_site_digest(site_bad)
+        self.assertInvalid(site_bad, "trader_room_packet_incomplete")
 
 
 class DegradedHeadlinesTests(FixtureCase):

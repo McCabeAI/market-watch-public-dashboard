@@ -581,7 +581,8 @@ jobs:
           assert packet.get("run_id") == selected.name
           assert packet.get("run_id") == expected.get("run_id")
           assert packet.get("run_id") == packet.get("selection", {}).get("selected_run_id")
-          assert packet.get("seat_count") == 14
+          from scripts.trader_room_public import assert_published_trader_room
+          assert_published_trader_room(packet, selected)
           assert packet.get("selection", {}).get("manual_pointer") is False
           assert packet.get("selection", {}).get("mode") == "newest_complete_valid"
           PY

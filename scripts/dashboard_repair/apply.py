@@ -22,6 +22,7 @@ from scripts.dashboard_repair.source_health import build_source_health_snapshot,
 from scripts.dashboard_repair.sources_view import render_sources
 from scripts.dashboard_repair.tape import render_tape, tape_cards
 from scripts.macro_ingestion.contract import load_catalog
+from scripts.overnight.books import published_room_roster
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -143,44 +144,83 @@ button:focus-visible,.jump:focus-visible,summary:focus-visible,.brief-tab:focus-
 </style>
 """
 
-SCRIPT = """
+def repair_script() -> str:
+    from scripts.overnight.constants import STANDING_SEATS
+    from scripts.trader_room.agent_config import legacy_pin
+
+    legacy_ids = [str(row["id"]) for row in legacy_pin("daily")["traders"]]
+    standing_json = json.dumps(list(STANDING_SEATS))
+    legacy_json = json.dumps(legacy_ids)
+    return f"""
 <script id="dashboard-repair-script">
-(function () {
+(function () {{
   "use strict";
-  function go(code) {
+  var MW_STANDING_ROSTER = {standing_json};
+  var MW_LEGACY_ROSTER = {legacy_json};
+  function mwAuthoritativeRoom(packet) {{
+    if (!packet || packet.available !== true) return false;
+    var trades = packet.trades;
+    if (!trades || !trades.length) return false;
+    var seen = {{}};
+    var ids = [];
+    for (var i = 0; i < trades.length; i++) {{
+      var row = trades[i];
+      if (!row || typeof row.agent !== "string") return false;
+      var agent = row.agent;
+      if (!agent || agent !== agent.trim()) return false;
+      if (seen[agent]) return false;
+      seen[agent] = true;
+      ids.push(agent);
+    }}
+    var seatCount = packet.seat_count;
+    if (typeof seatCount !== "number" || seatCount % 1 !== 0) return false;
+    function matchesRoster(roster) {{
+      if (ids.length !== roster.length) return false;
+      var rosterSet = {{}};
+      for (var j = 0; j < roster.length; j++) rosterSet[roster[j]] = true;
+      for (var k = 0; k < ids.length; k++) {{
+        if (!rosterSet[ids[k]]) return false;
+      }}
+      return true;
+    }}
+    if (!matchesRoster(MW_STANDING_ROSTER) && !matchesRoster(MW_LEGACY_ROSTER)) return false;
+    if (seatCount !== ids.length) return false;
+    return true;
+  }}
+  function go(code) {{
     var page = document.getElementById("p-country");
     var country = document.getElementById("c-" + code);
     if (page) page.checked = true;
     if (country) country.checked = true;
     var section = document.getElementById("country-detail");
-    if (section && section.scrollIntoView) section.scrollIntoView({block: "start"});
+    if (section && section.scrollIntoView) section.scrollIntoView({{block: "start"}});
     var label = document.querySelector('label[for="c-' + code + '"]');
     if (label && label.focus) label.focus();
-  }
-  document.addEventListener("click", function (ev) {
+  }}
+  document.addEventListener("click", function (ev) {{
     var btn = ev.target.closest ? ev.target.closest(".country-jump") : null;
     if (!btn) return;
     ev.preventDefault();
     go(btn.getAttribute("data-country"));
-  });
+  }});
   var filter = document.getElementById("source-filter");
-  if (filter) {
-    filter.addEventListener("input", function () {
+  if (filter) {{
+    filter.addEventListener("input", function () {{
       var query = filter.value.toLowerCase();
-      document.querySelectorAll("[data-source-row]").forEach(function (row) {
+      document.querySelectorAll("[data-source-row]").forEach(function (row) {{
         row.hidden = query && row.textContent.toLowerCase().indexOf(query) < 0;
-      });
-    });
-  }
-  function escText(value) {
+      }});
+    }});
+  }}
+  function escText(value) {{
     return String(value === null || value === undefined ? "" : value)
       .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-  }
-  function debateCards(packet) {
-    return (packet.trades || []).map(function (row) {
-      var trade = row.trade || {};
-      var rebuttal = row.rebuttal || {};
+  }}
+  function debateCards(packet) {{
+    return (packet.trades || []).map(function (row) {{
+      var trade = row.trade || {{}};
+      var rebuttal = row.rebuttal || {{}};
       var rebuttalText = [rebuttal.trade_change, rebuttal.strongest_opponent_point].filter(Boolean).join(" ");
       return '<article class="debate-card" data-debate-card="1"><h3>' + escText(row.agent) + '</h3>'
         + '<p><b>' + escText(trade.instrument || "No trade") + '</b> ' + escText(trade.direction || "")
@@ -190,19 +230,18 @@ SCRIPT = """
         + (row.mispricing ? '<p><b>Mispricing</b> ' + escText(row.mispricing) + '</p>' : '')
         + (rebuttalText ? '<p><b>Rebuttal</b> ' + escText(rebuttalText) + '</p>' : '')
         + '<p>Confidence ' + escText(row.confidence === null || row.confidence === undefined ? "—" : row.confidence) + '</p></article>';
-    }).join("");
-  }
+    }}).join("");
+  }}
   var debate = document.getElementById("research-debate");
   if (!debate) return;
-  fetch("trader-room.json", {cache: "no-store"}).then(function (response) {
+  fetch("trader-room.json", {{cache: "no-store"}}).then(function (response) {{
     if (!response.ok) throw new Error("HTTP " + response.status);
     return response.json();
-  }).then(function (packet) {
-    var trades = packet && packet.trades;
-    if (!packet || packet.available !== true || packet.seat_count !== 14 || !trades || trades.length !== 14) {
+  }}).then(function (packet) {{
+    if (!mwAuthoritativeRoom(packet)) {{
       if (!debate.querySelector("[data-debate-card]")) debate.remove();
       return;
-    }
+    }}
     debate.hidden = false;
     var body = document.getElementById("research-debate-body");
     if (!body) return;
@@ -210,10 +249,10 @@ SCRIPT = """
       + ', evidence ' + escText(packet.as_of || "date not recorded")
       + '. Separate from accepted Trader Book decisions. Not a book instruction.</p><div class="debate-grid">'
       + debateCards(packet) + '</div>';
-  }).catch(function () {
+  }}).catch(function () {{
     if (!debate.querySelector("[data-debate-card]")) debate.remove();
-  });
-})();
+  }});
+}})();
 </script>
 """
 
@@ -374,7 +413,7 @@ def _debate_text(value: object) -> str:
 
 
 def render_debate_html(packet: dict[str, Any] | None) -> str:
-    """Read-only 14-seat debate. Incomplete packets produce no control."""
+    """Read-only authoritative-roster debate. Incomplete packets produce no control."""
     shell = (
         '<details id="research-debate" class="research-debate" hidden>'
         "<summary>View research debate</summary>"
@@ -382,20 +421,16 @@ def render_debate_html(packet: dict[str, Any] | None) -> str:
     )
     if packet is None:
         return shell
+    matched = published_room_roster(packet)
+    if matched is None:
+        return ""
     trades = packet.get("trades")
-    if (
-        packet.get("available") is not True
-        or packet.get("seat_count") != 14
-        or not isinstance(trades, list)
-        or len(trades) != 14
-    ):
+    if not isinstance(trades, list):
         return ""
     cards = []
     for row in trades:
-        if not isinstance(row, dict):
-            continue
-        trade = row.get("trade") if isinstance(row.get("trade"), dict) else {}
-        rebuttal = row.get("rebuttal") if isinstance(row.get("rebuttal"), dict) else {}
+        trade = row.get("trade") if isinstance(row, dict) and isinstance(row.get("trade"), dict) else {}
+        rebuttal = row.get("rebuttal") if isinstance(row, dict) and isinstance(row.get("rebuttal"), dict) else {}
         rebuttal_text = " ".join(
             part
             for part in (
@@ -405,20 +440,25 @@ def render_debate_html(packet: dict[str, Any] | None) -> str:
             if part
         )
         instrument = trade.get("instrument") or "No trade"
+        agent = row.get("agent") if isinstance(row, dict) else None
         cards.append(
             '<article class="debate-card" data-debate-card="1">'
-            f'<h3>{_debate_text(row.get("agent"))}</h3>'
+            f'<h3>{_debate_text(agent)}</h3>'
             f'<p><b>{_debate_text(instrument)}</b> {_debate_text(trade.get("direction") or "")}'
             + (f' · {_debate_text(trade.get("expression"))}' if trade.get("expression") else "")
             + (f' · {_debate_text(trade.get("horizon"))}' if trade.get("horizon") else "")
             + "</p>"
-            f'<p><b>Why</b> {_debate_text(row.get("entry_reason") or "")}</p>'
-            + (f'<p><b>Mispricing</b> {_debate_text(row.get("mispricing"))}</p>' if row.get("mispricing") else "")
+            f'<p><b>Why</b> {_debate_text(row.get("entry_reason") if isinstance(row, dict) else "")}</p>'
+            + (
+                f'<p><b>Mispricing</b> {_debate_text(row.get("mispricing"))}</p>'
+                if isinstance(row, dict) and row.get("mispricing")
+                else ""
+            )
             + (f'<p><b>Rebuttal</b> {_debate_text(rebuttal_text)}</p>' if rebuttal_text else "")
-            + f'<p>Confidence {_debate_text(row.get("confidence") if row.get("confidence") is not None else "—")}</p>'
+            + f'<p>Confidence {_debate_text(row.get("confidence") if isinstance(row, dict) and row.get("confidence") is not None else "—")}</p>'
             "</article>"
         )
-    if len(cards) != 14:
+    if len(cards) != len(matched):
         return ""
     return (
         '<details id="research-debate" class="research-debate">'
@@ -462,10 +502,11 @@ def _style_and_script(html: str) -> str:
         html = replace_element_containing(html, 'id="mw-theme-css"', theme_css())
     elif "</head>" in html:
         html = html.replace("</head>", theme_css() + "</head>", 1)
+    script = repair_script()
     if 'id="dashboard-repair-script"' in html:
-        html = replace_element_containing(html, 'id="dashboard-repair-script"', SCRIPT)
+        html = replace_element_containing(html, 'id="dashboard-repair-script"', script)
     elif "</body>" in html:
-        html = html.replace("</body>", SCRIPT + "</body>", 1)
+        html = html.replace("</body>", script + "</body>", 1)
     if 'data-dashboard-repair="applied"' not in html:
         html = html.replace("<body>", '<body data-dashboard-repair="applied">', 1)
     return html

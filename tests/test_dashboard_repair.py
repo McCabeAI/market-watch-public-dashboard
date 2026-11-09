@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import copy
 import gzip
+import json
 import os
 import subprocess
 import sys
@@ -14,7 +15,9 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from scripts.apply_six_economy_dashboard import apply_six_economy_dashboard
-from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html
+from scripts.dashboard_repair.apply import apply_dashboard_repair, load_scores, render_debate_html, repair_script
+from scripts.overnight.constants import STANDING_SEATS
+from scripts.trader_room.agent_config import legacy_pin
 from scripts.dashboard_repair.brief import ranked_impulses, ranked_moves
 from scripts.dashboard_repair.calendar_view import (
     _empsit_face_roles,
@@ -947,30 +950,111 @@ class ScheduleFetchTests(unittest.TestCase):
 
 
 class DebateTests(unittest.TestCase):
+    LEGACY_IDS = tuple(str(row["id"]) for row in legacy_pin("daily")["traders"])
+
+    def _trade_row(self, agent: str) -> dict:
+        return {
+            "agent": agent,
+            "entry_reason": "<script>alert(1)</script>",
+            "mispricing": "wide",
+            "confidence": 0.4,
+            "trade": {"instrument": "USDCAD", "direction": "long", "expression": "spot", "horizon": "2w"},
+            "rebuttal": {"trade_change": "cut size", "strongest_opponent_point": "already priced"},
+        }
+
+    def _packet(self, agents: tuple[str, ...] | list[str], **overrides) -> dict:
+        trades = [self._trade_row(agent) for agent in agents]
+        body = {
+            "available": True,
+            "seat_count": len(agents),
+            "run_id": "tr-test",
+            "as_of": "2026-10-22T12:00:00Z",
+            "trades": trades,
+        }
+        body.update(overrides)
+        return body
+
     def test_complete_debate_is_escaped_and_incomplete_debate_is_hidden(self):
-        trades = []
-        for index in range(14):
-            trades.append(
-                {
-                    "agent": f"seat-{index}",
-                    "entry_reason": "<script>alert(1)</script>",
-                    "mispricing": "wide",
-                    "confidence": 0.4,
-                    "trade": {"instrument": "USDCAD", "direction": "long", "expression": "spot", "horizon": "2w"},
-                    "rebuttal": {"trade_change": "cut size", "strongest_opponent_point": "already priced"},
-                }
-            )
-        html = render_debate_html(
-            {"available": True, "seat_count": 14, "run_id": "tr-test", "as_of": "2026-10-22T12:00:00Z", "trades": trades}
-        )
+        html = render_debate_html(self._packet(self.LEGACY_IDS))
         self.assertEqual(html.count('data-debate-card="1"'), 14)
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
         self.assertNotIn("<script>alert", html)
         self.assertIn("Rebuttal", html)
         self.assertIn("already priced", html)
         self.assertIn("Not a book instruction", html)
-        self.assertEqual(render_debate_html({"available": True, "seat_count": 13, "trades": trades[:13]}), "")
-        self.assertEqual(render_debate_html({"available": False, "seat_count": 14, "trades": trades}), "")
+
+        standing_html = render_debate_html(self._packet(STANDING_SEATS))
+        self.assertEqual(standing_html.count('data-debate-card="1"'), 15)
+
+        fake = [self._trade_row(f"seat-{i}") for i in range(14)]
+        self.assertEqual(render_debate_html({"available": True, "seat_count": 14, "trades": fake}), "")
+
+        cases = [
+            self._packet(self.LEGACY_IDS[:13]),
+            self._packet([*self.LEGACY_IDS[:-1], "chart-guy"]),
+            self._packet([*STANDING_SEATS, "unknown-trader"]),
+            self._packet([*STANDING_SEATS, STANDING_SEATS[0]]),
+            self._packet(self.LEGACY_IDS, seat_count=15),
+            self._packet(self.LEGACY_IDS, available=False),
+        ]
+        for packet in cases:
+            with self.subTest(packet=packet.get("seat_count")):
+                self.assertEqual(render_debate_html(packet), "")
+
+    def test_repair_script_embeds_rosters_and_client_validation(self):
+        src = repair_script()
+        self.assertIn(json.dumps(list(STANDING_SEATS)), src)
+        legacy = [str(row["id"]) for row in legacy_pin("daily")["traders"]]
+        self.assertIn(json.dumps(legacy), src)
+        self.assertNotIn("seat_count !== 14", src)
+        self.assertNotIn("trades.length !== 14", src)
+        self.assertIn("function mwAuthoritativeRoom(packet)", src)
+
+        node = shutil_which("node")
+        if node is None:
+            self.skipTest("node not on PATH")
+
+        legacy_ids = list(self.LEGACY_IDS)
+        standing_ids = list(STANDING_SEATS)
+        sniff = """
+const src = process.argv[1];
+const legacy = JSON.parse(process.argv[2]);
+const standing = JSON.parse(process.argv[3]);
+const block = src.split("function mwAuthoritativeRoom(packet)")[1].split("function go(code)")[0];
+eval(
+  "var MW_STANDING_ROSTER = standing; var MW_LEGACY_ROSTER = legacy; function mwAuthoritativeRoom(packet)" + block
+);
+function pack(agents, extra) {
+  var p = Object.assign({available: true, seat_count: agents.length, trades: agents.map(function (a) { return {agent: a}; })}, extra || {});
+  return p;
+}
+const okLegacy = mwAuthoritativeRoom(pack(legacy));
+const okLegacyRev = mwAuthoritativeRoom(pack(legacy.slice().reverse()));
+const okStanding = mwAuthoritativeRoom(pack(standing));
+const okStandingRev = mwAuthoritativeRoom(pack(standing.slice().reverse()));
+const bad = [
+  mwAuthoritativeRoom(pack(legacy.slice(0, 13))),
+  mwAuthoritativeRoom(pack(legacy.slice(0, -1).concat(["chart-guy"]))),
+  mwAuthoritativeRoom(pack(standing.concat(["unknown-trader"]))),
+  mwAuthoritativeRoom(pack(standing.concat([standing[0]]))),
+  mwAuthoritativeRoom(pack(legacy, {seat_count: 15})),
+  mwAuthoritativeRoom(pack(legacy, {available: false})),
+];
+if (!okLegacy || !okLegacyRev || !okStanding || !okStandingRev || bad.some(Boolean)) process.exit(1);
+"""
+        proc = subprocess.run(
+            [node, "-e", sniff, src, json.dumps(legacy_ids), json.dumps(standing_ids)],
+            capture_output=True,
+            text=True,
+            cwd=ROOT,
+        )
+        self.assertEqual(proc.returncode, 0, proc.stderr or proc.stdout)
+
+
+def shutil_which(cmd: str) -> str | None:
+    from shutil import which
+
+    return which(cmd)
 
 
 class DashboardPresentationTests(unittest.TestCase):
