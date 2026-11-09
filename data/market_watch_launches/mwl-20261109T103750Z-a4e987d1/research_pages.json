@@ -1,0 +1,299 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-09T12:19:31+00:00",
+      "release_sha256": "8c77315197bc6aa1d9f9f90853065e5b661453ffceebd76df1b0835e80f67fc8",
+      "run_attempt": "2",
+      "run_id": "42602152627",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42602152627",
+      "site_sha256": "36de4607dbb4b66ae5906ef3876dd714fdcfa2ace3f20ae5585486bfea39d684"
+    }
+  ],
+  "launch_id": "mwl-20261109T103750Z-a4e987d1",
+  "launch_terminal": false,
+  "packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-06T07:35:42.744502-05:00",
+      "as_of": "2026-11-06T06:25:49.281876-05:00",
+      "books_run_id": "overnight-20261106",
+      "overnight_run_id": "overnight-20261106",
+      "packet_sha256": "57cbe09b78e90e4d87a1fc08764ce3f0983ef627fa58c168f36bd2db09081ac8"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-09T05:37:50.499948-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-09T05:37:50.499948-05:00",
+      "counts": {
+        "considered": 21,
+        "eligible": 5,
+        "rejected": {
+          "unverified_source": 16
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Alphabet Mulls Asia Bond Sale as AI Fears Fuel Volatility",
+          "id": "news:cd9973916764182f",
+          "published_at": "2026-11-08T17:37:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-09/alphabet-mulls-asia-bond-sale-as-ai-fears-fuel-global-volatility",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields steady as investors await more economic data",
+          "id": "news:fbe58c95619caee4",
+          "published_at": "2026-11-09T03:42:37-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/09/us-treasurys-bonds-yields.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Goldman says 'the pieces are in place' for a shift in Treasury yields, global 10-years",
+          "id": "news:66806b129bb39da2",
+          "published_at": "2026-11-09T02:19:07-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/09/goldman-treasury-yields-bonds.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "reuters_credit",
+          "headline": "Asian stocks bounce as AI, Mideast jitters recede; dollar firm on Fed bets",
+          "id": "news:fef3a53fba442cd7",
+          "published_at": "2026-11-08T11:00:00-05:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/world/asia-pacific/global-markets-global-markets-2026-11-09/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "India\u2019s Capital Chokes on Diwali Smog as Data Blip Masks Crisis",
+          "id": "news:87b9a20aa42b7d71",
+          "published_at": "2026-11-08T18:04:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-09/india-s-capital-chokes-on-diwali-smog-as-data-blip-masks-crisis",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-09T05:37:50.499948-05:00",
+      "news_family_digest": "99c8d711933dfd69f63e192cb5b0db1fd57f3897200506602a0e5d3c02e75106",
+      "packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-09T05:37:50.499948-05:00",
+        "start": "2026-11-08T05:37:50.499948-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/freeze_binding.json",
+        "sha256": "10e8262c8d6b541bdaf55a8a08d6b5e117e66d37f9f50fe8bdb37e60a2386af3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/remote_freeze.json",
+        "sha256": "e508af2d392acb924a2365fb02d6f7f563996ca0e50475cca75a00a10ea283a2"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/artifacts/00_authenticate.json",
+        "sha256": "ea27bb3fb0ab6b2f1e3adcf7aa7fe3976cf10c99be52c4aa1dab4c67b5807cfb"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/artifacts/01_ingest.json",
+        "sha256": "e6a19d5b5959f99520125cb49840a3d3e04c0133243b5f365c0b2be1f957362a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/artifacts/02_acquire.json",
+        "sha256": "faa9f6a483a802ea797835164df49ae09d9490a54a2f79b9f5931002bdde03e5"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/artifacts/03_quality_gate.json",
+        "sha256": "fb54b66cd77e25a6c31d3aad1005a7ca588121167c94dae64634f25164557f2a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/artifacts/04_freeze.json",
+        "sha256": "5c66f9d822e846fe2f2844cafab770f5d00e840e9b97720324d80699c70fd353"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/temperature_scores.json",
+        "sha256": "54120e5c9e869bdef15f940f2f59de6bb78cdc004d92f49febf56c2df13eb13f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/history/ca.json",
+        "sha256": "4550a1c46e623fddb40aa8a658ee80bde32d36fa4471a7191574b44fa9f23405"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/history/ea.json",
+        "sha256": "4ff434b23ffcd9f4b9c46f12e89e2fecd988ee6b1945404093fd90a2bf02ab3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/history/jp.json",
+        "sha256": "9ee23b32ee992020ac34fdab2a62fbf7b603264e89b9d1cc11ffaf6cfbbc19bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261109T103750Z-a4e987d1/lineage/history/us.json",
+        "sha256": "77ac84b396934b4bfff16593c677476dd1fa7e074a2e37c1b4e690ff418d49c9"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261109/reviews/review-001/evidence_snapshot.json",
+        "sha256": "8a7671d75cc84b0470dc27b0df5613cbcd5b708823a6c0681681e89b48630891"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "eeaac5470b89639eafe57e24f4406243f592b84a7b9b5c4df119932cb44015cd"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261106/assembled_dataset.json",
+        "sha256": "0fe09e8bc0f8f119ef69175915d72fc8317732fb2d20ec3cfa61fd0f3226bef9"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "67065d34b519f02a8073bfc1232e27bd3adf0f882a77aa701bf9c3ee32682e91"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "0a452648f3be7da7924f8bc6964273061a6771095998848b3d8ef8bd307add88"
+      }
+    ],
+    "launch_id": "mwl-20261109T103750Z-a4e987d1",
+    "market_state": {
+      "as_of": "2026-11-09T10:56:13Z",
+      "digest": "299cae6b262a4a8692fa9721a7afe04306e71c29fd77d74afcca07cd7b7c92cd",
+      "generated_at": "2026-11-09T10:56:13Z"
+    },
+    "news": {
+      "age_label": "71 h before this freeze",
+      "as_of": "2026-11-06T06:25:49.281876-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261106",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261109",
+    "packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Consumer.income",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "df5478d8409c8ccd0d9caa49a145b16d241e61c8",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 6,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-09T10:37:50Z",
+      "inputs_last_ingested_at": "2026-11-09T10:37:50Z",
+      "score_state_sha256": "54120e5c9e869bdef15f940f2f59de6bb78cdc004d92f49febf56c2df13eb13f"
+    },
+    "session_date": "2026-11-09",
+    "site_sha256": "36de4607dbb4b66ae5906ef3876dd714fdcfa2ace3f20ae5585486bfea39d684",
+    "source_commit": "1490420829146a4801c647c5f74c215b2c064167",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261109",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "8c77315197bc6aa1d9f9f90853065e5b661453ffceebd76df1b0835e80f67fc8",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-09",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
