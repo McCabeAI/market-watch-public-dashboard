@@ -485,6 +485,10 @@ def collect_inputs(
     if set(families) != set(EVIDENCE_FAMILIES):
         raise StageError("collect did not produce every evidence family")
 
+    from scripts.dashboard_repair.calendar_packet import collect_economic_calendar
+
+    economic_calendar = collect_economic_calendar(stamp, root=root)
+
     snapshot = {
         "schema_version": SCHEMA_VERSION,
         "overnight_run_id": run_id,
@@ -492,6 +496,7 @@ def collect_inputs(
         "as_of": isoformat(stamp),
         "offline": offline,
         "families": families,
+        "economic_calendar": economic_calendar,
         "temperature_scores": scores,
         "preservation": {
             "dashboard_patches_rewritten": False,
