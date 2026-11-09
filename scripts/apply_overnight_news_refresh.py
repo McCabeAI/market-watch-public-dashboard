@@ -12,6 +12,11 @@ from scripts.overnight.accepted_news import (
     load_accepted_public_news,
     morning_dataset_from_public_news,
 )
+from scripts.overnight.news_commentary_state import (
+    MODE as COMMENTARY_MISSING_MODE,
+    commentary_missing_news_html,
+    classify_news_commentary,
+)
 from scripts.overnight.public_prose import public_research_summary
 from scripts.overnight.research_publishability import audit_agent_research
 
@@ -49,10 +54,12 @@ def _load_dataset(root: Path, dataset_path: Path | None = None) -> dict[str, Any
         rel = latest.get("assembled_dataset")
         if rel:
             path = root / rel
-            if path.is_file():
-                dataset = json.loads(path.read_text(encoding="utf-8"))
-                if dataset.get("type") == "OVERNIGHT_MORNING_DATASET":
-                    return dataset
+            if not path.is_file():
+                raise ValueError(f"assembled dataset missing: {path}")
+            dataset = json.loads(path.read_text(encoding="utf-8"))
+            if dataset.get("type") == "OVERNIGHT_MORNING_DATASET":
+                return dataset
+            raise ValueError("assembled dataset type mismatch")
 
     artifact = load_accepted_public_news(root)
     if artifact is None:
@@ -441,6 +448,24 @@ def _raw_publication_row(
 
 def explain_display_slots(dataset: dict[str, Any], *, cutoff: datetime) -> list[dict[str, Any]]:
     """Explain webpage slot membership using the same slice math as the HTML builders."""
+    try:
+        if classify_news_commentary(dataset) == COMMENTARY_MISSING_MODE:
+            return [
+                {
+                    "headline": None,
+                    "url": None,
+                    "source": None,
+                    "published_at": None,
+                    "id": None,
+                    "family": None,
+                    "outcome": COMMENTARY_MISSING_MODE,
+                    "reason": "empty_research_supplement",
+                    "cap": None,
+                    "slot": None,
+                }
+            ]
+    except ValueError:
+        pass
     rows: list[dict[str, Any]] = []
     research = dataset.get("agent_research") or {}
     start_24 = cutoff - timedelta(hours=24)
@@ -740,7 +765,19 @@ def explain_display_slots(dataset: dict[str, Any], *, cutoff: datetime) -> list[
     return rows
 
 
-def _rollup_mode(dated_items: list[dict[str, Any]], undated_items: list[dict[str, Any]], cutoff: datetime) -> str:
+def _rollup_mode(
+    dated_items: list[dict[str, Any]],
+    undated_items: list[dict[str, Any]],
+    cutoff: datetime,
+    *,
+    dataset: dict[str, Any] | None = None,
+) -> str:
+    if dataset is not None:
+        try:
+            if classify_news_commentary(dataset) == COMMENTARY_MISSING_MODE:
+                return COMMENTARY_MISSING_MODE
+        except ValueError:
+            pass
     start = cutoff - timedelta(days=7)
     digest = [row for row in dated_items if start <= row["_published"] <= cutoff]
     if digest:
@@ -757,6 +794,27 @@ def _assert_refresh_output(
     mode: str,
 ) -> None:
     scan_date = f"{cutoff.day} {cutoff.strftime('%b')} {cutoff.year}"
+    if mode == COMMENTARY_MISSING_MODE:
+        from scripts.overnight.news_commentary_state import WARNING
+
+        if out.count(WARNING) != 1:
+            raise ValueError("missing-mode warning sentence count invalid")
+        if "Last refreshed" in out[out.index(LAST24_START) : out.index(ROLLUP_END, out.index(LAST24_START))]:
+            raise ValueError("missing-mode refresh must not stamp Last refreshed")
+        forbidden = (
+            'class="driver-card"',
+            '<details class="story"',
+            'class="last24-item"',
+            "7-Day Quick Digest",
+            "Accepted Overnight Research · Age Unverified",
+            UNDATED_PROVENANCE_ATTR,
+            "Top Market Drivers",
+        )
+        region = out[out.index(LAST24_START) : out.index(ROLLUP_END, out.index(LAST24_START))]
+        for needle in forbidden:
+            if needle in region:
+                raise ValueError(f"missing-mode refresh must not include {needle}")
+        return
     if f"Last refreshed {scan_date}" not in out:
         raise ValueError("live Last 24 Hours timestamp missing after refresh")
     driver_count = out.count('class="driver-card"')
@@ -779,6 +837,16 @@ def _assert_refresh_output(
 
 def apply_overnight_news_refresh(html: str, dataset: dict[str, Any]) -> str:
     cutoff = _cutoff(dataset)
+    commentary_class = classify_news_commentary(dataset)
+    if commentary_class == COMMENTARY_MISSING_MODE:
+        if LAST24_START not in html or ROLLUP_START not in html or ROLLUP_END not in html:
+            raise ValueError("news section anchors changed")
+        last_start = html.index(LAST24_START)
+        rollup_end = html.index(ROLLUP_END, last_start)
+        replacement = commentary_missing_news_html(dataset)
+        out = html[:last_start] + replacement + html[rollup_end:]
+        _assert_refresh_output(out, cutoff=cutoff, mode=COMMENTARY_MISSING_MODE)
+        return out
     audit = audit_agent_research(dataset.get("agent_research"))
     if audit.renderable == 0:
         raise ValueError("accepted overnight research has no renderable items")
@@ -792,7 +860,7 @@ def apply_overnight_news_refresh(html: str, dataset: dict[str, Any]) -> str:
     rollup_start = html.index(ROLLUP_START, last_start)
     rollup_end = html.index(ROLLUP_END, rollup_start)
 
-    mode = _rollup_mode(dated_items, undated_items, cutoff)
+    mode = _rollup_mode(dated_items, undated_items, cutoff, dataset=dataset)
     if mode == "empty":
         raise ValueError("accepted overnight research has no items in the rolling 7-day window")
 
@@ -815,6 +883,12 @@ def main(argv: list[str] | None = None) -> int:
     current = args.html.read_text(encoding="utf-8")
     updated = apply_overnight_news_refresh(current, dataset)
     args.html.write_text(updated, encoding="utf-8")
+    if classify_news_commentary(dataset) == COMMENTARY_MISSING_MODE:
+        print(
+            f"Trader Room news commentary missing for run {dataset['overnight_run_id']}; "
+            "dashboard news section shows explicit unavailable state"
+        )
+        return 0
     cutoff = _cutoff(dataset)
     audit = audit_agent_research(dataset.get("agent_research"))
     print(

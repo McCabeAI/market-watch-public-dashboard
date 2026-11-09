@@ -52,6 +52,8 @@ on:
       - "scripts/harvest_au_pmi.py"
       - "tests/test_sync_news_summary.py"
       - "tests/test_overnight_news_refresh.py"
+      - "tests/test_news_commentary_missing.py"
+      - "scripts/overnight/news_commentary_state.py"
       - "tests/test_research_publishability.py"
       - "tests/test_temperature_scores.py"
       - "tests/test_temperature_level.py"
@@ -319,21 +321,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_overnight_news_refresh
+          PYTHONPATH=. python -m unittest tests.test_overnight_news_refresh tests.test_news_commentary_missing
           PYTHONPATH=. python scripts/apply_overnight_news_refresh.py _site/index.html
           if grep -Fq 'Last refreshed 18 Sep 2026' _site/index.html; then
             echo "stale Sep 18 Last 24 Hours survived accepted overnight news refresh"
             exit 1
           fi
           PYTHONPATH=. python - <<'PY'
-          import html as html_lib
           from pathlib import Path
-          from scripts.overnight.accepted_news import (
-              effective_public_news_context,
-              last_refreshed_label,
-              parse_visible_last_refreshed,
-          )
-          from scripts.overnight.clock import parse_iso
+          from scripts.overnight.accepted_news import effective_public_news_context
+          from scripts.overnight.news_commentary_state import assert_built_news_matches_context
           from scripts.overnight.store import OvernightStore
 
           html = Path("_site/index.html").read_text(encoding="utf-8")
@@ -347,22 +344,7 @@ jobs:
           context = effective_public_news_context(store, dataset)
           if context is None:
               raise SystemExit("missing accepted public news context for Pages HTML assertion")
-          cutoff = parse_iso(context["as_of"])
-          visible = parse_visible_last_refreshed(html)
-          if visible != cutoff.date():
-              raise SystemExit(
-                  f"visible Last refreshed {visible} != accepted news {cutoff.date()}"
-              )
-          if last_refreshed_label(cutoff) not in html:
-              raise SystemExit("accepted news Last refreshed label missing from HTML")
-          plain = html_lib.unescape(html)
-          headlines = [
-              str(item.get("headline") or "").strip()
-              for item in (context.get("news") or [])
-              if isinstance(item, dict)
-          ]
-          if not any(headline and headline in plain for headline in headlines):
-              raise SystemExit("accepted public news headlines missing from built HTML")
+          assert_built_news_matches_context(html, context, require_front_alert=False)
           PY
 
       - name: Sync news summary metadata
@@ -550,14 +532,25 @@ jobs:
           grep -Fq 'Trader Book · paper P&L' _site/index.html
           grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
           grep -Fq 'Live 1–100 Score Board' _site/index.html
-          if grep -Fq '7-Day Quick Digest' _site/index.html; then
-            echo "dated 7-Day Quick Digest present"
-          elif grep -Fq 'Accepted Overnight Research · Age Unverified' _site/index.html; then
-            echo "undated age-unverified research digest present"
-          else
-            echo "missing dated or undated news digest section"
-            exit 1
-          fi
+          PYTHONPATH=. python - <<'PY'
+          from pathlib import Path
+          from scripts.overnight.accepted_news import effective_public_news_context
+          from scripts.overnight.news_commentary_state import assert_built_news_matches_context
+          from scripts.overnight.store import OvernightStore
+
+          html = Path("_site/index.html").read_text(encoding="utf-8")
+          store = OvernightStore(root=Path("."))
+          dataset = None
+          latest = store.read_latest()
+          if latest and latest.get("overnight_run_id"):
+              run_id = latest["overnight_run_id"]
+              if store.has_artifact(run_id, "assembled_dataset.json"):
+                  dataset = store.read_artifact(run_id, "assembled_dataset.json")
+          context = effective_public_news_context(store, dataset)
+          if context is None:
+              raise SystemExit("missing accepted public news context for trader-book HTML assertion")
+          assert_built_news_matches_context(html, context, require_front_alert=True)
+          PY
           grep -Fq 'Market Data · official snapshot' _site/index.html
 
       - name: Add Trader Room tab

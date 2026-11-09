@@ -343,11 +343,19 @@ def render_edition_banner(release: dict[str, Any]) -> str:
             items.append(
                 "Current verified headlines: unavailable (frozen news collection failed verification)."
             )
-        items.append(
-            f"Previous accepted analysis (as of {_esc(format_et(news.get('as_of')))}, "
-            f"{_esc(news.get('age_label') or 'age not recorded')}): news digest, desk summary and research "
-            "from the last accepted cycle. Today's analysis is published with the final edition after acceptance."
-        )
+        if news.get("mode") == "current-cycle-news-commentary-missing":
+            items.append(
+                f"Previous accepted analysis (as of {_esc(format_et(news.get('as_of')))}, "
+                f"{_esc(news.get('age_label') or 'age not recorded')}): the previous accepted cycle "
+                "did not publish a Trader Room news write-up. Today's analysis is published with the "
+                "final edition after acceptance."
+            )
+        else:
+            items.append(
+                f"Previous accepted analysis (as of {_esc(format_et(news.get('as_of')))}, "
+                f"{_esc(news.get('age_label') or 'age not recorded')}): news digest, desk summary and research "
+                "from the last accepted cycle. Today's analysis is published with the final edition after acceptance."
+            )
         scores = release.get("scores") or {}
         items.append(
             "Scores: provisional Stage 04 state pending acceptance; inputs last ingested "
