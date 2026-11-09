@@ -1,25 +1,30 @@
 {
   "allowable_actions": [
     "OPEN",
-    "ADD",
     "HOLD",
-    "REDUCE",
-    "HEDGE",
-    "CLOSE",
     "NO_TRADE"
   ],
   "base_packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
   "calibration": {
-    "average_holding_seconds": null,
-    "average_realized_pnl_usd": null,
+    "average_holding_seconds": 2347537,
+    "average_realized_pnl_usd": 687992.54,
     "breakeven": 0,
-    "by_asset_class": {},
-    "closed_trade_count": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": 1421250.0
+      },
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": -45264.93
+      }
+    },
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": 1421250.0,
+        "count": 1,
+        "hit_rate": 1.0
       },
       "low": {
         "average_pnl_usd": null,
@@ -27,15 +32,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": -45264.93,
+        "count": 1,
+        "hit_rate": 0.0
       }
     },
-    "losses": 0,
+    "losses": 1,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 0.0,
-    "wins": 0
+    "total_realized_pnl_usd": 1375985.07,
+    "wins": 1
   },
   "cash_capital_usd": 1000000000,
   "conflicts": {
@@ -43,7 +48,7 @@
     "rebuttals": [],
     "source": "overnight_scheduled_review"
   },
-  "drawdown_usd": 114.92,
+  "drawdown_usd": 178.29,
   "evidence": {
     "as_of": "2026-11-09T05:37:50.499948-05:00",
     "known_gaps": [
@@ -7357,7 +7362,7 @@
   },
   "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
   "evidence_packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
-  "funded_draw_usd": 550000.0,
+  "funded_draw_usd": 0.0,
   "funding_context": {
     "authority": "Official NY Fed SOFR is the realized funding-rate authority. SR3 is forward context only.",
     "forward_summaries": {
@@ -8204,7 +8209,7 @@
     "status": "ok"
   },
   "gross_notional_limit_usd": 1000000000,
-  "gross_utilization_usd": 55000000.0,
+  "gross_utilization_usd": 0,
   "independence": {
     "chatgpt_ingest": true,
     "sees_other_current_pm_decisions": false,
@@ -20488,16 +20493,25 @@
       }
     ],
     "calibration": {
-      "average_holding_seconds": null,
-      "average_realized_pnl_usd": null,
+      "average_holding_seconds": 2347537,
+      "average_realized_pnl_usd": 687992.54,
       "breakeven": 0,
-      "by_asset_class": {},
-      "closed_trade_count": 0,
+      "by_asset_class": {
+        "rates": {
+          "count": 1,
+          "total_realized_pnl_usd": 1421250.0
+        },
+        "spot_fx": {
+          "count": 1,
+          "total_realized_pnl_usd": -45264.93
+        }
+      },
+      "closed_trade_count": 2,
       "conviction_buckets": {
         "high": {
-          "average_pnl_usd": null,
-          "count": 0,
-          "hit_rate": null
+          "average_pnl_usd": 1421250.0,
+          "count": 1,
+          "hit_rate": 1.0
         },
         "low": {
           "average_pnl_usd": null,
@@ -20505,15 +20519,15 @@
           "hit_rate": null
         },
         "medium": {
-          "average_pnl_usd": null,
-          "count": 0,
-          "hit_rate": null
+          "average_pnl_usd": -45264.93,
+          "count": 1,
+          "hit_rate": 0.0
         }
       },
-      "losses": 0,
+      "losses": 1,
       "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-      "total_realized_pnl_usd": 0.0,
-      "wins": 0
+      "total_realized_pnl_usd": 1375985.07,
+      "wins": 1
     },
     "capital_owner": {
       "mandate": "synthesis",
@@ -20521,7 +20535,7 @@
     },
     "consequence": {
       "best_trader_net_pnl_usd": 226877.97,
-      "best_trader_outearn_streak": 0,
+      "best_trader_outearn_streak": null,
       "best_trader_seat": "value-guy",
       "capital_normalized": false,
       "competition_cohort_size": 4,
@@ -20549,111 +20563,85 @@
       "learning_status": "compliant",
       "repeated_error_escalations": []
     },
-    "learning_obligations": [],
-    "memory_context_sha256": "f6a21b42cf6c02767b3c994e481e660e296ec973b1399c899dc8c3d182cc2a65",
-    "open_positions": [
+    "learning_obligations": [
       {
-        "asset_class": "rates",
-        "conviction": 68,
-        "current_notional_usd": 50000000.0,
-        "entry_mark": 3.4,
-        "harvest": {
-          "asset_class": "rates",
-          "catalyst_by": null,
-          "catalyst_logic": null,
-          "current_mark": 3.0425,
-          "current_notional_usd": 50000000.0,
-          "entry_mark": 3.4,
-          "expected_mark_direction": null,
-          "framing": null,
-          "full_size_hold_requires_reunderwrite": false,
-          "giveback_usd": 0.0,
-          "holding_seconds": 4351889,
-          "horizon_elapsed_fraction": null,
-          "horizon_status": "unspecified",
-          "instrument": "CORRA_2027H-Z",
-          "intended_horizon_days": null,
-          "mae_usd": -118750.0,
-          "mechanical_order": false,
-          "mfe_usd": 1394375.0,
-          "move_versus_entry_intent": "unknown",
-          "order_policy": "review_only",
-          "position_id": "pm-chatgpt-595561a1b90f",
-          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "realization_logic": null,
-          "realized_pnl_usd": 1215625.0,
-          "recorded_mfe_usd": 737500.0,
-          "retained_mfe_fraction": 1.0,
-          "review_move_bp": null,
-          "review_required": false,
-          "review_threshold_usd": 5000000.0,
-          "review_triggers": [],
-          "risk_context": "legacy_or_spot",
-          "side": "long",
-          "total_pnl_usd": 1394375.0,
-          "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
-          "unrealized_pnl_usd": 178750.0
-        },
-        "instrument": "CORRA_2027H-Z",
-        "opened_at": "2026-09-19T23:10:54.130509-04:00",
-        "position_id": "pm-chatgpt-595561a1b90f",
-        "risk_capital_usd": 500000.0,
-        "side": "long",
-        "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+        "kind": "postmortem",
+        "obligation_id": "pmd-792fc0fb7c9b",
+        "owner_id": "chatgpt",
+        "owner_type": "pm",
+        "reference": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
+        "source_run_id": "overnight-20261109"
       },
       {
-        "asset_class": "spot_fx",
-        "conviction": 50,
-        "current_notional_usd": 5000000.0,
-        "entry_mark": 1.13,
-        "harvest": {
-          "asset_class": "spot_fx",
-          "catalyst_by": null,
-          "catalyst_logic": "Continued repricing of dollar political/geopolitical demand and Europe's energy outlook over coming weeks. Confirmation may support later resizing but is not an entry prerequisite. Election reporting alone does not prove peace or lower deficits.",
-          "current_mark": 1.1224,
-          "current_notional_usd": 5000000.0,
-          "entry_mark": 1.1267,
-          "expected_mark_direction": "higher",
-          "framing": "swing",
-          "full_size_hold_requires_reunderwrite": false,
-          "giveback_usd": null,
-          "holding_seconds": 342597,
-          "horizon_elapsed_fraction": 0.0472,
-          "horizon_status": "within",
-          "instrument": "EURUSD",
-          "intended_horizon_days": 84,
-          "mae_usd": -19082.28,
-          "mechanical_order": false,
-          "mfe_usd": 0.0,
-          "move_versus_entry_intent": "against_intent",
-          "order_policy": "review_only",
-          "position_id": "pm-chatgpt-aef5bacd43d3",
-          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "realization_logic": "Realize through EURUSD appreciation toward the judgmental1.1356\u20131.1472 range. Review progress at1.1356; use subsequent shared evidence for any harvest, resize or exit. Re-underwrite by84days rather than indefinitely extending the thesis.",
-          "realized_pnl_usd": 0.0,
-          "recorded_mfe_usd": 0.0,
-          "retained_mfe_fraction": null,
-          "review_move_bp": null,
-          "review_required": false,
-          "review_threshold_usd": 100000.0,
-          "review_triggers": [],
-          "risk_context": "legacy_or_spot",
-          "side": "long",
-          "total_pnl_usd": -19082.28,
-          "trade_id": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3",
-          "unrealized_pnl_usd": -19082.28
-        },
-        "instrument": "EURUSD",
-        "opened_at": "2026-11-05T08:52:26.537704-05:00",
-        "position_id": "pm-chatgpt-aef5bacd43d3",
-        "risk_capital_usd": 50000.0,
-        "side": "long",
-        "trade_id": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3"
+        "kind": "postmortem",
+        "obligation_id": "pmd-b6d58713e98c",
+        "owner_id": "chatgpt",
+        "owner_type": "pm",
+        "reference": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3",
+        "source_run_id": "overnight-20261109"
       }
     ],
+    "memory_context_sha256": "347566a1a50b4bc697fc3b7792aae61a4672779571a53be7d5fadb391b1da0a1",
+    "open_positions": [],
     "owner_id": "chatgpt",
     "owner_type": "pm",
-    "postmortems_due": [],
+    "postmortems_due": [
+      {
+        "created_at": "2026-11-09T08:07:18.429835-05:00",
+        "created_run_id": "overnight-20261109",
+        "facts": {
+          "asset_class": "spot_fx",
+          "closed_at": "2026-11-09T08:07:18.429835-05:00",
+          "conviction": 50,
+          "entry_mark": 1.13,
+          "exit_mark": 1.12,
+          "exit_reason_category": null,
+          "expression": null,
+          "holding_duration_seconds": 342891,
+          "instrument": "EURUSD",
+          "invalidation": "Exit/review on a daily close at or below1.1179; reconsider if renewed energy disruption and renewed dollar demand invalidate the relief thesis. A gap toward1.113 would exceed the planned exit loss. No stop guarantees a loss cap.",
+          "opened_at": "2026-11-05T08:52:26.537704-05:00",
+          "rationale_status": "present",
+          "realized_pnl_usd": -45264.93,
+          "side": "long",
+          "thesis": null
+        },
+        "postmortem_id": "pmd-b6d58713e98c",
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3"
+      },
+      {
+        "created_at": "2026-11-09T08:07:18.429835-05:00",
+        "created_run_id": "overnight-20261109",
+        "facts": {
+          "asset_class": "rates",
+          "closed_at": "2026-11-09T08:07:18.429835-05:00",
+          "conviction": 68,
+          "entry_mark": 3.4,
+          "exit_mark": 2.99,
+          "exit_reason_category": null,
+          "expression": {
+            "curve_id": "CORRA",
+            "expiries": [
+              "2027-03",
+              "2027-06",
+              "2027-09",
+              "2027-12"
+            ],
+            "type": "futures_strip_average"
+          },
+          "holding_duration_seconds": 4352184,
+          "instrument": "CORRA_2027H-Z",
+          "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+          "opened_at": "2026-09-19T23:10:54.130509-04:00",
+          "rationale_status": "present",
+          "realized_pnl_usd": 1421250.0,
+          "side": "long",
+          "thesis": null
+        },
+        "postmortem_id": "pmd-792fc0fb7c9b",
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+      }
+    ],
     "profit_harvest": {
       "mechanical_orders": false,
       "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -20667,11 +20655,34 @@
       "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
       "schema_version": 1
     },
-    "recent_closed_trades": [],
+    "recent_closed_trades": [
+      {
+        "asset_class": "rates",
+        "closed_at": "2026-11-09T08:07:18.429835-05:00",
+        "conviction": 68,
+        "holding_duration_seconds": 4352184,
+        "instrument": "CORRA_2027H-Z",
+        "opened_at": "2026-09-19T23:10:54.130509-04:00",
+        "realized_pnl_usd": 1421250.0,
+        "side": "long",
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+      },
+      {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-09T08:07:18.429835-05:00",
+        "conviction": 50,
+        "holding_duration_seconds": 342891,
+        "instrument": "EURUSD",
+        "opened_at": "2026-11-05T08:52:26.537704-05:00",
+        "realized_pnl_usd": -45264.93,
+        "side": "long",
+        "trade_id": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3"
+      }
+    ],
     "recent_performance_reflections": [],
     "reflections_due": []
   },
-  "memory_context_sha256": "f6a21b42cf6c02767b3c994e481e660e296ec973b1399c899dc8c3d182cc2a65",
+  "memory_context_sha256": "347566a1a50b4bc697fc3b7792aae61a4672779571a53be7d5fadb391b1da0a1",
   "opportunity_instruction": "Scan the full frozen market evidence in this packet. Trader Room decisions are an input and a challenge set. The permitted opportunity universe is that frozen evidence. Originate independent trades when the packet can mark and risk them. Emit a small opportunity_scan of the best ideas you independently considered.",
   "overnight_books": {
     "as_of": "2026-11-09T05:37:50.499948-05:00",
@@ -23086,7 +23097,63 @@
   },
   "overnight_run_id": "overnight-20261109",
   "pm_id": "chatgpt",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-09T08:07:18.429835-05:00",
+      "created_run_id": "overnight-20261109",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-09T08:07:18.429835-05:00",
+        "conviction": 50,
+        "entry_mark": 1.13,
+        "exit_mark": 1.12,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 342891,
+        "instrument": "EURUSD",
+        "invalidation": "Exit/review on a daily close at or below1.1179; reconsider if renewed energy disruption and renewed dollar demand invalidate the relief thesis. A gap toward1.113 would exceed the planned exit loss. No stop guarantees a loss cap.",
+        "opened_at": "2026-11-05T08:52:26.537704-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -45264.93,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-b6d58713e98c",
+      "trade_id": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3"
+    },
+    {
+      "created_at": "2026-11-09T08:07:18.429835-05:00",
+      "created_run_id": "overnight-20261109",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-09T08:07:18.429835-05:00",
+        "conviction": 68,
+        "entry_mark": 3.4,
+        "exit_mark": 2.99,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 4352184,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+        "opened_at": "2026-09-19T23:10:54.130509-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 1421250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-792fc0fb7c9b",
+      "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+    }
+  ],
   "prior_book": {
     "alerts": [
       "The frozen market-state packet is stale only because NZ_rates; that gap does not drive this Canada position.",
@@ -23126,117 +23193,34 @@
       "Today's lessons are process/coaching adoption, not a performance-validated trading edge."
     ],
     "cash_capital_usd": 1000000000.0,
-    "cash_yield_usd": 5240555.55,
-    "conviction": 50,
-    "decision_status": "active",
-    "drawdown_usd": 114.92,
-    "funded_draw_usd": 550000.0,
+    "cash_yield_usd": 5564722.22,
+    "conviction": 75,
+    "decision_status": "hold",
+    "drawdown_usd": 178.29,
+    "funded_draw_usd": 0.0,
     "funding_basis_status": "risk_capital_1pct_shock",
-    "funding_cost_usd": 25220.48,
+    "funding_cost_usd": 25398.77,
     "gross_notional_limit_usd": 1000000000,
-    "gross_remaining_usd": 945000000.0,
-    "gross_utilization_usd": 55000000.0,
-    "high_water_nav_usd": 1001350187.16,
-    "invalidation": "Preserve prior CORRA average review/exit3.16125 and EURUSD daily-close exit/review1.1179, earlier fundamental reassessment and original horizons. Saved management rules are not resting orders.",
-    "last_action": "HOLD",
+    "gross_remaining_usd": 1000000000.0,
+    "gross_utilization_usd": 0,
+    "high_water_nav_usd": 1001350764.59,
+    "invalidation": "Re-underwrite new risk from flat after a materially different repricing or new authorized evidence.",
+    "last_action": "CLOSE",
     "max_drawdown_usd": 50000000,
-    "net_after_funding_pnl_usd": 1350072.24,
+    "net_after_funding_pnl_usd": 1350586.3,
     "pm_id": "chatgpt",
     "pnl_unavailable": false,
-    "positions": [
-      {
-        "asset_class": "rates",
-        "entry_price": 3.4,
-        "entry_price_as_of": "2026-09-20T02:06:32Z",
-        "entry_price_source": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]",
-        "funding_basis": "risk_capital_1pct_shock",
-        "funding_basis_reason": "official SOFR is charged on absolute MTM loss from the standard shock (1% spot, 100bp outright rates, 100bp curve/RV)",
-        "funding_basis_status": "risk_capital_1pct_shock",
-        "funding_draw_usd": 500000.0,
-        "hedge_of": null,
-        "instrument": "CORRA_2027H-Z",
-        "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
-        "locked_expression_family": "corra",
-        "mark_price": 3.0425,
-        "mark_price_as_of": "2026-11-06T12:35:42Z",
-        "mark_price_source": "derived:futures_strip_average:CORRA[market_state.tradable_rate_curves.CORRA.2027-03.implied_rate,market_state.tradable_rate_curves.CORRA.2027-06.implied_rate,market_state.tradable_rate_curves.CORRA.2027-09.implied_rate,market_state.tradable_rate_curves.CORRA.2027-12.implied_rate]",
-        "mark_status": "ok",
-        "notional_usd": 50000000.0,
-        "opened_at": "2026-09-19T23:10:54.130509-04:00",
-        "opened_run_id": "tr-20260920T020818Z-ondemand",
-        "paper_expression": {
-          "curve_id": "CORRA",
-          "expiries": [
-            "2027-03",
-            "2027-06",
-            "2027-09",
-            "2027-12"
-          ],
-          "type": "futures_strip_average"
-        },
-        "pnl_unavailable": false,
-        "position_id": "pm-chatgpt-595561a1b90f",
-        "risk_capital_method": "mtm_standard_1pct_move",
-        "risk_capital_unavailable": false,
-        "risk_capital_usd": 500000.0,
-        "risk_shock": {
-          "curve_bps": 100.0,
-          "rates_percentage_points": 1.0,
-          "spot_fraction": 0.01
-        },
-        "side": "long",
-        "thesis": "Receive the 2027 CORRA H/M/U/Z strip. The market prices roughly 84 to 130.5 bp of BoC tightening from a 2.29% overnight rate even though Canadian labor is weak and core inflation is near 2%; the 2027 hike cycle is too aggressive relative to the domestic reaction function.",
-        "unrealized_pnl_usd": 178750.0
-      },
-      {
-        "asset_class": "spot_fx",
-        "entry_price": 1.1267,
-        "entry_price_as_of": "2026-11-04",
-        "entry_price_source": "market_state.fx.EURUSD.spot",
-        "expected_mark_direction": "higher",
-        "funding_basis": "risk_capital_1pct_shock",
-        "funding_basis_reason": "official SOFR is charged on absolute MTM loss from the standard shock (1% spot, 100bp outright rates, 100bp curve/RV)",
-        "funding_basis_status": "risk_capital_1pct_shock",
-        "funding_draw_usd": 50000.0,
-        "hedge_of": null,
-        "instrument": "EURUSD",
-        "invalidation": "Exit/review on a daily close at or below1.1179; reconsider if renewed energy disruption and renewed dollar demand invalidate the relief thesis. A gap toward1.113 would exceed the planned exit loss. No stop guarantees a loss cap.",
-        "isolated": false,
-        "locked_expression_family": "spot_fx",
-        "mark_price": 1.1224,
-        "mark_price_as_of": "2026-11-05",
-        "mark_price_source": "market_state.fx.EURUSD.spot",
-        "mark_status": "ok",
-        "notional_usd": 5000000.0,
-        "opened_at": "2026-11-05T08:52:26.537704-05:00",
-        "opened_run_id": "overnight-20261105",
-        "paper_expression": null,
-        "pnl_unavailable": false,
-        "position_id": "pm-chatgpt-aef5bacd43d3",
-        "risk_capital_method": "mtm_standard_1pct_move",
-        "risk_capital_unavailable": false,
-        "risk_capital_usd": 50000.0,
-        "risk_shock": {
-          "curve_bps": 100.0,
-          "rates_percentage_points": 1.0,
-          "spot_fraction": 0.01
-        },
-        "side": "long",
-        "thesis": "Initial USD5m-equivalent EURUSD long on a discretionary view that post-election unwinding of geopolitical/political dollar demand can continue and cheaper energy can improve Europe's outlook. The trade expresses broad dollar weakness; EUR need not outperform all European peers. This is a conditional judgment, not a proven factor model or a request from Kevin to buy EUR.",
-        "unrealized_pnl_usd": -19082.28,
-        "valuation_method": "legacy_duration_one"
-      }
-    ],
-    "realized_pnl_usd": 1215625.0,
-    "review_status": "stale",
+    "positions": [],
+    "realized_pnl_usd": 1375985.07,
+    "review_status": "fresh",
     "risk_capital_limit_usd": 100000000,
-    "risk_capital_remaining_usd": 99450000.0,
-    "risk_capital_usd": 550000.0,
+    "risk_capital_remaining_usd": 100000000.0,
+    "risk_capital_usd": 0.0,
     "risk_stop_pending": false,
     "risk_stopped": false,
-    "thesis": "Memory-only update: retain50m CORRA2027 H/M/U/Z receive and5m EURUSD long under the previously approved management plans. Add all sixteen approved research-foundation and regime/tail lessons without new risk.",
-    "total_pnl_usd": 1375292.72,
-    "unrealized_pnl_usd": 159667.72,
+    "thesis": "Realize the remaining CORRA gain and honor the EURUSD daily-close exit. Stay flat into US CPI.",
+    "total_pnl_usd": 1375985.07,
+    "unrealized_pnl_usd": 0.0,
     "unused_cash_usd": 1000000000.0
   },
   "research_supplement": {
@@ -23247,10 +23231,10 @@
   },
   "review_id": "review-001",
   "review_packet_id": "prp-chatgpt-overnight-20261109-review-001",
-  "review_packet_sha256": "f9b2993a34e144ed456fb9e89685ba198d337e75ad604da3764cfb4df28eadf6",
+  "review_packet_sha256": "2fbd7a55c33ef02676df3d66fdb78242340e76c8e37d1bd87d3512bc100cdb3e",
   "risk_capital_limit_usd": 100000000,
-  "risk_capital_remaining_usd": 99450000.0,
-  "risk_capital_usd": 550000.0,
+  "risk_capital_remaining_usd": 100000000.0,
+  "risk_capital_usd": 0.0,
   "risk_stop_pending": false,
   "risk_stopped": false,
   "schema_version": 1,

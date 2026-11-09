@@ -1,5 +1,67 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-09T08:07:18.429835-05:00",
+      "created_run_id": "overnight-20261109",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-09T08:07:18.429835-05:00",
+        "conviction": 50,
+        "entry_mark": 1.13,
+        "exit_mark": 1.12,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 342891,
+        "instrument": "EURUSD",
+        "invalidation": "Exit/review on a daily close at or below1.1179; reconsider if renewed energy disruption and renewed dollar demand invalidate the relief thesis. A gap toward1.113 would exceed the planned exit loss. No stop guarantees a loss cap.",
+        "opened_at": "2026-11-05T08:52:26.537704-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -45264.93,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-b6d58713e98c",
+      "status": "due",
+      "trade_id": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3"
+    },
+    {
+      "created_at": "2026-11-09T08:07:18.429835-05:00",
+      "created_run_id": "overnight-20261109",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-09T08:07:18.429835-05:00",
+        "conviction": 68,
+        "entry_mark": 3.4,
+        "exit_mark": 2.99,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 4352184,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "Reduce or close if Canadian core inflation moves decisively above the current near-2% zone while employment and wage growth reaccelerate, or if BoC communication/delivered hikes validate a 2027 path in the mid-3% area. A headline-energy spike without confirmation in core inflation and labor is not sufficient invalidation.",
+        "opened_at": "2026-09-19T23:10:54.130509-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 1421250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-792fc0fb7c9b",
+      "status": "due",
+      "trade_id": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }
