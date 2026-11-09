@@ -14,6 +14,8 @@ from scripts.overnight.research_publishability import audit_agent_research
 from scripts.overnight.store import sha256_json
 
 MODE = "current-cycle-news-commentary-missing"
+LEGACY_NO_AGENT_RESEARCH = "legacy-no-agent-research"
+SUPPLEMENT_WITHOUT_STORIES = "supplement-without-stories"
 WARNING = "Trader Room news write-up unavailable for this run."
 FRONT_FLAG = "MARKET NEWS · WRITE-UP UNAVAILABLE"
 FRONT_TITLE = "Trader Room news write-up unavailable"
@@ -61,7 +63,11 @@ def classify_news_commentary(dataset: dict[str, Any]) -> str:
     run_id = dataset.get("overnight_run_id")
     if not isinstance(run_id, str) or not run_id.strip():
         raise ValueError("overnight_run_id missing")
-    research = _agent_research(dataset)
+    research = dataset.get("agent_research")
+    if research is None:
+        return LEGACY_NO_AGENT_RESEARCH
+    if not isinstance(research, dict):
+        raise ValueError("agent_research must be a dict for commentary classification")
     for key in ("news", "central_bank_research"):
         if key not in research:
             raise ValueError(f"agent_research missing required key: {key}")
@@ -77,7 +83,7 @@ def classify_news_commentary(dataset: dict[str, Any]) -> str:
     if not isinstance(sources, list):
         raise ValueError("agent_research.sources must be a list")
     if sources:
-        raise ValueError("agent_research.sources must be empty when news lists are empty")
+        return SUPPLEMENT_WITHOUT_STORIES
     summary = research.get("summary")
     if summary is not None and not isinstance(summary, str):
         raise ValueError("agent_research.summary must be a string when present")

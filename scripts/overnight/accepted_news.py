@@ -15,7 +15,12 @@ from scripts.overnight.freshness import age_status
 from scripts.overnight.store import OvernightStore, sha256_json, write_json
 from scripts.overnight.public_prose import public_research_summary
 from scripts.overnight.news_relevance import apply_transmission, public_news_rows
-from scripts.overnight.news_commentary_state import MODE as COMMENTARY_MISSING_MODE, assert_news_html
+from scripts.overnight.news_commentary_state import (
+    LEGACY_NO_AGENT_RESEARCH,
+    MODE as COMMENTARY_MISSING_MODE,
+    SUPPLEMENT_WITHOUT_STORIES,
+    assert_news_html,
+)
 from scripts.overnight.research_publishability import validate_research_supplement_publishability
 
 ACCEPTED_PUBLIC_NEWS_REL = "data/overnight/accepted_public_news.json"
@@ -254,7 +259,8 @@ def effective_public_news_context(
                     "overnight_run_id": dataset.get("overnight_run_id"),
                     "source": "assembled-dataset",
                 }
-        raise PublicationError("accepted overnight research has no renderable items")
+        if kind not in (LEGACY_NO_AGENT_RESEARCH, SUPPLEMENT_WITHOUT_STORIES):
+            raise PublicationError("accepted overnight research has no renderable items")
     artifact = load_accepted_public_news(store.root)
     if artifact and (artifact.get("news") or artifact.get("central_bank_research")):
         return {

@@ -24,7 +24,9 @@ from scripts.overnight.accepted_news import (
 )
 from scripts.overnight.errors import PublicationError
 from scripts.overnight.news_commentary_state import (
+    LEGACY_NO_AGENT_RESEARCH,
     MODE,
+    SUPPLEMENT_WITHOUT_STORIES,
     WARNING,
     assert_built_news_matches_context,
     assert_news_html,
@@ -76,6 +78,89 @@ def _dataset() -> dict:
 
 
 class NewsCommentaryMissingTests(unittest.TestCase):
+    def _legacy_null_dataset(self, *, omit_key: bool = False) -> dict:
+        base = {
+            "type": "OVERNIGHT_MORNING_DATASET",
+            "overnight_run_id": "overnight-legacy-null",
+            "as_of": "2026-09-18T12:00:00-04:00",
+            "agent_research_cutoff": "2026-09-18T11:00:00-04:00",
+        }
+        if not omit_key:
+            base["agent_research"] = None
+        return base
+
+    def test_legacy_null_agent_research_classifies_and_falls_back_to_artifact(self) -> None:
+        artifact = load_accepted_public_news(REPO)
+        self.assertIsNotNone(artifact)
+        store = OvernightStore(root=REPO)
+        for omit in (False, True):
+            with self.subTest(omit_key=omit):
+                dataset = self._legacy_null_dataset(omit_key=omit)
+                self.assertEqual(classify_news_commentary(dataset), LEGACY_NO_AGENT_RESEARCH)
+                ctx = effective_public_news_context(store, dataset)
+                self.assertIsNotNone(ctx)
+                self.assertNotIn("mode", ctx or {})
+                self.assertEqual(ctx.get("source"), "accepted-public-news-artifact")
+                self.assertEqual(ctx.get("as_of"), artifact.get("as_of"))
+                self.assertNotEqual(ctx.get("as_of"), dataset["as_of"])
+
+    def test_present_empty_dict_still_raises(self) -> None:
+        dataset = {
+            "type": "OVERNIGHT_MORNING_DATASET",
+            "overnight_run_id": "overnight-empty-dict",
+            "agent_research_cutoff": "2026-11-09T05:37:50-05:00",
+            "agent_research": {},
+        }
+        with self.assertRaises(ValueError):
+            classify_news_commentary(dataset)
+        store = OvernightStore(root=REPO)
+        with self.assertRaises(PublicationError):
+            effective_public_news_context(store, dataset)
+
+    def test_non_dict_agent_research_raises(self) -> None:
+        dataset = self._legacy_null_dataset()
+        dataset["agent_research"] = []
+        with self.assertRaises(ValueError):
+            classify_news_commentary(dataset)
+
+    def test_supplement_without_stories_falls_back_to_artifact(self) -> None:
+        artifact = load_accepted_public_news(REPO)
+        self.assertIsNotNone(artifact)
+        dataset = {
+            "type": "OVERNIGHT_MORNING_DATASET",
+            "overnight_run_id": "overnight-sources-only",
+            "as_of": "2026-09-18T12:00:00-04:00",
+            "agent_research_cutoff": "2026-09-18T11:00:00-04:00",
+            "agent_research": {
+                "news": [],
+                "central_bank_research": [],
+                "sources": [{"id": "src"}],
+            },
+        }
+        self.assertEqual(classify_news_commentary(dataset), SUPPLEMENT_WITHOUT_STORIES)
+        store = OvernightStore(root=REPO)
+        ctx = effective_public_news_context(store, dataset)
+        self.assertIsNotNone(ctx)
+        self.assertNotIn("mode", ctx or {})
+        self.assertNotIn("digest", ctx or {})
+        self.assertEqual(ctx.get("source"), "accepted-public-news-artifact")
+        self.assertEqual(ctx.get("as_of"), artifact.get("as_of"))
+        self.assertNotEqual(ctx.get("as_of"), dataset["agent_research_cutoff"])
+        html = BASE_HTML
+        with self.assertRaises(ValueError):
+            apply_overnight_news_refresh(html, dataset)
+        self.assertNotIn(MODE, html)
+        self.assertNotIn(WARNING, html)
+
+    def test_legacy_null_apply_refresh_raises_without_missing_marker(self) -> None:
+        dataset = self._legacy_null_dataset()
+        html = BASE_HTML
+        with self.assertRaises(ValueError) as caught:
+            apply_overnight_news_refresh(html, dataset)
+        self.assertIn("no renderable items", str(caught.exception))
+        self.assertNotIn(WARNING, html)
+        self.assertNotIn(MODE, html)
+
     def test_nov9_apply_refresh(self) -> None:
         dataset = _nov9_dataset()
         out = apply_overnight_news_refresh(BASE_HTML, dataset)
