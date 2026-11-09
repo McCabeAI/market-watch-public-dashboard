@@ -26,7 +26,6 @@ from scripts.market_watch_launch.pages import (
 )
 from scripts.pm.constants import AUTOMATED_PM_IDS
 
-TRADER_SEAT_COUNT = 14
 LAUNCH_ID_IN_TITLE = re.compile(r"mwl-\d{8}T\d{6}Z-[0-9a-f]{8}")
 DISPATCH_NOT_CONFIRMED = "pages_dispatch_not_confirmed"
 DISPATCH_AMBIGUOUS = "pages_dispatch_ambiguous"
@@ -308,9 +307,13 @@ def assert_public_dataset(
     """The live page must serve this deploy's trader roster and the 3 PM books."""
     if "Trader Book" not in html:
         raise SystemExit("public page is missing Trader Book")
-    seats = trader.get("seats")
-    if not isinstance(seats, list) or len(seats) != TRADER_SEAT_COUNT:
-        raise SystemExit("public trader-books.json does not list 14 trader seats")
+    from scripts.overnight.books import published_book_roster
+
+    matched = published_book_roster(trader.get("seats"))
+    if matched is None:
+        raise SystemExit("public trader-books.json roster is not an authoritative seat identity")
+    if trader.get("seat_count") is not None and trader.get("seat_count") != len(matched):
+        raise SystemExit("public trader-books.json roster is not an authoritative seat identity")
     published = (
         ((trader.get("publication") or {}) if isinstance(trader.get("publication"), dict) else {}).get(
             "overnight_run_id"

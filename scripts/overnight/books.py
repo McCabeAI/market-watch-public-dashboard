@@ -1543,6 +1543,50 @@ def _hold_memo(seat: str) -> dict[str, Any]:
     }
 
 
+def match_authoritative_roster(seat_ids) -> tuple[str, ...] | None:
+    """Return the canonical standing or legacy daily roster when seat_ids match exactly."""
+    try:
+        items = iter(seat_ids)
+    except TypeError:
+        return None
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        if not isinstance(item, str):
+            return None
+        if not item or item != item.strip():
+            return None
+        if item in seen:
+            return None
+        seen.add(item)
+        normalized.append(item)
+    roster_set = set(normalized)
+    if roster_set == set(STANDING_SEATS):
+        return tuple(STANDING_SEATS)
+    from scripts.trader_room.agent_config import legacy_pin
+
+    legacy = legacy_pin("daily")
+    legacy_ids = tuple(str(row["id"]) for row in legacy["traders"])
+    if roster_set == set(legacy_ids):
+        return legacy_ids
+    return None
+
+
+def published_book_roster(seats: Any) -> tuple[str, ...] | None:
+    """Match a public trader-books ``seats`` list to an authoritative roster identity."""
+    if not isinstance(seats, list) or not seats:
+        return None
+    ids: list[str] = []
+    for row in seats:
+        if not isinstance(row, dict):
+            return None
+        seat = row.get("seat")
+        if not isinstance(seat, str):
+            return None
+        ids.append(seat)
+    return match_authoritative_roster(ids)
+
+
 def validate_books(
     books: dict[str, Any],
     *,
@@ -1556,14 +1600,16 @@ def validate_books(
     book_ids = set(books.get("seats") or {})
     entry_map = _entries_by_id(entries)
     if not explicit_roster and book_ids != set(seats):
-        from scripts.trader_room.agent_config import legacy_pin
-
-        legacy = legacy_pin("daily")
-        legacy_ids = tuple(str(row["id"]) for row in legacy["traders"])
-        if book_ids == set(legacy_ids):
-            seats = legacy_ids
+        matched = match_authoritative_roster(book_ids)
+        if matched is not None:
+            seats = matched
             if not entry_map:
-                entry_map = _entries_by_id(legacy["traders"])
+                from scripts.trader_room.agent_config import legacy_pin
+
+                legacy = legacy_pin("daily")
+                legacy_ids = tuple(str(row["id"]) for row in legacy["traders"])
+                if matched == legacy_ids:
+                    entry_map = _entries_by_id(legacy["traders"])
     if book_ids != set(seats):
         raise SchemaError("books must contain every locked seat")
     if books.get("starting_nav_usd") != STARTING_NAV_USD:
