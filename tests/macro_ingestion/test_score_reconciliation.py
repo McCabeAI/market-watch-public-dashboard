@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import copy
 import json
-import shutil
 import tempfile
 import unittest
 from pathlib import Path
@@ -24,6 +23,7 @@ from scripts.temperature_level import (
     period_sort_key,
     scoring_cutoff,
 )
+from tests.macro_cutoff import DEFAULT_MACRO_CUTOFF, cutoff_history_dir
 
 ROOT = Path(__file__).resolve().parents[2]
 CHECKED_AT = "2026-11-04T15:00:00Z"
@@ -58,8 +58,7 @@ class ScoreReconciliationSameCycleTests(unittest.TestCase):
     def test_unemployment_forward_print_updates_dimension_as_of(self) -> None:
         cal = load_calibration()
         with tempfile.TemporaryDirectory() as tmp:
-            hist_dir = Path(tmp) / "history"
-            shutil.copytree(HISTORY_DIR, hist_dir)
+            hist_dir = cutoff_history_dir(Path(tmp), DEFAULT_MACRO_CUTOFF)
             histories = load_history(hist_dir)
             before = build_score_state(cal, compute_state(cal, histories))
             before_unemp = before["countries"]["US"]["Labor"]["component_state"]["unemployment"]
@@ -150,8 +149,7 @@ class StageVerifiedLineageReconciliationTests(unittest.TestCase):
         cal = load_calibration(CALIBRATION_PATH)
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp)
-            hist_dir = work / "history"
-            shutil.copytree(HISTORY_DIR, hist_dir)
+            hist_dir = cutoff_history_dir(work, DEFAULT_MACRO_CUTOFF)
             obs_root = work / "observations"
             obs_root.mkdir()
             us_store = {
@@ -171,9 +169,9 @@ class StageVerifiedLineageReconciliationTests(unittest.TestCase):
             }
             (obs_root / "us.json").write_text(json.dumps(us_store, indent=2) + "\n", encoding="utf-8")
             for country in ("ca", "au", "nz", "ea", "jp"):
-                shutil.copy2(
-                    ROOT / f"data/macro_ingestion/observations/{country}.json",
-                    obs_root / f"{country}.json",
+                (obs_root / f"{country}.json").write_text(
+                    json.dumps({"country": country.upper(), "observations": []}, indent=2) + "\n",
+                    encoding="utf-8",
                 )
             launch_dir = work / "launch_drop"
             launch_dir.mkdir()

@@ -26,6 +26,7 @@ from scripts.macro_ingestion.us_employment.contract import BLS_EMPSIT_SERIES, SC
 from scripts.market_watch_launch.ingest import _enrich_row
 from scripts.market_watch_launch.quality_gate import _minimal_passing_market_families, evaluate_gate
 from scripts.temperature_level import CALIBRATION_PATH, component_level, load_calibration, load_history
+from tests.macro_cutoff import DEFAULT_MACRO_CUTOFF, histories_through_cutoff
 
 BLS_URL = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
 DUE_AFTER_EMPSIT = datetime(2026, 10, 5, 16, 0, tzinfo=timezone.utc)
@@ -516,7 +517,7 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
             observations_dir=self.obs_dir,
             health_dir=self.health_dir,
         )
-        histories = copy.deepcopy(load_history())
+        histories = histories_through_cutoff(load_history(), DEFAULT_MACRO_CUTOFF)
         outcome = recompute_scores_after_observation(
             persist_history=False,
             persist_scores=False,
@@ -572,7 +573,7 @@ class TestUSEmpsitBlsPrimary(unittest.TestCase):
         forward["value"] = WAGE_YOY + 1.0
         store["observations"].append(forward)
         (self.obs_dir / "us.json").write_text(json.dumps(store), encoding="utf-8")
-        forward_histories = copy.deepcopy(load_history())
+        forward_histories = histories_through_cutoff(load_history(), DEFAULT_MACRO_CUTOFF)
         forward_outcome = recompute_scores_after_observation(
             persist_history=False,
             persist_scores=False,

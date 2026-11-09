@@ -34,7 +34,8 @@ from scripts.dashboard_repair.official_schedule import parse_abs_future_releases
 from scripts.dashboard_repair.scoreboard import score_cards
 from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
 from scripts.dashboard_repair.tape import render_tape, tape_cards
-from scripts.temperature_level import display_score
+from scripts.country_registry import dashboard_headings
+from scripts.temperature_level import DIMENSIONS, display_score, temperature_class
 
 ROOT = Path(__file__).resolve().parents[1]
 ET = ZoneInfo("America/New_York")
@@ -231,24 +232,74 @@ class TapeTests(unittest.TestCase):
 
 
 class ScoreboardTests(unittest.TestCase):
+    def _expected_card_fields(self, spec: dict) -> tuple[str, str, str, float | None]:
+        level = spec.get("level")
+        level_value = float(level) if level is not None else None
+        klass = spec.get("temperature_class")
+        if level_value is not None and not klass:
+            klass = temperature_class(level_value)
+        klass = str(klass or "neutral")
+        direction = str(spec.get("direction") or "static").lower()
+        if direction not in {"cooling", "static", "warming"}:
+            direction = "static"
+        level_text = display_score(level_value) if level_value is not None else "—"
+        coverage = spec.get("coverage")
+        coverage_value = float(coverage) if coverage is not None else None
+        return level_text, klass, direction, coverage_value
+
     def test_cards_match_score_state_and_separate_impulse_from_level(self):
         state = load_scores()
         cards = {card["country"]: card for card in score_cards(state)}
-        us = cards["US"]["dimensions"]
-        inflation = next(row for row in us if row["dimension"] == "Inflation")
-        labor = next(row for row in us if row["dimension"] == "Labor")
-        self.assertEqual(inflation["level_text"], display_score(state["countries"]["US"]["Inflation"]["level"]))
-        self.assertEqual(inflation["klass"], "warm")
-        self.assertEqual(inflation["direction"], "static")
-        self.assertEqual(labor["direction"], "cooling")
-        self.assertNotEqual(labor["klass"], "cooling")
-        partial = [
-            (country, row)
-            for country, card in cards.items()
-            for row in card["dimensions"]
-            if row["coverage"] is not None and row["coverage"] < 1
-        ]
-        self.assertTrue(partial)
+        for country, card in cards.items():
+            block = state.get("countries", {}).get(country, {})
+            if not isinstance(block, dict):
+                block = {}
+            for row in card["dimensions"]:
+                dim = row["dimension"]
+                spec = block.get(dim, {}) if isinstance(block.get(dim), dict) else {}
+                level_text, klass, direction, coverage = self._expected_card_fields(spec)
+                self.assertEqual(row["level_text"], level_text, f"{country}/{dim}")
+                self.assertEqual(row["klass"], klass, f"{country}/{dim}")
+                self.assertEqual(row["direction"], direction, f"{country}/{dim}")
+                if coverage is not None:
+                    self.assertEqual(row["coverage"], coverage, f"{country}/{dim}")
+            partial_from_state = any(
+                (not isinstance(block.get(dimension), dict) or block[dimension].get("level") is None)
+                or (
+                    block[dimension].get("coverage") is not None
+                    and float(block[dimension]["coverage"]) < 1.0 - 1e-9
+                )
+                for dimension in DIMENSIONS
+            )
+            self.assertEqual(card["partial"], partial_from_state, country)
+
+        synthetic = {
+            "countries": {
+                code: {
+                    dimension: {
+                        "level": 50.0,
+                        "direction": "static",
+                        "temperature_class": "neutral",
+                        "coverage": 1.0,
+                    }
+                    for dimension in DIMENSIONS
+                }
+                for code in dashboard_headings()
+            }
+        }
+        synthetic["countries"]["US"]["Labor"].update(
+            {"level": 65.0, "direction": "cooling", "temperature_class": "warm"}
+        )
+        synthetic["countries"]["US"]["Inflation"].update(
+            {"level": 72.0, "direction": "warming", "temperature_class": "warm"}
+        )
+        syn_cards = {card["country"]: card for card in score_cards(synthetic)}
+        us = {row["dimension"]: row for row in syn_cards["US"]["dimensions"]}
+        self.assertEqual(us["Labor"]["direction"], "cooling")
+        self.assertEqual(us["Labor"]["klass"], "warm")
+        self.assertNotEqual(us["Labor"]["klass"], "cooling")
+        self.assertEqual(us["Inflation"]["direction"], "warming")
+        self.assertEqual(us["Inflation"]["klass"], "warm")
 
 
 class CalendarTests(unittest.TestCase):

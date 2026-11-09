@@ -1077,10 +1077,39 @@ class BookTransitionTests(unittest.TestCase):
 
     def test_canonical_trader_books_migrate_without_rewriting_trades(self):
         from copy import deepcopy
-        from pathlib import Path
+
         from scripts.overnight.books import validate_books, public_books_view
 
-        raw = json.loads((Path(__file__).resolve().parents[1] / "data" / "overnight" / "books" / "latest.json").read_text())
+        chart_hold = {
+            "action": "HOLD",
+            "result": "applied",
+            "overnight_run_id": "overnight-20261109",
+            "at": "2026-11-09T05:37:50.499948-05:00",
+            "positions": [],
+            "blocked_families": [],
+            "instrument": None,
+            "note": None,
+            "notional_usd": None,
+            "paper_mid_bid": None,
+            "paper_mid_ask": None,
+            "position_id": None,
+            "price": None,
+            "realized_pnl_usd": None,
+        }
+        position_seat = "dollar-king"
+        open_position = {
+            "position_id": "pos-synthetic-migrate-001",
+            "instrument": "USDCAD",
+            "asset_class": "spot_fx",
+            "side": "long",
+            "notional_usd": 5_000_000,
+            "entry_price": 1.38,
+            "mark_price": 1.39,
+        }
+        raw = empty_books(overnight_run_id="overnight-20261109", roster=STANDING_SEATS)
+        raw["seats"]["chart-guy"]["history"] = [chart_hold]
+        raw["seats"][position_seat]["realized_pnl_usd"] = 250_000.0
+        raw["seats"][position_seat]["positions"] = [open_position]
         before = deepcopy(raw)
         validated = validate_books(deepcopy(raw))
         view = public_books_view(deepcopy(raw))
@@ -1088,7 +1117,10 @@ class BookTransitionTests(unittest.TestCase):
         chart = validated["seats"]["chart-guy"]
         self.assertEqual(chart["nav_usd"], 100_000_000)
         self.assertEqual(chart["positions"], [])
-        self.assertEqual(chart["history"], [])
+        self.assertEqual(chart["history"], before["seats"]["chart-guy"]["history"])
+        self.assertEqual(len(chart["history"]), 1)
+        self.assertEqual(chart["history"][0]["action"], "HOLD")
+        self.assertEqual(chart["history"][0]["overnight_run_id"], "overnight-20261109")
         self.assertEqual(chart["realized_pnl_usd"], 0.0)
         self.assertEqual(before["seats"]["chart-guy"]["nav_usd"], 100_000_000)
         for seat, item in validated["seats"].items():
