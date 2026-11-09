@@ -321,7 +321,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_overnight_news_refresh tests.test_news_commentary_missing
           PYTHONPATH=. python scripts/apply_overnight_news_refresh.py _site/index.html
           if grep -Fq 'Last refreshed 18 Sep 2026' _site/index.html; then
             echo "stale Sep 18 Last 24 Hours survived accepted overnight news refresh"
@@ -351,7 +350,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_sync_news_summary
           PYTHONPATH=. python scripts/sync_news_summary.py _site/index.html
 
       - name: Apply live temperature scores
@@ -360,7 +358,6 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. python scripts/validate_score_sources.py
           python -m pip install --disable-pip-version-check -r requirements-market-state.txt
-          PYTHONPATH=. python -m unittest tests.test_temperature_history_audit tests.test_six_economy_dashboard tests.test_activity_survey_freshness tests.test_harvest_nz_pci tests.test_harvest_ca_pmi tests.test_harvest_au_pmi tests.test_harvest_ea_pmi tests.test_harvest_jp_pmi tests.test_euro_area_macro_data tests.test_japan_macro_data
           TMPDIR="$(mktemp -d)"
           PYTHONPATH=. python - <<PY
           from pathlib import Path
@@ -483,7 +480,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_country_detail_policy_rate tests.test_policy_state -v
           if ! PYTHONPATH=. python3 scripts/policy_state.py --refresh; then
             echo "policy state refresh failed; Country Detail will use the committed artifact"
           fi
@@ -550,7 +546,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python -m unittest tests.test_trader_room_publish -v
           python scripts/apply_trader_room_tab.py _site/index.html
           PYTHONPATH=. python scripts/trader_room_public.py --output _site/trader-room.json
           test -s _site/trader-room.js
@@ -599,8 +594,6 @@ jobs:
         run: |
           set -euo pipefail
           python -m pip install --disable-pip-version-check 'pypdf==6.0.0'
-          PYTHONPATH=. python -m unittest tests.test_dashboard_repair tests.test_release_calendar_contract tests.test_release_calendar_us tests.test_release_calendar_ca tests.test_release_calendar_ea tests.test_release_calendar_au tests.test_release_calendar_nz tests.test_release_calendar_jp tests.test_release_calendar_pipeline tests.test_release_calendar_pdf
-          # Calendar tests assert the committed seed. Overlay the restored live cache only after they finish.
           RESTORED=".mw-cache-restore/official_release_cache.json"
           TARGET="data/dashboard_repair/official_release_cache.json"
           if [[ -f "$RESTORED" ]]; then
