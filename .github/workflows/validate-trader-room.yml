@@ -13,7 +13,10 @@ on:
       - "scripts/validate_trader_room.py"
       - "scripts/trader_room/**"
       - "scripts/trader_room_go.py"
+      - "scripts/trader_room_public.py"
+      - "scripts/apply_trader_room_tab.py"
       - "tests/test_trader_room_ondemand.py"
+      - "tests/test_trader_room_publish.py"
       - "trader-room/**"
       - ".github/workflows/validate-trader-room.yml"
   pull_request:
@@ -28,7 +31,10 @@ on:
       - "scripts/validate_trader_room.py"
       - "scripts/trader_room/**"
       - "scripts/trader_room_go.py"
+      - "scripts/trader_room_public.py"
+      - "scripts/apply_trader_room_tab.py"
       - "tests/test_trader_room_ondemand.py"
+      - "tests/test_trader_room_publish.py"
       - "trader-room/**"
       - ".github/workflows/validate-trader-room.yml"
 
@@ -41,5 +47,5 @@ jobs:
         with:
           python-version: "3.12"
       - run: python scripts/validate_trader_room.py
-      - run: python -m unittest tests.test_trader_room_ondemand tests.test_pm_launch -v
+      - run: PYTHONPATH=. python -m unittest tests.test_trader_room_ondemand tests.test_pm_launch tests.test_trader_room_publish -v
       - run: PYTHONPATH=. python scripts/trader_room_go.py go --synthetic --topic go --artifact-root /tmp/trader-room-ci
