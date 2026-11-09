@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-09T07:57:38.086241-05:00",
+  "as_of": "2026-11-09T08:02:24.099876-05:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -79,21 +79,18 @@
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
-    "competition_rank": 3,
-    "competitive_rank": 3,
-    "drawdown_usd": 868017.98,
-    "gap_to_best_trader_usd": 113965.4,
-    "high_water_nav_usd": 1001208861.35,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 980.0,
+    "gap_to_best_trader_usd": 1524491.33,
+    "high_water_nav_usd": 1001752349.3,
     "max_drawdown_usd": 50000000.0,
-    "net_after_funding_pnl_usd": 340843.37,
-    "pressure_flags": [
-      "behind_leading_pm",
-      "competitive_pressure"
-    ],
-    "raw_pnl_rank": 3,
-    "spread_to_leader_pm_usd": -1009228.87,
+    "net_after_funding_pnl_usd": 1751369.3,
+    "pressure_flags": [],
+    "raw_pnl_rank": 1,
+    "spread_to_leader_pm_usd": 0.0,
     "status": "ok",
-    "total_pnl_usd": 389412.66
+    "total_pnl_usd": 1800918.59
   },
   "learning": {
     "competition_eligible": true,
@@ -103,7 +100,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d29912207067cac5bb470a76e59978166288365dac8b0d93f41af8d18cef8dd1",
+  "memory_context_sha256": "9be3bef025123d292b0b114b7c56725a4346017a0bbd5beabc72ddb0d1000f69",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -114,15 +111,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The late-October New Zealand policy surprise is already in the kiwi and does not justify AUDNZD at a five-year extreme versus a modest yield gap; a kiwi bounce off the cheap tail is the path, not a new Australian shock.",
-        "current_mark": 1.2453065552298384,
+        "current_mark": 1.2394461538461539,
         "current_notional_usd": 300000000.0,
         "entry_mark": 1.2455636090977256,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 1411505.93,
-        "holding_seconds": 512798,
-        "horizon_elapsed_fraction": 0.2826,
+        "giveback_usd": 0.0,
+        "holding_seconds": 513084,
+        "horizon_elapsed_fraction": 0.2828,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 21,
@@ -136,16 +133,16 @@
         "realization_logic": "Cross mean-reverts from 1.2456 toward 1.20-1.22 as New Zealand cheapness versus Australia normalizes off the five-year tail.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 1473418.59,
-        "retained_mfe_fraction": 0.042,
+        "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 3000000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 61912.66,
+        "total_pnl_usd": 1473418.59,
         "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2",
-        "unrealized_pnl_usd": 61912.66
+        "unrealized_pnl_usd": 1473418.59
       },
       "instrument": "AUDNZD",
       "opened_at": "2026-11-03T09:30:59.132629-05:00",

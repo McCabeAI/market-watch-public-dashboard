@@ -1,28 +1,28 @@
 {
-  "as_of": "2026-11-06T07:35:42.744502-05:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20261106/assembled_dataset.json",
+  "as_of": "2026-11-09T08:02:23.438696-05:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20261109/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20261106",
+  "overnight_run_id": "overnight-20261109",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
         "as_of": "2026-11-06T06:25:49.281876-05:00",
-        "blocking": false,
+        "blocking": true,
         "catastrophic": false,
-        "digest": "afece30c61553683a9ad5f2c87f04c0f91ea641c1dc2b4fffeb05defe88c5980",
+        "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
         "notes": [
-          "accepted current-cycle ACP central-bank research supplement"
+          "rolling 30-day central-bank research state is frozen below"
         ],
-        "status": "fresh"
+        "status": "stale"
       },
       "macro_hard": {
         "as_of": "2026-11-06T06:25:49-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "7619f978462c81eba885c2502cf13e796477bc1622d8712f9c887680be22c918",
+        "digest": "05d4192d7e434a3ec4a851b0eaec2301a970205102c1c598cfbcbbc1236b57c2",
         "notes": [
           "calibration_as_of 2026-09-21 is the structural anchor, not the freshness clock",
           "component exceptions: AU.Activity.business_surveys=due_missing, AU.Activity.gdp_domestic_demand=due_missing, AU.Consumer.confidence=due_missing, AU.Consumer.income=due_missing, AU.Consumer.retail=due_missing, AU.Consumer.spending=due_missing, AU.Inflation.headline=due_missing, AU.Inflation.underlying=due_missing (+56 more)",
@@ -32,10 +32,10 @@
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-11-06T12:35:42Z",
+        "as_of": "2026-11-09T13:02:22Z",
         "blocking": false,
         "catastrophic": false,
-        "digest": "a3d1eccab643e4c47c73d22c7e93653403e8c97870b562dcf51f8f5c68109be5",
+        "digest": "65dd2ab5c9430ae5041cf4ec84b6de7c95e632ff0758e8ca1b23b0e7a0b5266f",
         "notes": [
           "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates",
           "source-isolated unavailable feeds: CME_positioning, NZ_rates"
@@ -43,18 +43,21 @@
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-11-06T06:25:49.281876-05:00",
+        "as_of": "2026-11-09T05:37:50.499948-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "4afb3b8bfe4f4532f462a43a1e9ae121e3fb7a41b72e8e3f3a741aa84ecf653c",
+        "digest": "99c8d711933dfd69f63e192cb5b0db1fd57f3897200506602a0e5d3c02e75106",
         "notes": [
-          "accepted current-cycle ACP research supplement"
+          "substantive normalized news items are frozen below",
+          "accepted news kept as baseline; live discovery merged into the current window",
+          "live news acquisition completed",
+          "live news reuters check failed: HTTP Error 401: HTTP Forbidden"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20261106",
-    "last_successful_review_run_id": "overnight-20261106",
+    "last_successful_pm_run_id": "overnight-20261109",
+    "last_successful_review_run_id": "overnight-20261109",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",

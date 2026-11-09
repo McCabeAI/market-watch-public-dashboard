@@ -380,7 +380,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-09T07:57:37.968450-05:00",
+  "as_of": "2026-11-09T08:02:23.969545-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -420,16 +420,19 @@
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
-    "competition_rank": 1,
-    "competitive_rank": 1,
+    "competition_rank": 3,
+    "competitive_rank": 3,
     "drawdown_usd": 114.92,
     "gap_to_best_trader_usd": 1123194.27,
     "high_water_nav_usd": 1001350187.16,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1350072.24,
-    "pressure_flags": [],
-    "raw_pnl_rank": 1,
-    "spread_to_leader_pm_usd": 0.0,
+    "pressure_flags": [
+      "behind_leading_pm",
+      "competitive_pressure"
+    ],
+    "raw_pnl_rank": 3,
+    "spread_to_leader_pm_usd": -401297.06,
     "status": "ok",
     "total_pnl_usd": 1375292.72
   },
@@ -441,7 +444,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0713144efd59f463cbf69cf6e319c701a8dcd3a7897e499079f723105dd79327",
+  "memory_context_sha256": "f6a21b42cf6c02767b3c994e481e660e296ec973b1399c899dc8c3d182cc2a65",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -459,7 +462,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 4351603,
+        "holding_seconds": 4351889,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027H-Z",
@@ -508,7 +511,7 @@
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 342311,
+        "holding_seconds": 342597,
         "horizon_elapsed_fraction": 0.0472,
         "horizon_status": "within",
         "instrument": "EURUSD",
