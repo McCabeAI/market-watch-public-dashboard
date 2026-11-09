@@ -539,6 +539,12 @@ def render_previous_analysis_note(news: dict[str, Any]) -> str:
     as_of = format_et(news.get("as_of"))
     age = _esc(news.get("age_label") or "age not recorded")
     run_id = _esc(news.get("overnight_run_id") or "run not recorded")
+    if news.get("mode") == "current-cycle-news-commentary-missing":
+        return (
+            f"<b>Previous accepted analysis (as of {_esc(as_of)}).</b> {age}. "
+            "The previous accepted cycle did not publish a Trader Room news write-up "
+            f'(<span class="mw-raw">{run_id}</span>); today\'s analysis arrives with the final edition.'
+        )
     return (
         f"<b>Previous accepted analysis (as of {_esc(as_of)}).</b> {age}. "
         "Digest, desk summary and research below are from the last accepted cycle "

@@ -15,6 +15,12 @@ from scripts.overnight.freshness import age_status
 from scripts.overnight.store import OvernightStore, sha256_json, write_json
 from scripts.overnight.public_prose import public_research_summary
 from scripts.overnight.news_relevance import apply_transmission, public_news_rows
+from scripts.overnight.news_commentary_state import (
+    LEGACY_NO_AGENT_RESEARCH,
+    MODE as COMMENTARY_MISSING_MODE,
+    SUPPLEMENT_WITHOUT_STORIES,
+    assert_news_html,
+)
 from scripts.overnight.research_publishability import validate_research_supplement_publishability
 
 ACCEPTED_PUBLIC_NEWS_REL = "data/overnight/accepted_public_news.json"
@@ -202,9 +208,48 @@ def effective_public_news_context(
     dataset: dict[str, Any] | None,
 ) -> dict[str, Any] | None:
     if dataset is not None:
+        from scripts.overnight.news_commentary_state import (
+            classify_news_commentary,
+            commentary_missing_digest,
+        )
+
+        try:
+            kind = classify_news_commentary(dataset)
+        except ValueError as exc:
+            raise PublicationError(str(exc)) from exc
+        if kind == COMMENTARY_MISSING_MODE:
+            research = dataset.get("agent_research") or {}
+            cutoff = dataset.get("agent_research_cutoff") or dataset.get("as_of")
+            if not isinstance(cutoff, str):
+                raise PublicationError("assembled dataset missing agent_research_cutoff")
+            return {
+                "mode": COMMENTARY_MISSING_MODE,
+                "as_of": cutoff,
+                "summary": research.get("summary"),
+                "news": [],
+                "central_bank_research": [],
+                "sources": list(research.get("sources") or []),
+                "overnight_run_id": dataset.get("overnight_run_id"),
+                "source": "assembled-dataset",
+                "digest": commentary_missing_digest(dataset),
+            }
+        agent_research = dataset.get("agent_research")
+        if isinstance(agent_research, dict) and (
+            agent_research.get("news") or agent_research.get("central_bank_research")
+        ):
+            cutoff = dataset.get("agent_research_cutoff") or (dataset.get("core") or {}).get("news", {}).get("as_of")
+            if isinstance(cutoff, str):
+                return {
+                    "as_of": cutoff,
+                    "summary": agent_research.get("summary"),
+                    "news": list(agent_research.get("news") or []),
+                    "central_bank_research": list(agent_research.get("central_bank_research") or []),
+                    "overnight_run_id": dataset.get("overnight_run_id"),
+                    "source": "assembled-dataset",
+                }
         research = dataset_agent_research(dataset)
-        cutoff = dataset.get("agent_research_cutoff") or (dataset.get("core") or {}).get("news", {}).get("as_of")
         if research.get("news") or research.get("central_bank_research"):
+            cutoff = dataset.get("agent_research_cutoff") or (dataset.get("core") or {}).get("news", {}).get("as_of")
             if isinstance(cutoff, str):
                 return {
                     "as_of": cutoff,
@@ -214,6 +259,8 @@ def effective_public_news_context(
                     "overnight_run_id": dataset.get("overnight_run_id"),
                     "source": "assembled-dataset",
                 }
+        if kind not in (LEGACY_NO_AGENT_RESEARCH, SUPPLEMENT_WITHOUT_STORIES):
+            raise PublicationError("accepted overnight research has no renderable items")
     artifact = load_accepted_public_news(store.root)
     if artifact and (artifact.get("news") or artifact.get("central_bank_research")):
         return {
@@ -261,10 +308,14 @@ def assert_site_news_matches_accepted(
     context: dict[str, Any],
     *,
     require_headline_substrings: tuple[str, ...] = (),
+    require_front_alert: bool = False,
 ) -> None:
     if not html_path.is_file():
         return
     html = html_path.read_text(encoding="utf-8")
+    if context.get("mode") == COMMENTARY_MISSING_MODE:
+        assert_news_html(html, context, require_front_alert=require_front_alert)
+        return
     raw_as_of = context.get("as_of")
     if not isinstance(raw_as_of, str):
         raise PublicationError("accepted public news missing as_of for HTML consistency check")

@@ -52,9 +52,28 @@ DRIVER_RE = re.compile(
     re.S,
 )
 FRONT_ALERT_RE = re.compile(
-    r'<div class="news-alert market-alert">.*?'
+    r'<div class="news-alert market-alert"[^>]*>.*?'
     r'<label for="p-news">Open News &amp; Research</label>\s*</div>',
     re.S,
+)
+COMMENTARY_MARKER_RE = re.compile(
+    r'data-publication-state="current-cycle-news-commentary-missing"'
+    r'[^>]*data-news-commentary-run="([^"]+)"'
+    r'[^>]*data-news-commentary-digest="([0-9a-f]{64})"',
+    re.S,
+)
+MISSING_NEWS_WINDOW = '<div class="news-window"><b>News commentary:</b> unavailable for this run.</div>'
+MISSING_NEWS_WINDOW_RE = re.compile(r'<div class="news-window">.*?</div>', re.S)
+MISSING_LEGACY_SCANLINE_RE = re.compile(
+    r'<div class="scanline"><b>Last scanned:</b>.*?</div>',
+    re.S,
+)
+MISSING_CURRENT_TAPE_RE = re.compile(
+    r'(<div class="stitle">Current tape</div><div class="news-count">)'
+    r'[^<]+'
+    r'(</div><p>)'
+    r'[^<]+'
+    r'(</p>)'
 )
 
 
@@ -164,7 +183,81 @@ def _sync_undated_news_summary(html: str) -> str:
     return html
 
 
+def _sync_commentary_missing_news_summary(html: str) -> str:
+    from scripts.overnight.news_commentary_state import (
+        FRONT_FLAG,
+        FRONT_SUB,
+        FRONT_TITLE,
+        MODE,
+        WARNING,
+    )
+
+    if (
+        FRONT_FLAG in html
+        and MISSING_NEWS_WINDOW in html
+        and '<div class="news-count">none</div>' in html
+        and "<b>Last scanned:</b>" not in html
+        and "Sources include Reuters" not in html
+    ):
+        return html
+
+    marker = COMMENTARY_MARKER_RE.search(html)
+    if not marker:
+        raise ValueError("news commentary missing-mode marker not found")
+    run_id = marker.group(1)
+    digest = marker.group(2)
+    if html.count(WARNING) != 1:
+        raise ValueError(f"missing-mode warning must appear exactly once, found {html.count(WARNING)}")
+
+    html, scan_replacements = MISSING_NEWS_WINDOW_RE.subn(MISSING_NEWS_WINDOW, html, count=1)
+    if scan_replacements != 1:
+        raise ValueError("Market News news-window could not be synchronized for missing mode")
+    html, _ = MISSING_LEGACY_SCANLINE_RE.subn("", html)
+
+    tape_sentence = "No sourced news digest was published for this cycle."
+    html, tape_replacements = MISSING_CURRENT_TAPE_RE.subn(
+        rf"\g<1>none\g<2>{tape_sentence}\g<3>",
+        html,
+        count=1,
+    )
+    if tape_replacements != 1:
+        raise ValueError("Current tape summary could not be synchronized for missing mode")
+
+    replacement = (
+        f'<div class="news-alert market-alert" data-publication-state="{MODE}" '
+        f'data-news-commentary-digest="{digest}" data-news-commentary-run="{run_id}">'
+        f'<div class="flag">{FRONT_FLAG}</div>'
+        f"<div><h3>{FRONT_TITLE}</h3>"
+        f'<span class="alert-sub">{FRONT_SUB}</span></div>'
+        '<label for="p-news">Open News &amp; Research</label>'
+        "</div>"
+    )
+    html, replacements = FRONT_ALERT_RE.subn(replacement, html, count=1)
+    if replacements != 1:
+        raise ValueError("Front-page Market News alert could not be synchronized for missing mode")
+    if FRONT_FLAG not in html or FRONT_TITLE not in html or FRONT_SUB not in html:
+        raise ValueError("Front-page missing-mode alert metadata verification failed")
+    if "qualifying events" in html:
+        raise ValueError("missing-mode sync must not leave qualifying-events language")
+    if MISSING_NEWS_WINDOW not in html:
+        raise ValueError("Market News commentary status line verification failed")
+    if "<b>Last scanned:</b>" in html:
+        raise ValueError("missing-mode sync must not leave Last scanned summary line")
+    if "Sources include Reuters" in html:
+        raise ValueError("missing-mode sync must not leave stale source-scan claim")
+    if '<div class="news-count">none</div>' not in html:
+        raise ValueError("Current tape news-count verification failed")
+    if tape_sentence not in html:
+        raise ValueError("Current tape sentence verification failed")
+    alert_block = FRONT_ALERT_RE.search(html)
+    if alert_block and WARNING in alert_block.group(0):
+        raise ValueError("Front-page alert must not duplicate the news-section warning sentence")
+    return html
+
+
 def sync_news_summary(html: str) -> str:
+    if 'data-publication-state="current-cycle-news-commentary-missing"' in html:
+        return _sync_commentary_missing_news_summary(html)
     if 'data-news-provenance="undated"' in html and '<div class="stitle">7-Day Quick Digest</div>' not in html:
         return _sync_undated_news_summary(html)
 
@@ -227,7 +320,11 @@ def sync_news_summary(html: str) -> str:
 def main() -> None:
     path = Path(sys.argv[1] if len(sys.argv) > 1 else "_site/index.html")
     html = path.read_text()
-    path.write_text(sync_news_summary(html))
+    updated = sync_news_summary(html)
+    path.write_text(updated)
+    if 'data-publication-state="current-cycle-news-commentary-missing"' in updated:
+        print("News summary metadata synchronized for missing Trader Room commentary")
+        return
     print("News summary metadata and front-page alert synchronized to the live 7-Day Quick Digest")
 
 

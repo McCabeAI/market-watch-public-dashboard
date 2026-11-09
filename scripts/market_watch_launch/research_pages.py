@@ -429,13 +429,18 @@ def _accepted_news(context: dict[str, Any], *, session_date: str, frozen_at: str
     as_of = parse_iso(context["as_of"])
     frozen = parse_iso(frozen_at)
     hours = max(0, int((frozen - as_of).total_seconds() // 3600))
-    return {
+    news = {
         "as_of": context["as_of"],
         "overnight_run_id": context.get("overnight_run_id"),
         "source": context.get("source"),
         "current_session": as_of.date().isoformat() == session_date,
         "age_label": f"{hours} h before this freeze",
     }
+    if context.get("mode"):
+        news["mode"] = context["mode"]
+        if context.get("digest"):
+            news["digest"] = context["digest"]
+    return news
 
 
 def _superseded_reason(root: Path, launch: dict[str, Any], books: dict[str, Any]) -> str | None:
@@ -926,16 +931,21 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
         raise _fail("score_ingestion_label_missing")
 
     news = contract.get("news") or {}
-    news_as_of = parse_iso(str(news.get("as_of")))
-    visible = parse_visible_last_refreshed(html)
-    if visible != news_as_of.date() or last_refreshed_label(news_as_of) not in html:
-        raise _fail("news_label_not_accepted_date", f"visible={visible} accepted={news_as_of.date()}")
-    if not news.get("current_session"):
-        session_label = last_refreshed_label(parse_iso(contract["frozen_at"]))
-        if session_label in html:
-            raise _fail("stale_news_labeled_current", session_label)
-        if 'data-edition-note="news"' not in html:
-            raise _fail("news_age_note_missing")
+    from scripts.overnight.news_commentary_state import MODE as COMMENTARY_MISSING_MODE, assert_news_html
+
+    if news.get("mode") == COMMENTARY_MISSING_MODE:
+        assert_news_html(html, news, require_front_alert=False)
+    else:
+        news_as_of = parse_iso(str(news.get("as_of")))
+        visible = parse_visible_last_refreshed(html)
+        if visible != news_as_of.date() or last_refreshed_label(news_as_of) not in html:
+            raise _fail("news_label_not_accepted_date", f"visible={visible} accepted={news_as_of.date()}")
+        if not news.get("current_session"):
+            session_label = last_refreshed_label(parse_iso(contract["frozen_at"]))
+            if session_label in html:
+                raise _fail("stale_news_labeled_current", session_label)
+            if 'data-edition-note="news"' not in html:
+                raise _fail("news_age_note_missing")
 
     from scripts.market_watch_launch.publication_release import _esc, format_et
     from scripts.market_watch_launch.research_headlines import FRONT_HEADLINES

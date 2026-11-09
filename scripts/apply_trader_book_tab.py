@@ -85,6 +85,7 @@ def apply_trader_book_tab(path: Path, *, repo_root: Path | None = None) -> Path:
         for marker in (
             "7-Day Quick Digest",
             "Accepted Overnight Research · Age Unverified",
+            'data-publication-state="current-cycle-news-commentary-missing"',
         )
     ):
         raise SystemExit("trader book tab lost required dashboard news digest marker")
