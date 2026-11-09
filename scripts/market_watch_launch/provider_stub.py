@@ -161,6 +161,9 @@ def build_stub_output(
         "cross_assets": _frozen_cross_assets(base_packet),
         "trade_permissions": base_packet.get("trade_permissions"),
     }
+    from scripts.dashboard_repair.calendar_packet import economic_calendar_from_frozen
+
+    agent_packet["economic_calendar"] = economic_calendar_from_frozen(base_packet)
     agent_packet["packet_sha256"] = sha256_json(agent_packet)
     packet_hash = agent_packet["packet_sha256"]
 
