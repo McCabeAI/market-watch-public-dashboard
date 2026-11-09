@@ -23,6 +23,7 @@ from scripts.macro_ingestion.score_bridge import points_from_observation_stores
 from scripts.market_watch_launch.lineage import stage_verified_lineage
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.temperature_level import CALIBRATION_PATH, load_calibration, load_history
+from tests.macro_cutoff import DEFAULT_MACRO_CUTOFF, cutoff_history_dir
 
 LAUNCH = ROOT / "data/market_watch_launches/mwl-20261015T085222Z-b4bbe448"
 OBS_DIR = LAUNCH / "ingestion/observations"
@@ -546,10 +547,11 @@ class CaScoreLineageTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             launch_dir = Path(tmp) / "launch"
             launch_dir.mkdir()
+            hist_dir = cutoff_history_dir(Path(tmp) / "hist", DEFAULT_MACRO_CUTOFF)
             result = stage_verified_lineage(
                 launch_dir=launch_dir,
                 checked_at="2026-11-15T08:52:22Z",
-                canonical_history_dir=HISTORY_DIR,
+                canonical_history_dir=hist_dir,
                 calibration_path=CALIBRATION_PATH,
                 points=[wrong, future, bad_gdp],
                 mode="live",

@@ -29,6 +29,7 @@ from scripts.macro_freshness import (
     release_due,
     roll_to_business_day,
 )
+from scripts.macro_freshness import load_macro_inputs
 from scripts.macro_source_refresh import (
     apply_verified_observation,
     parse_fred_csv,
@@ -36,6 +37,7 @@ from scripts.macro_source_refresh import (
     refresh_macro_sources,
     relate_periods,
 )
+from tests.macro_cutoff import DEFAULT_MACRO_CUTOFF, materialize_macro_test_root
 from scripts.overnight.clock import isoformat, parse_iso
 from scripts.overnight.collect import collect_inputs
 from scripts.overnight.constants import REQUIRED_OPEN_FAMILIES
@@ -290,177 +292,220 @@ class LedgerFreshnessTests(unittest.TestCase):
         # row would duplicate the canonical print. A verified new release is
         # the next period on that same BLS-primary score identity.
         when = OCT6
-        history = json.loads((ROOT / "data" / "temperature_history" / "us.json").read_text(encoding="utf-8"))
-        september = [
-            obs
-            for obs in history["components"]["Labor.unemployment"]["observations"]
-            if obs.get("reference_period") == "2026-09" and obs.get("transformation") == "percent"
-        ]
-        self.assertEqual(len(september), 1)
-        self.assertEqual(september[0]["series_id"], "UNRATE")
-        self.assertEqual(september[0]["value"], 4.2)
-        self.assertEqual(september[0]["source_url"], BLS_UNRATE_URL)
-        before = load_state()
+        with tempfile.TemporaryDirectory() as tmp:
+            test_root = materialize_macro_test_root(Path(tmp), DEFAULT_MACRO_CUTOFF)
+            us_path = test_root / "data" / "temperature_history" / "us.json"
+            history = json.loads(us_path.read_text(encoding="utf-8"))
+            september = [
+                obs
+                for obs in history["components"]["Labor.unemployment"]["observations"]
+                if obs.get("reference_period") == "2026-09" and obs.get("transformation") == "percent"
+            ]
+            self.assertEqual(len(september), 1)
+            self.assertEqual(september[0]["series_id"], "UNRATE")
+            self.assertEqual(september[0]["value"], 4.2)
+            self.assertEqual(september[0]["source_url"], BLS_UNRATE_URL)
+            calibration, _registry, histories, _scores = load_macro_inputs(test_root)
+            before = build_score_state(calibration, compute_state(calibration, histories))
 
-        def fetch(entry: dict) -> dict:
-            if entry["id"] == "US.Labor.unemployment":
-                self.assertEqual(entry["latest_period"], "2026-09")
-                self.assertEqual(entry["latest_value"], 4.2)
-                self.assertEqual(entry["series_id"], "UNRATE")
-                self.assertEqual(entry["source_transformation"], "percent")
-                return {
-                    "ok": True,
+            def fetch(entry: dict) -> dict:
+                if entry["id"] == "US.Labor.unemployment":
+                    self.assertEqual(entry["latest_period"], "2026-09")
+                    self.assertEqual(entry["latest_value"], 4.2)
+                    self.assertEqual(entry["series_id"], "UNRATE")
+                    self.assertEqual(entry["source_transformation"], "percent")
+                    return {
+                        "ok": True,
+                        "reference_period": "2026-10",
+                        "value": 6.5,
+                        "transformation": "percent",
+                        "series_id": "UNRATE",
+                        "bls_series_id": "LNS14000000",
+                        "source_url": BLS_UNRATE_URL,
+                    }
+                return _confirmed(when)(entry)
+
+            result = refresh_macro_sources(test_root, when=when, fetcher=fetch, persist=False)
+            self.assertEqual(result["ingested"], ["US.Labor.unemployment"])
+            state = result["score_state"]
+            self.assertEqual(state["as_of"], "2026-09-21")
+            self.assertEqual(state["calibration_anchor_date"], "2026-09-21")
+            self.assertGreater(state["last_refresh_date"], "2026-09-21")
+            self.assertNotEqual(
+                state["countries"]["US"]["Labor"]["level"],
+                before["countries"]["US"]["Labor"]["level"],
+            )
+            unemployment = state["countries"]["US"]["Labor"]["component_state"]["unemployment"]
+            self.assertTrue(str(unemployment.get("retrieved_at") or "").startswith("2026-10-06"))
+            self.assertEqual(unemployment["as_of"], "2026-10")
+            self.assertEqual(unemployment["transform_value"], 6.5)
+            self.assertEqual(
+                state["countries"]["US"]["Labor"]["components"],
+                before["countries"]["US"]["Labor"]["components"],
+            )
+            self.assertEqual(
+                state["countries"]["US"]["Inflation"]["level"],
+                before["countries"]["US"]["Inflation"]["level"],
+            )
+            self.assertEqual(
+                state["countries"]["CA"]["Labor"]["level"],
+                before["countries"]["CA"]["Labor"]["level"],
+            )
+            self.assertEqual(
+                state["countries"]["US"]["Labor"]["coverage"],
+                before["countries"]["US"]["Labor"]["coverage"],
+            )
+            updated = next(row for row in result["components"] if row["id"] == "US.Labor.unemployment")
+            self.assertEqual(updated["reference_period"], "2026-10")
+            self.assertEqual(updated["series_id"], "UNRATE")
+            self.assertEqual(updated["status"], "fresh")
+            self.assertNotEqual(updated["checked_at"], "2026-09-21")
+            disk_after = json.loads(us_path.read_text(encoding="utf-8"))
+            self.assertEqual(history, disk_after)
+
+            appended = apply_verified_observation(
+                {"US": json.loads(json.dumps(history))},
+                {
+                    "country": "US",
+                    "history_key": "Labor.unemployment",
+                    "series_id": "UNRATE",
+                    "source_transformation": "percent",
+                },
+                {
                     "reference_period": "2026-10",
                     "value": 6.5,
                     "transformation": "percent",
                     "series_id": "UNRATE",
-                    "bls_series_id": "LNS14000000",
                     "source_url": BLS_UNRATE_URL,
-                }
-            return _confirmed(when)(entry)
+                    "checked_at": isoformat(when),
+                },
+            )
+            self.assertTrue(appended)
 
-        result = refresh_macro_sources(ROOT, when=when, fetcher=fetch, persist=False)
-        self.assertEqual(result["ingested"], ["US.Labor.unemployment"])
-        state = result["score_state"]
-        self.assertEqual(state["as_of"], "2026-09-21")
-        self.assertEqual(state["calibration_anchor_date"], "2026-09-21")
-        self.assertGreater(state["last_refresh_date"], "2026-09-21")
-        self.assertNotEqual(state["countries"]["US"]["Labor"]["level"], before["countries"]["US"]["Labor"]["level"])
-        unemployment = state["countries"]["US"]["Labor"]["component_state"]["unemployment"]
-        self.assertTrue(str(unemployment.get("retrieved_at") or "").startswith("2026-10-06"))
-        self.assertEqual(unemployment["as_of"], "2026-10")
-        self.assertEqual(unemployment["transform_value"], 6.5)
-        self.assertEqual(state["countries"]["US"]["Labor"]["components"], before["countries"]["US"]["Labor"]["components"])
-        self.assertEqual(state["countries"]["US"]["Inflation"]["level"], before["countries"]["US"]["Inflation"]["level"])
-        self.assertEqual(state["countries"]["CA"]["Labor"]["level"], before["countries"]["CA"]["Labor"]["level"])
-        self.assertEqual(state["countries"]["US"]["Labor"]["coverage"], before["countries"]["US"]["Labor"]["coverage"])
-        updated = next(row for row in result["components"] if row["id"] == "US.Labor.unemployment")
-        self.assertEqual(updated["reference_period"], "2026-10")
-        self.assertEqual(updated["series_id"], "UNRATE")
-        self.assertEqual(updated["status"], "fresh")
-        self.assertNotEqual(updated["checked_at"], "2026-09-21")
-        disk_after = json.loads((ROOT / "data" / "temperature_history" / "us.json").read_text(encoding="utf-8"))
-        self.assertEqual(history, disk_after)
-
-        appended = apply_verified_observation(
-            {"US": json.loads(json.dumps(history))},
-            {"country": "US", "history_key": "Labor.unemployment", "series_id": "UNRATE", "source_transformation": "percent"},
-            {
-                "reference_period": "2026-10",
-                "value": 6.5,
-                "transformation": "percent",
-                "series_id": "UNRATE",
-                "source_url": BLS_UNRATE_URL,
-                "checked_at": isoformat(when),
-            },
-        )
-        self.assertTrue(appended)
-
-        again = apply_verified_observation(
-            {"US": history},
-            {"country": "US", "history_key": "Labor.unemployment", "series_id": "UNRATE", "source_transformation": "percent"},
-            {"reference_period": "2026-08", "value": 1.0, "transformation": "percent", "series_id": "UNRATE", "checked_at": isoformat(when)},
-        )
-        self.assertFalse(again)
-        september_again = apply_verified_observation(
-            {"US": history},
-            {"country": "US", "history_key": "Labor.unemployment", "series_id": "UNRATE", "source_transformation": "percent"},
-            {
-                "reference_period": "2026-09",
-                "value": 4.2,
-                "transformation": "percent",
-                "series_id": "UNRATE",
-                "source_url": BLS_UNRATE_URL,
-                "checked_at": isoformat(when),
-            },
-        )
-        self.assertFalse(september_again)
+            again = apply_verified_observation(
+                {"US": history},
+                {
+                    "country": "US",
+                    "history_key": "Labor.unemployment",
+                    "series_id": "UNRATE",
+                    "source_transformation": "percent",
+                },
+                {
+                    "reference_period": "2026-08",
+                    "value": 1.0,
+                    "transformation": "percent",
+                    "series_id": "UNRATE",
+                    "checked_at": isoformat(when),
+                },
+            )
+            self.assertFalse(again)
+            september_again = apply_verified_observation(
+                {"US": history},
+                {
+                    "country": "US",
+                    "history_key": "Labor.unemployment",
+                    "series_id": "UNRATE",
+                    "source_transformation": "percent",
+                },
+                {
+                    "reference_period": "2026-09",
+                    "value": 4.2,
+                    "transformation": "percent",
+                    "series_id": "UNRATE",
+                    "source_url": BLS_UNRATE_URL,
+                    "checked_at": isoformat(when),
+                },
+            )
+            self.assertFalse(september_again)
 
     def test_bls_primary_unemployment_rejects_stale_revision_and_mismatched_identity(self) -> None:
         when = OCT6
-        before = json.loads((ROOT / "data" / "temperature_history" / "us.json").read_text(encoding="utf-8"))
+        with tempfile.TemporaryDirectory() as tmp:
+            test_root = materialize_macro_test_root(Path(tmp), DEFAULT_MACRO_CUTOFF)
+            us_path = test_root / "data" / "temperature_history" / "us.json"
+            before = json.loads(us_path.read_text(encoding="utf-8"))
 
-        def _reject(payload: dict) -> dict:
-            def fetch(entry: dict) -> dict:
-                if entry["id"] == "US.Labor.unemployment":
-                    return payload
-                return _confirmed(when)(entry)
+            def _reject(payload: dict) -> dict:
+                def fetch(entry: dict) -> dict:
+                    if entry["id"] == "US.Labor.unemployment":
+                        return payload
+                    return _confirmed(when)(entry)
 
-            result = refresh_macro_sources(ROOT, when=when, fetcher=fetch, persist=False)
-            row = next(item for item in result["components"] if item["id"] == "US.Labor.unemployment")
-            after = json.loads((ROOT / "data" / "temperature_history" / "us.json").read_text(encoding="utf-8"))
-            self.assertEqual(before, after)
-            self.assertEqual(result["ingested"], [])
-            return row
+                result = refresh_macro_sources(test_root, when=when, fetcher=fetch, persist=False)
+                row = next(item for item in result["components"] if item["id"] == "US.Labor.unemployment")
+                after = json.loads(us_path.read_text(encoding="utf-8"))
+                self.assertEqual(before, after)
+                self.assertEqual(result["ingested"], [])
+                return row
 
-        revised = _reject(
-            {
-                "ok": True,
-                "reference_period": "2026-09",
-                "value": 6.5,
-                "transformation": "percent",
-                "series_id": "UNRATE",
-                "source_url": BLS_UNRATE_URL,
-            }
-        )
-        self.assertEqual(revised["status"], "unexpected_change")
-        self.assertEqual(revised["reference_period"], "2026-09")
-
-        stale = _reject(
-            {
-                "ok": True,
-                "reference_period": "2026-07",
-                "value": 9.0,
-                "transformation": "percent",
-                "series_id": "UNRATE",
-                "source_url": BLS_UNRATE_URL,
-            }
-        )
-        self.assertEqual(stale["status"], "unavailable")
-
-        native_bls_id = _reject(
-            {
-                "ok": True,
-                "reference_period": "2026-10",
-                "value": 6.5,
-                "transformation": "percent",
-                "series_id": "LNS14000000",
-                "source_url": BLS_UNRATE_URL,
-            }
-        )
-        self.assertEqual(native_bls_id["status"], "partial")
-
-        wrong_transform = _reject(
-            {
-                "ok": True,
-                "reference_period": "2026-10",
-                "value": 6.5,
-                "transformation": "yoy_pct",
-                "series_id": "UNRATE",
-                "source_url": BLS_UNRATE_URL,
-            }
-        )
-        self.assertEqual(wrong_transform["status"], "partial")
-
-        def fetch_level(entry: dict) -> dict:
-            if entry["id"] == "US.Labor.unemployment":
-                return {
+            revised = _reject(
+                {
                     "ok": True,
-                    "reference_period": "2026-10",
-                    "value": 4.4,
-                    "transformation": "source_level",
+                    "reference_period": "2026-09",
+                    "value": 6.5,
+                    "transformation": "percent",
                     "series_id": "UNRATE",
                     "source_url": BLS_UNRATE_URL,
                 }
-            return _confirmed(when)(entry)
+            )
+            self.assertEqual(revised["status"], "unexpected_change")
+            self.assertEqual(revised["reference_period"], "2026-09")
 
-        derived = refresh_macro_sources(ROOT, when=when, fetcher=fetch_level, persist=False)
-        self.assertEqual(derived["ingested"], ["US.Labor.unemployment"])
-        scored = derived["score_state"]["countries"]["US"]["Labor"]["component_state"]["unemployment"]
-        self.assertEqual(scored["as_of"], "2026-10")
-        self.assertEqual(scored["transform_value"], 4.4)
-        after_level = json.loads((ROOT / "data" / "temperature_history" / "us.json").read_text(encoding="utf-8"))
-        self.assertEqual(before, after_level)
+            stale = _reject(
+                {
+                    "ok": True,
+                    "reference_period": "2026-07",
+                    "value": 9.0,
+                    "transformation": "percent",
+                    "series_id": "UNRATE",
+                    "source_url": BLS_UNRATE_URL,
+                }
+            )
+            self.assertEqual(stale["status"], "unavailable")
+
+            native_bls_id = _reject(
+                {
+                    "ok": True,
+                    "reference_period": "2026-10",
+                    "value": 6.5,
+                    "transformation": "percent",
+                    "series_id": "LNS14000000",
+                    "source_url": BLS_UNRATE_URL,
+                }
+            )
+            self.assertEqual(native_bls_id["status"], "partial")
+
+            wrong_transform = _reject(
+                {
+                    "ok": True,
+                    "reference_period": "2026-10",
+                    "value": 6.5,
+                    "transformation": "yoy_pct",
+                    "series_id": "UNRATE",
+                    "source_url": BLS_UNRATE_URL,
+                }
+            )
+            self.assertEqual(wrong_transform["status"], "partial")
+
+            def fetch_level(entry: dict) -> dict:
+                if entry["id"] == "US.Labor.unemployment":
+                    return {
+                        "ok": True,
+                        "reference_period": "2026-10",
+                        "value": 4.4,
+                        "transformation": "source_level",
+                        "series_id": "UNRATE",
+                        "source_url": BLS_UNRATE_URL,
+                    }
+                return _confirmed(when)(entry)
+
+            derived = refresh_macro_sources(test_root, when=when, fetcher=fetch_level, persist=False)
+            self.assertEqual(derived["ingested"], ["US.Labor.unemployment"])
+            scored = derived["score_state"]["countries"]["US"]["Labor"]["component_state"]["unemployment"]
+            self.assertEqual(scored["as_of"], "2026-10")
+            self.assertEqual(scored["transform_value"], 4.4)
+            after_level = json.loads(us_path.read_text(encoding="utf-8"))
+            self.assertEqual(before, after_level)
 
     def test_same_session_catch_up_is_idempotent_and_a_later_session_rechecks(self) -> None:
         calls = {"n": 0}
@@ -636,16 +681,26 @@ class ScoreCutoffTests(unittest.TestCase):
     def test_disk_scores_remain_the_engine_output(self) -> None:
         state = load_state()
         calibration = load_calibration()
-        engine = build_score_state(calibration, compute_state(calibration, load_history()))
+        histories = load_history()
+        engine = build_score_state(calibration, compute_state(calibration, histories))
         self.assertEqual(state, engine)
         self.assertEqual(state["as_of"], calibration["as_of"])
-        unemployment = state["countries"]["US"]["Labor"]["component_state"]["unemployment"]
-        self.assertEqual(unemployment["as_of"], "2026-09")
-        self.assertEqual(unemployment["transform_value"], 4.2)
-        self.assertEqual(
-            state["countries"]["US"]["Labor"]["level"],
-            engine["countries"]["US"]["Labor"]["level"],
-        )
+
+        with tempfile.TemporaryDirectory() as tmp:
+            test_root = materialize_macro_test_root(Path(tmp), DEFAULT_MACRO_CUTOFF)
+            cut_calibration, _registry, cut_histories, _scores = load_macro_inputs(test_root)
+            cutoff_state = build_score_state(
+                cut_calibration,
+                compute_state(cut_calibration, cut_histories, cutoff=DEFAULT_MACRO_CUTOFF),
+            )
+            unemployment = cutoff_state["countries"]["US"]["Labor"]["component_state"]["unemployment"]
+            self.assertEqual(unemployment["as_of"], "2026-09")
+            self.assertEqual(unemployment["transform_value"], 4.2)
+            engine_cutoff = compute_state(cut_calibration, cut_histories, cutoff=DEFAULT_MACRO_CUTOFF)
+            self.assertEqual(
+                cutoff_state["countries"]["US"]["Labor"]["level"],
+                engine_cutoff["countries"]["US"]["Labor"]["level"],
+            )
 
 
 if __name__ == "__main__":

@@ -1080,7 +1080,13 @@ class BookTransitionTests(unittest.TestCase):
         from pathlib import Path
         from scripts.overnight.books import validate_books, public_books_view
 
-        raw = json.loads((Path(__file__).resolve().parents[1] / "data" / "overnight" / "books" / "latest.json").read_text())
+        books_fixture = (
+            Path(__file__).resolve().parent
+            / "fixtures"
+            / "overnight_books"
+            / "canonical_trader_books_latest.json"
+        )
+        raw = json.loads(books_fixture.read_text(encoding="utf-8"))
         before = deepcopy(raw)
         validated = validate_books(deepcopy(raw))
         view = public_books_view(deepcopy(raw))
@@ -1088,7 +1094,10 @@ class BookTransitionTests(unittest.TestCase):
         chart = validated["seats"]["chart-guy"]
         self.assertEqual(chart["nav_usd"], 100_000_000)
         self.assertEqual(chart["positions"], [])
-        self.assertEqual(chart["history"], [])
+        self.assertEqual(chart["history"], before["seats"]["chart-guy"]["history"])
+        self.assertEqual(len(chart["history"]), 1)
+        self.assertEqual(chart["history"][0]["action"], "HOLD")
+        self.assertEqual(chart["history"][0]["overnight_run_id"], "overnight-20261109")
         self.assertEqual(chart["realized_pnl_usd"], 0.0)
         self.assertEqual(before["seats"]["chart-guy"]["nav_usd"], 100_000_000)
         for seat, item in validated["seats"].items():
