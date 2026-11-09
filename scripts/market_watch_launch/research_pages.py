@@ -1092,7 +1092,7 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
         raise _fail("trader_books_not_previous_accepted", str(published_run))
     if trader.get("books_run_id") != books.get("books_run_id") or trader.get("books_as_of") != books.get("as_of"):
         raise _fail("trader_books_dates_mismatch", f"{trader.get('books_run_id')} {trader.get('books_as_of')}")
-    from scripts.overnight.books import match_authoritative_roster, published_book_roster
+    from scripts.overnight.books import published_book_roster, published_room_roster
 
     seats = trader.get("seats")
     matched_roster = published_book_roster(seats)
@@ -1136,19 +1136,8 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     room = _read_json(site / "trader-room.json")
     if room.get("available") is not True:
         raise _fail("trader_room_packet_incomplete")
-    trades = room.get("trades")
-    if not isinstance(trades, list):
-        raise _fail("trader_room_packet_incomplete")
-    agent_ids: list[str] = []
-    for row in trades:
-        if not isinstance(row, dict):
-            raise _fail("trader_room_packet_incomplete")
-        agent = row.get("agent")
-        if not isinstance(agent, str):
-            raise _fail("trader_room_packet_incomplete")
-        agent_ids.append(agent)
-    matched_room = match_authoritative_roster(agent_ids)
-    if matched_room is None or room.get("seat_count") != len(matched_room):
+    matched_room = published_room_roster(room)
+    if matched_room is None:
         raise _fail("trader_room_packet_incomplete")
     _ = root
     return release

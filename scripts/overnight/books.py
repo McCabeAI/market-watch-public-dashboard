@@ -1587,6 +1587,32 @@ def published_book_roster(seats: Any) -> tuple[str, ...] | None:
     return match_authoritative_roster(ids)
 
 
+def published_room_roster(packet: Any) -> tuple[str, ...] | None:
+    """Match a public trader-room packet to an authoritative roster identity."""
+    if not isinstance(packet, dict):
+        return None
+    if packet.get("available") is not True:
+        return None
+    trades = packet.get("trades")
+    if not isinstance(trades, list) or not trades:
+        return None
+    ids: list[str] = []
+    for row in trades:
+        if not isinstance(row, dict):
+            return None
+        agent = row.get("agent")
+        if not isinstance(agent, str):
+            return None
+        ids.append(agent)
+    matched = match_authoritative_roster(ids)
+    if matched is None:
+        return None
+    seat_count = packet.get("seat_count")
+    if not isinstance(seat_count, int) or seat_count != len(matched):
+        return None
+    return matched
+
+
 def validate_books(
     books: dict[str, Any],
     *,

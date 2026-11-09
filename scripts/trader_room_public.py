@@ -14,6 +14,7 @@ import re
 from pathlib import Path
 from typing import Any
 
+from scripts.overnight.books import published_room_roster
 from scripts.overnight.public_prose import sanitize_public_value
 from scripts.trader_room.constants import HANDOFF_MARKER, STANDING_ADVOCATES
 from scripts.trader_room.agent_config import pin_from_artifact, pin_trader_ids
@@ -112,6 +113,17 @@ def list_run_dirs(root: Path = ROOT) -> list[Path]:
         (path for path in runs_dir.iterdir() if path.is_dir() and not path.name.startswith(".")),
         key=lambda path: run_sort_key(path.name),
     )
+
+
+def assert_published_trader_room(packet: dict[str, Any], run_dir: Path) -> tuple[str, ...]:
+    """Require an authoritative trader-room roster that matches the run's cycle pin."""
+    matched = published_room_roster(packet)
+    if matched is None:
+        raise AssertionError("trader-room packet does not match an authoritative roster")
+    expected = _expected_advocates(run_dir)
+    if set(matched) != expected:
+        raise AssertionError("trader-room roster does not match the selected run pin")
+    return matched
 
 
 def _expected_advocates(run_dir: Path) -> set[str]:

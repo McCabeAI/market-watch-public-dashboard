@@ -12,10 +12,11 @@ from pathlib import Path
 from scripts.market_watch_launch import publication_release as pr
 from scripts.market_watch_launch import research_pages as rp
 from scripts.market_watch_launch.pages_dispatch import assert_public_dataset
-from scripts.overnight.books import match_authoritative_roster, published_book_roster
+from scripts.overnight.books import match_authoritative_roster, published_book_roster, published_room_roster
 from scripts.overnight.constants import STANDING_SEATS
 from scripts.pm.constants import AUTOMATED_PM_IDS
-from scripts.trader_room.agent_config import legacy_pin
+from scripts.trader_room.agent_config import build_pin, legacy_pin
+from scripts.trader_room_public import assert_published_trader_room, build_public_packet, select_newest_complete_run
 
 REPO = Path(__file__).resolve().parents[1]
 LEGACY_IDS = tuple(str(row["id"]) for row in legacy_pin("daily")["traders"])
@@ -31,6 +32,16 @@ def _seat_rows(ids: tuple[str, ...] | list[str]) -> list[dict[str, str]]:
 
 def _pm_rows() -> list[dict[str, str]]:
     return [{"pm_id": pm_id} for pm_id in AUTOMATED_PM_IDS]
+
+
+def _room_packet(agents: tuple[str, ...] | list[str], **overrides) -> dict:
+    body = {
+        "available": True,
+        "seat_count": len(agents),
+        "trades": [{"agent": agent} for agent in agents],
+    }
+    body.update(overrides)
+    return body
 
 
 class LegacyStandingRelationship(unittest.TestCase):
@@ -70,6 +81,30 @@ class MatchAuthoritativeRosterTests(unittest.TestCase):
         for seat_ids in cases:
             with self.subTest(seat_ids=seat_ids):
                 self.assertIsNone(match_authoritative_roster(seat_ids))
+
+    def test_published_room_roster_accepts_both_rosters(self) -> None:
+        self.assertEqual(published_room_roster(_room_packet(LEGACY_IDS)), LEGACY_IDS)
+        self.assertEqual(published_room_roster(_room_packet(STANDING_SEATS)), tuple(STANDING_SEATS))
+
+    def test_published_room_roster_shape_failures(self) -> None:
+        good = _room_packet(LEGACY_IDS)
+        cases = [
+            {},
+            None,
+            _room_packet([], seat_count=0),
+            {**good, "available": False},
+            {**good, "seat_count": 15},
+            _room_packet(LEGACY_IDS[:13]),
+            _room_packet([*LEGACY_IDS[:-1], "chart-guy"]),
+            _room_packet([*STANDING_SEATS, "unknown-trader"]),
+            _room_packet([*STANDING_SEATS, STANDING_SEATS[0]]),
+            {**good, "trades": good["trades"] + [{"agent": LEGACY_IDS[0]}]},
+            {"available": True, "seat_count": 14, "trades": "bad"},
+            _room_packet(LEGACY_IDS, trades=[{"agent": "  "}]),
+        ]
+        for packet in cases:
+            with self.subTest(packet=packet):
+                self.assertIsNone(published_room_roster(packet))
 
     def test_published_book_roster_shape_failures(self) -> None:
         good = _seat_rows(LEGACY_IDS)
@@ -137,6 +172,67 @@ class AssertPublicDatasetRosterTests(unittest.TestCase):
                 pm=pm,
                 overnight_run_id="overnight-20261022",
             )
+
+
+class AssertPublishedTraderRoomTests(unittest.TestCase):
+    def _run_dir(self, pin: dict) -> Path:
+        tmp = Path(tempfile.mkdtemp())
+        self.addCleanup(lambda: _rmtree(tmp))
+        (tmp / "launch_plan.json").write_text(
+            json.dumps({"agent_roster_pin": pin}),
+            encoding="utf-8",
+        )
+        return tmp
+
+    def test_legacy_pin_packet_passes(self) -> None:
+        pin = legacy_pin("ondemand")
+        run_dir = self._run_dir(pin)
+        packet = _room_packet(tuple(str(row["id"]) for row in pin["traders"]))
+        assert_published_trader_room(packet, run_dir)
+
+    def test_standing_pin_packet_passes(self) -> None:
+        pin = build_pin("ondemand")
+        run_dir = self._run_dir(pin)
+        packet = _room_packet(tuple(str(row["id"]) for row in pin["traders"]))
+        assert_published_trader_room(packet, run_dir)
+
+    def test_malformed_packets_raise(self) -> None:
+        pin = legacy_pin("ondemand")
+        run_dir = self._run_dir(pin)
+        ids = tuple(str(row["id"]) for row in pin["traders"])
+        bad_packets = [
+            _room_packet([*ids, ids[0]]),
+            _room_packet([*ids, "unknown-trader"]),
+            _room_packet(ids[: len(ids) - 1]),
+            _room_packet(ids, seat_count=len(ids) - 1),
+            _room_packet(ids, available=False),
+        ]
+        for packet in bad_packets:
+            with self.subTest(seat_count=packet.get("seat_count")):
+                with self.assertRaises(AssertionError):
+                    assert_published_trader_room(packet, run_dir)
+
+    def test_pin_packet_mismatch_raises(self) -> None:
+        legacy = legacy_pin("ondemand")
+        standing = build_pin("ondemand")
+        legacy_ids = tuple(str(row["id"]) for row in legacy["traders"])
+        standing_ids = tuple(str(row["id"]) for row in standing["traders"])
+        with self.assertRaises(AssertionError):
+            assert_published_trader_room(_room_packet(standing_ids, seat_count=15), self._run_dir(legacy))
+        with self.assertRaises(AssertionError):
+            assert_published_trader_room(_room_packet(legacy_ids), self._run_dir(standing))
+
+    def test_canonical_newest_complete_run_passes(self) -> None:
+        selected = select_newest_complete_run(REPO)
+        if selected is None:
+            self.fail("no complete valid canonical Trader Room run")
+        assert_published_trader_room(build_public_packet(REPO), selected)
+
+
+def _rmtree(path: Path) -> None:
+    import shutil
+
+    shutil.rmtree(path, ignore_errors=True)
 
 
 class Nov9ResearchEditionSmoke(unittest.TestCase):
