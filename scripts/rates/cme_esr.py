@@ -13,8 +13,7 @@ from typing import Any, Callable
 
 from scripts.rates.cme_session import (
     FRESH_MAX_AGE_DAYS,
-    classify_mark_freshness,
-    latest_expected_cme_session,
+    stamp_cme_publication_fields,
 )
 
 FetchBytes = Callable[..., bytes]
@@ -668,6 +667,7 @@ def acquire_esr_contracts(
     today: date,
     benchmark: float | None = None,
     last_official: list | None = None,
+    now: datetime | None = None,
 ) -> tuple[list, str, str, dict]:
     """Acquire ESR strips from CME settlements, then optional eSignal fallback."""
     attempts: list[dict[str, Any]] = []
@@ -689,18 +689,14 @@ def acquire_esr_contracts(
             )
             _accept_fresh_esr_rows(rows, today)
             trade_iso = rows[0]["observation_date"]
-            obs_date = date.fromisoformat(str(trade_iso))
-            session_expected = latest_expected_cme_session(today).isoformat()
-            freshness_hint = classify_mark_freshness(
+            freshness_hint, pub = stamp_cme_publication_fields(
                 curve_key="ESR",
-                observation=obs_date,
+                rows=rows,
                 today=today,
                 mark_kind="official_settlement",
                 trade_date_verified=True,
+                now=now,
             )
-            for row in rows:
-                row["session_expected"] = session_expected
-                row["freshness"] = freshness_hint
             provenance = {
                 "attempts": attempts,
                 "mark_kind": "official_settlement",
@@ -708,7 +704,9 @@ def acquire_esr_contracts(
                 "trade_date": trade_iso,
                 "via": attempt.get("via"),
                 "freshness_hint": freshness_hint,
-                "session_expected": session_expected,
+                "session_expected": pub["expected_session_if_published"],
+                "publishable_session": pub["publishable_session"],
+                "publication_status": pub,
             }
             attempts.append(attempt)
             return rows, url, "CME ESR settlements API", provenance
@@ -728,19 +726,14 @@ def acquire_esr_contracts(
             delayed = _comparable_fallback(delayed, last_official)
         else:
             _accept_delayed_without_official(delayed, today=today, retrieved_on=retrieved_on)
-        session_expected = latest_expected_cme_session(today).isoformat()
-        obs_raw = delayed[0].get("observation_date")
-        obs_date = date.fromisoformat(str(obs_raw)) if obs_raw else None
-        freshness_hint = classify_mark_freshness(
+        freshness_hint, pub = stamp_cme_publication_fields(
             curve_key="ESR",
-            observation=obs_date,
+            rows=delayed,
             today=today,
             mark_kind="delayed_quote",
             trade_date_verified=False,
+            now=now,
         )
-        for row in delayed:
-            row["session_expected"] = session_expected
-            row["freshness"] = freshness_hint
         provenance = {
             "attempts": attempts,
             "mark_kind": "delayed_quote",
@@ -748,7 +741,9 @@ def acquire_esr_contracts(
             "trade_date": delayed[0].get("observation_date"),
             "via": attempt.get("via"),
             "freshness_hint": freshness_hint,
-            "session_expected": session_expected,
+            "session_expected": pub["expected_session_if_published"],
+            "publishable_session": pub["publishable_session"],
+            "publication_status": pub,
         }
         return delayed, delayed_url, "delayed CME ESR futures chain via eSignal", provenance
     except Exception as exc:

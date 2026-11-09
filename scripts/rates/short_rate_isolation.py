@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import copy
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Callable
 
@@ -180,16 +180,22 @@ def _freshness_class(
     mark_kind: str,
     trade_date_verified: bool,
     provenance: dict[str, Any],
+    now: datetime | None = None,
 ) -> str:
     hint = provenance.get("freshness_hint") if isinstance(provenance, dict) else None
     if hint in ("fresh", "stale", "unavailable"):
-        return str(hint)
+        pub = provenance.get("publication_status") if isinstance(provenance, dict) else None
+        if isinstance(pub, dict) and pub.get("research_eligible") is False and hint == "fresh":
+            hint = None
+        elif hint is not None:
+            return str(hint)
     return classify_mark_freshness(
         curve_key=curve_key,
         observation=observation,
         today=today,
         mark_kind=mark_kind,
         trade_date_verified=trade_date_verified,
+        now=now,
     )
 
 
@@ -245,8 +251,10 @@ def _process_task_result(
     store: dict[str, Any],
     today: date,
     store_corrupt_note: str | None,
-) -> tuple[dict[str, Any], dict[str, Any]]:
+    now: datetime | None = None,
+) -> tuple[dict[str, Any], dict[str, Any], bool]:
     working_store = store
+    store_dirty = False
     if result["status"] == "ok":
         try:
             normalized = _normalize_acquire(result["value"])
@@ -259,6 +267,7 @@ def _process_task_result(
                     fetch_error=f"{curve_key} acquire normalize: {exc}",
                     store_corrupt_note=store_corrupt_note,
                 ),
+                store_dirty,
             )
         rows = normalized["rows"]
         method = str(normalized["method"])
@@ -274,6 +283,7 @@ def _process_task_result(
                     fetch_error=f"{curve_key}: fresh rows missing observation_date/as_of",
                     store_corrupt_note=store_corrupt_note,
                 ),
+                store_dirty,
             )
         if obs > today:
             return (
@@ -284,6 +294,7 @@ def _process_task_result(
                         "is in the future; not remembered"
                     ),
                 ),
+                store_dirty,
             )
         row_kind = rows[0].get("mark_kind") if rows and isinstance(rows[0], dict) else None
         prov_kind = provenance.get("mark_kind") if isinstance(provenance, dict) else None
@@ -297,6 +308,7 @@ def _process_task_result(
             mark_kind=mark_kind,
             trade_date_verified=verified,
             provenance=provenance,
+            now=now,
         )
 
         if curve_key in ("SR1", "SR3"):
@@ -309,6 +321,7 @@ def _process_task_result(
                             "outside freshness window; not remembered"
                         ),
                     ),
+                    store_dirty,
                 )
             try:
                 working_store = remember_fresh(
@@ -321,10 +334,12 @@ def _process_task_result(
                     mark_kind=mark_kind,
                     provenance=provenance,
                 )
+                store_dirty = True
             except ValueError as exc:
                 return (
                     working_store,
                     _unavailable_fetch_block(error=str(exc)),
+                    store_dirty,
                 )
             return (
                 working_store,
@@ -337,12 +352,12 @@ def _process_task_result(
                     mark_kind=mark_kind,
                     provenance=provenance,
                 ),
+                store_dirty,
             )
 
-        # ESR
         stored_as_of = _stored_as_of(working_store, curve_key)
         stored_record = (working_store.get("curves") or {}).get(curve_key)
-        is_delayed = mark_kind == "delayed_quote"
+        is_delayed = mark_kind in {"delayed_quote", "delayed_last"}
 
         if freshness == "fresh":
             try:
@@ -356,10 +371,12 @@ def _process_task_result(
                     mark_kind=mark_kind,
                     provenance=provenance,
                 )
+                store_dirty = True
             except ValueError as exc:
                 return (
                     working_store,
                     _unavailable_fetch_block(error=str(exc)),
+                    store_dirty,
                 )
             return (
                 working_store,
@@ -372,6 +389,7 @@ def _process_task_result(
                     mark_kind=mark_kind,
                     provenance=provenance,
                 ),
+                store_dirty,
             )
 
         if freshness == "unavailable":
@@ -386,9 +404,9 @@ def _process_task_result(
                     ),
                     store_corrupt_note=store_corrupt_note,
                 ),
+                store_dirty,
             )
 
-        # freshness == "stale"
         if is_delayed and stored_record and stored_as_of is not None:
             recalled = recall(working_store, curve_key, today=today)
             return (
@@ -398,6 +416,7 @@ def _process_task_result(
                     fetch_error=f"{curve_key}: delayed quote not promoted over stored official mark",
                     store_corrupt_note=store_corrupt_note,
                 ),
+                store_dirty,
             )
 
         if stored_as_of is not None and stored_as_of > obs:
@@ -408,6 +427,7 @@ def _process_task_result(
                     retained=True,
                     error=None,
                 ),
+                store_dirty,
             )
 
         if not is_delayed and (stored_as_of is None or stored_as_of <= obs):
@@ -422,10 +442,12 @@ def _process_task_result(
                     mark_kind=mark_kind,
                     provenance=provenance,
                 )
+                store_dirty = True
             except ValueError as exc:
                 return (
                     working_store,
                     _unavailable_fetch_block(error=str(exc)),
+                    store_dirty,
                 )
 
         return (
@@ -439,6 +461,7 @@ def _process_task_result(
                 mark_kind=mark_kind,
                 provenance=provenance,
             ),
+            store_dirty,
         )
 
     fetch_error = result.get("error") or f"{curve_key}: unknown fetch error"
@@ -450,6 +473,7 @@ def _process_task_result(
             fetch_error=fetch_error,
             store_corrupt_note=store_corrupt_note,
         ),
+        store_dirty,
     )
 
 
@@ -463,6 +487,7 @@ def collect_usd_eur_short_rates(
     acquire_sr1: Callable[..., object],
     acquire_sr3: Callable[..., object],
     acquire_esr: Callable[..., object],
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     persist = store_path is not None
     store_corrupt_note: str | None = None
@@ -496,16 +521,19 @@ def collect_usd_eur_short_rates(
 
     isolated = run_isolated({"SR1": task_sr1, "SR3": task_sr3, "ESR": task_esr})
     blocks: dict[str, dict[str, Any]] = {}
+    store_dirty = False
     for key in CURVE_KEYS:
-        store, blocks[key] = _process_task_result(
+        store, blocks[key], key_dirty = _process_task_result(
             key,
             isolated[key],
             store=store,
             today=today,
             store_corrupt_note=store_corrupt_note,
+            now=now,
         )
+        store_dirty = store_dirty or key_dirty
 
-    if persist:
+    if persist and store_dirty:
         save_store(Path(store_path), store)
     return {
         "SR1": blocks["SR1"],
@@ -580,6 +608,7 @@ def collect_zq_and_euribor(
     store_path: Path | str | None,
     acquire_zq: Callable[..., object],
     acquire_euribor: Callable[..., object],
+    now: datetime | None = None,
 ) -> dict[str, Any]:
     """Fault-isolated ZQ and EURIBOR collection on the short-rate last-good store.
 
@@ -605,14 +634,17 @@ def collect_zq_and_euribor(
 
     isolated = run_isolated({"ZQ": task_zq, "EURIBOR": task_euribor})
     blocks: dict[str, dict[str, Any]] = {}
+    store_dirty = False
     for key in ("ZQ", "EURIBOR"):
-        store, blocks[key] = _process_task_result(
+        store, blocks[key], key_dirty = _process_task_result(
             key,
             isolated[key],
             store=store,
             today=today,
             store_corrupt_note=store_corrupt_note,
+            now=now,
         )
-    if persist:
+        store_dirty = store_dirty or key_dirty
+    if persist and store_dirty:
         save_store(Path(store_path), store)
     return {"ZQ": blocks["ZQ"], "EURIBOR": blocks["EURIBOR"]}
