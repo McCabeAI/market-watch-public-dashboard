@@ -2386,6 +2386,71 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "SOFR futures already capitalize a hike path off 3.94 percent cash, with December at 4.115, March at 4.24, June at 4.335 and September at 4.365. The US 2-year at 4.46 and the 10-year at 4.84 have rallied hard into the jobs report, so new duration is a crowded pre-position. Canada and Australia show the same priced paths, and the completed Bank of England hike leaves no rates spread that is cheap to the information already in the curve."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 30,
+      "decision_fingerprint": "a4d2be55c8817d2bcfd1ee9702060345c5860c1ed7d462e7d5bf6d7dbd2c2416",
+      "event_id": "jde-ed1d24f3424b4fd8",
+      "funding_view": {
+        "current_sofr": "The official NY Fed SOFR fixing is 3.92 percent ACT/360 on 5 Nov.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Stay at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital is not warranted when realized funding is about the same as a strip that already prices the rise.",
+        "sr3_forward_view": "SR3 December implies 4.145, March 4.27, June 4.365 and September 4.395, about 22 to 48 basis points above the cash fixing through next September."
+      },
+      "invalidation": "The hold breaks if, after jobs, the strip settles on a path outside the current December-to-September range and that gap is not the consensus already in the news, or if Australian-kiwi remains at the 98th percentile after the existing short base has cleared.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a3ea5cd1192697aa70b925952eb8abd702e8727e6d1b24dd52896a940d74b785",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "The official NY Fed SOFR fixing is 3.92 percent ACT/360 on 5 Nov.",
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Stay at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital is not warranted when realized funding is about the same as a strip that already prices the rise.",
+          "sr3_forward_view": "SR3 December implies 4.145, March 4.27, June 4.365 and September 4.395, about 22 to 48 basis points above the cash fixing through next September."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "045f85aa1ec6ff095e45cab597e5d42b1d4c90437f58fa4443243a296ef7627d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The futures strip already sits 22 to 48 basis points above the 3.92 percent SOFR fixing, so the higher-funding path is the market price. Two-year yields at 4.51 and ten-year yields at 4.86 are well off the monthly highs and only slightly firmer today, with bullish bond bets already written up and jobs still ahead. Australian-kiwi at 1.2394 is a 98th-percentile extreme with the short already populated, while the kiwi at 0.5543 is a five-year low. Volatility at 28, Brent near 98, gold near 4,075, and Bank Rate at 4 percent are already in the price.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "The futures strip already sits 22 to 48 basis points above the 3.92 percent SOFR fixing, so the higher-funding path is the market price. Two-year yields at 4.51 and ten-year yields at 4.86 are well off the monthly highs and only slightly firmer today, with bullish bond bets already written up and jobs still ahead. Australian-kiwi at 1.2394 is a 98th-percentile extreme with the short already populated, while the kiwi at 0.5543 is a five-year low. Volatility at 28, Brent near 98, gold near 4,075, and Bank Rate at 4 percent are already in the price."
     }
   ],
   "schema_version": 1,

@@ -1,5 +1,60 @@
 {
-  "events": [],
+  "events": [
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 40,
+      "decision_fingerprint": "ee51f402e541a53fc674c6ce59e7a5caf2c2265c08def0d5372a66c067246c7e",
+      "event_id": "jde-020b81d37a614eb8",
+      "funding_view": null,
+      "invalidation": "A spot expression appears only if a later daily close leaves a single breakout or failed breakout with a side and states the prior close-range level on the adverse side plus a farther target. Until that daily-close level exists, the book stays flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2ea93b514cd80ea59e2db7a6f5f8aa764e5e0f79efaecae269c6d3a8f9ed3fb3",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7fc722d945a628493b9c1c6e11c30b930136ea200c321c3a5db7858246cbe062"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The latest daily closes show a cluster of Australian-dollar breakouts, short the base in Aussie-Swiss and Aussie-Sweden and long the base in sterling-Aussie, plus a separate kiwi-Canada breakout. Kiwi-Norway is a failed breakout with no side. Australian-kiwi still carries a large z-score, so the two dollars are not one chart. No name has a confirmed adverse daily-close level that would let reward exceed risk, and the research recommendations are empty. Nothing is opened.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "The latest daily closes show a cluster of Australian-dollar breakouts, short the base in Aussie-Swiss and Aussie-Sweden and long the base in sterling-Aussie, plus a separate kiwi-Canada breakout. Kiwi-Norway is a failed breakout with no side. Australian-kiwi still carries a large z-score, so the two dollars are not one chart. No name has a confirmed adverse daily-close level that would let reward exceed risk, and the research recommendations are empty. Nothing is opened."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_DECISION_JOURNAL"
 }

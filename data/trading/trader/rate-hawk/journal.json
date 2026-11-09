@@ -2616,6 +2616,60 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "The US two-year fell 12bp to 4.46 into the jobs report while SOFR cash is 3.94 and Brent is 98.29. That rally underprices a reaction function still aimed at price risks, with the Bank of England already at 4 percent and warning inflation could approach 5 percent. The September SOFR, March CORRA, and June AONIA shorts stay on. The new risk is a smaller short in December SOFR, the nearest exchange contract to that front-end rally, because the cash two-year itself is not a bookable contract."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US 2Y",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "47bba4645797a544ac61d991bb7a4e8758ed066df17aed497bbe3590eebadbbb",
+      "event_id": "jde-d777a77999e845d4",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if the labor data pulls December SOFR implied back toward 3.92 and the two-year extends its monthly decline, or if September 2027 implied loses the path above the overnight rate.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0b7fe057a45e25ea0c6964725ae6a29ca0a2901605bc91a9237d2f4ff00d6bd3",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6002d9153a61ff2c39ba6b0113d9af6a7cfd08ab3cb66a71ba561fb276ea6f7b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SOFR sits above the 3.92 overnight rate from December through the October 2028 terminal. The two-year has still rallied 26bp on the month to 4.51, up 5bp today, while Brent is 98.32, the Bank of England has raised Bank Rate to 4 percent, and the Fed is still gathering information on price risks before the labor data. Paying the two-year fades that monthly rally while the hike path and the oil impulse are still in place. Dollar-yen at 158.33 was available and was not the expression.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "SOFR sits above the 3.92 overnight rate from December through the October 2028 terminal. The two-year has still rallied 26bp on the month to 4.51, up 5bp today, while Brent is 98.32, the Bank of England has raised Bank Rate to 4 percent, and the Fed is still gathering information on price risks before the labor data. Paying the two-year fades that monthly rally while the hike path and the oil impulse are still in place. Dollar-yen at 158.33 was available and was not the expression."
     }
   ],
   "schema_version": 1,

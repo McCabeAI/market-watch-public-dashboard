@@ -1840,6 +1840,60 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "CORRA cash at 2.52 against the 2027 strip average of 3.05 still embeds about 53 basis points of hikes, and that premium is the easing gap to keep. The long strip from 3.40 is already ahead and stays at 42.5 million. US March SOFR at 4.24 is only about 30 basis points over 3.94 cash after a large bond rally, with Williams still waiting on price risks and Brent at 98.29, so there is no fresh US receive in front of the jobs report."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "268ccf395ad33d01a7eea96ef9831a464b921668686f490cf367eab54ac26eeb",
+      "event_id": "jde-c023bc586d3a4467",
+      "funding_view": null,
+      "invalidation": "The hold fails if the Canada 2027 strip trades back up through the 3.40 entry, or if a strong jobs print lifts the US strip and Canada follows while cash stays near 2.52.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "643c0fc564dbbaa9f4ac9958ac14a434fc7f3865b8aa574935b3404bb07962db",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6e82438e7821fd5a6d845e8d1e4e50351541fd6f67819d805e5cfbf0703800d0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Restrictive policy is already biting and the front end still prices the opposite. Canada cash at 2.52 against a February 2027 terminal at 2.725, with the 2027 strip marked near 3.05, is a hike path, and the existing long is the clean fade of that premium. US SOFR is the same mistake in larger prints, but volatility at 28, Brent near 98, Bank Rate just lifted to 4 percent, and jobs next make a second front-end long a bet on the print. Australia is essentially flat to cash, so there is nowhere better to add.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "Restrictive policy is already biting and the front end still prices the opposite. Canada cash at 2.52 against a February 2027 terminal at 2.725, with the 2027 strip marked near 3.05, is a hike path, and the existing long is the clean fade of that premium. US SOFR is the same mistake in larger prints, but volatility at 28, Brent near 98, Bank Rate just lifted to 4 percent, and jobs next make a second front-end long a bet on the print. Australia is essentially flat to cash, so there is nowhere better to add."
     }
   ],
   "schema_version": 1,

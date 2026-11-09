@@ -47,8 +47,8 @@
     "nav_usd": 99976401.08,
     "net_pnl_usd": -23598.92,
     "pressure_flags": [],
-    "prior_competition_rank": 10,
-    "rank_change": 1,
+    "prior_competition_rank": 12,
+    "rank_change": -1,
     "raw_pnl_rank": 11,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -65,7 +65,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "32ad2c5d8cd8f9658d2eb2402ee1bcb54dbcf0c315cd5863ab6e75b674c5fd45",
+  "memory_context_sha256": "9f79a6eee5d64bd64668a9ff71601f6d2befe2a663ebb6977059e94dad5b4c42",
   "open_positions": [],
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
@@ -85,7 +85,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "up",
-        "value": 0.37
+        "value": 0.43
       },
       "complacency": {
         "band": "calm",
@@ -99,13 +99,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.24
+        "trend": "up",
+        "value": 0.3
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.18
       },
       "revenge_pressure": {
         "band": "calm",
@@ -135,24 +135,24 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261104"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261105"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261106"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261109"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261109"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "f9287b991ad4a1a33173b5cdff0b6663134b5254c1f82b5597c6af52e7b171a7",
+    "state_sha256": "7753be8d0824f6b268ecd5510593d059739e1dc5e54ac234a9d35dda2eee3630",
     "streaks": {
-      "flat_cycles": 7,
+      "flat_cycles": 8,
       "session_loss": 0,
       "session_win": 0
     }

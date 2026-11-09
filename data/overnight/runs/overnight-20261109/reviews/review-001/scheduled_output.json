@@ -1,0 +1,1340 @@
+{
+  "agent_packet": {
+    "base_evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+    "base_packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-11-05",
+      "funding_rate_annual": 0.0392,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+    "learning_obligations": {
+      "manifest_sha256": "30068e398a30db54990fa0abbd711f9949990d13f9914b50c3e3dfc6ea1ad6fb",
+      "obligation_count": 1
+    },
+    "overnight_run_id": "overnight-20261109",
+    "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+    "research_supplement": {
+      "central_bank_research": [],
+      "news": [],
+      "sources": [],
+      "summary": "Markets are trading stress, not a clean growth bid. Volatility is 28, gold is near 4,075, WTI near 91 and Brent near 98, while the S&P 500 is still 7,354. Treasury yields bounced today: the two-year is 4.51 percent and the ten-year 4.86 percent, but both are lower on the month. Official SOFR is 3.92 percent and the futures strip sits above it, December near 4.15 and March near 4.27, so funding is priced to rise. Dollar-yen is 158.33. Australian-kiwi at 1.2394 is still a five-year extreme, a 2.6 z-score and the 98th percentile, after slipping from the marks on existing shorts. Canada cash is 2.52 percent with the 2027 path still above cash. The Bank of England raised Bank Rate to 4 percent. Next is the US jobs report, and whether oil, gold, and Asia credit stress stay in place. Consumer and activity coverage is still thin outside the United States. That is a research caveat, not a ban on markable currencies or eligible rate markets. New Zealand government yields remain research only."
+    },
+    "review_id": "review-001",
+    "schema_version": 1,
+    "trade_permissions": {
+      "block_why": null,
+      "blocked_expressions": [],
+      "blocked_legs": [],
+      "blocked_sources": [],
+      "countries": {
+        "AU": {
+          "eligible": true,
+          "gaps": [
+            "AU.Activity.business_surveys",
+            "AU.Consumer.confidence",
+            "AU.Consumer.retail"
+          ],
+          "scored_status": "partial"
+        },
+        "CA": {
+          "eligible": true,
+          "gaps": [
+            "CA.Consumer.confidence",
+            "CA.Consumer.income",
+            "CA.Consumer.retail",
+            "CA.Consumer.spending"
+          ],
+          "scored_status": "partial"
+        },
+        "EA": {
+          "eligible": true,
+          "gaps": [
+            "EA.Labor.wages",
+            "EA.Consumer.income",
+            "EA.Consumer.spending",
+            "EA.Labor.employment"
+          ],
+          "scored_status": "partial"
+        },
+        "JP": {
+          "eligible": true,
+          "gaps": [
+            "JP.Consumer.income",
+            "JP.Activity.business_surveys",
+            "JP.Activity.gdp_domestic_demand",
+            "JP.Consumer.spending",
+            "JP.Labor.wages"
+          ],
+          "scored_status": "blocked"
+        },
+        "NZ": {
+          "eligible": true,
+          "gaps": [
+            "NZ.Consumer.confidence",
+            "NZ.Activity.business_surveys",
+            "NZ.Consumer.income"
+          ],
+          "scored_status": "blocked",
+          "sovereign_admission": "research_only"
+        },
+        "US": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        }
+      },
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "expansion_rule": "country_and_expression_specific",
+      "hold_decisions_emitted": 0,
+      "partial_expressions": [
+        "activity:US",
+        "activity:CA",
+        "activity:AU",
+        "activity:NZ",
+        "activity:EA",
+        "activity:JP",
+        "macro:AU",
+        "macro:NZ"
+      ],
+      "partial_legs": [
+        "NZ_rates"
+      ],
+      "quarantine_mode": null,
+      "quarantine_reason": null,
+      "quarantined_positions": [],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Consumer.income",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "restricted_seats": [],
+      "seat_risk": {},
+      "source_health": [
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-Q2",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Activity.gdp_domestic_demand"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.confidence"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Inflation.core_pce"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.income"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-08",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.retail"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.spending"
+        }
+      ],
+      "synthetic_holds": false,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_eligible": true,
+      "trader_execution": "allowed"
+    },
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+  },
+  "base_packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
+  "decisions": {
+    "carry-is-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Canada March receive. March at 2.885 still clears cash at 2.52 and there has been no cash-rate shift.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Australia March receive. Fresh March implied at 4.88 is only a few basis points over cash, not a cash-rate shift.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 63,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the Canada March receive. March at 2.885 still clears cash at 2.52 and there has been no cash-rate shift.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A rise in Canadian or Australian cash rates invalidates the receives. A new US front-end receive becomes the carry expression only after the jobs data if the SOFR path still sits materially above 3.92.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "carry-is-king",
+      "thesis": "The Canada receive still earns its keep: cash is 2.52, the February terminal is 2.725, and March is marked at 2.885, so the hike gap stays wide with cash policy unchanged. The Australia receive is thinner, March implied at 4.88 against cash at 4.85, but the move from the 4.83 entry is only a few basis points and there has been no cash-rate shift. September SOFR against the 3.92 fix is the fatter carry, and dollar-yen pays the gap to Japan, yet the jobs report is next and Bank Rate has just gone to 4 percent, enough to refuse a new expression today."
+    },
+    "catalyst-junkie": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Stay flat. The jobs-sensitive rates legs require a side on an unpublished number after bullish bets are already in the market.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 38,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Stay flat. The jobs-sensitive rates legs require a side on an unpublished number after bullish bets are already in the market.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A released jobs print that moves the two-year or the SOFR strip through the pre-set bullish positioning reopens a tactical front-end trade in the direction of the data.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "catalyst-junkie",
+      "thesis": "The upcoming US jobs report is the only dated catalyst, and the number is still unpublished. Bullish Treasury bets are already on: the two-year at 4.51 is 26bp lower on the month and only 5bp higher today, while SOFR runs from 3.92 cash to a strip above that. Putting on duration here would treat the rumor as the print. The Bank of England hike to 4 percent is done, and dollar-yen, Australian-kiwi, and the kiwi have no dated repricing path of their own."
+    },
+    "chart-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Flat book unchanged. The Australian-dollar breakouts conflict with the kiwi-Norway failed breakout, and no daily-close invalidation is available to size one spot.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 40,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Flat book unchanged. The Australian-dollar breakouts conflict with the kiwi-Norway failed breakout, and no daily-close invalidation is available to size one spot.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A spot expression appears only if a later daily close leaves a single breakout or failed breakout with a side and states the prior close-range level on the adverse side plus a farther target. Until that daily-close level exists, the book stays flat.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "chart-guy",
+      "thesis": "The latest daily closes show a cluster of Australian-dollar breakouts, short the base in Aussie-Swiss and Aussie-Sweden and long the base in sterling-Aussie, plus a separate kiwi-Canada breakout. Kiwi-Norway is a failed breakout with no side. Australian-kiwi still carries a large z-score, so the two dollars are not one chart. No name has a confirmed adverse daily-close level that would let reward exceed risk, and the research recommendations are empty. Nothing is opened."
+    },
+    "cross-merchant": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Australian-kiwi short. Leave Australia-Canada alone until a fresh policy or carry gap appears.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "position_id": "pos-525ff12dcad9"
+        }
+      ],
+      "alerts": [],
+      "conviction": 64,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the short. The percentile is still extreme and the five-session give-back is too small to cover or to add.",
+        "selected": "spot",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "AUDNZD",
+          "rationale": "Keep the existing Australian-kiwi short. The cross isolates the Australia premium without the dollar rates strip or the oil bid in Canada."
+        }
+      },
+      "invalidation": "Close the short if Australian-kiwi trades back through the 1.2456 entry and holds higher, or if kiwi weakness shows up together against Canada and sterling and the move stops being an Australia premium.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "cross-merchant",
+      "thesis": "Australian-kiwi at 1.2394 is still a five-year z-score of 2.62 and the 98th percentile, so the existing short remains the clean bilateral premium. Buying the kiwi against the dollar would take a five-year low into a SOFR strip that sits above cash and volatility at 28. Sterling-kiwi is the weaker cheap-kiwi cross, and kiwi-Canada leans against Brent near 98. The cross has only slipped half a percent over five sessions, so this stays a valuation hold rather than a cover or an add."
+    },
+    "dollar-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold dollar-yen. The long is still above the entry, the day is flat, and the US strip above cash supports the dollar. Do not add ahead of the jobs report.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "position_id": "pos-012b8f0c252c"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold dollar-yen. The long is still above the entry, the day is flat, and the US strip above cash supports the dollar. Do not add ahead of the jobs report.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Dollar-yen back through the 158.06 entry, or a jobs result that pulls the rates strip back toward 3.92 cash SOFR and drives the yen through that entry.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "dollar-king",
+      "thesis": "The dollar is still the clean expression of this tape: SOFR at 3.92 with the strip higher into March, the two-year at 4.51, volatility at 28, and commodity currencies under pressure. Dollar-yen at 158.33 is almost unchanged, only moderately stretched over five years, and still above the 158.06 entry, so the existing long stays. Canada is the wrong new dollar: oil is not three-digit, and dollar-Canada is down on the month despite today's bounce. Sterling just got a Bank Rate hike to 4 percent, the kiwi is already at a five-year low, and jobs are next, so there is nothing to add."
+    },
+    "mean-reverter": {
+      "actions": [
+        {
+          "action": "ADD",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "US 2Y",
+              "rationale": "Paying the two-year at 4.51 would fade a 26bp monthly decline that bounced 5bp today, but that anchor has no five-year percentile."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "rationale": "New Zealand government yields are research only, so an Australasian rates spread is not a tradable fade.",
+                "status": "unavailable"
+              },
+              "curve": {
+                "asset_class": "curve",
+                "instrument": "US 2s10s",
+                "rationale": "Two-year versus ten-year near 35bp has no historical anchor that beats the cross extreme.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "asset_class": "rates",
+                "instrument": "US 5Y",
+                "rationale": "The five-year is not the stretch being faded. Australian-kiwi carries the five-year extreme.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "two_year",
+              "selection_rationale": "The US two-year is the rates comparison. It is inferior to short Australian-kiwi, which is still a five-year extreme with a five-session slip already underway.",
+              "stir_policy_path": {
+                "asset_class": "rates",
+                "instrument": "SOFR_2027-03",
+                "rationale": "March SOFR at 4.27 has already fallen from the closed long's 4.58 entry toward the 4.24 exit, with cash at 3.92. That normalization is done.",
+                "status": "not_compelling"
+              },
+              "ten_year": {
+                "asset_class": "rates",
+                "instrument": "US 10Y",
+                "rationale": "The ten-year at 4.86 has no five-year extreme that matches the cross.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "asset_class": "rates",
+                "instrument": "US 2Y",
+                "rationale": "The two-year at 4.51 fell 26bp on the month and bounced 5bp today. Paying it is the least-bad rates fade and it lacks a five-year percentile.",
+                "status": "candidate"
+              }
+            },
+            "rationale": "Add the minimum to the existing Australian-kiwi short. The two-year pay is the rates comparison and is the weaker fade.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDNZD",
+              "rationale": "Short Australian-kiwi at 1.2394 is still a 2.62 five-year z-score and the 98th percentile, and the five-session slip is the reversal condition."
+            }
+          },
+          "instrument": "AUDNZD",
+          "notional_usd": 5000000,
+          "position_id": "pos-9a020b7cffca",
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": {
+          "asset_class": "rates",
+          "instrument": "US 2Y",
+          "rationale": "Paying the two-year at 4.51 would fade a 26bp monthly decline that bounced 5bp today, but that anchor has no five-year percentile."
+        },
+        "rates_tenor_scan": {
+          "cross_market_rv": {
+            "rationale": "New Zealand government yields are research only, so an Australasian rates spread is not a tradable fade.",
+            "status": "unavailable"
+          },
+          "curve": {
+            "asset_class": "curve",
+            "instrument": "US 2s10s",
+            "rationale": "Two-year versus ten-year near 35bp has no historical anchor that beats the cross extreme.",
+            "status": "not_compelling"
+          },
+          "five_year": {
+            "asset_class": "rates",
+            "instrument": "US 5Y",
+            "rationale": "The five-year is not the stretch being faded. Australian-kiwi carries the five-year extreme.",
+            "status": "not_compelling"
+          },
+          "selected_bucket": "two_year",
+          "selection_rationale": "The US two-year is the rates comparison. It is inferior to short Australian-kiwi, which is still a five-year extreme with a five-session slip already underway.",
+          "stir_policy_path": {
+            "asset_class": "rates",
+            "instrument": "SOFR_2027-03",
+            "rationale": "March SOFR at 4.27 has already fallen from the closed long's 4.58 entry toward the 4.24 exit, with cash at 3.92. That normalization is done.",
+            "status": "not_compelling"
+          },
+          "ten_year": {
+            "asset_class": "rates",
+            "instrument": "US 10Y",
+            "rationale": "The ten-year at 4.86 has no five-year extreme that matches the cross.",
+            "status": "not_compelling"
+          },
+          "two_year": {
+            "asset_class": "rates",
+            "instrument": "US 2Y",
+            "rationale": "The two-year at 4.51 fell 26bp on the month and bounced 5bp today. Paying it is the least-bad rates fade and it lacks a five-year percentile.",
+            "status": "candidate"
+          }
+        },
+        "rationale": "Add the minimum to the existing Australian-kiwi short. The two-year pay is the rates comparison and is the weaker fade.",
+        "selected": "spot",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "AUDNZD",
+          "rationale": "Short Australian-kiwi at 1.2394 is still a 2.62 five-year z-score and the 98th percentile, and the five-session slip is the reversal condition."
+        }
+      },
+      "invalidation": "Exit the add and the core short if Australian-kiwi reclaims the 1.2453 entry while the kiwi stays at a five-year low and volatility holds near 28, or if Brent holds the oil tail and the two-year extends today's rise enough to reopen a hotter US path.",
+      "memory_context_sha256": "a1088557fbd78d32347f6b37d9101c2db28bd908cd0719634d201fd1200ec605",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "The elevated March implied was vulnerable to normalization, the decline occurred, and the stated hawkish invalidation did not have to print for the exit at 4.24 to be the right close of that stretch.",
+            "assumptions_wrong_or_underweighted": "How far the gap to cash would close was underweighted. Implied stalled near 4.24, still well above cash at 3.92, so the full premium to cash was never the right target, and a modest conviction correctly treated the labor and oil tails as a reason to keep size small.",
+            "causal_divergence": "The forward did the thing the thesis asked, a 34bp decline from 4.58 to 4.24, while the book recorded only 250 dollars because the expression was sized for a 56 conviction rather than for a full move to cash.",
+            "decision_quality_attribution": "thesis",
+            "future_implication": "A completed normalization is not a reason to reload the same March long at 4.27, and a later rates fade needs a fresh stretch versus cash and the curve rather than the memory of the 4.58 entry.",
+            "observed_reality": "Implied fell from 4.58 to 4.24 by 6 Nov, the position was closed for a 250 dollar paper increment after about 47 days, and the current screen shows cash SOFR at 3.92 with March at 4.27.",
+            "original_belief": "March 2027 implied at 4.58 was stretched above a plausible lower path and would mean-revert unless another 25bp was delivered into the December window with March holding at or above the prior June mid, or hotter US labor and inflation re-widened the oil tail.",
+            "same_information_counterfactual": "With the same 4.58 entry and the same invalidation, the sound path was still to hold the long while the forward stayed stretched and to exit once it had fallen to 4.24. Raising size after the decline was known would have used information that was not available at entry."
+          },
+          "expression_assessment": "Long March SOFR was the right instrument for that policy-path fade. At 4.27, with cash at 3.92, the same long is no longer a fresh extreme and should not be reopened from memory of the 4.58 entry.",
+          "no_new_lesson": "The process was sound. The stretch was identified, the invalidation was specific, the forward normalized, and the exit followed that normalization. The 250 dollar increment is the bounded variance of a 56-conviction expression held for about 47 days, not a defect in the anchor or the exit rule. The same rule is what keeps March from being reopened now that the entry extreme is gone.",
+          "postmortem_id": "pmd-a5f512bc204e",
+          "sizing_assessment": "Conviction 56 correctly kept the expression modest. A 250 dollar increment on a realized normalization is a bounded outcome of that conviction, not evidence the position should have been sized up after the move was known.",
+          "thesis_assessment": "The thesis held. Implied normalized from 4.58 to 4.24, and the live invalidation did not force the exit. The close was taken after the stretch had been given back.",
+          "timing_assessment": "The hold of about 47 days and the exit on 6 Nov at 4.24 matched the normalization window. Staying for a full gap close to cash would have been a different trade.",
+          "trade_id": "trd-trader-mean-reverter-pos-1477172adb86",
+          "what_failed": "The realized paper increment was only 250 dollars after about 47 days, so a 34bp favorable move stayed a small book outcome at conviction 56.",
+          "what_worked": "March 2027 SOFR implied fell from the 4.58 entry to the 4.24 exit, so the view that the forward was stretched high and would normalize lower was right, and the close kept the result instead of retargeting cash at 3.92."
+        }
+      ],
+      "review_id": "review-001",
+      "seat": "mean-reverter",
+      "thesis": "Australian-kiwi is still a five-year extreme, a 2.62 z-score and the 98th percentile, at 1.2394 after a small dip today and over five sessions, so the overshoot has started to give way while the anchor is intact. That turn is the reversal condition on the existing short, inside a kiwi-cheap complex. The US two-year at 4.51 has no percentile behind it, and March SOFR has already normalized from the old 4.58 extreme toward cash at 3.92. Add the minimum to the short, because volatility at 28 and Brent near 98 can still extend kiwi underperformance before the cross fully normalizes."
+    },
+    "no-trade-skeptic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the book flat at the official SOFR benchmark until a post-jobs funding gap or a cleared Australian-kiwi extreme is actually in the price.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 30,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Keep the book flat at the official SOFR benchmark until a post-jobs funding gap or a cleared Australian-kiwi extreme is actually in the price.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "funding_view": {
+        "current_sofr": "The official NY Fed SOFR fixing is 3.92 percent ACT/360 on 5 Nov.",
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Stay at the zero official-SOFR benchmark. Paying SOFR on shocked-risk capital is not warranted when realized funding is about the same as a strip that already prices the rise.",
+        "sr3_forward_view": "SR3 December implies 4.145, March 4.27, June 4.365 and September 4.395, about 22 to 48 basis points above the cash fixing through next September."
+      },
+      "invalidation": "The hold breaks if, after jobs, the strip settles on a path outside the current December-to-September range and that gap is not the consensus already in the news, or if Australian-kiwi remains at the 98th percentile after the existing short base has cleared.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "no-trade-skeptic",
+      "thesis": "The futures strip already sits 22 to 48 basis points above the 3.92 percent SOFR fixing, so the higher-funding path is the market price. Two-year yields at 4.51 and ten-year yields at 4.86 are well off the monthly highs and only slightly firmer today, with bullish bond bets already written up and jobs still ahead. Australian-kiwi at 1.2394 is a 98th-percentile extreme with the short already populated, while the kiwi at 0.5543 is a five-year low. Volatility at 28, Brent near 98, gold near 4,075, and Bank Rate at 4 percent are already in the price."
+    },
+    "perma-bear": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the US ten-year long unchanged. The slowdown hedge is already on from 5.24 with the market at 4.86.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 55,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Keep the US ten-year long unchanged. The slowdown hedge is already on from 5.24 with the market at 4.86.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Abandon the hold if the ten-year yield trades back through the 5.24 entry, or if the SOFR strip falls below the 3.92 cash fixing and the front end becomes the cleaner slowdown market.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "perma-bear",
+      "thesis": "SoftBank credit risk at a four-year high, Brent at 98.32, and a Bank of England Bank Rate of 4 percent say the landing is fragile, while the S&P at 7,354 still prices it as benign. SOFR from December through September sits above the 3.92 cash fixing, so the strip already prices tighter policy and is a poor receive into payrolls. The US ten-year at 4.86 has rallied from the 5.24 entry and is the defensive duration already held. Oil and that hawkish strip can rebuild term premium, so the clean act is to keep the bond and leave new risk alone."
+    },
+    "perma-bull": {
+      "actions": [
+        {
+          "action": "ADD",
+          "asset_class": "rates",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "AONIA_2027-03",
+              "rationale": "Short March 2027 AONIA at 4.88 against cash at 4.85. The open short has already traded up from 4.765."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "asset_class": "rates_rv",
+                "instrument": "AU-US_2Y",
+                "rationale": "A cross-market rates spread is not cleaner than the Australian policy contract, and New Zealand yields are research only.",
+                "status": "not_compelling"
+              },
+              "curve": {
+                "asset_class": "curve",
+                "instrument": "US 2s10s",
+                "rationale": "The US curve is modestly positive and the labor print can go either way. It is not the add.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "asset_class": "rates",
+                "instrument": "US 5Y",
+                "rationale": "The five-year is not the cyclical add. The Australian March contract is the path that is still flat to cash.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "stir_policy_path",
+              "selection_rationale": "Add to the Australian March short. Cash anchors the implied rate, and the US and Canadian shorts have not retraced enough to add.",
+              "stir_policy_path": {
+                "asset_class": "rates",
+                "instrument": "AONIA_2027-03",
+                "rationale": "Australian cash is 4.85 and March 2027 implied is 4.88, almost no tightening, with Brent near 98 and equities still elevated. The open short has already moved up from 4.765.",
+                "status": "candidate"
+              },
+              "ten_year": {
+                "asset_class": "rates",
+                "instrument": "US 10Y",
+                "rationale": "The US ten-year is 42bp lower on the month. A new US duration short would stack the same labor-data risk already carried in the SOFR short.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "asset_class": "rates",
+                "instrument": "AU 2Y",
+                "rationale": "The Australian two-year already sits near cash. The flatness to add is the March policy contract, not a new US two-year short stacked on the existing SOFR short.",
+                "status": "not_compelling"
+              }
+            },
+            "rationale": "Add the Australian March short. The US and Canadian shorts have not retraced, so they stay unchanged.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "NZDUSD",
+              "rationale": "Long kiwi at 0.5543 is the cheap cyclical spot, but New Zealand yields are research only and Australian-kiwi is already stretched. The bill is the cleaner add."
+            }
+          },
+          "instrument": "AONIA_2027-03",
+          "notional_usd": 10000000,
+          "position_id": "pos-78563c24fe05",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the US March SOFR short. Implied is 4.27 against a 4.52 entry, still above 3.92 cash, and the entry has not been retraced.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Canada March short. The mark is 2.885 against a 3.13 entry, and the path has not come back.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 61,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "Short March 2027 AONIA at 4.88 against cash at 4.85. The open short has already traded up from 4.765."
+        },
+        "rates_tenor_scan": {
+          "cross_market_rv": {
+            "asset_class": "rates_rv",
+            "instrument": "AU-US_2Y",
+            "rationale": "A cross-market rates spread is not cleaner than the Australian policy contract, and New Zealand yields are research only.",
+            "status": "not_compelling"
+          },
+          "curve": {
+            "asset_class": "curve",
+            "instrument": "US 2s10s",
+            "rationale": "The US curve is modestly positive and the labor print can go either way. It is not the add.",
+            "status": "not_compelling"
+          },
+          "five_year": {
+            "asset_class": "rates",
+            "instrument": "US 5Y",
+            "rationale": "The five-year is not the cyclical add. The Australian March contract is the path that is still flat to cash.",
+            "status": "not_compelling"
+          },
+          "selected_bucket": "stir_policy_path",
+          "selection_rationale": "Add to the Australian March short. Cash anchors the implied rate, and the US and Canadian shorts have not retraced enough to add.",
+          "stir_policy_path": {
+            "asset_class": "rates",
+            "instrument": "AONIA_2027-03",
+            "rationale": "Australian cash is 4.85 and March 2027 implied is 4.88, almost no tightening, with Brent near 98 and equities still elevated. The open short has already moved up from 4.765.",
+            "status": "candidate"
+          },
+          "ten_year": {
+            "asset_class": "rates",
+            "instrument": "US 10Y",
+            "rationale": "The US ten-year is 42bp lower on the month. A new US duration short would stack the same labor-data risk already carried in the SOFR short.",
+            "status": "not_compelling"
+          },
+          "two_year": {
+            "asset_class": "rates",
+            "instrument": "AU 2Y",
+            "rationale": "The Australian two-year already sits near cash. The flatness to add is the March policy contract, not a new US two-year short stacked on the existing SOFR short.",
+            "status": "not_compelling"
+          }
+        },
+        "rationale": "Add the Australian March short. The US and Canadian shorts have not retraced, so they stay unchanged.",
+        "selected": "rates",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "NZDUSD",
+          "rationale": "Long kiwi at 0.5543 is the cheap cyclical spot, but New Zealand yields are research only and Australian-kiwi is already stretched. The bill is the cleaner add."
+        }
+      },
+      "invalidation": "The add is wrong if Australian March implied falls back through cash at 4.85 toward 4.765, or if the labor data breaks risk appetite and pulls commodity-linked policy pricing onto an easing path.",
+      "memory_context_sha256": "66a3653869e74f4ba929f10cb5f38dabdbe26edc7aa3665c84689038c0f88fd7",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "perma-bull",
+      "thesis": "Equities are still elevated and Brent is near 98, while a 28 vol handle and the month's yield rally price a weaker cycle than the tape shows. Australia is the cyclical that is still asleep: cash is 4.85 and March 2027 is 4.88, against a ten-year yield at 5.08 and a Bank of England that has just taken Bank Rate to 4. The US March short from 4.52 and the Canadian short from 3.13 have not retraced, so they stay unchanged. Add to the Australian March short, which has already traded up from 4.765."
+    },
+    "positioning-cynic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Keep the existing short Australian-kiwi and the existing short Canada March. Do not add the crowded short-kiwi complex and do not receive March Canada.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 56,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Keep the existing short Australian-kiwi and the existing short Canada March. Do not add the crowded short-kiwi complex and do not receive March Canada.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The stand-aside fails if Australian-kiwi reclaims 1.2453 and holds a fresh extreme, or if Canada March implied trades back through 2.995 and leaves that short further offside into the jobs release.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "positioning-cynic",
+      "thesis": "Short Australian-kiwi is the crowded trade. The cross is still a 2.62 five-year z-score at the 98th percentile, the short is already widely held, and this account is short from 1.2453 while spot has only just slipped to 1.2394. Kiwi-dollar at a five-year low and sterling-kiwi at the 100th percentile are the same short-kiwi ownership in other crosses. March Canada is already short from 2.995 with the mark at 2.885 against cash at 2.52, so a new receive would chase the move that has been working. Hold both and add nothing."
+    },
+    "rate-dove": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Canada 2027 strip long. Hike pricing versus cash is still intact, and the pre-jobs tape is the wrong place to add or to lay the position off.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 58,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the Canada 2027 strip long. Hike pricing versus cash is still intact, and the pre-jobs tape is the wrong place to add or to lay the position off.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The hold fails if the Canada 2027 strip trades back up through the 3.40 entry, or if a strong jobs print lifts the US strip and Canada follows while cash stays near 2.52.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "rate-dove",
+      "thesis": "Restrictive policy is already biting and the front end still prices the opposite. Canada cash at 2.52 against a February 2027 terminal at 2.725, with the 2027 strip marked near 3.05, is a hike path, and the existing long is the clean fade of that premium. US SOFR is the same mistake in larger prints, but volatility at 28, Brent near 98, Bank Rate just lifted to 4 percent, and jobs next make a second front-end long a bet on the print. Australia is essentially flat to cash, so there is nowhere better to add."
+    },
+    "rate-hawk": {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "US 2Y",
+              "rationale": "Pay the two-year at 4.51 to fade the 26bp monthly rally while the SOFR strip remains above 3.92 cash."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "asset_class": "rates",
+                "instrument": "CORRA_2027-03",
+                "rationale": "Canada and Australia price fewer hikes than the US strip, and those shorts are already open. New Zealand yields stay research only.",
+                "status": "not_compelling"
+              },
+              "curve": {
+                "asset_class": "curve",
+                "instrument": "US 2s10s",
+                "rationale": "Ten-year 4.86 versus two-year 4.51 does not give a clean flattener or steepener into the labor print.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "asset_class": "rates",
+                "instrument": "US 5Y",
+                "rationale": "The five-year is not the policy-path pay. The two-year carries the monthly rally that this seat wants to fade.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "two_year",
+              "selection_rationale": "Pay the US two-year at 4.51. The SOFR strip already prices the near hikes, and dollar-yen was not the expression.",
+              "stir_policy_path": {
+                "asset_class": "rates",
+                "instrument": "SOFR_2027-09",
+                "rationale": "December 4.145 through September 4.395 already sit above 3.92 cash, and the September short is already on. Adding front SOFR would chase a priced hike path.",
+                "status": "not_compelling"
+              },
+              "ten_year": {
+                "asset_class": "rates",
+                "instrument": "US 10Y",
+                "rationale": "The ten-year at 4.86 is up only 2bp today. The remit is the policy path, and the two-year is the cleaner fade of the monthly rally.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "asset_class": "rates",
+                "instrument": "US 2Y",
+                "rationale": "The two-year is 4.51, up 5bp on the day and down 26bp on the month. That monthly rally is the premature easing to fade into the labor data.",
+                "status": "candidate"
+              }
+            },
+            "rationale": "The two-year is the fresh level that has eased 26bp on the month while the SOFR path remains above the overnight rate.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDJPY",
+              "rationale": "Dollar-yen at 158.33 was the available dollar spot and was not selected. The two-year pay is the expression."
+            }
+          },
+          "instrument": "US 2Y",
+          "lifecycle": {
+            "catalyst_logic": "The next labor release tests whether price risks stay firm, with Brent near 98 and Bank Rate at 4 percent as the backdrop.",
+            "framing": "tactical",
+            "horizon_days": 25,
+            "realization_logic": "The pay is realized if the two-year gives back a meaningful share of the 26bp monthly rally while December through September SOFR holds above 3.92."
+          },
+          "notional_usd": 10000000,
+          "side": "short"
+        }
+      ],
+      "alerts": [],
+      "conviction": 60,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": {
+          "asset_class": "rates",
+          "instrument": "US 2Y",
+          "rationale": "Pay the two-year at 4.51 to fade the 26bp monthly rally while the SOFR strip remains above 3.92 cash."
+        },
+        "rates_tenor_scan": {
+          "cross_market_rv": {
+            "asset_class": "rates",
+            "instrument": "CORRA_2027-03",
+            "rationale": "Canada and Australia price fewer hikes than the US strip, and those shorts are already open. New Zealand yields stay research only.",
+            "status": "not_compelling"
+          },
+          "curve": {
+            "asset_class": "curve",
+            "instrument": "US 2s10s",
+            "rationale": "Ten-year 4.86 versus two-year 4.51 does not give a clean flattener or steepener into the labor print.",
+            "status": "not_compelling"
+          },
+          "five_year": {
+            "asset_class": "rates",
+            "instrument": "US 5Y",
+            "rationale": "The five-year is not the policy-path pay. The two-year carries the monthly rally that this seat wants to fade.",
+            "status": "not_compelling"
+          },
+          "selected_bucket": "two_year",
+          "selection_rationale": "Pay the US two-year at 4.51. The SOFR strip already prices the near hikes, and dollar-yen was not the expression.",
+          "stir_policy_path": {
+            "asset_class": "rates",
+            "instrument": "SOFR_2027-09",
+            "rationale": "December 4.145 through September 4.395 already sit above 3.92 cash, and the September short is already on. Adding front SOFR would chase a priced hike path.",
+            "status": "not_compelling"
+          },
+          "ten_year": {
+            "asset_class": "rates",
+            "instrument": "US 10Y",
+            "rationale": "The ten-year at 4.86 is up only 2bp today. The remit is the policy path, and the two-year is the cleaner fade of the monthly rally.",
+            "status": "not_compelling"
+          },
+          "two_year": {
+            "asset_class": "rates",
+            "instrument": "US 2Y",
+            "rationale": "The two-year is 4.51, up 5bp on the day and down 26bp on the month. That monthly rally is the premature easing to fade into the labor data.",
+            "status": "candidate"
+          }
+        },
+        "rationale": "The two-year is the fresh level that has eased 26bp on the month while the SOFR path remains above the overnight rate.",
+        "selected": "rates",
+        "spot_candidate": {
+          "asset_class": "spot_fx",
+          "instrument": "USDJPY",
+          "rationale": "Dollar-yen at 158.33 was the available dollar spot and was not selected. The two-year pay is the expression."
+        }
+      },
+      "invalidation": "The pay is wrong if the labor data pulls December SOFR implied back toward 3.92 and the two-year extends its monthly decline, or if September 2027 implied loses the path above the overnight rate.",
+      "memory_context_sha256": "0b7fe057a45e25ea0c6964725ae6a29ca0a2901605bc91a9237d2f4ff00d6bd3",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "rate-hawk",
+      "thesis": "SOFR sits above the 3.92 overnight rate from December through the October 2028 terminal. The two-year has still rallied 26bp on the month to 4.51, up 5bp today, while Brent is 98.32, the Bank of England has raised Bank Rate to 4 percent, and the Fed is still gathering information on price risks before the labor data. Paying the two-year fades that monthly rally while the hike path and the oil impulse are still in place. Dollar-yen at 158.33 was available and was not the expression."
+    },
+    "trend-follower": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the long March 2027 SOFR receive. Fresh implied is still through the entry, and the lower-yield trend is intact.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "position_id": "pos-96a63a1df145"
+        }
+      ],
+      "alerts": [],
+      "conviction": 62,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the long March 2027 SOFR receive. Fresh implied is still through the entry, and the lower-yield trend is intact.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Exit the long if March 2027 implied sustains above the 4.2825 entry and the US ten-year's five-session change turns into a sustained yield backup, or if the ten-year prints a confirmed new yield high.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "trend-follower",
+      "thesis": "Lower yields remain the durable move. The US ten-year at 4.86 is down 42bp on the month, the two-year at 4.51 is down 26bp on the month, and Europe and Japan tens are down on the month as well. This session is a bounce of a few basis points in the US, while Japan tens fell again, so the downtrend is intact and the US ten-year has not printed a new yield high. The long March 2027 SOFR, entered at 4.2825 against a fresh implied of 4.27, is already the receive aligned with that trend. The lift from 4.24 is a pause, not a reason to add or to flatten."
+    },
+    "value-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Australian-kiwi short. The 98th-percentile anchor is intact, and one down day is not a reason to add or to rotate into rates.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "position_id": "pos-65b06053d4c6"
+        }
+      ],
+      "alerts": [],
+      "conviction": 63,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Hold the Australian-kiwi short. The 98th-percentile anchor is intact, and one down day is not a reason to add or to rotate into rates.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A sustained reclaim of 1.2453 ends the hold. So does a terms-of-trade gap that specifically justifies Australian richness versus the kiwi, or a further kiwi slide that marks the discount as a risk premium rather than a percentile extreme ready to converge.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "value-guy",
+      "thesis": "Australian-kiwi at 1.2394 is still a five-year extreme, a 2.62 z-score and the 98th percentile, so the short is a live convergence after a small decline. Kiwi-dollar is on the 0th percentile, kiwi-Canada and sterling-kiwi confirm a broad kiwi discount, and oil near 98 can sponsor Canada without sponsoring a richer Australian dollar against the kiwi. The US two-year versus Canada already lines up with the cash-rate gap, so the residual value is in the spot. Volatility at 28 can hold that discount, so the existing short stays and is not increased on the first down day."
+    },
+    "vol-convexity": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Equity vol is already the stress into jobs, and there is no premium on the sheet to buy. Spot would wear an unbounded gap into the same event.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "alerts": [],
+      "conviction": 30,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "Equity vol is already the stress into jobs, and there is no premium on the sheet to buy. Spot would wear an unbounded gap into the same event.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "A live premium that prices the jobs move cheap against the currency extremes would reopen a long-vol expression. The hold also fails if volatility gives back this stress while those extremes are still intact and a mark becomes available.",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "review_id": "review-001",
+      "seat": "vol-convexity",
+      "thesis": "Volatility at 28 is already a stress print and equity vol is bid into the jobs data, so listed convexity is not cheap. Australian-kiwi is slipping off a five-year extreme and the kiwi is at a five-year low, but those gaps are an event path that spot cannot bound. Twos at 4.51 against tens at 4.86, with SOFR at 3.92 and the strip above cash, are not a rates shock that forces a spot substitute. No option premium is on the sheet, so the book stays flat."
+    }
+  },
+  "execution": {
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.7"
+    ],
+    "auto_used": false,
+    "composer_cap": 2,
+    "declared_composer_calls": 2,
+    "declared_grok_calls": 19,
+    "declared_total_model_calls": 21,
+    "grok_cap": 19,
+    "other_models_calls": 0,
+    "parent_model": "grok-4.7",
+    "total_model_cap": 21
+  },
+  "launch_id": "mwl-20261109T103750Z-a4e987d1",
+  "learning_quality_review": {
+    "assessments": [
+      {
+        "adequate": true,
+        "owner_id": "mean-reverter",
+        "owner_type": "trader",
+        "reasons": [
+          "The postmortem links stretch-normalization to the 4.58 to 4.24 move, separates the modest dollar result from thesis failure via the conviction-56 size, and grounds the exit and the decision not to reload at 4.27 in that observed normalization."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-a5f512bc204e",
+        "submission_state": "adequate"
+      }
+    ],
+    "call_count": 1,
+    "model": "composer-2.5",
+    "role": "learning_quality_examiner"
+  },
+  "overnight_run_id": "overnight-20261109",
+  "pm_decisions": {
+    "grinder": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the existing Australian-kiwi short. Do not add, and do not open the two-year or the Australia bill.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "conviction": 40,
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR at 3.92 percent ACT/360 is the zero-alpha benchmark charged on shocked-risk capital. A trade must clear that cost on its plausible adverse path.",
+        "candidate_assessments": [
+          {
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "Canada consumer series are a research gap and do not mark this cross",
+              "Missing option premiums",
+              "Brent and the equity index are tape context, not the cross mark"
+            ],
+            "instrument": "AUDNZD",
+            "markable": true,
+            "rationale": "Spot 1.2394 remains a five-year extreme, so the existing short is still in thesis. Adding size does not clear the hurdle: jobs are ahead, volatility is 28, and a one-percent squeeze is about 100 thousand dollars per 10 million. Holding the current short deploys no new shocked capital."
+          },
+          {
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "Australian-kiwi forward points",
+              "The Australia cash-to-March gap",
+              "Missing option premiums"
+            ],
+            "instrument": "US 2Y",
+            "markable": true,
+            "rationale": "The two-year is markable at 4.51. A short expects the yield higher, but the packet shows no mispricing versus SOFR cash at 3.92, and March SOFR at 4.27 already prices a higher funding path. Jobs can gap the yield either way."
+          },
+          {
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "US two-year detail beyond 4.51",
+              "Australian-kiwi percentile",
+              "Missing option premiums"
+            ],
+            "instrument": "AONIA_2027-03",
+            "markable": true,
+            "rationale": "March Australia at 4.88 versus cash at 4.85 is only a few basis points. That gap is the priced path, not a demonstrated rich or cheap level, so a new short does not clear official SOFR on shocked-risk capital."
+          }
+        ],
+        "chosen_action_rationale": "All three handoffs are markable and none clears official SOFR on shocked-risk capital. The currency fade is already held at a preservation size. No new open or add follows."
+      },
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No new expression. Keep the existing book unchanged.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Cover the short if fresh spot rises back through the 1.2456 entry and the five-year extreme breaks, or if an adverse move approaches a one-percent squeeze of about 100 thousand dollars and the loss starts to compound.",
+      "opportunity_scan": [
+        {
+          "asset_class": "spot_fx",
+          "instrument": "AUDNZD",
+          "rationale": "Fresh spot 1.2394 is the extreme already held. A further add fails into the jobs report."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "US 2Y",
+          "rationale": "A short at 4.51 versus SOFR cash at 3.92 is negative carry, and March SOFR already prices a higher path."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "March at 4.88 is only a few basis points over cash at 4.85."
+        }
+      ],
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "pm_id": "grinder",
+      "principal_model": "grok-4.7",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "The book stays short Australian-kiwi from 1.2456. Fresh spot at 1.2394 is still a five-year z-score of 2.62 and the 98th percentile. Official SOFR at 3.92 percent is the zero-alpha hurdle, and none of the proposed adds clear it: another slice of the cross, a short Australian March bill only a few basis points over cash, or a short US two-year at 4.51. Jobs are immediately ahead, so preservation is to keep the small short and not expand."
+    },
+    "pragmatist": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the Canada March receive and the Australian-kiwi short. No add, open, reduce, or close.",
+            "selected": "none",
+            "spot_candidate": null
+          }
+        }
+      ],
+      "conviction": 45,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "No new expression. Keep the existing book unchanged.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "The Canada receive is invalidated if March implied reverses through the 3.13 entry. The Australian-kiwi short is invalidated if the cross reclaims 1.2456 and the five-year extreme collapses.",
+      "opportunity_scan": [
+        {
+          "asset_class": "rates",
+          "instrument": "CORRA_2027-03",
+          "rationale": "Keep the receive. March at 2.885 is still above the February terminal at 2.725 and cash at 2.52."
+        },
+        {
+          "asset_class": "spot_fx",
+          "instrument": "AUDNZD",
+          "rationale": "Keep the short. The five-year z-score is 2.62 and fresh spot is 1.2394."
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "US 2Y",
+          "rationale": "A pay at 4.51 was considered as a front-end offset, but jobs data are still ahead."
+        }
+      ],
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "pm_id": "pragmatist",
+      "portfolio_construction": {
+        "adverse_scenario": "The loss case is a hawkish jobs print that lifts March Canada from 2.885 back toward the 3.13 entry while Australian-kiwi rebounds from 1.2394 through the 1.2456 short.",
+        "candidate_interactions": [
+          {
+            "instrument": "US 2Y",
+            "interaction": "offset",
+            "rationale": "A short two-year would gain if the front end sells off and would offset the Canada receive. It does not hedge the currency short."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "interaction": "unrelated",
+            "rationale": "March Australia at 4.88 versus cash at 4.85 is a three-basis-point wedge. It does not change this book."
+          },
+          {
+            "instrument": "AUDNZD",
+            "interaction": "duplicate_beta",
+            "rationale": "Adding to the short repeats the existing currency position at a lower sale than the original entry."
+          }
+        ],
+        "chosen_actions_rationale": "Hold both legs. March Canada has not converged to the terminal or to cash. Australian-kiwi should stay short, but fresh spot is already through the entry, so the add is a worse sale ahead of jobs. The two-year pay is an unnecessary offset.",
+        "existing_book_summary": "Long March 2027 Canada from 3.13, marked at 2.885, still above the February 2027 terminal at 2.725 and cash at 2.52. Short Australian-kiwi from 1.2456, book mark 1.2453, versus fresh spot 1.2394 and a five-year z-score of 2.62. Drawdown is negligible.",
+        "independent_handoff_opportunities": [
+          {
+            "instrument": "US 2Y",
+            "markable": true,
+            "rationale": "Open a 10 million short of the US two-year at 4.51, against SOFR at 3.92 and March SOFR at 4.27."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "markable": true,
+            "rationale": "Add 10 million to a short of March Australia bills, marked near 4.88 versus cash at 4.85."
+          },
+          {
+            "instrument": "AUDNZD",
+            "markable": true,
+            "rationale": "Add 5 million to the existing Australian-kiwi short at the fresh spot 1.2394, with the five-year z-score still 2.62."
+          }
+        ],
+        "rejected_complements": [
+          {
+            "instrument": "US 2Y",
+            "reason": "Paying 4.51 into a jobs report that has not printed would mainly cap the Canada receive if the data are soft."
+          },
+          {
+            "instrument": "AONIA_2027-03",
+            "reason": "Shorting March Australia at 4.88 against cash at 4.85 has no premium cushion."
+          },
+          {
+            "instrument": "AUDNZD",
+            "reason": "The extra short duplicates the open position and sells below the original entry, with jobs still ahead."
+          }
+        ]
+      },
+      "principal_model": "grok-4.7",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "The book keeps a receive in March Canada, marked at 2.885 against a February 2027 terminal of 2.725 and cash at 2.52, and a short Australian-kiwi from 1.2456 with the five-year z-score still 2.62. Live spot at 1.2394 is through the book mark, so that short is already working, and the Canada receive still has room toward the terminal. Jobs are still ahead and volatility is 28, so the intact expressions stay on rather than being chased."
+    },
+    "swinger": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Hold the concentrated Australian-kiwi short. Fresh spot is through the entry and the cross is still a five-year extreme.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "position_id": "pm-swinger-f8f9feb515d2"
+        }
+      ],
+      "conviction": 72,
+      "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+      "expression_memo": {
+        "options_candidate": null,
+        "rates_candidate": null,
+        "rationale": "The book is already the Australian-kiwi short. The two-year and the Australian bill are not large enough dislocations to open in front of the jobs report.",
+        "selected": "none",
+        "spot_candidate": null
+      },
+      "invalidation": "Australian-kiwi trades back above the 1.2456 entry and holds there, so the break through entry fails.",
+      "opportunity_scan": [
+        {
+          "asset_class": "spot_fx",
+          "instrument": "AUDNZD",
+          "rationale": "Existing concentrated short, spot 1.2394 still the 98th percentile and through entry. Keep it. Do not add before the jobs report.",
+          "side": "short"
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "US 2Y",
+          "rationale": "A pay at 4.51 is a jobs coin-flip. March SOFR at 4.27 already sits above cash at 3.92.",
+          "side": "short"
+        },
+        {
+          "asset_class": "rates",
+          "instrument": "AONIA_2027-03",
+          "rationale": "March at 4.88 versus cash at 4.85 is three basis points. No add.",
+          "side": "short"
+        }
+      ],
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+      "pm_id": "swinger",
+      "principal_model": "grok-4.7",
+      "review_id": "review-001",
+      "subagent_count": 0,
+      "subagent_models": [],
+      "thesis": "Australian-kiwi at 1.2394 is still a five-year extreme, a 2.62 z-score and the 98th percentile, and fresh spot is through the 1.2456 entry. The concentrated short stays. The jobs report is still ahead, and the US two-year and Australian March bill are separate bets that do not belong in this book."
+    }
+  },
+  "review_id": "review-001",
+  "schedule_id": "market-watch-weekday-0205",
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT"
+}

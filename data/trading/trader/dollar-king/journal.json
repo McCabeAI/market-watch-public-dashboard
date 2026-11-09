@@ -1844,6 +1844,62 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "Dollar-yen is the dollar book. Cash SOFR at 3.94 percent versus TONA at 1.228 still pays about 271 basis points, March 2027 SOFR at 4.24 sits above that cash rate, and the 20 million long from 158.06 is slightly ahead at 158.46. VIX at 16.61 and the S&P 500 at 7688 show the credit headlines have not produced a yen haven bid. Carry is collected at this size rather than added at a 90th-percentile spot level."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "0efba7e8b38800e6d878b53c69dc5d68a4d96d7240ab71dd66fd52d35d23be6e",
+      "event_id": "jde-5c6a492d093242bd",
+      "funding_view": null,
+      "invalidation": "Dollar-yen back through the 158.06 entry, or a jobs result that pulls the rates strip back toward 3.92 cash SOFR and drives the yen through that entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0373bc0e3302933281128db724ada5502019d3298d07769136b6f67899e8b47b",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b3db4b7934625530f680b5d22e7b2fcd3d8d248afde9d0cfb1094e334147e6cc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar is still the clean expression of this tape: SOFR at 3.92 with the strip higher into March, the two-year at 4.51, volatility at 28, and commodity currencies under pressure. Dollar-yen at 158.33 is almost unchanged, only moderately stretched over five years, and still above the 158.06 entry, so the existing long stays. Canada is the wrong new dollar: oil is not three-digit, and dollar-Canada is down on the month despite today's bounce. Sterling just got a Bank Rate hike to 4 percent, the kiwi is already at a five-year low, and jobs are next, so there is nothing to add.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "The dollar is still the clean expression of this tape: SOFR at 3.92 with the strip higher into March, the two-year at 4.51, volatility at 28, and commodity currencies under pressure. Dollar-yen at 158.33 is almost unchanged, only moderately stretched over five years, and still above the 158.06 entry, so the existing long stays. Canada is the wrong new dollar: oil is not three-digit, and dollar-Canada is down on the month despite today's bounce. Sterling just got a Bank Rate hike to 4 percent, the kiwi is already at a five-year low, and jobs are next, so there is nothing to add."
     }
   ],
   "schema_version": 1,

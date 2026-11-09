@@ -1770,6 +1770,60 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "VIX at 16.61 is a calm equity-vol print in front of a US jobs report and credit stress, and Australian-kiwi at 1.2453 plus dollar-yen at 158.46 are the spot tails that want optionality. No implied volatility, premium, or strike is in the packet, so nothing is opened and the book stays flat. The overlay, had volatility been marked, would have been dollar-yen downside into the jobs report."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 30,
+      "decision_fingerprint": "7c8839b5a6158899ab00c2b4c799225a80409211b94c8c8bbc5023a0be528f1d",
+      "event_id": "jde-0731f19861aa4308",
+      "funding_view": null,
+      "invalidation": "A live premium that prices the jobs move cheap against the currency extremes would reopen a long-vol expression. The hold also fails if volatility gives back this stress while those extremes are still intact and a mark becomes available.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "257770d01d472128df656e3e92a43bcb9bd618f863d596a34d48a0cc03a6bb84",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "0e9f3d1606216207fb19e1e8262ec180de81ae6bbc4d0a1fde7e2f63813e918f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Volatility at 28 is already a stress print and equity vol is bid into the jobs data, so listed convexity is not cheap. Australian-kiwi is slipping off a five-year extreme and the kiwi is at a five-year low, but those gaps are an event path that spot cannot bound. Twos at 4.51 against tens at 4.86, with SOFR at 3.92 and the strip above cash, are not a rates shock that forces a spot substitute. No option premium is on the sheet, so the book stays flat.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "Volatility at 28 is already a stress print and equity vol is bid into the jobs data, so listed convexity is not cheap. Australian-kiwi is slipping off a five-year extreme and the kiwi is at a five-year low, but those gaps are an event path that spot cannot bound. Twos at 4.51 against tens at 4.86, with SOFR at 3.92 and the strip above cash, are not a rates shock that forces a spot substitute. No option premium is on the sheet, so the book stays flat."
     }
   ],
   "schema_version": 1,

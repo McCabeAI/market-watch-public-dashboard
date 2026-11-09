@@ -42,14 +42,14 @@
     "nav_usd": 99874302.29,
     "net_pnl_usd": -125697.71,
     "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 1,
+    "prior_competition_rank": 13,
+    "rank_change": 0,
     "raw_pnl_rank": 13,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 650000.0,
     "risk_capital_utilization": 0.065,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 10712.33,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0b7fe057a45e25ea0c6964725ae6a29ca0a2901605bc91a9237d2f4ff00d6bd3",
+  "memory_context_sha256": "e53868895cc43c8809cca09ef760679650e783b1226261a24adb0b3b345cdc25",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -224,7 +224,7 @@
         "expected_mark_direction": "higher",
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 750.0,
         "holding_seconds": 256321,
         "horizon_elapsed_fraction": 0.1483,
         "horizon_status": "within",
@@ -232,15 +232,15 @@
         "intended_horizon_days": 20,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 0.0,
+        "mfe_usd": 750.0,
         "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-6c7bcf0fe6af",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if December SOFR implied yield rises as the jobs-report gap closes and the 12bp front-end rally is retraced.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 750.0,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": 5.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -276,7 +276,7 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.13
       },
       "complacency": {
@@ -286,17 +286,17 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.19
+        "value": 0.18
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -332,7 +332,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "6002d9153a61ff2c39ba6b0113d9af6a7cfd08ab3cb66a71ba561fb276ea6f7b",
+    "state_sha256": "5e0d3c5520c1858fcbc945f7a7a24604d4d2ccddd6fbfeca22d8c891fbfb3798",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 3,

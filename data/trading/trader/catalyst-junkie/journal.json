@@ -1804,6 +1804,60 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "The US employment report is the dated event, and the two-year has already traded the dovish outcome at 4.46, down 12bp, with bullish bond bets put on ahead of the print. That cash yield is not an exchange contract, and the SOFR strip was not where the day's crowded bet printed, so no new risk is opened. The book stays flat into the release."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 38,
+      "decision_fingerprint": "575503d58d4bc2921d2fd922bd1d31caf18ed766aeda394d90cdc4340ab0ae24",
+      "event_id": "jde-c74fa73842ac413b",
+      "funding_view": null,
+      "invalidation": "A released jobs print that moves the two-year or the SOFR strip through the pre-set bullish positioning reopens a tactical front-end trade in the direction of the data.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "32ad2c5d8cd8f9658d2eb2402ee1bcb54dbcf0c315cd5863ab6e75b674c5fd45",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f9287b991ad4a1a33173b5cdff0b6663134b5254c1f82b5597c6af52e7b171a7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The upcoming US jobs report is the only dated catalyst, and the number is still unpublished. Bullish Treasury bets are already on: the two-year at 4.51 is 26bp lower on the month and only 5bp higher today, while SOFR runs from 3.92 cash to a strip above that. Putting on duration here would treat the rumor as the print. The Bank of England hike to 4 percent is done, and dollar-yen, Australian-kiwi, and the kiwi have no dated repricing path of their own.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "The upcoming US jobs report is the only dated catalyst, and the number is still unpublished. Bullish Treasury bets are already on: the two-year at 4.51 is 26bp lower on the month and only 5bp higher today, while SOFR runs from 3.92 cash to a strip above that. Putting on duration here would treat the rumor as the print. The Bank of England hike to 4 percent is done, and dollar-yen, Australian-kiwi, and the kiwi have no dated repricing path of their own."
     }
   ],
   "schema_version": 1,

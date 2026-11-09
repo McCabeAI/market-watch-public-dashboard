@@ -71,14 +71,14 @@
     "nav_usd": 99772237.06,
     "net_pnl_usd": -227762.94,
     "pressure_flags": [],
-    "prior_competition_rank": 14,
-    "rank_change": 1,
+    "prior_competition_rank": 15,
+    "rank_change": 0,
     "raw_pnl_rank": 15,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1250000.0,
     "risk_capital_utilization": 0.125,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 20408.33,
     "status": "ok"
   },
   "learning": {
@@ -89,7 +89,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "66a3653869e74f4ba929f10cb5f38dabdbe26edc7aa3665c84689038c0f88fd7",
+  "memory_context_sha256": "60da18adfae80e43c33dba03b9034163333f233c1364747737faf1ffd01f317d",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -112,7 +112,7 @@
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": null,
-        "mae_usd": -122500.0,
+        "mae_usd": -147500.0,
         "mechanical_order": false,
         "mfe_usd": 10000.0,
         "move_versus_entry_intent": "unknown",
@@ -143,7 +143,7 @@
     {
       "asset_class": "rates",
       "conviction": 70,
-      "current_notional_usd": 25000000.0,
+      "current_notional_usd": 35000000.0,
       "entry_mark": 4.76,
       "harvest": {
         "asset_class": "rates",
@@ -174,7 +174,7 @@
         "retained_mfe_fraction": 0.8857,
         "review_move_bp": null,
         "review_required": false,
-        "review_threshold_usd": 250000.0,
+        "review_threshold_usd": 350000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
@@ -266,22 +266,22 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.23
+        "trend": "flat",
+        "value": 0.22
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
+        "trend": "down",
         "value": 0.16
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.14
+        "trend": "down",
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.06
       },
       "self_trust": {
@@ -312,7 +312,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "c08366d4d9fa63a55c1238a4d22f10308456b0410f50ad21b097517b1f8210bd",
+    "state_sha256": "342f45d0d7bc1586781a3403e796d6f5b474e9264e07431f036a5440118b8490",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 5,

@@ -114,14 +114,14 @@
     "nav_usd": 100203364.35,
     "net_pnl_usd": 203364.35,
     "pressure_flags": [],
-    "prior_competition_rank": 2,
-    "rank_change": 0,
+    "prior_competition_rank": 1,
+    "rank_change": 1,
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -23513.62,
     "status": "ok"
   },
   "learning": {
@@ -132,7 +132,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "ccb4aea6267f33f01a99ae7c015c5e76db473ac17053f8eedd3bd04aef39c0f2",
+  "memory_context_sha256": "a6350c40830fbb33001c4cd57bd38c9bcff8283f1d0f033a68220dcb85b68d19",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -149,7 +149,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 23529.95,
         "holding_seconds": 256321,
         "horizon_elapsed_fraction": 0.0989,
         "horizon_status": "within",
@@ -157,15 +157,15 @@
         "intended_horizon_days": 30,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 23529.95,
         "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-65b06053d4c6",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Realize the short if Australian-kiwi falls clearly off the 99th percentile, and otherwise exit at 30 days if the cross has not made a new high.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 23529.95,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -201,13 +201,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.13
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.19
+        "value": 0.18
       },
       "defensiveness": {
         "band": "calm",
@@ -217,7 +217,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.14
+        "value": 0.13
       },
       "frustration": {
         "band": "calm",
@@ -232,7 +232,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.54
+        "value": 0.53
       },
       "thesis_attachment": {
         "band": "calm",
@@ -262,7 +262,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "f9f6be54ead598d17f90ada385618e188ef59f9c8b6e13ed560d1e22ac0732a5",
+    "state_sha256": "b2fd89ed8b2cdfb40c152e7c1dce31a5dff53462905b2042df70b83c764db72e",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

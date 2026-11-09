@@ -1866,6 +1866,62 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "Lower yields are still the persistent move. The US 2-year at 4.46 is down 12bp on the day and 33bp on the month, and the US 10-year at 4.84 is down 43bp on the month, with Canada, Germany, Japan, and Australia yields lower as well. March 2027 SOFR at 4.24 is moving with that trend but still sits above 3.94 cash, so the owned long is added as the strip catches the coupon rally. Firm oil and a high equity market have left the yield downtrend intact into the jobs report."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-96a63a1df145",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "f2cb265d687942a8bd2e7b52366c601e96d6e70bcb6b6fd586169eb6068d2df3",
+      "event_id": "jde-f8afda23bd4040fa",
+      "funding_view": null,
+      "invalidation": "Exit the long if March 2027 implied sustains above the 4.2825 entry and the US ten-year's five-session change turns into a sustained yield backup, or if the ten-year prints a confirmed new yield high.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9a28d04513ecd27225c1a67dda2bb8f45058b966e24b8fa7eb16392a7b0379b7",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "577aadc9a97b3ebf5df1965d186e1706371a466264063a217c5e09a53a48e853"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Lower yields remain the durable move. The US ten-year at 4.86 is down 42bp on the month, the two-year at 4.51 is down 26bp on the month, and Europe and Japan tens are down on the month as well. This session is a bounce of a few basis points in the US, while Japan tens fell again, so the downtrend is intact and the US ten-year has not printed a new yield high. The long March 2027 SOFR, entered at 4.2825 against a fresh implied of 4.27, is already the receive aligned with that trend. The lift from 4.24 is a pause, not a reason to add or to flatten.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "Lower yields remain the durable move. The US ten-year at 4.86 is down 42bp on the month, the two-year at 4.51 is down 26bp on the month, and Europe and Japan tens are down on the month as well. This session is a bounce of a few basis points in the US, while Japan tens fell again, so the downtrend is intact and the US ten-year has not printed a new yield high. The long March 2027 SOFR, entered at 4.2825 against a fresh implied of 4.27, is already the receive aligned with that trend. The lift from 4.24 is a pause, not a reason to add or to flatten."
     }
   ],
   "schema_version": 1,

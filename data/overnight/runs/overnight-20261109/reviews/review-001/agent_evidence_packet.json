@@ -1,0 +1,227 @@
+{
+  "base_evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+  "base_packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11",
+  "competition": {
+    "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+    "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+    "funding_convention": "ACT/360",
+    "funding_day_count": 360,
+    "funding_observation_date": "2026-11-05",
+    "funding_rate_annual": 0.0392,
+    "funding_source": "NY_FED",
+    "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+    "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+    "metric": "net_pnl_after_funding",
+    "no_trade_allowed": true,
+    "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+    "risk_limits": {
+      "max_drawdown_usd": 5000000,
+      "paper_nav_usd": 100000000,
+      "risk_capital_limit_usd": 10000000,
+      "risk_capital_method": "mtm_standard_1pct_move"
+    }
+  },
+  "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+  "learning_obligations": {
+    "manifest_sha256": "30068e398a30db54990fa0abbd711f9949990d13f9914b50c3e3dfc6ea1ad6fb",
+    "obligation_count": 1
+  },
+  "overnight_run_id": "overnight-20261109",
+  "packet_sha256": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+  "research_supplement": {
+    "central_bank_research": [],
+    "news": [],
+    "sources": [],
+    "summary": "Markets are trading stress, not a clean growth bid. Volatility is 28, gold is near 4,075, WTI near 91 and Brent near 98, while the S&P 500 is still 7,354. Treasury yields bounced today: the two-year is 4.51 percent and the ten-year 4.86 percent, but both are lower on the month. Official SOFR is 3.92 percent and the futures strip sits above it, December near 4.15 and March near 4.27, so funding is priced to rise. Dollar-yen is 158.33. Australian-kiwi at 1.2394 is still a five-year extreme, a 2.6 z-score and the 98th percentile, after slipping from the marks on existing shorts. Canada cash is 2.52 percent with the 2027 path still above cash. The Bank of England raised Bank Rate to 4 percent. Next is the US jobs report, and whether oil, gold, and Asia credit stress stay in place. Consumer and activity coverage is still thin outside the United States. That is a research caveat, not a ban on markable currencies or eligible rate markets. New Zealand government yields remain research only."
+  },
+  "review_id": "review-001",
+  "schema_version": 1,
+  "trade_permissions": {
+    "block_why": null,
+    "blocked_expressions": [],
+    "blocked_legs": [],
+    "blocked_sources": [],
+    "countries": {
+      "AU": {
+        "eligible": true,
+        "gaps": [
+          "AU.Activity.business_surveys",
+          "AU.Consumer.confidence",
+          "AU.Consumer.retail"
+        ],
+        "scored_status": "partial"
+      },
+      "CA": {
+        "eligible": true,
+        "gaps": [
+          "CA.Consumer.confidence",
+          "CA.Consumer.income",
+          "CA.Consumer.retail",
+          "CA.Consumer.spending"
+        ],
+        "scored_status": "partial"
+      },
+      "EA": {
+        "eligible": true,
+        "gaps": [
+          "EA.Labor.wages",
+          "EA.Consumer.income",
+          "EA.Consumer.spending",
+          "EA.Labor.employment"
+        ],
+        "scored_status": "partial"
+      },
+      "JP": {
+        "eligible": true,
+        "gaps": [
+          "JP.Consumer.income",
+          "JP.Activity.business_surveys",
+          "JP.Activity.gdp_domestic_demand",
+          "JP.Consumer.spending",
+          "JP.Labor.wages"
+        ],
+        "scored_status": "blocked"
+      },
+      "NZ": {
+        "eligible": true,
+        "gaps": [
+          "NZ.Consumer.confidence",
+          "NZ.Activity.business_surveys",
+          "NZ.Consumer.income"
+        ],
+        "scored_status": "blocked",
+        "sovereign_admission": "research_only"
+      },
+      "US": {
+        "eligible": true,
+        "gaps": [],
+        "scored_status": "ok"
+      }
+    },
+    "coverage": "PARTIAL",
+    "eligible": true,
+    "expansion_rule": "country_and_expression_specific",
+    "hold_decisions_emitted": 0,
+    "partial_expressions": [
+      "activity:US",
+      "activity:CA",
+      "activity:AU",
+      "activity:NZ",
+      "activity:EA",
+      "activity:JP",
+      "macro:AU",
+      "macro:NZ"
+    ],
+    "partial_legs": [
+      "NZ_rates"
+    ],
+    "quarantine_mode": null,
+    "quarantine_reason": null,
+    "quarantined_positions": [],
+    "research_coverage_gaps": [
+      "macro:CA",
+      "macro:AU",
+      "macro:NZ",
+      "macro:EA",
+      "macro:JP"
+    ],
+    "research_coverage_series": [
+      "CA.Consumer.income",
+      "CA.Consumer.retail",
+      "CA.Consumer.spending",
+      "AU.Consumer.retail",
+      "NZ.Activity.business_surveys",
+      "EA.Labor.wages",
+      "EA.Consumer.income",
+      "EA.Consumer.spending",
+      "EA.Labor.employment",
+      "JP.Consumer.income",
+      "JP.Activity.gdp_domestic_demand",
+      "JP.Consumer.spending",
+      "JP.Labor.wages"
+    ],
+    "research_eligible": true,
+    "restricted_seats": [],
+    "seat_risk": {},
+    "source_health": [
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-Q2",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Activity.gdp_domestic_demand"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.confidence"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Inflation.core_pce"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.income"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-08",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.retail"
+      },
+      {
+        "blocks_new_risk": false,
+        "carried_forward": true,
+        "classification": "transient_fetch",
+        "country": "US",
+        "fetch_error": "The read operation timed out",
+        "observation_period": "2026-07",
+        "research_status": "previous release retained",
+        "retrieved_at": "2026-09-21T14:41:19Z",
+        "series_id": "US.Consumer.spending"
+      }
+    ],
+    "synthetic_holds": false,
+    "trade_eligible_countries": [
+      "US",
+      "CA",
+      "AU",
+      "NZ",
+      "EA",
+      "JP"
+    ],
+    "trader_eligible": true,
+    "trader_execution": "allowed"
+  },
+  "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+}

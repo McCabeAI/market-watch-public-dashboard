@@ -126,14 +126,14 @@
     "nav_usd": 100155816.1,
     "net_pnl_usd": 155816.1,
     "pressure_flags": [],
-    "prior_competition_rank": 3,
-    "rank_change": 0,
+    "prior_competition_rank": 2,
+    "rank_change": 1,
     "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 350000.0,
     "risk_capital_utilization": 0.035,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -34445.58,
     "status": "ok"
   },
   "learning": {
@@ -144,7 +144,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "29bd68ecc5594e899a544f2e3c747abc874dc24fd7f173a8fdc6b38fb18d54ce",
+  "memory_context_sha256": "284e523c856e5012eb408898b5228666eb27ba2030d32bc31987acf3d292da51",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -167,7 +167,7 @@
         "horizon_status": "within",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": 30,
-        "mae_usd": -35000.0,
+        "mae_usd": -40000.0,
         "mechanical_order": false,
         "mfe_usd": 15000.0,
         "move_versus_entry_intent": "unknown",
@@ -210,7 +210,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 47059.91,
         "holding_seconds": 256321,
         "horizon_elapsed_fraction": 0.1483,
         "horizon_status": "within",
@@ -218,15 +218,15 @@
         "intended_horizon_days": 20,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 47059.91,
         "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-be9eaa63695e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if Australian-kiwi mean-reverts off the 99th percentile while kiwi-dollar stays cheap at 0.5622.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 47059.91,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -278,12 +278,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "revenge_pressure": {
         "band": "calm",
@@ -312,7 +312,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "41ea77ddb81a822dcbca2c8d1d25bc42d47c7990c544ec9ec3b4c639b38cbc35",
+    "state_sha256": "7fd96af210dbae35d54e59909c11ec3f2d28b6847ca476db3930163e6e4503e7",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

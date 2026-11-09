@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "causal": {
+        "assumptions_right": "The elevated March implied was vulnerable to normalization, the decline occurred, and the stated hawkish invalidation did not have to print for the exit at 4.24 to be the right close of that stretch.",
+        "assumptions_wrong_or_underweighted": "How far the gap to cash would close was underweighted. Implied stalled near 4.24, still well above cash at 3.92, so the full premium to cash was never the right target, and a modest conviction correctly treated the labor and oil tails as a reason to keep size small.",
+        "causal_divergence": "The forward did the thing the thesis asked, a 34bp decline from 4.58 to 4.24, while the book recorded only 250 dollars because the expression was sized for a 56 conviction rather than for a full move to cash.",
+        "decision_quality_attribution": "thesis",
+        "future_implication": "A completed normalization is not a reason to reload the same March long at 4.27, and a later rates fade needs a fresh stretch versus cash and the curve rather than the memory of the 4.58 entry.",
+        "observed_reality": "Implied fell from 4.58 to 4.24 by 6 Nov, the position was closed for a 250 dollar paper increment after about 47 days, and the current screen shows cash SOFR at 3.92 with March at 4.27.",
+        "original_belief": "March 2027 implied at 4.58 was stretched above a plausible lower path and would mean-revert unless another 25bp was delivered into the December window with March holding at or above the prior June mid, or hotter US labor and inflation re-widened the oil tail.",
+        "same_information_counterfactual": "With the same 4.58 entry and the same invalidation, the sound path was still to hold the long while the forward stayed stretched and to exit once it had fallen to 4.24. Raising size after the decline was known would have used information that was not available at entry."
+      },
+      "expression_assessment": "Long March SOFR was the right instrument for that policy-path fade. At 4.27, with cash at 3.92, the same long is no longer a fresh extreme and should not be reopened from memory of the 4.58 entry.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-06T06:25:49.281876-05:00",
+        "conviction": 56,
+        "entry_mark": 4.58,
+        "exit_mark": 4.24,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 4088939,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Another clearly delivered 25bp into the Dec-26 window with SR3H7 implied holding at or above the packet Jun-27 4.72 mid, or hotter US labor/inflation with a re-widening oil tail.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": null,
+      "lesson": null,
+      "no_new_lesson": "The process was sound. The stretch was identified, the invalidation was specific, the forward normalized, and the exit followed that normalization. The 250 dollar increment is the bounded variance of a 56-conviction expression held for about 47 days, not a defect in the anchor or the exit rule. The same rule is what keeps March from being reopened now that the entry extreme is gone.",
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-a5f512bc204e",
+      "run_id": "overnight-20261109",
+      "sizing_assessment": "Conviction 56 correctly kept the expression modest. A 250 dollar increment on a realized normalization is a bounded outcome of that conviction, not evidence the position should have been sized up after the move was known.",
+      "tags": [],
+      "thesis_assessment": "The thesis held. Implied normalized from 4.58 to 4.24, and the live invalidation did not force the exit. The close was taken after the stretch had been given back.",
+      "timing_assessment": "The hold of about 47 days and the exit on 6 Nov at 4.24 matched the normalization window. Staying for a full gap close to cash would have been a different trade.",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86",
+      "what_failed": "The realized paper increment was only 250 dollars after about 47 days, so a 34bp favorable move stayed a small book outcome at conviction 56.",
+      "what_worked": "March 2027 SOFR implied fell from the 4.58 entry to the 4.24 exit, so the view that the forward was stretched high and would normalize lower was right, and the close kept the result instead of retargeting cash at 3.92."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

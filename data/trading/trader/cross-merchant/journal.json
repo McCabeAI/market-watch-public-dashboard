@@ -1850,6 +1850,62 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "Australian-kiwi at 1.2453 is a five-year z-score of 2.75 and the 99th percentile, and the existing 20 million short from 1.2456 is marked at 1.2453, so the extreme is intact and still unmonetized. The cross isolates rich Australian dollars against a kiwi that is independently cheap, with kiwi-dollar at 0.5622 in the 3rd percentile. Australian-Canada is a lesser rich print and pays a wide cash-rate gap while oil is firm, so it is not the cleaner cross."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "2bf3ca0929d48c7299e609728c8783db23430795702b3faced61f9b54ff397a5",
+      "event_id": "jde-cb2144f2d3844ab6",
+      "funding_view": null,
+      "invalidation": "Close the short if Australian-kiwi trades back through the 1.2456 entry and holds higher, or if kiwi weakness shows up together against Canada and sterling and the move stops being an Australia premium.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b0621157677c23211510b0e7f5e1f1cd981875d262e69eae6fa5405854eac005",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "74521d38990e09cacfc0a2484275877cabfad526fb94c921bf9f45a1f0a24167"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian-kiwi at 1.2394 is still a five-year z-score of 2.62 and the 98th percentile, so the existing short remains the clean bilateral premium. Buying the kiwi against the dollar would take a five-year low into a SOFR strip that sits above cash and volatility at 28. Sterling-kiwi is the weaker cheap-kiwi cross, and kiwi-Canada leans against Brent near 98. The cross has only slipped half a percent over five sessions, so this stays a valuation hold rather than a cover or an add.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "Australian-kiwi at 1.2394 is still a five-year z-score of 2.62 and the 98th percentile, so the existing short remains the clean bilateral premium. Buying the kiwi against the dollar would take a five-year low into a SOFR strip that sits above cash and volatility at 28. Sterling-kiwi is the weaker cheap-kiwi cross, and kiwi-Canada leans against Brent near 98. The cross has only slipped half a percent over five sessions, so this stays a valuation hold rather than a cover or an add."
     }
   ],
   "schema_version": 1,

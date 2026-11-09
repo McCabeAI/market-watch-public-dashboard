@@ -1846,6 +1846,60 @@
       "run_id": "overnight-20261106",
       "schema_version": 1,
       "thesis": "SoftBank credit risk at a four-year high sits beside a VIX at 16.61 and the S&P 500 at 7688, so the liquidity tail is still underpriced. US duration has already marked a lot of that stress, with the 10-year down to 4.84, while SOFR futures still imply hikes from 3.94 cash. A fresh long at 4.84 is no longer the entry, but the line bought at 5.24 still hedges a hike path that can be pared back if credit stress spreads."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-09T05:37:50.499948-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "6ffa376d8f1dc5b414bff7d47d2158aa72c234849f1e5e91a7191c1db9bd15e5",
+      "event_id": "jde-4d701ea840604c82",
+      "funding_view": null,
+      "invalidation": "Abandon the hold if the ten-year yield trades back through the 5.24 entry, or if the SOFR strip falls below the 3.92 cash fixing and the front end becomes the cleaner slowdown market.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "01b864d1a620a72bd5769044d7e93dc052a5d1e7ea247ef1d271a69f19d73f16",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "dbdd81b1f7bb461bb22d4c30943159ed46207bac10d9c005e3d07b104a26ef83"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
+        "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+        "overnight_run_id": "overnight-20261109",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "SoftBank credit risk at a four-year high, Brent at 98.32, and a Bank of England Bank Rate of 4 percent say the landing is fragile, while the S&P at 7,354 still prices it as benign. SOFR from December through September sits above the 3.92 cash fixing, so the strip already prices tighter policy and is a poor receive into payrolls. The US ten-year at 4.86 has rallied from the 5.24 entry and is the defensive duration already held. Oil and that hawkish strip can rebuild term premium, so the clean act is to keep the bond and leave new risk alone.",
+      "run_id": "overnight-20261109",
+      "schema_version": 1,
+      "thesis": "SoftBank credit risk at a four-year high, Brent at 98.32, and a Bank of England Bank Rate of 4 percent say the landing is fragile, while the S&P at 7,354 still prices it as benign. SOFR from December through September sits above the 3.92 cash fixing, so the strip already prices tighter policy and is a poor receive into payrolls. The US ten-year at 4.86 has rallied from the 5.24 entry and is the defensive duration already held. Oil and that hawkish strip can rebuild term premium, so the clean act is to keep the bond and leave new risk alone."
     }
   ],
   "schema_version": 1,
