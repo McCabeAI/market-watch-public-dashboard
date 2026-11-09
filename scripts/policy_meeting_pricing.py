@@ -680,6 +680,25 @@ def _forward_baseline_rate(
     return (n_calendar * implied - fixed_sum) / forward_days
 
 
+def _sr1_unsolved_predecessor_eff(
+    meeting_idx: int,
+    unresolved: list[dict],
+    solved_sofr: list[tuple[date, float]],
+) -> date | None:
+    """Effective date of the latest unresolved predecessor meeting lacking a solved SOFR post."""
+    solved_effs = {eff for eff, _ in solved_sofr}
+    for j in range(meeting_idx - 1, -1, -1):
+        eff = _parse_date(unresolved[j]["effective_date"])
+        if eff not in solved_effs:
+            return eff
+    return None
+
+
+US_SR1_PREDECESSOR_GAP_REASON = (
+    "A prior FOMC step is unavailable; the SR1-identified policy path is underdetermined"
+)
+
+
 def _sr1_month_pre_meeting_known_sum(
     *,
     month_start: date,
@@ -690,8 +709,10 @@ def _sr1_month_pre_meeting_known_sum(
     f_baseline: float,
     prev_meeting_eff: date | None,
     prev_f_sofr_post: float | None,
+    unsolved_predecessor_eff: date | None = None,
 ) -> tuple[float, bool]:
     """Sum SOFR accrual factors for calendar days in [month_start, k_eff)."""
+    gap_eff = unsolved_predecessor_eff if unsolved_predecessor_eff is not None else prev_meeting_eff
     total = 0.0
     d = month_start
     while d < k_eff and d < month_end:
@@ -700,8 +721,13 @@ def _sr1_month_pre_meeting_known_sum(
             if r is None:
                 return 0.0, False
             total += r
-        elif prev_meeting_eff is not None and d >= prev_meeting_eff:
-            total += prev_f_sofr_post if prev_f_sofr_post is not None else 0.0
+        elif gap_eff is not None and d >= gap_eff:
+            if prev_meeting_eff is not None and d >= prev_meeting_eff:
+                if prev_f_sofr_post is None:
+                    return 0.0, False
+                total += prev_f_sofr_post
+            else:
+                return 0.0, False
         else:
             total += f_baseline
         d += timedelta(days=1)
@@ -754,6 +780,7 @@ def price_meetings(
     solved_sofr: list[tuple[date, float]] = []
     previous_post: float | None = None
     sr1_baseline_path_started = False
+    us_sr1_path_gap = False
 
     fixings_sorted = _sorted_sofr_fixings(sofr_fixings)
     corra_fixings_sorted = _sorted_pct_fixings(sofr_fixings)
@@ -1337,6 +1364,22 @@ def price_meetings(
             else date.max
         )
 
+        if bank == "US" and us_sr1_path_gap:
+            while idx < len(unresolved):
+                rows.append(
+                    _row(
+                        unresolved[idx],
+                        None,
+                        None,
+                        None,
+                        "unavailable",
+                        [],
+                        extras={"reason": US_SR1_PREDECESSOR_GAP_REASON},
+                    )
+                )
+                idx += 1
+            break
+
         contract_rows: list[tuple[dict, date, date, int, date]] = []
         for contract in contracts:
             start, end = accrual_window(contract["expiry"], contract["period"])
@@ -1461,6 +1504,10 @@ def price_meetings(
                             prev_f_post = f_v
                             break
 
+                unsolved_pred_eff = _sr1_unsolved_predecessor_eff(
+                    idx, unresolved, solved_sofr
+                )
+
                 sum_known_m, sk_ok = _sr1_month_pre_meeting_known_sum(
                     month_start=month_start,
                     month_end=month_end,
@@ -1470,6 +1517,7 @@ def price_meetings(
                     f_baseline=f_baseline if f_baseline is not None else 0.0,
                     prev_meeting_eff=prev_meeting_eff,
                     prev_f_sofr_post=prev_f_post,
+                    unsolved_predecessor_eff=unsolved_pred_eff,
                 )
 
                 n_pre = sum(
@@ -1599,7 +1647,27 @@ def price_meetings(
                     sr1_baseline_path_started = True
 
             if sr1_for_meeting and not used_sr1_forward:
-                rows.append(_row(meeting, None, None, None, "unavailable", []))
+                if sr1_baseline_path_started or solved_sofr:
+                    us_sr1_path_gap = True
+                gap_reason = (
+                    US_SR1_PREDECESSOR_GAP_REASON
+                    if unsolved_pred_eff is not None
+                    else None
+                )
+                extras_unavail: dict[str, Any] | None = (
+                    {"reason": gap_reason} if gap_reason else None
+                )
+                rows.append(
+                    _row(
+                        meeting,
+                        None,
+                        None,
+                        None,
+                        "unavailable",
+                        [],
+                        extras=extras_unavail,
+                    )
+                )
                 idx += 1
                 continue
 
@@ -2533,6 +2601,7 @@ def build_policy_meeting_prices(
                 "ib_prior_forward",
                 "ib_post_level",
                 "estimate_note",
+                "reason",
             ):
                 if optional_key in row:
                     mt[optional_key] = row[optional_key]
