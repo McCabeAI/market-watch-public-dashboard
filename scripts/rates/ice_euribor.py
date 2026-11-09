@@ -39,6 +39,20 @@ ER3_CONTRACT_DATA_URL = (
     f"?productId={ER3_PRODUCT_ID}&hubId={ER3_HUB_ID}"
 )
 ER3_EXPIRY_CSV_URL = f"https://www.ice.com/api/productguide/spec/{ER3_SPEC_ID}/expiry/csv"
+ICE_SPREAD_SPEC_ID = "83050087"
+ICE_SPREAD_PRODUCT_ID = "28596"
+ICE_SPREAD_HUB_ID = "29427"
+ICE_SPREAD_SPEC_URL = (
+    "https://www.ice.com/products/83050087/Three-Month-ESTR-vs-Three-Month-Euribor-Spread"
+)
+ICE_SPREAD_CONTRACT_DATA_URL = (
+    "https://www.ice.com/marketdata/api/productguide/charting/contract-data"
+    f"?productId={ICE_SPREAD_PRODUCT_ID}&hubId={ICE_SPREAD_HUB_ID}"
+)
+# ICE spread page: minimum fluctuation 0.0025 (€6.25); quote is ER3 price minus I price.
+ICE_SPREAD_TICK_INDEX = 0.0025
+ICE_SPREAD_TICK_EUR = 6.25
+ICE_SPREAD_BP_EUR = 25.0
 # Sourced from the ICE product page body, not from a generic IMM assumption.
 # Unit of trading: €2,500 × Rate Index. Minimum fluctuation 0.005 = €12.50.
 ICE_TICK_INDEX = 0.005
@@ -245,52 +259,143 @@ def same_label_cross_check(
     euribor_rows: list[dict[str, Any]],
     er3_rows: list[dict[str, Any]],
     er3_expiries: dict[str, dict[str, str | None]],
+    direct_spread_rows: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Show why an ER3-minus-I price gap is not a basis when LTDs differ."""
+    """ICE pairs ER3 and I on the EURIBOR contract month. The legs expire separately.
+
+    A same-label outright gap is an indicative delayed last, not an official
+    spread settlement. The direct inter-commodity spread, when present, is the
+    exchange quote for that same pairing.
+    """
     er3_by = {str(row.get("market_strip")): row for row in er3_rows}
+    direct_by = {str(row.get("market_strip")): row for row in direct_spread_rows or []}
     points = []
     for row in euribor_rows:
         symbol = str(row.get("market_strip") or "")
         other = er3_by.get(symbol)
+        direct = direct_by.get(symbol)
         er3_life = er3_expiries.get(symbol) or {}
         i_ltd = row.get("ltd")
         er3_ltd = er3_life.get("ltd")
-        gap = None
+        indicative = None
         if other and other.get("price") is not None and row.get("price") is not None:
-            gap = round(100.0 * (float(other["price"]) - float(row["price"])), 6)
-        aligned = bool(i_ltd and er3_ltd and i_ltd == er3_ltd)
+            indicative = round(100.0 * (float(other["price"]) - float(row["price"])), 6)
+        same_clock = bool(
+            other
+            and row.get("quote_time")
+            and other.get("quote_time")
+            and row.get("quote_time") == other.get("quote_time")
+        )
         points.append(
             {
                 "market_strip": symbol,
+                "pairing": "euribor_contract_series",
                 "euribor_code": row.get("code"),
                 "er3_code": None if other is None else other.get("code"),
                 "i_ltd": i_ltd,
                 "er3_ltd": er3_ltd,
+                "independent_expiries": i_ltd != er3_ltd,
                 "i_quote_time": row.get("quote_time"),
                 "er3_quote_time": None if other is None else other.get("quote_time"),
-                "unaligned_price_gap_bp": None if aligned else gap,
-                "basis_bp": gap if aligned else None,
-                "status": "period_aligned" if aligned else "unavailable",
-                "reason": None
-                if aligned
-                else (
-                    f"ICE I {symbol} LTD {i_ltd} and ER3 {symbol} LTD {er3_ltd} "
-                    "are not the same contract period. The price gap is not a basis."
+                "indicative_basis_bp": indicative,
+                "indicative_kind": "derived_delayed_last",
+                "direct_spread_price": None if direct is None else direct.get("price"),
+                "direct_spread_bp": None if direct is None else direct.get("basis_bp"),
+                "direct_quote_time": None if direct is None else direct.get("quote_time"),
+                "direct_kind": None if direct is None else direct.get("mark_kind"),
+                "basis_bp": None if direct is None else direct.get("basis_bp"),
+                "status": "exchange_paired" if other is not None or direct is not None else "unavailable",
+                "exact_fra_ois": False,
+                "execution_eligible": False,
+                "same_quote_time": same_clock,
+                "reason": (
+                    "ICE lists this month on the EURIBOR series: buying the spread is long one ER3 "
+                    f"and short one I. I LTD {i_ltd} and ER3 LTD {er3_ltd} are independent. "
+                    "The outright price gap is an indicative delayed last"
+                    + ("" if same_clock else " and the leg timestamps differ")
+                    + ". It is not an official spread settlement and not an identical FRA/OIS period."
                 ),
             }
         )
-    usable = [row for row in points if row["status"] == "period_aligned" and row.get("basis_bp") is not None]
+    paired = [row for row in points if row["status"] == "exchange_paired"]
     return {
         "curve_id": "EA_ICE_ER3_MINUS_I",
-        "status": "ok" if usable else "unavailable",
-        "formula": "100 * (ER3 last - I last) = 100 * ((100 - I) - (100 - ER3))",
+        "status": "indicative" if paired else "unavailable",
+        "formula": "quote = ER3 futures price - I futures price; bp = 100 * that difference",
+        "spread_side": "long ER3 and short I when the spread is bought",
         "exact_fra_ois": False,
         "execution_eligible": False,
         "points": points,
         "reason": None
-        if usable
-        else "Same ICE month labels do not share a last trading day, so ER3 minus I is not a basis.",
+        if paired
+        else "No ER3 or direct ICE spread quote was paired to an EURIBOR month.",
     }
+
+
+def parse_ice_spread_data(
+    payload: object,
+    *,
+    source_url: str,
+    retrieved_at: str,
+) -> list[dict[str, Any]]:
+    """Direct inter-commodity spread lasts. Prices are small index differences, not 100-minus-rate."""
+    if not isinstance(payload, list):
+        raise ValueError("ICE spread contract-data payload must be a list")
+    rows: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for item in payload:
+        if not isinstance(item, dict):
+            continue
+        parsed = parse_strip_label(str(item.get("marketStrip") or ""))
+        stamp = parse_body_timestamp(item.get("lastTime"))
+        price = item.get("lastPrice")
+        if parsed is None or price is None or stamp["quote_date"] is None:
+            continue
+        expiry, _year, month = parsed
+        if expiry in seen:
+            continue
+        price_f = float(price)
+        seen.add(expiry)
+        rows.append(
+            {
+                "product": "ER3-I",
+                "exchange": "ICE",
+                "code": f"ER3-I-{item.get('marketStrip')}",
+                "expiry": expiry,
+                "market_strip": item.get("marketStrip"),
+                "price": round(price_f, 6),
+                "basis_bp": round(price_f * 100.0, 6),
+                "volume": item.get("volume"),
+                "observation_date": stamp["quote_date"],
+                "quote_time": stamp["quote_time"],
+                "retrieved_at": retrieved_at,
+                "mark_kind": "delayed_last",
+                "trade_date_verified": False,
+                "source_url": source_url,
+                "spec_url": ICE_SPREAD_SPEC_URL,
+                "quote_convention": "ER3 futures price minus I futures price",
+                "long_leg": "ER3",
+                "short_leg": "I",
+                "listing": "quarterly" if month in {3, 6, 9, 12} else "serial",
+                "execution_eligible": False,
+                "tick_index": ICE_SPREAD_TICK_INDEX,
+                "tick_eur": ICE_SPREAD_TICK_EUR,
+            }
+        )
+    rows.sort(key=lambda row: row["expiry"])
+    return rows
+
+
+def ice_spread_pnl_eur(entry_price: float, exit_price: float, lots: int, side: str) -> float | None:
+    """EUR PnL of the listed spread. Long is long ER3 and short I, and gains when the quote rises."""
+    if lots < 0 or str(side).lower() not in {"long", "short"}:
+        return None
+    if lots == 0:
+        return 0.0
+    amount = (float(exit_price) - float(entry_price)) / ICE_SPREAD_TICK_INDEX * ICE_SPREAD_TICK_EUR * int(lots)
+    if str(side).lower() == "short":
+        amount = -amount
+    return round(amount, 2)
 
 
 def ice_i_pnl_eur(entry_index: float, exit_index: float, lots: int, side: str) -> float | None:
@@ -352,7 +457,27 @@ def acquire_ice_euribor_contracts(
         for row in er3_parsed["rows"]:
             row["product"] = "ER3"
             row["code"] = "ER3" + row["code"][1:]
-        cross = same_label_cross_check(parsed["rows"], er3_parsed["rows"], er3_exp)
+        direct_rows: list[dict[str, Any]] = []
+        try:
+            spread_raw = json.loads(_invoke(fetch_bytes, ICE_SPREAD_CONTRACT_DATA_URL).decode("utf-8"))
+            direct_rows = parse_ice_spread_data(
+                spread_raw,
+                source_url=ICE_SPREAD_CONTRACT_DATA_URL,
+                retrieved_at=retrieved,
+            )
+        except Exception as spread_exc:
+            direct_rows = []
+            spread_error = str(spread_exc)
+        else:
+            spread_error = None
+        cross = same_label_cross_check(
+            parsed["rows"],
+            er3_parsed["rows"],
+            er3_exp,
+            direct_spread_rows=direct_rows,
+        )
+        if spread_error:
+            cross["direct_spread_error"] = spread_error
     except Exception as exc:
         cross = {"status": "unavailable", "points": [], "reason": f"ER3 cross-check unavailable: {exc}"}
     provenance = {

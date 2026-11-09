@@ -545,7 +545,7 @@ def build_eus_basis(
                 "mark_kind": row.get("mark_kind"),
                 "source": source,
                 "execution_eligible": False,
-                "economics": "unverified_tick",
+                "economics": row.get("economics") or "ser_9059_eur_25_per_bp",
                 "exact_fra_ois": False,
                 "reason": row.get("period_note"),
                 "changes": _changes(history, EUS_DEFINITION, str(row.get("expiry") or ""), session, basis),

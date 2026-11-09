@@ -791,10 +791,27 @@ class BasisTests(unittest.TestCase):
             {"Dec26": {"ltd": "2027-03-16", "fsd": "2027-03-17", "symbol": "Dec26"}},
         )
         point = cross["points"][0]
-        self.assertEqual(point["status"], "unavailable")
+        self.assertEqual(point["status"], "exchange_paired")
+        self.assertTrue(point["independent_expiries"])
+        self.assertEqual(point["i_ltd"], "2026-12-14")
+        self.assertEqual(point["er3_ltd"], "2027-03-16")
+        self.assertAlmostEqual(point["indicative_basis_bp"], 19.75, places=4)
+        self.assertFalse(point["exact_fra_ois"])
+        self.assertFalse(point["execution_eligible"])
         self.assertIsNone(point["basis_bp"])
-        self.assertAlmostEqual(point["unaligned_price_gap_bp"], 19.75, places=4)
-        self.assertIn("not the same contract period", point["reason"])
+        from scripts.rates.ice_euribor import ice_spread_pnl_eur, parse_ice_spread_data
+
+        direct = parse_ice_spread_data(
+            [{"marketStrip": "Dec26", "lastPrice": 0.20, "volume": 33175, "lastTime": "11/06/2026 08:48 PM GMT"}],
+            source_url="https://www.ice.com/marketdata/api/productguide/charting/contract-data?productId=28596&hubId=29427",
+            retrieved_at="2026-11-08T23:30:00+00:00",
+        )
+        self.assertEqual(direct[0]["long_leg"], "ER3")
+        self.assertEqual(direct[0]["short_leg"], "I")
+        self.assertAlmostEqual(direct[0]["basis_bp"], 20.0, places=4)
+        self.assertEqual(direct[0]["mark_kind"], "delayed_last")
+        self.assertEqual(ice_spread_pnl_eur(0.20, 0.2025, 1, "long"), 6.25)
+        self.assertEqual(ice_spread_pnl_eur(0.20, 0.21, 1, "short"), -25.0)
 
     def test_eus_settlement_is_a_direct_basis_not_an_outright(self) -> None:
         from scripts.rates.cme_eus import parse_cme_eus_settlements_json
@@ -818,6 +835,16 @@ class BasisTests(unittest.TestCase):
         self.assertAlmostEqual(dec["basis_bp"], 17.0, places=6)
         self.assertIsNone(dec["implied_rate"])
         self.assertFalse(dec["execution_eligible"])
+        self.assertEqual(dec["paper_trading"], "observe_only")
+        self.assertEqual(dec["bp_value_eur"], 25.0)
+        self.assertEqual(dec["tick_eur"], 6.25)
+        from scripts.rates.cme_eus import eus_assignment_esr_price, eus_pnl_eur, eus_pnl_usd
+
+        self.assertEqual(eus_pnl_eur(0.17000, 0.18000, 1, "long"), 25.0)
+        self.assertEqual(eus_pnl_eur(0.17000, 0.1725, 1, "long"), 6.25)
+        self.assertEqual(eus_pnl_eur(0.17000, 0.18000, 1, "short"), -25.0)
+        self.assertEqual(eus_pnl_usd(0.17000, 0.18000, 1, "long", 1.08), 27.0)
+        self.assertEqual(eus_assignment_esr_price(0.7600, 0.4500), 99.69)
         nov = next(row for row in rows if row["expiry"] == "2026-11")
         self.assertAlmostEqual(nov["basis_bp"], -52.5, places=6)
         curve = build_futures_basis(

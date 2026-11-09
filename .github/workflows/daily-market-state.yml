@@ -75,12 +75,25 @@ jobs:
         continue-on-error: true
         run: PYTHONPATH=. python scripts/rates/cme_esr_runner_probe.py --session 2026-11-06 --output /tmp/cme-esr-probe.json
 
+      - name: ICE EURIBOR and CME EUS runner probe
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        run: PYTHONPATH=. python scripts/rates/euribor_runner_probe.py --output /tmp/euribor-eus-probe.json
+
       - name: Upload CME ESR probe artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
           name: cme-esr-probe
           path: /tmp/cme-esr-probe.json
+          if-no-files-found: warn
+
+      - name: Upload ICE EURIBOR and CME EUS probe artifact
+        if: github.event_name == 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: euribor-eus-probe
+          path: /tmp/euribor-eus-probe.json
           if-no-files-found: warn
 
       - name: ASX EOD runner probe

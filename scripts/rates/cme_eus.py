@@ -27,6 +27,22 @@ CME_EUS_SPECS_URL = (
     "https://www.cmegroup.com/markets/interest-rates/stirs/"
     "euro-short-term-rate-spread.contractSpecs.html"
 )
+CME_EUS_SER_URL = "https://www.cmegroup.com/content/dam/cmegroup/notices/ser/2022/09/SER-9059.pdf"
+# SER-9059, Rulebook Chapter 481: each basis point of the spread is €25.
+# Minimum increment for every EUS month is 0.0025 index points = €6.25.
+EUS_BP_EUR = 25.0
+EUS_TICK_INDEX = 0.0025
+EUS_TICK_EUR = 6.25
+EUS_ECONOMICS_SOURCE = (
+    "CME SER-9059 Exhibit 1, Rulebook Chapter 481: the quote is the Euribor-minus-€STR "
+    "basis in percent per annum, €25 per basis point; minimum price increment 0.0025 "
+    "index points equals €6.25. Final settlement assigns the same named-month ESR future "
+    "at 100 minus the Euribor fixing plus the EUS final settlement."
+)
+EUS_PAPER_BLOCKER = (
+    "A long EUS final settlement assigns a long ESR future of the same named month. "
+    "ESR remains observe_only, so EUS is not opened as a paper position."
+)
 _MONTHS = {
     "JAN": 1,
     "FEB": 2,
@@ -148,12 +164,19 @@ def parse_cme_eus_settlements_json(
                 "spec_url": CME_EUS_SPECS_URL,
                 "report_type": payload.get("reportType"),
                 "ds_header": header,
-                "economics": "unverified_tick",
+                "economics": "ser_9059_eur_25_per_bp",
+                "bp_value_eur": EUS_BP_EUR,
+                "tick_index": EUS_TICK_INDEX,
+                "tick_eur": EUS_TICK_EUR,
                 "execution_eligible": False,
+                "paper_trading": "observe_only",
+                "paper_blocker": EUS_PAPER_BLOCKER,
+                "economics_source": EUS_ECONOMICS_SOURCE,
                 "period_note": (
-                    "CME names the contract month. The settlement file does not stamp "
-                    "the EURIBOR fixing day or the €STR compound window, so this quote "
-                    "is not mapped onto an ICE I or ESR period."
+                    "SER-9059 prices the spread over the same interest period as the "
+                    "named-month Euribor and compounded €STR. The settlement file itself "
+                    "does not reprint those fixing dates. Final settlement assigns ESR, "
+                    "it does not leave an open spread."
                 ),
             }
         )
@@ -161,6 +184,33 @@ def parse_cme_eus_settlements_json(
         raise ValueError("CME EUS settlement file contained no basis quotes")
     rows.sort(key=lambda row: row["expiry"])
     return rows
+
+
+def eus_pnl_eur(entry_index: float, exit_index: float, lots: int, side: str) -> float | None:
+    """EUR variation on the quoted basis. Long gains when the EUS index rises."""
+    if lots < 0 or str(side).lower() not in {"long", "short"}:
+        return None
+    if lots == 0:
+        return 0.0
+    amount = (float(exit_index) - float(entry_index)) / 0.01 * EUS_BP_EUR * int(lots)
+    if str(side).lower() == "short":
+        amount = -amount
+    return round(amount, 2)
+
+
+def eus_pnl_usd(entry_index: float, exit_index: float, lots: int, side: str, eurusd: float | None) -> float | None:
+    local = eus_pnl_eur(entry_index, exit_index, lots, side)
+    if local is None or eurusd is None or eurusd <= 0:
+        return None
+    return round(local * float(eurusd), 2)
+
+
+def eus_assignment_esr_price(euribor_percent: float, eus_final_settlement: float) -> float:
+    """IMM index of the ESR future assigned to a long EUS at final settlement.
+
+    SER-9059 example: Euribor 0.7600 and spread 0.4500 assign at 99.6900.
+    """
+    return round(100.0 - float(euribor_percent) + float(eus_final_settlement), 6)
 
 
 def acquire_eus_contracts(
@@ -198,7 +248,10 @@ def acquire_eus_contracts(
                 "ds_header": rows[0]["ds_header"],
                 "via": attempt.get("via"),
                 "execution_eligible": False,
-                "economics": "unverified_tick",
+                "economics": "ser_9059_eur_25_per_bp",
+                "economics_source": EUS_ECONOMICS_SOURCE,
+                "paper_trading": "observe_only",
+                "paper_blocker": EUS_PAPER_BLOCKER,
                 "not_an_euribor_outright": True,
             }
             return rows, url, "CME EUS basis settlements", provenance
