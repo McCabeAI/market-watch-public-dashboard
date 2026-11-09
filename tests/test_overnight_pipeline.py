@@ -1077,16 +1077,39 @@ class BookTransitionTests(unittest.TestCase):
 
     def test_canonical_trader_books_migrate_without_rewriting_trades(self):
         from copy import deepcopy
-        from pathlib import Path
+
         from scripts.overnight.books import validate_books, public_books_view
 
-        books_fixture = (
-            Path(__file__).resolve().parent
-            / "fixtures"
-            / "overnight_books"
-            / "canonical_trader_books_latest.json"
-        )
-        raw = json.loads(books_fixture.read_text(encoding="utf-8"))
+        chart_hold = {
+            "action": "HOLD",
+            "result": "applied",
+            "overnight_run_id": "overnight-20261109",
+            "at": "2026-11-09T05:37:50.499948-05:00",
+            "positions": [],
+            "blocked_families": [],
+            "instrument": None,
+            "note": None,
+            "notional_usd": None,
+            "paper_mid_bid": None,
+            "paper_mid_ask": None,
+            "position_id": None,
+            "price": None,
+            "realized_pnl_usd": None,
+        }
+        position_seat = "dollar-king"
+        open_position = {
+            "position_id": "pos-synthetic-migrate-001",
+            "instrument": "USDCAD",
+            "asset_class": "spot_fx",
+            "side": "long",
+            "notional_usd": 5_000_000,
+            "entry_price": 1.38,
+            "mark_price": 1.39,
+        }
+        raw = empty_books(overnight_run_id="overnight-20261109", roster=STANDING_SEATS)
+        raw["seats"]["chart-guy"]["history"] = [chart_hold]
+        raw["seats"][position_seat]["realized_pnl_usd"] = 250_000.0
+        raw["seats"][position_seat]["positions"] = [open_position]
         before = deepcopy(raw)
         validated = validate_books(deepcopy(raw))
         view = public_books_view(deepcopy(raw))
