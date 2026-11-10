@@ -1,0 +1,347 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-10T11:11:35+00:00",
+      "release_sha256": "77e0631736cc00cf528e484269de5fe4caafa79444b497950a29e1272497b119",
+      "run_attempt": "2",
+      "run_id": "42793964553",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42793964553",
+      "site_sha256": "790a8155a009de845597777d6b9bb4e59bef62bbb1078b84f36483cc761c201d"
+    }
+  ],
+  "launch_id": "mwl-20261110T095036Z-eaa0689a",
+  "launch_terminal": false,
+  "packet_sha256": "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-09T08:02:23.438696-05:00",
+      "as_of": "2026-11-09T05:37:50.499948-05:00",
+      "books_run_id": "overnight-20261109",
+      "overnight_run_id": "overnight-20261109",
+      "packet_sha256": "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-10T04:50:36.940059-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-10T04:50:36.940059-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 9,
+          "unverified_source": 7
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Fed\u2019s Waller Backs December Rate Hike, Says Open to Larger Move",
+          "id": "news:8389a5d0d18b4c3a",
+          "published_at": "2026-11-09T20:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-10/fed-s-waller-backs-december-rate-hike-says-open-to-larger-move",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Millions of dollars poured into prediction markets on election night, trading on Democratic control of Congress and Texas governor's race",
+          "id": "news:73b8caf2883a2c9f",
+          "published_at": "2026-11-09T13:41:13-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/09/millions-of-dollars-poured-into-prediction-markets-on-election-night.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Goldman CEO Solomon says AI financing remains strong despite market jitters",
+          "id": "news:89570fee08def909",
+          "published_at": "2026-11-09T12:14:47-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/09/goldman-ceo-ai-financing-market.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg_credit",
+          "headline": "Thai Bond Sales Set for Rebound in 2027 as AI Investment Surges",
+          "id": "news:12bf4c93fcbd8424",
+          "published_at": "2026-11-09T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-10/thai-bond-sales-set-for-rebound-in-2027-as-ai-investment-surges",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "bloomberg_politics",
+          "headline": "Iran Uses Global Climate Talks to Highlight Impact of US Strike",
+          "id": "news:efac93d9ba75fb85",
+          "published_at": "2026-11-09T19:05:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-10/iran-uses-global-climate-talks-to-highlight-impact-of-us-strike",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "AUD",
+            "iron_ore"
+          ],
+          "channel": "china_spillover",
+          "currency": "current",
+          "discovery_source": "bloomberg_politics",
+          "headline": "China Oil Imports Rebound as More Crude Flows From Persian Gulf",
+          "id": "news:3b39da25449939b0",
+          "published_at": "2026-11-09T14:43:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-10/china-oil-imports-rebound-as-more-crude-flows-from-persian-gulf",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "global_risk",
+          "claim": "evidenced",
+          "currency": "current",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Kiwi Extends Gains to Most in Seven Months After Election Result",
+          "id": "news:01a1f214d884a792",
+          "published_at": "2026-11-09T09:50:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-09/kiwi-extends-gains-to-most-in-seven-months-after-election-result",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "S&P 500 futures rise as traders brace for crucial consumer inflation report: Live updates",
+          "id": "news:28b1ea159eba0691",
+          "published_at": "2026-11-10T03:37:38-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/09/stock-market-today-live-updates.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-10T04:50:36.940059-05:00",
+      "news_family_digest": "1a9d51370140a3c8b1a78e3b61d6ef1318b27db39299f1d0617dad9109e223f9",
+      "packet_sha256": "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-10T04:50:36.940059-05:00",
+        "start": "2026-11-09T05:37:50.499948-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/freeze_binding.json",
+        "sha256": "1de9c4c36ca93af2665ec5b64bb9d06e3ad3002ec3d387f10233f272e998f0a0"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/remote_freeze.json",
+        "sha256": "736254c022be408990e0407fdcc5ec44c286af673f0bc390b24a8ce5ccb62e42"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/artifacts/00_authenticate.json",
+        "sha256": "28e93e1c62fa77bf4387f716624960bbe1d3c77306fe87425e2714102dc587a1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/artifacts/01_ingest.json",
+        "sha256": "f4f4a83bfc68a4dab9235484c263915fbe5a97d583a7597b22d34cfc105a468e"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/artifacts/02_acquire.json",
+        "sha256": "f9306d730c36ac3e97b6e12baad40a31fe4912c829eb9823d8238633297c7334"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/artifacts/03_quality_gate.json",
+        "sha256": "bd597db6e110cd043027def14e412ef956b09f7a65238ead14918dbe62d6fac3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/artifacts/04_freeze.json",
+        "sha256": "c7623fe0f607cc169b84276c25346975334aca5ce35138d1e844f2d5955dfa3c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/temperature_scores.json",
+        "sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/history/ca.json",
+        "sha256": "4550a1c46e623fddb40aa8a658ee80bde32d36fa4471a7191574b44fa9f23405"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/history/ea.json",
+        "sha256": "4ff434b23ffcd9f4b9c46f12e89e2fecd988ee6b1945404093fd90a2bf02ab3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/lineage/history/us.json",
+        "sha256": "77ac84b396934b4bfff16593c677476dd1fa7e074a2e37c1b4e690ff418d49c9"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261110/reviews/review-001/evidence_snapshot.json",
+        "sha256": "dc04d2410b95e18020a5158b9b3686d2f7cc770b51e2d0c9ead9723682e47a6d"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "ed2619de6256559af3e4d78da518b4ea54e12d9b277192879289e55022735de7"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261109/assembled_dataset.json",
+        "sha256": "2890d7a3ffdb88af11848d54a2b5f4e6e4c24a8d261a339b2fccc6a8e3669224"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "67065d34b519f02a8073bfc1232e27bd3adf0f882a77aa701bf9c3ee32682e91"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "e29f0dc31b18d8200d0cf23e82e367c472449f6f4ef85aa6733120d94bad16c3"
+      }
+    ],
+    "launch_id": "mwl-20261110T095036Z-eaa0689a",
+    "market_state": {
+      "as_of": "2026-11-10T10:11:50Z",
+      "digest": "2418f2a44daa7e7598f3271b8e9d47a777a5f10c2ec2a22c6e1a0e84d0840de4",
+      "generated_at": "2026-11-10T10:11:50Z"
+    },
+    "news": {
+      "age_label": "23 h before this freeze",
+      "as_of": "2026-11-09T05:37:50.499948-05:00",
+      "current_session": false,
+      "digest": "52a54aa33a9928216e266d6ef6dc3dcd1c3c116e288eb478cd69bb6389587410",
+      "mode": "current-cycle-news-commentary-missing",
+      "overnight_run_id": "overnight-20261109",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261110",
+    "packet_sha256": "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "50ccda67738f89e09273616825a6334281051484",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 2,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-10T09:50:36Z",
+      "inputs_last_ingested_at": "2026-11-10T09:50:36Z",
+      "score_state_sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a"
+    },
+    "session_date": "2026-11-10",
+    "site_sha256": "790a8155a009de845597777d6b9bb4e59bef62bbb1078b84f36483cc761c201d",
+    "source_commit": "be04a2314020c369b06f2c579f7999075129f8e2",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261110",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "77e0631736cc00cf528e484269de5fe4caafa79444b497950a29e1272497b119",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-10",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
