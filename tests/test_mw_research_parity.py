@@ -1,9 +1,8 @@
 """The research renderer stays in lockstep with deploy-pages.yml, and the
 workflow wiring keeps research and final publication separate.
 
-The static-base checks execute the actual deploy-pages heredocs and the
-``research_static_base`` port on the same repository inputs and require
-byte-identical output.
+The static base is one module. deploy-pages.yml invokes its CLIs, and those
+CLIs match the research path functions on the repository inputs.
 """
 
 from __future__ import annotations
@@ -33,6 +32,10 @@ EXEMPT_ENTRYPOINTS = {
     "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",
     "scripts.market_watch_launch.publication_release": "final-edition stamp and guard; research stamps through research_pages",
     "scripts.market_watch_launch.pages_recovery": "final-edition Stage 08 in-run reconciliation",
+    "scripts.market_watch_launch.research_static_base": "shared static-base CLI; research calls the same functions in-process",
+    "scripts.market_watch_launch.render_steps": "shared hard/optional render runner; research applies the same step policy in-process",
+    "scripts.market_watch_launch.publication_checks": "shared final-edition integrity checks after the stamp",
+    "scripts.market_watch_launch.publication_issues": "shared issues feed; never a publication veto",
 }
 
 
@@ -75,51 +78,89 @@ def step_order(block: str) -> list[str]:
 
 
 class StaticBaseParityTests(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls._tmp = tempfile.TemporaryDirectory()
-        cls.work = Path(cls._tmp.name) / "work"
-        cls.scratch = Path(cls._tmp.name) / "scratch"
-        cls.bin = Path(cls._tmp.name) / "bin"
-        for path in (cls.work, cls.scratch, cls.bin):
-            path.mkdir()
-        for name in ("payload_v6", "patch_v7", "patch_v8", "patch_v9", "scripts", "data"):
-            (cls.work / name).symlink_to(REPO / name)
-        (cls.bin / "python").symlink_to(sys.executable)
-        cls.blocks = step_blocks(DEPLOY)
+    def test_workflow_has_no_inline_static_base_transforms(self):
+        for needle in (
+            "payload_v6",
+            "patch_v7/last24",
+            "patch_v9/news_rollup",
+            "patch_v8/",
+            "2c68341978db2ccc8efdd8f1af7bee4e105c89427f741bb10e7747cb98dde917",
+            "v6 base already contains v7 patch",
+            "rolling-news anchors changed",
+            "temperature score patch already present",
+        ):
+            self.assertNotIn(needle, DEPLOY, needle)
+        blocks = step_blocks(DEPLOY)
+        self.assertIn(
+            "python3 -m scripts.market_watch_launch.research_static_base base --root . --out _site/index.html",
+            blocks["Rebuild static base"],
+        )
+        self.assertIn(
+            "python3 -m scripts.market_watch_launch.research_static_base temperature-inputs --root . --html _site/index.html",
+            blocks["Restore 1-100 temperature input scores"],
+        )
+        for retired in (
+            "Rebuild v6 base",
+            "Apply last-24-hours patch",
+            "Apply rolling news rollup",
+        ):
+            self.assertNotIn(retired, blocks)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls._tmp.cleanup()
+    def test_cli_output_matches_research_functions(self):
+        env = dict(os.environ, PYTHONPATH=str(REPO))
+        with tempfile.TemporaryDirectory() as tmp:
+            out = Path(tmp) / "index.html"
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "scripts.market_watch_launch.research_static_base",
+                    "base",
+                    "--root",
+                    str(REPO),
+                    "--out",
+                    str(out),
+                ],
+                cwd=REPO,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+            expected = base.apply_news_rollup(REPO, base.apply_last24(REPO, base.rebuild_v6_base(REPO)))
+            self.assertEqual(out.read_bytes(), expected.encode("utf-8"))
 
-    def run_step(self, name: str) -> None:
-        script = self.blocks[name].replace("/tmp/", f"{self.scratch}/")
-        env = dict(os.environ, PATH=f"{self.bin}{os.pathsep}{os.environ.get('PATH', '')}", PYTHONPATH=str(REPO))
-        proc = subprocess.run(["bash", "-c", script], cwd=self.work, env=env, capture_output=True, text=True, check=False)
-        self.assertEqual(proc.returncode, 0, f"{name}: {proc.stderr[-2000:]}")
-
-    def site_html(self) -> str:
-        return (self.work / "_site" / "index.html").read_text()
-
-    def test_workflow_static_base_steps_match_research_port(self):
-        self.run_step("Rebuild v6 base")
-        v6 = base.rebuild_v6_base(REPO)
-        self.assertEqual((self.scratch / "v6.html").read_bytes(), v6.encode("utf-8"))
-
-        self.run_step("Apply last-24-hours patch")
-        last24 = base.apply_last24(REPO, v6)
-        self.assertEqual(self.site_html(), last24)
-
-        self.run_step("Apply rolling news rollup")
-        rolled = base.apply_news_rollup(REPO, last24)
-        self.assertEqual(self.site_html(), rolled)
-
-        self.run_step("Extend dashboard to six economies")
-        six = self.site_html()
-        base.assert_six_economies(six)
-
-        self.run_step("Restore 1-100 temperature input scores")
-        self.assertEqual(self.site_html(), base.apply_temperature_inputs(REPO, six))
+            proc = subprocess.run(
+                [sys.executable, "scripts/apply_six_economy_dashboard.py", str(out)],
+                cwd=REPO,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+            six = out.read_text(encoding="utf-8")
+            base.assert_six_economies(six)
+            proc = subprocess.run(
+                [
+                    sys.executable,
+                    "-m",
+                    "scripts.market_watch_launch.research_static_base",
+                    "temperature-inputs",
+                    "--root",
+                    str(REPO),
+                    "--html",
+                    str(out),
+                ],
+                cwd=REPO,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr[-2000:])
+            self.assertEqual(out.read_bytes(), base.apply_temperature_inputs(REPO, six).encode("utf-8"))
 
     def test_port_rejects_changed_anchors(self):
         v6 = base.rebuild_v6_base(REPO)
@@ -145,13 +186,10 @@ class EntrypointCoverageTests(unittest.TestCase):
 
     def test_static_steps_ported_are_the_ones_in_deploy_pages(self):
         blocks = step_blocks(DEPLOY)
-        for name in (
-            "Rebuild v6 base",
-            "Apply last-24-hours patch",
-            "Apply rolling news rollup",
-            "Restore 1-100 temperature input scores",
-        ):
-            self.assertIn(name, blocks)
+        self.assertIn("Rebuild static base", blocks)
+        self.assertIn("Restore 1-100 temperature input scores", blocks)
+        self.assertIn("research_static_base base", blocks["Rebuild static base"])
+        self.assertIn("research_static_base temperature-inputs", blocks["Restore 1-100 temperature input scores"])
 
 
 class LaunchResearchWorkflowWiringTests(unittest.TestCase):
@@ -247,23 +285,42 @@ class LaunchResearchWorkflowWiringTests(unittest.TestCase):
 
 
 class FinalWorkflowWiringTests(unittest.TestCase):
-    def test_final_publication_contract_is_unchanged(self):
+    def test_final_publication_hard_gates_remain(self):
         for needle in (
             "REQUIRE_DATASET=(--require-dataset)",
             "assert_published_trader_room(packet, selected)",
             "validate_public_packet(packet)",
+            "validate_snapshot(packet)",
+            "validate_score_sources.py",
+            'cmp data/temperature_scores.json',
+            "node --check patch_v12/market-data.js",
             "pages_dispatch bind-checkout",
             "pages_dispatch verify-public",
+            "publication_checks final --site-dir _site --root .",
+            "publication_issues publish --site-dir _site --root .",
+            "publication_release stamp-final --site-dir _site",
+            "publication_release guard --site-dir _site",
+            "MW_RENDER_DIAGNOSTICS:",
             "cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}",
             "group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production'",
         ):
-            self.assertIn(needle, DEPLOY)
+            self.assertIn(needle, DEPLOY, needle)
+        for removed in (
+            "stale Michigan 47.8",
+            "stale petrol sentence remains",
+            "official_release_cache.json version must be 1",
+            "missing accepted public news context for Pages HTML assertion",
+            "scoreboard still labeled Live",
+        ):
+            self.assertNotIn(removed, DEPLOY, removed)
 
     def test_stamp_and_guard_order_in_final_build(self):
         build = job_block(DEPLOY, "build")
         order = step_order(build)
         self.assertLess(order.index("Apply dashboard repair"), order.index("Stamp final publication edition"))
-        self.assertLess(order.index("Stamp final publication edition"), order.index("Configure Pages"))
+        self.assertLess(order.index("Stamp final publication edition"), order.index("Check final publication integrity"))
+        self.assertLess(order.index("Check final publication integrity"), order.index("Publish issues feed"))
+        self.assertLess(order.index("Publish issues feed"), order.index("Configure Pages"))
         self.assertLess(order.index("Configure Pages"), order.index("Refuse to publish over a newer edition"))
         self.assertLess(order.index("Refuse to publish over a newer edition"), order.index("Upload Pages artifact"))
         guard = build[build.index("- name: Refuse to publish over a newer edition") :]
