@@ -29,6 +29,7 @@ import hashlib
 import html as html_lib
 import json
 import os
+import re
 import subprocess
 import sys
 import time
@@ -412,11 +413,18 @@ def _insert_after(html: str, anchor: str, block: str) -> str:
     return html[:index] + block + html[index:]
 
 
-def _insert_before(html: str, anchor: str, block: str) -> str:
-    if html.count(anchor) != 1:
+_FRONT_NEWS_ALERT_OPEN_RE = re.compile(
+    r'<div class="news-alert market-alert"(?:>|\s[^>]*>)'
+)
+
+
+def _insert_before_front_news_alert(html: str, block: str) -> str:
+    matches = list(_FRONT_NEWS_ALERT_OPEN_RE.finditer(html))
+    if len(matches) != 1:
+        anchor = '<div class="news-alert market-alert">'
         raise ValueError(f"edition anchor {anchor!r} is missing or ambiguous")
-    index = html.index(anchor)
-    return html[:index] + block + html[index:]
+    match = matches[0]
+    return html[: match.start()] + block + html[match.start() :]
 
 
 TOPBAR_OPEN = '<header class="topbar">'
@@ -468,9 +476,8 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
         news = release.get("news") or {}
         headlines = release.get("headlines") or {}
         prev_note = render_previous_analysis_note(news)
-        out = _insert_before(
+        out = _insert_before_front_news_alert(
             out,
-            '<div class="news-alert market-alert">',
             "\n"
             + render_headlines_panel(headlines, previous_news=news, panel="front", limit=FRONT_HEADLINES)
             + "\n"
