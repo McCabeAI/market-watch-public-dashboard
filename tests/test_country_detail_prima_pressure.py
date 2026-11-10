@@ -1264,6 +1264,28 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertEqual(_oil_headline("RISING", 0.06), "Oil shock: sharply higher")
         self.assertEqual(_oil_headline("RISING", 0.02), "Oil shock: higher")
 
+    def test_oil_line_needs_stored_horizon_legs(self) -> None:
+        from scripts.country_detail._prima_section import _brent_legs, _oil_grounded_line
+
+        self.assertIn("were not stored for this run", _oil_grounded_line("RISING", {}))
+        self.assertNotIn("both moved", _oil_grounded_line("RISING", {}))
+        legs = _brent_legs(
+            {
+                "shock_persistence": {
+                    "inputs": [
+                        {"maturity_months": 0, "change_1m_pct": 0.19},
+                        {"maturity_months": 12, "change_1m_pct": 0.09},
+                        {"maturity_months": 24, "change_1m_pct": 0.067},
+                    ]
+                }
+            }
+        )
+        self.assertEqual(sorted(legs), ["12", "24", "front"])
+        self.assertEqual(
+            _oil_grounded_line("RISING", legs),
+            "Brent’s rise is now evident across the front and longer-dated futures curve.",
+        )
+
     def test_headline_change_reports_streak_start(self) -> None:
         from scripts.country_detail._prima_section import _prima_headline_change
 

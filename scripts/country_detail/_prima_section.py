@@ -186,6 +186,11 @@ def _oil_grounded_line(shock_dir: str, legs: dict[str, Mapping[str, Any]]) -> st
     pct_label = _prima_band_pct(persist)
     if shock_dir == "UNAVAILABLE":
         return ""
+    if "12" not in legs or "24" not in legs:
+        return (
+            "Brent 12- and 24-month leg values were not stored for this run; "
+            "the oil direction is the stored channel reading."
+        )
     if shock_dir == "STABLE":
         return (
             f"Brent 12- and 24-month futures did not both move more than {pct_label} "
