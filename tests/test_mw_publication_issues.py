@@ -126,6 +126,8 @@ class PublicationIssuesCollectorsTests(unittest.TestCase):
         codes = {row["code"] for row in rows}
         self.assertIn("source_fetch_failed", codes)
         self.assertIn("source_blocked", codes)
+        blocked = next(row for row in rows if row["code"] == "source_blocked")
+        self.assertEqual(blocked["severity"], "info")
         self.assertIn("source_partial", codes)
         agg = next(row for row in rows if row["component"] == "sources:not_checked")
         self.assertEqual(agg["occurrences"], 2)

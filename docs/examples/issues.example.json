@@ -2,9 +2,9 @@
   "counts": {
     "active": 55,
     "critical": 0,
-    "info": 10,
+    "info": 23,
     "resolved": 5,
-    "warning": 45
+    "warning": 32
   },
   "edition": {
     "launch_id": "mwl-20261110T095036Z-eaa0689a",
@@ -48,54 +48,6 @@
       "source": {
         "publisher": null,
         "url": null
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:AU.Activity.business_surveys",
-      "country": "AU",
-      "detail": "pmi_listing_challenge",
-      "id": "iss-895033ed599b",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": "2026-08",
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "AU.Activity.business_surveys",
-      "severity": "warning",
-      "source": {
-        "publisher": "S&P Global / Judo Bank",
-        "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:AU.Activity.flash_composite_pmi",
-      "country": "AU",
-      "detail": "pmi_listing_challenge",
-      "id": "iss-f36af401b562",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "AU.Activity.flash_composite_pmi",
-      "severity": "warning",
-      "source": {
-        "publisher": "S&P Global / Judo Bank",
-        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
       },
       "state": "active"
     },
@@ -221,30 +173,6 @@
     },
     {
       "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:AU.Labor.nab_employment_subindex",
-      "country": "AU",
-      "detail": "",
-      "id": "iss-1245c35fe35c",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": "2026-09",
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "AU.Labor.nab_employment_subindex",
-      "severity": "warning",
-      "source": {
-        "publisher": "NAB",
-        "url": "https://www.nabtrade.com.au/insights/news/2026/10/nab-business-survey---september-2026"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
       "cause": "Fetch failed at the stage check. period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-september26/",
       "code": "source_fetch_failed",
       "component": "source:AU.Labor.seek_job_ad_trend",
@@ -264,54 +192,6 @@
       "source": {
         "publisher": "SEEK",
         "url": "https://au.seek.com/about/news/category/seek-employment-reports/0"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:CA.Consumer.confidence",
-      "country": "CA",
-      "detail": "bank_of_canada_csce_no_machine_readable_series",
-      "id": "iss-72bf1b74789d",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "CA.Consumer.confidence",
-      "severity": "warning",
-      "source": {
-        "publisher": "Bank of Canada",
-        "url": "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:CA.Housing.existing_home_sales",
-      "country": "CA",
-      "detail": "crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series",
-      "id": "iss-8bbaf75c1fa3",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "CA.Housing.existing_home_sales",
-      "severity": "warning",
-      "source": {
-        "publisher": "Canadian Real Estate Association",
-        "url": "https://stats.crea.ca/en-CA/"
       },
       "state": "active"
     },
@@ -360,54 +240,6 @@
       "source": {
         "publisher": "Statistics Canada",
         "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:EA.Activity.flash_composite_pmi",
-      "country": "EA",
-      "detail": "",
-      "id": "iss-72b09e4d3b8f",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": "2026-10",
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "EA.Activity.flash_composite_pmi",
-      "severity": "warning",
-      "source": {
-        "publisher": "S&P Global",
-        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:JP.Activity.business_surveys",
-      "country": "JP",
-      "detail": "pmi_listing_blocked",
-      "id": "iss-6763cccdf206",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": "2026-08",
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "JP.Activity.business_surveys",
-      "severity": "warning",
-      "source": {
-        "publisher": "S&P Global / au Jibun Bank",
-        "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
       },
       "state": "active"
     },
@@ -749,30 +581,6 @@
     },
     {
       "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:US.Consumer.confidence_conference_board",
-      "country": "US",
-      "detail": "proprietary_blocked",
-      "id": "iss-d7ed9321da1a",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "US.Consumer.confidence_conference_board",
-      "severity": "warning",
-      "source": {
-        "publisher": "The Conference Board",
-        "url": "https://www.conference-board.org/topics/consumer-confidence"
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
       "cause": "Fetch failed at the stage check. The read operation timed out",
       "code": "source_fetch_failed",
       "component": "source:US.Consumer.income",
@@ -988,126 +796,6 @@
       "state": "active"
     },
     {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:US.Labor.adp_employment",
-      "country": "US",
-      "detail": "proprietary_blocked",
-      "id": "iss-324121c0db1c",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "US.Labor.adp_employment",
-      "severity": "warning",
-      "source": {
-        "publisher": "ADP",
-        "url": null
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:US.Labor.challenger_job_cuts",
-      "country": "US",
-      "detail": "proprietary_blocked",
-      "id": "iss-9663f0177608",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "US.Labor.challenger_job_cuts",
-      "severity": "warning",
-      "source": {
-        "publisher": "Challenger",
-        "url": null
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:US.Labor.conference_board_jobs_hard_to_get",
-      "country": "US",
-      "detail": "proprietary_blocked",
-      "id": "iss-e5dc329c3320",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "US.Labor.conference_board_jobs_hard_to_get",
-      "severity": "warning",
-      "source": {
-        "publisher": "Conference",
-        "url": null
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:US.Labor.conference_board_jobs_plentiful",
-      "country": "US",
-      "detail": "proprietary_blocked",
-      "id": "iss-9f9353a4efad",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "US.Labor.conference_board_jobs_plentiful",
-      "severity": "warning",
-      "source": {
-        "publisher": "Conference",
-        "url": null
-      },
-      "state": "active"
-    },
-    {
-      "category": "source",
-      "cause": "Publisher blocks automated access.",
-      "code": "source_blocked",
-      "component": "source:US.Labor.conference_board_labor_differential",
-      "country": "US",
-      "detail": "proprietary_blocked",
-      "id": "iss-0fd9ff3067dd",
-      "impact": "Last verified value stays dated; it is not shown as fresh.",
-      "last_verified_vintage": null,
-      "occurrences": 1,
-      "run": {
-        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "launch_id": "mwl-20261110T095036Z-eaa0689a",
-        "phase": "research"
-      },
-      "series_id": "US.Labor.conference_board_labor_differential",
-      "severity": "warning",
-      "source": {
-        "publisher": "Conference",
-        "url": null
-      },
-      "state": "active"
-    },
-    {
       "category": "news",
       "cause": "Accepted analysis is from an earlier session",
       "code": "news_previous_session",
@@ -1181,6 +869,78 @@
     },
     {
       "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:AU.Activity.business_surveys",
+      "country": "AU",
+      "detail": "pmi_listing_challenge",
+      "id": "iss-895033ed599b",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-08",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Activity.business_surveys",
+      "severity": "info",
+      "source": {
+        "publisher": "S&P Global / Judo Bank",
+        "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:AU.Activity.flash_composite_pmi",
+      "country": "AU",
+      "detail": "pmi_listing_challenge",
+      "id": "iss-f36af401b562",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Activity.flash_composite_pmi",
+      "severity": "info",
+      "source": {
+        "publisher": "S&P Global / Judo Bank",
+        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:AU.Labor.nab_employment_subindex",
+      "country": "AU",
+      "detail": "",
+      "id": "iss-1245c35fe35c",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-09",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.nab_employment_subindex",
+      "severity": "info",
+      "source": {
+        "publisher": "NAB",
+        "url": "https://www.nabtrade.com.au/insights/news/2026/10/nab-business-survey---september-2026"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
       "cause": "1 series were not checked on the latest Stage 01 ledger.",
       "code": "sources_not_checked",
       "component": "sources:not_checked",
@@ -1229,6 +989,54 @@
     },
     {
       "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:CA.Consumer.confidence",
+      "country": "CA",
+      "detail": "bank_of_canada_csce_no_machine_readable_series",
+      "id": "iss-72bf1b74789d",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "CA.Consumer.confidence",
+      "severity": "info",
+      "source": {
+        "publisher": "Bank of Canada",
+        "url": "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:CA.Housing.existing_home_sales",
+      "country": "CA",
+      "detail": "crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series",
+      "id": "iss-8bbaf75c1fa3",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "CA.Housing.existing_home_sales",
+      "severity": "info",
+      "source": {
+        "publisher": "Canadian Real Estate Association",
+        "url": "https://stats.crea.ca/en-CA/"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
       "cause": "Research coverage gap: macro:EA.",
       "code": "quality_coverage_gap",
       "component": "quality:coverage",
@@ -1253,6 +1061,30 @@
     },
     {
       "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:EA.Activity.flash_composite_pmi",
+      "country": "EA",
+      "detail": "",
+      "id": "iss-72b09e4d3b8f",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "EA.Activity.flash_composite_pmi",
+      "severity": "info",
+      "source": {
+        "publisher": "S&P Global",
+        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
       "cause": "Research coverage gap: macro:JP.",
       "code": "quality_coverage_gap",
       "component": "quality:coverage",
@@ -1272,6 +1104,30 @@
       "source": {
         "publisher": null,
         "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:JP.Activity.business_surveys",
+      "country": "JP",
+      "detail": "pmi_listing_blocked",
+      "id": "iss-6763cccdf206",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-08",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Activity.business_surveys",
+      "severity": "info",
+      "source": {
+        "publisher": "S&P Global / au Jibun Bank",
+        "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
       },
       "state": "active"
     },
@@ -1343,6 +1199,150 @@
       "severity": "info",
       "source": {
         "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Consumer.confidence_conference_board",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-d7ed9321da1a",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Consumer.confidence_conference_board",
+      "severity": "info",
+      "source": {
+        "publisher": "The Conference Board",
+        "url": "https://www.conference-board.org/topics/consumer-confidence"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.adp_employment",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-324121c0db1c",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.adp_employment",
+      "severity": "info",
+      "source": {
+        "publisher": "ADP",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.challenger_job_cuts",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-9663f0177608",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.challenger_job_cuts",
+      "severity": "info",
+      "source": {
+        "publisher": "Challenger",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.conference_board_jobs_hard_to_get",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-e5dc329c3320",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.conference_board_jobs_hard_to_get",
+      "severity": "info",
+      "source": {
+        "publisher": "Conference",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.conference_board_jobs_plentiful",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-9f9353a4efad",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.conference_board_jobs_plentiful",
+      "severity": "info",
+      "source": {
+        "publisher": "Conference",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.conference_board_labor_differential",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-0fd9ff3067dd",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.conference_board_labor_differential",
+      "severity": "info",
+      "source": {
+        "publisher": "Conference",
         "url": null
       },
       "state": "active"

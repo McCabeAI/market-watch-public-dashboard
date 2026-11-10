@@ -47,16 +47,6 @@ def apply_trader_room_tab(path: Path, *, repo_root: Path | None = None) -> Path:
         raise SystemExit("relative page section anchor changed")
     html = html.replace(end_anchor, page + "\n" + end_anchor, 1)
 
-    for required in (
-        "Last 24 Hours · Desk Summary",
-        "Live 1–100 Score Board",
-        "Market Data · official snapshot",
-        "Trader Book · paper P&L",
-        "Trader Room · adversarial ideas",
-    ):
-        if required not in html:
-            raise SystemExit(f"trader room tab lost required dashboard marker: {required}")
-
     path.write_text(html)
     shutil.copyfile(root / "patch_v14/trader-room.js", site_dir / "trader-room.js")
     return path

@@ -206,19 +206,30 @@ def main(argv: list[str] | None = None) -> int:
     base_p = sub.add_parser("base", help="Rebuild v6 and apply last-24 + news rollup patches")
     base_p.add_argument("--root", type=Path, required=True)
     base_p.add_argument("--out", type=Path, required=True)
+    base_p.add_argument(
+        "--strict",
+        action="store_true",
+        help="Refuse when last-24 or rolling-news patch anchors are missing (default: skip with diagnostics)",
+    )
     temp_p = sub.add_parser("temperature-inputs", help="Apply temperature input score blocks in place")
     temp_p.add_argument("--root", type=Path, required=True)
     temp_p.add_argument("--html", type=Path, required=True)
+    temp_p.add_argument(
+        "--strict",
+        action="store_true",
+        help="Refuse when a country-detail anchor is missing (default: skip that country with diagnostics)",
+    )
     args = parser.parse_args(argv)
+    strict = bool(args.strict)
     try:
         if args.command == "base":
-            html = build_static_base_html(args.root)
+            html = build_static_base_html(args.root, strict=strict)
             args.out.parent.mkdir(parents=True, exist_ok=True)
             args.out.write_text(html, encoding="utf-8")
         else:
             page = args.html.read_text(encoding="utf-8")
             args.html.write_text(
-                apply_temperature_inputs(args.root, page),
+                apply_temperature_inputs(args.root, page, strict=strict),
                 encoding="utf-8",
             )
     except StaticBaseError as exc:

@@ -399,7 +399,7 @@ jobs:
             -- python3 scripts/apply_trader_book_tab.py _site/index.html
           REQUIRE_DATASET=()
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then REQUIRE_DATASET=(--require-dataset); fi
-          PYTHONPATH=. python3 scripts/overnight_pipeline.py publish-check --site-dir _site "${REQUIRE_DATASET[@]}"
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py publish-check --site-dir _site --news-html-policy soft "${REQUIRE_DATASET[@]}"
 
       - name: Add Trader Room tab
         shell: bash

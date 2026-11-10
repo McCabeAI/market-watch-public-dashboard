@@ -68,14 +68,11 @@ class RenderFallbackTests(unittest.TestCase):
             self.assertIn(f'<div class="cdetail {key}">', out)
             self.assertIn('data-country-detail-state="unavailable"', out)
 
-    def test_downstream_trader_book_survives_news_fallback(self):
+    def test_downstream_trader_book_survives_news_and_scores_fallback(self):
         with tempfile.TemporaryDirectory() as tmp:
             site = Path(tmp)
             index = site / "index.html"
-            html = apply_scores(
-                news_unavailable(_build_pre_scores_with_temp_inputs()),
-                load_state(REPO / "data" / "temperature_scores.json"),
-            )
+            html = scores_unavailable(news_unavailable(_build_pre_scores_with_temp_inputs()))
             index.write_text(html, encoding="utf-8")
             for script in ("scripts/apply_market_data_tab.py", "scripts/apply_trader_book_tab.py"):
                 proc = subprocess.run(

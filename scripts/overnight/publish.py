@@ -8,6 +8,7 @@ from typing import Any
 from scripts.overnight.accepted_news import assert_site_news_matches_accepted, effective_public_news_context
 from scripts.overnight.assemble import validate_dataset
 from scripts.overnight.errors import PublicationError, SchemaError
+from scripts.market_watch_launch.publication_issues import record_diagnostic
 from scripts.overnight.freshness import assert_may_publish, age_status
 from scripts.overnight.public_prose import (
     public_research_summary,
@@ -30,13 +31,47 @@ def load_assembled(store: OvernightStore, run_id: str | None = None) -> dict[str
     return None
 
 
+def _soft_news_diagnostic(exc: PublicationError, *, news_status: str | None = None) -> None:
+    message = str(exc)
+    if "not fresh" in message or news_status == "stale":
+        code = "news_freshness_soft"
+        cause = "Accepted public news is not fresh relative to publication checks."
+        impact = "Visible news may be dated; hard news-date integrity checks still apply."
+    else:
+        code = "news_html_inconsistent"
+        cause = "Built news HTML does not match the accepted publication context."
+        impact = "News presentation may be inconsistent; book and dataset gates were not waived."
+    record_diagnostic(
+        code,
+        category="news",
+        severity="warning",
+        component="news",
+        cause=cause,
+        impact=impact,
+        detail=message[:1000],
+    )
+
+
+def _check_visible_news_html(html_path: Path, context: dict[str, Any], *, news_policy: str) -> None:
+    try:
+        assert_site_news_matches_accepted(html_path, context)
+    except PublicationError as exc:
+        if news_policy == "soft":
+            _soft_news_diagnostic(exc)
+            return
+        raise
+
+
 def publication_gate(
     store: OvernightStore,
     *,
     run_id: str | None = None,
     require_dataset: bool = False,
     site_dir: Path | None = None,
+    news_policy: str = "strict",
 ) -> dict[str, Any]:
+    if news_policy not in ("strict", "soft"):
+        raise SchemaError(f"unknown news_policy {news_policy!r}")
     dataset = load_assembled(store, run_id)
     if dataset is None:
         if require_dataset:
@@ -45,9 +80,21 @@ def publication_gate(
         if context is not None and site_dir is not None:
             html_path = Path(site_dir) / "index.html"
             if html_path.is_file():
-                if age_status(context.get("as_of")) != "fresh":
-                    raise PublicationError("accepted public news is not fresh; refusing to publish stale visible news")
-                assert_site_news_matches_accepted(html_path, context)
+                freshness = age_status(context.get("as_of"))
+                if freshness != "fresh":
+                    if news_policy == "soft":
+                        _soft_news_diagnostic(
+                            PublicationError(
+                                "accepted public news is not fresh; refusing to publish stale visible news"
+                            ),
+                            news_status=freshness,
+                        )
+                    else:
+                        raise PublicationError(
+                            "accepted public news is not fresh; refusing to publish stale visible news"
+                        )
+                else:
+                    _check_visible_news_html(html_path, context, news_policy=news_policy)
         return {
             "may_publish": True,
             "core_status": "ok",
@@ -71,11 +118,21 @@ def publication_gate(
         else:
             news_status = age_status(context.get("as_of"))
         if news_status != "fresh":
-            raise PublicationError("accepted public news is not fresh; refusing to publish stale visible news")
-        if site_dir is not None:
+            if news_policy == "soft":
+                _soft_news_diagnostic(
+                    PublicationError(
+                        "accepted public news is not fresh; refusing to publish stale visible news"
+                    ),
+                    news_status=str(news_status),
+                )
+            else:
+                raise PublicationError(
+                    "accepted public news is not fresh; refusing to publish stale visible news"
+                )
+        elif site_dir is not None:
             html_path = Path(site_dir) / "index.html"
             if html_path.is_file():
-                assert_site_news_matches_accepted(html_path, context)
+                _check_visible_news_html(html_path, context, news_policy=news_policy)
     return {**decision, "dataset": dataset}
 
 

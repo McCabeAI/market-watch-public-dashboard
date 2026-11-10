@@ -353,7 +353,7 @@ def collect_source_health_issues(
                 make_issue(
                     "source_blocked",
                     category="source",
-                    severity="warning",
+                    severity="info",
                     component=f"source:{series_id}",
                     cause="Publisher blocks automated access.",
                     impact="Last verified value stays dated; it is not shown as fresh.",

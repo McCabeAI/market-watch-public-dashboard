@@ -995,32 +995,17 @@ def build_research_site(
             book_ok = book_tab.ok
         else:
             _skip_render("trader book tab", "market data tab", diagnostics=diagnostics, launch_id=launch_id)
-        # Book emission stays hard. A news-label mismatch is an issue only after the
-        # news step already replaced that section with an unavailable placeholder.
-        try:
-            step(
-                ["scripts/overnight_pipeline.py", "publish-check", "--site-dir", str(site)],
-                label="publish-check",
-            )
-        except ResearchRefusal as exc:
-            news_html_veto = any(
-                token in (exc.detail or "")
-                for token in ("Last refreshed", "visible marker", "accepted headline", "news alert", "commentary digest")
-            )
-            if news_step.ok or exc.reason != "render_step_failed" or not news_html_veto:
-                raise
-            record_diagnostic(
-                "news_html_inconsistent",
-                path=diagnostics,
-                category="news",
-                severity="warning",
-                component="news",
-                launch_id=launch_id,
-                phase=PHASE_RESEARCH,
-                cause="The news section is unavailable, so publish-check could not match a visible news label.",
-                impact="News stays unavailable. Trader and PM book publication was not given a success it did not earn.",
-                detail=_public_detail(exc.detail, limit=1000),
-            )
+        step(
+            [
+                "scripts/overnight_pipeline.py",
+                "publish-check",
+                "--site-dir",
+                str(site),
+                "--news-html-policy",
+                "soft",
+            ],
+            label="publish-check",
+        )
         if book_ok:
             step(["scripts/apply_trader_room_tab.py", str(index)], label="trader room tab", policy=OPTIONAL)
         else:

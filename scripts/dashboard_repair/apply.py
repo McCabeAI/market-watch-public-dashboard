@@ -568,6 +568,23 @@ def _fence_macro_snapshot(html: str) -> str:
     return html[:start] + wrapped + html[end:]
 
 
+_HEADER_META_PLACEHOLDER = (
+    '<div class="meta"><span class="mw-asof">Header metadata unavailable</span></div>'
+)
+
+
+def _replace_header_unavailable(html: str) -> str:
+    header = html.find('<header class="topbar">')
+    if header < 0:
+        return html
+    meta = html.find('<div class="meta">', header)
+    header_end = html.find("</header>", header)
+    if meta < 0 or (header_end >= 0 and meta >= header_end):
+        return html
+    end = balanced_element_end(html, meta)
+    return html[:meta] + _HEADER_META_PLACEHOLDER + html[end:]
+
+
 def _replace_header(html: str, packet: dict[str, Any] | None, scores: dict[str, Any]) -> str:
     header = html.find('<header class="topbar">')
     if header >= 0:
@@ -786,9 +803,10 @@ def apply_dashboard_repair(
             category="render",
             component="header_meta",
             cause="Header metadata could not be rendered for this edition.",
-            impact="The page header keeps its previous metadata block.",
+            impact="The page header shows a neutral unavailable metadata block.",
             detail=f"{type(exc).__name__}: {exc}",
         )
+        html = _replace_header_unavailable(html)
     brief_block = _BRIEF_PLACEHOLDER
     try:
         brief_block = render_brief(
