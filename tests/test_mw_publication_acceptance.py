@@ -49,14 +49,23 @@ class PublicationAcceptanceTests(unittest.TestCase):
             self.assertTrue(any(row.get("code") == "news_freshness_soft" for row in lines))
 
     def test_publish_gate_strict_still_raises_on_stale_news(self):
-        store = OvernightStore(root=REPO)
-        with mock.patch(
-            "scripts.overnight.publish.effective_public_news_context",
-            return_value={"as_of": "2020-01-01T00:00:00Z", "news": []},
-        ):
-            with mock.patch("scripts.overnight.publish.age_status", return_value="stale"):
-                with self.assertRaises(PublicationError):
-                    publication_gate(store, run_id=None, require_dataset=False, site_dir=None, news_policy="strict")
+        with tempfile.TemporaryDirectory() as tmp:
+            site = Path(tmp) / "_site"
+            site.mkdir()
+            (site / "index.html").write_text("<html></html>", encoding="utf-8")
+            store = OvernightStore(root=REPO)
+            ctx = {"as_of": "2020-01-01T00:00:00Z", "news": []}
+            with mock.patch("scripts.overnight.publish.load_assembled", return_value=None):
+                with mock.patch("scripts.overnight.publish.effective_public_news_context", return_value=ctx):
+                    with mock.patch("scripts.overnight.publish.age_status", return_value="stale"):
+                        with self.assertRaises(PublicationError):
+                            publication_gate(
+                                store,
+                                run_id=None,
+                                require_dataset=False,
+                                site_dir=site,
+                                news_policy="strict",
+                            )
 
 
 if __name__ == "__main__":
