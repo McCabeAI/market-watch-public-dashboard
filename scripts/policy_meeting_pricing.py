@@ -736,6 +736,23 @@ def _prior_month_expiry(expiry: str) -> str:
     return f"{py:04d}-{pm:02d}"
 
 
+def _next_month_expiry(expiry: str) -> str:
+    y, m = _expiry_month_key(expiry)
+    ny, nm = _add_months(y, m, 1)
+    return f"{ny:04d}-{nm:02d}"
+
+
+def _meeting_month_sr1_expiry(k_eff: date) -> str:
+    return f"{k_eff.year:04d}-{k_eff.month:02d}"
+
+
+US_SR1_CROSS_MONTH_ESTIMATE_NOTE = (
+    "Post-meeting SOFR is anchored from the meeting-free following month SR1 average "
+    "under a flat inter-meeting SOFR assumption; the meeting month has fewer than "
+    "seven post-meeting accrual days."
+)
+
+
 def _sorted_sofr_fixings(
     fixings: list[tuple[date, float]] | None,
 ) -> list[tuple[date, float]]:
@@ -1713,7 +1730,6 @@ def price_meetings(
         )
 
         used_sr1_forward = False
-        sr1_for_meeting: list[tuple[dict, date, date, int, date]] = []
         if (
             bank == "US"
             and observation_date is not None
@@ -1721,19 +1737,14 @@ def price_meetings(
             and sr1_by_expiry
         ):
             obs_date = observation_date
-            sr1_for_meeting = [
-                item
-                for item in contract_rows
-                if item[0].get("product") == "SR1"
-                and item[0].get("period") == "1m"
-                and _sr1_contract_live(str(item[0].get("expiry") or ""), as_of)
-            ]
-            if sr1_for_meeting:
-                meeting_contract, start, end, _, _ = min(
-                    sr1_for_meeting,
-                    key=lambda item: item[2],
-                )
-                expiry_s = str(meeting_contract["expiry"])
+            expiry_s = _meeting_month_sr1_expiry(k_eff)
+            meeting_contract = sr1_by_expiry.get(expiry_s)
+            if (
+                meeting_contract is not None
+                and meeting_contract.get("implied_rate") is not None
+                and meeting_contract.get("period") == "1m"
+                and _sr1_contract_live(expiry_s, as_of)
+            ):
                 month_start, month_end = accrual_window(expiry_s, "1m")
                 n_cal = (month_end - month_start).days
                 f_month = float(meeting_contract["implied_rate"])
@@ -1949,30 +1960,185 @@ def price_meetings(
                     used_sr1_forward = True
                     sr1_baseline_path_started = True
 
-            if sr1_for_meeting and not used_sr1_forward:
-                if sr1_baseline_path_started or solved_sofr:
-                    us_sr1_path_gap = True
-                gap_reason = (
-                    US_SR1_PREDECESSOR_GAP_REASON
-                    if unsolved_pred_eff is not None
-                    else None
-                )
-                extras_unavail: dict[str, Any] | None = (
-                    {"reason": gap_reason} if gap_reason else None
-                )
-                rows.append(
-                    _row(
-                        meeting,
-                        None,
-                        None,
-                        None,
-                        "unavailable",
-                        [],
-                        extras=extras_unavail,
+                elif (
+                    0 < n_post < 7
+                    and prev_f_post is not None
+                    and unsolved_pred_eff is None
+                ):
+                    next_exp = _next_month_expiry(expiry_s)
+                    next_row = sr1_by_expiry.get(next_exp)
+                    next_start, next_end = accrual_window(next_exp, "1m")
+                    cross_ok = (
+                        next_row is not None
+                        and next_row.get("implied_rate") is not None
+                        and _sr1_contract_live(next_exp, as_of)
+                        and _accrual_window_meeting_free(
+                            next_start, next_end, unresolved_cal
+                        )
                     )
-                )
-                idx += 1
-                continue
+                    if cross_ok:
+                        f_post_sofr = float(next_row["implied_rate"])
+                        cross_baseline = f_baseline
+                        anchor_row = baseline_contract_row or next_row
+                        anchor_expiry = baseline_source_expiry or next_exp
+                        if cross_baseline is None:
+                            next_fixed, next_fixed_ok = (
+                                _fixed_day_rates_before_observation(
+                                    next_exp, obs_date, fixings_sorted
+                                )
+                            )
+                            if next_fixed_ok:
+                                n_next_cal = (next_end - next_start).days
+                                cross_baseline = _forward_baseline_rate(
+                                    f_post_sofr, n_next_cal, next_fixed
+                                )
+                            else:
+                                cross_baseline = f_post_sofr
+                        sum_known_cross, sk_cross = _sr1_month_pre_meeting_known_sum(
+                            month_start=month_start,
+                            month_end=month_end,
+                            k_eff=k_eff,
+                            observation_date=obs_date,
+                            fixings_sorted=fixings_sorted,
+                            f_baseline=cross_baseline,
+                            prev_meeting_eff=prev_meeting_eff,
+                            prev_f_sofr_post=prev_f_post,
+                            unsolved_predecessor_eff=None,
+                        )
+                        if sk_cross:
+                            recon_avg = (sum_known_cross + n_post * f_post_sofr) / n_cal
+                            strip_residual_bp = _round_bp(
+                                (recon_avg - f_month) * 100.0
+                            )
+                            prev_f_sofr = solved_sofr[-1][1]
+                            step_sofr = f_post_sofr - prev_f_sofr
+                            pol_prev = (
+                                previous_post if previous_post is not None else anchor
+                            )
+                            policy_post = pol_prev + step_sofr
+                            inc = _round_bp(step_sofr * 100.0)
+                            cum = _round_bp((policy_post - anchor) * 100.0)
+                            previous_post = policy_post
+
+                            contracts_out = [
+                                _contract_dict_for_output(
+                                    meeting_contract, weight=1.0, role="meeting_month"
+                                ),
+                                _contract_dict_for_output(
+                                    next_row, weight=0.0, role="cross_month_anchor"
+                                ),
+                            ]
+                            if (
+                                anchor_row is not next_row
+                                and baseline_source_expiry
+                            ):
+                                contracts_out.append(
+                                    _contract_dict_for_output(
+                                        anchor_row, weight=0.0, role="forward_baseline"
+                                    )
+                                )
+
+                            extras_cross: dict[str, Any] = {
+                                "sofr_post_rate": _round_rate(f_post_sofr),
+                                "zq_cross_check": None,
+                                "baseline": {
+                                    "kind": "sr1_cross_month",
+                                    "rate": _round_rate(cross_baseline),
+                                    "source_expiry": anchor_expiry,
+                                    "fixed_days": len(realized_pre_meeting),
+                                    "forward_days": None,
+                                    "monthly_average": _round_rate(
+                                        float(anchor_row["implied_rate"])
+                                    ),
+                                    "meeting_month_average": _round_rate(f_month),
+                                    "turn_adjustment_bp": None,
+                                },
+                                "step_meaning": US_SR1_STEP_MEANING,
+                                "estimate_note": US_SR1_CROSS_MONTH_ESTIMATE_NOTE,
+                                "n_pre": n_pre,
+                                "n_post": n_post,
+                                "strip_identity_residual_bp": strip_residual_bp,
+                            }
+                            if policy_state_us:
+                                lower = policy_state_us.get("lower")
+                                upper = policy_state_us.get("upper")
+                                if lower is not None and upper is not None:
+                                    extras_cross["target_lower"] = float(lower)
+                                    extras_cross["target_upper"] = float(upper)
+
+                            if contracts_zq:
+                                zq_by_exp: dict[str, dict] = {}
+                                zq_obs: set[str] = set()
+                                for zrow in contracts_zq:
+                                    ex = str(zrow.get("expiry") or "")
+                                    od = zrow.get("observation_date")
+                                    if zrow.get("implied_rate") is None or not od:
+                                        continue
+                                    zq_by_exp[ex] = zrow
+                                    zq_obs.add(str(od))
+                                if (
+                                    len(zq_obs) == 1
+                                    and str(next(iter(zq_obs))) == obs_date.isoformat()
+                                ):
+                                    zq_meet = zq_by_exp.get(expiry_s)
+                                    zq_next = zq_by_exp.get(next_exp)
+                                    if zq_meet is not None and zq_next is not None:
+                                        extras_cross["zq_cross_check"] = {
+                                            "implied_change_bp": _round_bp(
+                                                (
+                                                    float(zq_next["implied_rate"])
+                                                    - float(zq_meet["implied_rate"])
+                                                )
+                                                * 100.0
+                                            ),
+                                            "method": "adjacent_month_effr",
+                                            "note": (
+                                                "ZQ is 30-day federal funds futures on EFFR, not SOFR. "
+                                                "Not an input to the SR1 solve."
+                                            ),
+                                        }
+
+                            solved.append((k_eff, policy_post))
+                            solved_sofr.append((k_eff, f_post_sofr))
+                            rows.append(
+                                _row(
+                                    meeting,
+                                    policy_post,
+                                    inc,
+                                    cum,
+                                    "estimated",
+                                    contracts_out,
+                                    extras=extras_cross,
+                                )
+                            )
+                            idx += 1
+                            used_sr1_forward = True
+                            sr1_baseline_path_started = True
+
+                if not used_sr1_forward:
+                    if sr1_baseline_path_started or solved_sofr:
+                        us_sr1_path_gap = True
+                    gap_reason = (
+                        US_SR1_PREDECESSOR_GAP_REASON
+                        if unsolved_pred_eff is not None
+                        else None
+                    )
+                    extras_unavail: dict[str, Any] | None = (
+                        {"reason": gap_reason} if gap_reason else None
+                    )
+                    rows.append(
+                        _row(
+                            meeting,
+                            None,
+                            None,
+                            None,
+                            "unavailable",
+                            [],
+                            extras=extras_unavail,
+                        )
+                    )
+                    idx += 1
+                    continue
 
         if used_sr1_forward:
             continue
@@ -3250,6 +3416,8 @@ def build_policy_meeting_prices(
                 "n_pre",
                 "n_post",
                 "ib_identity_residual_bp",
+                "strip_identity_residual_bp",
+                "estimate_note",
             ):
                 if optional_key in row:
                     mt[optional_key] = row[optional_key]
@@ -3261,6 +3429,20 @@ def build_policy_meeting_prices(
                     status = "partial"
                     reason = None
                     break
+
+        if code == "US" and status == "ok" and meetings_out:
+            future_rows = [
+                row
+                for row in meetings_out
+                if _parse_date(str(row["effective_date"])) > as_of
+            ]
+            if future_rows:
+                methods = {str(row.get("method") or "") for row in future_rows}
+                if "unavailable" in methods and methods & {"identified", "estimated"}:
+                    status = "partial"
+                elif methods == {"unavailable"}:
+                    status = "unavailable"
+                    reason = US_SR1_PREDECESSOR_GAP_REASON
 
         bank_block: dict[str, Any] = {
             "status": status,

@@ -57,18 +57,22 @@ def _fresh_build() -> dict:
 
 
 class Nov9PublicationGuardTest(unittest.TestCase):
-    def test_phantom_us_march_row_downgraded_from_sidecar(self) -> None:
+    def test_us_sidecar_matches_fresh_build_after_cross_month(self) -> None:
+        built = _fresh_build()
         guarded = load_policy_meeting_prices_for_publication(SIDECAR)
         self.assertIsNotNone(guarded)
-        us = guarded["banks"]["US"]
-        mar = next(
-            m for m in us["meetings"] if m["decision_date"] == "2027-03-17"
-        )
-        self.assertEqual(mar["method"], "unavailable")
-        self.assertIsNone(mar["post_rate"])
-        self.assertIsNone(mar["incremental_bp"])
-        self.assertIsNone(mar["cumulative_bp"])
-        self.assertIn("underdetermined", (mar.get("reason") or "").lower())
+        us_built = {r["decision_date"]: r for r in built["banks"]["US"]["meetings"]}
+        us_side = {r["decision_date"]: r for r in guarded["banks"]["US"]["meetings"]}
+        for decision_date in ("2026-12-09", "2027-01-27", "2027-03-17"):
+            a, b = us_built[decision_date], us_side[decision_date]
+            for fld in ("method", "post_rate", "incremental_bp", "cumulative_bp"):
+                self.assertEqual(a.get(fld), b.get(fld), msg=(decision_date, fld))
+        jan = us_side["2027-01-27"]
+        self.assertEqual(jan["method"], "estimated")
+        mar = us_side["2027-03-17"]
+        self.assertEqual(mar["method"], "identified")
+        self.assertIsNotNone(mar["post_rate"])
+        self.assertLess(abs(float(mar["cumulative_bp"])), 100.0)
 
     def test_guard_leaves_unrelated_market_fields_intact(self) -> None:
         raw = json.loads(SIDECAR.read_text(encoding="utf-8"))

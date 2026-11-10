@@ -1,4 +1,4 @@
-"""Regression: US SR1 must not invent 0% for a missing predecessor (Nov 9 2026 vintage)."""
+"""Regression: US SR1 cross-month identification for Jan 2027 and onward path (Nov 9 vintage)."""
 
 from __future__ import annotations
 
@@ -59,10 +59,19 @@ class Nov9FomcSr1RegressionTests(unittest.TestCase):
             cls.evidence = json.load(handle)
         cls.ms = cls.evidence["families"]["market_state"]["data"]
         cls.policy_paths = cls.ms["policy_paths"]
+        cls.us_contracts = cls.policy_paths["countries"]["US"]["contracts_1m"]
         with Path("data/policy_state.json").open(encoding="utf-8") as handle:
             cls.policy_state = json.load(handle)
         with Path("data/policy_meetings.json").open(encoding="utf-8") as handle:
             cls.calendar = json.load(handle)
+
+    def _snapshot(self) -> dict:
+        return build_policy_meeting_prices(
+            as_of=date(2026, 11, 9),
+            calendar=self.calendar,
+            policy_state=self.policy_state,
+            policy_paths=self.policy_paths,
+        )
 
     def test_evidence_packet_unchanged(self) -> None:
         before = hashlib.sha256(EVIDENCE.read_bytes()).hexdigest()
@@ -73,91 +82,71 @@ class Nov9FomcSr1RegressionTests(unittest.TestCase):
         after = hashlib.sha256(EVIDENCE.read_bytes()).hexdigest()
         self.assertEqual(before, after, "evidence_snapshot.json must not be rewritten")
 
-    def test_nov9_us_path_no_phantom_after_january_gap(self) -> None:
-        as_of = date(2026, 11, 9)
-        snapshot = build_policy_meeting_prices(
-            as_of=as_of,
-            calendar=self.calendar,
-            policy_state=self.policy_state,
-            policy_paths=self.policy_paths,
-        )
+    def test_november_sr1_contracts_match_evidence(self) -> None:
+        by_exp = {str(c["expiry"]): float(c["implied_rate"]) for c in self.us_contracts}
+        self.assertAlmostEqual(by_exp["2026-12"], 4.04, places=4)
+        self.assertAlmostEqual(by_exp["2027-01"], 4.1125, places=4)
+        self.assertAlmostEqual(by_exp["2027-02"], 4.1475, places=4)
+        for exp in ("2026-12", "2027-01", "2027-02"):
+            obs = next(
+                c.get("observation_date") for c in self.us_contracts if c["expiry"] == exp
+            )
+            self.assertEqual(obs, "2026-11-09")
+
+    def test_january_cross_month_estimated_with_strip_residual(self) -> None:
+        snapshot = self._snapshot()
         us = snapshot["banks"]["US"]
         by_decision = {m["decision_date"]: m for m in us["meetings"]}
 
-        jan = by_decision["2027-01-27"]
-        self.assertEqual(jan["method"], "unavailable")
-        self.assertIsNone(jan["post_rate"])
-
-        mar = by_decision["2027-03-17"]
-        self.assertEqual(mar["method"], "unavailable")
-        self.assertIsNone(mar["post_rate"])
-        self.assertIsNone(mar["incremental_bp"])
-        self.assertIsNone(mar["cumulative_bp"])
-        self.assertIn("underdetermined", (mar.get("reason") or "").lower())
-        if mar.get("post_rate") is not None:
-            self.fail("March post must be absent")
-        post = mar.get("post_rate")
-        if post is not None:
-            self.assertNotAlmostEqual(post, 9.26, places=1)
-        cum = mar.get("cumulative_bp")
-        if cum is not None:
-            self.assertNotAlmostEqual(cum, 538.0, delta=5.0)
-        inc = mar.get("incremental_bp")
-        if inc is not None:
-            self.assertNotAlmostEqual(inc, 516.0, delta=5.0)
-
         dec = by_decision["2026-12-09"]
         self.assertEqual(dec["method"], "identified")
-        self.assertIsNotNone(dec["post_rate"])
-        self.assertLess(dec["post_rate"], 6.0)
-        self.assertLess(abs(dec["cumulative_bp"]), 100.0)
+        self.assertAlmostEqual(dec["sofr_post_rate"], 4.1041, places=4)
 
-        gap_started = False
-        for decision_date in sorted(by_decision):
-            row = by_decision[decision_date]
-            if _parse_future(as_of, row["effective_date"]) is False:
-                continue
-            if decision_date == "2027-01-27":
-                gap_started = True
-                continue
-            if gap_started and decision_date > "2027-01-27":
-                self.assertEqual(
-                    row["method"],
-                    "unavailable",
-                    f"{decision_date} must be unavailable after January gap",
-                )
-                self.assertIsNone(row["post_rate"])
-                self.assertIsNone(row["incremental_bp"])
-                self.assertIsNone(row["cumulative_bp"])
+        jan = by_decision["2027-01-27"]
+        self.assertEqual(jan["method"], "estimated")
+        self.assertAlmostEqual(jan["sofr_post_rate"], 4.1475, places=4)
+        self.assertAlmostEqual(jan["strip_identity_residual_bp"], -0.28, places=2)
+        self.assertIsNotNone(jan.get("estimate_note"))
+        self.assertEqual(jan.get("n_post"), 4)
 
-    def test_repriced_row_snapshot_for_report(self) -> None:
-        """Materialize rows requested in worker handoff (not asserted here)."""
-        as_of = date(2026, 11, 9)
-        snapshot = build_policy_meeting_prices(
-            as_of=as_of,
-            calendar=self.calendar,
-            policy_state=self.policy_state,
-            policy_paths=self.policy_paths,
+        by_exp = {str(c["expiry"]): float(c["implied_rate"]) for c in self.us_contracts}
+        f_jan = by_exp["2027-01"]
+        recon_avg = f_jan + jan["strip_identity_residual_bp"] / 100.0
+        self.assertAlmostEqual(f_jan, 4.1125, places=4)
+        self.assertAlmostEqual(recon_avg, 4.1097, places=3)
+        self.assertAlmostEqual(by_exp["2027-02"], jan["sofr_post_rate"], places=4)
+
+        self.assertAlmostEqual(jan["incremental_bp"], 4.34, places=2)
+        self.assertLess(abs(jan["cumulative_bp"]), 50.0)
+
+    def test_march_onward_identified_without_phantom_tail(self) -> None:
+        snapshot = self._snapshot()
+        us = snapshot["banks"]["US"]
+        by_decision = {m["decision_date"]: m for m in us["meetings"]}
+
+        mar = by_decision["2027-03-17"]
+        self.assertEqual(mar["method"], "identified")
+        self.assertIsNotNone(mar["post_rate"])
+        self.assertLess(abs(mar.get("cumulative_bp") or 0.0), 100.0)
+        self.assertNotAlmostEqual(mar.get("cumulative_bp") or 0.0, 538.0, delta=5.0)
+
+        jun = by_decision["2027-06-09"]
+        self.assertEqual(jun["method"], "identified")
+        self.assertIsNotNone(jun["post_rate"])
+
+    def test_us_bank_status_ok_when_future_path_identified(self) -> None:
+        snapshot = self._snapshot()
+        us = snapshot["banks"]["US"]
+        self.assertEqual(us["status"], "ok")
+        future = [
+            m
+            for m in us["meetings"]
+            if date.fromisoformat(m["effective_date"]) > date(2026, 11, 9)
+        ]
+        self.assertTrue(
+            all(m["method"] in {"identified", "estimated"} for m in future),
+            "no future FOMC step should be unavailable after Jan cross-month fix",
         )
-        by_decision = {
-            m["decision_date"]: m for m in snapshot["banks"]["US"]["meetings"]
-        }
-        cls = type(self)
-        cls._report_rows = {
-            d: {
-                "method": by_decision[d].get("method"),
-                "post_rate": by_decision[d].get("post_rate"),
-                "incremental_bp": by_decision[d].get("incremental_bp"),
-                "cumulative_bp": by_decision[d].get("cumulative_bp"),
-                "reason": by_decision[d].get("reason"),
-            }
-            for d in FOMC_ROWS
-            if d in by_decision
-        }
-
-
-def _parse_future(as_of: date, eff_s: str) -> bool:
-    return date.fromisoformat(eff_s) > as_of
 
 
 if __name__ == "__main__":
