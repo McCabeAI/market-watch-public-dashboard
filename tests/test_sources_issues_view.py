@@ -158,6 +158,10 @@ class IssuesPanelTests(unittest.TestCase):
         self.assertNotIn("mw-issues", stripped)
         self.assertNotIn("mw-issues-badge", stripped)
 
+    def test_unbalanced_issues_panel_is_not_stripped(self):
+        html = '<body><div class="mw-issues"><div>open<section>Last refreshed 18 Sep 2026</section></body>'
+        self.assertEqual(strip_issues_panel(html), html)
+
     def test_nav_rename_keeps_id(self):
         page = '<label for="p-sources">Sources</label>'
         once = rename_sources_nav_label(page)

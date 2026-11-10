@@ -53,7 +53,8 @@ def strip_issues_panel(html: str) -> str:
             try:
                 end = balanced_element_end(out, start)
             except ValueError:
-                end = len(out)
+                # An unbalanced panel is not stripped: hard checks must still see the rest of the page.
+                return html
             out = out[:start] + out[end:]
     return out
 
