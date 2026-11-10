@@ -44,9 +44,10 @@ def _legend_tiles(slice_points: list[Mapping[str, Any]]) -> str:
         parts.append(
             f'<div class="temp-tile" data-series="{html.escape(key, quote=True)}">'
             f'<i class="temp-swatch" style="background:{color}"></i>'
+            '<div class="temp-tile-body">'
             f'<span class="temp-tile-name">{html.escape(SERIES_LABELS[key], quote=True)}</span>'
             f'<b class="temp-tile-value">{html.escape(latest[key], quote=True)}</b>'
-            "</div>"
+            "</div></div>"
         )
     return "".join(parts)
 

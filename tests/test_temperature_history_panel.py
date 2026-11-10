@@ -75,6 +75,14 @@ class TemperatureHistoryPanelTest(unittest.TestCase):
         self.assertIn("not the existing production mean", fragment)
         for color in ("#1687FF", "#12BF4A", "#FFD13D", "#FF7626", "#CBAAF5"):
             self.assertIn(color, fragment)
+        self.assertIn('class="temp-tile-body"', fragment)
+        self.assertRegex(
+            fragment,
+            r'<div class="temp-tile" data-series="aggregate">'
+            r'<i class="temp-swatch"[^>]*></i><div class="temp-tile-body">'
+            r'<span class="temp-tile-name">Aggregate</span>'
+            r"<b class=\"temp-tile-value\">",
+        )
         self.assertIn('data-window="12"', fragment)
         self.assertIn('aria-pressed="true"', fragment)
         self.assertIn('data-window-panel="3" hidden', fragment)

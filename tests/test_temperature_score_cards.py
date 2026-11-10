@@ -179,12 +179,32 @@ class TemperatureScoreCardsTests(unittest.TestCase):
         )
         self.assertIn("Equal-weight summary is the simple mean", html)
         self.assertIn("Latest component", html)
+        self.assertIn('class="mw-scoreboard-legacy"', html)
+        self.assertIn("Detailed calibrated scores (equal-weight view)", html)
+        self.assertNotRegex(html, r'<details[^>]*mw-scoreboard-legacy[^>]*\sopen')
+
+    def test_temp_cards_include_country_jump_buttons(self) -> None:
+        doc = _empty_paths_doc()
+        _add_month(doc["paths"]["US"], "2025-10", 50.0, 50.0, 50.0, 50.0)
+        html = render_scoreboard(_load_fixture_state(), paths_doc=doc)
+        self.assertEqual(html.count('class="jump country-jump"'), 12)
+        us = re.search(
+            r'<article class="temp-card" data-country="US">(.*?</article>)',
+            html,
+            re.DOTALL,
+        )
+        assert us is not None
+        self.assertIn('data-country="us"', us.group(1))
+        self.assertIn("View country trends", us.group(1))
+        self.assertIn('class="score-open"', html)
 
     def test_no_cards_when_paths_unavailable(self) -> None:
         with patch("scripts.temperature_trends.load_paths", return_value=None):
             html = render_scoreboard(_load_fixture_state(), paths_doc=None)
         self.assertNotIn("temp-cards", html)
         self.assertIn("Equal-weight", html)
+        self.assertNotIn("mw-scoreboard-legacy", html)
+        self.assertIn('<b>1–100 Score Board</b>', html)
 
     def test_partial_score_state_still_renders_table(self) -> None:
         state = {"countries": {}}

@@ -188,6 +188,10 @@ def _render_temp_card(card: dict[str, Any]) -> str:
         f'<p class="temp-card-move">{esc(card["movement"])}</p>'
         f"{flags_html}"
         '<p class="temp-card-provenance">Reconstructed monthly replay</p>'
+        '<p class="temp-card-actions">'
+        f'<button type="button" class="jump country-jump" data-country="{esc(str(card["country"]).lower())}" '
+        f'aria-label="View country trends for {esc(card["name"])}">View country trends</button>'
+        "</p>"
         "</article>"
     )
 
@@ -273,10 +277,18 @@ def render_scoreboard(state: dict[str, Any], paths_doc: dict[str, Any] | None = 
         paths_doc = load_paths()
     if paths_doc is not None:
         cards_html = _render_temp_cards(paths_doc)
+    table_html = _scoreboard_markup(state)
+    if cards_html:
+        table_html = (
+            '<details class="mw-scoreboard-legacy" data-scoreboard-legacy>'
+            "<summary>Detailed calibrated scores (equal-weight view)</summary>"
+            + table_html
+            + "</details>"
+        )
     # Cards stay inside the replaced scoreboard element so a later repair does not duplicate them.
     return (
         '<div data-score-overview="calibrated" class="scoreboard">'
         + cards_html
-        + _scoreboard_markup(state)
+        + table_html
         + "</div>"
     )
