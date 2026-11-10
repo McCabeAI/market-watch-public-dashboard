@@ -35,13 +35,6 @@ from scripts.market_watch_launch.publication_issues import record_diagnostic
 from scripts.temperature_level import load_calibration, load_history, load_state
 
 ROOT = Path(__file__).resolve().parents[1]
-_AU_RENDER_FAILURE_MARKER = Path("data") / "country_detail" / "au_render_failure.marker"
-
-
-def _au_render_failure_requested(root: Path) -> bool:
-    return (Path(root) / _AU_RENDER_FAILURE_MARKER).is_file()
-
-
 SCORES_PATH = ROOT / "data" / "temperature_scores.json"
 REGISTRY_PATH = ROOT / "data" / "country_registry.json"
 REVIEW_PATH = ROOT / "tests" / "fixtures" / "country_detail" / "review.html"
@@ -154,7 +147,9 @@ def render_dashboard_sections(
     *,
     observations_dir: Path | None = None,
     policy_meetings: dict | None = None,
+    errors: dict[str, str] | None = None,
 ) -> dict[str, str]:
+    """Render every economy. With ``errors``, a failed economy renders empty and its error is kept."""
     ctx = context or load_country_detail_context(root, observations_dir=observations_dir)
     projection = ctx["projection"]
     attention = ctx["attention"]
@@ -165,8 +160,6 @@ def render_dashboard_sections(
     sections: dict[str, str] = {}
     for code in COUNTRY_CODES:
         try:
-            if code == "AU" and _au_render_failure_requested(root or ROOT):
-                raise RuntimeError("AU country detail render failure (marker)")
             sections[code] = render_country_detail(
                 code,
                 projection["countries"][code],
@@ -176,7 +169,10 @@ def render_dashboard_sections(
                 policy_meetings=meetings,
                 stir_strips=stir,
             )
-        except Exception:
+        except Exception as exc:
+            if errors is None:
+                raise
+            errors[code] = f"{type(exc).__name__}: {exc}"
             sections[code] = ""
     return sections
 
@@ -370,8 +366,9 @@ def apply_country_detail(
     if not present:
         raise ValueError("dashboard HTML has no cdetail blocks")
     sections: dict[str, str] = {}
+    render_errors: dict[str, str] = {}
     try:
-        sections = render_dashboard_sections(root)
+        sections = render_dashboard_sections(root, errors=render_errors)
     except Exception:
         sections = {}
     if len(sections) < len(present):
@@ -386,8 +383,6 @@ def apply_country_detail(
             if code in sections:
                 continue
             try:
-                if code == "AU" and _au_render_failure_requested(root):
-                    raise RuntimeError("AU country detail render failure (marker)")
                 sections[code] = render_country_detail(
                     code,
                     projection["countries"][code],
@@ -397,7 +392,8 @@ def apply_country_detail(
                     policy_meetings=meetings,
                     stir_strips=stir,
                 )
-            except Exception:
+            except Exception as exc:
+                render_errors[code] = f"{type(exc).__name__}: {exc}"
                 sections[code] = ""
     key_list = [keys[code] for code in COUNTRY_CODES]
     bounds = [(code, _country_bounds(page, keys[code], key_list)) for code in present]
@@ -414,7 +410,7 @@ def apply_country_detail(
                 country=code,
                 cause=f"Country detail could not be rendered for {code}.",
                 impact="This country's detail drawer shows an unavailable placeholder.",
-                detail="no rendered section",
+                detail=render_errors.get(code) or "no rendered section",
             )
             updated = _inject_section(block, keys[code], _country_unavailable_fragment(code))
         else:

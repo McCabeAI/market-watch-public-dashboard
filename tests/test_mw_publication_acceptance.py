@@ -252,10 +252,17 @@ class CountryDetailIsolationFullBuildTests(FixtureCloneCase):
     # Scenario (3)
 
     def test_one_country_detail_failure_isolates_in_full_research_build(self):
-        marker = self.root / "data" / "country_detail" / "au_render_failure.marker"
-        marker.parent.mkdir(parents=True, exist_ok=True)
-        marker.write_text("fixture\n", encoding="utf-8")
-        self.addCleanup(lambda: marker.unlink(missing_ok=True))
+        # Fault injected into the fixture clone's renderer copy only; the overlay
+        # copies the clone's scripts/, so production code carries no test hook.
+        renderer = self.root / "scripts" / "country_detail" / "render.py"
+        original = renderer.read_text(encoding="utf-8")
+        anchor = '    """Render the Country Detail fragment for one economy."""\n    code = str(country_code)\n'
+        self.assertIn(anchor, original)
+        renderer.write_text(
+            original.replace(anchor, anchor + '    if code == "AU":\n        raise RuntimeError("injected AU render fault")\n', 1),
+            encoding="utf-8",
+        )
+        self.addCleanup(renderer.write_text, original, encoding="utf-8")
 
         with tempfile.TemporaryDirectory() as tmp:
             site = Path(tmp) / "site"
@@ -285,6 +292,7 @@ class CountryDetailIsolationFullBuildTests(FixtureCloneCase):
                 and row.get("country") == "AU"
             ]
             self.assertEqual(len(chart_rows), 1, chart_rows)
+            self.assertIn("injected AU render fault", chart_rows[0]["detail"])
 
 
 class FrozenLaunchRecoveryTests(FixtureCloneCase):
