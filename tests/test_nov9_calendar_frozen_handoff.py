@@ -11,8 +11,12 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from scripts.dashboard_repair.evidence_calendar import build_evidence_calendar
+from scripts.dashboard_repair.calendar_packet import economic_calendar_from_frozen
+from scripts.market_watch_launch.provider_stub import build_stub_output
 from scripts.overnight.evidence import freeze_snapshot
+from scripts.overnight.errors import EvidenceBoundaryError
 from scripts.overnight.pipeline import run_stage
+from scripts.overnight.scheduled_output import validate_output
 from scripts.overnight.store import OvernightStore
 from scripts.pm.constants import PM_IDS
 from scripts.pm.overnight_packet import attach_economic_calendar
@@ -81,6 +85,36 @@ class Nov9CalendarFrozenHandoffTests(unittest.TestCase):
         self.assertNotIn("economic_calendar", snapshot)
         build_evidence_calendar(AS_OF, root=ROOT, allow_network=False)
         self.assertEqual(IMMUTABLE_SNAPSHOT.read_bytes(), before)
+
+    def test_scheduled_output_enforces_identical_agent_packet_calendar(self) -> None:
+        review_id = "review-099"
+        self.store.write_artifact(
+            self.run_id,
+            "evidence_snapshot.json",
+            self.snapshot,
+            review_id=review_id,
+        )
+        launch = {
+            "launch_id": "mwl-handoff-cal-test",
+            "overnight_run_id": self.run_id,
+            "review_id": review_id,
+        }
+        output = build_stub_output(self.store, launch=launch, base_packet=self.snapshot)
+        validate_output(self.store, output)
+
+        bad = json.loads(json.dumps(output))
+        bad["agent_packet"]["economic_calendar"] = {
+            **self.snapshot["economic_calendar"],
+            "content_hash": "deadbeef",
+        }
+        with self.assertRaises(EvidenceBoundaryError):
+            validate_output(self.store, bad)
+
+    def test_review_snapshot_calendar_round_trip_for_pm_handoff(self) -> None:
+        snap_hash = self.snapshot["economic_calendar"]["content_hash"]
+        round_trip = economic_calendar_from_frozen(self.snapshot)
+        self.assertEqual(round_trip["content_hash"], snap_hash)
+        self.assertEqual(round_trip["events"], self.snapshot["economic_calendar"]["events"])
 
     def test_no_leak_and_us_prints_present(self) -> None:
         block = self.snapshot["economic_calendar"]

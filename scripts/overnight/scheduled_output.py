@@ -471,6 +471,27 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
     if agent_packet.get("packet_sha256") != expected_packet_hash:
         raise EvidenceBoundaryError("agent_packet packet_sha256 mismatch")
 
+    base_economic_calendar = base.get("economic_calendar")
+    agent_economic_calendar = agent_packet.get("economic_calendar")
+    if isinstance(base_economic_calendar, dict) and base_economic_calendar.get(
+        "content_hash"
+    ):
+        if not isinstance(agent_economic_calendar, dict):
+            raise EvidenceBoundaryError(
+                "agent_packet missing economic_calendar required by frozen base"
+            )
+        if (
+            agent_economic_calendar.get("content_hash")
+            != base_economic_calendar.get("content_hash")
+        ):
+            raise EvidenceBoundaryError(
+                "agent_packet economic_calendar content_hash mismatch"
+            )
+        if agent_economic_calendar != base_economic_calendar:
+            raise EvidenceBoundaryError(
+                "agent_packet economic_calendar payload must match frozen base exactly"
+            )
+
     from scripts.trader_room import agent_config
 
     pin = agent_config.assert_acceptable_pin(agent_config.pin_from_artifact(base, kind="daily"))
