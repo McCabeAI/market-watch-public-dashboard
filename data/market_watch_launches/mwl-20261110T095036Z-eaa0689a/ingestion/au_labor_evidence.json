@@ -1,0 +1,86 @@
+{
+  "added_by": "au-labor-reliability-20261014",
+  "as_of": "2026-11-10",
+  "partial": true,
+  "observations": [
+    {
+      "id": "AU.Labor.anz_indeed_job_ads_sa",
+      "publisher": "anz_indeed",
+      "period": "2026-09",
+      "release_date": "2026-10-06",
+      "vintage": "release:2026-10-06",
+      "source_url": "https://www.anz.com.au/content/dam/anzcomau/mediacentre/images/jobads/2026/october/ANZ-Indeed%20Australian%20Job%20Ads%20data_Sep26.xlsx",
+      "raw_sha256": "14334bdd34e5f539f81a7c34417f1f448ef247c98b7b1988c427b58c256aa528",
+      "units": "index",
+      "weight": 0.0,
+      "provenance": {
+        "publisher": "anz_indeed",
+        "source_url": "https://www.anz.com.au/content/dam/anzcomau/mediacentre/images/jobads/2026/october/ANZ-Indeed%20Australian%20Job%20Ads%20data_Sep26.xlsx",
+        "raw_sha256": "14334bdd34e5f539f81a7c34417f1f448ef247c98b7b1988c427b58c256aa528",
+        "release_date": "2026-10-06",
+        "revision_status": "latest_available",
+        "transformation": "sa_level",
+        "discovery": "controlled_release_index"
+      },
+      "value": 125.29980391886193,
+      "transformation": "sa_level"
+    }
+  ],
+  "gaps": [
+    {
+      "id": "AU.Labor.jsa_ivi_national_sa",
+      "publisher": "jsa_ivi",
+      "status": "source_failed",
+      "reason": "transport_error:The read operation timed out"
+    },
+    {
+      "id": "AU.Labor.jsa_reos_recruiting_share",
+      "publisher": "jsa_reos",
+      "status": "source_failed",
+      "reason": "transport_error:The read operation timed out"
+    },
+    {
+      "id": "AU.Labor.jsa_reos_recruitment_difficulty",
+      "publisher": "jsa_reos",
+      "status": "source_failed",
+      "reason": "transport_error:The read operation timed out"
+    },
+    {
+      "id": "AU.Labor.jsa_reos_hiring_intent",
+      "publisher": "jsa_reos",
+      "status": "source_failed",
+      "reason": "transport_error:The read operation timed out"
+    },
+    {
+      "id": "AU.Labor.anz_indeed_job_ads_sa",
+      "publisher": "anz_indeed",
+      "status": "discovery_gap",
+      "reason": "ANZ newsroom index did not list a dated job-ads release; controlled vintage index used"
+    },
+    {
+      "id": "AU.Labor.nab_employment_subindex",
+      "publisher": "nab_business_survey",
+      "status": "not_yet_released",
+      "reason": "release_date 2026-11-10 not eligible at as_of 2026-11-10"
+    },
+    {
+      "id": "AU.Labor.seek_job_ad_trend",
+      "publisher": "seek_employment_report",
+      "status": "source_failed",
+      "reason": "period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-september26/"
+    },
+    {
+      "id": "AU.Labor.seek_job_ad_trend",
+      "publisher": "seek_employment_report",
+      "status": "source_failed",
+      "reason": "period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-august26/"
+    },
+    {
+      "id": "AU.Labor.seek_job_ad_trend",
+      "publisher": "seek_employment_report",
+      "status": "source_failed",
+      "reason": "period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-july26/"
+    }
+  ],
+  "packet_sha256": "635001daa9f8ff72de2ebcaa253ae896726148c184076f364d2e7ad9626ff0b9"
+}
