@@ -560,8 +560,10 @@ def _caveat_block(
     if missing:
         lines = []
         for card in missing:
-            reason = str(card.get("reason_short") or card.get("detail") or "series unavailable")
-            lines.append(f'<li><span class="brief-name">{esc(card.get("label") or card.get("key"))}</span> {esc(reason)}</li>')
+            reason = esc(str(card.get("reason_short") or card.get("detail") or "series unavailable"))
+            lines.append(
+                f'<li><span class="brief-name">{esc(card.get("label") or card.get("key"))}</span> {reason}</li>'
+            )
         unavailable = '<ul class="brief-list">' + "".join(lines) + "</ul>"
     else:
         unavailable = '<p class="brief-caption">No tape series is marked unavailable.</p>'

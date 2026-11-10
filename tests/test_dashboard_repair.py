@@ -732,6 +732,9 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertNotIn("Last successful check 2026", sources)
         self.assertIn('data-market-source="US_rates"', sources)
         self.assertNotIn("Sep 8 public snapshot", sources)
+        self.assertIn("Sources &amp; Issues", self.html)
+        self.assertIn('data-issues-root="pending"', sources)
+        self.assertIn('for="p-sources">Sources &amp; Issues</label>', self.html)
         self.assertEqual(self.html.count('data-score-overview="calibrated"'), 1)
         again = apply_dashboard_repair(
             self.html,

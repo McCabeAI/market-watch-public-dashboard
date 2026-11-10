@@ -365,8 +365,12 @@ class NewsCommentaryMissingTests(unittest.TestCase):
         blocks = step_blocks(deploy)
         news_step = blocks["Apply accepted overnight news refresh"]
         trader_step = blocks["Add Trader Book tab"]
-        self.assertIn("assert_built_news_matches_context", news_step)
-        self.assertIn("assert_built_news_matches_context", trader_step)
+        integrity = blocks["Check final publication integrity"]
+        self.assertIn("render_steps", news_step)
+        self.assertIn("news_unavailable", news_step)
+        self.assertIn("publish-check", trader_step)
+        self.assertIn("--news-html-policy soft", trader_step)
+        self.assertIn("publication_checks final", integrity)
         self.assertNotIn('raise SystemExit("accepted public news headlines missing from built HTML")', news_step)
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp)

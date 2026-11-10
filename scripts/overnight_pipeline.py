@@ -86,6 +86,12 @@ def main(argv: list[str] | None = None) -> int:
     pub.add_argument("--run-id")
     pub.add_argument("--site-dir", type=Path, default=None)
     pub.add_argument("--require-dataset", action="store_true")
+    pub.add_argument(
+        "--news-html-policy",
+        choices=("strict", "soft"),
+        default="strict",
+        help="strict raises on stale accepted news HTML; soft records a diagnostic",
+    )
 
     args = parser.parse_args(argv)
     if args.cmd == "schedule":
@@ -164,6 +170,7 @@ def main(argv: list[str] | None = None) -> int:
             run_id=args.run_id,
             require_dataset=args.require_dataset,
             site_dir=site_dir,
+            news_policy=args.news_html_policy,
         )
         if site_dir:
             from scripts.overnight.publish import emit_pm_books_json

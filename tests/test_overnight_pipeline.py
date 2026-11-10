@@ -1692,15 +1692,15 @@ class TraderBookTabTests(unittest.TestCase):
                 self.assertIn(news_marker, out)
                 self.assertTrue((tmp / "trader-book.js").is_file())
 
-    def test_tab_fails_closed_if_both_news_markers_are_missing(self):
+    def test_tab_still_applies_without_news_digest_marker(self):
         from scripts.apply_trader_book_tab import apply_trader_book_tab
 
         tmp = Path(tempfile.mkdtemp(prefix="tb-tab-"))
         self.addCleanup(shutil.rmtree, tmp)
         target = tmp / "index.html"
         target.write_text(self._html_with_news_marker("No accepted news section"))
-        with self.assertRaisesRegex(SystemExit, "required dashboard news digest marker"):
-            apply_trader_book_tab(target, repo_root=ROOT)
+        apply_trader_book_tab(target, repo_root=ROOT)
+        self.assertIn("Trader Book · paper P&L", target.read_text(encoding="utf-8"))
 
 
 class SeedBooksTests(unittest.TestCase):

@@ -28,9 +28,14 @@ def _jsonable(value: Any) -> Any:
 def _write_sidecars(site: Path) -> None:
     snapshot = getattr(apply_dashboard_repair, "last_snapshot", None)
     calendar = getattr(apply_dashboard_repair, "last_calendar", None)
-    if isinstance(snapshot, dict):
-        (site / "source-health.json").write_text(json.dumps(_jsonable(snapshot), indent=2) + "\n", encoding="utf-8")
-    if isinstance(calendar, dict):
+    try:
+        if isinstance(snapshot, dict):
+            (site / "source-health.json").write_text(json.dumps(_jsonable(snapshot), indent=2) + "\n", encoding="utf-8")
+    except (OSError, TypeError, ValueError):
+        pass
+    if not isinstance(calendar, dict):
+        return
+    try:
         public = {
             "window_start": calendar.get("window_start"),
             "window_end": calendar.get("window_end"),
@@ -44,6 +49,8 @@ def _write_sidecars(site: Path) -> None:
             "unscheduled_count": len(calendar.get("unscheduled_scored") or []),
         }
         (site / "release-calendar.json").write_text(json.dumps(_jsonable(public), indent=2) + "\n", encoding="utf-8")
+    except (OSError, TypeError, ValueError):
+        pass
 
 
 def main() -> None:

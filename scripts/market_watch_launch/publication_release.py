@@ -344,7 +344,12 @@ def render_edition_banner(release: dict[str, Any]) -> str:
             items.append(
                 "Current verified headlines: unavailable (frozen news collection failed verification)."
             )
-        if news.get("mode") == "current-cycle-news-commentary-missing":
+        if news.get("status") == "unavailable" or not news.get("as_of"):
+            items.append(
+                "Previous accepted analysis: unavailable. No accepted news record was available for this edition. "
+                "Today's analysis is published with the final edition after acceptance."
+            )
+        elif news.get("mode") == "current-cycle-news-commentary-missing":
             items.append(
                 f"Previous accepted analysis (as of {_esc(format_et(news.get('as_of')))}, "
                 f"{_esc(news.get('age_label') or 'age not recorded')}): the previous accepted cycle "
@@ -416,16 +421,11 @@ def _insert_after(html: str, anchor: str, block: str) -> str:
 _FRONT_NEWS_ALERT_OPEN_RE = re.compile(
     r'<div class="news-alert market-alert"(?:>|\s[^>]*>)'
 )
-
-
-def _insert_before_front_news_alert(html: str, block: str) -> str:
-    matches = list(_FRONT_NEWS_ALERT_OPEN_RE.finditer(html))
-    if len(matches) != 1:
-        anchor = '<div class="news-alert market-alert">'
-        raise ValueError(f"edition anchor {anchor!r} is missing or ambiguous")
-    match = matches[0]
-    return html[: match.start()] + block + html[match.start() :]
-
+_BODY_OPEN_RE = re.compile(r"<body\b[^>]*>", re.IGNORECASE)
+_FRONT_SECTION_RE = re.compile(r'<section\b[^>]*class="page front"[^>]*>')
+_NEWS_SECTION_RE = re.compile(r'<section\b[^>]*class="page news"[^>]*>')
+_TRADERBOOK_SECTION_RE = re.compile(r'<section\b[^>]*class="page traderbook"[^>]*>')
+_TRADER_BOOK_ROOT = '<div id="trader-book-root"'
 
 TOPBAR_OPEN = '<header class="topbar">'
 
@@ -440,8 +440,155 @@ def _insert_after_topbar(html: str, block: str) -> str:
     return html[:index] + block + html[index:]
 
 
-def stamp_html(html: str, release: dict[str, Any]) -> str:
-    """Insert the edition banner (and research panel notes) exactly once."""
+def _insert_after_banner(html: str, block: str) -> str:
+    marker = 'data-publication-phase="'
+    pos = html.find(marker)
+    if pos < 0:
+        raise ValueError("edition banner missing")
+    end = html.find("</section>", pos)
+    if end < 0:
+        raise ValueError("edition banner is not closed")
+    index = end + len("</section>")
+    return html[:index] + block + html[index:]
+
+
+def _stamp_issue(
+    diagnostics: list[dict[str, Any]] | None,
+    release: dict[str, Any],
+    *,
+    code: str,
+    component: str,
+    cause: str,
+    impact: str,
+) -> None:
+    if diagnostics is None:
+        return
+    from scripts.market_watch_launch.publication_issues import make_issue
+
+    diagnostics.append(
+        make_issue(
+            code,
+            category="render",
+            severity="warning",
+            component=component,
+            cause=cause,
+            impact=impact,
+            launch_id=str(release.get("launch_id") or "") or None,
+            phase=str(release.get("phase") or "") or None,
+        )
+    )
+
+
+def _insert_edition_banner(
+    html: str,
+    block: str,
+    release: dict[str, Any],
+    diagnostics: list[dict[str, Any]] | None,
+) -> str:
+    try:
+        return _insert_after_topbar(html, block)
+    except ValueError:
+        match = _BODY_OPEN_RE.search(html)
+        if match is None:
+            raise ValueError("edition anchor topbar header and body are missing")
+        _stamp_issue(
+            diagnostics,
+            release,
+            code="edition_anchor_fallback",
+            component="edition:banner",
+            cause="The topbar anchor was missing or ambiguous; the edition banner was inserted after the body tag.",
+            impact="The edition banner is still visible at the top of the page.",
+        )
+        index = match.end()
+        return html[:index] + block + html[index:]
+
+
+def _insert_traderbook_note(
+    html: str,
+    note: str,
+    release: dict[str, Any],
+    diagnostics: list[dict[str, Any]] | None,
+) -> str:
+    opens = list(_TRADERBOOK_SECTION_RE.finditer(html))
+    if len(opens) == 1:
+        end = opens[0].end()
+        return html[:end] + note + html[end:]
+    roots = [match.start() for match in re.finditer(re.escape(_TRADER_BOOK_ROOT), html)]
+    if len(roots) == 1:
+        _stamp_issue(
+            diagnostics,
+            release,
+            code="edition_anchor_fallback",
+            component="edition:traderbook",
+            cause="The Trader Book section was missing; the previous-books note was inserted before the trader book root.",
+            impact="Previous accepted books stay labeled as previous.",
+        )
+        index = roots[0]
+        return html[:index] + note + html[index:]
+    _stamp_issue(
+        diagnostics,
+        release,
+        code="edition_anchor_fallback",
+        component="edition:traderbook",
+        cause="The Trader Book section was missing; the previous-books note was inserted after the edition banner.",
+        impact="Previous accepted books stay labeled as previous.",
+    )
+    return _insert_after_banner(html, note)
+
+
+def _insert_front_headlines(
+    html: str,
+    block: str,
+    release: dict[str, Any],
+    diagnostics: list[dict[str, Any]] | None,
+) -> str:
+    matches = list(_FRONT_NEWS_ALERT_OPEN_RE.finditer(html))
+    if len(matches) == 1:
+        start = matches[0].start()
+        return html[:start] + block + html[start:]
+    _stamp_issue(
+        diagnostics,
+        release,
+        code="edition_anchor_fallback",
+        component="edition:front_headlines",
+        cause="The front news-alert anchor was missing or ambiguous; the headlines panel was inserted at a fallback position.",
+        impact="Verified headlines are still shown on the page.",
+    )
+    opens = list(_FRONT_SECTION_RE.finditer(html))
+    if len(opens) == 1:
+        end = opens[0].end()
+        return html[:end] + block + html[end:]
+    return _insert_after_banner(html, block)
+
+
+def _insert_news_headlines(
+    html: str,
+    block: str,
+    release: dict[str, Any],
+    diagnostics: list[dict[str, Any]] | None,
+) -> str:
+    opens = list(_NEWS_SECTION_RE.finditer(html))
+    if len(opens) == 1:
+        end = opens[0].end()
+        return html[:end] + block + html[end:]
+    _stamp_issue(
+        diagnostics,
+        release,
+        code="edition_anchor_fallback",
+        component="edition:news_headlines",
+        cause="The News page section is missing, so the news headlines panel was omitted.",
+        impact="Verified headlines are not repeated on the News page.",
+    )
+    return html
+
+
+def stamp_html(html: str, release: dict[str, Any], *, diagnostics: list | None = None) -> str:
+    """Insert the edition banner (and research panel notes) exactly once.
+
+    A missing topbar falls back to the ``<body>`` tag. Research panel anchors
+    that are missing or ambiguous fall back or, for the News page, omit the
+    panel. Only a page with neither a topbar nor a body tag raises.
+    """
     if EDITION_MARKER in html:
         raise ValueError("site already carries an edition banner")
     if "</style>" not in html:
@@ -452,7 +599,7 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
 
         extra_css = EDITION_CSS + "\n" + HEADLINES_CSS
     out = html.replace("</style>", extra_css + "\n</style>", 1)
-    out = _insert_after_topbar(out, "\n" + render_edition_banner(release))
+    out = _insert_edition_banner(out, "\n" + render_edition_banner(release), release, diagnostics)
     if release.get("phase") == PHASE_RESEARCH:
         from scripts.market_watch_launch.research_headlines import (
             FRONT_HEADLINES,
@@ -463,33 +610,37 @@ def stamp_html(html: str, release: dict[str, Any]) -> str:
 
         books = release.get("books") or {}
         session = format_session(release.get("session_date"))
-        out = _insert_after(
+        out = _insert_traderbook_note(
             out,
-            '<section class="page traderbook">',
             render_panel_note(
                 f"<b>Previous accepted books.</b> Books, P&amp;L and tickets are from "
                 f"<span class=\"mw-raw\">{_esc(_books_run(books))}</span> "
                 f"({_esc(_books_dates(books))}), not {_esc(session)} decisions.",
                 "traderbook",
             ),
+            release,
+            diagnostics,
         )
         news = release.get("news") or {}
         headlines = release.get("headlines") or {}
         prev_note = render_previous_analysis_note(news)
-        out = _insert_before_front_news_alert(
+        out = _insert_front_headlines(
             out,
             "\n"
             + render_headlines_panel(headlines, previous_news=news, panel="front", limit=FRONT_HEADLINES)
             + "\n"
             + render_panel_note(prev_note, "front-news"),
+            release,
+            diagnostics,
         )
-        out = _insert_after(
+        out = _insert_news_headlines(
             out,
-            '<section class="page news">',
             "\n"
             + render_headlines_panel(headlines, previous_news=news, panel="news", limit=MAX_HEADLINES)
             + "\n"
             + render_panel_note(prev_note, "news"),
+            release,
+            diagnostics,
         )
     return out
 
@@ -531,16 +682,21 @@ def canonical_json(payload: Any) -> str:
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
 
-def stamp_site(site_dir: Path, release: dict[str, Any]) -> dict[str, Any]:
+def stamp_site(site_dir: Path, release: dict[str, Any], *, diagnostics: list | None = None) -> dict[str, Any]:
     """Write ``release.json`` and the visible edition into a complete built site.
 
     Returns the release with ``site_sha256`` over every other file.
+    ``diagnostics`` collects anchor-fallback issue rows; it does not change
+    insertion when omitted.
     """
     site = Path(site_dir)
     index = site / "index.html"
     if not index.is_file():
         raise ValueError("built site has no index.html")
-    index.write_text(stamp_html(index.read_text(encoding="utf-8"), release), encoding="utf-8")
+    index.write_text(
+        stamp_html(index.read_text(encoding="utf-8"), release, diagnostics=diagnostics),
+        encoding="utf-8",
+    )
     if release.get("phase") == PHASE_RESEARCH:
         for name, kind in (("trader-books.json", "trader"), ("pm-books.json", "pm")):
             path = site / name

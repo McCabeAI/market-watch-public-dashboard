@@ -7,6 +7,7 @@ a fresh check.
 from __future__ import annotations
 
 import json
+import re
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -33,6 +34,202 @@ _BUCKET_LABELS: list[tuple[str, str, str, str]] = [
     ("not_applicable", "Not applicable", "mw-chip--info", "Outside the Stage 01 check scope for this row."),
     ("not_checked", "Not checked", "mw-chip--info", "No succeeded stage check recorded for this series."),
 ]
+
+_ISSUE_SEVERITIES = ("critical", "warning", "info")
+_ISSUE_STATES = ("active", "resolved")
+_SEVERITY_CHIP = {
+    "critical": "mw-chip--bad",
+    "warning": "mw-chip--warn",
+    "info": "mw-chip--info",
+}
+
+ISSUES_PANEL_OPEN = '<div class="mw-issues"'
+ISSUES_BADGE_OPEN = '<span class="mw-issues-badge"'
+ISSUES_SLOT = (
+    '<div class="mw-issues" id="mw-issues" data-issues-root="pending">'
+    '<p class="note">Issues for this edition are listed once the edition is assembled.</p></div>'
+)
+
+
+def _valid_issue_row(row: object) -> bool:
+    if not isinstance(row, dict):
+        return False
+    if row.get("state") not in _ISSUE_STATES or row.get("severity") not in _ISSUE_SEVERITIES:
+        return False
+    if not row.get("id") or not row.get("cause"):
+        return False
+    if not row.get("category") or not row.get("component"):
+        return False
+    return True
+
+
+def _issue_sort_key(row: dict[str, Any]) -> tuple[Any, ...]:
+    from scripts.market_watch_launch.publication_issues import sort_key
+
+    return sort_key(row)
+
+
+def _issue_row_html(row: dict[str, Any]) -> str:
+    severity = str(row.get("severity") or "")
+    chip = _SEVERITY_CHIP.get(severity, "mw-chip--info")
+    country = row.get("country") or ""
+    category = str(row.get("category") or "")
+    source = row.get("source") if isinstance(row.get("source"), dict) else {}
+    url = source.get("url")
+    publisher = source.get("publisher") or "source"
+    if url and str(url).startswith("https://"):
+        source_html = f'<a href="{esc(url)}" rel="noopener" target="_blank">{esc(publisher)}</a>'
+    else:
+        source_html = esc("not recorded")
+    run = row.get("run") if isinstance(row.get("run"), dict) else {}
+    launch_id = run.get("launch_id") or "not recorded"
+    ingest_launch_id = run.get("ingest_launch_id") or "not recorded"
+    phase = run.get("phase") or "not recorded"
+    vintage = row.get("last_verified_vintage") or "not recorded"
+    detail = str(row.get("detail") or "")
+    occurrences = int(row.get("occurrences") or 1)
+    return (
+        '<li class="mw-issue-row" '
+        f'data-issue-id="{esc(row.get("id"))}" '
+        f'data-issue-severity="{esc(severity)}" '
+        f'data-issue-category="{esc(category)}" '
+        f'data-issue-state="{esc(row.get("state"))}">'
+        f'<span class="mw-chip {chip}">{esc(severity)}</span> '
+        f'<span class="mw-issue-category">{esc(category)}</span> '
+        f'<span class="mw-issue-country">{esc(country)}</span> '
+        f'<span class="mw-issue-component">{esc(row.get("component"))}</span> '
+        f'<span class="mw-issue-cause">{esc(row.get("cause"))}</span> '
+        '<details class="mw-issue-more">'
+        "<summary>Details</summary>"
+        f"<p><b>Impact</b> {esc(row.get('impact') or '')}</p>"
+        f"<p><b>Last verified vintage</b> {esc(vintage)}</p>"
+        f"<p><b>Source</b> {source_html}</p>"
+        f"<p><b>Run</b> launch {esc(launch_id)} · ingest launch {esc(ingest_launch_id)} · phase {esc(phase)}</p>"
+        f"<p><b>Occurrences</b> {esc(occurrences)}</p>"
+        + (f"<pre>{esc(detail)}</pre>" if detail else "")
+        + "</details></li>"
+    )
+
+
+def _issues_unavailable() -> str:
+    return (
+        '<div class="mw-issues" id="mw-issues" data-issues-root="unavailable">'
+        '<p class="note">Issues for this edition are unavailable.</p></div>'
+    )
+
+
+def render_issues_panel(feed: dict[str, Any] | None) -> str:
+    """Issues panel for the Sources & Issues tab. Quiet unavailable state without a feed."""
+    if not isinstance(feed, dict) or feed.get("status") != "available":
+        return _issues_unavailable()
+    if feed.get("schema_version") != 1:
+        return _issues_unavailable()
+    counts = feed.get("counts") if isinstance(feed.get("counts"), dict) else {}
+    rows = [_row for _row in (feed.get("issues") or []) if _valid_issue_row(_row)]
+    active = [row for row in rows if row.get("state") == "active"]
+    resolved = [row for row in rows if row.get("state") == "resolved"]
+    active.sort(key=_issue_sort_key)
+    resolved.sort(key=_issue_sort_key)
+    crit = int(counts.get("critical") or sum(1 for row in active if row.get("severity") == "critical"))
+    warn = int(counts.get("warning") or sum(1 for row in active if row.get("severity") == "warning"))
+    info = int(counts.get("info") or sum(1 for row in active if row.get("severity") == "info"))
+    resolved_n = int(counts.get("resolved") or len(resolved))
+    count_line = (
+        f"{len(active)} active"
+        f" · {crit} critical · {warn} warning · {info} info"
+        f" · {resolved_n} resolved"
+    )
+    categories = sorted({str(row.get("category") or "") for row in active if row.get("category")})
+    cat_opts = '<option value="">All categories</option>' + "".join(
+        f'<option value="{esc(cat)}">{esc(cat)}</option>' for cat in categories
+    )
+    sev_opts = (
+        '<option value="">All severities</option>'
+        '<option value="critical">critical</option>'
+        '<option value="warning">warning</option>'
+        '<option value="info">info</option>'
+    )
+    filters = (
+        '<div class="mw-issues-filters">'
+        '<label for="mw-issues-severity">Severity</label>'
+        f'<select id="mw-issues-severity" class="mw-issues-filter" aria-label="Filter issues by severity">{sev_opts}</select>'
+        '<label for="mw-issues-category">Category</label>'
+        f'<select id="mw-issues-category" class="mw-issues-filter" aria-label="Filter issues by category">{cat_opts}</select>'
+        '<label for="mw-issues-search">Search</label>'
+        '<input id="mw-issues-search" type="search" class="mw-issues-filter" '
+        'aria-label="Search issues" placeholder="Component, cause, country">'
+        "</div>"
+    )
+    if not active:
+        body = '<p class="note mw-issues-empty">No active issues for this edition.</p>'
+        list_html = ""
+    else:
+        body = ""
+        list_html = '<ul class="mw-issue-list" id="mw-issue-list-active">' + "".join(_issue_row_html(row) for row in active) + "</ul>"
+    resolved_html = ""
+    if resolved:
+        resolved_html = (
+            f'<details class="mw-issues-resolved"><summary>Resolved ({len(resolved)})</summary>'
+            '<ul class="mw-issue-list mw-issue-list-resolved">'
+            + "".join(_issue_row_html(row) for row in resolved)
+            + "</ul></details>"
+        )
+    return (
+        '<div class="mw-issues" id="mw-issues" data-issues-root="rendered">'
+        '<div class="stitle">Issues</div>'
+        f'<p class="mw-issues-counts note">{esc(count_line)}</p>'
+        + filters
+        + body
+        + list_html
+        + resolved_html
+        + "</div>"
+    )
+
+
+def _strip_issues_badge(html: str) -> str:
+    from scripts.dashboard_repair.htmlutil import balanced_element_end
+
+    out = html
+    while True:
+        start = out.find(ISSUES_BADGE_OPEN)
+        if start < 0:
+            break
+        end = balanced_element_end(out, start)
+        out = out[:start] + out[end:]
+    return out
+
+
+def _insert_issues_badge(html: str, critical: int) -> str:
+    if critical <= 0:
+        return html
+    badge = (
+        f'<span class="mw-issues-badge" data-issues-badge="critical">'
+        f'<label for="p-sources">{critical} critical issue(s) · Sources &amp; Issues</label></span>'
+    )
+    marker = '<header class="topbar">'
+    idx = html.find(marker)
+    if idx < 0:
+        return html
+    return html[: idx + len(marker)] + badge + html[idx + len(marker) :]
+
+
+def inject_issues_panel(html: str, feed: dict[str, Any] | None) -> str:
+    """Replace the Issues slot in a built page and sync the critical-issue nav badge."""
+    from scripts.dashboard_repair.htmlutil import balanced_element_end
+
+    start = html.find(ISSUES_PANEL_OPEN)
+    if start < 0:
+        return html
+    end = balanced_element_end(html, start)
+    panel = render_issues_panel(feed)
+    html = html[:start] + panel + html[end:]
+    html = _strip_issues_badge(html)
+    critical = 0
+    if isinstance(feed, dict) and feed.get("status") == "available":
+        counts = feed.get("counts")
+        if isinstance(counts, dict):
+            critical = int(counts.get("critical") or 0)
+    return _insert_issues_badge(html, critical)
 
 
 def _format_stage_date(raw: str) -> str:
@@ -315,11 +512,14 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
                     + "</pre></details>"
                 )
             detail_bit = f" {esc(visible_detail)}" if error and visible_detail else ""
+            status = str(source.get("status") or "unverified")
+            if status in {"unavailable", "failed", "source_failed"} and not visible_detail:
+                detail_bit = " Unavailable"
             market_lines.append(
                 "<li data-market-source=\"" + esc(key) + "\">"
                 f'<span class="mw-source-name">{esc(human_label)}</span> '
                 f'<span class="mw-raw">{esc(key)}</span> · '
-                f'status {esc(source.get("status") or "unverified")} · '
+                f'status {esc(status)} · '
                 f'observation {esc(source.get("observation_date") or "none")} · {link}.'
                 f"{detail_bit}{note_html} {extra}"
                 "</li>"
@@ -327,7 +527,9 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
     generated = "not published" if not isinstance(packet, dict) else str(packet.get("generated_at") or "timestamp missing")
     return (
         '<section class="page sources" data-source-health="repair">'
-        '<div class="stitle">Sources · provenance and freshness</div>'
+        '<div class="stitle">Sources &amp; Issues</div>'
+        + ISSUES_SLOT
+        + '<div class="stitle">Sources · provenance and freshness</div>'
         f'<p class="note mw-source-audit">{esc(audit_visible)} '
         f'<details class="mw-raw"><summary>Stage ledger notes</summary><p>{esc(audit_note)}</p></details></p>'
         '<div class="source-summary">'
@@ -344,3 +546,16 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
         + "".join(market_lines)
         + "</ul></details></section>"
     )
+
+
+def rename_sources_nav_label(html: str) -> str:
+    """Idempotent visible nav rename; keeps ``for=\"p-sources\"``."""
+    pattern = re.compile(r'(<label\b[^>]*\bfor="p-sources"[^>]*>)(.*?)(</label>)', re.DOTALL | re.IGNORECASE)
+
+    def repl(match: re.Match[str]) -> str:
+        inner = match.group(2)
+        if "Sources &amp; Issues" in inner or "Sources & Issues" in inner:
+            return match.group(0)
+        return match.group(1) + "Sources &amp; Issues" + match.group(3)
+
+    return pattern.sub(repl, html, count=1)

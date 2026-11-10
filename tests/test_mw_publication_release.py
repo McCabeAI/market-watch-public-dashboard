@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import io
 import json
-import re
 import tempfile
 import unittest
 import urllib.error
@@ -327,13 +326,31 @@ class StampTests(unittest.TestCase):
         html = pr.render_edition_banner(research(review_id='"><script>x</script>'))
         self.assertNotIn("<script>", html)
 
-    def test_missing_anchor_is_refused(self):
+    def test_missing_anchor_falls_back(self):
+        no_topbar = SITE_HTML.replace('<header class="topbar">', "<header>")
+        banner_rows: list = []
+        stamped = pr.stamp_html(no_topbar, research(), diagnostics=banner_rows)
+        self.assertIn('data-publication-phase="research"', stamped)
+        self.assertLess(stamped.index("<body>"), stamped.index('data-publication-phase="research"'))
+        self.assertTrue(any(row["component"] == "edition:banner" for row in banner_rows))
+        final_rows: list = []
+        final_html = pr.stamp_html(no_topbar, final(), diagnostics=final_rows)
+        self.assertIn('data-publication-phase="final"', final_html)
+        self.assertTrue(any(row["component"] == "edition:banner" for row in final_rows))
         with self.assertRaises(ValueError):
-            pr.stamp_html(SITE_HTML.replace('<header class="topbar">', "<header>"), research())
-        with self.assertRaises(ValueError):
-            pr.stamp_html(SITE_HTML.replace('<section class="page traderbook">', "<section>"), research())
-        with self.assertRaises(ValueError):
-            pr.stamp_html(SITE_HTML.replace('<div class="news-alert market-alert">', "<div>"), research())
+            pr.stamp_html(no_topbar.replace("<body>", "<div>", 1), research())
+
+        book_rows: list = []
+        no_book = SITE_HTML.replace('<section class="page traderbook">', "<section>")
+        stamped = pr.stamp_html(no_book, research(), diagnostics=book_rows)
+        self.assertIn('data-edition-note="traderbook"', stamped)
+        self.assertEqual(sum(1 for row in book_rows if row["component"] == "edition:traderbook"), 1)
+
+        alert_rows: list = []
+        no_alert = SITE_HTML.replace('<div class="news-alert market-alert"><p>alert</p></div>', "")
+        stamped = pr.stamp_html(no_alert, research(), diagnostics=alert_rows)
+        self.assertIn('data-headlines-panel="front"', stamped)
+        self.assertEqual(sum(1 for row in alert_rows if row["component"] == "edition:front_headlines"), 1)
 
     def test_research_site_marks_books_previous_cycle_and_digest_binds_files(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -363,7 +380,6 @@ class StampTests(unittest.TestCase):
 
 MISSING_NEWS_DIGEST = "52a54aa33a9928216e266d6ef6dc3dcd1c3c116e288eb478cd69bb6389587410"
 MISSING_NEWS_RUN_ID = "overnight-20261109"
-NEWS_ALERT_ANCHOR_ERR = "edition anchor '<div class=\"news-alert market-alert\">' is missing or ambiguous"
 BARE_NEWS_ALERT_OPEN = '<div class="news-alert market-alert">'
 
 
@@ -450,7 +466,7 @@ class FrontNewsAlertOpenAnchorTests(unittest.TestCase):
         self.assertEqual(html.count(open_tag), 1)
         self.assertIn('data-news-provenance="undated"', html)
 
-    def test_zero_eligible_news_alert_anchors_raise(self):
+    def test_zero_eligible_news_alert_anchors_fall_back(self):
         cases = [
             ("no alert", SITE_HTML.replace('<div class="news-alert market-alert"><p>alert</p></div>', "")),
             ("news-alert only", SITE_HTML.replace('news-alert market-alert', "news-alert")),
@@ -459,10 +475,13 @@ class FrontNewsAlertOpenAnchorTests(unittest.TestCase):
         ]
         for label, site in cases:
             with self.subTest(case=label):
-                with self.assertRaisesRegex(ValueError, re.escape(NEWS_ALERT_ANCHOR_ERR)):
-                    pr.stamp_html(site, research())
+                rows: list = []
+                html = pr.stamp_html(site, research(), diagnostics=rows)
+                self.assertIn('data-headlines-panel="front"', html)
+                self.assertEqual(sum(1 for row in rows if row["component"] == "edition:front_headlines"), 1)
+                self.assertEqual(html.count('data-publication-phase="research"'), 1)
 
-    def test_multiple_eligible_news_alert_anchors_raise(self):
+    def test_multiple_eligible_news_alert_anchors_fall_back_once(self):
         bare_block = '<div class="news-alert market-alert"><p>a</p></div>'
         attributed = _missing_news_front_alert(digest=MISSING_NEWS_DIGEST, run_id=MISSING_NEWS_RUN_ID)
         cases = [
@@ -475,8 +494,34 @@ class FrontNewsAlertOpenAnchorTests(unittest.TestCase):
         ]
         for label, site in cases:
             with self.subTest(case=label):
-                with self.assertRaisesRegex(ValueError, re.escape(NEWS_ALERT_ANCHOR_ERR)):
-                    pr.stamp_html(site, research())
+                rows: list = []
+                html = pr.stamp_html(site, research(), diagnostics=rows)
+                self.assertEqual(html.count('data-headlines-panel="front"'), 1)
+                self.assertEqual(sum(1 for row in rows if row["component"] == "edition:front_headlines"), 1)
+
+    def test_missing_news_page_omits_panel_with_diagnostic(self):
+        site = SITE_HTML.replace('<section class="page news"><p>news</p></section>', "")
+        rows: list = []
+        html = pr.stamp_html(site, research(), diagnostics=rows)
+        self.assertNotIn('data-headlines-panel="news"', html)
+        self.assertIn('data-headlines-panel="front"', html)
+        self.assertEqual(sum(1 for row in rows if row["component"] == "edition:news_headlines"), 1)
+
+    def test_unavailable_previous_analysis_is_truthful(self):
+        html = pr.stamp_html(
+            SITE_HTML,
+            research(
+                news={
+                    "status": "unavailable",
+                    "as_of": None,
+                    "reason": "accepted_news_missing",
+                    "current_session": False,
+                    "age_label": "no accepted news",
+                }
+            ),
+        )
+        self.assertIn("Previous accepted analysis: unavailable", html)
+        self.assertNotIn("as of time not recorded", html)
 
 
 class CommittedAndFinalTests(unittest.TestCase):
