@@ -76,9 +76,9 @@ _CHANNEL_ROW_LABELS = {
 }
 
 _GAP_TABLE_STATUS = {
-    "invalid_futures": "Gap · invalid Brent inputs",
+    "invalid_futures": "Gap · invalid Brent",
     "no_aggregate": "Gap · no aggregate",
-    "partial": "Gap · partial coverage",
+    "partial": "Gap · partial",
 }
 
 _HIST_CHART_W = 340
@@ -560,7 +560,7 @@ def _render_history_chart(points: list[dict[str, Any]], esc: Any) -> str:
             "<tr>"
             f"<td>{esc(p['short_date'])}</td>"
             f"<td>{esc(net_cell)}</td>"
-            f"<td>{esc(str(p['coverage']))} of 5</td>"
+            f"<td>{esc(str(p['coverage']))}/5</td>"
             f"<td>{esc(status)}</td>"
             "</tr>"
         )

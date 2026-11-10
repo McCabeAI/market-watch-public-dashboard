@@ -1159,12 +1159,12 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertIn('data-prima-gap="Partial: 4 of 5 channels" data-prima-history-point="2026-11-06"', prima)
         self.assertIn('data-prima-gap="Partial: 2 of 5 channels" data-prima-history-point="2026-10-22"', prima)
         self.assertIn(
-            "<tr><td>6 Nov</td><td>0 (partial)</td><td>4 of 5</td>"
-            "<td>Gap · partial coverage</td></tr>",
+            "<tr><td>6 Nov</td><td>0 (partial)</td><td>4/5</td>"
+            "<td>Gap · partial</td></tr>",
             table,
         )
         self.assertIn(
-            "<tr><td>2 Nov</td><td>—</td><td>4 of 5</td><td>Gap · invalid Brent inputs</td></tr>",
+            "<tr><td>2 Nov</td><td>—</td><td>4/5</td><td>Gap · invalid Brent</td></tr>",
             table,
         )
         self.assertLess(table.index("10 Nov"), table.index("21 Oct"))

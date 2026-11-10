@@ -689,9 +689,14 @@
   color: var(--mw-muted, #93a5b6);
 }
 
-.country-detail .prima-history-table td:nth-child(-n + 3) {
-  white-space: nowrap;
+.country-detail .prima-history-table td {
+  overflow-wrap: normal;
   font-variant-numeric: tabular-nums;
+}
+
+.country-detail .prima-history-table td:first-child,
+.country-detail .prima-history-table td:nth-child(3) {
+  white-space: nowrap;
 }
 
 .country-detail .prima-history-legend {
