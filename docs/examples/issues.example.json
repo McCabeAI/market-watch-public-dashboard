@@ -1,0 +1,1474 @@
+{
+  "counts": {
+    "active": 55,
+    "critical": 0,
+    "info": 10,
+    "resolved": 5,
+    "warning": 45
+  },
+  "edition": {
+    "launch_id": "mwl-20261110T095036Z-eaa0689a",
+    "phase": "research",
+    "review_id": "review-001",
+    "session_date": "2026-11-10"
+  },
+  "inputs": [
+    {
+      "name": "release.json",
+      "sha256": "5c142cd111c0e0a9ebf78b0948012a32e3c5da51ceea4d007c29c1631863910c"
+    },
+    {
+      "name": "source-health.json",
+      "sha256": "9985211a2f0e6fcb319971c3517c38e9deb9c77852fb97b389da9f2ccbc6a8e2"
+    },
+    {
+      "name": "market-state.json",
+      "sha256": "94455483d751e6b9eb11bd0d51d1628b051d53eb4036cc503f58aaf9d4f9d03d"
+    }
+  ],
+  "issues": [
+    {
+      "category": "market_data",
+      "cause": "HTTP Error 403: Forbidden",
+      "code": "market_source_degraded",
+      "component": "market_state:CME_positioning",
+      "country": null,
+      "detail": "HTTP Error 403: Forbidden",
+      "id": "iss-d2ed81ea7b0c",
+      "impact": "This market-data source is not fully current on the page.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "warning",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:AU.Activity.business_surveys",
+      "country": "AU",
+      "detail": "pmi_listing_challenge",
+      "id": "iss-895033ed599b",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-08",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Activity.business_surveys",
+      "severity": "warning",
+      "source": {
+        "publisher": "S&P Global / Judo Bank",
+        "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:AU.Activity.flash_composite_pmi",
+      "country": "AU",
+      "detail": "pmi_listing_challenge",
+      "id": "iss-f36af401b562",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Activity.flash_composite_pmi",
+      "severity": "warning",
+      "source": {
+        "publisher": "S&P Global / Judo Bank",
+        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. westpac_unverified_no_primary_adapter",
+      "code": "source_fetch_failed",
+      "component": "source:AU.Consumer.confidence",
+      "country": "AU",
+      "detail": "westpac_unverified_no_primary_adapter",
+      "id": "iss-fa6fa850302b",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-09",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Consumer.confidence",
+      "severity": "warning",
+      "source": {
+        "publisher": "Westpac-Melbourne Institute",
+        "url": "https://www.westpaciq.com.au/economics"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. transport_error:The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:AU.Labor.jsa_ivi_national_sa",
+      "country": "AU",
+      "detail": "transport_error:The read operation timed out",
+      "id": "iss-666ffba21151",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.jsa_ivi_national_sa",
+      "severity": "warning",
+      "source": {
+        "publisher": "Jobs and Skills Australia",
+        "url": "https://www.jobsandskills.gov.au/data/internet-vacancy-index"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. transport_error:The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:AU.Labor.jsa_reos_hiring_intent",
+      "country": "AU",
+      "detail": "transport_error:The read operation timed out",
+      "id": "iss-62f053e867dc",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.jsa_reos_hiring_intent",
+      "severity": "warning",
+      "source": {
+        "publisher": "Jobs and Skills Australia",
+        "url": "https://www.jobsandskills.gov.au/data/recruitment-experiences-and-outlook-survey"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. transport_error:The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:AU.Labor.jsa_reos_recruiting_share",
+      "country": "AU",
+      "detail": "transport_error:The read operation timed out",
+      "id": "iss-d066b6b7c6bd",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.jsa_reos_recruiting_share",
+      "severity": "warning",
+      "source": {
+        "publisher": "Jobs and Skills Australia",
+        "url": "https://www.jobsandskills.gov.au/data/recruitment-experiences-and-outlook-survey"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. transport_error:The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:AU.Labor.jsa_reos_recruitment_difficulty",
+      "country": "AU",
+      "detail": "transport_error:The read operation timed out",
+      "id": "iss-3c2315bae0f7",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.jsa_reos_recruitment_difficulty",
+      "severity": "warning",
+      "source": {
+        "publisher": "Jobs and Skills Australia",
+        "url": "https://www.jobsandskills.gov.au/data/recruitment-experiences-and-outlook-survey"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:AU.Labor.nab_employment_subindex",
+      "country": "AU",
+      "detail": "",
+      "id": "iss-1245c35fe35c",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-09",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.nab_employment_subindex",
+      "severity": "warning",
+      "source": {
+        "publisher": "NAB",
+        "url": "https://www.nabtrade.com.au/insights/news/2026/10/nab-business-survey---september-2026"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-september26/",
+      "code": "source_fetch_failed",
+      "component": "source:AU.Labor.seek_job_ad_trend",
+      "country": "AU",
+      "detail": "period or release date missing on https://au.seek.com/about/news/article/seek-employment-report-september26/",
+      "id": "iss-8a8e8def5eba",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "AU.Labor.seek_job_ad_trend",
+      "severity": "warning",
+      "source": {
+        "publisher": "SEEK",
+        "url": "https://au.seek.com/about/news/category/seek-employment-reports/0"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:CA.Consumer.confidence",
+      "country": "CA",
+      "detail": "bank_of_canada_csce_no_machine_readable_series",
+      "id": "iss-72bf1b74789d",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "CA.Consumer.confidence",
+      "severity": "warning",
+      "source": {
+        "publisher": "Bank of Canada",
+        "url": "https://www.bankofcanada.ca/publications/canadian-survey-of-consumer-expectations/"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:CA.Housing.existing_home_sales",
+      "country": "CA",
+      "detail": "crea_existing_home_sales_no_stable_lawful_machine_readable_primary_series",
+      "id": "iss-8bbaf75c1fa3",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "CA.Housing.existing_home_sales",
+      "severity": "warning",
+      "source": {
+        "publisher": "Canadian Real Estate Association",
+        "url": "https://stats.crea.ca/en-CA/"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. CA.Inflation.import_export_price_indexes: vector id unpinned in catalog fragment",
+      "code": "source_fetch_failed",
+      "component": "source:CA.Inflation.import_export_price_indexes",
+      "country": "CA",
+      "detail": "CA.Inflation.import_export_price_indexes: vector id unpinned in catalog fragment",
+      "id": "iss-58a9526fb10c",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "CA.Inflation.import_export_price_indexes",
+      "severity": "warning",
+      "source": {
+        "publisher": "Statistics Canada",
+        "url": "https://www.statcan.gc.ca/en/subjects-start/prices_and_price_indexes"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. CA.Labor.participation: vector id unpinned in catalog fragment",
+      "code": "source_fetch_failed",
+      "component": "source:CA.Labor.participation",
+      "country": "CA",
+      "detail": "CA.Labor.participation: vector id unpinned in catalog fragment",
+      "id": "iss-f7e855ac60d8",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "CA.Labor.participation",
+      "severity": "warning",
+      "source": {
+        "publisher": "Statistics Canada",
+        "url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1410028701"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:EA.Activity.flash_composite_pmi",
+      "country": "EA",
+      "detail": "",
+      "id": "iss-72b09e4d3b8f",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "EA.Activity.flash_composite_pmi",
+      "severity": "warning",
+      "source": {
+        "publisher": "S&P Global",
+        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:JP.Activity.business_surveys",
+      "country": "JP",
+      "detail": "pmi_listing_blocked",
+      "id": "iss-6763cccdf206",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-08",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Activity.business_surveys",
+      "severity": "warning",
+      "source": {
+        "publisher": "S&P Global / au Jibun Bank",
+        "url": "https://www.pmi.spglobal.com/Public/Release/PressReleases"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. meti_iip_page_unparsed",
+      "code": "source_fetch_failed",
+      "component": "source:JP.Activity.industrial_production",
+      "country": "JP",
+      "detail": "meti_iip_page_unparsed",
+      "id": "iss-65da09ac7477",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Activity.industrial_production",
+      "severity": "warning",
+      "source": {
+        "publisher": "METI",
+        "url": "https://www.meti.go.jp/english/statistics/tyo/iip/index.html"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. tankan_zip_unparsed",
+      "code": "source_fetch_failed",
+      "component": "source:JP.Activity.tankan_large_manufacturing",
+      "country": "JP",
+      "detail": "tankan_zip_unparsed",
+      "id": "iss-e6dd99501fbd",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Activity.tankan_large_manufacturing",
+      "severity": "warning",
+      "source": {
+        "publisher": "Bank of Japan",
+        "url": "https://www.boj.or.jp/en/statistics/tk/gaiyo/2026/tka2606.zip"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+      "code": "source_fetch_failed",
+      "component": "source:JP.Inflation.cgpi_ppi",
+      "country": "JP",
+      "detail": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+      "id": "iss-d6cf1a55eb3e",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Inflation.cgpi_ppi",
+      "severity": "warning",
+      "source": {
+        "publisher": "Bank of Japan",
+        "url": "https://www.boj.or.jp/en/statistics/pi/cgpi_release/index.htm"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+      "code": "source_fetch_failed",
+      "component": "source:JP.Inflation.export_price_index",
+      "country": "JP",
+      "detail": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+      "id": "iss-06d7ec77c36d",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Inflation.export_price_index",
+      "severity": "warning",
+      "source": {
+        "publisher": "Bank of Japan",
+        "url": "https://www.boj.or.jp/en/statistics/pi/cgpi_release/index.htm"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+      "code": "source_fetch_failed",
+      "component": "source:JP.Inflation.import_price_index",
+      "country": "JP",
+      "detail": "cgpi_index_level_only_in_official_pdf_no_pinned_csv",
+      "id": "iss-745a1109342e",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "JP.Inflation.import_price_index",
+      "severity": "warning",
+      "source": {
+        "publisher": "Bank of Japan",
+        "url": "https://www.boj.or.jp/en/statistics/pi/cgpi_release/index.htm"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. anz_confidence_ambiguous",
+      "code": "source_fetch_failed",
+      "component": "source:NZ.Consumer.confidence",
+      "country": "NZ",
+      "detail": "anz_confidence_ambiguous",
+      "id": "iss-c2f3cc6d8e44",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "NZ.Consumer.confidence",
+      "severity": "warning",
+      "source": {
+        "publisher": "ANZ",
+        "url": "https://www.anz.co.nz/about-us/economic-markets-research/consumer-confidence/"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. experimental_income_unparsed",
+      "code": "source_fetch_failed",
+      "component": "source:NZ.Consumer.income",
+      "country": "NZ",
+      "detail": "experimental_income_unparsed",
+      "id": "iss-012af942d654",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2025-Q2",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "NZ.Consumer.income",
+      "severity": "warning",
+      "source": {
+        "publisher": "Stats NZ",
+        "url": "https://www.stats.govt.nz/topics/households"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. HTTP 404",
+      "code": "source_fetch_failed",
+      "component": "source:NZ.Inflation.export_price_index",
+      "country": "NZ",
+      "detail": "HTTP 404",
+      "id": "iss-dc9883d544f2",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "NZ.Inflation.export_price_index",
+      "severity": "warning",
+      "source": {
+        "publisher": "Stats NZ",
+        "url": "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. HTTP 404",
+      "code": "source_fetch_failed",
+      "component": "source:NZ.Inflation.import_price_index",
+      "country": "NZ",
+      "detail": "HTTP 404",
+      "id": "iss-7aa813a44b07",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "NZ.Inflation.import_price_index",
+      "severity": "warning",
+      "source": {
+        "publisher": "Stats NZ",
+        "url": "https://www.stats.govt.nz/information-releases/overseas-trade-indexes-prices"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. HTTP 404",
+      "code": "source_fetch_failed",
+      "component": "source:NZ.Inflation.ppi",
+      "country": "NZ",
+      "detail": "HTTP 404",
+      "id": "iss-4351de883964",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "NZ.Inflation.ppi",
+      "severity": "warning",
+      "source": {
+        "publisher": "Stats NZ",
+        "url": "https://www.stats.govt.nz/information-releases/business-price-indexes"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. flash_pmi_primary_pdf_not_parsed",
+      "code": "source_fetch_failed",
+      "component": "source:US.Activity.flash_pmi",
+      "country": "US",
+      "detail": "flash_pmi_primary_pdf_not_parsed",
+      "id": "iss-827a797a88f4",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Activity.flash_pmi",
+      "severity": "warning",
+      "source": {
+        "publisher": "S&P Global",
+        "url": "https://www.pmi.spglobal.com/Public/Release/ReleaseDates?language=en"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:US.Activity.gdp_domestic_demand",
+      "country": "US",
+      "detail": "The read operation timed out",
+      "id": "iss-0755f01410e5",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-Q2",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Activity.gdp_domestic_demand",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA",
+        "url": "https://www.bea.gov/data/gdp/gross-domestic-product"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. host_deferred",
+      "code": "source_fetch_failed",
+      "component": "source:US.Activity.gdp_level",
+      "country": "US",
+      "detail": "host_deferred",
+      "id": "iss-7904ccdb5699",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Activity.gdp_level",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=GDPC1"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:US.Consumer.confidence",
+      "country": "US",
+      "detail": "The read operation timed out",
+      "id": "iss-4ff260fb4c01",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-07",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Consumer.confidence",
+      "severity": "warning",
+      "source": {
+        "publisher": "University of Michigan Surveys of Consumers",
+        "url": "https://www.sca.isr.umich.edu/"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Consumer.confidence_conference_board",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-d7ed9321da1a",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Consumer.confidence_conference_board",
+      "severity": "warning",
+      "source": {
+        "publisher": "The Conference Board",
+        "url": "https://www.conference-board.org/topics/consumer-confidence"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:US.Consumer.income",
+      "country": "US",
+      "detail": "The read operation timed out",
+      "id": "iss-d2808b3f92f6",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-07",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Consumer.income",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA",
+        "url": "https://www.bea.gov/data/income-saving/personal-income"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:US.Consumer.retail",
+      "country": "US",
+      "detail": "The read operation timed out",
+      "id": "iss-94bbb041e5ee",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-08",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Consumer.retail",
+      "severity": "warning",
+      "source": {
+        "publisher": "U.S. Census Bureau",
+        "url": "https://www.census.gov/retail/sales.html"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:US.Consumer.spending",
+      "country": "US",
+      "detail": "The read operation timed out",
+      "id": "iss-c9f7be4355b5",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-07",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Consumer.spending",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA",
+        "url": "https://www.bea.gov/data/consumer-spending/main"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. host_deferred",
+      "code": "source_fetch_failed",
+      "component": "source:US.Credit.mortgage_30y",
+      "country": "US",
+      "detail": "host_deferred",
+      "id": "iss-248ba8537633",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Credit.mortgage_30y",
+      "severity": "warning",
+      "source": {
+        "publisher": "Freddie Mac",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=MORTGAGE30US"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. host_deferred",
+      "code": "source_fetch_failed",
+      "component": "source:US.Housing.fhfa_purchase_only",
+      "country": "US",
+      "detail": "host_deferred",
+      "id": "iss-0a141cecbb17",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Housing.fhfa_purchase_only",
+      "severity": "warning",
+      "source": {
+        "publisher": "FHFA",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HPIPONM226S"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. host_deferred",
+      "code": "source_fetch_failed",
+      "component": "source:US.Housing.housing_starts",
+      "country": "US",
+      "detail": "host_deferred",
+      "id": "iss-977cfcefc6cf",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Housing.housing_starts",
+      "severity": "warning",
+      "source": {
+        "publisher": "U.S. Census Bureau / HUD",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=HOUST"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. The read operation timed out",
+      "code": "source_fetch_failed",
+      "component": "source:US.Inflation.core_pce",
+      "country": "US",
+      "detail": "The read operation timed out",
+      "id": "iss-e1687277750b",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-07",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Inflation.core_pce",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA",
+        "url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. mapped_bridge_transform_not_wired",
+      "code": "source_fetch_failed",
+      "component": "source:US.Inflation.mapped_bridge",
+      "country": "US",
+      "detail": "mapped_bridge_transform_not_wired",
+      "id": "iss-226d9a5a9c3c",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": "2026-08",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Inflation.mapped_bridge",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA / BLS",
+        "url": "https://www.bls.gov/news.release/cpi.htm"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch failed at the stage check. host_deferred",
+      "code": "source_fetch_failed",
+      "component": "source:US.Inflation.pce_headline",
+      "country": "US",
+      "detail": "host_deferred",
+      "id": "iss-673ca6906dda",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Inflation.pce_headline",
+      "severity": "warning",
+      "source": {
+        "publisher": "BEA",
+        "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPI"
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.adp_employment",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-324121c0db1c",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.adp_employment",
+      "severity": "warning",
+      "source": {
+        "publisher": "ADP",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.challenger_job_cuts",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-9663f0177608",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.challenger_job_cuts",
+      "severity": "warning",
+      "source": {
+        "publisher": "Challenger",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.conference_board_jobs_hard_to_get",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-e5dc329c3320",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.conference_board_jobs_hard_to_get",
+      "severity": "warning",
+      "source": {
+        "publisher": "Conference",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.conference_board_jobs_plentiful",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-9f9353a4efad",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.conference_board_jobs_plentiful",
+      "severity": "warning",
+      "source": {
+        "publisher": "Conference",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Publisher blocks automated access.",
+      "code": "source_blocked",
+      "component": "source:US.Labor.conference_board_labor_differential",
+      "country": "US",
+      "detail": "proprietary_blocked",
+      "id": "iss-0fd9ff3067dd",
+      "impact": "Last verified value stays dated; it is not shown as fresh.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.conference_board_labor_differential",
+      "severity": "warning",
+      "source": {
+        "publisher": "Conference",
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "news",
+      "cause": "Accepted analysis is from an earlier session",
+      "code": "news_previous_session",
+      "component": "news",
+      "country": null,
+      "detail": "",
+      "id": "iss-aa4c1e8a3278",
+      "impact": "News and commentary reflect the prior overnight cycle, not this session.",
+      "last_verified_vintage": "2026-11-09T05:37:50.499948-05:00",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "news",
+      "cause": "Current-cycle news commentary is missing.",
+      "code": "news_commentary_missing",
+      "component": "news",
+      "country": null,
+      "detail": "",
+      "id": "iss-f2530378193d",
+      "impact": "The Front page shows news context without same-cycle commentary.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Research coverage gap: macro:AU.",
+      "code": "quality_coverage_gap",
+      "component": "quality:coverage",
+      "country": "AU",
+      "detail": "macro:AU",
+      "id": "iss-8da4e3ac75be",
+      "impact": "Macro inputs for this economy may be incomplete in scores.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "1 series were not checked on the latest Stage 01 ledger.",
+      "code": "sources_not_checked",
+      "component": "sources:not_checked",
+      "country": "AU",
+      "detail": "AU.Housing.dwelling_values_and_approvals",
+      "id": "iss-f78e0d996f2b",
+      "impact": "Those series are listed without a fresh verification time.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Research coverage gap: macro:CA.",
+      "code": "quality_coverage_gap",
+      "component": "quality:coverage",
+      "country": "CA",
+      "detail": "macro:CA",
+      "id": "iss-6456fd84b4ae",
+      "impact": "Macro inputs for this economy may be incomplete in scores.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Research coverage gap: macro:EA.",
+      "code": "quality_coverage_gap",
+      "component": "quality:coverage",
+      "country": "EA",
+      "detail": "macro:EA",
+      "id": "iss-6b99582f9ab6",
+      "impact": "Macro inputs for this economy may be incomplete in scores.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Research coverage gap: macro:JP.",
+      "code": "quality_coverage_gap",
+      "component": "quality:coverage",
+      "country": "JP",
+      "detail": "macro:JP",
+      "id": "iss-1549db13d3b8",
+      "impact": "Macro inputs for this economy may be incomplete in scores.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "1 series were not checked on the latest Stage 01 ledger.",
+      "code": "sources_not_checked",
+      "component": "sources:not_checked",
+      "country": "JP",
+      "detail": "JP.Activity.flash_composite_pmi",
+      "id": "iss-b8ed42007edd",
+      "impact": "Those series are listed without a fresh verification time.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Research coverage gap: macro:NZ.",
+      "code": "quality_coverage_gap",
+      "component": "quality:coverage",
+      "country": "NZ",
+      "detail": "macro:NZ",
+      "id": "iss-eae3c251dd98",
+      "impact": "Macro inputs for this economy may be incomplete in scores.",
+      "last_verified_vintage": null,
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": null,
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "5 series were not checked on the latest Stage 01 ledger.",
+      "code": "sources_not_checked",
+      "component": "sources:not_checked",
+      "country": "NZ",
+      "detail": "NZ.Inflation.headline, NZ.Inflation.underlying, NZ.Labor.employment, NZ.Labor.unemployment, NZ.Labor.wages",
+      "id": "iss-0605d100f078",
+      "impact": "Those series are listed without a fresh verification time.",
+      "last_verified_vintage": null,
+      "occurrences": 5,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": null,
+      "severity": "info",
+      "source": {
+        "publisher": null,
+        "url": null
+      },
+      "state": "active"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch succeeded after mwl-20261109T103750Z-a4e987d1 had reported source failed.",
+      "code": "source_resolved",
+      "component": "source:US.Labor.continuing_claims_revised",
+      "country": "US",
+      "detail": "",
+      "id": "iss-95f2afe72e2c",
+      "impact": "The series is checked on the current Stage 01 ledger.",
+      "last_verified_vintage": "2026-10-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.continuing_claims_revised",
+      "severity": "info",
+      "source": {
+        "publisher": "U.S. Department of Labor",
+        "url": "https://oui.doleta.gov/unemploy/claims.asp"
+      },
+      "state": "resolved"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch succeeded after mwl-20261109T103750Z-a4e987d1 had reported source failed.",
+      "code": "source_resolved",
+      "component": "source:US.Labor.initial_claims_4w_revised",
+      "country": "US",
+      "detail": "",
+      "id": "iss-5f5c4a21fb07",
+      "impact": "The series is checked on the current Stage 01 ledger.",
+      "last_verified_vintage": "2026-10-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.initial_claims_4w_revised",
+      "severity": "info",
+      "source": {
+        "publisher": "U.S. Department of Labor",
+        "url": "https://oui.doleta.gov/unemploy/claims.asp"
+      },
+      "state": "resolved"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch succeeded after mwl-20261109T103750Z-a4e987d1 had reported source failed.",
+      "code": "source_resolved",
+      "component": "source:US.Labor.initial_claims_normalized",
+      "country": "US",
+      "detail": "",
+      "id": "iss-77386e3c2b1a",
+      "impact": "The series is checked on the current Stage 01 ledger.",
+      "last_verified_vintage": "2026-10-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.initial_claims_normalized",
+      "severity": "info",
+      "source": {
+        "publisher": "Market Watch",
+        "url": "https://www.bls.gov/news.release/empsit.htm"
+      },
+      "state": "resolved"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch succeeded after mwl-20261109T103750Z-a4e987d1 had reported source failed.",
+      "code": "source_resolved",
+      "component": "source:US.Labor.initial_claims_revised",
+      "country": "US",
+      "detail": "",
+      "id": "iss-62597a49757f",
+      "impact": "The series is checked on the current Stage 01 ledger.",
+      "last_verified_vintage": "2026-10-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.initial_claims_revised",
+      "severity": "info",
+      "source": {
+        "publisher": "U.S. Department of Labor",
+        "url": "https://oui.doleta.gov/unemploy/claims.asp"
+      },
+      "state": "resolved"
+    },
+    {
+      "category": "source",
+      "cause": "Fetch succeeded after mwl-20261109T103750Z-a4e987d1 had reported source failed.",
+      "code": "source_resolved",
+      "component": "source:US.Labor.insured_unemployment_rate_revised",
+      "country": "US",
+      "detail": "",
+      "id": "iss-5553f05bab48",
+      "impact": "The series is checked on the current Stage 01 ledger.",
+      "last_verified_vintage": "2026-10-10",
+      "occurrences": 1,
+      "run": {
+        "ingest_launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "launch_id": "mwl-20261110T095036Z-eaa0689a",
+        "phase": "research"
+      },
+      "series_id": "US.Labor.insured_unemployment_rate_revised",
+      "severity": "info",
+      "source": {
+        "publisher": "U.S. Department of Labor",
+        "url": "https://oui.doleta.gov/unemploy/claims.asp"
+      },
+      "state": "resolved"
+    }
+  ],
+  "schema_version": 1,
+  "status": "available",
+  "type": "MARKET_WATCH_PUBLIC_ISSUES"
+}
