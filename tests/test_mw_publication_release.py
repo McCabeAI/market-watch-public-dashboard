@@ -8,12 +8,14 @@ from __future__ import annotations
 
 import io
 import json
+import re
 import tempfile
 import unittest
 import urllib.error
 from pathlib import Path
 
 from scripts.market_watch_launch import publication_release as pr
+from scripts.overnight.news_commentary_state import FRONT_FLAG, FRONT_SUB, FRONT_TITLE, MODE, WARNING
 
 LAUNCH_A = "mwl-20261027T093212Z-9512d95d"
 LAUNCH_B = "mwl-20261027T150000Z-0000beef"
@@ -357,6 +359,124 @@ class StampTests(unittest.TestCase):
             before = (site / "trader-books.json").read_bytes()
             pr.stamp_site(site, final())
             self.assertEqual((site / "trader-books.json").read_bytes(), before)
+
+
+MISSING_NEWS_DIGEST = "52a54aa33a9928216e266d6ef6dc3dcd1c3c116e288eb478cd69bb6389587410"
+MISSING_NEWS_RUN_ID = "overnight-20261109"
+NEWS_ALERT_ANCHOR_ERR = "edition anchor '<div class=\"news-alert market-alert\">' is missing or ambiguous"
+BARE_NEWS_ALERT_OPEN = '<div class="news-alert market-alert">'
+
+
+def _missing_news_attributed_open(*, digest: str, run_id: str, extra: str = "") -> str:
+    prefix = f'<div class="news-alert market-alert"{extra} data-publication-state="{MODE}" '
+    return f'{prefix}data-news-commentary-digest="{digest}" data-news-commentary-run="{run_id}">'
+
+
+def _missing_news_front_alert(*, digest: str, run_id: str, extra: str = "") -> str:
+    open_tag = _missing_news_attributed_open(digest=digest, run_id=run_id, extra=extra)
+    return (
+        f"{open_tag}"
+        f'<div class="flag">{FRONT_FLAG}</div>'
+        f"<div><h3>{FRONT_TITLE}</h3>"
+        f'<span class="alert-sub">{FRONT_SUB}</span></div>'
+        '<label for="p-news">Open News &amp; Research</label></div>'
+    )
+
+
+def _site_html_front_alert(alert_html: str, *, news_body: str = "<p>news</p>") -> str:
+    return SITE_HTML.replace(
+        '<div class="news-alert market-alert"><p>alert</p></div>',
+        alert_html,
+    ).replace('<section class="page news"><p>news</p></section>', f'<section class="page news">{news_body}</section>')
+
+
+def _missing_news_research_release() -> dict:
+    return research(
+        session_date="2026-11-09",
+        overnight_run_id=MISSING_NEWS_RUN_ID,
+        news={
+            "mode": MODE,
+            "as_of": "2026-11-08T07:37:10-05:00",
+            "overnight_run_id": MISSING_NEWS_RUN_ID,
+            "current_session": False,
+            "age_label": "1 d before this freeze",
+        },
+    )
+
+
+class FrontNewsAlertOpenAnchorTests(unittest.TestCase):
+    def test_bare_market_alert_research_stamp(self):
+        html = pr.stamp_html(SITE_HTML, research())
+        self.assertEqual(html.count('data-publication-phase="research"'), 1)
+        alert_at = html.index(BARE_NEWS_ALERT_OPEN)
+        self.assertLess(html.index('data-headlines-panel="front"'), alert_at)
+        self.assertLess(html.index('data-edition-note="front-news"'), alert_at)
+        self.assertIn('<section class="page news">', html)
+        self.assertIn('data-headlines-panel="news"', html)
+        self.assertIn('data-edition-note="traderbook"', html)
+        self.assertEqual(html.count(BARE_NEWS_ALERT_OPEN), 1)
+        with self.assertRaises(ValueError):
+            pr.stamp_html(html, research())
+
+    def test_missing_news_attributed_alert_research_stamp(self):
+        attributed_open = _missing_news_attributed_open(digest=MISSING_NEWS_DIGEST, run_id=MISSING_NEWS_RUN_ID)
+        site = _site_html_front_alert(
+            _missing_news_front_alert(digest=MISSING_NEWS_DIGEST, run_id=MISSING_NEWS_RUN_ID),
+            news_body=f"<p>{WARNING}</p>",
+        )
+        html = pr.stamp_html(site, _missing_news_research_release())
+        self.assertEqual(html.count(attributed_open), 1)
+        self.assertIn(attributed_open, html)
+        self.assertIn(MISSING_NEWS_DIGEST, html)
+        self.assertIn(MISSING_NEWS_RUN_ID, html)
+        self.assertIn(MODE, html)
+        self.assertIn(FRONT_FLAG, html)
+        self.assertIn(FRONT_TITLE, html)
+        self.assertIn(FRONT_SUB, html)
+        self.assertEqual(html.count(WARNING), 1)
+        self.assertLess(html.index('data-headlines-panel="front"'), html.index(attributed_open))
+        self.assertIn('data-headlines-panel="news"', html)
+        with self.assertRaises(ValueError):
+            pr.stamp_html(html, _missing_news_research_release())
+
+    def test_attributed_alert_extra_attributes_and_order_preserved(self):
+        open_tag = (
+            f'<div class="news-alert market-alert" data-news-commentary-run="{MISSING_NEWS_RUN_ID}" '
+            f'data-publication-state="{MODE}" data-news-commentary-digest="{MISSING_NEWS_DIGEST}" '
+            f'data-news-provenance="undated">'
+        )
+        site = _site_html_front_alert(f"{open_tag}<p>alert</p></div>")
+        html = pr.stamp_html(site, _missing_news_research_release())
+        self.assertEqual(html.count(open_tag), 1)
+        self.assertIn('data-news-provenance="undated"', html)
+
+    def test_zero_eligible_news_alert_anchors_raise(self):
+        cases = [
+            ("no alert", SITE_HTML.replace('<div class="news-alert market-alert"><p>alert</p></div>', "")),
+            ("news-alert only", SITE_HTML.replace('news-alert market-alert', "news-alert")),
+            ("extra class token", SITE_HTML.replace('news-alert market-alert', "news-alert market-alert extra")),
+            ("market-alerts typo", SITE_HTML.replace('news-alert market-alert', "news-alert market-alerts")),
+        ]
+        for label, site in cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(ValueError, re.escape(NEWS_ALERT_ANCHOR_ERR)):
+                    pr.stamp_html(site, research())
+
+    def test_multiple_eligible_news_alert_anchors_raise(self):
+        bare_block = '<div class="news-alert market-alert"><p>a</p></div>'
+        attributed = _missing_news_front_alert(digest=MISSING_NEWS_DIGEST, run_id=MISSING_NEWS_RUN_ID)
+        cases = [
+            ("two bare", SITE_HTML.replace('<div class="news-alert market-alert"><p>alert</p></div>', bare_block + bare_block)),
+            ("two attributed", _site_html_front_alert(attributed + attributed)),
+            (
+                "bare and attributed",
+                _site_html_front_alert(attributed + '<div class="news-alert market-alert"><p>x</p></div>'),
+            ),
+        ]
+        for label, site in cases:
+            with self.subTest(case=label):
+                with self.assertRaisesRegex(ValueError, re.escape(NEWS_ALERT_ANCHOR_ERR)):
+                    pr.stamp_html(site, research())
 
 
 class CommittedAndFinalTests(unittest.TestCase):
