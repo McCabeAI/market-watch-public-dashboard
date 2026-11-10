@@ -300,12 +300,13 @@ class FinalWorkflowWiringTests(unittest.TestCase):
             "publication_issues publish --site-dir _site --root .",
             "publication_release stamp-final --site-dir _site",
             "publication_release guard --site-dir _site",
-            "MW_RENDER_DIAGNOSTICS:",
+            'MW_RENDER_DIAGNOSTICS=${RUNNER_TEMP}/render-diagnostics.jsonl',
             "cancel-in-progress: ${{ github.event_name != 'workflow_dispatch' }}",
             "group: ${{ github.event_name == 'workflow_dispatch' && 'pages-production'",
         ):
             self.assertIn(needle, DEPLOY, needle)
         for removed in (
+            "${{ runner.temp }}/render-diagnostics",
             "stale Michigan 47.8",
             "stale petrol sentence remains",
             "official_release_cache.json version must be 1",

@@ -141,16 +141,19 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Optional render failures append one JSON line here. The file stays outside
-    # _site; the issues step reads it and restamps release.json before upload.
-    env:
-      MW_RENDER_DIAGNOSTICS: ${{ runner.temp }}/render-diagnostics.jsonl
     outputs:
       dataset_run_id: ${{ steps.dataset.outputs.dataset_run_id }}
       pages_base_url: ${{ steps.pages.outputs.base_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      # Optional render failures append one JSON line here. The file stays outside
+      # _site; the issues step reads it and restamps release.json before upload.
+      # The runner context is not available in job-level env, so export it here.
+      - name: Set render diagnostics path
+        shell: bash
+        run: echo "MW_RENDER_DIAGNOSTICS=${RUNNER_TEMP}/render-diagnostics.jsonl" >> "$GITHUB_ENV"
 
       - name: Restore official release cache (side path)
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
