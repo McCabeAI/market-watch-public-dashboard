@@ -1062,6 +1062,87 @@
       "subject": {
         "session_pnl_change_usd": 94035.07
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0,
+          200000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "event_id": "pse-000045",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261110",
+      "seq": 45,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0012,
+        "complacency": 0.0237,
+        "defensiveness": -0.0022,
+        "external_pressure": -0.001,
+        "frustration": -0.0024,
+        "revenge_pressure": -0.0008,
+        "self_trust": 0.0071
+      },
+      "event_id": "pse-000046",
+      "kind": "session_gain",
+      "magnitude": 0.36122468,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261110",
+      "scale": 1.0,
+      "seq": 46,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 180612.34
+      }
+    },
+    {
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0048,
+        "complacency": 0.0438,
+        "external_pressure": -0.0109,
+        "frustration": -0.0034,
+        "self_trust": 0.0098
+      },
+      "event_id": "pse-000047",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261110",
+      "scale": 1.0,
+      "seq": 47,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -3
+      }
     }
   ],
   "owner_id": "cross-merchant",

@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-10T04:50:36.940059-05:00",
+  "as_of": "2026-11-10T07:01:14.221046-05:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -73,24 +73,24 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 226877.97,
+    "best_trader_net_pnl_usd": 346788.96,
     "best_trader_outearn_streak": null,
-    "best_trader_seat": "value-guy",
+    "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
     "competition_rank": 1,
     "competitive_rank": 1,
-    "drawdown_usd": 980.0,
-    "gap_to_best_trader_usd": 1524491.33,
-    "high_water_nav_usd": 1001752349.3,
+    "drawdown_usd": 324.17,
+    "gap_to_best_trader_usd": 4113765.41,
+    "high_water_nav_usd": 1004460878.54,
     "max_drawdown_usd": 50000000.0,
-    "net_after_funding_pnl_usd": 1751369.3,
+    "net_after_funding_pnl_usd": 4460554.37,
     "pressure_flags": [],
     "raw_pnl_rank": 1,
     "spread_to_leader_pm_usd": 0.0,
     "status": "ok",
-    "total_pnl_usd": 1800918.59
+    "total_pnl_usd": 4510427.83
   },
   "learning": {
     "competition_eligible": true,
@@ -99,8 +99,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "3bd93eb8831dc58d2784a4915fd79d74019a0d6f47f2050cbf408367e218ce44",
+  "learning_obligations": [
+    {
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-f8b170567279",
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "reference": "rfd-f8b170567279",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "4b11489734fc8e139b03092bc9ee2ed5481764446c8cb4a4e430cd60ad740cca",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -111,38 +120,50 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The late-October New Zealand policy surprise is already in the kiwi and does not justify AUDNZD at a five-year extreme versus a modest yield gap; a kiwi bounce off the cheap tail is the path, not a new Australian shock.",
-        "current_mark": 1.2394461538461539,
+        "current_mark": 1.2281966001478197,
         "current_notional_usd": 300000000.0,
         "entry_mark": 1.2455636090977256,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 587977,
-        "horizon_elapsed_fraction": 0.3241,
+        "holding_seconds": 595815,
+        "horizon_elapsed_fraction": 0.3284,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 21,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 1473418.59,
+        "mfe_usd": 4182927.83,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
+        "pending_review": {
+          "mechanical_order": false,
+          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+          "residual_notional_usd": 300000000.0,
+          "status": "due",
+          "triggers": [
+            "material_winner",
+            "giveback"
+          ]
+        },
         "position_id": "pm-swinger-f8f9feb515d2",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Cross mean-reverts from 1.2456 toward 1.20-1.22 as New Zealand cheapness versus Australia normalizes off the five-year tail.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 1473418.59,
+        "recorded_mfe_usd": 4182927.83,
         "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
-        "review_required": false,
+        "review_required": true,
         "review_threshold_usd": 3000000.0,
-        "review_triggers": [],
+        "review_triggers": [
+          "material_winner"
+        ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 1473418.59,
+        "total_pnl_usd": 4182927.83,
         "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2",
-        "unrealized_pnl_usd": 1473418.59
+        "unrealized_pnl_usd": 4182927.83
       },
       "instrument": "AUDNZD",
       "opened_at": "2026-11-03T09:30:59.132629-05:00",
@@ -158,10 +179,14 @@
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [],
+    "obligations_due": [
+      "pm-swinger-f8f9feb515d2"
+    ],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "review_required_position_ids": []
+    "review_required_position_ids": [
+      "pm-swinger-f8f9feb515d2"
+    ]
   },
   "psychology": {
     "active_flags": [],
@@ -170,7 +195,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "complacency": {
         "band": "calm",
@@ -185,12 +210,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.29
+        "value": 0.27
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -230,7 +255,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0d62f440a51d7fb67e63025c64d36cae5fb097185cbe8a1b46cf6ed819e8b94d",
+    "state_sha256": "77d63928880417225106d2962caae821182d79be1b684301512e22d9a56f386c",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -252,7 +277,26 @@
   ],
   "recent_funding_views": [],
   "recent_performance_reflections": [],
-  "reflections_due": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-11-10T06:54:50.243918-05:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 1,
+        "drawdown_usd": 980.0,
+        "lesson_ids": [],
+        "net_pnl_usd": 1751369.3,
+        "prior_competition_rank": 1,
+        "trade_ids": [
+          "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+        ]
+      },
+      "reflection_due_id": "rfd-f8b170567279",
+      "trigger_ids": [
+        "profit_giveback"
+      ]
+    }
+  ],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

@@ -2202,6 +2202,77 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "The book keeps a receive in March Canada, marked at 2.885 against a February 2027 terminal of 2.725 and cash at 2.52, and a short Australian-kiwi from 1.2456 with the five-year z-score still 2.62. Live spot at 1.2394 is through the book mark, so that short is already working, and the Canada receive still has room toward the terminal. Jobs are still ahead and volatility is 28, so the intact expressions stay on rather than being chased."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-fb7a9dedff4a",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T06:54:50.438682-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "68b214c36e04c51f98f3a6b3f1ff646303db8f7d94363e45cbf9b1d289c70f25",
+      "event_id": "jde-d22061a511fc48cb",
+      "funding_view": null,
+      "invalidation": "Exit the CORRA receive if March CORRA holds above 3.05. Cover the AUDNZD short on a daily close back above the 1.25 entry. A hot CPI that lifts March CORRA and AUDNZD together is the combined pain path and would be cut, not averaged.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05",
+        "pm-pragmatist-fb7a9dedff4a"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "62c5ee3834028e4a9fc0dadb0df11fa43a1d48214363e8342516328081f94ef6",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "91d345dacc9596d280f700521ca9bb916d0502a251f2d4b75d35808c35eda4c8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "fa027ec5986ec1cad21548a7bfe4fad2f2aa464c457f5344b2484b77ba583594",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261110-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March CORRA still sits about 36 basis points above 2.52 percent cash after the receive from 3.13, so the open long-duration position is a residual grind of priced Canadian tightening rather than a fresh swing. AUDNZD remains in the 82nd percentile after a five-day fall, so the open short still expresses Australian underperformance against a kiwi that is itself extremely cheap. October CPI is unknown this morning and Waller is already arguing for a December hike, with a large part of the US hike path already in SOFR March at 4.315 versus 3.89 percent cash. Both lines stay, and nothing new is added before the 8:30 print.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "March CORRA still sits about 36 basis points above 2.52 percent cash after the receive from 3.13, so the open long-duration position is a residual grind of priced Canadian tightening rather than a fresh swing. AUDNZD remains in the 82nd percentile after a five-day fall, so the open short still expresses Australian underperformance against a kiwi that is itself extremely cheap. October CPI is unknown this morning and Waller is already arguing for a December hike, with a large part of the US hike path already in SOFR March at 4.315 versus 3.89 percent cash. Both lines stay, and nothing new is added before the 8:30 print."
     }
   ],
   "schema_version": 1,

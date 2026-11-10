@@ -78,7 +78,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1350000.0,
     "risk_capital_utilization": 0.135,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -49104.12,
     "status": "ok"
   },
   "learning": {
@@ -89,7 +89,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c5191cd0687f45270bf27396e375a90d887e782b7aa62ebb863827a7ead088ff",
+  "memory_context_sha256": "de02ee2d5937bb4e45c08ffd854e34bd203ef2b28485ba0091321b99c33746dd",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -237,6 +237,55 @@
       "risk_capital_usd": 500000.0,
       "side": "short",
       "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42"
+    },
+    {
+      "asset_class": "spot_fx",
+      "conviction": 64,
+      "current_notional_usd": 5000000.0,
+      "entry_mark": 0.56,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The incumbent kept a path to govern and the pair is still the fourth percentile after a 1.26 percent bounce.",
+        "current_mark": 0.5613058522641793,
+        "current_notional_usd": 5000000.0,
+        "entry_mark": 0.56,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "NZDUSD",
+        "intended_horizon_days": 25,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-0c736b9e5e13",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "NZDUSD lifts off the one-year floor as the governance discount keeps closing and pro-cyclical FX catches copper and oil.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-perma-bull-pos-0c736b9e5e13",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "NZDUSD",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "position_id": "pos-0c736b9e5e13",
+      "risk_capital_usd": 50000.0,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bull-pos-0c736b9e5e13"
     }
   ],
   "owner_id": "perma-bull",
@@ -257,11 +306,11 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
+        "trend": "up",
         "value": 0.1
       },
       "defensiveness": {
@@ -272,7 +321,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
@@ -308,15 +357,20 @@
         "kind": "session_loss",
         "magnitude": 0.16777361999999998,
         "run_id": "overnight-20261106"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.09820824,
+        "run_id": "overnight-20261110"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "342f45d0d7bc1586781a3403e796d6f5b474e9264e07431f036a5440118b8490",
+    "state_sha256": "4ff84307a592ee066c9a6d5330619ecb118266f702d81974d43ee7de046cc210",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 5,
-      "session_win": 0
+      "session_loss": 0,
+      "session_win": 1
     }
   },
   "recent_closed_trades": [],

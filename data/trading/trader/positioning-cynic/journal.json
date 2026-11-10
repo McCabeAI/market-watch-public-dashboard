@@ -1936,6 +1936,79 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "Short Australian-kiwi is the crowded trade. The cross is still a 2.62 five-year z-score at the 98th percentile, the short is already widely held, and this account is short from 1.2453 while spot has only just slipped to 1.2394. Kiwi-dollar at a five-year low and sterling-kiwi at the 100th percentile are the same short-kiwi ownership in other crosses. March Canada is already short from 2.995 with the mark at 2.885 against cash at 2.52, so a new receive would chase the move that has been working. Hold both and add nothing."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": 10000000,
+          "position_id": "pos-df316f59e974",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-be9eaa63695e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "de1fbed07ba4715347f90cf6a20367128d0bb57494c5f0c460b591e43e4ea70a",
+      "event_id": "jde-8c75fbf290134271",
+      "funding_view": null,
+      "invalidation": "The cut is early if CORRA March 2027 reverses back up through the 3.00 entry. The AUDNZD hold is done if the pair reclaims 1.25 and NZDUSD gives back the 1.26 percent jump.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-be9eaa63695e",
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-df316f59e974"
+      ],
+      "memory_context_sha256": "2f4f4a11de38c5a2b311ce4d4d08f41ddb401abc9317d5c8d307a6b8cab370dd",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7fd96af210dbae35d54e59909c11ec3f2d28b6847ca476db3930163e6e4503e7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March SOFR at 4.315 versus 3.89 cash and March CORRA at 2.885 versus 2.52 cash already carry a public December hike, so a new front-end pay chases a repriced path and a new receive is the obvious trade ahead of an unreleased CPI. The March 2027 CORRA pay is the stale line: sold at 3.00 and marked 2.835, so that bucket has already been received. Ten million of the 25 million short-duration notional comes off, and a 15 million stub stays. AUDNZD stays short from 1.25 to 1.239 with the cross still at the 82nd percentile. The NZDUSD jump at the fourth percentile can still be a squeeze, so there is no add.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "March SOFR at 4.315 versus 3.89 cash and March CORRA at 2.885 versus 2.52 cash already carry a public December hike, so a new front-end pay chases a repriced path and a new receive is the obvious trade ahead of an unreleased CPI. The March 2027 CORRA pay is the stale line: sold at 3.00 and marked 2.835, so that bucket has already been received. Ten million of the 25 million short-duration notional comes off, and a 15 million stub stays. AUDNZD stays short from 1.25 to 1.239 with the cross still at the 82nd percentile. The NZDUSD jump at the fourth percentile can still be a squeeze, so there is no add."
     }
   ],
   "schema_version": 1,

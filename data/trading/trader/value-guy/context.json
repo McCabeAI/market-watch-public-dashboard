@@ -114,14 +114,14 @@
     "nav_usd": 100226877.97,
     "net_pnl_usd": 226877.97,
     "pressure_flags": [],
-    "prior_competition_rank": 1,
-    "rank_change": 0,
+    "prior_competition_rank": 3,
+    "rank_change": -2,
     "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -45162.41,
     "status": "ok"
   },
   "learning": {
@@ -132,7 +132,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b21620f20d06eb0d072f81caebc854a41b9766d46e80d66bda6047ec3032547c",
+  "memory_context_sha256": "37bdabbc9608a5f35d38b155142b01a3c7911ea76147ccee02c196d15d587f9b",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -149,7 +149,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 45167.81,
         "holding_seconds": 339887,
         "horizon_elapsed_fraction": 0.1311,
         "horizon_status": "within",
@@ -157,15 +157,15 @@
         "intended_horizon_days": 30,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 23529.95,
+        "mfe_usd": 68697.76,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-65b06053d4c6",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Realize the short if Australian-kiwi falls clearly off the 99th percentile, and otherwise exit at 30 days if the cross has not made a new high.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 23529.95,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 68697.76,
+        "retained_mfe_fraction": 0.3425,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -182,6 +182,55 @@
       "risk_capital_usd": 50000.0,
       "side": "short",
       "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
+    },
+    {
+      "asset_class": "spot_fx",
+      "conviction": 61,
+      "current_notional_usd": 5000000.0,
+      "entry_mark": 0.83,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "Convergence is the discount mean-reverting on its own history. The US inflation print is not the trigger.",
+        "current_mark": 0.8343,
+        "current_notional_usd": 5000000.0,
+        "entry_mark": 0.83,
+        "expected_mark_direction": null,
+        "framing": "structural",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "EURGBP",
+        "intended_horizon_days": 120,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-5760dbd4ac3e",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The euro's joint cheapness versus sterling, the dollar and the yen is realized as EURGBP drifts back toward the middle of its one-year range.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "EURGBP",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "position_id": "pos-5760dbd4ac3e",
+      "risk_capital_usd": 50000.0,
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
     }
   ],
   "owner_id": "value-guy",
@@ -201,12 +250,12 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.18
       },
       "defensiveness": {
@@ -216,13 +265,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -251,22 +300,22 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.16733414000000002,
-        "run_id": "overnight-20261104"
+        "magnitude": 0.09032482,
+        "run_id": "overnight-20261110"
       },
       {
-        "kind": "trade_win_close",
-        "magnitude": 0.52059804,
-        "run_id": "overnight-20261105"
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261110"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b2fd89ed8b2cdfb40c152e7c1dce31a5dff53462905b2042df70b83c764db72e",
+    "state_sha256": "dfc7e7eaa4e30ac9f8330122a6308e83389c5c2b7fe7519771b03b88fd8c8bfa",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 4
+      "session_win": 5
     }
   },
   "recent_closed_trades": [

@@ -1900,6 +1900,62 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "The dollar is still the clean expression of this tape: SOFR at 3.92 with the strip higher into March, the two-year at 4.51, volatility at 28, and commodity currencies under pressure. Dollar-yen at 158.33 is almost unchanged, only moderately stretched over five years, and still above the 158.06 entry, so the existing long stays. Canada is the wrong new dollar: oil is not three-digit, and dollar-Canada is down on the month despite today's bounce. Sterling just got a Bank Rate hike to 4 percent, the kiwi is already at a five-year low, and jobs are next, so there is nothing to add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 67,
+      "decision_fingerprint": "b412181705a76300cc123f824502b6e02eb3b9f4380c64cce050b5c72085206a",
+      "event_id": "jde-1d9f227d39d041e4",
+      "funding_view": null,
+      "invalidation": "The hold fails if October CPI shows inflation no longer accelerating and March 2027 SOFR retraces toward cash at 3.89, or if USDJPY sustains below the 158.06 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9ad4802a6893be11f3dacfb3227e141841cbed9c1e3be8149d04537818f6767f",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9c77a035613378b856ae60cda06fb3c9bf3071fc8fc13e3335e1a5d4df2691c9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Waller has a December hike in play and is open to 50bp if inflation keeps accelerating, and the strip already leans that way, with cash SOFR at 3.89 versus March 2027 SOFR at 4.315. USDJPY near 158 is around the middle of its one-year range, so that nominal impulse still has room, while the euro, the kiwi, the Swiss franc and the Canadian dollar already embed a rich dollar. October CPI is unknown, and the existing USDJPY long is the dollar expression through the print. WTI at 86.85 leaves USDCAD, already extended, as a finished dollar move.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "Waller has a December hike in play and is open to 50bp if inflation keeps accelerating, and the strip already leans that way, with cash SOFR at 3.89 versus March 2027 SOFR at 4.315. USDJPY near 158 is around the middle of its one-year range, so that nominal impulse still has room, while the euro, the kiwi, the Swiss franc and the Canadian dollar already embed a rich dollar. October CPI is unknown, and the existing USDJPY long is the dollar expression through the print. WTI at 86.85 leaves USDCAD, already extended, as a finished dollar move."
     }
   ],
   "schema_version": 1,

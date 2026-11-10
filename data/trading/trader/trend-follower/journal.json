@@ -1922,6 +1922,62 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "Lower yields remain the durable move. The US ten-year at 4.86 is down 42bp on the month, the two-year at 4.51 is down 26bp on the month, and Europe and Japan tens are down on the month as well. This session is a bounce of a few basis points in the US, while Japan tens fell again, so the downtrend is intact and the US ten-year has not printed a new yield high. The long March 2027 SOFR, entered at 4.2825 against a fresh implied of 4.27, is already the receive aligned with that trend. The lift from 4.24 is a pause, not a reason to add or to flatten."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-96a63a1df145",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "4abd23796489ce72e503fd64874ee1c79090200a3c6e301e9cbd7c002baec235",
+      "event_id": "jde-135a2b958cb14dc8",
+      "funding_view": null,
+      "invalidation": "Exit the March 2027 receive if SOFR implied sustains above 4.36, through the 4.33 entry, or if the ten-year leaves 4.88 and trades decisively back toward last year's high-yield range.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "faa2fcfda948432e9cb8cdcda8d55786c19af08608aa3f6cf506c311c68398c3",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b9294279994a1ae0591ac6e64f7b248052fe22d0b89f579bd4803bbb04980d7c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The ten-year rally is still the trend in force: the ten-year is 4.88, well below last year's highs, with no reversal in the marks. The March 2027 SOFR receive is on that side, live implied 4.315 versus a 4.33 entry. The funds path from 3.89 cash to 4.435 by September 2027 is the curve already priced, and a 50 million line does not get more size with October CPI still unknown. That receive stays. The one-day kiwi jump and the flat dollar-yen do not replace it.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "The ten-year rally is still the trend in force: the ten-year is 4.88, well below last year's highs, with no reversal in the marks. The March 2027 SOFR receive is on that side, live implied 4.315 versus a 4.33 entry. The funds path from 3.89 cash to 4.435 by September 2027 is the curve already priced, and a 50 million line does not get more size with October CPI still unknown. That receive stays. The one-day kiwi jump and the flat dollar-yen do not replace it."
     }
   ],
   "schema_version": 1,

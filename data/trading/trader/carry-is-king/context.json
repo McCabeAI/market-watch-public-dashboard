@@ -42,16 +42,16 @@
   ],
   "as_of": "2026-11-10T04:50:36.940059-05:00",
   "calibration": {
-    "average_holding_seconds": 402936,
-    "average_realized_pnl_usd": -13593.75,
+    "average_holding_seconds": 1390817,
+    "average_realized_pnl_usd": -13645.83,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 2,
-        "total_realized_pnl_usd": -27187.5
+        "count": 3,
+        "total_realized_pnl_usd": -40937.5
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -64,14 +64,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -13593.75,
-        "count": 2,
-        "hit_rate": 0.5
+        "average_pnl_usd": -13645.83,
+        "count": 3,
+        "hit_rate": 0.3333
       }
     },
-    "losses": 1,
+    "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -27187.5,
+    "total_realized_pnl_usd": -40937.5,
     "wins": 1
   },
   "capital_owner": null,
@@ -94,7 +94,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 500000.0,
     "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 13804.03,
     "status": "ok"
   },
   "learning": {
@@ -105,57 +105,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "8820dc6a5d2d8846c0794693fecec4f7730c29f80238d6a24f7088ff1ca982be",
+  "memory_context_sha256": "e2083492878fca9bd379bb7958b7fa5fdc7b3c81bb0492293178eaaa044b8f86",
   "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 62,
-      "current_notional_usd": 25000000.0,
-      "entry_mark": 4.83,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": null,
-        "current_mark": 4.88,
-        "current_notional_usd": 25000000.0,
-        "entry_mark": 4.83,
-        "expected_mark_direction": null,
-        "framing": null,
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 28750.0,
-        "holding_seconds": 3366579,
-        "horizon_elapsed_fraction": null,
-        "horizon_status": "unspecified",
-        "instrument": "AONIA_2027-03",
-        "intended_horizon_days": null,
-        "mae_usd": -27500.0,
-        "mechanical_order": false,
-        "mfe_usd": 16250.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-524ab67108ee",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": null,
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 16250.0,
-        "retained_mfe_fraction": -0.7692,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 250000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": -12500.0,
-        "trade_id": "trd-trader-carry-is-king-pos-524ab67108ee",
-        "unrealized_pnl_usd": -12500.0
-      },
-      "instrument": "AONIA_2027-03",
-      "opened_at": "2026-10-02T05:40:56.963171-04:00",
-      "position_id": "pos-524ab67108ee",
-      "risk_capital_usd": 250000.0,
-      "side": "long",
-      "trade_id": "trd-trader-carry-is-king-pos-524ab67108ee"
-    },
     {
       "asset_class": "rates",
       "conviction": 61,
@@ -224,7 +175,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
@@ -239,12 +190,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "revenge_pressure": {
         "band": "calm",
@@ -273,7 +224,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d1b3d2be9f0e9643ab167339f2da068953a8d2ec825876575c4a76674d650edc",
+    "state_sha256": "6fe139e8feda418a2dcceb91c36ff99afd2f36a6658256fee0af4e52740a138c",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -281,6 +232,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 62,
+      "holding_duration_seconds": 3366579,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "realized_pnl_usd": -13750.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-524ab67108ee"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-10-01T04:50:57.400664-04:00",

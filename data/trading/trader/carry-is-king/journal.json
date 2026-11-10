@@ -2109,6 +2109,79 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "The Canada receive still earns its keep: cash is 2.52, the February terminal is 2.725, and March is marked at 2.885, so the hike gap stays wide with cash policy unchanged. The Australia receive is thinner, March implied at 4.88 against cash at 4.85, but the move from the 4.83 entry is only a few basis points and there has been no cash-rate shift. September SOFR against the 3.92 fix is the fatter carry, and dollar-yen pays the gap to Japan, yet the jobs report is next and Bank Rate has just gone to 4 percent, enough to refuse a new expression today."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-524ab67108ee",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "9b8ab057723c96c23eeba15e7b02cfd3935ae0a078615c1c61b4acfff053ee38",
+      "event_id": "jde-60e6bc7d767245ee",
+      "funding_view": null,
+      "invalidation": "Rebuild the Australia March receive only if, after the inflation figures, the implied rate is back through 4.83 with cash still near 4.85 and the path is no longer threatened by a larger Fed step.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846",
+        "pos-524ab67108ee"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-524ab67108ee"
+      ],
+      "memory_context_sha256": "8820dc6a5d2d8846c0794693fecec4f7730c29f80238d6a24f7088ff1ca982be",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d1b3d2be9f0e9643ab167339f2da068953a8d2ec825876575c4a76674d650edc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Australia March receive pays only about 3.5 basis points over 4.85 cash, and the mark has already moved against it from 4.83 to 4.88. Waller is leaning into a December hike, oil is firm, and this morning's CPI is still unknown, so that thin cushion does not pay for the gap. The Canada March receive stays: March is 2.885 against cash 2.52, the position is ahead of the 3.00 entry, and cash policy has not changed. AUDNZD is still an elevated cross, and there are no forward points that put spot ahead of cutting the thin Australia receive.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "The Australia March receive pays only about 3.5 basis points over 4.85 cash, and the mark has already moved against it from 4.83 to 4.88. Waller is leaning into a December hike, oil is firm, and this morning's CPI is still unknown, so that thin cushion does not pay for the gap. The Canada March receive stays: March is 2.885 against cash 2.52, the position is ahead of the 3.00 entry, and cash policy has not changed. AUDNZD is still an elevated cross, and there are no forward points that put spot ahead of cutting the thin Australia receive."
     }
   ],
   "schema_version": 1,

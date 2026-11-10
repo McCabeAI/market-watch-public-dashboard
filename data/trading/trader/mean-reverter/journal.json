@@ -1920,6 +1920,62 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "Australian-kiwi is still a five-year extreme, a 2.62 z-score and the 98th percentile, at 1.2394 after a small dip today and over five sessions, so the overshoot has started to give way while the anchor is intact. That turn is the reversal condition on the existing short, inside a kiwi-cheap complex. The US two-year at 4.51 has no percentile behind it, and March SOFR has already normalized from the old 4.58 extreme toward cash at 3.92. Add the minimum to the short, because volatility at 28 and Brent near 98 can still extend kiwi underperformance before the cross fully normalizes."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-9a020b7cffca",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 63,
+      "decision_fingerprint": "ea8e58b228b65c6313cb1a1d546250e8c159652c40d3e7582345a719bd21eda4",
+      "event_id": "jde-22a0df7639504570",
+      "funding_view": null,
+      "invalidation": "Cover the short if AUDNZD reclaims 1.25 and holds above the entry, or if the election jump in the kiwi fully unwinds and the cross pushes back toward the top of its one-year range.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9a020b7cffca"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "423410cbbb48e1aa91806e3969cfd2e74c24144a574fd414706c31dbf75b529d",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4da8de9eba6f929079026fa4c7e652daa8507b91c77a7d0437f6588badce20a7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the AUDNZD short. The cross is still high versus its own year, near 1.228 at the 82nd percentile, even after a five-day fall of 1.39 percent, and the fade from 1.25 has only started. The reversal condition is the New Zealand election: the kiwi jumped 1.26 percent and NZDUSD is still around the fourth percentile, so that bid looks like the start of a normalization rather than a completed move. The front end does not offer a better fade. March SOFR at 4.315 versus 3.89 cash is a high funds path, not a cheap receive, and the 32bp 2s10s curve has no catalyst to steepen ahead of an unknown CPI print.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "Keep the AUDNZD short. The cross is still high versus its own year, near 1.228 at the 82nd percentile, even after a five-day fall of 1.39 percent, and the fade from 1.25 has only started. The reversal condition is the New Zealand election: the kiwi jumped 1.26 percent and NZDUSD is still around the fourth percentile, so that bid looks like the start of a normalization rather than a completed move. The front end does not offer a better fade. March SOFR at 4.315 versus 3.89 cash is a high funds path, not a cheap receive, and the 32bp 2s10s curve has no catalyst to steepen ahead of an unknown CPI print."
     }
   ],
   "schema_version": 1,

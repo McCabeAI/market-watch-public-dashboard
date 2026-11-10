@@ -1940,6 +1940,64 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "The book stays short Australian-kiwi from 1.2456. Fresh spot at 1.2394 is still a five-year z-score of 2.62 and the 98th percentile. Official SOFR at 3.92 percent is the zero-alpha hurdle, and none of the proposed adds clear it: another slice of the cross, a short Australian March bill only a few basis points over cash, or a short US two-year at 4.51. Jobs are immediately ahead, so preservation is to keep the small short and not expand."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pm-grinder-9366bc9ee048",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T06:54:50.638463-05:00",
+      "conviction": 44,
+      "decision_fingerprint": "ae747fa503819c3191d1c883114aeb68402e9e463112f877d6bad4e0ce7486db",
+      "event_id": "jde-7a6b9fa7caa14d26",
+      "funding_view": null,
+      "invalidation": "Cover the AUDNZD short if the cross rises back through the 1.25 entry, or if it trades above 1.26 and the rich-cross case no longer holds after the CPI print.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-grinder-9366bc9ee048"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c77704345f581b55d06386c55dcd113c44e25b2b671d7907ded1cd65e8730bef",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "87f3aa78e5f928b3a1d93b7d9a56c27bda5f7673da97d953892c977cf618adb6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "13f6ab94ee1f7f4c4d68a7d823a2ec102c471d5627703558436c134246526528",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261110-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book keeps the existing 10 million short in AUDNZD, entered at 1.25 with the book mark at 1.239. The cross at 1.228 is still in the 82nd percentile, so the retained short remains a small rich-cross line whose residual edge covers official SOFR at 3.89 percent and December SR3 funding at 4.165 on its shocked risk capital. Long NZDUSD, long EURGBP, and short September AONIA fail that hurdle with October CPI still unknown and Waller supporting a December hike. No new risk is added.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "The book keeps the existing 10 million short in AUDNZD, entered at 1.25 with the book mark at 1.239. The cross at 1.228 is still in the 82nd percentile, so the retained short remains a small rich-cross line whose residual edge covers official SOFR at 3.89 percent and December SR3 funding at 4.165 on its shocked risk capital. Long NZDUSD, long EURGBP, and short September AONIA fail that hurdle with October CPI still unknown and Waller supporting a December hike. No new risk is added."
     }
   ],
   "schema_version": 1,
