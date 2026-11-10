@@ -35,6 +35,44 @@ _BUCKET_LABELS: list[tuple[str, str, str, str]] = [
 ]
 
 
+ISSUES_PANEL_OPEN = '<div class="mw-issues"'
+ISSUES_SLOT = (
+    '<div class="mw-issues" id="mw-issues" data-issues-root="pending">'
+    '<p class="note">Issues for this edition are unavailable.</p></div>'
+)
+
+
+def render_issues_panel(feed: dict[str, Any] | None) -> str:
+    """Issues panel for the Sources & Issues tab. Quiet unavailable state without a feed."""
+    if not isinstance(feed, dict) or feed.get("status") != "available":
+        return (
+            '<div class="mw-issues" id="mw-issues" data-issues-root="unavailable">'
+            '<p class="note">Issues for this edition are unavailable.</p></div>'
+        )
+    rows = [row for row in feed.get("issues") or [] if isinstance(row, dict)]
+    items = "".join(
+        f'<li data-issue-id="{esc(row.get("id"))}" data-issue-severity="{esc(row.get("severity"))}" '
+        f'data-issue-state="{esc(row.get("state"))}">{esc(row.get("component"))}: {esc(row.get("cause"))}</li>'
+        for row in rows
+    )
+    return (
+        '<div class="mw-issues" id="mw-issues" data-issues-root="rendered">'
+        f'<div class="stitle">Issues · {int((feed.get("counts") or {}).get("active") or 0)} active</div>'
+        f'<ul class="mw-issue-list">{items}</ul></div>'
+    )
+
+
+def inject_issues_panel(html: str, feed: dict[str, Any] | None) -> str:
+    """Replace the Issues slot in a built page. Returns the page unchanged without a slot."""
+    from scripts.dashboard_repair.htmlutil import balanced_element_end
+
+    start = html.find(ISSUES_PANEL_OPEN)
+    if start < 0:
+        return html
+    end = balanced_element_end(html, start)
+    return html[:start] + render_issues_panel(feed) + html[end:]
+
+
 def _format_stage_date(raw: str) -> str:
     text = str(raw or "").strip()
     if not text:
@@ -327,7 +365,8 @@ def render_sources(packet: dict[str, Any] | None, snapshot: dict[str, Any], rows
     generated = "not published" if not isinstance(packet, dict) else str(packet.get("generated_at") or "timestamp missing")
     return (
         '<section class="page sources" data-source-health="repair">'
-        '<div class="stitle">Sources · provenance and freshness</div>'
+        + ISSUES_SLOT
+        + '<div class="stitle">Sources · provenance and freshness</div>'
         f'<p class="note mw-source-audit">{esc(audit_visible)} '
         f'<details class="mw-raw"><summary>Stage ledger notes</summary><p>{esc(audit_note)}</p></details></p>'
         '<div class="source-summary">'
