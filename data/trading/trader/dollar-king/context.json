@@ -134,14 +134,14 @@
     "nav_usd": 100188715.13,
     "net_pnl_usd": 188715.13,
     "pressure_flags": [],
-    "prior_competition_rank": 3,
-    "rank_change": 0,
+    "prior_competition_rank": 5,
+    "rank_change": -2,
     "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 47876.06,
     "status": "ok"
   },
   "learning": {
@@ -152,7 +152,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "9ad4802a6893be11f3dacfb3227e141841cbed9c1e3be8149d04537818f6767f",
+  "memory_context_sha256": "aebc243d319839ce7fa363eddbc50e00ef04db545164d97a917111b4d4ad302f",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -222,12 +222,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.17
+        "value": 0.19
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "defensiveness": {
         "band": "calm",
@@ -237,12 +237,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.25
+        "value": 0.3
       },
       "frustration": {
         "band": "calm",
         "trend": "up",
-        "value": 0.15
+        "value": 0.17
       },
       "revenge_pressure": {
         "band": "calm",
@@ -270,23 +270,28 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_gain",
-        "magnitude": 0.09825638,
-        "run_id": "overnight-20261104"
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261109"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.09575212,
+        "run_id": "overnight-20261110"
       },
       {
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
-        "run_id": "overnight-20261109"
+        "run_id": "overnight-20261110"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "9c77a035613378b856ae60cda06fb3c9bf3071fc8fc13e3335e1a5d4df2691c9",
+    "state_sha256": "eac784b014fdac96b09b408c3655116e63631d11c0e3ba4b1747a8d2a1745451",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 0,
-      "session_win": 2
+      "session_loss": 1,
+      "session_win": 0
     }
   },
   "recent_closed_trades": [

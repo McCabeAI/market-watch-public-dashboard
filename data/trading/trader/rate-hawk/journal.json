@@ -2670,6 +2670,125 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "SOFR sits above the 3.92 overnight rate from December through the October 2028 terminal. The two-year has still rallied 26bp on the month to 4.51, up 5bp today, while Brent is 98.32, the Bank of England has raised Bank Rate to 4 percent, and the Fed is still gathering information on price risks before the labor data. Paying the two-year fades that monthly rally while the hike path and the oil impulse are still in place. Dollar-yen at 158.33 was available and was not the expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": 12500000,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-6c7bcf0fe6af",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-09",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "c13d16e3bd79df903608405583bfe541a4075fb4b0bdce6a6481676b068b483c",
+      "event_id": "jde-864917f49e63420c",
+      "funding_view": null,
+      "invalidation": "The Australia pay is wrong if inflation cools and September AONIA stays below cash, or if the RBA validates cuts inside the next two meetings. The SOFR cut is wrong if September 2027 SOFR reprices sustainably above 4.60.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-069ec6c19021",
+        "pos-2709875e8c9c",
+        "pos-6c7bcf0fe6af",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-069ec6c19021",
+        "trd-trader-rate-hawk-pos-c9184707c12b"
+      ],
+      "memory_context_sha256": "fba0125b5df676c851adb73c6ef11ec6cf54a22833a20b8acc87d5514c64c7c5",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5e0d3c5520c1858fcbc945f7a7a24604d4d2ccddd6fbfeca22d8c891fbfb3798"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australia is the mispricing. AONIA cash is 4.85, March is only 4.885, and September is 4.71, so a warm inflation impulse is being met with a flat front and cuts in the back of the bills. The US path is largely priced, with December SOFR at 4.165 already a hike above 3.89 cash and September 2027 at 4.435 sitting under a two-year at 4.56. Canada's warm activity still justifies the March CORRA pay, but that first hike is already in the price. Half of the September 2027 SOFR pay comes off, and a smaller pay is opened in September 2027 AONIA, where the easing is actually priced.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "Australia is the mispricing. AONIA cash is 4.85, March is only 4.885, and September is 4.71, so a warm inflation impulse is being met with a flat front and cuts in the back of the bills. The US path is largely priced, with December SOFR at 4.165 already a hike above 3.89 cash and September 2027 at 4.435 sitting under a two-year at 4.56. Canada's warm activity still justifies the March CORRA pay, but that first hike is already in the price. Half of the September 2027 SOFR pay comes off, and a smaller pay is opened in September 2027 AONIA, where the easing is actually priced."
     }
   ],
   "schema_version": 1,

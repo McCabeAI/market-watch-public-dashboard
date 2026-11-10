@@ -1870,6 +1870,79 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "Australian-kiwi at 1.2394 is still a five-year extreme, a 2.62 z-score and the 98th percentile, so the short is a live convergence after a small decline. Kiwi-dollar is on the 0th percentile, kiwi-Canada and sterling-kiwi confirm a broad kiwi discount, and oil near 98 can sponsor Canada without sponsoring a richer Australian dollar against the kiwi. The US two-year versus Canada already lines up with the cash-rate gap, so the residual value is in the spot. Volatility at 28 can hold that discount, so the existing short stays and is not increased on the first down day."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-65b06053d4c6",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": 5000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "25c0c578801aac2a05a31065e8fb7f1247e697c5ac0479caaba37f72c7c7193a",
+      "event_id": "jde-bd3182d048ee4ea0",
+      "funding_view": null,
+      "invalidation": "The euro long is invalidated if EURGBP stays pinned at 0.834 after EURUSD and EURJPY have lifted off their lows, or if a further rise in crude marks that cheapness as fair. The AUDNZD short is invalidated by a sustained rebound through the 1.25 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5760dbd4ac3e",
+        "pos-65b06053d4c6"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-5760dbd4ac3e"
+      ],
+      "memory_context_sha256": "b21620f20d06eb0d072f81caebc854a41b9766d46e80d66bda6047ec3032547c",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b2fd89ed8b2cdfb40c152e7c1dce31a5dff53462905b2042df70b83c764db72e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "EURGBP at 0.834 is near the bottom of its one-year range, and the euro is cheap on the same window in EURUSD at 1.1193 and EURJPY at 176.79. Long EURGBP is the structural expression of that euro discount. The rates complex is a policy path without a historical spread anchor: US two-year 4.56 versus Canada 3.12, and both March SOFR and March CORRA sit well above cash. The AUDNZD short stays on because the cross is still historically high, and it does not get added while oil and copper are still firm.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "EURGBP at 0.834 is near the bottom of its one-year range, and the euro is cheap on the same window in EURUSD at 1.1193 and EURJPY at 176.79. Long EURGBP is the structural expression of that euro discount. The rates complex is a policy path without a historical spread anchor: US two-year 4.56 versus Canada 3.12, and both March SOFR and March CORRA sit well above cash. The AUDNZD short stays on because the cross is still historically high, and it does not get added while oil and copper are still firm."
     }
   ],
   "schema_version": 1,

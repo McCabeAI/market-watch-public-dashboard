@@ -2363,6 +2363,109 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "Equities are still elevated and Brent is near 98, while a 28 vol handle and the month's yield rally price a weaker cycle than the tape shows. Australia is the cyclical that is still asleep: cash is 4.85 and March 2027 is 4.88, against a ten-year yield at 5.08 and a Bank of England that has just taken Bank Rate to 4. The US March short from 4.52 and the Canadian short from 3.13 have not retraced, so they stay unchanged. Add to the Australian March short, which has already traded up from 4.765."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-78563c24fe05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "NZDUSD",
+          "notional_usd": 5000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "64c68782b3458f98fac0117e15a8869f4d6cc33f6039ea6afefc0a452f1a91f6",
+      "event_id": "jde-7b0a852ffe234e27",
+      "funding_view": null,
+      "invalidation": "NZDUSD fully retraces the 1.26 percent bounce, or March 2027 SOFR trades up through the September 2027 mark at 4.435 and the dollar squeeze overwhelms the re-rating.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-0c736b9e5e13",
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-0c736b9e5e13"
+      ],
+      "memory_context_sha256": "c5191cd0687f45270bf27396e375a90d887e782b7aa62ebb863827a7ead088ff",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "342f45d0d7bc1586781a3403e796d6f5b474e9264e07431f036a5440118b8490"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The US funds path is already a hike path, with cash SOFR at 3.89 versus 4.165 for December and 4.315 for March 2027, so another short-duration add just pays up for Waller. The under-discounted cyclical is the kiwi. NZDUSD at 0.5613 is still near the fourth percentile of the past year after only a 1.26 percent bounce, while copper at 6.33, Brent at 92.57 and equities still firm say growth is not what broke. The existing SOFR, CORRA and AONIA shorts stay, and a small NZDUSD long is the new expression.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "The US funds path is already a hike path, with cash SOFR at 3.89 versus 4.165 for December and 4.315 for March 2027, so another short-duration add just pays up for Waller. The under-discounted cyclical is the kiwi. NZDUSD at 0.5613 is still near the fourth percentile of the past year after only a 1.26 percent bounce, while copper at 6.33, Brent at 92.57 and equities still firm say growth is not what broke. The existing SOFR, CORRA and AONIA shorts stay, and a small NZDUSD long is the new expression."
     }
   ],
   "schema_version": 1,

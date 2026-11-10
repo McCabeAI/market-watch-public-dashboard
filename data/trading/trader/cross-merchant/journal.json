@@ -1906,6 +1906,62 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "Australian-kiwi at 1.2394 is still a five-year z-score of 2.62 and the 98th percentile, so the existing short remains the clean bilateral premium. Buying the kiwi against the dollar would take a five-year low into a SOFR strip that sits above cash and volatility at 28. Sterling-kiwi is the weaker cheap-kiwi cross, and kiwi-Canada leans against Brent near 98. The cross has only slipped half a percent over five sessions, so this stays a valuation hold rather than a cover or an add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 70,
+      "decision_fingerprint": "e2315947760488c4563499fd77cb51940b1e5504418140891377318081f5f0eb",
+      "event_id": "jde-72844985a8034146",
+      "funding_view": null,
+      "invalidation": "The short fails if the incumbent's path to govern breaks and AUDNZD reclaims the 1.25 entry, or if an Australia-only bid lifts the cross back through that entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "09a0f915196d0035b11c6c7e8e2d63c023463b8762ccdc005b0214bb2ed79acd",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "867238d8246e725469f591f4dd55df42ce50520fbc47bf047ba1550d755510fe"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "AUDNZD at 1.228 is still in the 82nd percentile of its one-year range after a five-day drop of 1.39 percent, so the short from 1.25 is ahead with the richness intact. NZDUSD rose 1.26 percent after the incumbent kept a path to govern and remains near the bottom of its range, while AUDUSD is softer over five days. That governance relief is a New Zealand premium inside a cross that is still historically high. The short cross carries the antipodean split through the US inflation release without taking a direct dollar bet.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "AUDNZD at 1.228 is still in the 82nd percentile of its one-year range after a five-day drop of 1.39 percent, so the short from 1.25 is ahead with the richness intact. NZDUSD rose 1.26 percent after the incumbent kept a path to govern and remains near the bottom of its range, while AUDUSD is softer over five days. That governance relief is a New Zealand premium inside a cross that is still historically high. The short cross carries the antipodean split through the US inflation release without taking a direct dollar bet."
     }
   ],
   "schema_version": 1,

@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "10374e5047a2cd3ee06f3a670055d7ca2fe8fdfefcc54e1f2958b72e3ed3c51d",
+  "memory_context_sha256": "13162fb55d89a1e9cbaca8942ff95e70c20208436e9d543211bc56f5e1ef8faa",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -130,30 +130,36 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261105"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261106"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261109"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261110"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d4044ddee52efb9c3a8f9b622a3b7cc3ab951920a44acaf7ff0876e7e00da536",
+    "state_sha256": "21e7cea92b2428ef50f863e3a229e8c771e04daf973ca362e686f1c87fc70938",
     "streaks": {
-      "flat_cycles": 28,
+      "flat_cycles": 29,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "Official NY Fed SOFR is 3.89 percent effective 2026-11-06, ACT/360.",
+      "forward_funding_assessment": "higher",
+      "implication": "December SR3 at 4.165 percent is above official SOFR at 3.89 percent, so forward funding is higher, and no expression in front of the unknown morning inflation print beats SOFR charged on shocked risk capital. Flat cash is not alpha.",
+      "sr3_forward_view": "December SR3 implies 4.165 percent."
+    },
     {
       "current_sofr": "The official NY Fed SOFR fixing is 3.92 percent ACT/360 on 5 Nov.",
       "forward_funding_assessment": "about_the_same",
@@ -181,17 +187,6 @@
       "forward_funding_assessment": "lower",
       "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding at 3.97 prints below the December-to-September strip. Paying SOFR on shocked-risk capital to own a hike path already in the strip is not alpha.",
       "sr3_forward_view": "Strip is a hiking path versus official SOFR 3.97: December 4.165, March 4.36, June 4.475, September 4.505. Overnight realized funding is the official 3.97 fixing, not the term curve."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-11-02",
-        "percent_rate": 3.95,
-        "rate": 3.95,
-        "source": "NY_FED"
-      },
-      "forward_funding_assessment": "lower",
-      "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding at 3.95 prints below the December-to-September strip. Paying SOFR on shocked-risk capital to own a hike path already in the strip is not alpha.",
-      "sr3_forward_view": "Strip is a hiking path versus official SOFR 3.95: December 4.16, March 4.365, June 4.495, September 4.535. Overnight realized funding is the official 3.95 fixing, not the term curve."
     }
   ],
   "recent_performance_reflections": [],

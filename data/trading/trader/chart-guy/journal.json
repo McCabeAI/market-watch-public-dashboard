@@ -53,6 +53,60 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "The latest daily closes show a cluster of Australian-dollar breakouts, short the base in Aussie-Swiss and Aussie-Sweden and long the base in sterling-Aussie, plus a separate kiwi-Canada breakout. Kiwi-Norway is a failed breakout with no side. Australian-kiwi still carries a large z-score, so the two dollars are not one chart. No name has a confirmed adverse daily-close level that would let reward exceed risk, and the research recommendations are empty. Nothing is opened."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 32,
+      "decision_fingerprint": "d10350a24a70afbfdb77a37c51fc29e25f936570b2f0b6d8d2c7e6a33f33315f",
+      "event_id": "jde-f5989330ba624c07",
+      "funding_view": null,
+      "invalidation": "The flat call would change if AUDNZD kept falling on both the five-day and one-month closes and a close-based adverse level were available to trade against.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cda182a59b5f98265d9e5d412bf85d0470a295cc15934bd6fac94290df353957",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a6ec6e66e3059023688af7c5d6c5071d8f4875527c7471321c525e809290e1bf"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Five-session and one-month closes disagree on the crosses that actually moved, and the rest are too small to call. USDCAD and NZDCAD have flipped sign between the week and the month, GBPUSD is up on the month and flat on the week, and EURUSD, USDJPY, and NZDUSD are noise on both marks. AUDNZD is the only cross lower on the day, the week, and the month, but the day already did most of that damage and AUDUSD bounced. There is no close-based adverse level to hang a short on, so the book stays flat.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "Five-session and one-month closes disagree on the crosses that actually moved, and the rest are too small to call. USDCAD and NZDCAD have flipped sign between the week and the month, GBPUSD is up on the month and flat on the week, and EURUSD, USDJPY, and NZDUSD are noise on both marks. AUDNZD is the only cross lower on the day, the week, and the month, but the day already did most of that damage and AUDUSD bounced. There is no close-based adverse level to hang a short on, so the book stays flat."
     }
   ],
   "schema_version": 1,

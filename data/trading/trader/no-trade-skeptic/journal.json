@@ -2451,6 +2451,71 @@
       "run_id": "overnight-20261109",
       "schema_version": 1,
       "thesis": "The futures strip already sits 22 to 48 basis points above the 3.92 percent SOFR fixing, so the higher-funding path is the market price. Two-year yields at 4.51 and ten-year yields at 4.86 are well off the monthly highs and only slightly firmer today, with bullish bond bets already written up and jobs still ahead. Australian-kiwi at 1.2394 is a 98th-percentile extreme with the short already populated, while the kiwi at 0.5543 is a five-year low. Volatility at 28, Brent near 98, gold near 4,075, and Bank Rate at 4 percent are already in the price."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 74,
+      "decision_fingerprint": "6903d3a14e3dfd99e3869f4e6e5463f4849781938ad4f3a15fed42a6590ff2de",
+      "event_id": "jde-f128bf71f2004ac7",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR is 3.89 percent effective 2026-11-06, ACT/360.",
+        "forward_funding_assessment": "higher",
+        "implication": "December SR3 at 4.165 percent is above official SOFR at 3.89 percent, so forward funding is higher, and no expression in front of the unknown morning inflation print beats SOFR charged on shocked risk capital. Flat cash is not alpha.",
+        "sr3_forward_view": "December SR3 implies 4.165 percent."
+      },
+      "invalidation": "A delivered CPI outcome that leaves December SR3 or the ten-year mispriced versus a hike path the strip has not already discounted would make risk actionable.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "10374e5047a2cd3ee06f3a670055d7ca2fe8fdfefcc54e1f2958b72e3ed3c51d",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR is 3.89 percent effective 2026-11-06, ACT/360.",
+          "forward_funding_assessment": "higher",
+          "implication": "December SR3 at 4.165 percent is above official SOFR at 3.89 percent, so forward funding is higher, and no expression in front of the unknown morning inflation print beats SOFR charged on shocked risk capital. Flat cash is not alpha.",
+          "sr3_forward_view": "December SR3 implies 4.165 percent."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d4044ddee52efb9c3a8f9b622a3b7cc3ab951920a44acaf7ff0876e7e00da536"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-10T04:50:36.940059-05:00",
+        "evidence_hash": "88ed6531415eb3ece896e153de3521188f16f1d596b9ff8fe06f9aa7f1605e51",
+        "overnight_run_id": "overnight-20261110",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Waller's December hike, including openness to 50bp, is already in the strip. March 2027 SOFR implies 4.315 against cash SOFR at 3.89, December SR3 implies 4.165, and the ten-year at 4.88 carries the same message. October CPI is still ahead at 8:30 and unknown, so a rates or dollar position from this clock is a coin flip on shocked capital. NZDUSD sits near the bottom of its range after a bounce, EURUSD is historically cheap, and AUDNZD is still elevated after a five-day fall. Oil at these marks does not clear a funding rate that is set to realize above cash SOFR.",
+      "run_id": "overnight-20261110",
+      "schema_version": 1,
+      "thesis": "Waller's December hike, including openness to 50bp, is already in the strip. March 2027 SOFR implies 4.315 against cash SOFR at 3.89, December SR3 implies 4.165, and the ten-year at 4.88 carries the same message. October CPI is still ahead at 8:30 and unknown, so a rates or dollar position from this clock is a coin flip on shocked capital. NZDUSD sits near the bottom of its range after a bounce, EURUSD is historically cheap, and AUDNZD is still elevated after a five-day fall. Oil at these marks does not clear a funding rate that is set to realize above cash SOFR."
     }
   ],
   "schema_version": 1,
