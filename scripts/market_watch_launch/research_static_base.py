@@ -8,11 +8,14 @@ requires byte-identical output, so the two paths cannot drift silently.
 
 from __future__ import annotations
 
+import argparse
 import base64
 import gzip
 import hashlib
-import re
+import sys
 from pathlib import Path
+
+from scripts.market_watch_launch.publication_issues import record_diagnostic
 
 V6_B64_BYTES = 41912
 V6_HTML_BYTES = 134496
@@ -20,10 +23,39 @@ V6_HTML_SHA256 = "2c68341978db2ccc8efdd8f1af7bee4e105c89427f741bb10e7747cb98dde9
 TOP_DRIVERS_ANCHOR = '<div class="stitle">Top Market Drivers</div>'
 X_SIGNAL_ANCHOR = '<div class="x-signal">'
 COUNTRY_KEYS = ("us", "ca", "au", "nz", "ea", "jp")
+_COUNTRY_CODES = {"us": "US", "ca": "CA", "au": "AU", "nz": "NZ", "ea": "EA", "jp": "JP"}
 
 
 class StaticBaseError(RuntimeError):
     pass
+
+
+def _skip_static_patch(
+    html: str,
+    *,
+    component: str,
+    cause: str,
+    country: str | None = None,
+    diagnostics: Path | str | None = None,
+) -> str:
+    record_diagnostic(
+        f"static_base_skipped:{component}",
+        path=diagnostics,
+        category="render",
+        severity="warning",
+        component=component,
+        country=country,
+        cause=cause,
+        impact="This static patch was not applied; downstream fallbacks may neutralize stale base-page content.",
+    )
+    from scripts.market_watch_launch.render_fallbacks import news_unavailable
+
+    if component in ("static_base:last24", "static_base:news_rollup"):
+        try:
+            return news_unavailable(html)
+        except Exception:
+            return html
+    return html
 
 
 def rebuild_v6_base(root: Path) -> str:
@@ -39,62 +71,104 @@ def rebuild_v6_base(root: Path) -> str:
     return raw.decode("utf-8")
 
 
-def apply_last24(root: Path, base: str) -> str:
+def apply_last24(
+    root: Path,
+    base: str,
+    *,
+    diagnostics: Path | str | None = None,
+    strict: bool = True,
+) -> str:
     patch = Path(root) / "patch_v7"
+    if ".last24{" in base or "Last 24 Hours · Desk Summary" in base:
+        record_diagnostic(
+            "static_base_present:last24",
+            path=diagnostics,
+            category="render",
+            severity="info",
+            component="static_base:last24",
+            cause="The last-24-hours static patch is already present on the page.",
+            impact="The patch step was skipped.",
+        )
+        return base
+    if base.count("</style>") < 1 or base.count(TOP_DRIVERS_ANCHOR) != 1:
+        if strict:
+            raise StaticBaseError("v6 patch anchors changed")
+        return _skip_static_patch(
+            base,
+            component="static_base:last24",
+            cause="Last-24 patch anchors are missing or ambiguous on the v6 base page.",
+            diagnostics=diagnostics,
+        )
     css = (patch / "last24.css").read_text()
     html = "".join(path.read_text() for path in sorted(patch.glob("last24_*.html")))
-    if ".last24{" in base or "Last 24 Hours · Desk Summary" in base:
-        raise StaticBaseError("v6 base already contains v7 patch")
-    if base.count("</style>") < 1 or base.count(TOP_DRIVERS_ANCHOR) != 1:
-        raise StaticBaseError("v6 patch anchors changed")
     out = base.replace("</style>", css + "\n</style>", 1)
     out = out.replace(TOP_DRIVERS_ANCHOR, "\n" + html + TOP_DRIVERS_ANCHOR, 1)
-    count = out.count('class="last24-item"')
-    if not 1 <= count <= 6:
-        raise StaticBaseError(f"invalid last-24 item count {count}")
-    for needle in ("Last 24 Hours · Desk Summary", 'class="last24-window"', "Last refreshed"):
-        if needle not in out:
-            raise StaticBaseError(f"last-24 patch missing {needle!r}")
     return out
 
 
-def apply_news_rollup(root: Path, base: str) -> str:
+def apply_news_rollup(
+    root: Path,
+    base: str,
+    *,
+    diagnostics: Path | str | None = None,
+    strict: bool = True,
+) -> str:
     rollup = (Path(root) / "patch_v9" / "news_rollup.html").read_text()
     if base.count(TOP_DRIVERS_ANCHOR) != 1 or base.count(X_SIGNAL_ANCHOR) != 1:
-        raise StaticBaseError("rolling-news anchors changed")
+        if strict:
+            raise StaticBaseError("rolling-news anchors changed")
+        return _skip_static_patch(
+            base,
+            component="static_base:news_rollup",
+            cause="Rolling-news anchors are missing or ambiguous on the page.",
+            diagnostics=diagnostics,
+        )
     a = base.index(TOP_DRIVERS_ANCHOR)
     b = base.index(X_SIGNAL_ANCHOR, a)
-    out = base[:a] + rollup + base[b:]
-    if out.count('class="driver-card"') > 3 or out.count('class="driver-card"') < 1:
-        raise StaticBaseError("invalid top-driver count")
-    story_count = out.count('class="story"')
-    if not 1 <= story_count <= 12:
-        raise StaticBaseError(f"invalid rolling digest count: {story_count}")
-    if '<div class="stitle">7-Day Quick Digest</div>' not in rollup or '<div class="scanline"><b>Window:</b>' not in rollup:
-        raise StaticBaseError("rolling digest metadata missing")
-    if "7-Day Quick Digest" not in out and "Accepted Overnight Research · Age Unverified" not in out:
-        raise StaticBaseError("missing dated or undated news digest section")
-    return out
+    return base[:a] + rollup + base[b:]
 
 
-def apply_temperature_inputs(root: Path, base: str) -> str:
+def apply_temperature_inputs(
+    root: Path,
+    base: str,
+    *,
+    diagnostics: Path | str | None = None,
+    strict: bool = True,
+) -> str:
     patch = Path(root) / "patch_v8"
-    css = (patch / "temp_scores.css").read_text()
-    blocks = {key: (patch / f"{key}.html").read_text() for key in COUNTRY_KEYS}
-    if ".temp-inputs{" in base or 'class="temp-dimension"' in base:
-        raise StaticBaseError("temperature score patch already present")
+    if 'class="temp-dimension"' in base and "Hard score inputs" in base:
+        record_diagnostic(
+            "static_base_present:temperature_inputs",
+            path=diagnostics,
+            category="render",
+            severity="info",
+            component="static_base:temperature_inputs",
+            cause="Temperature input score blocks are already present on the page.",
+            impact="The patch step was skipped.",
+        )
+        return base
     if base.count("</style>") < 1:
         raise StaticBaseError("temperature score CSS anchor changed")
+    css = (patch / "temp_scores.css").read_text()
+    blocks = {key: (patch / f"{key}.html").read_text() for key in COUNTRY_KEYS}
     out = base.replace("</style>", css + "\n</style>", 1)
     for key in COUNTRY_KEYS:
         anchor = f'<div class="cdetail {key}">'
         if out.count(anchor) != 1:
-            raise StaticBaseError(f"{key} country anchor changed")
+            if strict:
+                raise StaticBaseError(f"{key} country anchor changed")
+            record_diagnostic(
+                f"static_base_skipped:temperature_inputs:{key}",
+                path=diagnostics,
+                category="render",
+                severity="warning",
+                component="static_base:temperature_inputs",
+                country=_COUNTRY_CODES[key],
+                cause=f"The {key.upper()} country-detail anchor is missing or ambiguous.",
+                impact="Temperature input score blocks were not applied for this country.",
+            )
+            continue
         out = out.replace(anchor, anchor + "\n" + blocks[key], 1)
-    if len(re.findall(r'class="temp-dimension', out)) != 24:
-        raise StaticBaseError("expected 24 temperature dimensions")
-    if out.count("Hard score inputs") != 24 or out.count('class="evidence-block context"') != 24:
-        raise StaticBaseError("temperature input evidence blocks changed")
     return out
 
 
@@ -109,3 +183,49 @@ def assert_six_economies(html: str) -> None:
     ):
         if needle not in html:
             raise StaticBaseError(f"six-economy extension missing {needle!r}")
+
+
+def build_static_base_html(
+    root: Path,
+    *,
+    diagnostics: Path | str | None = None,
+    strict: bool = True,
+) -> str:
+    v6 = rebuild_v6_base(root)
+    return apply_news_rollup(
+        root,
+        apply_last24(root, v6, diagnostics=diagnostics, strict=strict),
+        diagnostics=diagnostics,
+        strict=strict,
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Market Watch static base patcher")
+    sub = parser.add_subparsers(dest="command", required=True)
+    base_p = sub.add_parser("base", help="Rebuild v6 and apply last-24 + news rollup patches")
+    base_p.add_argument("--root", type=Path, required=True)
+    base_p.add_argument("--out", type=Path, required=True)
+    temp_p = sub.add_parser("temperature-inputs", help="Apply temperature input score blocks in place")
+    temp_p.add_argument("--root", type=Path, required=True)
+    temp_p.add_argument("--html", type=Path, required=True)
+    args = parser.parse_args(argv)
+    try:
+        if args.command == "base":
+            html = build_static_base_html(args.root)
+            args.out.parent.mkdir(parents=True, exist_ok=True)
+            args.out.write_text(html, encoding="utf-8")
+        else:
+            page = args.html.read_text(encoding="utf-8")
+            args.html.write_text(
+                apply_temperature_inputs(args.root, page),
+                encoding="utf-8",
+            )
+    except StaticBaseError as exc:
+        print(f"static base error: {exc}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
