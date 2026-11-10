@@ -26,9 +26,35 @@ from scripts.temperature_level import (
     write_paths,
     write_state,
 )
+from scripts.temperature_trends import cap_path_end
 from scripts.validate_score_sources import validate_registry
 
 REPO = Path(__file__).resolve().parents[1]
+
+_PATH_POINT_KEYS = ("period", "level", "impulse", "direction", "coverage")
+
+
+def _assert_path_prefix_matches_explicit_end(
+    cal: dict,
+    histories: dict,
+    auto_doc: dict,
+    frozen_end: str,
+) -> None:
+    """Automatic path must match an explicit end= frozen window on shared months only."""
+    frozen = build_paths(cal, histories, end=frozen_end)
+    for country in temperature_countries():
+        for dim in ("Inflation", "Labor", "Activity", "Consumer"):
+            auto_rows = auto_doc["paths"][country][dim]
+            frozen_rows = frozen["paths"][country][dim]
+            if len(frozen_rows) > len(auto_rows):
+                raise AssertionError(f"{country} {dim}: automatic path shorter than frozen end")
+            for i, frozen_row in enumerate(frozen_rows):
+                for key in _PATH_POINT_KEYS:
+                    if auto_rows[i][key] != frozen_row[key]:
+                        raise AssertionError(
+                            f"{country} {dim} {key} at {frozen_row['period']}: "
+                            f"{auto_rows[i][key]!r} != {frozen_row[key]!r}"
+                        )
 
 _COMPONENT_STATE_KEYS = ("observed", "as_of", "transform_value", "level", "impulse")
 _DIMENSION_SCORE_KEYS = (
@@ -141,10 +167,17 @@ class TemperatureLevelEngineTest(unittest.TestCase):
         )
         engine_paths = build_paths(self.cal, self.histories)
         disk_paths = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(engine_paths["window"], {"start": "2025-09", "end": "2026-09"})
+        expected_end = cap_path_end(scoring_cutoff(self.cal, self.histories), self.histories)
+        self.assertGreaterEqual(expected_end, "2026-10")
+        self.assertEqual(engine_paths["window"], {"start": "2025-09", "end": expected_end})
         self.assertEqual(disk_paths["window"], engine_paths["window"])
         self.assertEqual(engine_paths["paths"], disk_paths["paths"])
         self.assertEqual(engine_paths["pathology"], disk_paths["pathology"])
+        _assert_path_prefix_matches_explicit_end(
+            self.cal, self.histories, engine_paths, "2026-09"
+        )
+        frozen_september = build_paths(self.cal, self.histories, end="2026-09")
+        self.assertEqual(frozen_september["window"]["end"], "2026-09")
 
     def test_fixed_september_cutoff_differs_from_october_fixture(self) -> None:
         """A fixed September cutoff must not match a state scored through October.
@@ -720,21 +753,14 @@ class JapanConsumerCalibrationTest(unittest.TestCase):
         series = paths["paths"]["JP"]["Consumer"]
         self.assertTrue(all(row["level"] is not None for row in series))
         levels = _jp_consumer_levels(paths)
-        self.assertEqual([row["period"] for row in series], [
-            "2025-09",
-            "2025-10",
-            "2025-11",
-            "2025-12",
-            "2026-01",
-            "2026-02",
-            "2026-03",
-            "2026-04",
-            "2026-05",
-            "2026-06",
-            "2026-07",
-            "2026-08",
-            "2026-09",
-        ])
+        september_prefix = build_paths(self.cal, self.histories, end="2026-09")
+        sept_series = september_prefix["paths"]["JP"]["Consumer"]
+        for i, row in enumerate(sept_series):
+            for key in _PATH_POINT_KEYS:
+                self.assertEqual(series[i][key], row[key], f"prefix mismatch at {row['period']} {key}")
+        self.assertGreaterEqual(paths["window"]["end"], "2026-10")
+        prefix_periods = [row["period"] for row in sept_series]
+        self.assertEqual(prefix_periods[-1], "2026-09")
         jumps = [abs(b - a) for a, b in zip(levels, levels[1:])]
         self.assertTrue(jumps)
         self.assertLess(max(jumps), 12.0, f"JP Consumer still sawtoothing: {levels}")

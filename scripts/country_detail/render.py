@@ -34,6 +34,7 @@ from scripts.country_detail.indicator import (
     score_usage,
 )
 from scripts.country_detail.policy_meetings import render_policy_meetings
+from scripts.country_detail.temperature_history_panel import render_temperature_history_panel
 from scripts.country_detail.present import (
     _movement_pair,
     bucket_label,
@@ -1272,6 +1273,7 @@ def render_country_detail(
     score_windows: Mapping[str, Any] | None = None,
     policy_meetings: Mapping | None = None,
     stir_strips: Mapping[str, Any] | None = None,
+    temperature_view: Mapping[str, Any] | None = None,
 ) -> str:
     """Render the Country Detail fragment for one economy."""
     code = str(country_code)
@@ -1283,8 +1285,10 @@ def render_country_detail(
     chunks = [
         f'<section class="country-detail" data-country="{_esc(code)}">',
         _score_header(score_state),
-        _render_score_compact(code, score_state),
     ]
+    if isinstance(temperature_view, Mapping):
+        chunks.append(render_temperature_history_panel(temperature_view))
+    chunks.append(_render_score_compact(code, score_state))
     if policy_meetings is not None:
         prices_root = policy_meetings.get("prices") if isinstance(policy_meetings, Mapping) else None
         calendar_root = policy_meetings.get("calendar") if isinstance(policy_meetings, Mapping) else None

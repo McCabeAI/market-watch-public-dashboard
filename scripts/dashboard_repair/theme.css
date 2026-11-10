@@ -754,6 +754,59 @@ label:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,i
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
 
+/* Proposed temperature cards. Light surface on the dark workstation. */
+.temp-cards{
+  background:#f7f6f3;
+  color:#161616;
+  border-radius:12px;
+  padding:16px;
+  margin:0 0 16px;
+  max-width:100%;
+  min-width:0;
+}
+.temp-cards-head b{display:block;font-size:18px;line-height:1.25;color:#111}
+.temp-cards-note{margin:6px 0 0;color:#5c656e;font-size:13px;line-height:1.45}
+.temp-card-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;margin-top:14px}
+.temp-card{
+  background:#fff;
+  color:#161616;
+  border:1px solid #e4e1da;
+  border-radius:10px;
+  padding:12px;
+  min-width:0;
+}
+.temp-card h3{margin:0;font-size:16px;line-height:1.2;color:#111}
+.temp-card-period{margin:2px 0 8px;color:#5c656e;font-size:12.5px}
+.temp-card-score{display:flex;align-items:baseline;gap:4px;margin:0}
+.temp-card-value{font-size:32px;font-weight:750;letter-spacing:-.03em;font-variant-numeric:tabular-nums;color:#111}
+.temp-card-unit,.temp-card-kind{color:#5c656e}
+.temp-card-kind{margin:0 0 8px;font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.temp-spark{margin:4px 0 8px}
+.temp-spark .temp-svg{width:100%;height:auto;display:block;min-width:0}
+.temp-card-deltas{display:flex;gap:16px;margin:0 0 8px}
+.temp-card-deltas div{min-width:0}
+.temp-card-deltas dt{color:#5c656e;font-size:11px;font-weight:750;letter-spacing:.06em;text-transform:uppercase}
+.temp-card-deltas dd{margin:0;font-size:16px;font-weight:750;font-variant-numeric:tabular-nums;color:#111}
+.temp-card .temp-unavailable{color:#5c656e;font-weight:650}
+.temp-card-gap,.temp-card-components,.temp-card-move,.temp-card-provenance{margin:0 0 6px;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.temp-gap-value{font-weight:750;font-variant-numeric:tabular-nums}
+.temp-card-flag{
+  display:inline-block;
+  margin:0 6px 6px 0;
+  padding:2px 8px;
+  border:1px solid #161616;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+.temp-card-provenance{color:#5c656e}
+@media (min-width:720px){
+  .temp-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (min-width:1100px){
+  .temp-card-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+
 @media print{
   :root{color-scheme:light}
   body{background:#fff!important;color:#111!important;font-size:11pt}

@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.country_registry import history_files, temperature_countries
+from scripts.temperature_trends import cap_path_end
 
 ROOT = Path(__file__).resolve().parents[1]
 CALIBRATION_PATH = ROOT / "data" / "temperature_calibration.json"
@@ -795,8 +796,10 @@ def build_paths(
     cal: dict[str, Any],
     histories: dict[str, dict[str, Any]],
     start: str = "2025-09",
-    end: str = "2026-09",
+    end: str | None = None,
 ) -> dict[str, Any]:
+    if end is None:
+        end = cap_path_end(scoring_cutoff(cal, histories), histories)
     cutoffs = iter_path_cutoffs(start, end)
     paths: dict[str, Any] = {c: {d: [] for d in DIMENSIONS} for c in COUNTRY_CODES}
     prev_levels: dict[str, dict[str, float | None]] = {
@@ -815,6 +818,8 @@ def build_paths(
                         "impulse": dim["impulse"],
                         "direction": dim["direction"],
                         "coverage": dim["coverage"],
+                        "source_period": dim.get("as_of"),
+                        "provenance": "reconstructed",
                     }
                 )
                 prev_levels[country][dimension] = dim["level"]
@@ -824,6 +829,31 @@ def build_paths(
         "version": 1,
         "methodology": cal["methodology"],
         "calibration": "data/temperature_calibration.json",
+        "provenance": {
+            "series_kind": "reconstructed",
+            "label": "RECONSTRUCTED",
+            "statement": (
+                "Monthly levels are a reconstructed replay of the current LEVEL engine at each cutoff, "
+                "using only observations whose reference period is on or before that cutoff. "
+                "They are not historical real-time published snapshots."
+            ),
+            "graph_month": "The path period is the scoring cutoff month, not necessarily the economic source period.",
+            "source_period": (
+                "source_period is the dimension as_of (latest scored component reference period) at that cutoff. "
+                "It may be earlier than the graph month."
+            ),
+        },
+        "derived_composite": {
+            "label": "proposed",
+            "weights": {"Inflation": 0.40, "Labor": 0.40, "Activity": 0.10, "Consumer": 0.10},
+            "formula": "0.40*Inflation + 0.40*Labor + 0.10*Activity + 0.10*Consumer",
+            "divergence": "Inflation - Labor",
+            "neutral": 50,
+            "not": "equal-weight mean",
+            "scope": (
+                "Dashboard visualization only. Does not replace calibrated levels or the production equal-weight mean."
+            ),
+        },
         "window": {"start": start, "end": end},
         "pathology": pathology,
         "paths": paths,
@@ -900,9 +930,23 @@ def write_state(path: Path = STATE_PATH) -> dict[str, Any]:
 
 
 def write_paths(path: Path = PATHS_PATH) -> dict[str, Any]:
+    """Rewrite score paths. Published snapshots ride along inside the same file.
+
+    The snapshot list is derived from the repo score file plus any snapshots
+    already stored in the repo path document. Writing to a temp path for the
+    Pages byte compare therefore matches the committed file and does not create
+    a second artifact.
+    """
+    from scripts.temperature_trends import paths_with_published_snapshot
+
     cal = load_calibration()
     histories = load_history()
     doc = build_paths(cal, histories)
+    prior = None
+    if PATHS_PATH.is_file():
+        prior = json.loads(PATHS_PATH.read_text(encoding="utf-8"))
+    if STATE_PATH.is_file():
+        doc = paths_with_published_snapshot(doc, load_state(STATE_PATH), prior if isinstance(prior, dict) else None)
     path.write_text(json.dumps(doc, indent=2) + "\n", encoding="utf-8")
     return doc
 
