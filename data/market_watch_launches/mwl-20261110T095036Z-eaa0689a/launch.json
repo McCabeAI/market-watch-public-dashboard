@@ -4656,16 +4656,90 @@
       "status": "succeeded"
     },
     "05_acp_handoff": {
-      "artifact": null,
-      "details": {},
+      "artifact": "artifacts/05_acp_handoff.json",
+      "details": {
+        "delegation_request": {
+          "base_packet_sha256": "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f",
+          "binding_relpath": "data/market_watch_launches/mwl-20261110T095036Z-eaa0689a/freeze_binding.json",
+          "budget": {
+            "composer_cap": 2,
+            "current_graph": {
+              "composer_calls": 2,
+              "grok_family_calls": 19,
+              "nodes": {
+                "automated_pms": 3,
+                "learning_examiner": 1,
+                "parent": 1,
+                "synthesis": 1,
+                "traders": 15
+              },
+              "total_calls": 21,
+              "version": 1
+            },
+            "frozen_command": ".cursor/commands/overnight-scheduled.md",
+            "grok_cap": 19,
+            "launch_command": ".cursor/commands/manual-market-watch-review.md",
+            "launcher_id": "manual-market-watch-launch-v1",
+            "legacy_schedule_id_inactive": "market-watch-weekday-0205",
+            "parent_model": "grok-4.7",
+            "total_model_cap": 21
+          },
+          "dispatch_when": "freeze-succeeded",
+          "freeze_commit_sha": null,
+          "launch_id": "mwl-20261110T095036Z-eaa0689a",
+          "origin": {
+            "actor": "kevinnmccabe-PC",
+            "actor_type": "User",
+            "issue_number": 336,
+            "issue_url": "https://github.com/McCabeAI/market-watch-public-dashboard/issues/336",
+            "repository_permission": "admin",
+            "source": "github_issue"
+          },
+          "overnight_run_id": "overnight-20261110",
+          "public_verification": {
+            "readable_without_secrets": true,
+            "ref": "main",
+            "repo": "McCabeAI/market-watch-public-dashboard"
+          },
+          "review_id": "review-001",
+          "score_state_sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a",
+          "session_date": "2026-11-10",
+          "single_use": true,
+          "starting_pm_books_sha256": "a89ffc220d3a7a275d0ebdce3455d30891432acabbb70abb666012d17f80810c",
+          "starting_trader_books_sha256": "e29f0dc31b18d8200d0cf23e82e367c472449f6f4ef85aa6733120d94bad16c3",
+          "target_repo": "McCabeAI/market-watch-public-dashboard",
+          "type": "MW_ACP_ONE_SHOT_DELEGATION_REQUEST",
+          "version": 1
+        },
+        "dispatch_implemented": false,
+        "grant_present": false,
+        "grant_verified": false,
+        "handoff_status": "request_ready",
+        "handoff_url": null,
+        "live_model_calls": 0,
+        "live_provider_dispatched": false,
+        "receipt_matches": false,
+        "receipt_present": false,
+        "remote_freeze_verified": true,
+        "research_publication": {
+          "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+          "public_state": "matched",
+          "receipt_path": "research_pages.json",
+          "receipt_sha256": "242804f80f36256c0a9121df3dcd9e22bd3cde7f6f8cbfba2f2fbd5e95ded664",
+          "recorded_at": "2026-11-10T11:11:35+00:00",
+          "release_sha256": "77e0631736cc00cf528e484269de5fe4caafa79444b497950a29e1272497b119",
+          "run_id": 42793964553,
+          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/42793964553"
+        }
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
-      "reason": null,
+      "input_sha256": "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f",
+      "output_sha256": "dace5e5d2a2b33cb3381a55687f35ff4248daa1ac141ac4391cc78ba96803500",
+      "reason": "awaiting_acp_one_shot_authority",
       "source_run_url": null,
       "stage": "05_acp_handoff",
       "started_at": null,
-      "status": "pending"
+      "status": "blocked"
     },
     "06_acceptance": {
       "artifact": null,
@@ -4706,7 +4780,7 @@
   },
   "starting_pm_books_sha256": "a89ffc220d3a7a275d0ebdce3455d30891432acabbb70abb666012d17f80810c",
   "starting_trader_books_sha256": "e29f0dc31b18d8200d0cf23e82e367c472449f6f4ef85aa6733120d94bad16c3",
-  "status": "running",
+  "status": "blocked",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }
