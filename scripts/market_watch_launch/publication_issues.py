@@ -55,6 +55,10 @@ _FORBIDDEN_PHRASES = ("Current verified headlines", "Last refreshed")
 _TEMP_PATH_RE = re.compile(r"(?:(?:/tmp|/var/tmp|/var/folders)/[^\s\"']+)")
 
 _MARKET_SOURCE_BAD = frozenset({"unavailable", "partial", "error"})
+_MARKET_KEY_COUNTRY_RE = re.compile(
+    r"^(US|CA|AU|NZ|EA|JP)_",
+    re.I,
+)
 _PREV_INGEST_FAILURE = frozenset({"source_failed", "license_gap", "due_missing"})
 _LAUNCHES_REL = Path("data") / "market_watch_launches"
 
@@ -76,6 +80,28 @@ def _sanitize_text(text: str) -> str:
     for phrase in _FORBIDDEN_PHRASES:
         out = out.replace(phrase, "[redacted label]")
     return _TEMP_PATH_RE.sub("[temp path]", out)
+
+
+def _market_source_country(key: str) -> str | None:
+    match = _MARKET_KEY_COUNTRY_RE.match(str(key or ""))
+    if not match:
+        return None
+    code = match.group(1).upper()
+    return code if code in COUNTRIES else None
+
+
+def _market_source_cause(note: str, error: str, *, fetch_failed: bool = True) -> str:
+    from scripts.dashboard_repair.sources_view import _human_market_detail
+
+    human, _ = _human_market_detail(note, error)
+    if human:
+        text = re.sub(r"https?://\S+", "", human)
+        text = " ".join(text.split()).strip(" ,;:")
+    else:
+        text = "Market-data source fetch failed." if fetch_failed else "Market-data source is stale."
+    if len(text) <= 160:
+        return text
+    return text[:159] + "…"
 
 
 def _error_summary(error: str) -> str:
@@ -442,6 +468,7 @@ def collect_market_state_issues(
                         if affects_marks
                         else "This market-data source is not fully current on the page."
                     ),
+                    country=_market_source_country(key),
                     launch_id=launch_id,
                     phase=phase,
                     last_verified_vintage=vintage,
@@ -450,8 +477,12 @@ def collect_market_state_issues(
             )
             continue
         if status in _MARKET_SOURCE_BAD or error:
+            from scripts.dashboard_repair.sources_view import _human_market_detail
+
             severity = "critical" if affects_marks else "warning"
-            cause = error or f"{key} is {status} in the market-state packet."
+            cause = _market_source_cause(note, error, fetch_failed=True)
+            _, blob = _human_market_detail(note, error)
+            detail = blob or detail
             issues.append(
                 make_issue(
                     "market_source_degraded",
@@ -464,6 +495,7 @@ def collect_market_state_issues(
                         if affects_marks
                         else "This market-data source is not fully current on the page."
                     ),
+                    country=_market_source_country(key),
                     launch_id=launch_id,
                     phase=phase,
                     last_verified_vintage=vintage,

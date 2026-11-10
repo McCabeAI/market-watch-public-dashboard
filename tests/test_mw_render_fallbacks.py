@@ -61,12 +61,26 @@ class RenderFallbackTests(unittest.TestCase):
         self.assertIn("Live 1–100 Score Board", out)
         self.assertIsNone(re.search(r'<span class="score-num">\s*[0-9]', out))
 
+    def test_scores_unavailable_is_idempotent(self):
+        html = _build_pre_scores_with_temp_inputs()
+        once = scores_unavailable(html)
+        twice = scores_unavailable(once)
+        self.assertEqual(twice, once)
+        self.assertEqual(once.count("Macro Snapshot"), 1)
+
     def test_country_detail_unavailable_preserves_cdetail_blocks(self):
         html = _build_pre_scores_with_temp_inputs()
         out = country_detail_unavailable(html)
         for key in static_base.COUNTRY_KEYS:
             self.assertIn(f'<div class="cdetail {key}">', out)
             self.assertIn('data-country-detail-state="unavailable"', out)
+
+    def test_country_detail_unavailable_is_idempotent(self):
+        html = _build_pre_scores_with_temp_inputs()
+        once = country_detail_unavailable(html)
+        twice = country_detail_unavailable(once)
+        self.assertEqual(twice, once)
+        self.assertEqual(once.count('data-country-detail-state="unavailable"'), len(static_base.COUNTRY_KEYS))
 
     def test_downstream_trader_book_survives_news_and_scores_fallback(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -196,6 +196,13 @@ def _replace_score_overview_div(html: str, marker: str) -> str:
 def scores_unavailable(html: str, *, reason: str = "") -> str:
     del reason
     if (
+        'class="score-overview-unavailable"' in html
+        and 'data-score-overview="calibrated"' in html
+        and 'data-component-state="unavailable"' in html
+        and SCORE_OVERVIEW_MARKER not in html
+    ):
+        return html
+    if (
         SCORE_OVERVIEW_MARKER not in html
         and 'data-score-overview="calibrated"' not in html
         and 'data-score-overview="live"' not in html
@@ -248,6 +255,13 @@ def country_detail_unavailable(html: str, *, reason: str = "") -> str:
     del reason
     if not any(f'<div class="cdetail {key}">' in html for key in COUNTRY_KEYS):
         raise FallbackUnavailable("no country detail containers")
+    present = [key for key in COUNTRY_KEYS if f'<div class="cdetail {key}">' in html]
+    if present and all(
+        f'data-country-detail-state="unavailable" data-component-state="unavailable" data-country-key="{key}"'
+        in html
+        for key in present
+    ):
+        return html
     out = html
     touched = False
     for key in COUNTRY_KEYS:

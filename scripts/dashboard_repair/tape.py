@@ -500,7 +500,10 @@ def render_tape(packet: dict[str, Any] | None) -> str:
         "DXY is omitted: the packet has no DXY series, and the broad dollar index is not relabeled as DXY. "
         "A missing series stays unavailable and is not replaced with the September base-page snapshot."
     )
-    short = f"Market-state packet {short_when}; packet status {packet_status}. Dated official closes, not a quote feed."
+    short = (
+        f"Market-state packet {short_when}; packet status {packet_status}. "
+        "Dated official closes, not a quote feed. A missing series stays unavailable."
+    )
     return (
         '<div class="mw-tape" data-global-tape="repair">'
         '<div class="stitle">Global Tape · dated official observations</div>'

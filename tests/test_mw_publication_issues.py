@@ -149,6 +149,33 @@ class PublicationIssuesCollectorsTests(unittest.TestCase):
         self.assertEqual(by_component["market_state:US_rates"]["code"], "market_source_stale")
         self.assertEqual(by_component["market_state:CME_positioning"]["severity"], "warning")
 
+    def test_market_state_degraded_short_cause_and_country_prefix(self):
+        rbnz_note = (
+            "RBNZ official B2 workbook was blocked; "
+            "see https://www.rbnz.govt.nz/statistics/series/exchange-and-interest-rates/b2"
+        )
+        packet = {
+            "status": "ok",
+            "sources": {
+                "NZ_rates": {"status": "unavailable", "error": rbnz_note},
+                "CME_positioning": {
+                    "status": "unavailable",
+                    "error": "errors={'AUD': HTTP Error 403: Forbidden https://www.cmegroup.com/market-data/…}",
+                },
+            },
+        }
+        rows = pi.collect_market_state_issues(packet, _release())
+        by_component = {row["component"]: row for row in rows}
+        nz = by_component["market_state:NZ_rates"]
+        self.assertEqual(nz["country"], "NZ")
+        self.assertNotIn("https://", nz["cause"])
+        self.assertLessEqual(len(nz["cause"]), 160)
+        self.assertIn(rbnz_note, nz["detail"])
+        cme = by_component["market_state:CME_positioning"]
+        self.assertIsNone(cme.get("country"))
+        self.assertIn("403", cme["cause"])
+        self.assertNotIn("cmegroup.com", cme["cause"].lower())
+
     def test_market_state_top_unavailable(self):
         with tempfile.TemporaryDirectory() as td:
             site = Path(td)
