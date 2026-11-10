@@ -1732,3 +1732,185 @@
 .country-detail .policy-meetings table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
 .country-detail .policy-meetings th, .country-detail .policy-meetings td { text-align: left; padding: 0.35rem 0.5rem; white-space: nowrap; }
 .country-detail .policy-meetings-source { color: var(--cd-muted); font-size: 0.85rem; }
+
+/* Historical temperature panel. Light chart surface inside the dark country page. */
+.country-detail .temp-panel,
+.cdetail-preview .temp-panel{
+  background:#f7f6f3;
+  color:#161616;
+  border:1px solid #e4e1da;
+  border-radius:12px;
+  padding:16px;
+  margin:0 0 16px;
+  position:relative;
+  max-width:100%;
+  min-width:0;
+}
+.country-detail .temp-panel-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.country-detail .temp-panel-title{
+  margin:0;
+  flex:1 1 12rem;
+  color:#111;
+  font-size:clamp(1.05rem, 4.8vw, 1.55rem);
+  line-height:1.2;
+  font-weight:750;
+}
+.country-detail .temp-panel-month{
+  margin:0;
+  color:#111;
+  font-weight:700;
+  text-align:right;
+}
+.country-detail .temp-panel-desc,
+.country-detail .temp-neutral-note,
+.country-detail .temp-panel-provenance{
+  color:#5c656e;
+  font-size:.92rem;
+  line-height:1.45;
+}
+.country-detail .temp-legend{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px 6px;
+  margin:12px 0;
+}
+.country-detail .temp-tile{
+  display:flex;
+  align-items:stretch;
+  gap:6px;
+  min-width:0;
+  padding:0;
+  background:transparent;
+  color:#111;
+  border:none;
+  border-radius:0;
+}
+.country-detail .temp-swatch{
+  width:3px;
+  flex:0 0 3px;
+  align-self:stretch;
+  border-radius:2px;
+  display:block;
+}
+.country-detail .temp-tile-body{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:2px;
+  min-width:0;
+  flex:1 1 auto;
+}
+.country-detail .temp-tile-name{
+  font-weight:650;
+  font-size:.8rem;
+  line-height:1.2;
+}
+.country-detail .temp-tile-value{
+  margin:0;
+  font-size:.95rem;
+  font-weight:750;
+  font-variant-numeric:tabular-nums;
+  line-height:1.15;
+  overflow-wrap:anywhere;
+}
+.country-detail .temp-window{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:0 0 12px;
+}
+.country-detail .temp-panel button.temp-window-btn{
+  min-height:44px;
+  min-width:44px;
+  padding:0 14px;
+  border:1px solid #d5d3cc;
+  border-radius:999px;
+  background:#fff;
+  color:#161616;
+  font:inherit;
+  font-weight:700;
+}
+.country-detail .temp-panel button.temp-window-btn:hover,
+.country-detail .temp-panel button.temp-window-btn:focus-visible{
+  background:#fff;
+  color:#161616;
+  outline:2px solid #1687FF;
+  outline-offset:2px;
+}
+.country-detail .temp-panel button.temp-window-btn[aria-pressed="true"],
+.country-detail .temp-panel button.temp-window-btn[aria-pressed="true"]:hover{
+  background:#161616;
+  color:#fff;
+  border-color:#161616;
+}
+.country-detail .temp-chart-scroll{
+  overflow-x:auto;
+  background:#f7f6f3;
+  border-radius:8px;
+}
+.country-detail .temp-chart-scroll:focus{
+  outline:2px solid #1687FF;
+  outline-offset:2px;
+}
+.country-detail .temp-chart-scroll .temp-svg{
+  display:block;
+  width:100%;
+  height:auto;
+  min-width:0;
+}
+.country-detail .temp-focus,
+.country-detail .temp-multiple{
+  margin:10px 0 0;
+  min-width:0;
+  background:#fff;
+  border:1px solid #e4e1da;
+  border-radius:10px;
+  padding:8px 8px 4px;
+}
+.country-detail .temp-focus figcaption,
+.country-detail .temp-multiple figcaption{
+  color:#111;
+  font-weight:700;
+  font-size:.85rem;
+}
+.country-detail .temp-focus .temp-svg,
+.country-detail .temp-multiple .temp-svg{
+  display:block;
+  width:100%;
+  height:auto;
+  min-width:0;
+}
+.country-detail .temp-multiples{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:10px;
+}
+.country-detail .temp-tip{
+  position:absolute;
+  z-index:4;
+  max-width:min(280px, calc(100% - 16px));
+  background:#161616;
+  color:#f7f6f3;
+  padding:8px 10px;
+  border-radius:8px;
+  font-size:12px;
+  line-height:1.35;
+  white-space:pre-line;
+  pointer-events:none;
+  transform:translate(-50%, calc(-100% - 8px));
+}
+.country-detail .temp-hit.is-active{fill:rgba(22,135,255,.16)}
+@media (max-width:359px){
+  .country-detail .temp-tile-name{font-size:.74rem}
+  .country-detail .temp-tile-value{font-size:.88rem}
+}
+@media (min-width:700px){
+  .country-detail .temp-multiples{grid-template-columns:repeat(2,minmax(0,1fr))}
+}

@@ -181,7 +181,19 @@ def refresh_promoted_score_paths(repo_root: Path) -> bool:
     paths_path = history_dir / "score_paths.json"
     calibration = load_calibration(calibration_path)
     histories = load_history(history_dir)
+    from scripts.temperature_trends import paths_with_published_snapshot
+
     document = build_paths(calibration, histories)
+    prior = None
+    if paths_path.is_file():
+        prior = json.loads(paths_path.read_text(encoding="utf-8"))
+    scores_path = root / "data" / "temperature_scores.json"
+    if scores_path.is_file():
+        state = json.loads(scores_path.read_text(encoding="utf-8"))
+        document = paths_with_published_snapshot(document, state, prior if isinstance(prior, dict) else None)
+    elif isinstance(prior, dict) and "published_snapshots" in prior:
+        document = dict(document)
+        document["published_snapshots"] = prior["published_snapshots"]
     text = json.dumps(document, indent=2) + "\n"
     if paths_path.is_file() and paths_path.read_text(encoding="utf-8") == text:
         return False

@@ -2,9 +2,30 @@
   "version": 1,
   "methodology": "docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md",
   "calibration": "data/temperature_calibration.json",
+  "provenance": {
+    "series_kind": "reconstructed",
+    "label": "RECONSTRUCTED",
+    "statement": "Monthly levels are a reconstructed replay of the current LEVEL engine at each cutoff, using only observations whose reference period is on or before that cutoff. They are not historical real-time published snapshots.",
+    "graph_month": "The path period is the scoring cutoff month, not necessarily the economic source period.",
+    "source_period": "source_period is the dimension as_of (latest scored component reference period) at that cutoff. It may be earlier than the graph month."
+  },
+  "derived_composite": {
+    "label": "proposed",
+    "weights": {
+      "Inflation": 0.4,
+      "Labor": 0.4,
+      "Activity": 0.1,
+      "Consumer": 0.1
+    },
+    "formula": "0.40*Inflation + 0.40*Labor + 0.10*Activity + 0.10*Consumer",
+    "divergence": "Inflation - Labor",
+    "neutral": 50,
+    "not": "equal-weight mean",
+    "scope": "Dashboard visualization only. Does not replace calibrated levels or the production equal-weight mean."
+  },
   "window": {
     "start": "2025-09",
-    "end": "2026-09"
+    "end": "2026-10"
   },
   "pathology": {
     "max_abs_jump_threshold": 15.0,
@@ -18,91 +39,126 @@
           "level": 53.71,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 56.64,
           "impulse": 2.93,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 55.06,
           "impulse": -1.58,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 62.11,
           "impulse": 7.05,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 73.31,
           "impulse": 11.2,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 84.56,
           "impulse": 11.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 82.95,
           "impulse": -1.61,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 73.41,
           "impulse": -9.54,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 71.62,
           "impulse": -1.79,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 63.91,
           "impulse": -7.71,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 63.1,
           "impulse": -0.81,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 63.1,
           "impulse": -0.81,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 63.1,
           "impulse": -0.81,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 63.1,
+          "impulse": -0.81,
+          "direction": "static",
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         }
       ],
       "Labor": [
@@ -111,91 +167,126 @@
           "level": 50.22,
           "impulse": -2.0,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 48.2,
           "impulse": -3.42,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 47.31,
           "impulse": -0.89,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 47.68,
           "impulse": 0.37,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 50.94,
           "impulse": 3.26,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 48.31,
           "impulse": -2.62,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 50.72,
           "impulse": 2.41,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 50.92,
           "impulse": 0.19,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 51.9,
           "impulse": 0.99,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 52.18,
           "impulse": 0.28,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 52.44,
           "impulse": 0.26,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 52.8,
           "impulse": 0.36,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 51.26,
           "impulse": -1.54,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 53.81,
+          "impulse": 2.55,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-10",
+          "provenance": "reconstructed"
         }
       ],
       "Activity": [
@@ -204,91 +295,126 @@
           "level": 64.29,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 64.6,
           "impulse": 1.56,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 64.71,
           "impulse": -0.01,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 53.37,
           "impulse": -22.93,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 53.66,
           "impulse": -23.0,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 54.15,
           "impulse": -22.78,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 47.41,
           "impulse": 9.05,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 47.39,
           "impulse": 9.49,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 47.31,
           "impulse": 10.01,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 50.33,
           "impulse": -3.82,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 50.49,
           "impulse": -3.3,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 50.6,
           "impulse": -3.36,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 50.73,
           "impulse": -3.75,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 50.77,
+          "impulse": -3.59,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-10",
+          "provenance": "reconstructed"
         }
       ],
       "Consumer": [
@@ -297,91 +423,126 @@
           "level": 43.1,
           "impulse": -3.1,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 38.55,
           "impulse": -4.55,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 39.43,
           "impulse": 0.88,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 38.45,
           "impulse": -0.98,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 42.12,
           "impulse": 3.68,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 43.08,
           "impulse": 0.96,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 49.63,
           "impulse": 6.54,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 49.12,
           "impulse": -0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 51.02,
           "impulse": 1.9,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 46.96,
           "impulse": -4.06,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 45.45,
           "impulse": -1.51,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 46.47,
           "impulse": 3.55,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 46.47,
           "impulse": 3.55,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 46.47,
+          "impulse": 3.55,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         }
       ]
     },
@@ -392,91 +553,126 @@
           "level": 60.05,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 57.92,
           "impulse": -2.12,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 57.48,
           "impulse": -0.45,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 56.67,
           "impulse": -0.8,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 54.83,
           "impulse": -1.85,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 51.15,
           "impulse": -3.68,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 53.83,
           "impulse": 2.68,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 54.48,
           "impulse": 0.65,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 56.53,
           "impulse": 2.05,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 53.25,
           "impulse": -3.27,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 54.78,
           "impulse": 1.53,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 54.78,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 54.34,
           "impulse": -0.44,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 54.34,
+          "impulse": -0.44,
+          "direction": "static",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ],
       "Labor": [
@@ -485,91 +681,126 @@
           "level": 35.75,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 39.27,
           "impulse": 3.52,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 43.4,
           "impulse": 4.13,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 40.07,
           "impulse": -3.33,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 43.31,
           "impulse": 3.24,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 40.9,
           "impulse": -2.41,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 42.39,
           "impulse": 1.49,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 39.4,
           "impulse": -2.99,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 41.74,
           "impulse": 2.34,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 43.69,
           "impulse": 1.95,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 44.69,
           "impulse": 1.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 42.16,
           "impulse": -2.52,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 40.94,
           "impulse": -1.22,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 37.41,
+          "impulse": -3.53,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-10",
+          "provenance": "reconstructed"
         }
       ],
       "Activity": [
@@ -578,91 +809,126 @@
           "level": 50.23,
           "impulse": -2.1,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 50.62,
           "impulse": 4.0,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 50.16,
           "impulse": -5.4,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 41.77,
           "impulse": -16.16,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 41.25,
           "impulse": -17.0,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 41.55,
           "impulse": -16.6,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 36.82,
           "impulse": 7.39,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 37.29,
           "impulse": 8.11,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 37.78,
           "impulse": 7.55,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 49.93,
           "impulse": 15.87,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 49.9,
           "impulse": 17.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 49.5,
           "impulse": 16.27,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 49.61,
           "impulse": 17.39,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 49.4,
+          "impulse": 16.79,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-10",
+          "provenance": "reconstructed"
         }
       ],
       "Consumer": [
@@ -671,91 +937,126 @@
           "level": 29.22,
           "impulse": null,
           "direction": "static",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 34.84,
           "impulse": 16.87,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 42.44,
           "impulse": 22.8,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 48.79,
           "impulse": 6.35,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 54.34,
           "impulse": 9.11,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 51.32,
           "impulse": 0.53,
           "direction": "static",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 59.19,
           "impulse": 7.87,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 55.37,
           "impulse": -1.82,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 57.59,
           "impulse": 4.22,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 62.12,
           "impulse": 4.53,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 56.41,
           "impulse": 0.29,
           "direction": "static",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 57.03,
           "impulse": 6.61,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 57.03,
           "impulse": 6.61,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 57.03,
+          "impulse": 6.61,
+          "direction": "warming",
+          "coverage": 0.75,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         }
       ]
     },
@@ -766,91 +1067,126 @@
           "level": 60.75,
           "impulse": 2.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 62.5,
           "impulse": 1.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 59.75,
           "impulse": -2.75,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 62.5,
           "impulse": 2.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 62.5,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 62.0,
           "impulse": -0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 66.5,
           "impulse": 4.5,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 65.25,
           "impulse": -1.25,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 65.0,
           "impulse": -0.25,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 64.75,
           "impulse": -0.25,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 63.25,
           "impulse": -1.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 65.75,
           "impulse": 2.5,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 67.25,
           "impulse": 1.5,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 67.25,
+          "impulse": 1.5,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ],
       "Labor": [
@@ -859,91 +1195,126 @@
           "level": 50.16,
           "impulse": -3.86,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 51.88,
           "impulse": 2.16,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 51.61,
           "impulse": -0.34,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 54.99,
           "impulse": 3.38,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 55.51,
           "impulse": 0.72,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 52.8,
           "impulse": -2.51,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 52.44,
           "impulse": -0.36,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 49.07,
           "impulse": -3.77,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 50.74,
           "impulse": 1.27,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 50.41,
           "impulse": -0.33,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 50.12,
           "impulse": -0.3,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 50.13,
           "impulse": -0.42,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 45.74,
           "impulse": -4.39,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 45.74,
+          "impulse": -4.39,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ],
       "Activity": [
@@ -952,91 +1323,126 @@
           "level": 49.55,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 49.49,
           "impulse": -0.3,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 49.54,
           "impulse": 0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 54.25,
           "impulse": 9.16,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 54.73,
           "impulse": 11.68,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 54.71,
           "impulse": 8.48,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 51.69,
           "impulse": -16.98,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 50.98,
           "impulse": -13.14,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 50.49,
           "impulse": -15.34,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 44.88,
           "impulse": 3.11,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 45.25,
           "impulse": 3.55,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 45.79,
           "impulse": 2.23,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 45.79,
           "impulse": 2.23,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 45.79,
+          "impulse": 2.23,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         }
       ],
       "Consumer": [
@@ -1045,91 +1451,126 @@
           "level": 50.06,
           "impulse": 8.0,
           "direction": "warming",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 57.4,
           "impulse": 14.67,
           "direction": "warming",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 64.06,
           "impulse": 13.33,
           "direction": "warming",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 63.98,
           "impulse": -0.08,
           "direction": "static",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 57.31,
           "impulse": -1.42,
           "direction": "cooling",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 52.65,
           "impulse": 0.58,
           "direction": "static",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 51.65,
           "impulse": -1.0,
           "direction": "cooling",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 42.98,
           "impulse": -23.67,
           "direction": "cooling",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 48.98,
           "impulse": -9.0,
           "direction": "cooling",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 50.44,
           "impulse": 1.46,
           "direction": "warming",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 64.44,
           "impulse": 20.13,
           "direction": "warming",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 56.44,
           "impulse": -1.87,
           "direction": "cooling",
-          "coverage": 0.5
+          "coverage": 0.5,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 49.1,
           "impulse": -1.87,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 49.1,
+          "impulse": -1.87,
+          "direction": "cooling",
+          "coverage": 0.75,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ]
     },
@@ -1140,91 +1581,126 @@
           "level": 58.75,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 58.75,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 58.75,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 59.25,
           "impulse": 0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 59.25,
           "impulse": 0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 59.25,
           "impulse": 0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 60.0,
           "impulse": 0.75,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 60.0,
           "impulse": 0.75,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 60.0,
           "impulse": 0.75,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 64.25,
           "impulse": 4.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 64.25,
           "impulse": 4.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 64.25,
           "impulse": 4.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 64.25,
           "impulse": 4.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 64.25,
+          "impulse": 4.25,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         }
       ],
       "Labor": [
@@ -1233,91 +1709,126 @@
           "level": 39.6,
           "impulse": -1.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 39.6,
           "impulse": -1.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 39.6,
           "impulse": -1.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 39.6,
           "impulse": -0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 39.6,
           "impulse": -0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 39.6,
           "impulse": -0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 38.7,
           "impulse": -0.9,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 38.7,
           "impulse": -0.9,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 38.7,
           "impulse": -0.9,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 36.51,
           "impulse": -2.19,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 36.51,
           "impulse": -2.19,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 36.51,
           "impulse": -2.19,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 36.51,
           "impulse": -2.19,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 36.51,
+          "impulse": -2.19,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         }
       ],
       "Activity": [
@@ -1326,91 +1837,126 @@
           "level": 41.21,
           "impulse": 60.27,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 41.35,
           "impulse": 36.44,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 41.24,
           "impulse": 35.68,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 54.91,
           "impulse": -8.12,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 55.15,
           "impulse": -10.28,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 55.21,
           "impulse": -10.84,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 54.5,
           "impulse": 9.2,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 54.18,
           "impulse": 10.48,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 54.19,
           "impulse": 9.76,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 51.13,
           "impulse": -16.0,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 51.46,
           "impulse": -17.12,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 51.87,
           "impulse": -16.88,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 51.87,
           "impulse": -16.88,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 51.87,
+          "impulse": -16.88,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         }
       ],
       "Consumer": [
@@ -1419,91 +1965,126 @@
           "level": 48.0,
           "impulse": -8.0,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 48.0,
           "impulse": -8.0,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 48.0,
           "impulse": -8.0,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 49.0,
           "impulse": 1.0,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 49.0,
           "impulse": 1.0,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 49.0,
           "impulse": 1.0,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 58.5,
           "impulse": 9.5,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 58.5,
           "impulse": 9.5,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 58.5,
           "impulse": 9.5,
           "direction": "warming",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 48.35,
           "impulse": -4.65,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 48.35,
           "impulse": -4.65,
           "direction": "cooling",
-          "coverage": 0.75
+          "coverage": 0.75,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 48.26,
           "impulse": -4.65,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 48.26,
           "impulse": -4.65,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 48.26,
+          "impulse": -4.65,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         }
       ]
     },
@@ -1514,91 +2095,126 @@
           "level": 54.0,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 53.5,
           "impulse": -0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 53.5,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 52.25,
           "impulse": -1.25,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 50.0,
           "impulse": -2.25,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 52.5,
           "impulse": 2.5,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 55.25,
           "impulse": 2.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 56.5,
           "impulse": 1.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 60.5,
           "impulse": 4.0,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 57.0,
           "impulse": -3.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 58.75,
           "impulse": 1.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 59.0,
           "impulse": 0.25,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 62.75,
           "impulse": 3.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 64.5,
+          "impulse": 1.75,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-10",
+          "provenance": "reconstructed"
         }
       ],
       "Labor": [
@@ -1607,91 +2223,126 @@
           "level": 48.99,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 48.99,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 48.99,
           "impulse": 0.0,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 55.93,
           "impulse": 6.94,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 55.93,
           "impulse": 6.94,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 54.53,
           "impulse": 5.54,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 50.26,
           "impulse": -4.27,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 50.26,
           "impulse": -4.27,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 50.26,
           "impulse": -4.27,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 50.42,
           "impulse": 0.16,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 49.02,
           "impulse": -1.24,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 49.02,
           "impulse": 0.16,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 49.02,
           "impulse": 0.16,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 49.02,
+          "impulse": 0.16,
+          "direction": "static",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ],
       "Activity": [
@@ -1700,91 +2351,126 @@
           "level": 49.31,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 49.57,
           "impulse": 1.3,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 49.7,
           "impulse": 0.3,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 48.53,
           "impulse": -2.94,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 48.37,
           "impulse": -2.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 48.25,
           "impulse": -2.18,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 44.53,
           "impulse": -5.29,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 44.19,
           "impulse": -5.57,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 43.74,
           "impulse": -4.93,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 48.51,
           "impulse": 15.13,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 48.93,
           "impulse": 15.33,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 49.35,
           "impulse": 14.37,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 54.59,
           "impulse": -4.27,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q3",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 54.59,
+          "impulse": -4.27,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-Q3",
+          "provenance": "reconstructed"
         }
       ],
       "Consumer": [
@@ -1793,91 +2479,126 @@
           "level": 47.72,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 48.42,
           "impulse": 1.4,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 47.85,
           "impulse": -1.15,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 49.09,
           "impulse": 1.24,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 48.93,
           "impulse": 1.49,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 47.31,
           "impulse": 0.03,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 46.43,
           "impulse": -0.88,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 43.72,
           "impulse": -4.93,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 46.12,
           "impulse": 0.19,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 44.31,
           "impulse": -1.81,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 43.42,
           "impulse": -0.66,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 44.17,
           "impulse": 0.97,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 41.2,
           "impulse": -2.74,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 40.92,
+          "impulse": -2.72,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-10",
+          "provenance": "reconstructed"
         }
       ]
     },
@@ -1888,91 +2609,126 @@
           "level": 49.25,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 52.0,
           "impulse": 2.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 51.5,
           "impulse": -0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 46.75,
           "impulse": -4.75,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 42.25,
           "impulse": -4.5,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 42.0,
           "impulse": -0.25,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 43.0,
           "impulse": 1.0,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 40.25,
           "impulse": -2.75,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 40.75,
           "impulse": 0.5,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 42.5,
           "impulse": 1.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 45.5,
           "impulse": 3.0,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 47.75,
           "impulse": 2.25,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 52.5,
           "impulse": 4.75,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 52.5,
+          "impulse": 4.75,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ],
       "Labor": [
@@ -1981,91 +2737,126 @@
           "level": 46.44,
           "impulse": null,
           "direction": "static",
-          "coverage": 0.9
+          "coverage": 0.9,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 48.35,
           "impulse": 0.89,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 46.4,
           "impulse": -1.95,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 47.62,
           "impulse": 1.22,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 47.82,
           "impulse": 0.02,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 47.35,
           "impulse": -0.47,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 45.7,
           "impulse": -1.65,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 52.05,
           "impulse": 6.35,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 52.28,
           "impulse": 0.23,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 52.88,
           "impulse": 0.6,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 52.35,
           "impulse": -0.53,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 50.05,
           "impulse": -2.3,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 53.78,
           "impulse": 2.93,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 53.78,
+          "impulse": 2.93,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ],
       "Activity": [
@@ -2074,91 +2865,126 @@
           "level": 29.0,
           "impulse": null,
           "direction": "static",
-          "coverage": 0.6
+          "coverage": 0.6,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 29.0,
           "impulse": null,
           "direction": "static",
-          "coverage": 0.6
+          "coverage": 0.6,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 29.0,
           "impulse": null,
           "direction": "static",
-          "coverage": 0.6
+          "coverage": 0.6,
+          "source_period": "2025-Q3",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 42.0,
           "impulse": 26.0,
           "direction": "warming",
-          "coverage": 0.6
+          "coverage": 0.6,
+          "source_period": "2025-Q4",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 46.44,
           "impulse": 26.0,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 46.6,
           "impulse": 15.92,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 56.73,
           "impulse": 4.44,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q1",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 56.61,
           "impulse": 4.48,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 56.24,
           "impulse": 4.36,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 57.07,
           "impulse": -2.44,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-Q2",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 57.14,
           "impulse": -2.92,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 57.46,
           "impulse": -2.68,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 57.46,
           "impulse": -2.68,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 57.46,
+          "impulse": -2.68,
+          "direction": "cooling",
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         }
       ],
       "Consumer": [
@@ -2167,93 +2993,249 @@
           "level": 52.76,
           "impulse": null,
           "direction": "static",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-09",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-10",
           "level": 47.26,
           "impulse": -11.12,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-10",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-11",
           "level": 48.94,
           "impulse": 10.01,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-11",
+          "provenance": "reconstructed"
         },
         {
           "period": "2025-12",
           "level": 40.85,
           "impulse": -22.58,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2025-12",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-01",
           "level": 41.23,
           "impulse": 13.61,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-01",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-02",
           "level": 35.61,
           "impulse": -8.85,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-02",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-03",
           "level": 39.53,
           "impulse": 10.9,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-03",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-04",
           "level": 41.44,
           "impulse": 3.16,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-04",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-05",
           "level": 48.25,
           "impulse": 3.79,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-05",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-06",
           "level": 44.65,
           "impulse": -17.2,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-06",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-07",
           "level": 37.53,
           "impulse": -6.35,
           "direction": "cooling",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-07",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-08",
           "level": 32.0,
           "impulse": 6.84,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-08",
+          "provenance": "reconstructed"
         },
         {
           "period": "2026-09",
           "level": 33.22,
           "impulse": 3.66,
           "direction": "warming",
-          "coverage": 1.0
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
+        },
+        {
+          "period": "2026-10",
+          "level": 33.22,
+          "impulse": 3.66,
+          "direction": "warming",
+          "coverage": 1.0,
+          "source_period": "2026-09",
+          "provenance": "reconstructed"
         }
       ]
     }
-  }
+  },
+  "published_snapshots": [
+    {
+      "kind": "published",
+      "source": "data/temperature_scores.json",
+      "observed_from": "current_published_state",
+      "scoring_cutoff": "2026-10",
+      "score_inputs_latest_reference_period": "2026-10",
+      "last_refresh_date": "2026-11-10",
+      "countries": {
+        "US": {
+          "Inflation": {
+            "level": 63.1,
+            "as_of": "2026-07"
+          },
+          "Labor": {
+            "level": 53.81,
+            "as_of": "2026-10"
+          },
+          "Activity": {
+            "level": 50.77,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 46.47,
+            "as_of": "2026-08"
+          }
+        },
+        "CA": {
+          "Inflation": {
+            "level": 54.34,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 37.41,
+            "as_of": "2026-10"
+          },
+          "Activity": {
+            "level": 49.4,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 57.03,
+            "as_of": "2026-08"
+          }
+        },
+        "AU": {
+          "Inflation": {
+            "level": 67.25,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 45.74,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 45.79,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 49.1,
+            "as_of": "2026-09"
+          }
+        },
+        "NZ": {
+          "Inflation": {
+            "level": 64.25,
+            "as_of": "2026-Q2"
+          },
+          "Labor": {
+            "level": 36.51,
+            "as_of": "2026-Q2"
+          },
+          "Activity": {
+            "level": 51.87,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 48.26,
+            "as_of": "2026-08"
+          }
+        },
+        "EA": {
+          "Inflation": {
+            "level": 64.5,
+            "as_of": "2026-10"
+          },
+          "Labor": {
+            "level": 49.02,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 54.59,
+            "as_of": "2026-Q3"
+          },
+          "Consumer": {
+            "level": 40.92,
+            "as_of": "2026-10"
+          }
+        },
+        "JP": {
+          "Inflation": {
+            "level": 52.5,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 53.78,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 57.46,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 33.22,
+            "as_of": "2026-09"
+          }
+        }
+      },
+      "note": "Observed published score state. Not a reconstructed monthly path and not a historical real-time vintage of earlier months."
+    }
+  ]
 }

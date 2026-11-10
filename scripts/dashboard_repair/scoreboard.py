@@ -150,7 +150,69 @@ def _level_face(row: dict[str, Any]) -> str:
     )
 
 
-def render_scoreboard(state: dict[str, Any]) -> str:
+def _delta_dd_class(delta_text: str) -> str:
+    if delta_text == "unavailable":
+        return ' class="temp-unavailable"'
+    return ""
+
+
+def _render_temp_card(card: dict[str, Any]) -> str:
+    from scripts.temperature_trends import render_sparkline
+
+    title = f'{card["name"]} proposed composite'
+    spark = render_sparkline(card["sparkline"], title)
+    component_bits = []
+    for dimension in DIMENSIONS:
+        face = card["components"][dimension]
+        component_bits.append(f"{esc(dimension)} {esc(face['text'])}")
+    flags_html = "".join(
+        f'<p class="temp-card-flag">{esc(flag)}</p>' for flag in (card.get("flags") or [])
+    )
+    return (
+        f'<article class="temp-card" data-country="{esc(card["country"])}">'
+        f"<h3>{esc(card['name'])}</h3>"
+        f'<p class="temp-card-period">{esc(card["period_label"])}</p>'
+        f'<p class="temp-card-score"><span class="temp-card-value">{esc(card["composite_text"])}</span>'
+        '<span class="temp-card-unit">/100</span></p>'
+        f'<p class="temp-card-kind">Proposed composite</p>'
+        f'<div class="temp-spark">{spark}</div>'
+        '<dl class="temp-card-deltas">'
+        f"<div><dt>1-month</dt><dd{_delta_dd_class(card['delta_1m_text'])}>"
+        f"{esc(card['delta_1m_text'])}</dd></div>"
+        f"<div><dt>3-month</dt><dd{_delta_dd_class(card['delta_3m_text'])}>"
+        f"{esc(card['delta_3m_text'])}</dd></div>"
+        "</dl>"
+        f'<p class="temp-card-gap">Inflation \u2212 Labor <span class="temp-gap-value">'
+        f"{esc(card['divergence_text'])}</span></p>"
+        f'<p class="temp-card-components">{"; ".join(component_bits)}</p>'
+        f'<p class="temp-card-move">{esc(card["movement"])}</p>'
+        f"{flags_html}"
+        '<p class="temp-card-provenance">Reconstructed monthly replay</p>'
+        '<p class="temp-card-actions">'
+        f'<button type="button" class="jump country-jump" data-country="{esc(str(card["country"]).lower())}" '
+        f'aria-label="View country trends for {esc(card["name"])}">View country trends</button>'
+        "</p>"
+        "</article>"
+    )
+
+
+def _render_temp_cards(paths_doc: dict[str, Any]) -> str:
+    from scripts.temperature_trends import overview_cards
+
+    articles = "".join(_render_temp_card(card) for card in overview_cards(paths_doc))
+    return (
+        '<section class="temp-cards" data-temp-cards>'
+        '<div class="temp-cards-head">'
+        "<b>Proposed temperature composite</b>"
+        '<p class="temp-cards-note">40/40/10/10 proposed weights. Not the equal-weight production mean. '
+        "50 is a structural reference, not a policy-balance claim.</p>"
+        "</div>"
+        f'<div class="temp-card-grid">{articles}</div>'
+        "</section>"
+    )
+
+
+def _scoreboard_markup(state: dict[str, Any]) -> str:
     from scripts.dashboard_repair.score_dates import scoreboard_asof_line
 
     as_of_line = scoreboard_asof_line(state)
@@ -199,10 +261,34 @@ def render_scoreboard(state: dict[str, Any]) -> str:
         "Equal-weight summary is the simple mean of the published dimension levels, not a separate weighted aggregate."
     )
     return (
-        '<div data-score-overview="calibrated" class="scoreboard">'
         '<div class="scoreboard-head"><b>1–100 Score Board</b>'
         f'<span class="mw-asof">{esc(as_of_line)}</span></div>'
         f'<p class="score-legend">{esc(legend)}</p>'
         '<div class="score-scroll"><table class="score-matrix">'
-        f"<thead><tr>{heads}</tr></thead><tbody>{''.join(body)}</tbody></table></div></div>"
+        f"<thead><tr>{heads}</tr></thead><tbody>{''.join(body)}</tbody></table></div>"
+    )
+
+
+def render_scoreboard(state: dict[str, Any], paths_doc: dict[str, Any] | None = None) -> str:
+    cards_html = ""
+    if paths_doc is None:
+        from scripts.temperature_trends import load_paths
+
+        paths_doc = load_paths()
+    if paths_doc is not None:
+        cards_html = _render_temp_cards(paths_doc)
+    table_html = _scoreboard_markup(state)
+    if cards_html:
+        table_html = (
+            '<details class="mw-scoreboard-legacy" data-scoreboard-legacy>'
+            "<summary>Detailed calibrated scores (equal-weight view)</summary>"
+            + table_html
+            + "</details>"
+        )
+    # Cards stay inside the replaced scoreboard element so a later repair does not duplicate them.
+    return (
+        '<div data-score-overview="calibrated" class="scoreboard">'
+        + cards_html
+        + table_html
+        + "</div>"
     )

@@ -32,7 +32,14 @@ from scripts.country_detail.render import (
 )
 from scripts.country_registry import dashboard_keys, load_country_registry, stale_after_days
 from scripts.market_watch_launch.publication_issues import record_diagnostic
+from scripts.country_detail.temperature_history_panel import temperature_chart_script
 from scripts.temperature_level import load_calibration, load_history, load_state
+from scripts.temperature_trends import (
+    country_names,
+    country_points,
+    load_paths,
+    provenance_note,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 SCORES_PATH = ROOT / "data" / "temperature_scores.json"
@@ -40,6 +47,7 @@ REGISTRY_PATH = ROOT / "data" / "country_registry.json"
 REVIEW_PATH = ROOT / "tests" / "fixtures" / "country_detail" / "review.html"
 _CSS_MARKER = "Country Detail — mobile-first"
 _FILTER_MARKER = "country-detail-evidence-filter"
+_CHART_MARKER = "temperature-history-chart"
 _TEMP_INPUTS = '<div class="temp-inputs"'
 
 
@@ -141,6 +149,29 @@ def load_stir_strip_view(root: Path | None) -> dict | None:
     return payload if isinstance(payload, dict) else None
 
 
+def _embedded_snapshots(paths_doc: dict | None) -> dict | None:
+    rows = paths_doc.get("published_snapshots") if isinstance(paths_doc, dict) else None
+    if isinstance(rows, list) and rows:
+        return {"snapshots": rows}
+    return None
+
+
+def _temperature_view_for_country(
+    paths_doc: dict | None,
+    snapshots: dict | None,
+    names: dict[str, str],
+    code: str,
+) -> dict | None:
+    if not paths_doc:
+        return None
+    return {
+        "country": code,
+        "name": names.get(code, code),
+        "points": country_points(paths_doc, code),
+        "provenance_note": provenance_note(paths_doc, snapshots),
+    }
+
+
 def render_dashboard_sections(
     root: Path | None = None,
     context: dict | None = None,
@@ -157,6 +188,9 @@ def render_dashboard_sections(
     windows = ctx.get("score_windows") or {}
     meetings = policy_meetings if policy_meetings is not None else load_policy_meeting_view(root)
     stir = load_stir_strip_view(root)
+    paths_doc = load_paths(root / "data" / "temperature_history" / "score_paths.json" if root else None)
+    snapshots = _embedded_snapshots(paths_doc)
+    names = country_names()
     sections: dict[str, str] = {}
     for code in COUNTRY_CODES:
         try:
@@ -168,6 +202,7 @@ def render_dashboard_sections(
                 score_windows=windows.get(code),
                 policy_meetings=meetings,
                 stir_strips=stir,
+                temperature_view=_temperature_view_for_country(paths_doc, snapshots, names, code),
             )
         except Exception as exc:
             if errors is None:
@@ -250,15 +285,18 @@ def _append_evidence(block: str, code: str, evidence: str) -> str:
 
 
 def _inject_filter_script(page: str) -> str:
-    if _FILTER_MARKER in page:
+    scripts: list[str] = []
+    if _FILTER_MARKER not in page:
+        scripts.append(f"<!-- {_FILTER_MARKER} -->\n<script>\n{evidence_filter_script()}\n</script>\n")
+    if _CHART_MARKER not in page:
+        scripts.append(f"<!-- {_CHART_MARKER} -->\n<script>\n{temperature_chart_script()}\n</script>\n")
+    if not scripts:
         return page
-    script = (
-        f"<!-- {_FILTER_MARKER} -->\n<script>\n{evidence_filter_script()}\n</script>\n"
-    )
+    blob = "".join(scripts)
     idx = page.rfind("</body>")
     if idx < 0:
-        return page + script
-    return page[:idx] + script + page[idx:]
+        return page + blob
+    return page[:idx] + blob + page[idx:]
 
 
 def _inside_archived(page: str, index: int) -> bool:
@@ -379,6 +417,9 @@ def apply_country_detail(
         windows = ctx.get("score_windows") or {}
         meetings = load_policy_meeting_view(root)
         stir = load_stir_strip_view(root)
+        paths_doc = load_paths(root / "data" / "temperature_history" / "score_paths.json")
+        snapshots = _embedded_snapshots(paths_doc)
+        names = country_names()
         for code in present:
             if code in sections:
                 continue
@@ -391,6 +432,7 @@ def apply_country_detail(
                     score_windows=windows.get(code),
                     policy_meetings=meetings,
                     stir_strips=stir,
+                    temperature_view=_temperature_view_for_country(paths_doc, snapshots, names, code),
                 )
             except Exception as exc:
                 render_errors[code] = f"{type(exc).__name__}: {exc}"
