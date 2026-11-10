@@ -31,10 +31,10 @@ from scripts.trading.memory import build_memory_context
 from scripts.trading.obligations import manifest_from_frozen_review
 from scripts.trading.store import TradingStore
 from tests.test_overnight_scheduled_output import (
-    AGENT_PACKET_TYPE,
     SCHEDULE_ID,
     _hold_decision,
     _pm_block,
+    build_test_agent_packet,
     execution_for_pin,
     snapshot_pin,
 )
@@ -296,23 +296,10 @@ class _FrozenObligationCase(unittest.TestCase):
         self.tmp.cleanup()
 
     def _payload(self) -> dict:
-        packet = {
-            "schema_version": 1,
-            "type": AGENT_PACKET_TYPE,
-            "overnight_run_id": self.run_id,
-            "review_id": self.base["review_id"],
-            "base_packet_sha256": self.base["packet_sha256"],
-            "base_evidence_cutoff": self.base["as_of"],
-            "evidence_cutoff": "2026-09-28T02:20:00-04:00",
-            "competition": self.base["competition"],
-            "research_supplement": {
-                "summary": "No material new research after the deterministic cutoff.",
-                "news": [],
-                "central_bank_research": [],
-                "sources": [],
-            },
-        }
-        packet["packet_sha256"] = sha256_json(packet)
+        packet = build_test_agent_packet(
+            self.base,
+            evidence_cutoff="2026-09-28T02:20:00-04:00",
+        )
         pin = snapshot_pin(self.base)
         from scripts.trader_room.agent_config import pin_trader_ids
 

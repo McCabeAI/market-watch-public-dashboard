@@ -118,6 +118,50 @@ def _skeptic_funding_view() -> dict:
     }
 
 
+def sync_agent_packet_calendar(packet: dict, base: dict) -> None:
+    """Copy frozen economic_calendar onto agent_packet when the base freeze carries one."""
+    block = base.get("economic_calendar")
+    if isinstance(block, dict) and block.get("content_hash"):
+        from scripts.dashboard_repair.calendar_packet import economic_calendar_from_frozen
+
+        packet["economic_calendar"] = economic_calendar_from_frozen(base)
+    else:
+        packet.pop("economic_calendar", None)
+
+
+def seal_agent_packet(packet: dict) -> None:
+    packet.pop("packet_sha256", None)
+    packet["packet_sha256"] = sha256_json({k: v for k, v in packet.items() if k != "packet_sha256"})
+
+
+def build_test_agent_packet(
+    base: dict,
+    *,
+    evidence_cutoff: str,
+    research_supplement: dict | None = None,
+) -> dict:
+    packet = {
+        "schema_version": 1,
+        "type": AGENT_PACKET_TYPE,
+        "overnight_run_id": base["overnight_run_id"],
+        "review_id": base["review_id"],
+        "base_packet_sha256": base["packet_sha256"],
+        "base_evidence_cutoff": base["as_of"],
+        "evidence_cutoff": evidence_cutoff,
+        "competition": base["competition"],
+        "research_supplement": research_supplement
+        or {
+            "summary": "No material new research after the deterministic cutoff.",
+            "news": [],
+            "central_bank_research": [],
+            "sources": [],
+        },
+    }
+    sync_agent_packet_calendar(packet, base)
+    seal_agent_packet(packet)
+    return packet
+
+
 def _hold_decision(seat: str, run_id: str, packet_hash: str, cutoff: str) -> dict:
     return {
         "seat": seat,
@@ -176,23 +220,10 @@ class ScheduledOutputTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def _payload(self) -> dict:
-        packet = {
-            "schema_version": 1,
-            "type": AGENT_PACKET_TYPE,
-            "overnight_run_id": self.run_id,
-            "review_id": self.base["review_id"],
-            "base_packet_sha256": self.base["packet_sha256"],
-            "base_evidence_cutoff": self.base["as_of"],
-            "evidence_cutoff": "2026-09-18T02:20:00-04:00",
-            "competition": self.base["competition"],
-            "research_supplement": {
-                "summary": "No material new research after the deterministic cutoff.",
-                "news": [],
-                "central_bank_research": [],
-                "sources": [],
-            },
-        }
-        packet["packet_sha256"] = sha256_json(packet)
+        packet = build_test_agent_packet(
+            self.base,
+            evidence_cutoff="2026-09-18T02:20:00-04:00",
+        )
         pin = snapshot_pin(self.base)
         return {
             "schema_version": 1,
@@ -214,6 +245,25 @@ class ScheduledOutputTests(unittest.TestCase):
             ),
             "execution": execution_for_pin(pin, total=19, grok=18, composer=1),
         }
+
+    def test_sync_agent_packet_calendar_legacy_base_has_no_block(self) -> None:
+        packet: dict = {"economic_calendar": {"content_hash": "orphan"}}
+        sync_agent_packet_calendar(
+            packet,
+            {"overnight_run_id": "overnight-x", "review_id": "review-001", "as_of": "t"},
+        )
+        self.assertNotIn("economic_calendar", packet)
+
+    def test_validate_rejects_tampered_agent_packet_calendar(self) -> None:
+        from scripts.overnight.errors import EvidenceBoundaryError
+
+        bad = json.loads(json.dumps(self.payload))
+        bad["agent_packet"]["economic_calendar"] = {
+            **self.base["economic_calendar"],
+            "content_hash": "deadbeef",
+        }
+        with self.assertRaises(EvidenceBoundaryError):
+            validate_output(self.store, bad)
 
     def test_valid_output_simulates_without_model_book_state(self) -> None:
         validate_output(self.store, self.payload)
@@ -414,23 +464,10 @@ class ScheduledOutputTests(unittest.TestCase):
             },
         )
         base = store.read_artifact(run_id, "evidence_snapshot.json")
-        packet = {
-            "schema_version": 1,
-            "type": AGENT_PACKET_TYPE,
-            "overnight_run_id": run_id,
-            "review_id": base["review_id"],
-            "base_packet_sha256": base["packet_sha256"],
-            "base_evidence_cutoff": base["as_of"],
-            "evidence_cutoff": "2026-09-18T02:20:00-04:00",
-            "competition": base["competition"],
-            "research_supplement": {
-                "summary": "No material new research after the deterministic cutoff.",
-                "news": [],
-                "central_bank_research": [],
-                "sources": [],
-            },
-        }
-        packet["packet_sha256"] = sha256_json(packet)
+        packet = build_test_agent_packet(
+            base,
+            evidence_cutoff="2026-09-18T02:20:00-04:00",
+        )
         session_pin = snapshot_pin(base)
         payload = {
             "schema_version": 1,

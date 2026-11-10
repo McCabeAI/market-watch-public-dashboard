@@ -17,12 +17,9 @@ from scripts.overnight.errors import PublicationError
 from scripts.overnight.freshness import publication_decision
 from scripts.overnight.pipeline import run_stage
 from scripts.overnight.publish import publication_gate
-from scripts.overnight.scheduled_output import (
-    AGENT_PACKET_TYPE,
-    SCHEDULE_ID,
-    simulate_output,
-)
-from scripts.overnight.store import OvernightStore, sha256_json
+from scripts.overnight.scheduled_output import SCHEDULE_ID, simulate_output
+from scripts.overnight.store import OvernightStore
+from tests.test_overnight_scheduled_output import build_test_agent_packet, seal_agent_packet
 from scripts.pm.grinder import synthetic_grinder_hurdle
 from scripts.pm.portfolio import synthetic_portfolio_construction
 from scripts.trader_room import agent_config
@@ -198,22 +195,19 @@ class ScheduledOutputNewsOverlayTests(unittest.TestCase):
     def _payload_for(self, base: dict, run_id: str) -> dict:
         final_cutoff = isoformat(parse_iso(base["as_of"]) + timedelta(minutes=10))
         packet = {
-            "schema_version": 1,
-            "type": AGENT_PACKET_TYPE,
+            **build_test_agent_packet(
+                {**base, "overnight_run_id": run_id},
+                evidence_cutoff=final_cutoff,
+                research_supplement={
+                    "summary": "Energy rebounded while U.S. activity data stayed mixed.",
+                    "news": [FRESH_NEWS_ITEM, ACTIVITY_ITEM],
+                    "central_bank_research": [],
+                    "sources": [],
+                },
+            ),
             "overnight_run_id": run_id,
-            "review_id": base["review_id"],
-            "base_packet_sha256": base["packet_sha256"],
-            "base_evidence_cutoff": base["as_of"],
-            "evidence_cutoff": final_cutoff,
-            "competition": base["competition"],
-            "research_supplement": {
-                "summary": "Energy rebounded while U.S. activity data stayed mixed.",
-                "news": [FRESH_NEWS_ITEM, ACTIVITY_ITEM],
-                "central_bank_research": [],
-                "sources": [],
-            },
         }
-        packet["packet_sha256"] = sha256_json(packet)
+        seal_agent_packet(packet)
         pin = agent_config.assert_acceptable_pin(agent_config.pin_from_artifact(base, kind="daily"))
         roles = pin["roles"]
         if agent_config.legacy_equivalent(pin):

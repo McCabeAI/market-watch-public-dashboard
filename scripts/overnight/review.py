@@ -123,6 +123,12 @@ def _frozen_cross_assets(packet: dict[str, Any]) -> dict[str, Any]:
     return frozen_cross_assets_from_evidence(packet)
 
 
+def _agent_economic_calendar(packet: dict[str, Any]) -> dict[str, Any]:
+    from scripts.dashboard_repair.calendar_packet import economic_calendar_from_frozen
+
+    return economic_calendar_from_frozen(packet)
+
+
 def _research_supplement_for_packet(packet: dict[str, Any]) -> dict[str, Any]:
     from scripts.macro_ingestion.au_labor_handoff import (
         leading_block_from_frozen,
@@ -168,6 +174,7 @@ def _ensure_agent_packet_for_pm(
             "funding_context": packet.get("funding_context"),
             "research_supplement": _research_supplement_for_packet(packet),
             "cross_assets": _frozen_cross_assets(packet),
+            "economic_calendar": _agent_economic_calendar(packet),
         },
         review_id=review_id,
     )

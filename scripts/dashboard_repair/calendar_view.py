@@ -506,6 +506,23 @@ def _parse_score_day(value: object) -> date | None:
         return None
 
 
+def build_release_model_from_economic_calendar(
+    block: dict[str, Any],
+    now: datetime,
+    *,
+    score_as_of: str = "2026-09-21",
+    score_inputs_last_ingested_at: str | None = None,
+) -> dict[str, Any]:
+    from scripts.dashboard_repair.calendar_packet import release_model_from_economic_calendar
+
+    return release_model_from_economic_calendar(
+        block,
+        now,
+        score_as_of=score_as_of,
+        score_inputs_last_ingested_at=score_inputs_last_ingested_at,
+    )
+
+
 def build_release_model(
     now: datetime,
     series: list[dict[str, Any]] | None = None,

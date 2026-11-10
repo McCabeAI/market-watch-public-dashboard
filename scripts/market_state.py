@@ -2219,6 +2219,8 @@ def _policy_meeting_prices(today: date, policy_paths: dict) -> dict:
         calendar = load_calendar(root) or {"banks": {}}
         policy_state = load_policy_state(root) or {"countries": {}}
         history = load_history(root)
+        from scripts.policy_meeting_pricing import guard_policy_meeting_prices_for_publication
+
         block = build_policy_meeting_prices(
             as_of=today,
             calendar=calendar,
@@ -2226,6 +2228,7 @@ def _policy_meeting_prices(today: date, policy_paths: dict) -> dict:
             policy_paths=policy_paths,
             history_doc=history,
         )
+        block = guard_policy_meeting_prices_for_publication(block)
         return attach_outcomes(block, policy_state, today, calendar)
     except Exception as exc:
         return {
@@ -2308,6 +2311,9 @@ def main(argv: Sequence[str] | None = None) -> int:
         root = Path(__file__).resolve().parents[1]
         prices = snapshot.get("policy_meeting_prices")
         if isinstance(prices, dict) and prices.get("as_of"):
+            from scripts.policy_meeting_pricing import guard_policy_meeting_prices_for_publication
+
+            prices = guard_policy_meeting_prices_for_publication(prices) or prices
             append_history(root, date.fromisoformat(str(prices["as_of"])), prices)
             sidecar = root / "data" / "policy_meeting_prices.json"
             sidecar.write_text(json.dumps(prices, indent=2, sort_keys=True) + "\n", encoding="utf-8")

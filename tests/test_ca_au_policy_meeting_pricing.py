@@ -144,8 +144,8 @@ class SnapshotHeadlineRegressionTest(unittest.TestCase):
         )
         self.assertEqual(au[0]["incremental_bp"], 4.72)
         self.assertEqual(au[0]["post_rate"], 4.8972)
-        self.assertEqual(au[1]["incremental_bp"], 6.63)
-        self.assertEqual(au[1]["post_rate"], 4.9635)
+        self.assertEqual(au[1]["incremental_bp"], 5.57)
+        self.assertEqual(au[1]["post_rate"], 4.9529)
 
     def test_basis_invariant_for_ca_au(self) -> None:
         as_of = date(2026, 11, 6)

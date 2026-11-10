@@ -54,7 +54,8 @@ The parent may create a common **agent packet** from the trusted evidence plus t
 - its evidence cutoff remains exactly the stage-04 `as_of`;
 - it must cite the same `base_packet_sha256`;
 - it cannot contain a source/value/vintage not already present in the trusted freeze;
-- it must preserve the deterministic `trade_permissions` block from the trusted stage-04 evidence snapshot unchanged.
+- it must preserve the deterministic `trade_permissions` block from the trusted stage-04 evidence snapshot unchanged;
+- when the trusted freeze carries `economic_calendar`, the same `economic_calendar` block (identical `content_hash` and payload) must be attached to the single final agent packet every pinned trader child and every automated PM child receives; the scheduled-output validator rejects omission or mutation.
 
 ### Trade-permission contract
 
@@ -86,7 +87,7 @@ The research summary and every trader/PM thesis and invalidation are displayed t
 
 Launch exactly the pinned trader seats (14 on the current roster) as direct children on the pinned trader model, through the custom agent named by `agent_config agents`. Each gets:
 - `MW_TRADER_FROZEN=1`;
-- the same agent packet and exact base packet/review identity;
+- the same agent packet and exact base packet/review identity (including a shared `economic_calendar` when the freeze defines one);
 - only that seat's prior memory sidecar.
 
 Trader children cannot use tools or fetch evidence. A valid `HOLD` is a deliberate trading decision, but each seat must independently consider the full allowed action set for its book and remit. Do not default to HOLD because an unrelated country is restricted. An operational data failure must already have stopped the deterministic launch before ACP and must never be represented as 14 synthetic HOLDs. A macro research gap is not an operational failure and is not a reason for a synthetic HOLD.
@@ -95,7 +96,7 @@ Trader children cannot use tools or fetch evidence. A valid `HOLD` is a delibera
 
 After all pinned trader decisions exist, launch exactly the three pinned automated PM principals as custom agents: `swinger`, `pragmatist`, and `grinder`. Each gets:
 - `MW_PM_FROZEN=1`;
-- the same frozen agent packet and the accepted trader decisions for every pinned seat;
+- the same frozen agent packet (including shared `economic_calendar` when present on the freeze) and the accepted trader decisions for every pinned seat;
 - only its own prior book/memory.
 
 No PM sees another PM's current-cycle decision. Do not launch ChatGPT PM.

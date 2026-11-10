@@ -117,13 +117,10 @@ def load_policy_meeting_view(root: Path | None = None, calendar: dict | None = N
         from scripts.policy_calendar import load_calendar
 
         calendar = load_calendar(root)
+    from scripts.policy_meeting_pricing import load_policy_meeting_prices_for_publication
+
     prices_path = root / "data" / "policy_meeting_prices.json"
-    prices = None
-    if prices_path.is_file():
-        try:
-            prices = json.loads(prices_path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            prices = None
+    prices = load_policy_meeting_prices_for_publication(prices_path)
     return {"prices": prices, "calendar": calendar}
 
 

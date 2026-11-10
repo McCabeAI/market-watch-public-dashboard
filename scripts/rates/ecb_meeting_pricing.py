@@ -5,6 +5,8 @@ from __future__ import annotations
 from datetime import date, datetime, timedelta
 from typing import Any, Callable
 
+from scripts.rates.cme_session import latest_publishable_official_session
+
 RateOnDay = Callable[[date], float | None]
 
 
@@ -207,6 +209,40 @@ def _has_official_verified(contracts: list[dict]) -> bool:
     return False
 
 
+def _qualifying_esr_research_strip(
+    contracts: list[dict],
+    *,
+    as_of: date,
+    now: datetime | None = None,
+) -> tuple[bool, str | None]:
+    """True when contracts carry a latest-publishable official verified ESR mark."""
+    if not contracts:
+        return False, "ESR strip empty"
+    publishable = latest_publishable_official_session(today=as_of, now=now)
+    saw_official = False
+    for row in contracts:
+        kind = str(row.get("mark_kind") or "")
+        if kind in {"delayed_quote", "delayed_last"}:
+            return False, "ESR strip uses delayed quotes; not official settlement"
+        if row.get("trade_date_verified") is False:
+            return False, "ESR strip trade date not verified"
+        if kind == "official_settlement" and row.get("trade_date_verified") is True:
+            saw_official = True
+            raw = row.get("observation_date") or row.get("as_of")
+            try:
+                obs = datetime.strptime(str(raw).strip()[:10], "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if obs == publishable:
+                return True, None
+    if not saw_official:
+        return False, "ESR strip lacks official settlement with verified trade date"
+    return (
+        False,
+        f"ESR strip observation is not the latest publishable session ({publishable.isoformat()})",
+    )
+
+
 def price_ecb_meetings(
     *,
     as_of: date,
@@ -216,6 +252,7 @@ def price_ecb_meetings(
     meetings: list[dict],
     contracts: list[dict],
     futures_freshness: str,
+    now: datetime | None = None,
 ) -> tuple[list[dict], str | None]:
     future_meetings = sorted(
         [m for m in meetings if _parse_date(m["effective_date"]) > as_of],
@@ -239,19 +276,19 @@ def price_ecb_meetings(
             )
         return rows, reason
 
-    if futures_freshness != "fresh":
-        reason = (
-            "ESR futures strip not fresh"
-            if futures_freshness != "stale"
-            else "ESR futures strip stale; meeting identification refused"
-        )
-        rows, bank_reason = unavailable_rows(reason)
+    if futures_freshness == "unavailable":
+        rows, bank_reason = unavailable_rows("ESR futures strip not available")
         return rows, bank_reason
 
-    if not contracts or not _has_official_verified(contracts):
-        rows, bank_reason = unavailable_rows(
-            "ESR strip lacks official settlement with verified trade date"
-        )
+    research_ok, research_reason = _qualifying_esr_research_strip(
+        contracts, as_of=as_of, now=now
+    )
+    if not research_ok:
+        rows, bank_reason = unavailable_rows(research_reason or "ESR strip not research-eligible")
+        return rows, bank_reason
+
+    if futures_freshness not in {"fresh", "stale"}:
+        rows, bank_reason = unavailable_rows("ESR futures strip freshness unknown")
         return rows, bank_reason
 
     if anchor is None or fixing is None:

@@ -847,12 +847,22 @@ class BasisTests(unittest.TestCase):
         self.assertEqual(eus_assignment_esr_price(0.7600, 0.4500), 99.69)
         nov = next(row for row in rows if row["expiry"] == "2026-11")
         self.assertAlmostEqual(nov["basis_bp"], -52.5, places=6)
+        from datetime import datetime
+        from zoneinfo import ZoneInfo
+
+        nov9_freeze = datetime(2026, 11, 9, 5, 37, 50, tzinfo=ZoneInfo("America/New_York"))
         curve = build_futures_basis(
             zq_block=None,
             sr1_block=None,
             euribor_block=None,
             esr_block=None,
-            eus_block={"rows": rows, "freshness": "fresh", "as_of": "2026-11-06", "source_url": "https://example.test/eus"},
+            eus_block={
+                "rows": rows,
+                "freshness": "fresh",
+                "as_of": "2026-11-06",
+                "source_url": "https://example.test/eus",
+            },
+            now=nov9_freeze,
         )["curves"]["EA_CME_EUS"]
         self.assertEqual(curve["status"], "ok")
         self.assertFalse(curve["execution_eligible"])

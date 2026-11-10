@@ -87,6 +87,10 @@ def compute_delta(
     else:
         current = _retain_prior_bloomberg_if_recheck_failed(prior, current)
 
+    prior_calendar = prior.get("economic_calendar")
+    if isinstance(prior_calendar, dict) and prior_calendar.get("content_hash"):
+        current = {**current, "economic_calendar": prior_calendar}
+
     changes: list[dict[str, Any]] = []
     for family in EVIDENCE_FAMILIES:
         before = (prior.get("families") or {}).get(family) or {}
@@ -111,6 +115,8 @@ def compute_delta(
         "families": current["families"],
         "unchanged": len(changes) == 0,
     }
+    if isinstance(current.get("economic_calendar"), dict):
+        payload["economic_calendar"] = current["economic_calendar"]
     filename = "pre_trader_delta.json" if stage == "pre_trader_delta" else "final_delta.json"
     store.write_artifact(run_id, filename, payload)
     return payload

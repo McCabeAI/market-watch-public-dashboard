@@ -101,7 +101,13 @@ def freeze_snapshot(
     delta = None
     if store.has_artifact(run_id, "pre_trader_delta.json"):
         delta = store.read_artifact(run_id, "pre_trader_delta.json")
-    families = (delta or collect)["families"]
+    baseline = delta or collect
+    families = baseline["families"]
+    economic_calendar = baseline.get("economic_calendar")
+    if not isinstance(economic_calendar, dict) or not economic_calendar.get("content_hash"):
+        from scripts.dashboard_repair.calendar_packet import ensure_economic_calendar
+
+        economic_calendar = ensure_economic_calendar({}, root=store.root, as_of=now_ny(when))
     prior_books = _prepare_prior_books(store, pin, run_id=run_id, when=when)
     market_state = ((families.get("market_state") or {}).get("data") if isinstance(families.get("market_state"), dict) else None)
     funding_context = build_funding_context(market_state or {}, as_of=isoformat(now_ny(when)))
@@ -112,6 +118,7 @@ def freeze_snapshot(
         "review_id": review_id,
         "as_of": isoformat(now_ny(when)),
         "families": families,
+        "economic_calendar": economic_calendar,
         "collect_as_of": collect.get("as_of"),
         "pre_trader_delta": None if delta is None else {"as_of": delta.get("as_of"), "changes": delta.get("changes")},
         "temperature_scores": collect.get("temperature_scores"),

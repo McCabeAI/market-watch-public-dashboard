@@ -21,8 +21,7 @@ from typing import Any, Callable
 
 from scripts.rates.cme_session import (
     FRESH_MAX_AGE_DAYS,
-    classify_mark_freshness,
-    latest_expected_cme_session,
+    stamp_cme_publication_fields,
 )
 
 FetchBytes = Callable[..., bytes]
@@ -490,21 +489,22 @@ def _fetch_bytes(
         raise primary_exc
 
 
-def _stamp_freshness(rows: list[dict[str, Any]], today: date, mark_kind: str) -> str:
-    observed_raw = rows[0].get("observation_date") or rows[0].get("as_of")
-    obs = date.fromisoformat(str(observed_raw)) if observed_raw else None
+def _stamp_freshness(
+    rows: list[dict[str, Any]],
+    today: date,
+    mark_kind: str,
+    *,
+    now: datetime | None = None,
+) -> str:
     verified = bool(rows[0].get("trade_date_verified"))
-    freshness = classify_mark_freshness(
+    freshness, _pub = stamp_cme_publication_fields(
         curve_key="ZQ",
-        observation=obs,
+        rows=rows,
         today=today,
         mark_kind=mark_kind,
         trade_date_verified=verified,
+        now=now,
     )
-    session_expected = latest_expected_cme_session(today).isoformat()
-    for row in rows:
-        row["session_expected"] = session_expected
-        row["freshness"] = freshness
     return freshness
 
 
@@ -514,6 +514,7 @@ def acquire_zq_contracts(
     today: date,
     benchmark: float | None = None,
     last_official: list | None = None,
+    now: datetime | None = None,
 ) -> tuple[list, str, str, dict]:
     """Acquire the ZQ strip. ``benchmark`` and ``last_official`` are ignored.
 
@@ -532,7 +533,7 @@ def acquire_zq_contracts(
             raw, attempt = _fetch_bytes(fetch_bytes, url, referer=CME_ZQ_PAGE)
             body = raw.decode("utf-8", errors="replace")
             rows, rejected = parse_cme_zq_settlements_json(body, session_date=session, source_url=url)
-            freshness = _stamp_freshness(rows, today, "official_settlement")
+            freshness = _stamp_freshness(rows, today, "official_settlement", now=now)
             provenance = {
                 "attempts": attempts + [attempt],
                 "mark_kind": "official_settlement",

@@ -516,7 +516,7 @@ def load_overnight_evidence(run_dir) -> dict[str, Any]:
             headlines.append(item.get("headline") or item.get("title") or item.get("summary"))
         elif isinstance(item, str):
             headlines.append(item)
-    return {
+    evidence = {
         "as_of": agent.get("evidence_cutoff") or snapshot.get("as_of"),
         "packet_sha256": agent.get("packet_sha256"),
         "run_id": agent.get("overnight_run_id") or run_dir.name,
@@ -530,6 +530,9 @@ def load_overnight_evidence(run_dir) -> dict[str, Any]:
         "base_packet_sha256": agent.get("base_packet_sha256") or snapshot.get("packet_sha256"),
         "base_evidence_cutoff": agent.get("base_evidence_cutoff") or snapshot.get("as_of"),
     }
+    if isinstance(snapshot.get("economic_calendar"), dict):
+        evidence["economic_calendar"] = snapshot["economic_calendar"]
+    return evidence
 
 
 @dataclass(frozen=True)
@@ -781,6 +784,16 @@ def build_review_packet(
     packet["memory_context_sha256"] = packet["memory"]["memory_context_sha256"]
     packet["postmortems_due"] = packet["memory"]["postmortems_due"]
     packet["calibration"] = packet["memory"]["calibration"]
+    from scripts.pm.overnight_packet import attach_economic_calendar
+
+    if source.is_overnight and isinstance(source.run_dir, Path):
+        snapshot_path = source.run_dir / "evidence_snapshot.json"
+        if snapshot_path.is_file():
+            packet = attach_economic_calendar(packet, _load_json(snapshot_path))
+    elif isinstance(evidence.get("economic_calendar"), dict):
+        from scripts.dashboard_repair.calendar_packet import economic_calendar_from_frozen
+
+        packet["economic_calendar"] = economic_calendar_from_frozen({"economic_calendar": evidence["economic_calendar"]})
     packet["review_packet_sha256"] = sha256_json({k: v for k, v in packet.items() if k != "review_packet_sha256"})
     return packet
 

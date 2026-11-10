@@ -33,7 +33,11 @@ from scripts.trading.migrate import backfill_from_books
 from scripts.trading.store import TradingStore
 from scripts.trader_room.constants import STANDING_ADVOCATES
 from scripts.trader_room.orchestrator import go as trader_room_go
-from tests.test_overnight_scheduled_output import execution_for_pin, snapshot_pin
+from tests.test_overnight_scheduled_output import (
+    build_test_agent_packet,
+    execution_for_pin,
+    snapshot_pin,
+)
 
 NY = ZoneInfo("America/New_York")
 AS_OF = datetime(2026, 9, 19, 12, 0, tzinfo=NY)
@@ -905,18 +909,16 @@ class OvernightAndTraderRoomMemoryTests(unittest.TestCase):
                 )
             store = OvernightStore(root=ROOT, state_root=state)
             base = store.read_artifact(run_id, "evidence_snapshot.json")
-            packet = {
-                "schema_version": 1,
-                "type": AGENT_PACKET_TYPE,
-                "overnight_run_id": run_id,
-                "review_id": base["review_id"],
-                "base_packet_sha256": base["packet_sha256"],
-                "base_evidence_cutoff": base["as_of"],
-                "evidence_cutoff": "2026-09-18T02:20:00-04:00",
-                "competition": base["competition"],
-                "research_supplement": {"summary": "none", "news": [], "central_bank_research": [], "sources": []},
-            }
-            packet["packet_sha256"] = sha256_json(packet)
+            packet = build_test_agent_packet(
+                base,
+                evidence_cutoff="2026-09-18T02:20:00-04:00",
+                research_supplement={
+                    "summary": "none",
+                    "news": [],
+                    "central_bank_research": [],
+                    "sources": [],
+                },
+            )
             decisions = {}
             pinned_seats = [row["id"] for row in (base.get("agent_roster_pin") or {}).get("traders") or []]
             for seat in pinned_seats:

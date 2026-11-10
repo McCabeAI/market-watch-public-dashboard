@@ -141,6 +141,8 @@ class EcbCompoundTests(unittest.TestCase):
                 "code": "ESRH7",
                 "mark_kind": "official_settlement",
                 "trade_date_verified": True,
+                "observation_date": "2026-10-30",
+                "as_of": "2026-10-30",
                 "open_interest": 100,
             }
         ]

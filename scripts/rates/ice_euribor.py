@@ -18,6 +18,8 @@ import re
 from datetime import date, datetime, timezone
 from typing import Any, Callable
 
+from scripts.rates.cme_session import stamp_cme_publication_fields
+
 FetchBytes = Callable[..., bytes]
 
 ICE_PRODUCT_CODE = "I"
@@ -429,8 +431,8 @@ def acquire_ice_euribor_contracts(
     *,
     today: date,
     retrieved_at: str | None = None,
+    now: datetime | None = None,
 ) -> tuple[list, str, str, dict]:
-    del today
     retrieved = retrieved_at or datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     raw = _invoke(fetch_bytes, ICE_CONTRACT_DATA_URL)
     payload = json.loads(raw.decode("utf-8"))
@@ -480,14 +482,25 @@ def acquire_ice_euribor_contracts(
             cross["direct_spread_error"] = spread_error
     except Exception as exc:
         cross = {"status": "unavailable", "points": [], "reason": f"ER3 cross-check unavailable: {exc}"}
+    freshness_hint, pub = stamp_cme_publication_fields(
+        curve_key="EURIBOR",
+        rows=parsed["rows"],
+        today=today,
+        mark_kind="delayed_last",
+        trade_date_verified=False,
+        now=now,
+    )
+    for row in parsed["rows"]:
+        row["official_settlement"] = False
     provenance = {
         "mark_kind": "delayed_last",
         "trade_date": parsed["rows"][0]["observation_date"],
         "quote_time": parsed["rows"][0]["quote_time"],
         "retrieved_at": retrieved,
-        "freshness_hint": "stale",
+        "freshness_hint": freshness_hint,
         "execution_eligible": False,
         "official_settlement": False,
+        "publication_status": pub,
         "product_code": ICE_PRODUCT_CODE,
         "exchange": "ICE",
         "filled_from_feU3": False,
