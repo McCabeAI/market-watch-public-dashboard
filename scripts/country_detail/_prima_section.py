@@ -57,21 +57,644 @@ _CORRA_DRIVER_RE = re.compile(
 _MONTHS_TITLE = (
     "Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split()
 )
-_COUNT_WORDS = {
-    0: "zero",
-    1: "one",
-    2: "two",
-    3: "three",
-    4: "four",
-    5: "five",
+_SHARP_FRONT_MOVE = 0.05
+
+_CHANNEL_ROW_ORDER = (
+    "shock_persistence",
+    "imported_pressure",
+    "consumer_price_breadth",
+    "production_network_pressure",
+    "demand_pass_through_constraint",
+)
+
+_CHANNEL_ROW_LABELS = {
+    "shock_persistence": "Oil shock",
+    "imported_pressure": "Raw-material prices",
+    "consumer_price_breadth": "Consumer-price breadth",
+    "production_network_pressure": "Producer prices ex-energy",
+    "demand_pass_through_constraint": "Demand constraint",
 }
-_CHANNEL_OFFSET_NOUN = {
-    "imported_pressure": "raw-material prices excluding crude energy",
-    "production_network_pressure": "non-energy producer prices (production network)",
-    "shock_persistence": "Brent curve persistence (shock persistence)",
-    "consumer_price_breadth": "CPI breadth (consumer price breadth)",
-    "demand_pass_through_constraint": "policy restraint via CORRA (demand pass-through)",
+
+_GAP_TABLE_STATUS = {
+    "invalid_futures": "Gap · invalid Brent inputs",
+    "no_aggregate": "Gap · no aggregate",
+    "partial": "Gap · partial coverage",
 }
+
+_HIST_CHART_W = 340
+_HIST_CHART_H = 170
+_HIST_PAD_L = 40
+_HIST_PAD_R = 20
+_HIST_PAD_T = 15
+_HIST_PAD_B = 30
+
+
+def _vote_dir(direction: str) -> int | None:
+    if direction == "RISING":
+        return 1
+    if direction == "FALLING":
+        return -1
+    if direction == "STABLE":
+        return 0
+    return None
+
+
+def _channel_vote_summary(subs: Mapping[str, Any]) -> tuple[int, int]:
+    net = 0
+    coverage = 0
+    for ch in prima_contract.CHANNELS:
+        v = _vote_dir(str(subs.get(ch) or "UNAVAILABLE"))
+        if v is not None:
+            net += v
+            coverage += 1
+    return net, coverage
+
+
+def _gauge_left_pct(value: float) -> float:
+    return (value + 5) * 10
+
+
+def _display_pct_fraction(frac: float) -> str:
+    pct = frac * 100
+    if pct < 0:
+        return f"−{abs(pct):.1f}%"
+    if pct > 0:
+        return f"+{pct:.1f}%"
+    return "0.0%"
+
+
+def _display_net(net: int) -> str:
+    if net < 0:
+        return f"−{abs(net)}"
+    if net > 0:
+        return f"+{net}"
+    return "0"
+
+
+def _contract_month_label(contract_month: str) -> str:
+    try:
+        y, mo = contract_month.split("-")
+        return f"{_MONTHS_TITLE[int(mo) - 1]} {y}"
+    except (ValueError, IndexError):
+        return contract_month
+
+
+def _brent_legs(channel_evidence: Mapping[str, Any] | None) -> dict[str, Mapping[str, Any]]:
+    legs: dict[str, Mapping[str, Any]] = {}
+    if not isinstance(channel_evidence, Mapping):
+        return legs
+    shock = channel_evidence.get("shock_persistence")
+    if not isinstance(shock, Mapping):
+        return legs
+    inputs = shock.get("inputs")
+    if not isinstance(inputs, list):
+        return legs
+    for inp in inputs:
+        if not isinstance(inp, Mapping):
+            continue
+        selection = inp.get("selection")
+        role = inp.get("horizon_role_months")
+        if role is None:
+            role = inp.get("maturity_months")
+        if selection == "active_front" or role == 0:
+            legs["front"] = inp
+        elif role == 12:
+            legs["12"] = inp
+        elif role == 24:
+            legs["24"] = inp
+    return legs
+
+
+def _oil_headline(shock_dir: str, front_change: float | None) -> str:
+    if shock_dir == "UNAVAILABLE":
+        return "Oil shock: unavailable"
+    if shock_dir == "STABLE":
+        return "Oil shock: no persistent move"
+    if shock_dir == "FALLING":
+        if front_change is not None and front_change <= -_SHARP_FRONT_MOVE:
+            return "Oil shock: sharply lower"
+        return "Oil shock: lower"
+    if shock_dir == "RISING":
+        if front_change is not None and front_change >= _SHARP_FRONT_MOVE:
+            return "Oil shock: sharply higher"
+        return "Oil shock: higher"
+    return f"Oil shock: {_PRIMA_DIR_WORD.get(shock_dir, shock_dir).lower()}"
+
+
+def _oil_grounded_line(shock_dir: str, legs: dict[str, Mapping[str, Any]]) -> str:
+    persist = prima_contract.PATH_PERSISTENCE_PCT
+    pct_label = _prima_band_pct(persist)
+    if shock_dir == "UNAVAILABLE":
+        return ""
+    if shock_dir == "STABLE":
+        return (
+            f"Brent 12- and 24-month futures did not both move more than {pct_label} "
+            "in the same direction over the past month."
+        )
+    front = legs.get("front")
+    leg12 = legs.get("12")
+    leg24 = legs.get("24")
+    if shock_dir in ("FALLING", "RISING") and front and leg12 and leg24:
+        try:
+            f = float(front.get("change_1m_pct") or 0)
+            a = float(leg12.get("change_1m_pct") or 0)
+            b = float(leg24.get("change_1m_pct") or 0)
+        except (TypeError, ValueError):
+            f = a = b = 0.0
+        if shock_dir == "FALLING" and f < 0 and a < 0 and b < 0:
+            return (
+                "Brent’s decline is now evident across the front and longer-dated futures curve."
+            )
+        if shock_dir == "RISING" and f > 0 and a > 0 and b > 0:
+            return (
+                "Brent’s rise is now evident across the front and longer-dated futures curve."
+            )
+    return (
+        f"Brent 12- and 24-month futures both moved more than {pct_label} over the past month."
+    )
+
+
+def _oil_grounded_line_unavailable(
+    shock_dir: str,
+    history_gap: Mapping[str, Any] | None,
+) -> str:
+    if shock_dir != "UNAVAILABLE":
+        return ""
+    if isinstance(history_gap, Mapping):
+        return (
+            "Stored Brent futures inputs were not active listed maturities on this run. "
+            "This is a history gap, not a stable reading."
+        )
+    return "No accepted Brent futures reading is stored for this run."
+
+
+def _gauge_class_label(direction: str, net: int) -> str:
+    word = _PRIMA_DIR_WORD.get(direction, direction)
+    if direction == "STABLE":
+        if net < 0:
+            return f"{word} · Falling tilt"
+        if net > 0:
+            return f"{word} · Rising tilt"
+        return f"{word} · Balanced"
+    if direction == "UNAVAILABLE":
+        return "Unavailable"
+    return word
+
+
+def _period_label(period: str) -> str:
+    try:
+        y, mo = period.split("-")
+        return f"{_MONTHS_TITLE[int(mo) - 1]} {y}"
+    except (ValueError, IndexError):
+        return period
+
+
+def _channel_vintage(
+    channel: str,
+    channel_evidence: Mapping[str, Any] | None,
+) -> str:
+    if not isinstance(channel_evidence, Mapping):
+        return ""
+    entry = channel_evidence.get(channel)
+    if not isinstance(entry, Mapping):
+        return ""
+    inputs = entry.get("inputs")
+    if channel == "shock_persistence" and isinstance(inputs, list):
+        for inp in inputs:
+            if not isinstance(inp, Mapping):
+                continue
+            if inp.get("selection") == "active_front" or inp.get("maturity_months") == 0:
+                obs = inp.get("observation_date") or ""
+                if obs:
+                    return f"Brent {_prima_display_date(obs)}"
+                break
+    if not isinstance(inputs, list) or not inputs:
+        return ""
+    first = inputs[0] if isinstance(inputs[0], Mapping) else {}
+    if channel == "demand_pass_through_constraint":
+        as_of = first.get("as_of")
+        if as_of:
+            return f"CORRA {_prima_short_date(str(as_of) + 'T12:00:00')}"
+    if channel in ("production_network_pressure", "imported_pressure"):
+        period = first.get("period")
+        release = first.get("release_time")
+        if period and release:
+            return f"{_period_label(str(period))} · released {_prima_short_date(str(release))}"
+        if period:
+            return _period_label(str(period))
+    if channel == "consumer_price_breadth":
+        majors = first.get("majors")
+        if isinstance(majors, list) and majors:
+            m0 = majors[0]
+            if isinstance(m0, Mapping) and m0.get("period"):
+                return f"{_period_label(str(m0['period']))} CPI"
+        period = first.get("period")
+        if period:
+            return f"{_period_label(str(period))} CPI"
+    return ""
+
+
+def _vote_channel_noun(channel: str, vintage: str) -> str:
+    if channel == "shock_persistence":
+        tag = vintage.replace("Brent ", "", 1) if vintage.startswith("Brent ") else vintage
+        return f"oil ({tag} quotes)" if tag else "oil"
+    period = vintage.split("·", 1)[0].strip() if vintage else ""
+    if channel == "imported_pressure":
+        return f"raw-material prices ({period} RMPI)" if period else "raw-material prices"
+    if channel == "consumer_price_breadth":
+        period = period.replace(" CPI", "")
+        return f"consumer-price breadth ({period} CPI)" if period else "consumer-price breadth"
+    if channel == "production_network_pressure":
+        return f"producer prices ex-energy ({period} IPPI)" if period else "producer prices ex-energy"
+    if channel == "demand_pass_through_constraint":
+        return f"the demand constraint ({vintage})" if vintage else "the demand constraint"
+    return channel
+
+
+def _join_english_list(items: list[str]) -> str:
+    if not items:
+        return ""
+    if len(items) == 1:
+        return items[0]
+    if len(items) == 2:
+        return f"{items[0]} and {items[1]}"
+    return ", ".join(items[:-1]) + f", and {items[-1]}"
+
+
+def _group_clause(nouns: list[str], direction_word: str) -> str:
+    verb = "points" if len(nouns) == 1 else "point"
+    return f"{_join_english_list(nouns)} {verb} {direction_word}"
+
+
+def _vote_text(
+    direction: str,
+    net: int,
+    coverage: int,
+    subs: Mapping[str, Any],
+    channel_evidence: Mapping[str, Any] | None,
+    shock_dir: str,
+) -> str:
+    if direction not in _PRIMA_CATEGORIES:
+        return "No aggregate vote is shown for this run; channel rows below show what was stored."
+    lower: list[str] = []
+    higher: list[str] = []
+    for ch in _CHANNEL_ROW_ORDER:
+        ch_dir = str(subs.get(ch) or "UNAVAILABLE")
+        if ch_dir not in ("RISING", "FALLING"):
+            continue
+        noun = _vote_channel_noun(ch, _channel_vintage(ch, channel_evidence))
+        (lower if ch_dir == "FALLING" else higher).append(noun)
+    clauses: list[str] = []
+    if lower:
+        clauses.append(_group_clause(lower, "lower"))
+    if higher:
+        clauses.append(_group_clause(higher, "higher"))
+    if clauses:
+        intro = ", while ".join(clauses) + "."
+    else:
+        intro = "No channel points higher or lower."
+    intro = intro[0].upper() + intro[1:]
+    net_disp = _display_net(net)
+    if coverage < 5:
+        tail = (
+            f"Only {coverage} of 5 channels are available; the net of {net_disp} "
+            f"covers those {coverage} votes."
+        )
+    elif direction == "STABLE":
+        tail = f"The five equal votes net to {net_disp}, inside the −1 to +1 stable band."
+        if shock_dir in ("RISING", "FALLING"):
+            tail += " A Stable vote does not mean oil has not repriced."
+    elif direction == "RISING":
+        tail = f"The five equal votes net to {net_disp}; +2 or more reads Rising."
+    else:
+        tail = f"The five equal votes net to {net_disp}; −2 or less reads Falling."
+    return f"{intro} {tail}"
+
+
+def _hist_y_coord(net: int) -> float:
+    plot_h = _HIST_CHART_H - _HIST_PAD_T - _HIST_PAD_B
+    return _HIST_PAD_T + (5 - net) / 10 * plot_h
+
+
+def _history_points(trend: list[Any]) -> list[dict[str, Any]]:
+    window = trend[-30:] if len(trend) > 30 else list(trend)
+    out: list[dict[str, Any]] = []
+    for point in window:
+        if not isinstance(point, Mapping):
+            continue
+        subs = point.get("subcomponent_directions")
+        if not isinstance(subs, Mapping):
+            subs = {}
+        net, coverage = _channel_vote_summary(subs)
+        direction = str(point.get("direction") or "UNAVAILABLE")
+        futures_validity = point.get("futures_validity")
+        plotted = (
+            direction in _PRIMA_CATEGORIES
+            and coverage == 5
+            and futures_validity != "invalid"
+        )
+        gap_reason: str | None = None
+        gap_kind: str | None = None
+        if not plotted:
+            if futures_validity == "invalid":
+                gap_kind = "invalid_futures"
+                gap_reason = "History gap: invalid Brent futures inputs"
+            elif direction not in _PRIMA_CATEGORIES:
+                gap_kind = "no_aggregate"
+                gap_reason = "Aggregate unavailable"
+            else:
+                gap_kind = "partial"
+                gap_reason = f"Partial: {coverage} of 5 channels"
+        observed = str(point.get("observed_at") or "")
+        date_key = observed[:10] if observed else ""
+        out.append(
+            {
+                "observed_at": observed,
+                "date_key": date_key,
+                "direction": direction,
+                "net": net,
+                "coverage": coverage,
+                "plotted": plotted,
+                "gap_reason": gap_reason,
+                "gap_kind": gap_kind,
+                "short_date": _prima_short_date(observed),
+            }
+        )
+    return out
+
+
+def _fmt_coord(x: float, y: float) -> str:
+    return f"{x:.1f},{y:.1f}"
+
+
+def _render_history_chart(points: list[dict[str, Any]], esc: Any) -> str:
+    if not points:
+        return '<p class="prima-history-empty">No accepted history yet.</p>'
+    n = len(points)
+    plot_w = _HIST_CHART_W - _HIST_PAD_L - _HIST_PAD_R
+    xs = [
+        _HIST_PAD_L + (plot_w * i / (n - 1) if n > 1 else plot_w / 2)
+        for i in range(n)
+    ]
+    y_m5 = _hist_y_coord(-5)
+    y_m2 = _hist_y_coord(-2)
+    y_0 = _hist_y_coord(0)
+    y_p2 = _hist_y_coord(2)
+    y_p5 = _hist_y_coord(5)
+    y_lo = _hist_y_coord(-1.5)
+    y_hi = _hist_y_coord(1.5)
+    band_y = min(y_lo, y_hi)
+    band_h = abs(y_hi - y_lo)
+
+    segments: list[list[dict[str, Any]]] = []
+    current: list[dict[str, Any]] = []
+    for p in points:
+        if p["plotted"]:
+            current.append(p)
+        else:
+            if current:
+                segments.append(current)
+                current = []
+    if current:
+        segments.append(current)
+
+    seg_idx = 0
+    poly_parts: list[str] = []
+    circle_parts: list[str] = []
+    gap_parts: list[str] = []
+    latest_plotted_idx: int | None = None
+    for i, p in enumerate(points):
+        x = xs[i]
+        if p["plotted"]:
+            latest_plotted_idx = i
+            y = _hist_y_coord(int(p["net"]))
+            title = (
+                f"{p['short_date']}: net {_display_net(int(p['net']))}, "
+                f"{_PRIMA_DIR_WORD.get(p['direction'], p['direction'])}, "
+                f"{p['coverage']} of 5"
+            )
+            accent = ""
+            circle_parts.append(
+                f'<circle class="prima-history-dot" cx="{x:.1f}" cy="{y:.1f}" r="3.5" '
+                f'data-prima-history-point="{esc(p["date_key"])}" data-prima-net="{int(p["net"])}">'
+                f'<title>{esc(title)}</title></circle>'
+            )
+        else:
+            reason = p["gap_reason"] or "Not plotted"
+            gap_parts.append(
+                f'<g class="prima-history-gap" data-prima-gap="{esc(reason)}" '
+                f'data-prima-history-point="{esc(p["date_key"])}">'
+                f'<line x1="{x:.1f}" y1="{y_p5:.1f}" x2="{x:.1f}" y2="{y_m5:.1f}" '
+                f'stroke-dasharray="2 3" class="prima-history-gap-tick"/>'
+                f'<text x="{x:.1f}" y="{y_m5 + 11:.1f}" text-anchor="middle" '
+                f'class="prima-history-gap-x">×</text>'
+                f"<title>{esc(reason)}</title></g>"
+            )
+
+    for seg in segments:
+        if len(seg) == 1:
+            continue
+        coords = []
+        for p in seg:
+            idx = next(i for i, row in enumerate(points) if row is p)
+            coords.append(_fmt_coord(xs[idx], _hist_y_coord(int(p["net"]))))
+        poly_parts.append(
+            f'<polyline class="prima-history-seg" data-prima-segment="{seg_idx}" '
+            f'fill="none" points="{" ".join(coords)}"/>'
+        )
+        seg_idx += 1
+
+    x_labels: list[str] = []
+    if n >= 1:
+        for idx in dict.fromkeys((0, n // 2, n - 1)):
+            if idx < len(points):
+                x_labels.append(
+                    f'<text x="{xs[idx]:.1f}" y="{_HIST_CHART_H - 4:.1f}" '
+                    f'text-anchor="middle" class="prima-history-x">{esc(points[idx]["short_date"])}</text>'
+                )
+
+    if latest_plotted_idx is not None:
+        circle_parts[-1] = circle_parts[-1].replace(
+            'class="prima-history-dot"',
+            'class="prima-history-dot prima-history-dot-latest"',
+            1,
+        )
+
+    aria = esc(
+        f"Directional balance history, {n} accepted overnight runs on a scale from −5 to +5."
+    )
+    svg = (
+        f'<svg class="prima-history-svg" viewBox="0 0 {_HIST_CHART_W} {_HIST_CHART_H}" '
+        f'width="100%" role="img" aria-labelledby="prima-history-aria">'
+        f'<title id="prima-history-aria">{aria}</title>'
+        f'<rect class="prima-history-band" x="{_HIST_PAD_L:.1f}" y="{band_y:.1f}" '
+        f'width="{plot_w:.1f}" height="{band_h:.1f}" data-prima-band="-1..+1"/>'
+        f'<line class="prima-history-zero" x1="{_HIST_PAD_L:.1f}" y1="{y_0:.1f}" '
+        f'x2="{_HIST_CHART_W - _HIST_PAD_R:.1f}" y2="{y_0:.1f}" stroke-dasharray="4 3"/>'
+        f'<text x="{_HIST_PAD_L - 6:.1f}" y="{y_m5:.1f}" class="prima-history-yl" text-anchor="end">−5</text>'
+        f'<text x="{_HIST_PAD_L - 6:.1f}" y="{y_m2:.1f}" class="prima-history-yl" text-anchor="end">−2</text>'
+        f'<text x="{_HIST_PAD_L - 6:.1f}" y="{y_0:.1f}" class="prima-history-yl" text-anchor="end">0</text>'
+        f'<text x="{_HIST_PAD_L - 6:.1f}" y="{y_p2:.1f}" class="prima-history-yl" text-anchor="end">+2</text>'
+        f'<text x="{_HIST_PAD_L - 6:.1f}" y="{y_p5:.1f}" class="prima-history-yl" text-anchor="end">+5</text>'
+        f'{"".join(gap_parts)}{"".join(poly_parts)}{"".join(circle_parts)}{"".join(x_labels)}'
+        f"</svg>"
+    )
+
+    rows: list[str] = []
+    for p in reversed(points):
+        if p["plotted"]:
+            net_cell = _display_net(int(p["net"]))
+            status = _PRIMA_DIR_WORD.get(p["direction"], p["direction"])
+        else:
+            if p["direction"] not in _PRIMA_CATEGORIES:
+                net_cell = "—"
+            else:
+                net_cell = f"{_display_net(int(p['net']))} (partial)" if p["coverage"] < 5 else "—"
+            status = _GAP_TABLE_STATUS.get(p["gap_kind"], "Gap")
+        rows.append(
+            "<tr>"
+            f"<td>{esc(p['short_date'])}</td>"
+            f"<td>{esc(net_cell)}</td>"
+            f"<td>{esc(str(p['coverage']))} of 5</td>"
+            f"<td>{esc(status)}</td>"
+            "</tr>"
+        )
+    table = (
+        '<div class="prima-history-table-wrap">'
+        '<table class="prima-history-table" data-prima-history-table>'
+        "<caption>Accepted overnight runs (newest first)</caption>"
+        "<thead><tr><th>Date</th><th>Net</th><th>Coverage</th><th>Status</th></tr></thead>"
+        f"<tbody>{''.join(rows)}</tbody></table></div>"
+    )
+    legend = (
+        '<p class="prima-history-legend">Each point is one accepted overnight run. '
+        "Gaps are runs with invalid Brent inputs or fewer than 5 channels; they are not shown as zero.</p>"
+    )
+    return svg + table + legend
+
+
+def _oil_leg_label(key: str, leg: Mapping[str, Any]) -> str:
+    cm = str(leg.get("contract_month") or "")
+    month = _contract_month_label(cm) if cm else key
+    if key == "front":
+        return f"Front · {month}"
+    role = leg.get("horizon_role_months")
+    if role is None:
+        role = leg.get("maturity_months")
+    actual = leg.get("actual_maturity_months")
+    if key == "24" and actual is not None and role is not None and int(actual) != int(role):
+        return f"{int(actual)}m actual · {int(role)}m role · {month}"
+    return f"{int(role)}m · {month}"
+
+
+def _render_oil_legs(legs: dict[str, Mapping[str, Any]], esc: Any) -> str:
+    items: list[str] = []
+    for key in ("front", "12", "24"):
+        leg = legs.get(key)
+        if not isinstance(leg, Mapping):
+            continue
+        pct = leg.get("change_1m_pct")
+        price = leg.get("price")
+        symbol = leg.get("symbol") or ""
+        try:
+            pct_disp = _display_pct_fraction(float(pct)) if pct is not None else "—"
+        except (TypeError, ValueError):
+            pct_disp = "—"
+        price_disp = f"${float(price):.2f}" if price is not None else "—"
+        items.append(
+            f'<li data-prima-oil-leg="{esc(key)}">'
+            f'<div class="prima-oil-leg-label">{esc(_oil_leg_label(key, leg))}</div>'
+            f'<div class="prima-oil-leg-pct">{esc(pct_disp)}</div>'
+            f'<div class="prima-oil-leg-cap">1m change</div>'
+            f'<div class="prima-oil-leg-meta">{esc(price_disp)} · {esc(str(symbol))}</div>'
+            f"</li>"
+        )
+    if not items:
+        return ""
+    return f'<ul class="prima-oil-legs" data-prima-oil-legs>{"".join(items)}</ul>'
+
+
+def _render_gauge(
+    esc: Any,
+    *,
+    direction: str,
+    net: int,
+    coverage: int,
+    confidence: str,
+    stale: bool,
+) -> str:
+    show_marker = direction in _PRIMA_CATEGORIES
+    partial = show_marker and coverage < 5
+    class_label = _gauge_class_label(direction, net)
+    net_figure = _display_net(net) if show_marker else "—"
+    stale_badge = '<span class="prima-stale-badge">Stale inputs</span>' if stale else ""
+    if show_marker:
+        aria = (
+            f"Directional balance {net_figure} on a −5 to +5 scale. {class_label}. "
+            f"{coverage} of 5 channels available."
+        )
+        if partial:
+            aria += f" Partial: the net covers only {coverage} votes."
+    else:
+        aria = f"Directional balance unavailable. {coverage} of 5 channels available."
+
+    ticks: list[str] = []
+    labels: list[str] = []
+    for v in range(-5, 6):
+        pct = _gauge_left_pct(v)
+        ticks.append(f'<span class="prima-gauge-tick" style="left:{pct:.1f}%"></span>')
+        zero_cls = " prima-gauge-tick-zero" if v == 0 else ""
+        labels.append(
+            f'<span class="prima-gauge-tick-lbl{zero_cls}" style="left:{pct:.1f}%">'
+            f"{esc(_display_net(v))}</span>"
+        )
+    labels.append('<span class="prima-gauge-neutral-lbl">neutral</span>')
+
+    marker_html = ""
+    if show_marker:
+        marker_cls = "prima-gauge-marker"
+        marker_label = f"NOW {net_figure}"
+        if partial:
+            marker_cls += " prima-gauge-marker-partial"
+            marker_label += f" · {coverage} of 5"
+        # Keep the label off the dashed neutral line without running past either end.
+        if -4 < net < 0 or net >= 4:
+            lbl_cls = "prima-gauge-marker-lbl prima-gauge-marker-lbl-left"
+        elif 0 < net < 4 or net <= -4:
+            lbl_cls = "prima-gauge-marker-lbl prima-gauge-marker-lbl-right"
+        else:
+            lbl_cls = "prima-gauge-marker-lbl"
+        marker_html = (
+            f'<span class="{marker_cls}" data-prima-gauge-marker style="left:{_gauge_left_pct(net):.1f}%">'
+            f'<span class="{lbl_cls}">{esc(marker_label)}</span></span>'
+        )
+
+    coverage_text = f"{coverage} of 5 channels · confidence {confidence}"
+    if partial:
+        coverage_text = f"Partial: {coverage} of 5 channels · confidence {confidence}"
+    elif not show_marker:
+        coverage_text = f"No aggregate on this run · {coverage} of 5 channels available"
+
+    return (
+        f'<span class="prima-gauge" data-prima-gauge data-prima-direction="{esc(direction)}" '
+        f'data-prima-net="{net if show_marker else ""}" '
+        f'data-prima-coverage="{coverage}" role="img" aria-label="{esc(aria)}">'
+        f'<span class="prima-gauge-kicker">Inflation pressure proxy · directional balance</span>'
+        f'<span class="prima-gauge-head">'
+        f'<b class="prima-gauge-net">{esc(net_figure)}</b>'
+        f'<span class="prima-gauge-scale">/ −5 to +5</span>{stale_badge}</span>'
+        f'<span class="prima-gauge-class">{esc(class_label)}</span>'
+        f'<span class="prima-gauge-scalebox" aria-hidden="true">'
+        f'<span class="prima-gauge-zones"><span>Falling</span><span>Stable</span><span>Rising</span></span>'
+        f'<span class="prima-gauge-track" data-prima-band="-1..+1">'
+        f'<span class="prima-gauge-stable-band"></span>'
+        f'<span class="prima-gauge-neutral"></span>'
+        f'{"".join(ticks)}{marker_html}</span>'
+        f'<span class="prima-gauge-labels">{"".join(labels)}</span></span>'
+        f'<span class="prima-gauge-coverage">{esc(coverage_text)}</span>'
+        f'<span class="prima-gauge-zero-note">0 = balanced votes, not the 2% inflation target.</span>'
+        f"</span>"
+    )
 
 
 def _prima_short_date(observed_at: str) -> str:
@@ -83,6 +706,17 @@ def _prima_short_date(observed_at: str) -> str:
     day = int(match.group(3))
     if 1 <= month <= 12:
         return f"{day} {_MONTHS_TITLE[month - 1]}"
+    return text
+
+
+def _prima_display_date(text: str) -> str:
+    match = re.match(r"(\d{4})-(\d{2})-(\d{2})", text.strip())
+    if not match:
+        return _prima_short_date(text)
+    year, month, day = match.groups()
+    mo = int(month)
+    if 1 <= mo <= 12:
+        return f"{int(day)} {_MONTHS_TITLE[mo - 1]} {year}"
     return text
 
 
@@ -116,165 +750,6 @@ def _prima_headline_change(direction: str, trend: list[Any]) -> str:
     if prev_dir in _PRIMA_CATEGORIES:
         return f"changed from {_PRIMA_DIR_WORD[prev_dir]} ({prev_day})"
     return f"prior run {prev_day}"
-
-
-def _prima_channel_counts(subs: Mapping[str, Any]) -> tuple[int, int, int, int]:
-    up = down = neutral = unavailable = 0
-    for ch in _PRIMA_CHANNEL_LABELS:
-        d = str(subs.get(ch) or "UNAVAILABLE")
-        if d == "RISING":
-            up += 1
-        elif d == "FALLING":
-            down += 1
-        elif d == "STABLE":
-            neutral += 1
-        else:
-            unavailable += 1
-    return up, down, neutral, unavailable
-
-
-def _count_word(n: int) -> str:
-    return _COUNT_WORDS.get(n, str(n))
-
-
-def _headline_count_clause(count: int, verb_phrase: str) -> str:
-    """e.g. 'Three of five channels point up' or 'One channel points up'."""
-    if count == 0:
-        return f"none of five channels {verb_phrase}"
-    if count == 1:
-        singular = verb_phrase.replace("point ", "points ", 1)
-        return f"One channel {singular}"
-    return f"{_count_word(count).title()} of five channels {verb_phrase}"
-
-
-def _secondary_count_clause(count: int, tail: str) -> str:
-    if count == 0:
-        return f"none {tail}"
-    if count == 1:
-        return f"one {tail}"
-    return f"{_count_word(count)} {tail}"
-
-
-def _brent_driver_labels(drivers: list[str]) -> list[str]:
-    brent_bits: list[str] = []
-    for drv in drivers:
-        m = _BRENT_DRIVER_RE.search(drv)
-        if not m:
-            continue
-        ym = m.group(1)
-        pct = m.group(4) if m.lastindex and m.lastindex >= 4 else m.group(2)
-        listed_m = m.group(2) if m.lastindex and m.lastindex >= 4 else None
-        try:
-            y, mo = ym.split("-")
-            label = f"{_MONTHS_TITLE[int(mo) - 1]}-{y}"
-        except (ValueError, IndexError):
-            label = ym
-        if listed_m is not None:
-            brent_bits.append(f"{label} {listed_m}m {pct}%")
-        else:
-            brent_bits.append(f"{label} {pct}%")
-    return brent_bits
-
-
-def _opposite_direction(headline: str) -> str:
-    if headline == "RISING":
-        return "FALLING"
-    if headline == "FALLING":
-        return "RISING"
-    return ""
-
-
-def _prima_channel_groups(
-    subs: Mapping[str, Any],
-    headline: str,
-) -> tuple[list[str], list[str], list[str], list[str]]:
-    supporting: list[str] = []
-    offsetting: list[str] = []
-    neutral: list[str] = []
-    unavailable: list[str] = []
-    opposite = _opposite_direction(headline)
-    for ch, label in _PRIMA_CHANNEL_LABELS.items():
-        d = str(subs.get(ch) or "UNAVAILABLE")
-        entry = f"{_prima_dir_phrase(d)} {label}"
-        if d == "UNAVAILABLE":
-            unavailable.append(entry)
-        elif headline == "STABLE":
-            if d == "STABLE":
-                supporting.append(entry)
-            elif d in ("RISING", "FALLING"):
-                offsetting.append(entry)
-        elif d == headline:
-            supporting.append(entry)
-        elif d == "STABLE":
-            neutral.append(entry)
-        elif opposite and d == opposite:
-            offsetting.append(entry)
-        elif d in _PRIMA_CATEGORIES:
-            offsetting.append(entry)
-    return supporting, offsetting, neutral, unavailable
-
-
-def _prima_summary_sentences(
-    direction: str,
-    subs: Mapping[str, Any],
-    drivers: list[str],
-) -> list[str]:
-    if direction not in _PRIMA_CATEGORIES:
-        return ["Aggregate direction is unavailable; channel rows below show what was stored."]
-    up, down, neutral, _unavail = _prima_channel_counts(subs)
-    sentence_parts: list[str] = []
-    if direction == "RISING":
-        sentence_parts.append(_headline_count_clause(up, "point up"))
-        if down:
-            sentence_parts.append(f"and {_secondary_count_clause(down, 'points down')}")
-        elif neutral and not down:
-            sentence_parts.append(f"and {_secondary_count_clause(neutral, 'are stable')}")
-    elif direction == "FALLING":
-        sentence_parts.append(_headline_count_clause(down, "point down"))
-        if up:
-            sentence_parts.append(f"and {_secondary_count_clause(up, 'point up')}")
-    else:
-        sentence_parts.append(
-            f"Channels split {_count_word(up)} up, {_count_word(down)} down, "
-            f"{_count_word(neutral)} stable; net vote is stable."
-        )
-    first = " ".join(sentence_parts).rstrip() + "."
-
-    second_bits: list[str] = []
-    brent_bits = _brent_driver_labels(drivers)
-    if brent_bits and direction == "RISING":
-        second_bits.append(
-            "Longer-dated Brent futures repriced higher over the past month ("
-            + ", ".join(brent_bits)
-            + ")"
-        )
-    elif brent_bits:
-        second_bits.append(
-            "Brent contract 1-month moves in stored drivers (" + ", ".join(brent_bits) + ")"
-        )
-
-    opposite = _opposite_direction(direction)
-    offset_channels: list[str] = []
-    if opposite:
-        for ch, label in _PRIMA_CHANNEL_LABELS.items():
-            if str(subs.get(ch) or "UNAVAILABLE") == opposite:
-                offset_channels.append(_CHANNEL_OFFSET_NOUN.get(ch, label))
-    if offset_channels:
-        if len(offset_channels) == 1:
-            second_bits.append(f"{offset_channels[0]} are the offset")
-        else:
-            second_bits.append(
-                "; ".join(offset_channels[:-1]) + f"; and {offset_channels[-1]} are offsets"
-            )
-
-    if not second_bits:
-        return [first]
-    second = second_bits[0]
-    if len(second_bits) > 1:
-        second = f"{second_bits[0]}; {second_bits[1]}"
-    if not second.endswith("."):
-        second += "."
-    return [first, second]
 
 
 def _prima_mpr_oil_line(change_text: str) -> str | None:
@@ -767,41 +1242,88 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
     fresh = str(staleness).strip() if staleness is not None and str(staleness).strip() else "staleness not recorded"
     meta_line = f"{available} of 5 channels available · confidence {conf_text} · {fresh}"
 
+    net, vote_coverage = _channel_vote_summary(subs)
     headline_change = _prima_headline_change(direction, trend)
     history_gap = current.get("futures_history_gap")
-    if isinstance(history_gap, Mapping):
-        summary_sents = [
-            "Aggregate direction is unavailable because stored Brent futures inputs were not active listed maturities on this run.",
-            "That is a history gap, not a stable reading. Other channel rows keep their stored non-oil inputs. No backfill was created.",
-        ]
-    else:
-        summary_sents = _prima_summary_sentences(direction, subs, drivers)
     mpr_line = _prima_mpr_oil_line(str(current.get("change_since_last_mpr") or ""))
+    change_mpr_text = str(current.get("change_since_last_mpr") or "").strip()
 
-    supporting, offsetting, neutral_list, unavailable_list = (
-        _prima_channel_groups(subs, direction) if direction in _PRIMA_CATEGORIES else ([], [], [], [])
+    hist_points = _history_points(trend)
+    gauge_html = _render_gauge(
+        esc,
+        direction=direction,
+        net=net,
+        coverage=vote_coverage,
+        confidence=conf_text,
+        stale=bool(current.get("stale")),
+    )
+    history_chart = _render_history_chart(hist_points, esc)
+    run_count = len(trend)
+    gauge_details = (
+        f'<details class="prima-gauge-details" data-prima-gauge-details>'
+        f'<summary class="prima-gauge-summary">{gauge_html}'
+        f'<span class="prima-gauge-hint">Show history · {run_count} accepted runs</span>'
+        f"</summary>"
+        f'<div class="prima-history" data-prima-history>{history_chart}</div>'
+        f"</details>"
     )
 
-    strip_items: list[str] = []
-    prev_dir: str | None = None
-    for point in trend:
-        if not isinstance(point, Mapping):
-            continue
-        at = str(point.get("observed_at") or "")
-        dir_word = str(point.get("direction") or "UNAVAILABLE")
-        day = esc(_prima_short_date(at))
-        phrase = esc(_prima_dir_phrase(dir_word))
-        changed = prev_dir is not None and prev_dir != dir_word
-        cls = " prima-strip-changed" if changed else ""
-        strip_items.append(
-            f'<li class="prima-strip-item{cls}">'
-            f'<span class="prima-strip-date">{day}</span> '
-            f'<span class="prima-strip-dir">{phrase}</span></li>'
+    shock_dir = str(subs.get("shock_persistence") or "UNAVAILABLE")
+    legs = _brent_legs(channel_evidence)
+    front_leg = legs.get("front")
+    front_chg: float | None = None
+    quote_date = ""
+    if isinstance(front_leg, Mapping):
+        try:
+            if front_leg.get("change_1m_pct") is not None:
+                front_chg = float(front_leg["change_1m_pct"])
+        except (TypeError, ValueError):
+            front_chg = None
+        obs = front_leg.get("observation_date")
+        if obs:
+            quote_date = _prima_display_date(str(obs))
+    oil_headline = _oil_headline(shock_dir, front_chg)
+    if shock_dir == "UNAVAILABLE":
+        oil_line = _oil_grounded_line_unavailable(shock_dir, history_gap if isinstance(history_gap, Mapping) else None)
+    else:
+        oil_line = _oil_grounded_line(shock_dir, legs)
+    shock_word = _PRIMA_DIR_WORD.get(shock_dir, shock_dir)
+    if quote_date:
+        oil_state = f'Oil channel: <b>{esc(shock_word)}</b> · Brent quotes {esc(quote_date)}'
+    else:
+        oil_state = f'Oil channel: <b>{esc(shock_word)}</b> · quote date not stored'
+    oil_legs_html = _render_oil_legs(legs, esc)
+    vote_line = (
+        f'<p class="prima-vote-line" data-prima-vote="{esc(direction)}">'
+        f"Broader inflation-pressure vote: <b>{esc(direction)}</b></p>"
+    )
+    vote_text = _vote_text(direction, net, vote_coverage, subs, channel_evidence, shock_dir)
+    panel_parts = [
+        '<section class="prima-panel" data-prima-panel>',
+        '<p class="prima-panel-kicker">Canada · Inflation pressure</p>',
+        f'<p class="prima-oil-headline" data-prima-oil-headline data-prima-oil-direction="{esc(shock_dir)}">{esc(oil_headline)}</p>',
+    ]
+    if oil_line:
+        panel_parts.append(f'<p class="prima-oil-line">{esc(oil_line)}</p>')
+    panel_parts.append(f'<p class="prima-oil-state">{oil_state}</p>')
+    if oil_legs_html:
+        panel_parts.append(oil_legs_html)
+    panel_parts.append('<hr class="prima-divider">')
+    panel_parts.append(vote_line)
+    if headline_change:
+        panel_parts.append(
+            f'<p class="prima-headline-change">{esc(headline_change)}</p>'
         )
-        prev_dir = dir_word
-    strip_html = (
-        f'<ol class="prima-strip">{"".join(strip_items)}</ol>' if strip_items else ""
-    )
+    panel_parts.append(f'<p class="prima-vote-text">{esc(vote_text)}</p>')
+    if isinstance(history_gap, Mapping):
+        gap_msg = (
+            "Aggregate direction is unavailable because stored Brent futures inputs "
+            "were not active listed maturities on this run."
+        )
+        panel_parts.append(
+            f'<p class="prima-history-gap" data-prima-history-gap="invalid">{esc(gap_msg)}</p>'
+        )
+    panel_html = "".join(panel_parts) + "</section>"
 
     current_run_day = _prima_short_date(
         str(trend[-1].get("observed_at") or "") if trend else ""
@@ -811,20 +1333,26 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         current_source = str(trend[-1].get("source_id") or "")
 
     channel_html_parts: list[str] = []
-    for channel, label in _PRIMA_CHANNEL_LABELS.items():
+    for channel in _CHANNEL_ROW_ORDER:
+        label = _CHANNEL_ROW_LABELS[channel]
+        contract_label = _PRIMA_CHANNEL_LABELS[channel]
         ch_dir = str(subs.get(channel) or "UNAVAILABLE")
         snippet = _prima_channel_snippet(channel, subs, drivers, channel_evidence)
         changed = _prima_channel_changed_marker(channel, trend)
+        vintage = _channel_vintage(channel, channel_evidence)
+        summary_left = [f'<span class="prima-ch-label">{esc(label)}</span>']
+        if snippet:
+            summary_left.append(f'<span class="prima-ch-snippet">{esc(snippet)}</span>')
+        if vintage:
+            summary_left.append(f'<span class="prima-ch-vintage">{esc(vintage)}</span>')
+        if channel in ("production_network_pressure", "imported_pressure"):
+            summary_left.append('<span class="prima-ch-layer">Monthly</span>')
+        if changed:
+            summary_left.append(f'<span class="prima-ch-changed">{esc(changed)}</span>')
         summary_bits = [
-            f'<span class="prima-ch-label">{esc(label)}</span>',
+            f'<span class="prima-ch-summary-left">{"".join(summary_left)}</span>',
             f'<span class="prima-ch-dir">{esc(_prima_dir_phrase(ch_dir))}</span>',
         ]
-        if snippet:
-            summary_bits.append(f'<span class="prima-ch-snippet">{esc(snippet)}</span>')
-        if channel in ("production_network_pressure", "imported_pressure"):
-            summary_bits.append('<span class="prima-ch-layer">Monthly</span>')
-        if changed:
-            summary_bits.append(f'<span class="prima-ch-changed">{esc(changed)}</span>')
 
         rule = esc(_prima_channel_rule_text(channel))
         why_title = f"Why {_PRIMA_DIR_WORD.get(ch_dir, ch_dir)}"
@@ -836,6 +1364,7 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                 ev_entry = raw_ev
         inputs = ev_entry.get("inputs") if ev_entry else None
         why_parts: list[str] = [
+            f'<p class="prima-ch-model">Model channel: {esc(contract_label)}</p>',
             _evidence_block(esc, "rule", "Rule", rule),
         ]
         direct_rows: list[str] = []
@@ -1047,61 +1576,25 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
     if lim_text:
         run_raw.append(f"<div>Limitations: {esc(lim_text)}</div>")
 
-    supporting_html = ""
-    if supporting:
-        supporting_html = (
-            '<div class="prima-lists"><div class="prima-list-label">Supporting</div><ul>'
-            + "".join(f"<li>{esc(x)}</li>" for x in supporting)
-            + "</ul></div>"
-        )
-    offset_html = ""
-    if offsetting:
-        offset_html = (
-            '<div class="prima-lists"><div class="prima-list-label">Offsetting</div><ul>'
-            + "".join(f"<li>{esc(x)}</li>" for x in offsetting)
-            + "</ul></div>"
-        )
-    neutral_html = ""
-    if neutral_list:
-        neutral_html = (
-            '<div class="prima-lists"><div class="prima-list-label">Neutral</div><ul>'
-            + "".join(f"<li>{esc(x)}</li>" for x in neutral_list)
-            + "</ul></div>"
-        )
-    unavailable_html = ""
-    if unavailable_list:
-        unavailable_html = (
-            '<div class="prima-lists"><div class="prima-list-label">Unavailable</div><ul>'
-            + "".join(f"<li>{esc(x)}</li>" for x in unavailable_list)
-            + "</ul></div>"
-        )
-
-    stale_badge = '<span class="prima-stale-badge">Stale inputs</span>' if current.get("stale") else ""
     shadow_html = _render_prima_shadow(current.get("shadow_sector_layer"), esc)
-
-    summary_html = "".join(f"<p>{esc(s)}</p>" for s in summary_sents)
-    mpr_html = f'<p class="prima-mpr-glance">{esc(mpr_line)}</p>' if mpr_line else ""
+    mpr_body = ""
+    if mpr_line:
+        mpr_body = f'<p class="prima-mpr-glance">{esc(mpr_line)}</p>'
+    elif change_mpr_text and change_mpr_text.lower() != "unavailable":
+        mpr_body = f'<p class="prima-mpr-glance">{esc(change_mpr_text)}</p>'
+    mpr_block = (
+        f'<details class="prima-raw" data-prima-raw="mpr">'
+        f'<summary class="prima-raw-summary">MPR comparison and quarterly shadow</summary>'
+        f'<div class="prima-raw-body">{mpr_body}{shadow_html}</div></details>'
+    )
     return (
         f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
-        f'<div class="prima-head">'
-        f'<div class="prima-title-row"><span class="prima-title">Inflation pressure proxy</span>'
-        f"{stale_badge}</div>"
-        f'<p class="prima-caveat">{esc(_PRIMA_CAVEAT)}</p></div>'
-        f'<div class="prima-headline" data-prima-direction="{esc(direction)}">'
-        f'<span class="prima-headline-dir">{esc(_prima_dir_phrase(direction))}</span>'
-        f'<span class="prima-headline-change">{esc(headline_change)}</span></div>'
-        + (
-            f'<p class="prima-history-gap" data-prima-history-gap="invalid">{esc(summary_sents[0])}</p>'
-            if isinstance(history_gap, Mapping)
-            else ""
-        )
-        + f'<div class="prima-summary">{summary_html}</div>'
-        f"{supporting_html}{offset_html}{neutral_html}{unavailable_html}"
-        f"{mpr_html}"
+        f"{gauge_details}"
+        f"{panel_html}"
         f'<div class="prima-channels">{"".join(channel_html_parts)}</div>'
-        f"{shadow_html}"
-        f"{strip_html}"
+        f"{mpr_block}"
         f'<p class="prima-meta-line">{esc(meta_line)}</p>'
+        f'<p class="prima-caveat">{esc(_PRIMA_CAVEAT)}</p>'
         f'<details class="prima-raw prima-raw-run" data-prima-raw="run">'
         f'<summary class="prima-raw-summary">Run provenance</summary>'
         f'<div class="prima-raw-body">{"".join(run_raw)}</div></details>'
@@ -1116,7 +1609,25 @@ def prima_glance_markup(prima_pressure: Mapping[str, Any] | None, esc: Any) -> s
     if not isinstance(cur, Mapping):
         return ""
     pdir = str(cur.get("direction") or "UNAVAILABLE")
+    subs = cur.get("subcomponent_directions")
+    if not isinstance(subs, Mapping):
+        subs = {}
+    if pdir not in _PRIMA_CATEGORIES:
+        balance = "Pressure balance —"
+    else:
+        net, cov = _channel_vote_summary(subs)
+        balance = f"Pressure balance {esc(_display_net(net))}"
+        if cov < 5:
+            balance += f" ({cov} of 5)"
+    shock = str(subs.get("shock_persistence") or "UNAVAILABLE")
+    oil_bit = ""
+    if shock == "RISING":
+        oil_bit = " · oil ↑"
+    elif shock == "FALLING":
+        oil_bit = " · oil ↓"
+    elif shock == "STABLE":
+        oil_bit = " · oil →"
     return (
         f'<span class="prima-glance" data-prima-glance>'
-        f"Pressure proxy {esc(_prima_dir_phrase(pdir))}</span>"
+        f"{balance}{oil_bit}</span>"
     )

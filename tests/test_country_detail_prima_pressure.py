@@ -6,6 +6,7 @@ import copy
 import hashlib
 import json
 import re
+import shutil
 import sys
 import tempfile
 import unittest
@@ -91,6 +92,44 @@ def _presentation_from_block(block: dict) -> dict:
 
 def _file_sha256(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def _presentation_root_through_run(max_run_id: str) -> Path:
+    """Copy accepted overnight evidence through ``max_run_id`` into a temp data root."""
+    root = Path(tempfile.mkdtemp())
+    runs = ROOT / "data/overnight/runs"
+    for run_dir in sorted(runs.iterdir()):
+        if not run_dir.is_dir() or run_dir.name > max_run_id:
+            continue
+        index_path = run_dir / "reviews/index.json"
+        if not index_path.is_file():
+            continue
+        dest = root / "data/overnight/runs" / run_dir.name / "reviews"
+        dest.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(index_path, dest / "index.json")
+        for review_dir in run_dir.joinpath("reviews").iterdir():
+            if not review_dir.is_dir():
+                continue
+            out = dest / review_dir.name
+            out.mkdir(parents=True, exist_ok=True)
+            for name in ("review.json", "evidence_snapshot.json"):
+                src = review_dir / name
+                if src.is_file():
+                    shutil.copy2(src, out / name)
+    return root
+
+
+def _prima_excerpt(html: str) -> str:
+    prima = html.split('data-prima-pressure="ca"', 1)[1]
+    return prima.split('class="evidence-block context"', 1)[0]
+
+
+def _prima_before_shadow(html: str) -> str:
+    prima = _prima_excerpt(html)
+    marker = prima.find('data-prima-shadow="sector-ppi"')
+    if marker < 0:
+        return prima
+    return prima[:marker]
 
 
 def _write_review_index(root: Path, run_id: str, rows: list[dict]) -> None:
@@ -194,7 +233,11 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
 
     def test_build_presentation_selects_canonical_repo_observation(self) -> None:
         self.assertFalse(REPO_HISTORY.is_file())
-        presentation = build_presentation(ROOT)
+        tmp_root = _presentation_root_through_run("overnight-20261105")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
         self.assertEqual(presentation["source"], "accepted_overnight_evidence_snapshots")
         self.assertEqual(presentation["limitations"], [])
         self.assertFalse(presentation["feeds_inflation_score"])
@@ -587,15 +630,18 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         for ch in contract.CHANNELS:
             self.assertIn(f'data-prima-channel="{ch}"', html)
             self.assertIn("prima-ch-summary", html)
-        prima = html.split('data-prima-pressure="ca"', 1)[1]
-        prima = prima.split('class="evidence-block context"', 1)[0]
+        prima = _prima_excerpt(html)
         layer1 = prima.split('class="prima-why"', 1)[0]
         for banned in ("stored observation", "not recomputed", "Quoted as stored"):
             self.assertNotIn(banned, layer1)
-        self.assertNotIn("<svg", prima)
-        self.assertNotIn("<canvas", prima)
+        self.assertNotIn("<canvas", layer1)
+        self.assertNotIn("<svg", layer1.split('data-prima-history', 1)[0])
+        self.assertIn("data-prima-history", layer1)
+        self.assertIn("prima-history-svg", layer1)
         self.assertNotIn("/100", prima)
-        self.assertNotIn("strength", prima.lower())
+        self.assertNotIn("strength", _prima_before_shadow(html).lower())
+        self.assertIn('data-prima-gauge', layer1)
+        self.assertIn("Inflation pressure proxy", layer1)
         self.assertEqual(prima.count("not a reconstruction"), 1)
         loud = _presentation_from_block(_rising_block())
         html_loud = render_country_detail(
@@ -713,9 +759,9 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
                 self.attention,
                 self.scores,
             )
-            prima = html.split('data-prima-pressure="ca"', 1)[1].split("</div>", 1)[0]
+            prima = _prima_excerpt(html)
             self.assertNotIn("/100", prima)
-            self.assertNotIn("strength", prima.lower())
+            self.assertNotIn("strength", _prima_before_shadow(html).lower())
             self.assertIn("5 of 5 channels available", html)
 
     def test_trend_from_two_accepted_runs(self) -> None:
@@ -808,20 +854,19 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.attention,
             self.scores,
         )
-        prima = html.split('data-prima-pressure="ca"', 1)[1].split(
-            'class="evidence-block context"', 1
+        prima = _prima_excerpt(html)
+        self.assertNotIn('prima-list-label">Offsetting', prima)
+        self.assertNotIn('prima-list-label">Neutral', prima)
+        self.assertIn('data-prima-channel="production_network_pressure"', prima)
+        prod = prima.split('data-prima-channel="production_network_pressure"', 1)[1].split(
+            "</details>", 1
         )[0]
-        offset_block = prima.split('prima-list-label">Offsetting', 1)[1].split(
-            'prima-list-label">Neutral', 1
-        )[0]
-        self.assertNotIn("Production network pressure", offset_block)
-        self.assertIn("Raw-material cost pressure", offset_block)
-        self.assertNotIn("Imported pressure", offset_block)
+        self.assertIn('data-prima-channel-direction="STABLE"', prod)
+        self.assertIn("Raw-material prices", prima)
+        self.assertNotIn("Imported pressure", prima)
         self.assertIn('class="prima-ch-layer">Monthly', prima)
         self.assertIn("not an import-price index", prima)
         self.assertIn("Headline IPPI and the quarterly Energy sector", prima)
-        neutral_block = prima.split('prima-list-label">Neutral', 1)[1].split("</ul>", 1)[0]
-        self.assertIn("Production network pressure", neutral_block)
 
     def test_prima_trend_chip_and_channel_change_marker(self) -> None:
         subs_rising = {
@@ -877,23 +922,27 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.attention,
             self.scores,
         )
-        prima = html.split('data-prima-pressure="ca"', 1)[1]
-        prima = prima.split('class="evidence-block context"', 1)[0]
+        prima = _prima_excerpt(html)
         layer1 = prima.split('class="prima-why"', 1)[0]
         self.assertIn("changed from Stable (21 Oct)", layer1)
-        self.assertIn("prima-strip", prima)
+        self.assertNotIn("prima-strip", prima)
+        self.assertIn("prima-history-table", prima)
         self.assertIn("21 Oct", prima)
         self.assertIn("23 Oct", prima)
-        self.assertNotIn("2026-10-21", layer1)
+        self.assertNotIn("2026-10-21", layer1.split("data-prima-history", 1)[0])
         self.assertIn("was Stable 21 Oct", prima)
         self.assertIn("↓ Falling", prima)
-        self.assertNotIn("Offsetting</div><ul><li>→ Stable Production", prima)
+        self.assertNotIn('prima-list-label">Offsetting', prima)
         imported = prima.split('data-prima-why="imported_pressure"', 1)[1]
         self.assertIn("0.40%", imported)
         self.assertIn("Not stored for this run", imported)
 
     def test_repo_demand_shows_prior_run_corra_reading(self) -> None:
-        presentation = build_presentation(ROOT)
+        tmp_root = _presentation_root_through_run("overnight-20261105")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
         html = render_country_detail(
             "CA",
             {**self.projection["countries"]["CA"], "prima_pressure": presentation},
@@ -904,8 +953,8 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             "</details>", 1
         )[0]
         self.assertIn('data-prima-evidence="direct"', demand)
-        self.assertIn("gap: -0.5", demand)
-        self.assertIn("corra_rate: 2.25", demand)
+        self.assertIn("gap: -0.22", demand)
+        self.assertIn("corra_rate: 2.53", demand)
         self.assertIn("22 Oct Rising", demand)
         self.assertIn("26 Oct Rising", demand)
 
@@ -981,6 +1030,239 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertIn("RMPI ex-crude-energy -0.50% m/m", html)
         self.assertNotIn("RMPI ex-energy", html)
         self.assertNotIn('data-prima-evidence="missing"', imported.split("</details>", 1)[0])
+
+    def test_nov10_prima_gauge_and_panel_regression(self) -> None:
+        tmp_root = _presentation_root_through_run("overnight-20261110")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        prima = _prima_excerpt(html)
+        self.assertIn('data-prima-net="-1"', prima)
+        self.assertIn('data-prima-coverage="5"', prima)
+        self.assertIn("Stable · Falling tilt", prima)
+        self.assertIn("−1", prima)
+        self.assertIn("/ −5 to +5", prima)
+        self.assertRegex(
+            prima,
+            r'<span class="prima-gauge-marker" data-prima-gauge-marker style="left:40\.0%">'
+            r'<span class="prima-gauge-marker-lbl prima-gauge-marker-lbl-left">NOW −1</span>',
+        )
+        self.assertIn('<span class="prima-gauge-neutral"></span>', prima)
+        self.assertIn('data-prima-band="-1..+1"', prima)
+        tick_lefts = re.findall(r'class="prima-gauge-tick" style="left:([\d.]+)%"', prima)
+        self.assertEqual(tick_lefts, [f"{i * 10:.1f}" for i in range(11)])
+        self.assertIn("Oil shock: sharply lower", prima)
+        self.assertIn("evident across the front and longer-dated futures curve", prima)
+        self.assertIn("9 Nov 2026", prima)
+        self.assertIn("−8.6%", prima)
+        self.assertIn("−5.6%", prima)
+        self.assertIn("−3.3%", prima)
+        self.assertIn("BZF27.NYM", prima)
+        self.assertIn("BZF28.NYM", prima)
+        self.assertIn("BZZ28.NYM", prima)
+        self.assertIn("23m actual", prima)
+        self.assertIn('data-prima-vote="STABLE"', prima)
+        self.assertIn("does not mean oil has not repriced", prima)
+        self.assertIn(
+            "Oil (9 Nov 2026 quotes) and raw-material prices (Sep 2026 RMPI) point lower, "
+            "while consumer-price breadth (Sep 2026 CPI) points higher. "
+            "The five equal votes net to −1, inside the −1 to +1 stable band.",
+            prima,
+        )
+        self.assertIn("Oil channel: <b>Falling</b> · Brent quotes 9 Nov 2026", prima)
+        self.assertEqual(prima.count("data-prima-gauge-marker"), 1)
+        self.assertNotIn("prima-gauge-marker-partial", prima)
+        self.assertNotIn("Supporting", prima)
+        self.assertNotIn("Offsetting", prima)
+        self.assertNotIn("Pressure proxy →", html)
+        gauge_end = prima.index("data-prima-history")
+        self.assertLess(prima.index("data-prima-gauge"), gauge_end)
+        self.assertLess(gauge_end, prima.index("data-prima-panel"))
+        labels = [
+            "Oil shock",
+            "Raw-material prices",
+            "Consumer-price breadth",
+            "Producer prices ex-energy",
+            "Demand constraint",
+        ]
+        positions = [prima.find(label) for label in labels]
+        self.assertTrue(all(p >= 0 for p in positions))
+        self.assertEqual(positions, sorted(positions))
+
+    def test_nov9_balanced_oil_stable(self) -> None:
+        tmp_root = _presentation_root_through_run("overnight-20261109")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        prima = _prima_excerpt(html)
+        self.assertIn('data-prima-net="0"', prima)
+        self.assertIn("Balanced", prima)
+        self.assertIn("Oil shock: no persistent move", prima)
+
+    def test_history_chart_segments_and_table(self) -> None:
+        from scripts.country_detail._prima_section import _history_points
+
+        tmp_root = _presentation_root_through_run("overnight-20261110")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
+        points = _history_points(presentation["trend"])
+        plotted_dates = [p["date_key"] for p in points if p["plotted"]]
+        self.assertIn("2026-10-21", plotted_dates)
+        self.assertNotIn("2026-10-22", plotted_dates)
+        self.assertIn("2026-11-09", plotted_dates)
+        self.assertIn("2026-11-10", plotted_dates)
+        for gap in ("2026-10-22", "2026-11-02", "2026-11-06"):
+            row = next(p for p in points if p["date_key"] == gap)
+            self.assertFalse(row["plotted"])
+            self.assertTrue(row["gap_reason"])
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        prima = _prima_excerpt(html)
+        self.assertEqual(prima.count('class="prima-history-seg"'), 2)
+        self.assertEqual(prima.count('data-prima-gap="'), len(points) - len(plotted_dates))
+        table = prima.split("data-prima-history-table", 1)[1]
+        self.assertEqual(table.count("<tr>"), 15 + 1)
+        self.assertIn('stroke-dasharray="4 3"', prima)
+        segs = re.findall(r'<polyline class="prima-history-seg"[^>]*points="([^"]+)"', prima)
+        # Plot spans y 15..140 for +5..-5, so +2 -> 52.5, 0 -> 77.5, -1 -> 90.0.
+        self.assertEqual([len(seg.split()) for seg in segs], [6, 2])
+        self.assertEqual({pt.split(",")[1] for pt in segs[0].split()}, {"52.5"})
+        self.assertEqual([pt.split(",")[1] for pt in segs[1].split()], ["77.5", "90.0"])
+        self.assertIn('<line class="prima-history-zero" x1="40.0" y1="77.5"', prima)
+        dots = dict(re.findall(r'data-prima-history-point="([\d-]+)" data-prima-net="(-?\d+)"', prima))
+        self.assertEqual(dots["2026-10-21"], "5")
+        self.assertEqual(dots["2026-11-09"], "0")
+        self.assertEqual(dots["2026-11-10"], "-1")
+        for missing in ("2026-10-22", "2026-11-02", "2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"):
+            self.assertNotIn(missing, dots)
+        self.assertIn('data-prima-gap="History gap: invalid Brent futures inputs" data-prima-history-point="2026-11-02"', prima)
+        self.assertIn('data-prima-gap="Partial: 4 of 5 channels" data-prima-history-point="2026-11-06"', prima)
+        self.assertIn('data-prima-gap="Partial: 2 of 5 channels" data-prima-history-point="2026-10-22"', prima)
+        self.assertIn(
+            "<tr><td>6 Nov</td><td>0 (partial)</td><td>4 of 5</td>"
+            "<td>Gap · partial coverage</td></tr>",
+            table,
+        )
+        self.assertIn(
+            "<tr><td>2 Nov</td><td>—</td><td>4 of 5</td><td>Gap · invalid Brent inputs</td></tr>",
+            table,
+        )
+        self.assertLess(table.index("10 Nov"), table.index("21 Oct"))
+
+    def test_partial_and_history_gap_gauge_markers(self) -> None:
+        block = _rising_block(
+            direction="STABLE",
+            subcomponent_directions={
+                "shock_persistence": "RISING",
+                "production_network_pressure": "UNAVAILABLE",
+                "imported_pressure": "STABLE",
+                "consumer_price_breadth": "STABLE",
+                "demand_pass_through_constraint": "STABLE",
+            },
+        )
+        pres = _presentation_from_block(block)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": pres},
+            self.attention,
+            self.scores,
+        )
+        prima = _prima_excerpt(html)
+        self.assertIn('data-prima-coverage="4"', prima)
+        self.assertIn("prima-gauge-marker-partial", prima)
+
+        gap_pres = _presentation_from_block(_rising_block(direction="UNAVAILABLE"))
+        gap_pres["current"]["futures_history_gap"] = {"source_id": "overnight-x", "findings": []}
+        html2 = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": gap_pres},
+            self.attention,
+            self.scores,
+        )
+        gauge = _prima_excerpt(html2).split("prima-gauge-net", 1)[1][:80]
+        self.assertIn("—", gauge)
+        self.assertNotIn("data-prima-gauge-marker", _prima_excerpt(html2))
+        self.assertIn("Pressure balance —", html2)
+
+    def test_history_window_caps_at_thirty(self) -> None:
+        from scripts.country_detail._prima_section import _history_points
+
+        from datetime import date, timedelta
+
+        start = date(2026, 1, 1)
+        trend = []
+        for i in range(35):
+            d = start + timedelta(days=i)
+            trend.append(
+                {
+                    "observed_at": f"{d.isoformat()}T08:00:00-05:00",
+                    "direction": "STABLE",
+                    "futures_validity": "valid",
+                    "subcomponent_directions": {ch: "STABLE" for ch in contract.CHANNELS},
+                }
+            )
+        points = _history_points(trend)
+        self.assertEqual(len(points), 30)
+        self.assertEqual(points[0]["date_key"], (start + timedelta(days=5)).isoformat())
+        self.assertEqual(points[-1]["date_key"], (start + timedelta(days=34)).isoformat())
+
+    def test_glance_pressure_balance_and_oil_arrow(self) -> None:
+        tmp_root = _presentation_root_through_run("overnight-20261110")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        self.assertIn("Pressure balance −1 · oil ↓", html)
+
+    def test_channel_drilldowns_preserve_raw_blocks(self) -> None:
+        tmp_root = _presentation_root_through_run("overnight-20261110")
+        try:
+            presentation = build_presentation(tmp_root)
+        finally:
+            shutil.rmtree(tmp_root)
+        html = render_country_detail(
+            "CA",
+            {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+            self.attention,
+            self.scores,
+        )
+        prima = _prima_excerpt(html)
+        for ch in contract.CHANNELS:
+            chunk = prima.split(f'data-prima-why="{ch}"', 1)[1].split("</details>", 1)[0]
+            self.assertIn("Source and calculation", chunk)
+            self.assertIn(f'data-prima-raw="{ch}"', prima)
+
+    def test_oil_headline_sharp_rising_mirror(self) -> None:
+        from scripts.country_detail._prima_section import _oil_headline
+
+        self.assertEqual(_oil_headline("RISING", 0.06), "Oil shock: sharply higher")
+        self.assertEqual(_oil_headline("RISING", 0.02), "Oil shock: higher")
 
     def test_headline_change_reports_streak_start(self) -> None:
         from scripts.country_detail._prima_section import _prima_headline_change
