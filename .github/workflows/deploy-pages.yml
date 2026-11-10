@@ -141,6 +141,10 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Optional render failures append one JSON line here. The file stays outside
+    # _site; the issues step reads it and restamps release.json before upload.
+    env:
+      MW_RENDER_DIAGNOSTICS: ${{ runner.temp }}/render-diagnostics.jsonl
     outputs:
       dataset_run_id: ${{ steps.dataset.outputs.dataset_run_id }}
       pages_base_url: ${{ steps.pages.outputs.base_url }}
@@ -167,190 +171,79 @@ jobs:
           PYTHONPATH: .
         run: python3 -m scripts.market_watch_launch.pages_dispatch bind-checkout
 
-      - name: Rebuild v6 base
+      - name: Rebuild static base
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p _site
-          cat payload_v6/part*.b64 > /tmp/v6.b64
-          test "$(wc -c < /tmp/v6.b64)" -eq 41912
-          base64 --decode /tmp/v6.b64 > /tmp/v6.html.gz
-          gzip -t /tmp/v6.html.gz
-          gzip -dc /tmp/v6.html.gz > /tmp/v6.html
-          test "$(wc -c < /tmp/v6.html)" -eq 134496
-          echo "2c68341978db2ccc8efdd8f1af7bee4e105c89427f741bb10e7747cb98dde917  /tmp/v6.html" | sha256sum -c -
-
-      - name: Apply last-24-hours patch
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat patch_v7/last24_*.html > /tmp/last24.html
-          python - <<'PY'
-          from pathlib import Path
-          base = Path('/tmp/v6.html').read_text()
-          css = Path('patch_v7/last24.css').read_text()
-          html = Path('/tmp/last24.html').read_text()
-          anchor = '<div class="stitle">Top Market Drivers</div>'
-          if '.last24{' in base or 'Last 24 Hours · Desk Summary' in base:
-              raise SystemExit('v6 base already contains v7 patch')
-          if base.count('</style>') < 1 or base.count(anchor) != 1:
-              raise SystemExit('v6 patch anchors changed')
-          out = base.replace('</style>', css + '\n</style>', 1)
-          out = out.replace(anchor, '\n' + html + anchor, 1)
-          Path('_site/index.html').write_text(out)
-          PY
-          test -s _site/index.html
-          news_count="$(grep -o 'class=\"last24-item\"' _site/index.html | wc -l | tr -d '[:space:]')"
-          test "$news_count" -ge 1
-          test "$news_count" -le 6
-          grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
-          grep -Fq 'class="last24-window"' _site/index.html
-          grep -Fq 'Last refreshed' _site/index.html
-
-      - name: Apply rolling news rollup
-        shell: bash
-        run: |
-          set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('_site/index.html')
-          base = path.read_text()
-          rollup = Path('patch_v9/news_rollup.html').read_text()
-          start = '<div class="stitle">Top Market Drivers</div>'
-          end = '<div class="x-signal">'
-          if base.count(start) != 1 or base.count(end) != 1:
-              raise SystemExit('rolling-news anchors changed')
-          a = base.index(start)
-          b = base.index(end, a)
-          out = base[:a] + rollup + base[b:]
-          if out.count('class="driver-card"') > 3 or out.count('class="driver-card"') < 1:
-              raise SystemExit('invalid top-driver count')
-          story_count = out.count('class="story"')
-          if not 1 <= story_count <= 12:
-              raise SystemExit(f'invalid rolling digest count: {story_count}')
-          if '<div class="stitle">7-Day Quick Digest</div>' not in rollup or '<div class="scanline"><b>Window:</b>' not in rollup:
-              raise SystemExit('rolling digest metadata missing')
-          path.write_text(out)
-          PY
-          driver_count="$(grep -o 'class=\"driver-card\"' _site/index.html | wc -l | tr -d '[:space:]')"
-          test "$driver_count" -ge 1
-          test "$driver_count" -le 3
-          story_count="$(grep -o 'class=\"story\"' _site/index.html | wc -l | tr -d '[:space:]')"
-          test "$story_count" -ge 1
-          test "$story_count" -le 12
-          if grep -Fq '7-Day Quick Digest' _site/index.html; then
-            echo "dated 7-Day Quick Digest present"
-          elif grep -Fq 'Accepted Overnight Research · Age Unverified' _site/index.html; then
-            echo "undated age-unverified research digest present"
-          else
-            echo "missing dated or undated news digest section"
-            exit 1
-          fi
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.research_static_base base --root . --out _site/index.html
 
       - name: Extend dashboard to six economies
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python scripts/apply_six_economy_dashboard.py _site/index.html
-          grep -Fq 'id="c-ea"' _site/index.html
-          grep -Fq 'id="c-jp"' _site/index.html
-          grep -Fq '<h3>EURO AREA</h3>' _site/index.html
-          grep -Fq '<h3>JAPAN</h3>' _site/index.html
-          grep -Fq 'class="cdetail ea"' _site/index.html
-          grep -Fq 'class="cdetail jp"' _site/index.html
+          PYTHONPATH=. python3 scripts/apply_six_economy_dashboard.py _site/index.html
 
       - name: Restore 1-100 temperature input scores
         shell: bash
         run: |
           set -euo pipefail
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('_site/index.html')
-          base = path.read_text()
-          css = Path('patch_v8/temp_scores.css').read_text()
-          blocks = {
-              'us': Path('patch_v8/us.html').read_text(),
-              'ca': Path('patch_v8/ca.html').read_text(),
-              'au': Path('patch_v8/au.html').read_text(),
-              'nz': Path('patch_v8/nz.html').read_text(),
-              'ea': Path('patch_v8/ea.html').read_text(),
-              'jp': Path('patch_v8/jp.html').read_text(),
-          }
-          anchors = {
-              'us': '<div class="cdetail us">',
-              'ca': '<div class="cdetail ca">',
-              'au': '<div class="cdetail au">',
-              'nz': '<div class="cdetail nz">',
-              'ea': '<div class="cdetail ea">',
-              'jp': '<div class="cdetail jp">',
-          }
-          if '.temp-inputs{' in base or 'class="temp-dimension"' in base:
-              raise SystemExit('temperature score patch already present')
-          if base.count('</style>') < 1:
-              raise SystemExit('temperature score CSS anchor changed')
-          out = base.replace('</style>', css + '\n</style>', 1)
-          for key, anchor in anchors.items():
-              if out.count(anchor) != 1:
-                  raise SystemExit(f'{key} country anchor changed')
-              out = out.replace(anchor, anchor + '\n' + blocks[key], 1)
-          Path('_site/index.html').write_text(out)
-          PY
-          test "$(grep -o 'class="temp-dimension' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
-          test "$(grep -o 'Hard score inputs' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
-          test "$(grep -o 'class="evidence-block context"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.research_static_base temperature-inputs --root . --html _site/index.html
 
       - name: Add August CPI context to US inflation evidence
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/apply_v10_us_cpi_context.py _site/index.html
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "August CPI context" \
+            --optional \
+            --fallback legacy_patch_skipped \
+            --category render \
+            --component legacy_patch \
+            --phase final \
+            -- python3 scripts/apply_v10_us_cpi_context.py _site/index.html
 
       - name: Apply Sep 14 completeness refresh
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/apply_v11_refresh.py _site/index.html
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "Sep 14 completeness refresh" \
+            --optional \
+            --fallback legacy_patch_skipped \
+            --category render \
+            --component legacy_patch \
+            --phase final \
+            -- python3 scripts/apply_v11_refresh.py _site/index.html
 
       - name: Apply Sep 18 legacy completeness refresh
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/apply_daily_refresh.py _site/index.html
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "Sep 18 legacy completeness refresh" \
+            --optional \
+            --fallback legacy_patch_skipped \
+            --category render \
+            --component legacy_patch \
+            --phase final \
+            -- python3 scripts/apply_daily_refresh.py _site/index.html
 
       - name: Apply accepted overnight news refresh
         shell: bash
         run: |
           set -euo pipefail
-          PYTHONPATH=. python scripts/apply_overnight_news_refresh.py _site/index.html
-          if grep -Fq 'Last refreshed 18 Sep 2026' _site/index.html; then
-            echo "stale Sep 18 Last 24 Hours survived accepted overnight news refresh"
-            exit 1
-          fi
-          PYTHONPATH=. python - <<'PY'
-          from pathlib import Path
-          from scripts.overnight.accepted_news import effective_public_news_context
-          from scripts.overnight.news_commentary_state import assert_built_news_matches_context
-          from scripts.overnight.store import OvernightStore
-
-          html = Path("_site/index.html").read_text(encoding="utf-8")
-          store = OvernightStore(root=Path("."))
-          dataset = None
-          latest = store.read_latest()
-          if latest and latest.get("overnight_run_id"):
-              run_id = latest["overnight_run_id"]
-              if store.has_artifact(run_id, "assembled_dataset.json"):
-                  dataset = store.read_artifact(run_id, "assembled_dataset.json")
-          context = effective_public_news_context(store, dataset)
-          if context is None:
-              raise SystemExit("missing accepted public news context for Pages HTML assertion")
-          assert_built_news_matches_context(html, context, require_front_alert=False)
-          PY
-
-      - name: Sync news summary metadata
-        shell: bash
-        run: |
-          set -euo pipefail
-          PYTHONPATH=. python scripts/sync_news_summary.py _site/index.html
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "accepted news refresh" \
+            --optional \
+            --fallback news_unavailable \
+            --category news \
+            --component news \
+            --phase final \
+            -- bash -c 'python3 scripts/apply_overnight_news_refresh.py _site/index.html && python3 scripts/sync_news_summary.py _site/index.html'
 
       - name: Apply live temperature scores
         shell: bash
@@ -368,30 +261,15 @@ jobs:
           cmp data/temperature_scores.json "${TMPDIR}/temperature_scores.json"
           cmp data/temperature_history/score_paths.json "${TMPDIR}/score_paths.json"
           PYTHONPATH=. python scripts/temperature_level.py --print-levels
-          PYTHONPATH=. python scripts/apply_temperature_scores.py _site/index.html --print-scores
-          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
-          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
-          test "$(grep -o 'data-score-overview="live"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 1
-          grep -Fq 'Live 1–100 Score Board' _site/index.html
-          if grep -Fq '>Temperature Board<' _site/index.html; then echo "stale top-level Temperature Board label remains"; exit 1; fi
-          if grep -Fq 'transition anchor' _site/index.html; then echo "stale transition-anchor language remains in built dashboard"; exit 1; fi
-          if grep -Fq 'lineage-pinned' _site/index.html; then echo "stale lineage-pinned drawer language remains"; exit 1; fi
-          if grep -Fq 'contributing −' _site/index.html; then echo "stale classified impulse contributing language remains"; exit 1; fi
-          python - <<'PY'
-          import re
-          import sys
-          from pathlib import Path
-          html = Path("_site/index.html").read_text(encoding="utf-8")
-          # JP Inflation LEVEL is 47.8 under V1 arithmetic and must not trip this
-          # check; the stale marker is the retired Michigan Sep-2026 SCORED row.
-          if re.search(
-              r"CONFIDENCE EVIDENCE · SCORED</span>.*?Michigan sentiment.*?47\.8",
-              html,
-              flags=re.S | re.I,
-          ):
-              print("stale Michigan 47.8 SCORED narrative remains")
-              sys.exit(1)
-          PY
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "temperature scores" \
+            --optional \
+            --fallback scores_unavailable \
+            --category scores \
+            --component scoreboard \
+            --phase final \
+            -- python3 scripts/apply_temperature_scores.py _site/index.html --print-scores
 
       - name: Set up Python for market-state packet
         uses: actions/setup-python@v6
@@ -483,94 +361,112 @@ jobs:
           if ! PYTHONPATH=. python3 scripts/policy_state.py --refresh; then
             echo "policy state refresh failed; Country Detail will use the committed artifact"
           fi
-          PYTHONPATH=. python3 scripts/apply_country_detail.py _site/index.html
-          for code in US CA AU NZ EA JP; do
-            grep -Fq "data-country=\"${code}\"" _site/index.html
-          done
-          test "$(grep -o 'class="temp-dimension score-detail"' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
-          test "$(grep -o '50 = structural/policy neutral anchor' _site/index.html | wc -l | tr -d '[:space:]')" -eq 24
-          grep -Eq 'What Matters Now|what-matters-now' _site/index.html
-          if grep -Fq 'Petrol and diesel accounted for almost two-thirds' _site/index.html; then
-            echo "stale petrol sentence remains"
-            exit 1
-          fi
-          grep -Eq 'class="wmn-quiet"|class="wmn-finding"' _site/index.html
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "country detail" \
+            --optional \
+            --fallback country_detail_unavailable \
+            --category chart \
+            --component country_detail \
+            --phase final \
+            -- python3 scripts/apply_country_detail.py _site/index.html
 
       - name: Add Market Data tab
         shell: bash
         run: |
           set -euo pipefail
           node --check patch_v12/market-data.js
-          python scripts/apply_market_data_tab.py _site/index.html
-          test -s _site/market-data.js
-          grep -Fq 'for="p-marketdata"' _site/index.html
-          grep -Fq 'Market Data · official snapshot' _site/index.html
-          if [ -s _site/market-state.json ]; then echo "Pages will include the live market-state packet"; else echo "Pages will ship the Market Data tab without a packet; the client shows an explicit load failure"; fi
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "market data tab" \
+            --optional \
+            --category render \
+            --component market_data_tab \
+            --phase final \
+            -- python3 scripts/apply_market_data_tab.py _site/index.html
 
       - name: Add Trader Book tab
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/apply_trader_book_tab.py _site/index.html
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "trader book tab" \
+            --optional \
+            --category trader_books \
+            --component trader_book_tab \
+            --phase final \
+            -- python3 scripts/apply_trader_book_tab.py _site/index.html
           REQUIRE_DATASET=()
           if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then REQUIRE_DATASET=(--require-dataset); fi
-          PYTHONPATH=. python scripts/overnight_pipeline.py publish-check --site-dir _site "${REQUIRE_DATASET[@]}"
-          test -s _site/trader-book.js
-          test -s _site/trader-books.json
-          grep -Fq 'for="p-traderbook"' _site/index.html
-          grep -Fq 'Trader Book · paper P&L' _site/index.html
-          grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
-          grep -Fq 'Live 1–100 Score Board' _site/index.html
-          PYTHONPATH=. python - <<'PY'
-          from pathlib import Path
-          from scripts.overnight.accepted_news import effective_public_news_context
-          from scripts.overnight.news_commentary_state import assert_built_news_matches_context
-          from scripts.overnight.store import OvernightStore
-
-          html = Path("_site/index.html").read_text(encoding="utf-8")
-          store = OvernightStore(root=Path("."))
-          dataset = None
-          latest = store.read_latest()
-          if latest and latest.get("overnight_run_id"):
-              run_id = latest["overnight_run_id"]
-              if store.has_artifact(run_id, "assembled_dataset.json"):
-                  dataset = store.read_artifact(run_id, "assembled_dataset.json")
-          context = effective_public_news_context(store, dataset)
-          if context is None:
-              raise SystemExit("missing accepted public news context for trader-book HTML assertion")
-          assert_built_news_matches_context(html, context, require_front_alert=True)
-          PY
-          grep -Fq 'Market Data · official snapshot' _site/index.html
+          PYTHONPATH=. python3 scripts/overnight_pipeline.py publish-check --site-dir _site "${REQUIRE_DATASET[@]}"
 
       - name: Add Trader Room tab
         shell: bash
         run: |
           set -euo pipefail
-          python scripts/apply_trader_room_tab.py _site/index.html
-          PYTHONPATH=. python scripts/trader_room_public.py --output _site/trader-room.json
-          test -s _site/trader-room.js
-          test -s _site/trader-room.json
+          PYTHONPATH=. python3 -m scripts.market_watch_launch.render_steps run \
+            --html _site/index.html \
+            --label "trader room tab" \
+            --optional \
+            --category render \
+            --component trader_room \
+            --phase final \
+            -- python3 scripts/apply_trader_room_tab.py _site/index.html
+          # An unverified room packet is published as unavailable, never as authoritative.
           PYTHONPATH=. python3 - <<'PY'
           import json
+          import sys
           from pathlib import Path
-          from scripts.trader_room_public import build_public_packet, select_newest_complete_run
-          packet = json.loads(Path("_site/trader-room.json").read_text())
-          selected = select_newest_complete_run()
-          expected = build_public_packet()
-          assert selected is not None, "no complete valid canonical Trader Room run"
-          assert packet.get("available") is True
-          assert packet.get("run_id") == selected.name
-          assert packet.get("run_id") == expected.get("run_id")
-          assert packet.get("run_id") == packet.get("selection", {}).get("selected_run_id")
-          from scripts.trader_room_public import assert_published_trader_room
-          assert_published_trader_room(packet, selected)
-          assert packet.get("selection", {}).get("manual_pointer") is False
-          assert packet.get("selection", {}).get("mode") == "newest_complete_valid"
+
+          out = Path("_site/trader-room.json")
+
+          def unavailable(reason: str) -> None:
+              out.parent.mkdir(parents=True, exist_ok=True)
+              out.write_text(json.dumps({"available": False, "reason": reason}) + "\n", encoding="utf-8")
+              from scripts.market_watch_launch.publication_issues import record_diagnostic
+              record_diagnostic(
+                  "trader_room_unavailable",
+                  category="render",
+                  severity="warning",
+                  component="trader_room",
+                  phase="final",
+                  cause="The trader room packet could not be verified, so it is published as unavailable.",
+                  impact="Trader Room is not shown as an authoritative debate record on this edition.",
+                  detail=reason,
+              )
+
+          try:
+              import subprocess
+              proc = subprocess.run(
+                  [sys.executable, "scripts/trader_room_public.py", "--output", str(out)],
+                  check=False,
+              )
+              if proc.returncode != 0:
+                  raise RuntimeError(f"trader_room_public.py exited {proc.returncode}")
+              packet = json.loads(out.read_text(encoding="utf-8"))
+              from scripts.trader_room_public import (
+                  assert_published_trader_room,
+                  build_public_packet,
+                  select_newest_complete_run,
+              )
+              selected = select_newest_complete_run()
+              expected = build_public_packet()
+              if selected is None:
+                  raise RuntimeError("no complete valid canonical Trader Room run")
+              if packet.get("available") is not True:
+                  raise RuntimeError("trader room packet is not available")
+              if packet.get("run_id") != selected.name or packet.get("run_id") != expected.get("run_id"):
+                  raise RuntimeError("trader room run_id does not match the selected run")
+              if packet.get("run_id") != (packet.get("selection") or {}).get("selected_run_id"):
+                  raise RuntimeError("trader room selection does not match run_id")
+              assert_published_trader_room(packet, selected)
+              selection = packet.get("selection") or {}
+              if selection.get("manual_pointer") is not False or selection.get("mode") != "newest_complete_valid":
+                  raise RuntimeError("trader room selection is not the newest complete valid run")
+          except Exception as exc:
+              unavailable(f"{type(exc).__name__}: {exc}")
           PY
-          grep -Fq 'for="p-traderroom"' _site/index.html
-          grep -Fq 'Trader Room · adversarial ideas' _site/index.html
-          grep -Fq 'Trader Book · paper P&L' _site/index.html
-          grep -Fq 'Market Data · official snapshot' _site/index.html
 
       - name: Add Portfolio Manager public JSON
         shell: bash
@@ -578,16 +474,13 @@ jobs:
           set -euo pipefail
           PYTHONPATH=. python scripts/pm_layer.py publish --site-dir _site
           test -s _site/pm-books.json
-          python3 - <<'PY'
+          PYTHONPATH=. python3 - <<'PY'
           import json
           from pathlib import Path
           from scripts.pm.public import validate_public_packet
           packet = json.loads(Path("_site/pm-books.json").read_text())
           validate_public_packet(packet)
           PY
-          grep -Fq 'Portfolio Managers' _site/trader-book.js
-          grep -Fq 'Trader Book · paper P&L' _site/index.html
-          grep -Fq 'Last 24 Hours · Desk Summary' _site/index.html
 
       - name: Apply dashboard repair
         shell: bash
@@ -620,79 +513,7 @@ jobs:
           if [ -s _site/market-state.json ]; then
             MARKET=(--market-state _site/market-state.json)
           fi
-          PYTHONPATH=. python scripts/apply_dashboard_repair.py _site/index.html "${MARKET[@]}" --fetch-schedules --schedule-timeout 6
-          python - <<'PY'
-          from pathlib import Path
-          html = Path("_site/index.html").read_text(encoding="utf-8")
-          start = html.find('data-global-tape="repair"')
-          end = html.find('data-score-overview="calibrated"', start)
-          if start < 0 or end < 0:
-              raise SystemExit("repaired tape or scoreboard missing")
-          tape = html[start:end]
-          for stale in ("4.79%", "1.3790", "0.7210", "0.58755", "98.83", "$92.33", "$97.23"):
-              if stale in tape:
-                  raise SystemExit(f"stale base-page tape value survived: {stale}")
-          if "Live 1–100 Score Board" in html:
-              raise SystemExit("scoreboard still labeled Live")
-          import json
-          from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
-          scores = json.loads(Path("data/temperature_scores.json").read_text(encoding="utf-8"))
-          anchor = scores.get("calibration_anchor_date") or scores.get("as_of")
-          ingested = scores.get("score_inputs_last_ingested_at")
-          if not anchor or not ingested:
-              raise SystemExit("score date metadata missing from temperature_scores.json")
-          if f"calibration anchor {format_calibration_anchor(anchor)}" not in html:
-              raise SystemExit(f"calibration anchor label missing for {anchor}")
-          if f"inputs last ingested {format_ingestion_day(ingested)}" not in html:
-              raise SystemExit("score input ingestion label missing from HTML")
-          lowered = html.lower()
-          for forbidden in ("score freeze", "scores frozen", "scores are frozen"):
-              if forbidden in lowered:
-                  raise SystemExit(f"forbidden score-freeze wording: {forbidden}")
-          for radio in ("p-feed", "p-relative", "p-traderroom"):
-              if f'for="{radio}"' in html or f'id="{radio}"' in html:
-                  raise SystemExit(f"{radio} still in the navigation")
-          for required in ("p-front", "p-country", "p-marketdata", "p-traderbook", "p-releases", "p-sources"):
-              if f'for="{required}"' not in html:
-                  raise SystemExit(f"missing nav {required}")
-          for code in ("us", "ca", "au", "nz", "ea", "jp"):
-              if f'data-country="{code}"' not in html:
-                  raise SystemExit(f"missing country jump {code}")
-          if "Trader Book" not in html:
-              raise SystemExit("Trader Book missing")
-          if "Market Data · official snapshot" not in html:
-              raise SystemExit("Market Data missing")
-          if 'data-release-calendar="repair"' not in html or 'data-source-health="repair"' not in html:
-              raise SystemExit("releases or sources were not rebuilt")
-          if "date unavailable" not in html:
-              raise SystemExit("calendar did not keep unknown dates unavailable")
-          if "Momentum Watch" in html:
-              raise SystemExit("static Momentum Watch survived")
-          health = json.loads(Path("_site/source-health.json").read_text(encoding="utf-8"))
-          if not health.get("stage_checked_at"):
-              raise SystemExit("source-health snapshot has no stage check time")
-          counts = health.get("counts") or {}
-          if sum(int(counts.get(name) or 0) for name in ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")) != len(health.get("rows") or []):
-              raise SystemExit("source-health counts do not match rows")
-          failed = [row for row in health["rows"] if row.get("bucket") == "failure"]
-          if any(row.get("last_successful_check") for row in failed):
-              raise SystemExit("failed source was given a successful check time")
-          cache_path = Path("data/dashboard_repair/official_release_cache.json")
-          try:
-              cache_obj = json.loads(cache_path.read_text(encoding="utf-8"))
-          except (OSError, json.JSONDecodeError) as exc:
-              raise SystemExit(f"official_release_cache.json not readable: {exc}") from exc
-          if not isinstance(cache_obj, dict):
-              raise SystemExit("official_release_cache.json must be an object")
-          if cache_obj.get("version") != 1:
-              raise SystemExit("official_release_cache.json version must be 1")
-          ccountries = cache_obj.get("countries")
-          if not isinstance(ccountries, dict):
-              raise SystemExit("official_release_cache.json countries missing")
-          for code in ("US", "CA", "EA", "AU", "NZ", "JP"):
-              if code not in ccountries:
-                  raise SystemExit(f"official_release_cache.json missing country {code}")
-          PY
+          PYTHONPATH=. python3 scripts/apply_dashboard_repair.py _site/index.html "${MARKET[@]}" --fetch-schedules --schedule-timeout 6
 
       - name: Save official release cache for next run
         if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
@@ -720,6 +541,20 @@ jobs:
           python3 -m scripts.market_watch_launch.publication_release stamp-final --site-dir _site
           test -s _site/release.json
           grep -Fq 'data-publication-phase="final"' _site/index.html
+
+      - name: Check final publication integrity
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python3 -m scripts.market_watch_launch.publication_checks final --site-dir _site --root .
+
+      - name: Publish issues feed
+        env:
+          PYTHONPATH: .
+        run: |
+          set -euo pipefail
+          python3 -m scripts.market_watch_launch.publication_issues publish --site-dir _site --root .
 
       - name: Configure Pages
         id: pages
