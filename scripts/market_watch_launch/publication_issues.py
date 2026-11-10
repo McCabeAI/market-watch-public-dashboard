@@ -22,9 +22,10 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import sys
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Callable, Iterable
 
 ISSUES_FILENAME = "issues.json"
 ISSUES_TYPE = "MARKET_WATCH_PUBLIC_ISSUES"
@@ -50,6 +51,13 @@ COUNTRIES = ("US", "CA", "AU", "NZ", "EA", "JP")
 DETAIL_LIMIT = 4000
 TEXT_LIMIT = 400
 
+_FORBIDDEN_PHRASES = ("Current verified headlines", "Last refreshed")
+_TEMP_PATH_RE = re.compile(r"(?:(?:/tmp|/var/tmp|/var/folders)/[^\s\"']+)")
+
+_MARKET_SOURCE_BAD = frozenset({"unavailable", "partial", "error"})
+_PREV_INGEST_FAILURE = frozenset({"source_failed", "license_gap", "due_missing"})
+_LAUNCHES_REL = Path("data") / "market_watch_launches"
+
 
 class IssueSchemaError(ValueError):
     pass
@@ -57,9 +65,26 @@ class IssueSchemaError(ValueError):
 
 def _bounded(value: Any, limit: int) -> str:
     text = " ".join(str(value or "").split()) if limit <= TEXT_LIMIT else str(value or "")
+    text = _sanitize_text(text)
     if len(text) <= limit:
         return text
     return text[: limit - 1] + "…"
+
+
+def _sanitize_text(text: str) -> str:
+    out = str(text or "")
+    for phrase in _FORBIDDEN_PHRASES:
+        out = out.replace(phrase, "[redacted label]")
+    return _TEMP_PATH_RE.sub("[temp path]", out)
+
+
+def _error_summary(error: str) -> str:
+    line = " ".join(str(error or "").split())
+    if not line:
+        return ""
+    if len(line) <= 120:
+        return line
+    return line[:119] + "…"
 
 
 def issue_id(category: str, component: str, code: str, country: str | None = None, series_id: str | None = None) -> str:
@@ -222,6 +247,418 @@ def _edition(release: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
+def _release_fields(release: dict[str, Any] | None) -> tuple[str | None, str | None]:
+    if not isinstance(release, dict):
+        return None, None
+    return (
+        str(release.get("launch_id") or "") or None,
+        str(release.get("phase") or "") or None,
+    )
+
+
+def _succeeded_ingest(path: Path, launch_name: str, root: Path) -> dict[str, Any] | None:
+    if not path.is_file():
+        return None
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    rows = payload.get("rows")
+    if payload.get("status") != "succeeded" or not isinstance(rows, list) or not rows:
+        return None
+    return {
+        "launch_id": launch_name,
+        "checked_at": str(payload.get("checked_at") or ""),
+        "stage_status": str(payload.get("status") or ""),
+        "rows": rows,
+        "source": str(path.relative_to(root)),
+    }
+
+
+def load_preceding_succeeded_ingest(root: Path, before_launch_id: str) -> dict[str, Any] | None:
+    """Stage 01 ingest immediately before ``before_launch_id`` in launch dir sort order."""
+    base = root / _LAUNCHES_REL
+    if not base.is_dir():
+        return None
+    candidates = sorted(path.name for path in base.iterdir() if path.is_dir() and path.name.startswith("mwl-"))
+    try:
+        index = candidates.index(before_launch_id)
+    except ValueError:
+        return None
+    for launch_name in reversed(candidates[:index]):
+        ingest = _succeeded_ingest(base / launch_name / "artifacts" / "01_ingest.json", launch_name, root)
+        if ingest is not None:
+            return ingest
+    return None
+
+
+def _ingest_row_status(ingest: dict[str, Any] | None, series_id: str) -> str:
+    if not ingest:
+        return ""
+    for row in ingest.get("rows") or []:
+        if isinstance(row, dict) and str(row.get("series_id") or "") == series_id:
+            return str(row.get("status") or "")
+    return ""
+
+
+def collect_source_health_issues(
+    snapshot: dict[str, Any],
+    release: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    launch_id, phase = _release_fields(release)
+    ingest_launch = str(snapshot.get("launch_id") or "") or None
+    rows = snapshot.get("rows") if isinstance(snapshot.get("rows"), list) else []
+    issues: list[dict[str, Any]] = []
+    not_checked: dict[str, list[str]] = {}
+
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        bucket = str(row.get("bucket") or "")
+        series_id = str(row.get("series_id") or "")
+        country = str(row.get("country") or "") or None
+        publisher = str(row.get("publisher") or "") or None
+        url = str(row.get("url") or "") or None
+        error = str(row.get("error") or "")
+        vintage = str(row.get("observation_period") or "") or None
+        common = {
+            "country": country,
+            "series_id": series_id or None,
+            "publisher": publisher,
+            "url": url,
+            "launch_id": launch_id,
+            "ingest_launch_id": ingest_launch,
+            "phase": phase,
+            "last_verified_vintage": vintage,
+        }
+        if bucket == "failure":
+            summary = _error_summary(error)
+            cause = "Fetch failed at the stage check."
+            if summary:
+                cause = f"{cause} {summary}"
+            issues.append(
+                make_issue(
+                    "source_fetch_failed",
+                    category="source",
+                    severity="warning",
+                    component=f"source:{series_id}",
+                    cause=cause,
+                    impact="Last verified value stays dated; it is not shown as fresh.",
+                    detail=error,
+                    **common,
+                )
+            )
+        elif bucket == "blocked":
+            issues.append(
+                make_issue(
+                    "source_blocked",
+                    category="source",
+                    severity="warning",
+                    component=f"source:{series_id}",
+                    cause="Publisher blocks automated access.",
+                    impact="Last verified value stays dated; it is not shown as fresh.",
+                    detail=error,
+                    **common,
+                )
+            )
+        elif bucket == "partial":
+            issues.append(
+                make_issue(
+                    "source_partial",
+                    category="source",
+                    severity="info",
+                    component=f"source:{series_id}",
+                    cause="Stage 01 marked this series as partially covered.",
+                    impact="The published score may rely on carried or incomplete inputs.",
+                    detail=error,
+                    **common,
+                )
+            )
+        elif bucket == "not_checked":
+            key = str(country or "unknown").upper()
+            not_checked.setdefault(key, []).append(series_id)
+
+    for country, series_ids in sorted(not_checked.items()):
+        ids = sorted(series_ids)
+        row = make_issue(
+            "sources_not_checked",
+            category="source",
+            severity="info",
+            component="sources:not_checked",
+            country=country if country != "UNKNOWN" else None,
+            cause=f"{len(ids)} series were not checked on the latest Stage 01 ledger.",
+            impact="Those series are listed without a fresh verification time.",
+            launch_id=launch_id,
+            ingest_launch_id=ingest_launch,
+            phase=phase,
+            detail=", ".join(ids),
+        )
+        row["occurrences"] = len(ids)
+        issues.append(row)
+    return issues
+
+
+def collect_market_state_issues(
+    packet: dict[str, Any],
+    release: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    launch_id, phase = _release_fields(release)
+    issues: list[dict[str, Any]] = []
+    top_status = str(packet.get("status") or "")
+    if top_status == "unavailable":
+        issues.append(
+            make_issue(
+                "market_state_unavailable",
+                category="market_data",
+                severity="critical",
+                component="market_state",
+                cause="The market-state packet is unavailable for this edition.",
+                impact="Market Data marks and cross-asset context are not shown as current.",
+                launch_id=launch_id,
+                phase=phase,
+            )
+        )
+    sources = packet.get("sources") if isinstance(packet.get("sources"), dict) else {}
+    for key in sorted(sources):
+        entry = sources.get(key)
+        if not isinstance(entry, dict):
+            continue
+        status = str(entry.get("status") or "ok")
+        error = str(entry.get("error") or "")
+        note = str(entry.get("note") or "")
+        vintage = str(entry.get("observation_date") or "") or None
+        affects_marks = key == "FX" or key.endswith("_rates")
+        detail = error or note
+        if status == "stale":
+            issues.append(
+                make_issue(
+                    "market_source_stale",
+                    category="market_data",
+                    severity="warning",
+                    component=f"market_state:{key}",
+                    cause=f"{key} observation is older than the freshness window.",
+                    impact=(
+                        "Published FX and rate marks may be stale."
+                        if affects_marks
+                        else "This market-data source is not fully current on the page."
+                    ),
+                    launch_id=launch_id,
+                    phase=phase,
+                    last_verified_vintage=vintage,
+                    detail=detail,
+                )
+            )
+            continue
+        if status in _MARKET_SOURCE_BAD or error:
+            severity = "critical" if affects_marks else "warning"
+            cause = error or f"{key} is {status} in the market-state packet."
+            issues.append(
+                make_issue(
+                    "market_source_degraded",
+                    category="market_data",
+                    severity=severity,
+                    component=f"market_state:{key}",
+                    cause=cause,
+                    impact=(
+                        "Published FX and rate marks may be missing or stale."
+                        if affects_marks
+                        else "This market-data source is not fully current on the page."
+                    ),
+                    launch_id=launch_id,
+                    phase=phase,
+                    last_verified_vintage=vintage,
+                    detail=detail,
+                )
+            )
+    return issues
+
+
+def _gap_country(gap: str) -> str | None:
+    text = str(gap or "")
+    if ":" in text:
+        code = text.split(":", 1)[1].upper()
+        if code in COUNTRIES:
+            return code
+    return None
+
+
+def collect_release_issues(release: dict[str, Any]) -> list[dict[str, Any]]:
+    launch_id, phase = _release_fields(release)
+    issues: list[dict[str, Any]] = []
+    quality = release.get("quality") if isinstance(release.get("quality"), dict) else {}
+    if str(quality.get("coverage") or "").upper() == "PARTIAL":
+        for gap in sorted(str(item) for item in quality.get("research_coverage_gaps") or []):
+            issues.append(
+                make_issue(
+                    "quality_coverage_gap",
+                    category="source",
+                    severity="info",
+                    component="quality:coverage",
+                    country=_gap_country(gap),
+                    cause=f"Research coverage gap: {gap}.",
+                    impact="Macro inputs for this economy may be incomplete in scores.",
+                    launch_id=launch_id,
+                    phase=phase,
+                    detail=gap,
+                )
+            )
+    for expr in sorted(str(item) for item in quality.get("blocked_expressions") or []):
+        issues.append(
+            make_issue(
+                "quality_blocked_expression",
+                category="publication",
+                severity="warning",
+                component="quality:blocked_expression",
+                country=_gap_country(expr),
+                cause=f"Expression blocked from publication: {expr}.",
+                impact="That macro expression is withheld from the public score board.",
+                launch_id=launch_id,
+                phase=phase,
+                detail=expr,
+            )
+        )
+    news = release.get("news") if isinstance(release.get("news"), dict) else {}
+    if str(news.get("status") or "") == "unavailable":
+        issues.append(
+            make_issue(
+                "news_unavailable",
+                category="news",
+                severity="warning",
+                component="news",
+                cause="Accepted news context is unavailable.",
+                impact="News sections show an unavailable placeholder.",
+                launch_id=launch_id,
+                phase=phase,
+            )
+        )
+    if str(news.get("mode") or "") == "current-cycle-news-commentary-missing":
+        issues.append(
+            make_issue(
+                "news_commentary_missing",
+                category="news",
+                severity="info",
+                component="news",
+                cause="Current-cycle news commentary is missing.",
+                impact="The Front page shows news context without same-cycle commentary.",
+                launch_id=launch_id,
+                phase=phase,
+            )
+        )
+    if news and news.get("current_session") is False:
+        issues.append(
+            make_issue(
+                "news_previous_session",
+                category="news",
+                severity="info",
+                component="news",
+                cause="Accepted analysis is from an earlier session",
+                impact="News and commentary reflect the prior overnight cycle, not this session.",
+                launch_id=launch_id,
+                phase=phase,
+                last_verified_vintage=str(news.get("as_of") or "") or None,
+            )
+        )
+    headlines = release.get("headlines") if isinstance(release.get("headlines"), dict) else {}
+    if str(headlines.get("status") or "") == "unavailable":
+        issues.append(
+            make_issue(
+                "headlines_unavailable",
+                category="news",
+                severity="warning",
+                component="headlines",
+                cause="Verified headlines are unavailable for this edition.",
+                impact="Headline panels show an empty or unavailable state.",
+                launch_id=launch_id,
+                phase=phase,
+            )
+        )
+    return issues
+
+
+def collect_trader_room_issues(payload: dict[str, Any], release: dict[str, Any] | None) -> list[dict[str, Any]]:
+    launch_id, phase = _release_fields(release)
+    if payload.get("available") is not False:
+        return []
+    return [
+        make_issue(
+            "trader_room_unavailable",
+            category="render",
+            severity="info",
+            component="research_debate",
+            cause="The research debate room is not available.",
+            impact="Trader Room shows as unavailable on this edition.",
+            launch_id=launch_id,
+            phase=phase,
+        )
+    ]
+
+
+def collect_resolved_source_issues(
+    snapshot: dict[str, Any],
+    preceding_ingest: dict[str, Any] | None,
+    release: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    if not preceding_ingest:
+        return []
+    launch_id, phase = _release_fields(release)
+    prev_launch = str(preceding_ingest.get("launch_id") or "")
+    rows = snapshot.get("rows") if isinstance(snapshot.get("rows"), list) else []
+    issues: list[dict[str, Any]] = []
+    for row in rows:
+        if not isinstance(row, dict) or str(row.get("bucket") or "") != "checked":
+            continue
+        series_id = str(row.get("series_id") or "")
+        prev_status = _ingest_row_status(preceding_ingest, series_id)
+        if prev_status not in _PREV_INGEST_FAILURE:
+            continue
+        issues.append(
+            make_issue(
+                "source_resolved",
+                category="source",
+                severity="info",
+                state="resolved",
+                component=f"source:{series_id}",
+                country=str(row.get("country") or "") or None,
+                series_id=series_id,
+                publisher=str(row.get("publisher") or "") or None,
+                url=str(row.get("url") or "") or None,
+                cause=f"Fetch succeeded after {prev_launch} had reported {prev_status.replace('_', ' ')}.",
+                impact="The series is checked on the current Stage 01 ledger.",
+                launch_id=launch_id,
+                ingest_launch_id=str(snapshot.get("launch_id") or "") or None,
+                phase=phase,
+                last_verified_vintage=str(row.get("observation_period") or "") or None,
+            )
+        )
+    return issues
+
+
+def _input_unreadable(name: str, release: dict[str, Any] | None) -> dict[str, Any]:
+    launch_id, phase = _release_fields(release)
+    return make_issue(
+        "issues_input_unreadable",
+        category="publication",
+        severity="info",
+        component=f"issues_input:{name}",
+        cause=f"Could not read {name} for the issues feed.",
+        impact="Problems from that input are omitted from this feed.",
+        launch_id=launch_id,
+        phase=phase,
+    )
+
+
+def _extend_collector(
+    issues: list[dict[str, Any]],
+    name: str,
+    release: dict[str, Any] | None,
+    collector: Callable[[], list[dict[str, Any]]],
+) -> None:
+    try:
+        issues.extend(collector())
+    except Exception:  # noqa: BLE001 - one bad collector must not break the feed
+        issues.append(_input_unreadable(name, release))
+
+
 def build_issues_feed(
     site_dir: Path,
     *,
@@ -235,11 +672,87 @@ def build_issues_feed(
     The contract of this function's return value is fixed by the schema here.
     """
     site = Path(site_dir)
-    release = _read_json(site / "release.json")
-    issues: list[dict[str, Any]] = list(diagnostics)
+    repo_root = Path(root) if root else site.parent
+    release_raw = _read_json(site / "release.json")
+    release = release_raw if isinstance(release_raw, dict) else None
+    launch_id, phase = _release_fields(release)
+    issues: list[dict[str, Any]] = []
+    for row in diagnostics:
+        if isinstance(row, dict) and row.get("id"):
+            issues.append(row)
+
+    health_path = site / "source-health.json"
+
+    def collect_health() -> list[dict[str, Any]]:
+        if not health_path.is_file():
+            return [
+                make_issue(
+                    "source_health_unavailable",
+                    category="source",
+                    severity="warning",
+                    component="sources",
+                    cause="The source-health snapshot was not published.",
+                    impact="Source freshness for this edition is not shown.",
+                    launch_id=launch_id,
+                    phase=phase,
+                )
+            ]
+        snapshot = _read_json(health_path)
+        if not isinstance(snapshot, dict):
+            raise ValueError("source-health unreadable")
+        out = collect_source_health_issues(snapshot, release)
+        snap_launch = str(snapshot.get("launch_id") or "")
+        if snap_launch:
+            preceding = load_preceding_succeeded_ingest(repo_root, snap_launch)
+            out.extend(collect_resolved_source_issues(snapshot, preceding, release))
+        return out
+
+    _extend_collector(issues, "source-health.json", release, collect_health)
+
+    market_path = site / "market-state.json"
+
+    def collect_market() -> list[dict[str, Any]]:
+        if not market_path.is_file():
+            return [
+                make_issue(
+                    "market_state_unavailable",
+                    category="market_data",
+                    severity="critical",
+                    component="market_state",
+                    cause="The market-state packet is not present on this site.",
+                    impact="Market Data marks and cross-asset context are not shown as current.",
+                    launch_id=launch_id,
+                    phase=phase,
+                )
+            ]
+        packet = _read_json(market_path)
+        if not isinstance(packet, dict):
+            raise ValueError("market-state unreadable")
+        return collect_market_state_issues(packet, release)
+
+    _extend_collector(issues, "market-state.json", release, collect_market)
+
+    def collect_release() -> list[dict[str, Any]]:
+        if not isinstance(release, dict):
+            raise ValueError("release unreadable")
+        return collect_release_issues(release)
+
+    _extend_collector(issues, "release.json", release, collect_release)
+
+    room_path = site / "trader-room.json"
+
+    def collect_room() -> list[dict[str, Any]]:
+        if not room_path.is_file():
+            return []
+        payload = _read_json(room_path)
+        if not isinstance(payload, dict):
+            raise ValueError("trader-room unreadable")
+        return collect_trader_room_issues(payload, release)
+
+    _extend_collector(issues, "trader-room.json", release, collect_room)
+
     issues = dedupe(issues)
-    del root
-    return finalize_feed(issues, release=release if isinstance(release, dict) else None, inputs=_input_digests(site))
+    return finalize_feed(issues, release=release, inputs=_input_digests(site))
 
 
 def _input_digests(site: Path) -> list[dict[str, str]]:
