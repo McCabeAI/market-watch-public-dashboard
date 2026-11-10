@@ -68,6 +68,20 @@ else
   run_json="$run_tmp"
 fi
 
+if [ "${PAGES_WORKFLOW_RUN:-}" = "1" ]; then
+  enriched_tmp="$(mktemp)"
+  if PYTHONPATH="$SOURCE_REPO" python3 -m scripts.market_watch_launch.pages_recovery enrich-actions-run \
+    --run-id "$RUN_ID" \
+    --run-json "$run_json" \
+    --repository "$REPO" \
+    --out "$enriched_tmp"
+  then
+    run_json="$enriched_tmp"
+  else
+    echo "Pages workflow run ${RUN_ID}: could not enrich deploy evidence; reconciler will fail closed without proven intent." >&2
+  fi
+fi
+
 COMMIT_MESSAGE=""
 if [ "${PAGES_WORKFLOW_RUN:-}" = "1" ]; then
   PYTHONPATH="$SOURCE_REPO" python3 -m scripts.market_watch_launch.pages_recovery workflow-run \

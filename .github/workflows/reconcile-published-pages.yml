@@ -6,8 +6,10 @@ on:
   # for launch-bound production deploys is normally recorded in-run by
   # deploy-pages.yml's reconcile job (GITHUB_TOKEN dispatches do not start
   # workflow_run); this workflow still reconciles human-dispatched production
-  # runs and the authorized manual recovery. A dispatch request is not enough,
-  # and pull_request Pages builds do not start this job.
+  # runs and the authorized manual recovery. Blank-input manual refreshes attach
+  # the deploy run's publication-release artifact in reconcile_published_pages.sh
+  # and reconcile as a no-op without launch-state writes. A dispatch request is
+  # not enough, and pull_request Pages builds do not start this job.
   workflow_run:
     workflows: ["Deploy Market Watch Dashboard"]
     types: [completed]
