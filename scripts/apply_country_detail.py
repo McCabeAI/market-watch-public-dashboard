@@ -9,6 +9,8 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import os
+import sys
 from pathlib import Path
 
 from datetime import date, datetime
@@ -29,6 +31,7 @@ from scripts.country_detail.render import (
     render_country_detail,
 )
 from scripts.country_registry import dashboard_keys, load_country_registry, stale_after_days
+from scripts.market_watch_launch.publication_issues import record_diagnostic
 from scripts.temperature_level import load_calibration, load_history, load_state
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -309,6 +312,14 @@ def _fence_country_snapshot(block: str) -> str:
     return block[:hero] + fenced + block[tail:]
 
 
+def _country_unavailable_fragment(code: str) -> str:
+    return (
+        f'<div class="country-detail country-detail-unavailable" data-country-detail-state="unavailable" '
+        f'data-country="{html.escape(code)}" data-component-state="unavailable">'
+        "<p>Country detail unavailable for this edition.</p></div>"
+    )
+
+
 def _inject_section(block: str, key: str, section: str) -> str:
     count = block.count(_TEMP_INPUTS)
     if count > 1:
@@ -325,9 +336,17 @@ def _inject_section(block: str, key: str, section: str) -> str:
     return block[:insert_at] + section + block[insert_at:]
 
 
-def apply_country_detail(page: str, *, root: Path | None = None) -> str:
+def apply_country_detail(
+    page: str,
+    *,
+    root: Path | None = None,
+    diagnostics: Path | str | None = None,
+) -> str:
     """Replace each country's temp-inputs block with a country-detail section."""
     root = root or ROOT
+    diag = diagnostics
+    if diag is None and os.environ.get("MW_RENDER_DIAGNOSTICS"):
+        diag = os.environ.get("MW_RENDER_DIAGNOSTICS")
     registry = _registry(root)
     keys = dashboard_keys(registry)
     page = _inject_css(page)
@@ -338,15 +357,71 @@ def apply_country_detail(page: str, *, root: Path | None = None) -> str:
     ]
     if not present:
         raise ValueError("dashboard HTML has no cdetail blocks")
-    sections = render_dashboard_sections(root)
+    sections: dict[str, str] = {}
+    try:
+        sections = render_dashboard_sections(root)
+    except Exception:
+        sections = {}
+    if len(sections) < len(present):
+        ctx = load_country_detail_context(root)
+        projection = ctx["projection"]
+        attention = ctx["attention"]
+        scores = ctx["scores"]
+        windows = ctx.get("score_windows") or {}
+        meetings = load_policy_meeting_view(root)
+        stir = load_stir_strip_view(root)
+        for code in present:
+            if code in sections:
+                continue
+            try:
+                sections[code] = render_country_detail(
+                    code,
+                    projection["countries"][code],
+                    attention["countries"][code],
+                    scores,
+                    score_windows=windows.get(code),
+                    policy_meetings=meetings,
+                    stir_strips=stir,
+                )
+            except Exception as exc:
+                record_diagnostic(
+                    "country_detail_render_failed",
+                    path=diag,
+                    category="chart",
+                    severity="warning",
+                    component="country_detail",
+                    country=code,
+                    cause=f"Country detail could not be rendered for {code}.",
+                    impact="This country's detail drawer shows an unavailable placeholder.",
+                    detail=f"{type(exc).__name__}: {exc}",
+                )
+                sections[code] = ""
     key_list = [keys[code] for code in COUNTRY_CODES]
     bounds = [(code, _country_bounds(page, keys[code], key_list)) for code in present]
     for code, (start, end) in reversed(bounds):
         block = page[start:end]
-        lead, evidence = _split_country_evidence(sections[code])
-        updated = _fence_country_snapshot(
-            _append_evidence(_inject_section(block, keys[code], lead), code, evidence)
-        )
+        section = sections.get(code) or ""
+        if not section.strip():
+            updated = _inject_section(block, keys[code], _country_unavailable_fragment(code))
+        else:
+            try:
+                lead, evidence = _split_country_evidence(section)
+                updated = _fence_country_snapshot(
+                    _append_evidence(_inject_section(block, keys[code], lead), code, evidence)
+                )
+            except Exception as exc:
+                record_diagnostic(
+                    "country_detail_render_failed",
+                    path=diag,
+                    category="chart",
+                    severity="warning",
+                    component="country_detail",
+                    country=code,
+                    cause=f"Country detail could not be rendered for {code}.",
+                    impact="This country's detail drawer shows an unavailable placeholder.",
+                    detail=f"{type(exc).__name__}: {exc}",
+                )
+                updated = _inject_section(block, keys[code], _country_unavailable_fragment(code))
         page = page[:start] + updated + page[end:]
     page = _inject_filter_script(page)
     return rewrite_policy_transmission(
@@ -421,14 +496,19 @@ def write_review_html(path: Path | None = None, *, root: Path | None = None) -> 
     return doc
 
 
-def main(argv: list[str] | None = None) -> None:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Apply Country Detail sections to dashboard HTML")
     parser.add_argument("index_html", type=Path, help="path to index.html")
     args = parser.parse_args(argv)
     path = args.index_html
-    page = path.read_text(encoding="utf-8")
-    path.write_text(apply_country_detail(page), encoding="utf-8")
+    try:
+        page = path.read_text(encoding="utf-8")
+        path.write_text(apply_country_detail(page), encoding="utf-8")
+    except ValueError as exc:
+        print(f"country detail apply failed: {exc}", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
