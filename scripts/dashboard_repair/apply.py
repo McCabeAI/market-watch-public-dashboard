@@ -19,7 +19,8 @@ from scripts.dashboard_repair.calendar_view import build_release_model, render_r
 from scripts.dashboard_repair.htmlutil import balanced_element_end, esc, replace_element_containing
 from scripts.dashboard_repair.scoreboard import render_scoreboard
 from scripts.dashboard_repair.source_health import build_source_health_snapshot, load_latest_ingest
-from scripts.dashboard_repair.sources_view import render_sources
+from scripts.dashboard_repair.sources_view import ISSUES_SLOT, render_sources, rename_sources_nav_label
+from scripts.market_watch_launch.publication_issues import record_diagnostic
 from scripts.dashboard_repair.tape import render_tape, tape_cards
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.overnight.books import published_room_roster
@@ -210,6 +211,29 @@ def repair_script() -> str:
       document.querySelectorAll("[data-source-row]").forEach(function (row) {{
         row.hidden = query && row.textContent.toLowerCase().indexOf(query) < 0;
       }});
+    }});
+  }}
+  var issuesRoot = document.getElementById("mw-issues");
+  if (issuesRoot && issuesRoot.getAttribute("data-issues-root") === "rendered") {{
+    var issueSeverity = document.getElementById("mw-issues-severity");
+    var issueCategory = document.getElementById("mw-issues-category");
+    var issueSearch = document.getElementById("mw-issues-search");
+    function applyIssueFilters() {{
+      var sev = issueSeverity ? issueSeverity.value : "";
+      var cat = issueCategory ? issueCategory.value : "";
+      var q = issueSearch ? issueSearch.value.toLowerCase() : "";
+      issuesRoot.querySelectorAll(".mw-issue-row").forEach(function (row) {{
+        var ok = true;
+        if (sev && row.getAttribute("data-issue-severity") !== sev) ok = false;
+        if (cat && row.getAttribute("data-issue-category") !== cat) ok = false;
+        if (q && row.textContent.toLowerCase().indexOf(q) < 0) ok = false;
+        row.hidden = !ok;
+      }});
+    }}
+    [issueSeverity, issueCategory, issueSearch].forEach(function (el) {{
+      if (!el) return;
+      el.addEventListener("input", applyIssueFilters);
+      if (el.tagName === "SELECT") el.addEventListener("change", applyIssueFilters);
     }});
   }}
   function escText(value) {{
@@ -578,6 +602,73 @@ def _replace_header(html: str, packet: dict[str, Any] | None, scores: dict[str, 
     return html
 
 
+_RELEASES_PLACEHOLDER = (
+    '<section class="page releases" data-release-calendar="unavailable">'
+    '<div class="stitle">Releases · next 14 days</div>'
+    '<p class="note">Release calendar unavailable for this edition.</p></section>'
+)
+
+_SOURCES_PLACEHOLDER = (
+    '<section class="page sources" data-source-health="unavailable">'
+    '<div class="stitle">Sources &amp; Issues</div>'
+    + ISSUES_SLOT
+    + '<p class="note">Sources inventory unavailable for this edition.</p></section>'
+)
+
+_BRIEF_PLACEHOLDER = (
+    '<section class="desk-brief" data-desk-brief="unavailable">'
+    '<div class="desk-brief-head"><h2>Desk brief</h2></div>'
+    '<p class="note">Desk brief unavailable for this edition.</p></section>'
+)
+
+
+def _record_render_diagnostic(
+    code: str,
+    *,
+    category: str,
+    component: str,
+    cause: str,
+    impact: str,
+    detail: str,
+) -> None:
+    record_diagnostic(
+        code,
+        category=category,
+        severity="warning",
+        component=component,
+        cause=cause,
+        impact=impact,
+        detail=detail[:4000],
+    )
+
+
+def _replace_optional_section(
+    html: str,
+    class_name: str,
+    replacement: str,
+    *,
+    code: str,
+    category: str,
+    component: str,
+    placeholder: str,
+) -> str:
+    try:
+        return _replace_section(html, class_name, replacement)
+    except Exception as exc:  # noqa: BLE001 — optional render must not veto publication
+        _record_render_diagnostic(
+            code,
+            category=category,
+            component=component,
+            cause=f"{component} could not be rendered for this edition.",
+            impact=f"The {component} section shows a local unavailable placeholder.",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+        try:
+            return _replace_section(html, class_name, placeholder)
+        except ValueError:
+            return html
+
+
 def _insert_brief(html: str, block: str) -> str:
     if _marker_outside_style(html, 'data-desk-brief="repair"') >= 0:
         return replace_element_containing(html, 'data-desk-brief="repair"', block)
@@ -609,34 +700,126 @@ def apply_dashboard_repair(
     html = _annotate_static_front(html)
     html = _fence_macro_snapshot(html)
     html = _remove_nav(html)
-    html = _research_link(html, trader_room)
     catalog_series = series if series is not None else load_catalog()["series"]
-    model = build_release_model(
-        now,
-        series=catalog_series,
-        score_as_of=str(scores.get("calibration_anchor_date") or scores.get("as_of") or "2026-09-21"),
-        score_inputs_last_ingested_at=scores.get("score_inputs_last_ingested_at"),
-        fetched_slots=(schedule_fetch or {}).get("slots"),
-        schedule_fetch=schedule_fetch,
-    )
-    html = _replace_section(html, "releases", render_releases(model))
-    if ingest is None and series is None:
-        ingest = load_latest_ingest()
-    snapshot = build_source_health_snapshot(catalog_series, ingest, model)
-    names = {str(spec.get("id") or ""): str(spec.get("canonical_name") or "").strip() for spec in catalog_series}
-    display_rows = [dict(row, canonical_name=names.get(str(row.get("series_id") or ""), "")) for row in snapshot.get("rows") or []]
-    html = _replace_section(html, "sources", render_sources(market_state, snapshot, display_rows))
-    html = _replace_header(html, market_state, scores)
-    html = _insert_brief(
-        html,
-        render_brief(
+    model = None
+    try:
+        model = build_release_model(
+            now,
+            series=catalog_series,
+            score_as_of=str(scores.get("calibration_anchor_date") or scores.get("as_of") or "2026-09-21"),
+            score_inputs_last_ingested_at=scores.get("score_inputs_last_ingested_at"),
+            fetched_slots=(schedule_fetch or {}).get("slots"),
+            schedule_fetch=schedule_fetch,
+        )
+    except Exception as exc:  # noqa: BLE001
+        _record_render_diagnostic(
+            "release_calendar_model",
+            category="calendar",
+            component="release_calendar",
+            cause="The release calendar model could not be built for this edition.",
+            impact="The Releases tab shows a local unavailable placeholder.",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+    if model is not None:
+        html = _replace_optional_section(
+            html,
+            "releases",
+            render_releases(model),
+            code="release_calendar_render",
+            category="calendar",
+            component="release_calendar",
+            placeholder=_RELEASES_PLACEHOLDER,
+        )
+    else:
+        html = _replace_optional_section(
+            html,
+            "releases",
+            _RELEASES_PLACEHOLDER,
+            code="release_calendar_render",
+            category="calendar",
+            component="release_calendar",
+            placeholder=_RELEASES_PLACEHOLDER,
+        )
+    snapshot = None
+    try:
+        if ingest is None and series is None:
+            ingest = load_latest_ingest()
+        snapshot = build_source_health_snapshot(catalog_series, ingest, model)
+    except Exception as exc:  # noqa: BLE001
+        _record_render_diagnostic(
+            "source_health_snapshot",
+            category="source",
+            component="sources_inventory",
+            cause="The source-health snapshot could not be built for this edition.",
+            impact="The Sources inventory shows a local unavailable placeholder.",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+    if snapshot is not None:
+        names = {str(spec.get("id") or ""): str(spec.get("canonical_name") or "").strip() for spec in catalog_series}
+        display_rows = [
+            dict(row, canonical_name=names.get(str(row.get("series_id") or ""), "")) for row in snapshot.get("rows") or []
+        ]
+        html = _replace_optional_section(
+            html,
+            "sources",
+            render_sources(market_state, snapshot, display_rows),
+            code="sources_render",
+            category="source",
+            component="sources_inventory",
+            placeholder=_SOURCES_PLACEHOLDER,
+        )
+    else:
+        html = _replace_optional_section(
+            html,
+            "sources",
+            _SOURCES_PLACEHOLDER,
+            code="sources_render",
+            category="source",
+            component="sources_inventory",
+            placeholder=_SOURCES_PLACEHOLDER,
+        )
+    try:
+        html = _replace_header(html, market_state, scores)
+    except Exception as exc:  # noqa: BLE001
+        _record_render_diagnostic(
+            "header_meta_render",
+            category="render",
+            component="header_meta",
+            cause="Header metadata could not be rendered for this edition.",
+            impact="The page header keeps its previous metadata block.",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+    brief_block = _BRIEF_PLACEHOLDER
+    try:
+        brief_block = render_brief(
             scores=scores,
             tape_cards=tape_cards(market_state),
             packet=market_state,
             calendar=model,
             country_detail=country_detail,
-        ),
-    )
+        )
+    except Exception as exc:  # noqa: BLE001
+        _record_render_diagnostic(
+            "desk_brief_render",
+            category="render",
+            component="desk_brief",
+            cause="The desk brief could not be rendered for this edition.",
+            impact="The Front page desk brief shows a local unavailable placeholder.",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+    html = _insert_brief(html, brief_block)
+    try:
+        html = _research_link(html, trader_room)
+    except Exception as exc:  # noqa: BLE001
+        _record_render_diagnostic(
+            "research_debate_render",
+            category="render",
+            component="research_debate",
+            cause="The research debate block could not be rendered for this edition.",
+            impact="The research debate control is omitted for this edition.",
+            detail=f"{type(exc).__name__}: {exc}",
+        )
+    html = rename_sources_nav_label(html)
     html = _style_and_script(html)
     html_result = html
     # Attach the read-models for the publication step without changing the HTML return.

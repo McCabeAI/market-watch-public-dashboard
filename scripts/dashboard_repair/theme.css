@@ -428,6 +428,37 @@ label:focus-visible,button:focus-visible,a:focus-visible,summary:focus-visible,i
 .mw-release-status{overflow-wrap:anywhere;white-space:normal}
 .page.releases h2{font-size:var(--mw-fs-title);margin:20px 0 10px;color:var(--mw-ink)}
 
+/* Issues panel (Sources & Issues tab) */
+.mw-issues{margin:0 0 18px;padding:12px;border:1px solid var(--mw-line);border-radius:var(--mw-r);background:var(--mw-panel)}
+.mw-issues-counts{margin:0 0 10px}
+.mw-issues-filters{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin:0 0 12px}
+.mw-issues-filter,.mw-issues-filters label{font-size:var(--mw-fs-body)}
+.mw-issues-filter{min-height:44px;font-size:16px;padding:8px 10px;border:1px solid var(--mw-line);border-radius:var(--mw-r-sm);background:var(--mw-panel-2);color:var(--mw-ink)}
+.mw-issues-filter[type="search"]{min-width:min(100%,280px);flex:1 1 200px}
+.mw-issue-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.mw-issue-row{display:grid;grid-template-columns:auto auto auto 1fr;gap:6px 10px;align-items:start;padding:10px;border:1px solid var(--mw-line);border-radius:var(--mw-r-sm);background:var(--mw-panel-2)}
+.mw-issue-cause{grid-column:1/-1;font-size:var(--mw-fs-body);line-height:1.4}
+.mw-issue-more{grid-column:1/-1}
+.mw-issue-more pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px;margin:8px 0 0}
+.mw-issues-resolved{margin-top:12px}
+.mw-issues-resolved>summary{min-height:44px;cursor:pointer;font-weight:750}
+.mw-issues-badge{
+  display:inline-flex;
+  align-items:center;
+  margin-left:8px;
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:750;
+  background:var(--mw-warn-bg,var(--mw-panel-3));
+  border:1px solid var(--mw-warn);
+  color:var(--mw-ink);
+}
+.mw-issues-badge label{cursor:pointer;min-height:44px;display:inline-flex;align-items:center;padding:4px 0}
+@media(max-width:720px){
+  .mw-issue-row{grid-template-columns:1fr;gap:6px}
+}
+
 /* Sources layout */
 .source-summary{padding:14px}
 .mw-source-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0 14px}
