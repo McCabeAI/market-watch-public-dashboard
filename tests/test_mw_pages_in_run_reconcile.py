@@ -194,7 +194,7 @@ class InRunEvidenceCliTests(unittest.TestCase):
                     str(state_root),
                 ]
             )
-            self.assertEqual(rc, 1)
+            self.assertEqual(rc, 0)
 
 
 class Nov2Stage08RecoveryPlanTests(unittest.TestCase):
@@ -269,15 +269,15 @@ class Nov2Stage08RecoveryPlanTests(unittest.TestCase):
             )
         self.assertIn("non-success conclusion", str(ctx.exception))
 
-        with self.assertRaises(SystemExit) as wf_ctx:
-            workflow_run_decision(
-                repo_root=ROOT,
-                state_root=self.state_root,
-                run=failed_api,
-                run_id=NOV2_RUN_ID,
-                repository=REPOSITORY,
-            )
-        self.assertIn("ambiguous pending finalized launches", str(wf_ctx.exception))
+        decision = workflow_run_decision(
+            repo_root=ROOT,
+            state_root=self.state_root,
+            run=failed_api,
+            run_id=NOV2_RUN_ID,
+            repository=REPOSITORY,
+        )
+        self.assertEqual(decision["action"], "skipped")
+        self.assertEqual(decision["reason"], "deploy_pages_intent_not_proven")
 
         store = LaunchStateStore(self.state_root)
         pending = store.load_launch(NOV2)
@@ -341,6 +341,17 @@ class InRunReconcileApplyTests(unittest.TestCase):
             repository=REPOSITORY,
         )
         api_run = _oct2_run()
+        api_run["dispatch_inputs"] = {
+            "launch_id": OCT2,
+            "review_id": "review-001",
+            "packet_sha256": "2b0c5980ac350ecd70d6149b08fef310ca461ba19924d01d4a1a8dd5c673688b",
+        }
+        api_run["publication_release"] = {
+            "trigger": "launch",
+            "launch_id": OCT2,
+            "review_id": "review-001",
+            "packet_sha256": "2b0c5980ac350ecd70d6149b08fef310ca461ba19924d01d4a1a8dd5c673688b",
+        }
         decision = workflow_run_decision(
             repo_root=ROOT,
             state_root=self.state_root,

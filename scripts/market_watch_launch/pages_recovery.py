@@ -13,16 +13,21 @@ only that launch's ``launch.json``, ``artifacts/08_pages.json``, and
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import os
 import re
 import subprocess
 import sys
+import urllib.error
+import urllib.request
+import zipfile
 from collections.abc import Mapping
 from pathlib import Path
 from typing import Any
 
 from scripts.market_watch_launch.contract import LAUNCH_ID_RE
+from scripts.market_watch_launch.publication_release import TRIGGER_LAUNCH, TRIGGER_REFRESH
 from scripts.market_watch_launch.pages import (
     INCOMPLETE_DEPLOY_CONCLUSIONS,
     PAGES_DEPLOY_FAILED,
@@ -47,6 +52,10 @@ _SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 _RUN_ID_RE = re.compile(r"^[0-9]{1,20}$")
 _PACKET_STAGES = ("04_freeze", "06_acceptance", "07_finalize")
 _REVIEW_STAGES = ("04_freeze", "06_acceptance", "07_finalize")
+_BIND_CHECKOUT_STEP = "Bind authorized Pages dispatch to this checkout"
+_PUBLICATION_RELEASE_ARTIFACT_PREFIX = "publication-release-"
+_MANUAL_REFRESH_REASON = "manual_pages_refresh"
+_INTENT_NOT_PROVEN_REASON = "deploy_pages_intent_not_proven"
 
 
 def pages_reconcile_allowlist(launch_id: str) -> tuple[str, ...]:
@@ -536,11 +545,270 @@ def launch_ids_at_commit(repo_root: Path, head_sha: str) -> list[str]:
     return found
 
 
+def _blank_input(value: object) -> str:
+    return str(value or "").strip()
+
+
+def _github_api_json(url: str, token: str) -> Any:
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "market-watch-pages-recovery",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:  # noqa: S310
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as exc:
+        raise SystemExit(f"GitHub API request failed: {exc.code}") from exc
+    except (OSError, TimeoutError, json.JSONDecodeError) as exc:
+        raise SystemExit(f"GitHub API request failed: {exc}") from exc
+
+
+def _github_api_bytes(url: str, token: str) -> bytes:
+    request = urllib.request.Request(
+        url,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "Authorization": f"Bearer {token}",
+            "X-GitHub-Api-Version": "2022-11-28",
+            "User-Agent": "market-watch-pages-recovery",
+        },
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310
+            return response.read()
+    except urllib.error.HTTPError as exc:
+        raise SystemExit(f"GitHub API request failed: {exc.code}") from exc
+    except (OSError, TimeoutError) as exc:
+        raise SystemExit(f"GitHub API request failed: {exc}") from exc
+
+
+def _bind_step_conclusion(jobs_payload: Any) -> str | None:
+    if not isinstance(jobs_payload, dict):
+        return None
+    for job in jobs_payload.get("jobs") or []:
+        if not isinstance(job, dict) or job.get("name") != "build":
+            continue
+        for step in job.get("steps") or []:
+            if isinstance(step, dict) and step.get("name") == _BIND_CHECKOUT_STEP:
+                conclusion = str(step.get("conclusion") or "").strip()
+                if conclusion:
+                    return conclusion
+    return None
+
+
+def _require_launch_bound_consistency(
+    run: dict[str, Any],
+    *,
+    launch_id: str,
+    review_id: str | None,
+    packet_sha256: str | None,
+) -> None:
+    release = run.get("publication_release")
+    if isinstance(release, dict):
+        rel_launch = release.get("launch_id")
+        if isinstance(rel_launch, str) and rel_launch and rel_launch != launch_id:
+            _fail("mismatched launch_id")
+        rel_review = release.get("review_id")
+        if review_id and isinstance(rel_review, str) and rel_review and rel_review != review_id:
+            _fail("mismatched review_id")
+        rel_packet = release.get("packet_sha256")
+        if packet_sha256 and isinstance(rel_packet, str) and rel_packet and rel_packet != packet_sha256:
+            _fail("mismatched packet SHA")
+    inputs = run.get("dispatch_inputs")
+    if not isinstance(inputs, dict):
+        return
+    in_launch = _blank_input(inputs.get("launch_id"))
+    if in_launch and in_launch != launch_id:
+        _fail("mismatched launch_id")
+    in_review = _blank_input(inputs.get("review_id"))
+    if review_id and in_review and in_review != review_id:
+        _fail("mismatched review_id")
+    in_packet = _blank_input(inputs.get("packet_sha256"))
+    if packet_sha256 and in_packet and in_packet != packet_sha256:
+        _fail("mismatched packet SHA")
+
+
+def classify_deploy_pages_workflow_intent(run: dict[str, Any]) -> dict[str, Any]:
+    """Classify a production deploy-pages run as refresh, launch-bound, or unknown."""
+    release = run.get("publication_release")
+    if isinstance(release, dict):
+        trigger = str(release.get("trigger") or "")
+        if trigger == TRIGGER_REFRESH:
+            return {
+                "intent": "manual_refresh",
+                "launch_id": None,
+                "source": "publication_release",
+            }
+        if trigger == TRIGGER_LAUNCH:
+            launch_id = _blank_input(release.get("launch_id"))
+            if not launch_id:
+                _fail("pages publication not proven")
+            _validate_launch_id(launch_id)
+            return {
+                "intent": "launch_bound",
+                "launch_id": launch_id,
+                "source": "publication_release",
+            }
+
+    inputs = run.get("dispatch_inputs")
+    if isinstance(inputs, dict):
+        launch_id = _blank_input(inputs.get("launch_id"))
+        if launch_id:
+            _validate_launch_id(launch_id)
+            return {
+                "intent": "launch_bound",
+                "launch_id": launch_id,
+                "source": "dispatch_inputs",
+            }
+        return {
+            "intent": "manual_refresh",
+            "launch_id": None,
+            "source": "dispatch_inputs",
+        }
+
+    jobs = run.get("workflow_jobs")
+    bind = _bind_step_conclusion(jobs)
+    if bind == "skipped":
+        return {
+            "intent": "manual_refresh",
+            "launch_id": None,
+            "source": "workflow_jobs",
+        }
+
+    return {
+        "intent": "unknown",
+        "launch_id": None,
+        "source": None,
+    }
+
+
+def _publication_release_from_artifact(zip_bytes: bytes) -> dict[str, Any]:
+    with zipfile.ZipFile(io.BytesIO(zip_bytes)) as archive:
+        names = [name for name in archive.namelist() if name.endswith("release.json")]
+        if not names:
+            _fail("publication release artifact is missing release.json")
+        payload = json.loads(archive.read(names[0]).decode("utf-8"))
+    if not isinstance(payload, dict):
+        _fail("publication release artifact is not a release object")
+    return payload
+
+
+def enrich_actions_run_from_github(
+    run: dict[str, Any],
+    *,
+    run_id: str,
+    repository: str,
+    token: str,
+) -> dict[str, Any]:
+    """Attach publication-release and workflow-job evidence to an Actions API run."""
+    expected = _validate_run_id(run_id)
+    merged = dict(run)
+    if not isinstance(merged.get("publication_release"), dict):
+        attempt = int(merged.get("run_attempt") or 1)
+        artifact_name = f"{_PUBLICATION_RELEASE_ARTIFACT_PREFIX}{attempt}"
+        artifacts = _github_api_json(
+            f"https://api.github.com/repos/{repository}/actions/runs/{expected}/artifacts",
+            token,
+        )
+        found = None
+        if isinstance(artifacts, dict):
+            for row in artifacts.get("artifacts") or []:
+                if (
+                    isinstance(row, dict)
+                    and row.get("name") == artifact_name
+                    and row.get("expired") is not True
+                ):
+                    found = row
+                    break
+        if found and isinstance(found.get("archive_download_url"), str):
+            merged["publication_release"] = _publication_release_from_artifact(
+                _github_api_bytes(found["archive_download_url"], token)
+            )
+            merged["publication_release_source"] = "actions_artifact"
+    if merged.get("workflow_jobs") is None:
+        jobs = _github_api_json(
+            f"https://api.github.com/repos/{repository}/actions/runs/{expected}/jobs",
+            token,
+        )
+        if isinstance(jobs, dict):
+            merged["workflow_jobs"] = jobs
+    release = merged.get("publication_release")
+    if isinstance(release, dict) and not isinstance(merged.get("dispatch_inputs"), dict):
+        trigger = str(release.get("trigger") or "")
+        if trigger == TRIGGER_LAUNCH:
+            merged["dispatch_inputs"] = {
+                "launch_id": _blank_input(release.get("launch_id")),
+                "review_id": _blank_input(release.get("review_id")),
+                "packet_sha256": _blank_input(release.get("packet_sha256")),
+            }
+        elif trigger == TRIGGER_REFRESH:
+            merged["dispatch_inputs"] = {
+                "launch_id": "",
+                "review_id": "",
+                "packet_sha256": "",
+            }
+    elif _bind_step_conclusion(merged.get("workflow_jobs")) == "skipped" and not isinstance(
+        merged.get("dispatch_inputs"), dict
+    ):
+        merged["dispatch_inputs"] = {
+            "launch_id": "",
+            "review_id": "",
+            "packet_sha256": "",
+        }
+    return merged
+
+
+def _launch_bound_at_commit(
+    repo_root: Path,
+    head_sha: str,
+    run: dict[str, Any],
+    *,
+    intent: dict[str, Any],
+) -> dict[str, Any]:
+    launch_id = intent.get("launch_id")
+    if not isinstance(launch_id, str) or not launch_id:
+        _fail("pages publication not proven")
+    launch = load_launch_at_commit(repo_root, head_sha, launch_id)
+    _require_launch_bound_consistency(
+        run,
+        launch_id=launch_id,
+        review_id=launch.get("review_id") if isinstance(launch.get("review_id"), str) else None,
+        packet_sha256=launch.get("base_packet_sha256")
+        if isinstance(launch.get("base_packet_sha256"), str)
+        else None,
+    )
+    return launch
+
+
+def resolve_workflow_run_launch(
+    repo_root: Path,
+    head_sha: str,
+    run: dict[str, Any],
+) -> tuple[str, dict[str, Any] | None]:
+    """Return ``(mode, launch)`` where mode is ``reconcile``, ``skip``, or ``fail``."""
+    intent = classify_deploy_pages_workflow_intent(run)
+    if intent["intent"] == "manual_refresh":
+        return "skip", None
+    if intent["intent"] == "unknown":
+        return "skip", None
+    if intent["intent"] != "launch_bound":
+        return "skip", None
+    launch = _launch_bound_at_commit(repo_root, head_sha, run, intent=intent)
+    return "reconcile", launch
+
+
 def select_pending_finalized_launch(launches: list[dict[str, Any]]) -> dict[str, Any] | None:
     """The one running launch at a deploy commit that is waiting on stage 08.
 
     Zero matches is a manual Pages refresh with nothing to terminalize.
     More than one match fails closed.
+
+    Prefer ``resolve_workflow_run_launch`` when the deploy run's intent is known.
     """
     eligible = [
         launch
@@ -587,7 +855,14 @@ def note_incomplete_deploy(
         repository=repository,
         require_success=False,
     )
-    candidate = select_pending_finalized_launch(_load_launches_at_commit(repo_root, normalized["head_sha"]))
+    mode, candidate = resolve_workflow_run_launch(repo_root, normalized["head_sha"], run)
+    if mode == "skip":
+        intent = classify_deploy_pages_workflow_intent(run)
+        if intent["intent"] == "manual_refresh":
+            return _skipped(_MANUAL_REFRESH_REASON)
+        if intent["intent"] == "unknown":
+            return _skipped(_INTENT_NOT_PROVEN_REASON)
+        return _skipped("no_pending_finalized_launch")
     if candidate is None:
         return _skipped("no_pending_finalized_launch")
     launch_id = str(candidate["launch_id"])
@@ -687,7 +962,14 @@ def workflow_run_decision(
     if conclusion != "success":
         return _skipped(f"ignored conclusion {conclusion or 'missing'}")
     normalized = normalize_actions_run(run, run_id=run_id, repository=repository)
-    candidate = select_pending_finalized_launch(_load_launches_at_commit(repo_root, normalized["head_sha"]))
+    mode, candidate = resolve_workflow_run_launch(repo_root, normalized["head_sha"], run)
+    if mode == "skip":
+        intent = classify_deploy_pages_workflow_intent(run)
+        if intent["intent"] == "manual_refresh":
+            return _skipped(_MANUAL_REFRESH_REASON)
+        if intent["intent"] == "unknown":
+            return _skipped(_INTENT_NOT_PROVEN_REASON)
+        return _skipped("no_pending_finalized_launch")
     if candidate is None:
         return _skipped("no_pending_finalized_launch")
     launch_id = str(candidate["launch_id"])
@@ -771,11 +1053,32 @@ def main(argv: list[str] | None = None) -> int:
     in_run_p.add_argument("--deploy-result", required=True)
     in_run_p.add_argument("--out", type=Path, required=True)
 
+    enrich_p = sub.add_parser(
+        "enrich-actions-run",
+        help="Attach publication-release and workflow-job evidence to an Actions API run",
+        parents=[run_shared],
+    )
+    enrich_p.add_argument("--out", type=Path, required=True)
+    enrich_p.add_argument("--token", default=None)
+
     args = parser.parse_args(argv)
     try:
         if args.command == "in-run-evidence":
             payload = in_run_actions_run(os.environ, deploy_result=args.deploy_result)
             args.out.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+            return 0
+        if args.command == "enrich-actions-run":
+            token = args.token or os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
+            if not token:
+                _fail("GitHub token is required to enrich workflow run evidence")
+            run = _load_run_json(Path(args.run_json))
+            enriched = enrich_actions_run_from_github(
+                run,
+                run_id=args.run_id,
+                repository=args.repository,
+                token=token,
+            )
+            args.out.write_text(json.dumps(enriched, indent=2, sort_keys=True) + "\n", encoding="utf-8")
             return 0
         root = Path(args.repo_root)
         if args.command == "preflight":

@@ -193,6 +193,29 @@ def _actions_run(head_sha: str, **overrides: object) -> dict:
     return payload
 
 
+def _launch_bound_run(head_sha: str, launch_id: str = LAUNCH_ID, **overrides: object) -> dict:
+    run = _actions_run(head_sha, **overrides)
+    run["dispatch_inputs"] = {
+        "launch_id": launch_id,
+        "review_id": REVIEW,
+        "packet_sha256": PACKET,
+    }
+    run["publication_release"] = {
+        "trigger": "launch",
+        "launch_id": launch_id,
+        "review_id": REVIEW,
+        "packet_sha256": PACKET,
+    }
+    return run
+
+
+def _manual_refresh_run(head_sha: str, **overrides: object) -> dict:
+    run = _actions_run(head_sha, **overrides)
+    run["dispatch_inputs"] = {"launch_id": "", "review_id": "", "packet_sha256": ""}
+    run["publication_release"] = {"trigger": "refresh"}
+    return run
+
+
 def _handlers() -> dict:
     def make(stage: str):
         def _handler(launch, ctx):
@@ -582,7 +605,7 @@ class WorkflowRunReconciliationTests(unittest.TestCase):
         first = workflow_run_decision(
             repo_root=root,
             state_root=root,
-            run=_actions_run(head),
+            run=_launch_bound_run(head),
             run_id=RUN_ID,
         )
         self.assertEqual(first["action"], "reconciled")
@@ -595,7 +618,7 @@ class WorkflowRunReconciliationTests(unittest.TestCase):
         second = workflow_run_decision(
             repo_root=root,
             state_root=root,
-            run=_actions_run(head),
+            run=_launch_bound_run(head),
             run_id=RUN_ID,
         )
         self.assertFalse(second["changed"])
@@ -611,7 +634,7 @@ class WorkflowRunReconciliationTests(unittest.TestCase):
         failed = workflow_run_decision(
             repo_root=root,
             state_root=root,
-            run=_actions_run(head, conclusion="failure"),
+            run=_launch_bound_run(head, conclusion="failure"),
             run_id=RUN_ID,
         )
         self.assertEqual(failed["action"], "noted_incomplete")
@@ -624,7 +647,7 @@ class WorkflowRunReconciliationTests(unittest.TestCase):
         replay = workflow_run_decision(
             repo_root=root,
             state_root=root,
-            run=_actions_run(head, conclusion="failure"),
+            run=_launch_bound_run(head, conclusion="failure"),
             run_id=RUN_ID,
         )
         self.assertFalse(replay["changed"])
@@ -668,11 +691,77 @@ class WorkflowRunReconciliationTests(unittest.TestCase):
         decision = workflow_run_decision(
             repo_root=root,
             state_root=root,
-            run=_actions_run(later),
+            run=_manual_refresh_run(later),
             run_id=RUN_ID,
         )
         self.assertEqual(decision["action"], "skipped")
+        self.assertEqual(decision["reason"], "manual_pages_refresh")
         self.assertFalse(decision["changed"])
+
+    def test_manual_refresh_skips_when_multiple_pending_launches_share_the_commit(self) -> None:
+        root, head = self._repo()
+        other_id = "mwl-20261023T120000Z-aabbccdd"
+        LaunchStateStore(root).save_launch(_ready_launch(other_id, session_date="2026-10-23"))
+        _git(root, "add", "data")
+        _git(root, "commit", "-q", "-m", "add second pending launch")
+        head = _git(root, "rev-parse", "HEAD").stdout.strip()
+        store = LaunchStateStore(root)
+        decision = workflow_run_decision(
+            repo_root=root,
+            state_root=root,
+            run=_manual_refresh_run(head),
+            run_id=RUN_ID,
+        )
+        self.assertEqual(decision["action"], "skipped")
+        self.assertEqual(decision["reason"], "manual_pages_refresh")
+        self.assertFalse(decision["changed"])
+        self.assertEqual(store.load_launch(LAUNCH_ID)["stages"]["08_pages"]["status"], "pending")
+        self.assertEqual(store.load_launch(other_id)["stages"]["08_pages"]["status"], "pending")
+
+    def test_launch_bound_run_reconciles_only_the_authorized_launch(self) -> None:
+        root, head = self._repo()
+        other_id = "mwl-20261023T120000Z-aabbccdd"
+        LaunchStateStore(root).save_launch(_ready_launch(other_id, session_date="2026-10-23"))
+        _git(root, "add", "data")
+        _git(root, "commit", "-q", "-m", "add second pending launch")
+        head = _git(root, "rev-parse", "HEAD").stdout.strip()
+        store = LaunchStateStore(root)
+        decision = workflow_run_decision(
+            repo_root=root,
+            state_root=root,
+            run=_launch_bound_run(head, launch_id=LAUNCH_ID),
+            run_id=RUN_ID,
+        )
+        self.assertEqual(decision["action"], "reconciled")
+        self.assertTrue(decision["changed"])
+        self.assertEqual(store.load_launch(LAUNCH_ID)["status"], "succeeded")
+        self.assertEqual(store.load_launch(other_id)["stages"]["08_pages"]["status"], "pending")
+
+    def test_launch_bound_identity_mismatch_fails_closed(self) -> None:
+        root, head = self._repo()
+        run = _launch_bound_run(head)
+        run["dispatch_inputs"]["packet_sha256"] = "f" * 64
+        with self.assertRaises(SystemExit) as ctx:
+            workflow_run_decision(
+                repo_root=root,
+                state_root=root,
+                run=run,
+                run_id=RUN_ID,
+            )
+        self.assertIn("mismatched packet SHA", str(ctx.exception))
+        self.assertEqual(LaunchStateStore(root).load_launch(LAUNCH_ID)["stages"]["08_pages"]["status"], "pending")
+
+    def test_cancelled_manual_refresh_does_not_touch_launch_state(self) -> None:
+        root, head = self._repo()
+        decision = workflow_run_decision(
+            repo_root=root,
+            state_root=root,
+            run=_manual_refresh_run(head, conclusion="cancelled"),
+            run_id=RUN_ID,
+        )
+        self.assertEqual(decision["action"], "skipped")
+        self.assertEqual(decision["reason"], "manual_pages_refresh")
+        self.assertEqual(LaunchStateStore(root).load_launch(LAUNCH_ID)["stages"]["08_pages"]["status"], "pending")
 
 
 class ContinuationProcessTests(unittest.TestCase):
