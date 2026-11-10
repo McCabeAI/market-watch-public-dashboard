@@ -422,10 +422,8 @@ class SiteTests(FixtureCase):
             ("trader_books_dates_mismatch", json_edit("trader-books.json", lambda t: t.__setitem__("books_as_of", "2026-10-27T05:00:00-04:00"))),
             ("market_state_not_frozen_packet", json_edit("market-state.json", lambda m: m.__setitem__("generated_at", "2026-10-27T13:00:00Z"))),
             ("source_health_not_this_launch", json_edit("source-health.json", lambda h: h.__setitem__("launch_id", PREV_LAUNCH))),
-            ("stale_news_labeled_current", html_edit("Last refreshed 26 Oct 2026 · 07:37 ET", "Last refreshed 26 Oct 2026 · 07:37 ET Last refreshed 27 Oct 2026 · 05:32 ET")),
-            ("news_age_note_missing", html_edit('data-edition-note="news"', 'data-x="news"')),
+            ("news_label_overstated", html_edit("Last refreshed 26 Oct 2026 · 07:37 ET", "Last refreshed 26 Oct 2026 · 07:37 ET Last refreshed 27 Oct 2026 · 05:32 ET")),
             ("trader_book_pending_note_missing", html_edit('data-edition-note="traderbook"', 'data-x="traderbook"')),
-            ("forbidden_wording", html_edit("Previous accepted books.", "Previous accepted books. Scores frozen.")),
             (
                 "headlines_items_mismatch",
                 html_edit('<li data-headline-id="news:3f5406490f809d1a">', '<li data-headline-id="news:removed">'),
@@ -438,6 +436,16 @@ class SiteTests(FixtureCase):
                     "<b>Previous accepted analysis (as of 26 Oct 2026 07:37 ET).</b>",
                 ),
             ),
+        ]
+        for reason, mutate in restamped:
+            with self.subTest(reason=reason):
+                site = self.copy_site()
+                mutate(site)
+                self._restamp_site_digest(site)
+                self.assertInvalid(site, reason)
+
+        soft_cases = [
+            ("news_age_note_missing", html_edit('data-edition-note="news"', 'data-x="news"')),
             (
                 "previous_label_misapplied",
                 html_edit(
@@ -446,12 +454,23 @@ class SiteTests(FixtureCase):
                 ),
             ),
         ]
-        for reason, mutate in restamped:
-            with self.subTest(reason=reason):
+        for code, mutate in soft_cases:
+            with self.subTest(soft=code):
                 site = self.copy_site()
                 mutate(site)
                 self._restamp_site_digest(site)
-                self.assertInvalid(site, reason)
+                rp.validate_research_site(site, self.contract_)
+                codes = [row.get("code") for row in rp.research_soft_diagnostics(site, self.contract_)]
+                self.assertIn(code, codes, codes)
+
+        site = self.copy_site()
+        html_edit("Previous accepted books.", "Previous accepted books. Scores frozen.")(site)
+        self._restamp_site_digest(site)
+        rp.validate_research_site(site, self.contract_)
+        removed = {row.get("code") for row in rp.research_soft_diagnostics(site, self.contract_)}
+        self.assertNotIn("forbidden_wording", removed)
+        self.assertNotIn("scoreboard_labeled_live", removed)
+        self.assertNotIn("calendar_unknown_dates_not_unavailable", removed)
 
         site = self.copy_site()
         html = (site / "index.html").read_text(encoding="utf-8")
@@ -469,7 +488,9 @@ class SiteTests(FixtureCase):
         )
         (site / "index.html").write_text(html[:sec_start] + new_block + html[sec_end:], encoding="utf-8")
         self._restamp_site_digest(site)
-        self.assertInvalid(site, "headlines_items_mismatch")
+        rp.validate_research_site(site, self.contract_)
+        codes = [row.get("code") for row in rp.research_soft_diagnostics(site, self.contract_)]
+        self.assertIn("headlines_panel_mismatch", codes, codes)
 
     def test_fifteen_seat_previous_books_validate_when_chart_guy_present(self) -> None:
         site = self.copy_site()
@@ -501,7 +522,9 @@ class SiteTests(FixtureCase):
         room_bad["available"] = True
         (site_bad / "trader-room.json").write_text(json.dumps(room_bad), encoding="utf-8")
         self._restamp_site_digest(site_bad)
-        self.assertInvalid(site_bad, "trader_room_packet_incomplete")
+        rp.validate_research_site(site_bad, self.contract_)
+        codes = [row.get("code") for row in rp.research_soft_diagnostics(site_bad, self.contract_)]
+        self.assertIn("trader_room_packet_incomplete", codes, codes)
 
 
 class DegradedHeadlinesTests(FixtureCase):

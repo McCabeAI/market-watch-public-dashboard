@@ -31,6 +31,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -40,6 +41,18 @@ from pathlib import Path
 from typing import Any
 
 from scripts.market_watch_launch.contract import CONCURRENCY_BLOCK, LAUNCH_ID_RE
+from scripts.market_watch_launch.publication_checks import (
+    PublicationIntegrityError,
+    check_news_dates_not_overstated,
+    check_no_stale_static_news,
+    check_no_stale_tape,
+    check_source_health_truthful,
+    soft_news_consistency,
+    soft_page_structure,
+    soft_source_health,
+    strip_issues_panel,
+)
+from scripts.market_watch_launch.publication_issues import make_issue, publish_issues, record_diagnostic
 from scripts.market_watch_launch.publication_release import (
     CHANNEL_LOCAL,
     CHANNEL_PRODUCTION,
@@ -56,12 +69,12 @@ from scripts.market_watch_launch.publication_release import (
     site_digest,
     stamp_site,
 )
+from scripts.market_watch_launch.render_steps import HARD, OPTIONAL, StepFailed, run_step
 from scripts.market_watch_launch.research_static_base import (
     StaticBaseError,
     apply_last24,
     apply_news_rollup,
     apply_temperature_inputs,
-    assert_six_economies,
     rebuild_v6_base,
 )
 from scripts.overnight.clock import now_ny, parse_iso
@@ -70,11 +83,6 @@ PRODUCTION_REPOSITORY = "McCabeAI/market-watch-public-dashboard"
 LAUNCHES_REL = Path("data") / "market_watch_launches"
 FREEZE_STAGES = ("00_authenticate", "01_ingest", "02_acquire", "03_quality_gate", "04_freeze")
 ACCEPTED_GATE_COVERAGE = frozenset({"COMPLETE", "PARTIAL"})
-REQUIRED_NAV = ("p-front", "p-country", "p-marketdata", "p-traderbook", "p-releases", "p-sources")
-COUNTRY_CODES = ("us", "ca", "au", "nz", "ea", "jp")
-RETIRED_NAV = ("p-feed", "p-relative", "p-traderroom")
-STALE_TAPE_VALUES = ("4.79%", "1.3790", "0.7210", "0.58755", "98.83", "$92.33", "$97.23")
-
 SKIP = "skip"
 FAIL = "fail"
 
@@ -415,14 +423,24 @@ def _accepted_books(root: Path) -> dict[str, Any]:
     }
 
 
-def _accepted_news_context(root: Path, dataset: dict[str, Any]) -> dict[str, Any]:
+def _accepted_news_context(root: Path, dataset: dict[str, Any]) -> dict[str, Any] | None:
     from scripts.overnight.accepted_news import effective_public_news_context
     from scripts.overnight.store import OvernightStore
 
     context = effective_public_news_context(OvernightStore(root=Path(root)), dataset)
     if context is None or not isinstance(context.get("as_of"), str):
-        raise _fail("accepted_news_missing")
+        return None
     return context
+
+
+def _unavailable_news() -> dict[str, Any]:
+    return {
+        "status": "unavailable",
+        "as_of": None,
+        "reason": "accepted_news_missing",
+        "current_session": False,
+        "age_label": "no accepted news",
+    }
 
 
 def _accepted_news(context: dict[str, Any], *, session_date: str, frozen_at: str) -> dict[str, Any]:
@@ -536,14 +554,23 @@ def research_contract(
     if _already_published(root, launch):
         raise _skip("research_already_published")
     news_context = _accepted_news_context(root, books["dataset"])
-    news = _accepted_news(news_context, session_date=session_date, frozen_at=frozen_at)
+    if news_context is None:
+        news = _unavailable_news()
+        previous_as_of = None
+        previous_items: list[Any] = []
+        previous_cb: list[Any] = []
+    else:
+        news = _accepted_news(news_context, session_date=session_date, frozen_at=frozen_at)
+        previous_as_of = news["as_of"]
+        previous_items = [row for row in (news_context.get("news") or []) if isinstance(row, dict)]
+        previous_cb = [row for row in (news_context.get("central_bank_research") or []) if isinstance(row, dict)]
     from scripts.market_watch_launch.research_headlines import select_current_headlines
 
     headlines = select_current_headlines(
         packet["families"].get("news"),
         frozen_at=frozen_at,
-        previous_accepted_as_of=news["as_of"],
-        previous_accepted_items=list(news_context.get("news") or []),
+        previous_accepted_as_of=previous_as_of,
+        previous_accepted_items=previous_items,
         packet_sha256=str(freeze.get("packet_sha256")),
     )
     market_family = packet["families"].get("market_state") if isinstance(packet["families"].get("market_state"), dict) else {}
@@ -579,6 +606,8 @@ def research_contract(
         "scores": scores,
         "books": {k: v for k, v in books.items() if k != "dataset"},
         "news": news,
+        "accepted_news_items": previous_items,
+        "accepted_cb_items": previous_cb,
         "headlines": headlines,
         "market_state": market_record,
         "inputs": _input_receipts(root, launch, books),
@@ -692,15 +721,86 @@ def prepare_overlay(source_root: Path, work_root: Path, contract: dict[str, Any]
     return work
 
 
-def _run(work: Path, args: list[str], *, label: str) -> str:
+_TEMP_PATH_RE = re.compile(r"(?:(?:/tmp|/var/tmp|/var/folders)/[^\s\"']+)")
+
+# Both news commands share one pre-step snapshot. A failure restores the page, then the fallback.
+_NEWS_REFRESH = """
+import subprocess, sys
+html = sys.argv[1]
+for script in ("scripts/apply_overnight_news_refresh.py", "scripts/sync_news_summary.py"):
+    proc = subprocess.run([sys.executable, script, html])
+    if proc.returncode != 0:
+        raise SystemExit(proc.returncode)
+"""
+
+
+def _step_env(work: Path, diagnostics: Path) -> dict[str, str]:
     env = dict(os.environ)
     env["PYTHONPATH"] = str(work)
     env.pop("GITHUB_EVENT_NAME", None)
-    proc = subprocess.run([sys.executable, *args], cwd=work, env=env, capture_output=True, text=True, check=False)
-    if proc.returncode != 0:
-        tail = (proc.stderr or proc.stdout or "")[-2000:]
-        raise _fail("render_step_failed", f"{label}: {tail}")
-    return proc.stdout
+    env["MW_RENDER_DIAGNOSTICS"] = str(diagnostics)
+    return env
+
+
+def _public_detail(detail: str, *, limit: int = 300) -> str:
+    text = _TEMP_PATH_RE.sub("[temp path]", " ".join(str(detail or "").split()))
+    if len(text) > limit:
+        return text[: limit - 1] + "…"
+    return text
+
+
+def _append_diagnostic_rows(path: Path, rows: list[dict[str, Any]]) -> None:
+    if not rows:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        for row in rows:
+            if isinstance(row, dict) and row.get("id"):
+                handle.write(json.dumps(row, sort_keys=True) + "\n")
+
+
+def _render(
+    index: Path,
+    args: list[str],
+    *,
+    label: str,
+    policy: str,
+    work: Path,
+    env: dict[str, str],
+    diagnostics: Path,
+    launch_id: str,
+    fallback: str | None = None,
+) -> Any:
+    try:
+        return run_step(
+            index,
+            [sys.executable, *args],
+            label=label,
+            policy=policy,
+            fallback=fallback,
+            cwd=work,
+            env=env,
+            diagnostics=diagnostics,
+            component=f"render:{label}",
+            launch_id=launch_id,
+            phase=PHASE_RESEARCH,
+        )
+    except StepFailed as exc:
+        raise _fail("render_step_failed", f"{label}: {exc.detail}") from exc
+
+
+def _skip_render(label: str, because: str, *, diagnostics: Path, launch_id: str) -> None:
+    record_diagnostic(
+        f"render_step_skipped:{label}",
+        path=diagnostics,
+        category="render",
+        severity="warning",
+        component=f"render:{label}",
+        launch_id=launch_id,
+        phase=PHASE_RESEARCH,
+        cause=f"Skipped {label} because {because} did not complete.",
+        impact="This part of the page was not updated on this edition.",
+    )
 
 
 _SCORES_CHECK = """
@@ -745,28 +845,73 @@ def build_research_site(
         work_root = Path(holder.name) / "root"
     try:
         work = prepare_overlay(source_root, Path(work_root), contract)
+        # Diagnostics stay outside the site so temp paths cannot enter the publication digest.
+        diagnostics = Path(work_root).resolve().parent / "render-diagnostics.jsonl"
+        env = _step_env(work, diagnostics)
+        launch_id = str(contract["launch_id"])
         index = site / "index.html"
+
+        def step(args: list[str], *, label: str, policy: str = HARD, fallback: str | None = None) -> Any:
+            return _render(
+                index,
+                args,
+                label=label,
+                policy=policy,
+                work=work,
+                env=env,
+                diagnostics=diagnostics,
+                launch_id=launch_id,
+                fallback=fallback,
+            )
+
         try:
-            html = apply_news_rollup(work, apply_last24(work, rebuild_v6_base(work)))
+            html = apply_news_rollup(
+                work,
+                apply_last24(work, rebuild_v6_base(work), diagnostics=diagnostics, strict=False),
+                diagnostics=diagnostics,
+                strict=False,
+            )
         except StaticBaseError as exc:
             raise _fail("static_base_invalid", str(exc)) from exc
         index.write_text(html, encoding="utf-8")
-        _run(work, ["scripts/apply_six_economy_dashboard.py", str(index)], label="six economies")
+        step(["scripts/apply_six_economy_dashboard.py", str(index)], label="six economies")
         try:
-            assert_six_economies(index.read_text(encoding="utf-8"))
-            index.write_text(apply_temperature_inputs(work, index.read_text(encoding="utf-8")), encoding="utf-8")
+            index.write_text(
+                apply_temperature_inputs(
+                    work,
+                    index.read_text(encoding="utf-8"),
+                    diagnostics=diagnostics,
+                    strict=False,
+                ),
+                encoding="utf-8",
+            )
         except StaticBaseError as exc:
             raise _fail("static_base_invalid", str(exc)) from exc
-        for script in ("scripts/apply_v10_us_cpi_context.py", "scripts/apply_v11_refresh.py", "scripts/apply_daily_refresh.py"):
-            _run(work, [script, str(index)], label=script)
-        _run(work, ["scripts/apply_overnight_news_refresh.py", str(index)], label="accepted news")
-        if "Last refreshed 18 Sep 2026" in index.read_text(encoding="utf-8"):
-            raise _fail("stale_news_survived")
-        _run(work, ["scripts/sync_news_summary.py", str(index)], label="news summary")
-        _run(work, ["scripts/validate_score_sources.py"], label="score sources")
+        for script, label in (
+            ("scripts/apply_v10_us_cpi_context.py", "v10 us cpi context"),
+            ("scripts/apply_v11_refresh.py", "v11 refresh"),
+            ("scripts/apply_daily_refresh.py", "daily refresh"),
+        ):
+            step([script, str(index)], label=label, policy=OPTIONAL, fallback="legacy_patch_skipped")
+        news_step = step(
+            ["-c", _NEWS_REFRESH, str(index)],
+            label="accepted news",
+            policy=OPTIONAL,
+            fallback="news_unavailable",
+        )
+        try:
+            check_no_stale_static_news(index.read_text(encoding="utf-8"))
+        except PublicationIntegrityError as exc:
+            raise _fail(exc.reason, exc.detail) from exc
+        step(["scripts/validate_score_sources.py"], label="score sources")
         with tempfile.TemporaryDirectory() as tmp:
-            _run(work, ["-c", _SCORES_CHECK, str(Path(tmp) / "temperature_scores.json")], label="staged scores")
-        _run(work, ["scripts/apply_temperature_scores.py", str(index)], label="temperature scores")
+            step(["-c", _SCORES_CHECK, str(Path(tmp) / "temperature_scores.json")], label="staged scores")
+        step(
+            ["scripts/apply_temperature_scores.py", str(index)],
+            label="temperature scores",
+            policy=OPTIONAL,
+            fallback="scores_unavailable",
+        )
 
         packet = require_snapshot(OvernightStore(root=work), contract["overnight_run_id"], contract["review_id"])
         if packet.get("packet_sha256") != contract["packet_sha256"]:
@@ -814,7 +959,12 @@ def build_research_site(
                     },
                 }
                 stir_path.write_text(json.dumps(stir_view, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        _run(work, ["scripts/apply_country_detail.py", str(index)], label="country detail")
+        step(
+            ["scripts/apply_country_detail.py", str(index)],
+            label="country detail",
+            policy=OPTIONAL,
+            fallback="country_detail_unavailable",
+        )
 
         if isinstance(frozen_market, dict) and frozen_market.get("generated_at"):
             try:
@@ -830,12 +980,64 @@ def build_research_site(
         else:
             raise _fail("frozen_market_state_missing")
         (site / "market-state.json").write_text(json.dumps(public, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        _run(work, ["scripts/apply_market_data_tab.py", str(index)], label="market data tab")
-        _run(work, ["scripts/apply_trader_book_tab.py", str(index)], label="trader book tab")
-        _run(work, ["scripts/overnight_pipeline.py", "publish-check", "--site-dir", str(site)], label="publish-check")
-        _run(work, ["scripts/apply_trader_room_tab.py", str(index)], label="trader room tab")
-        _run(work, ["scripts/trader_room_public.py", "--output", str(site / "trader-room.json")], label="trader room json")
-        _run(work, ["scripts/pm_layer.py", "publish", "--site-dir", str(site)], label="pm books")
+        market_tab = step(
+            ["scripts/apply_market_data_tab.py", str(index)],
+            label="market data tab",
+            policy=OPTIONAL,
+        )
+        book_ok = False
+        if market_tab.ok:
+            book_tab = step(
+                ["scripts/apply_trader_book_tab.py", str(index)],
+                label="trader book tab",
+                policy=OPTIONAL,
+            )
+            book_ok = book_tab.ok
+        else:
+            _skip_render("trader book tab", "market data tab", diagnostics=diagnostics, launch_id=launch_id)
+        # Book emission stays hard. A news-label mismatch is an issue only after the
+        # news step already replaced that section with an unavailable placeholder.
+        try:
+            step(
+                ["scripts/overnight_pipeline.py", "publish-check", "--site-dir", str(site)],
+                label="publish-check",
+            )
+        except ResearchRefusal as exc:
+            news_html_veto = any(
+                token in (exc.detail or "")
+                for token in ("Last refreshed", "visible marker", "accepted headline", "news alert", "commentary digest")
+            )
+            if news_step.ok or exc.reason != "render_step_failed" or not news_html_veto:
+                raise
+            record_diagnostic(
+                "news_html_inconsistent",
+                path=diagnostics,
+                category="news",
+                severity="warning",
+                component="news",
+                launch_id=launch_id,
+                phase=PHASE_RESEARCH,
+                cause="The news section is unavailable, so publish-check could not match a visible news label.",
+                impact="News stays unavailable. Trader and PM book publication was not given a success it did not earn.",
+                detail=_public_detail(exc.detail, limit=1000),
+            )
+        if book_ok:
+            step(["scripts/apply_trader_room_tab.py", str(index)], label="trader room tab", policy=OPTIONAL)
+        else:
+            prerequisite = "market data tab" if not market_tab.ok else "trader book tab"
+            _skip_render("trader room tab", prerequisite, diagnostics=diagnostics, launch_id=launch_id)
+        room_json = step(
+            ["scripts/trader_room_public.py", "--output", str(site / "trader-room.json")],
+            label="trader room json",
+            policy=OPTIONAL,
+        )
+        if not room_json.ok:
+            reason = _public_detail(room_json.detail) or "trader_room_unavailable"
+            (site / "trader-room.json").write_text(
+                canonical_json({"available": False, "reason": reason}),
+                encoding="utf-8",
+            )
+        step(["scripts/pm_layer.py", "publish", "--site-dir", str(site)], label="pm books")
         clock = (now or datetime.now(timezone.utc)).astimezone(timezone.utc).isoformat()
         repair = [
             "scripts/apply_dashboard_repair.py",
@@ -847,13 +1049,17 @@ def build_research_site(
         ]
         if fetch_schedules:
             repair += ["--fetch-schedules", "--schedule-timeout", str(schedule_timeout)]
-        _run(work, repair, label="dashboard repair")
+        step(repair, label="dashboard repair")
+        stamp_rows: list[dict[str, Any]] = []
         try:
-            release = stamp_site(site, build_research_release(contract, channel=channel))
+            stamp_site(site, build_research_release(contract, channel=channel), diagnostics=stamp_rows)
         except ValueError as exc:
             raise _fail("edition_stamp_failed", str(exc)) from exc
+        _append_diagnostic_rows(diagnostics, stamp_rows)
+        _append_diagnostic_rows(diagnostics, research_soft_diagnostics(site, contract))
+        publish_issues(site, root=work, diagnostics_file=diagnostics)
         validate_research_site(site, contract, root=work)
-        return release
+        return _read_json(site / RELEASE_FILENAME)
     finally:
         if holder is not None:
             holder.cleanup()
@@ -862,11 +1068,342 @@ def build_research_site(
 # -------------------------------------------------------------- validation
 
 
+_HEADLINE_LI_RE = re.compile(r'<li\s+data-headline-id="([^"]*)"(.*?)</li>', re.S)
+_HEADLINE_HREF_RE = re.compile(r'href="([^"]*)"')
+_HEADLINE_ALLOWED_PREVIOUS = (
+    "Previous accepted analysis is from",
+    "Previous accepted analysis: unavailable",
+)
+
+
+def _integrity(exc: PublicationIntegrityError) -> ResearchRefusal:
+    return _fail(exc.reason, exc.detail)
+
+
+def _soft_issue(
+    code: str,
+    *,
+    component: str,
+    cause: str,
+    impact: str,
+    category: str = "render",
+    severity: str = "warning",
+    **extra: Any,
+) -> dict[str, Any]:
+    return make_issue(
+        code,
+        category=category,
+        severity=severity,
+        component=component,
+        cause=cause,
+        impact=impact,
+        phase=PHASE_RESEARCH,
+        **extra,
+    )
+
+
+def _section_blocks(page: str, opener: str) -> list[str]:
+    close = "</section>"
+    blocks: list[str] = []
+    start = 0
+    while True:
+        index = page.find(opener, start)
+        if index < 0:
+            break
+        end = page.find(close, index)
+        if end < 0:
+            break
+        blocks.append(page[index : end + len(close)])
+        start = end + len(close)
+    return blocks
+
+
+def _headline_spans(page: str) -> list[tuple[int, int]]:
+    opener = '<section class="mw-headlines"'
+    close = "</section>"
+    spans: list[tuple[int, int]] = []
+    start = 0
+    while True:
+        index = page.find(opener, start)
+        if index < 0:
+            break
+        end = page.find(close, index)
+        if end < 0:
+            break
+        spans.append((index, end + len(close)))
+        start = end + len(close)
+    return spans
+
+
+def _research_banner_span(page: str) -> tuple[int, int] | None:
+    marker = 'data-publication-phase="research"'
+    pos = page.find(marker)
+    if pos < 0:
+        return None
+    start = page.rfind("<section", 0, pos)
+    if start < 0:
+        return None
+    end = page.find("</section>", pos)
+    if end < 0:
+        return None
+    return start, end + len("</section>")
+
+
+def _rendered_headline_refs(block: str) -> list[tuple[str, str | None]]:
+    found: list[tuple[str, str | None]] = []
+    for match in _HEADLINE_LI_RE.finditer(block):
+        href = _HEADLINE_HREF_RE.search(match.group(2) or "")
+        found.append((match.group(1), href.group(1) if href else None))
+    return found
+
+
+def _refuse_foreign_headlines(page: str, headlines: dict[str, Any]) -> None:
+    """Every rendered headline id and URL must belong to the frozen selection."""
+    from scripts.market_watch_launch.publication_release import _esc
+
+    status = str(headlines.get("status") or "")
+    items = [row for row in (headlines.get("items") or []) if isinstance(row, dict)]
+    allowed_ids = {_esc(row.get("id")) for row in items}
+    allowed_urls = {_esc(row.get("url")) for row in items}
+    for block in _section_blocks(page, '<section class="mw-headlines"'):
+        refs = _rendered_headline_refs(block)
+        if status != "available":
+            if refs:
+                raise _fail("headlines_items_mismatch")
+            continue
+        for item_id, url in refs:
+            if item_id not in allowed_ids or (url is not None and url not in allowed_urls):
+                raise _fail("headlines_items_mismatch")
+
+
+def _refuse_misplaced_current_label(page: str) -> None:
+    """The current-headlines label may appear only in the banner and headline panels."""
+    label = "Current verified headlines"
+    spans: list[tuple[int, int]] = []
+    banner = _research_banner_span(page)
+    if banner is not None:
+        spans.append(banner)
+    spans.extend(_headline_spans(page))
+    cursor = 0
+    while True:
+        found = page.find(label, cursor)
+        if found < 0:
+            break
+        if not any(start <= found < end for start, end in spans):
+            raise _fail("current_label_misapplied")
+        cursor = found + 1
+
+
+def _news_context_for_soft(contract: dict[str, Any]) -> dict[str, Any] | None:
+    news = contract.get("news") or {}
+    if news.get("status") == "unavailable" or not news.get("as_of"):
+        return None
+    context: dict[str, Any] = {
+        "as_of": news.get("as_of"),
+        "news": list(contract.get("accepted_news_items") or []),
+        "central_bank_research": list(contract.get("accepted_cb_items") or []),
+    }
+    for key in ("mode", "digest", "overnight_run_id"):
+        if news.get(key):
+            context[key] = news.get(key)
+    return context
+
+
+def _soft_headline_checks(html: str, contract: dict[str, Any]) -> list[dict[str, Any]]:
+    from scripts.market_watch_launch.publication_release import _esc, format_et
+    from scripts.market_watch_launch.research_headlines import FRONT_HEADLINES
+
+    issues: list[dict[str, Any]] = []
+    launch_id = str(contract.get("launch_id") or "") or None
+    headlines = contract.get("headlines") or {}
+    news = contract.get("news") or {}
+    h_status = str(headlines.get("status") or "")
+    sections = _section_blocks(html, '<section class="mw-headlines"')
+    front_sections = [block for block in sections if 'data-headlines-panel="front"' in block]
+    news_sections = [block for block in sections if 'data-headlines-panel="news"' in block]
+    if len(front_sections) != 1 or len(news_sections) != 1:
+        issues.append(
+            _soft_issue(
+                "headlines_panel_missing",
+                component="edition:headlines",
+                launch_id=launch_id,
+                cause="The front or news headlines panel is missing.",
+                impact="Verified headlines may be missing from one of the pages.",
+            )
+        )
+    items = [row for row in (headlines.get("items") or []) if isinstance(row, dict)]
+    for name, blocks in (("front", front_sections), ("news", news_sections)):
+        if len(blocks) != 1:
+            continue
+        block = blocks[0]
+        if (
+            f'data-current-headlines="{h_status}"' not in block
+            or f'data-headlines-as-of="{_esc(headlines.get("as_of"))}"' not in block
+        ):
+            issues.append(
+                _soft_issue(
+                    "headlines_panel_mismatch",
+                    component=f"edition:{name}_headlines",
+                    launch_id=launch_id,
+                    cause=f"The {name} headlines panel does not match the frozen headline record.",
+                    impact="Headline status or timing on that panel may be incomplete.",
+                )
+            )
+        refs = _rendered_headline_refs(block)
+        if h_status == "available":
+            expected_len = len(items) if name == "news" else min(len(items), FRONT_HEADLINES)
+            rendered_ids = [item_id for item_id, _url in refs]
+            expected_ids = [_esc(row.get("id")) for row in items[:expected_len]]
+            if rendered_ids != expected_ids:
+                issues.append(
+                    _soft_issue(
+                        "headlines_panel_mismatch",
+                        component=f"edition:{name}_headlines",
+                        launch_id=launch_id,
+                        cause=f"The {name} headlines panel count or order does not match the frozen selection.",
+                        impact="Some verified headlines may be missing or reordered. Foreign headlines are still refused.",
+                    )
+                )
+        elif "mw-headlines-empty" not in block:
+            issues.append(
+                _soft_issue(
+                    "headlines_empty_state_missing",
+                    component=f"edition:{name}_headlines",
+                    launch_id=launch_id,
+                    cause=f"The {name} headlines panel has no empty state.",
+                    impact="Readers may not see that verified headlines are unavailable.",
+                )
+            )
+        scan = 0
+        while True:
+            found = block.find("Previous accepted analysis", scan)
+            if found < 0:
+                break
+            if not block[found:].startswith(_HEADLINE_ALLOWED_PREVIOUS):
+                issues.append(
+                    _soft_issue(
+                        "previous_label_misapplied",
+                        component=f"edition:{name}_headlines",
+                        launch_id=launch_id,
+                        cause="A previous-analysis label appears inside a current headlines panel.",
+                        impact="Previous analysis must not be presented as a current headline.",
+                    )
+                )
+                break
+            scan = found + 1
+        if block.count("Current verified headlines") != 1:
+            issues.append(
+                _soft_issue(
+                    "current_label_misapplied",
+                    component=f"edition:{name}_headlines",
+                    launch_id=launch_id,
+                    cause=f"The {name} headlines panel does not show the current-headlines label once.",
+                    impact="The current-headlines label should appear once in each headlines panel.",
+                )
+            )
+    if not news.get("current_session") and 'data-edition-note="news"' not in html:
+        issues.append(
+            _soft_issue(
+                "news_age_note_missing",
+                component="edition:news",
+                category="news",
+                launch_id=launch_id,
+                cause="The news page is missing the previous-analysis note.",
+                impact="Readers may not see that the news write-up is from an earlier cycle.",
+            )
+        )
+    if news.get("status") == "unavailable" or not news.get("as_of"):
+        expected = "Previous accepted analysis: unavailable"
+    else:
+        expected = f"Previous accepted analysis (as of {format_et(news.get('as_of'))})"
+    if expected not in html:
+        issues.append(
+            _soft_issue(
+                "previous_analysis_label_missing",
+                component="edition:news",
+                category="news",
+                launch_id=launch_id,
+                cause="The previous-analysis label is missing.",
+                impact="The page does not say whether accepted analysis is available.",
+            )
+        )
+    return issues
+
+
+def _soft_trader_room(site: Path, contract: dict[str, Any]) -> list[dict[str, Any]]:
+    from scripts.overnight.books import published_room_roster
+
+    launch_id = str(contract.get("launch_id") or "") or None
+    path = site / "trader-room.json"
+
+    def issue(cause: str) -> dict[str, Any]:
+        return _soft_issue(
+            "trader_room_packet_incomplete",
+            component="research_debate",
+            severity="info",
+            launch_id=launch_id,
+            cause=cause,
+            impact="Trader Room is not shown as an authoritative current debate.",
+        )
+
+    if not path.is_file():
+        return [issue("The trader room packet was not published.")]
+    try:
+        room = _read_json(path)
+    except (OSError, json.JSONDecodeError):
+        return [issue("The trader room packet could not be read.")]
+    if not isinstance(room, dict) or room.get("available") is not True:
+        return [issue("The trader room packet is not available.")]
+    if published_room_roster(room) is None:
+        return [issue("The trader room roster does not match an authoritative roster.")]
+    return []
+
+
+def research_soft_diagnostics(site: Path, contract: dict[str, Any]) -> list[dict[str, Any]]:
+    """Presentation findings. Never refuses publication."""
+    site = Path(site)
+    launch_id = str(contract.get("launch_id") or "") or None
+    try:
+        html = strip_issues_panel((site / "index.html").read_text(encoding="utf-8"))
+        scores = contract.get("scores") or {}
+        score_state = {
+            "calibration_anchor_date": scores.get("calibration_anchor_date"),
+            "as_of": scores.get("calibration_anchor_date"),
+            "score_inputs_last_ingested_at": scores.get("inputs_last_ingested_at"),
+        }
+        issues = soft_page_structure(html, phase=PHASE_RESEARCH, scores=score_state)
+        health_path = site / "source-health.json"
+        health = _read_json(health_path) if health_path.is_file() else None
+        issues.extend(soft_source_health(health, phase=PHASE_RESEARCH))
+        issues.extend(
+            soft_news_consistency(
+                html,
+                _news_context_for_soft(contract),
+                require_front_alert=False,
+                phase=PHASE_RESEARCH,
+            )
+        )
+        issues.extend(_soft_headline_checks(html, contract))
+        issues.extend(_soft_trader_room(site, contract))
+        return issues
+    except Exception as exc:  # noqa: BLE001 - soft diagnostics never veto
+        return [
+            _soft_issue(
+                "soft_check_error",
+                component="research_soft_diagnostics",
+                severity="info",
+                launch_id=launch_id,
+                cause="A presentation check could not run.",
+                impact="Some presentation problems may be unlisted.",
+                detail=f"{type(exc).__name__}: {exc}",
+            )
+        ]
+
+
 def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Path | None = None) -> dict[str, Any]:
-    """Publication contract of a research edition. Raises ``ResearchRefusal``."""
-    from scripts.dashboard_repair.score_dates import format_calibration_anchor, format_ingestion_day
+    """Hard publication contract of a research edition. Raises ``ResearchRefusal``."""
     from scripts.market_state import MarketStateError, validate_snapshot
-    from scripts.overnight.accepted_news import last_refreshed_label, parse_visible_last_refreshed
+    from scripts.overnight.books import published_book_roster
     from scripts.pm.public import validate_public_packet
 
     site = Path(site_dir)
@@ -885,207 +1422,36 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
         raise _fail("release_claims_trader_cycle")
     if release.get("site_sha256") != site_digest(site):
         raise _fail("site_digest_mismatch")
-
-    html = (site / "index.html").read_text(encoding="utf-8")
-    if html.count('data-publication-phase="') != 1 or 'data-publication-phase="research"' not in html:
-        raise _fail("edition_banner_missing")
-    if f'data-launch-id="{contract["launch_id"]}"' not in html:
-        raise _fail("edition_banner_identity_missing")
-    if 'data-edition-note="traderbook"' not in html:
-        raise _fail("trader_book_pending_note_missing")
-    for nav in REQUIRED_NAV:
-        if f'for="{nav}"' not in html:
-            raise _fail("navigation_missing", nav)
-    for code in COUNTRY_CODES:
-        if f'data-country="{code}"' not in html:
-            raise _fail("country_jump_missing", code)
-    for needle in ('data-release-calendar="repair"', 'data-source-health="repair"', "Market Data · official snapshot", "Trader Book"):
-        if needle not in html:
-            raise _fail("research_section_missing", needle)
-    lowered = html.lower()
-    for forbidden in ("score freeze", "scores frozen", "scores are frozen"):
-        if forbidden in lowered:
-            raise _fail("forbidden_wording", forbidden)
-    for radio in RETIRED_NAV:
-        if f'for="{radio}"' in html or f'id="{radio}"' in html:
-            raise _fail("retired_navigation_present", radio)
-    start = html.find('data-global-tape="repair"')
-    end = html.find('data-score-overview="calibrated"', start)
-    if start < 0 or end < 0:
-        raise _fail("repaired_tape_missing")
-    for stale in STALE_TAPE_VALUES:
-        if stale in html[start:end]:
-            raise _fail("stale_tape_value", stale)
-    if "Live 1–100 Score Board" in html:
-        raise _fail("scoreboard_labeled_live")
-    if "date unavailable" not in html:
-        raise _fail("calendar_unknown_dates_not_unavailable")
-    if "Momentum Watch" in html:
-        raise _fail("static_momentum_watch_survived")
-    scores = contract.get("scores") or {}
-    anchor = scores.get("calibration_anchor_date")
-    if anchor and f"calibration anchor {format_calibration_anchor(anchor)}" not in html:
-        raise _fail("calibration_anchor_label_missing")
-    ingested = scores.get("inputs_last_ingested_at")
-    if ingested and f"inputs last ingested {format_ingestion_day(ingested)}" not in html:
-        raise _fail("score_ingestion_label_missing")
-
-    news = contract.get("news") or {}
-    from scripts.overnight.news_commentary_state import MODE as COMMENTARY_MISSING_MODE, assert_news_html
-
-    if news.get("mode") == COMMENTARY_MISSING_MODE:
-        assert_news_html(html, news, require_front_alert=False)
-    else:
-        news_as_of = parse_iso(str(news.get("as_of")))
-        visible = parse_visible_last_refreshed(html)
-        if visible != news_as_of.date() or last_refreshed_label(news_as_of) not in html:
-            raise _fail("news_label_not_accepted_date", f"visible={visible} accepted={news_as_of.date()}")
-        if not news.get("current_session"):
-            session_label = last_refreshed_label(parse_iso(contract["frozen_at"]))
-            if session_label in html:
-                raise _fail("stale_news_labeled_current", session_label)
-            if 'data-edition-note="news"' not in html:
-                raise _fail("news_age_note_missing")
-
-    from scripts.market_watch_launch.publication_release import _esc, format_et
-    from scripts.market_watch_launch.research_headlines import FRONT_HEADLINES
-
     headlines = contract.get("headlines") or {}
     release_headlines = release.get("headlines")
-    if release_headlines != headlines or release_headlines.get("packet_sha256") != contract.get("packet_sha256"):
+    if (
+        not isinstance(release_headlines, dict)
+        or release_headlines != headlines
+        or release_headlines.get("packet_sha256") != contract.get("packet_sha256")
+    ):
         raise _fail("release_headlines_mismatch")
-    prev_label = f"Previous accepted analysis (as of {format_et(news.get('as_of'))})"
-    if prev_label not in html:
-        raise _fail("previous_analysis_label_missing")
 
-    current_label = "Current verified headlines"
-    headlines_allowed_empty = "Previous accepted analysis is from"
-
-    def _section_spans(page: str, opener: str) -> list[tuple[int, int]]:
-        close = "</section>"
-        spans: list[tuple[int, int]] = []
-        start = 0
-        while True:
-            index = page.find(opener, start)
-            if index < 0:
-                break
-            end = page.find(close, index)
-            if end < 0:
-                break
-            spans.append((index, end + len(close)))
-            start = end + len(close)
-        return spans
-
-    def _research_banner_span(page: str) -> tuple[int, int] | None:
-        marker = 'data-publication-phase="research"'
-        pos = page.find(marker)
-        if pos < 0:
-            return None
-        start = page.rfind("<section", 0, pos)
-        if start < 0:
-            return None
-        end = page.find("</section>", pos)
-        if end < 0:
-            return None
-        return start, end + len("</section>")
-
-    def _in_span(offset: int, span: tuple[int, int]) -> bool:
-        return span[0] <= offset < span[1]
-
-    def _in_any_span(offset: int, spans: list[tuple[int, int]]) -> bool:
-        return any(_in_span(offset, span) for span in spans)
-
-    def _headline_section_blocks(page: str) -> list[str]:
-        return [page[lo:hi] for lo, hi in _section_spans(page, '<section class="mw-headlines"')]
-
-    headline_spans = _section_spans(html, '<section class="mw-headlines"')
-    sections = _headline_section_blocks(html)
-    front_sections = [block for block in sections if 'data-headlines-panel="front"' in block]
-    news_sections = [block for block in sections if 'data-headlines-panel="news"' in block]
-    if len(front_sections) != 1 or len(news_sections) != 1:
-        raise _fail("headlines_panel_missing")
-
-    h_status = str(headlines.get("status") or "")
-    h_as_of = headlines.get("as_of")
-    for block in (front_sections[0], news_sections[0]):
-        if f'data-current-headlines="{h_status}"' not in block:
-            raise _fail("headlines_panel_mismatch")
-        if f'data-headlines-as-of="{_esc(h_as_of)}"' not in block:
-            raise _fail("headlines_panel_mismatch")
-
-    items = list(headlines.get("items") or [])
-    news_block = news_sections[0]
-    front_block = front_sections[0]
-    li_count_news = news_block.count("<li data-headline-id=")
-    li_count_front = front_block.count("<li data-headline-id=")
-    if h_status == "available":
-        if li_count_news != len(items):
-            raise _fail("headlines_items_mismatch")
-        if li_count_front != min(len(items), FRONT_HEADLINES):
-            raise _fail("headlines_items_mismatch")
-        for row in items:
-            item_id = _esc(row.get("id"))
-            url = _esc(row.get("url"))
-            if f'data-headline-id="{item_id}"' not in news_block:
-                raise _fail("headlines_items_mismatch")
-            if url not in news_block:
-                raise _fail("headlines_items_mismatch")
-        front_limit = min(len(items), FRONT_HEADLINES)
-        expected_front_ids = [_esc(row.get("id")) for row in items[:front_limit]]
-        rendered_front_ids: list[str] = []
-        scan = 0
-        while True:
-            marker = '<li data-headline-id="'
-            index = front_block.find(marker, scan)
-            if index < 0:
-                break
-            start = index + len(marker)
-            end = front_block.find('"', start)
-            if end < 0:
-                raise _fail("headlines_items_mismatch")
-            rendered_front_ids.append(front_block[start:end])
-            scan = end + 1
-        if rendered_front_ids != expected_front_ids:
-            raise _fail("headlines_items_mismatch")
-    else:
-        if li_count_news or li_count_front:
-            raise _fail("headlines_empty_state_missing")
-        if "mw-headlines-empty" not in news_block or "mw-headlines-empty" not in front_block:
-            raise _fail("headlines_empty_state_missing")
-
-    banner_span = _research_banner_span(html)
-    if banner_span is None:
-        raise _fail("current_label_misapplied")
-    allowed_label_spans = [banner_span, *headline_spans]
-    label_positions: list[int] = []
-    cursor = 0
-    while True:
-        found = html.find(current_label, cursor)
-        if found < 0:
-            break
-        label_positions.append(found)
-        cursor = found + 1
-    if not label_positions or not all(_in_any_span(pos, allowed_label_spans) for pos in label_positions):
-        raise _fail("current_label_misapplied")
-    front_span = next((span for span, block in zip(headline_spans, sections) if 'data-headlines-panel="front"' in block), None)
-    news_span = next((span for span, block in zip(headline_spans, sections) if 'data-headlines-panel="news"' in block), None)
-    if front_span is None or news_span is None:
-        raise _fail("headlines_panel_missing")
-    front_slice = html[front_span[0] : front_span[1]]
-    news_slice = html[news_span[0] : news_span[1]]
-    if front_slice.count(current_label) != 1 or news_slice.count(current_label) != 1:
-        raise _fail("current_label_misapplied")
-
-    for span in headline_spans:
-        block = html[span[0] : span[1]]
-        scan = 0
-        while True:
-            found = block.find("Previous accepted analysis", scan)
-            if found < 0:
-                break
-            if not block[found:].startswith(headlines_allowed_empty):
-                raise _fail("previous_label_misapplied")
-            scan = found + 1
+    html = (site / "index.html").read_text(encoding="utf-8")
+    page = strip_issues_panel(html)
+    if page.count('data-publication-phase="') != 1 or 'data-publication-phase="research"' not in page:
+        raise _fail("edition_banner_missing")
+    if f'data-launch-id="{contract["launch_id"]}"' not in page:
+        raise _fail("edition_banner_identity_missing")
+    if 'data-edition-note="traderbook"' not in page:
+        raise _fail("trader_book_pending_note_missing")
+    try:
+        check_no_stale_tape(page)
+        check_no_stale_static_news(page)
+        check_news_dates_not_overstated(
+            page,
+            accepted_as_of=(contract.get("news") or {}).get("as_of") or None,
+            frozen_at=str(contract.get("frozen_at") or "") or None,
+            current_session=bool((contract.get("news") or {}).get("current_session")),
+        )
+    except PublicationIntegrityError as exc:
+        raise _integrity(exc) from exc
+    _refuse_foreign_headlines(page, headlines if isinstance(headlines, dict) else {})
+    _refuse_misplaced_current_label(page)
 
     trader = _read_json(site / "trader-books.json")
     edition = trader.get("edition") or {}
@@ -1102,8 +1468,6 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
         raise _fail("trader_books_not_previous_accepted", str(published_run))
     if trader.get("books_run_id") != books.get("books_run_id") or trader.get("books_as_of") != books.get("as_of"):
         raise _fail("trader_books_dates_mismatch", f"{trader.get('books_run_id')} {trader.get('books_as_of')}")
-    from scripts.overnight.books import published_book_roster, published_room_roster
-
     seats = trader.get("seats")
     matched_roster = published_book_roster(seats)
     if matched_roster is None:
@@ -1122,7 +1486,7 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
             raise _fail("market_state_not_frozen_packet")
         if _publication_has_numeric_mark(market):
             raise _fail("market_state_invalid", "unavailable market publication contains a numeric mark")
-        if "unavailable" not in html.lower():
+        if "unavailable" not in page.lower():
             raise _fail("market_state_invalid", "market charts are not marked unavailable")
     else:
         if market.get("generated_at") != contract_market.get("generated_at"):
@@ -1131,26 +1495,17 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
             validate_snapshot(market)
         except MarketStateError as exc:
             raise _fail("market_state_invalid", str(exc)) from exc
-    health = _read_json(site / "source-health.json")
-    if health.get("launch_id") != contract["launch_id"]:
-        raise _fail("source_health_not_this_launch", str(health.get("launch_id")))
-    if not health.get("stage_checked_at"):
-        raise _fail("source_health_check_time_missing")
-    rows = health.get("rows") or []
-    counts = health.get("counts") or {}
-    buckets = ("checked", "failure", "blocked", "partial", "not_checked", "not_applicable")
-    if sum(int(counts.get(name) or 0) for name in buckets) != len(rows):
-        raise _fail("source_health_counts_mismatch")
-    if any(row.get("bucket") == "failure" and row.get("last_successful_check") for row in rows):
-        raise _fail("failed_source_given_success_time")
-    room = _read_json(site / "trader-room.json")
-    if room.get("available") is not True:
-        raise _fail("trader_room_packet_incomplete")
-    matched_room = published_room_roster(room)
-    if matched_room is None:
-        raise _fail("trader_room_packet_incomplete")
+    try:
+        health = _read_json(site / "source-health.json")
+    except (OSError, json.JSONDecodeError) as exc:
+        raise _fail("source_health_missing", str(exc)) from exc
+    try:
+        check_source_health_truthful(health, launch_id=str(contract["launch_id"]))
+    except PublicationIntegrityError as exc:
+        raise _integrity(exc) from exc
     _ = root
     return release
+
 
 
 # ---------------------------------------------------------------- receipt
