@@ -4,9 +4,11 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
+import subprocess
 import tempfile
 import unittest
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 
 from scripts.market_watch_launch import publication_release as pr
@@ -24,6 +26,12 @@ NOV9_LAUNCH = "mwl-20261109T103750Z-a4e987d1"
 NOV9_REVIEW = "review-001"
 NOV9_PACKET = "36b651b69a9e2951d8f7c97819999a9354668967f97c455af200a46c3662fb11"
 NOV9_NOW = datetime.fromisoformat("2026-11-09T05:37:50.499948-05:00")
+NOV9_COMMIT = "2b8e2c9f2b743a1815cf0bd50e944add9f295dcc"
+NOV10_COMMIT = "d6c297e27f541e52f242e496f427df4f8a847f82"
+NOV10_LAUNCH = "mwl-20261110T095036Z-eaa0689a"
+NOV10_REVIEW = "review-001"
+NOV10_PACKET = "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f"
+NOV10_NOW = datetime(2026, 11, 10, 14, 0, tzinfo=timezone.utc)
 
 
 def _seat_rows(ids: tuple[str, ...] | list[str]) -> list[dict[str, str]]:
@@ -230,22 +238,46 @@ class AssertPublishedTraderRoomTests(unittest.TestCase):
 
 
 def _rmtree(path: Path) -> None:
-    import shutil
-
     shutil.rmtree(path, ignore_errors=True)
 
 
+def _fixture_clone(commit: str) -> tuple[Path, Path]:
+    if subprocess.run(["git", "cat-file", "-e", f"{commit}^{{commit}}"], cwd=REPO, check=False).returncode != 0:
+        raise unittest.SkipTest(f"fixture commit {commit} is not in this clone")
+    tmp = Path(tempfile.mkdtemp(prefix="mw-roster-fixture-"))
+    clone = tmp / "repo"
+    subprocess.run(["git", "clone", "-q", "--shared", "--no-checkout", str(REPO), str(clone)], check=True)
+    subprocess.run(["git", "checkout", "-q", "--detach", commit], cwd=clone, check=True)
+    shutil.rmtree(clone / "scripts")
+    shutil.copytree(REPO / "scripts", clone / "scripts", ignore=shutil.ignore_patterns("__pycache__"))
+    subprocess.run(["git", "add", "-A"], cwd=clone, check=True)
+    subprocess.run(
+        ["git", "-c", "user.name=fixture", "-c", "user.email=fixture@example.invalid", "commit", "-q", "-m", "fixture scripts"],
+        cwd=clone,
+        check=True,
+    )
+    return tmp, clone
+
+
 class Nov9ResearchEditionSmoke(unittest.TestCase):
-    launch_dir = REPO / "data" / "market_watch_launches" / NOV9_LAUNCH
+    """Pinned to the Nov 9 remote-freeze commit so later live launches cannot drift the smoke."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.tmp, cls.root = _fixture_clone(NOV9_COMMIT)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        _rmtree(cls.tmp)
 
     def test_nov9_research_site_builds_with_fifteen_seat_books(self) -> None:
-        if not self.launch_dir.is_dir():
-            self.fail(f"expected launch {NOV9_LAUNCH} on this checkout")
-        launch_path = self.launch_dir / "launch.json"
-        freeze_path = self.launch_dir / "remote_freeze.json"
-        books_path = REPO / "data" / "overnight" / "books" / "latest.json"
+        root = self.root
+        launch_dir = root / "data" / "market_watch_launches" / NOV9_LAUNCH
+        launch_path = launch_dir / "launch.json"
+        freeze_path = launch_dir / "remote_freeze.json"
+        books_path = root / "data" / "overnight" / "books" / "latest.json"
         packet_path = (
-            REPO
+            root
             / "data"
             / "overnight"
             / "runs"
@@ -270,7 +302,7 @@ class Nov9ResearchEditionSmoke(unittest.TestCase):
         before_seat_ids = set((books.get("seats") or {}).keys())
 
         contract = rp.research_contract(
-            REPO,
+            root,
             NOV9_LAUNCH,
             now=NOV9_NOW,
             expected_review_id=NOV9_REVIEW,
@@ -283,7 +315,7 @@ class Nov9ResearchEditionSmoke(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             site = Path(tmp) / "site"
             rp.build_research_site(
-                REPO,
+                root,
                 site,
                 contract,
                 channel=pr.CHANNEL_LOCAL,
@@ -314,6 +346,51 @@ class Nov9ResearchEditionSmoke(unittest.TestCase):
         }
         self.assertEqual(before, after)
         self.assertEqual(before_seat_ids, set((json.loads(books_path.read_text(encoding="utf-8")).get("seats") or {}).keys()))
+
+
+class Nov10ResearchEditionSmoke(unittest.TestCase):
+    """Nov 10 freeze (traders pending) builds on the attested commit, not the drifted checkout."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.tmp, cls.root = _fixture_clone(NOV10_COMMIT)
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        _rmtree(cls.tmp)
+
+    def test_nov10_research_site_builds(self) -> None:
+        contract = rp.research_contract(
+            self.root,
+            NOV10_LAUNCH,
+            now=NOV10_NOW,
+            expected_review_id=NOV10_REVIEW,
+            expected_packet_sha256=NOV10_PACKET,
+        )
+        self.assertEqual(contract["packet_sha256"], NOV10_PACKET)
+        self.assertNotEqual(contract["books"]["packet_sha256"], NOV10_PACKET)
+        self.assertEqual(contract["books"]["books_run_id"], "overnight-20261109")
+        with tempfile.TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            release = rp.build_research_site(
+                self.root,
+                site,
+                contract,
+                channel=pr.CHANNEL_LOCAL,
+                now=NOV10_NOW,
+                fetch_schedules=False,
+            )
+            trader = json.loads((site / "trader-books.json").read_text(encoding="utf-8"))
+            issues = json.loads((site / "issues.json").read_text(encoding="utf-8"))
+            self.assertEqual(release["site_sha256"], pr.site_digest(site))
+        self.assertEqual(release["phase"], "research")
+        self.assertEqual(trader["publication"]["trader_books_status"], "previous_cycle")
+        self.assertEqual(trader["books_run_id"], "overnight-20261109")
+        published_ids = {row["seat"] for row in trader["seats"]}
+        self.assertEqual(published_ids, set(STANDING_SEATS))
+        self.assertIn("chart-guy", published_ids)
+        self.assertEqual(issues["type"], "MARKET_WATCH_PUBLIC_ISSUES")
+        self.assertIn(issues["status"], {"available", "unavailable"})
 
 
 if __name__ == "__main__":
