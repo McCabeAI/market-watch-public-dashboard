@@ -477,6 +477,14 @@ def _channel_label(channel: Any, claim: Any = None) -> str:
     return label
 
 
+def _previous_analysis_clause(previous_news: dict[str, Any]) -> str:
+    if previous_news.get("status") == "unavailable" or not previous_news.get("as_of"):
+        return "Previous accepted analysis: unavailable."
+    prev_as_of = format_et(previous_news.get("as_of"))
+    prev_age = _esc(previous_news.get("age_label") or "age not recorded")
+    return f"Previous accepted analysis is from {_esc(prev_as_of)} ({prev_age})."
+
+
 def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str, Any], panel: str, limit: int) -> str:
     status = str(headlines.get("status") or "")
     as_of = headlines.get("as_of")
@@ -484,8 +492,7 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
     window = headlines.get("window") or {}
     start_et = format_et(window.get("start")) if window else "time not recorded"
     end_et = format_et(window.get("end")) if window else "time not recorded"
-    prev_as_of = format_et(previous_news.get("as_of"))
-    prev_age = _esc(previous_news.get("age_label") or "age not recorded")
+    previous_clause = _previous_analysis_clause(previous_news)
     title_as_of = format_et(as_of) if as_of else "time not recorded"
     attrs = (
         f'class="mw-headlines" data-current-headlines="{_esc(status)}" data-headlines-panel="{_esc(panel)}" '
@@ -497,7 +504,7 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
         body = (
             f"{title}"
             f'<p class="mw-headlines-empty">Current headlines unavailable: the frozen news collection failed verification '
-            f"({reason}). Previous accepted analysis is from {_esc(prev_as_of)} ({prev_age}).</p>"
+            f"({reason}). {previous_clause}</p>"
         )
         return f"<section {attrs}>{body}</section>"
 
@@ -512,7 +519,7 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
         body = (
             f"{title}{sub}"
             f'<p class="mw-headlines-empty">No headline in the frozen Stage 04 news collection passed verification for this '
-            f"window ({reason}). Previous accepted analysis is from {_esc(prev_as_of)} ({prev_age}).</p>"
+            f"window ({reason}). {previous_clause}</p>"
         )
         return f"<section {attrs}>{body}</section>"
 
@@ -536,6 +543,13 @@ def render_headlines_panel(headlines: dict[str, Any], *, previous_news: dict[str
 
 
 def render_previous_analysis_note(news: dict[str, Any]) -> str:
+    if news.get("status") == "unavailable" or not news.get("as_of"):
+        reason = _esc(news.get("reason") or "no accepted news")
+        return (
+            "<b>Previous accepted analysis: unavailable.</b> "
+            f"No accepted news record was available ({reason}). "
+            "Today's analysis arrives with the final edition."
+        )
     as_of = format_et(news.get("as_of"))
     age = _esc(news.get("age_label") or "age not recorded")
     run_id = _esc(news.get("overnight_run_id") or "run not recorded")
