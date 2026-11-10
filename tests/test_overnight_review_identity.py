@@ -28,7 +28,12 @@ from scripts.overnight.store import OvernightStore, sha256_file
 from scripts.pm.constants import PM_IDS
 from scripts.pm.store import PMStore
 from scripts.trading.store import TradingStore
-from tests.test_overnight_scheduled_output import AS_OF, ScheduledOutputTests
+from tests.test_overnight_scheduled_output import (
+    AS_OF,
+    ScheduledOutputTests,
+    seal_agent_packet,
+    sync_agent_packet_calendar,
+)
 
 FIXTURE = ROOT / "data" / "overnight" / "fixtures" / "market_state.json"
 
@@ -62,10 +67,8 @@ class ReviewIdentityTests(ScheduledOutputTests):
         packet["base_packet_sha256"] = base["packet_sha256"]
         packet["base_evidence_cutoff"] = base["as_of"]
         packet["competition"] = base["competition"]
-        packet.pop("packet_sha256", None)
-        from scripts.overnight.store import sha256_json
-
-        packet["packet_sha256"] = sha256_json(packet)
+        sync_agent_packet_calendar(packet, base)
+        seal_agent_packet(packet)
         payload["base_packet_sha256"] = base["packet_sha256"]
         for seat, decision in payload["decisions"].items():
             decision["overnight_run_id"] = base["overnight_run_id"]
