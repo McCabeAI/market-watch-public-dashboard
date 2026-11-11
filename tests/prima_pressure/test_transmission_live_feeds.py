@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sys
 import unittest
 from datetime import date
@@ -20,6 +21,7 @@ from scripts.prima_pressure.transmission import (
     inputs_from_frozen,
     inputs_from_live,
     transmission_for_snapshot,
+    unavailable_transmission,
 )
 from scripts.prima_pressure.transmission_contract import (
     BCPI_DIRECTION_BAND_PCT,
@@ -38,6 +40,13 @@ SNAPSHOT_PATH = (
     ROOT
     / "data/overnight/runs/overnight-20261110/reviews/review-001/evidence_snapshot.json"
 )
+
+_LEAKED_VALUE_RE = re.compile(r"(?<![a-zA-Z])(?:nan|null)(?![a-zA-Z])", re.IGNORECASE)
+
+
+def _assert_html_has_no_leaked_values(test: unittest.TestCase, html: str) -> None:
+    test.assertNotIn("None", html)
+    test.assertIsNone(_LEAKED_VALUE_RE.search(html))
 
 
 def _base_live(*, nrcan_weekly=None, bcpi_weekly=None):
@@ -479,6 +488,112 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
         self.assertEqual(food["remaining"]["h3_6m"].get("driver"), "bcpi_weekly_only")
         core = tx["underlying_core_evidence"]
         self.assertEqual(core["direction_h3_6m"], "neutral")
+
+    def _live_build_inputs(self, live: dict, **input_feeds) -> dict:
+        bundle = {
+            "oil_curves": {
+                "brent_last_day": {
+                    "points": [
+                        {
+                            "maturity_months": 0,
+                            "symbol": "BZF27.NYM",
+                            "contract_month": "2027-01",
+                            "price": 80,
+                            "observation_date": "2026-11-09",
+                            "changes": {"1m": {"pct": 0, "prior_date": "2026-10-09"}},
+                            "final_trade_date": "2026-11-30",
+                        }
+                    ]
+                }
+            }
+        }
+        inputs = {
+            "provenance": TRANSMISSION_PROVENANCE_LIVE,
+            "mode": "live",
+            "cpi_reference_period": "2026-09",
+            "bundle": bundle,
+            "live": live,
+            "usdcad_pair": {"ret_1m": 0.0, "ret_3m": 0.0, "as_of": "2026-11-10"},
+            **input_feeds,
+        }
+        return inputs
+
+    def _build_live_tx(self, inputs: dict):
+        with mock.patch(
+            "scripts.prima_pressure.proxy.compute_prima_proxy",
+            return_value={"subcomponents": {}},
+        ), mock.patch(
+            "scripts.prima_pressure.proxy.compact_block",
+            return_value={"channel_evidence": {}},
+        ):
+            return build_transmission(inputs, as_of=date(2026, 11, 11))
+
+    def test_stored_live_unavailable_transmission_round_trip(self) -> None:
+        tx = unavailable_transmission("live_inputs_incomplete")
+        tx["provenance"] = TRANSMISSION_PROVENANCE_LIVE
+        tx["as_of"] = "2026-11-11"
+        snap = {"canada_prima_pressure": {"transmission": tx}, "as_of": "2026-11-11"}
+        self.assertIs(transmission_for_snapshot(snap), tx)
+        html = render_prima_pressure_block({"transmission": tx}, _esc)
+        self.assertIn("<", html)
+        _assert_html_has_no_leaked_values(self, html)
+
+    def test_malformed_feed_variants_match_unavailable_baseline(self) -> None:
+        feed_cases = (
+            (
+                "bcpi_weekly",
+                lambda live: live.update({"bcpi_weekly": None}),
+                "food_and_non_energy_inputs",
+                "upstream_weekly",
+            ),
+            (
+                "import_prices",
+                lambda live: live.pop("import_prices", None),
+                "imported_non_energy_goods",
+                "import_price_evidence",
+            ),
+            (
+                "nrcan_weekly",
+                lambda live: live.update({"nrcan_weekly": None}),
+                "energy_direct_fuel",
+                "stages",
+            ),
+        )
+        malformed = (
+            ("series_str", lambda: {"status": "ok", "series": "oops"}),
+            ("series_list", lambda: {"status": "ok", "series": [1, 2]}),
+            ("feed_str", lambda: "oops"),
+        )
+        for feed_key, baseline_mutator, channel_id, evidence_key in feed_cases:
+            baseline_live = _base_live()
+            baseline_mutator(baseline_live)
+            baseline_tx = self._build_live_tx(self._live_build_inputs(baseline_live))
+            base_energy = baseline_tx["channels"]["energy_direct_fuel"]["remaining"]["h1_3m"]
+            base_core = baseline_tx["underlying_core_evidence"]["direction_h1_3m"]
+
+            for variant, feed_val in malformed:
+                with self.subTest(feed=feed_key, variant=variant):
+                    live = _base_live()
+                    feed_object = feed_val()
+                    live[feed_key] = feed_object
+                    inputs = self._live_build_inputs(live)
+                    inputs[feed_key] = feed_object
+                    tx = self._build_live_tx(inputs)
+                    energy = tx["channels"]["energy_direct_fuel"]["remaining"]["h1_3m"]
+                    self.assertEqual(energy.get("pp_mid"), base_energy.get("pp_mid"))
+                    self.assertEqual(
+                        tx["underlying_core_evidence"]["direction_h1_3m"],
+                        base_core,
+                    )
+                    ch = tx["channels"][channel_id]
+                    ev = ch.get(evidence_key) if evidence_key != "stages" else ch.get(evidence_key) or {}
+                    if feed_key == "nrcan_weekly":
+                        wp = (ev or {}).get("weekly_pump") or {}
+                        self.assertEqual(wp.get("reason"), "malformed_feed")
+                    else:
+                        self.assertEqual((ev or {}).get("reason"), "malformed_feed")
+                    html = render_prima_pressure_block({"transmission": tx}, _esc)
+                    _assert_html_has_no_leaked_values(self, html)
 
     def test_malformed_feeds_do_not_break_build(self) -> None:
         live = _base_live()

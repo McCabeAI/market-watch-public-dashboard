@@ -835,21 +835,25 @@ def _build_status_line(
     if bcpi is None and isinstance(live_in, Mapping):
         bcpi = live_in.get("bcpi_weekly")
     if isinstance(bcpi, Mapping) and bcpi.get("status") in ("ok", "partial"):
-        for sid in ("W.BCNE", "W.AGRI"):
-            srow = (bcpi.get("series") or {}).get(sid) or {}
-            latest = srow.get("latest") or {}
-            if latest.get("date"):
-                bits.append(f"BCPI wk {latest['date']}")
-                break
+        bcpi_series, bcpi_series_err = _feed_series_map(bcpi)
+        if not bcpi_series_err:
+            for sid in ("W.BCNE", "W.AGRI"):
+                srow = (bcpi_series or {}).get(sid) or {}
+                latest = srow.get("latest") or {}
+                if latest.get("date"):
+                    bits.append(f"BCPI wk {latest['date']}")
+                    break
     imp = (inputs or {}).get("import_prices") if isinstance(inputs, Mapping) else None
     if imp is None and isinstance(live_in, Mapping):
         imp = live_in.get("import_prices")
     if isinstance(imp, Mapping) and imp.get("status") in ("ok", "partial", "stale"):
-        ser = (imp.get("series") or {}).get("import_price_total") or {}
-        period = ser.get("latest_period")
-        rel = str(imp.get("release_time") or ser.get("release_time") or "")[:10]
-        if period:
-            bits.append(f"import px {period}" + (f" (rel. {rel})" if rel else ""))
+        imp_series, imp_series_err = _feed_series_map(imp)
+        if not imp_series_err:
+            ser = (imp_series or {}).get("import_price_total") or {}
+            period = ser.get("latest_period")
+            rel = str(imp.get("release_time") or ser.get("release_time") or "")[:10]
+            if period:
+                bits.append(f"import px {period}" + (f" (rel. {rel})" if rel else ""))
     bits.append(
         f"fuel h1_3m {fuel_h1.get('direction')} ({fuel_h1.get('basis')}) · "
         f"provenance {provenance}"
@@ -1910,11 +1914,7 @@ def transmission_for_snapshot(
         return unavailable_transmission("no_prima_block")
 
     frozen_tx = block.get("transmission")
-    if (
-        isinstance(frozen_tx, dict)
-        and frozen_tx.get("provenance") == TRANSMISSION_PROVENANCE_LIVE
-        and frozen_tx.get("status") != "unavailable"
-    ):
+    if isinstance(frozen_tx, dict) and frozen_tx.get("provenance") == TRANSMISSION_PROVENANCE_LIVE:
         return frozen_tx
 
     as_of = _parse_date(snapshot.get("as_of")) or _parse_date(block.get("as_of"))
