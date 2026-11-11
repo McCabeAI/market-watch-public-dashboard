@@ -1976,6 +1976,64 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "Keep the AUDNZD short. The cross is still high versus its own year, near 1.228 at the 82nd percentile, even after a five-day fall of 1.39 percent, and the fade from 1.25 has only started. The reversal condition is the New Zealand election: the kiwi jumped 1.26 percent and NZDUSD is still around the fourth percentile, so that bid looks like the start of a normalization rather than a completed move. The front end does not offer a better fade. March SOFR at 4.315 versus 3.89 cash is a high funds path, not a cheap receive, and the 32bp 2s10s curve has no catalyst to steepen ahead of an unknown CPI print."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 5000000,
+          "position_id": "pos-9a020b7cffca",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "225ac1dcc542f96cf79fc60dbf6b826c31377cabcd4960a20b6515d2e1d58677",
+      "event_id": "jde-f17eb402e96c49a1",
+      "funding_view": null,
+      "invalidation": "Cover the residual if the cross trades back through the 1.2424 entry, or if kiwi-dollar stays pinned near 0.5628 while the cross reclaims 1.2282.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9a020b7cffca"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-9a020b7cffca"
+      ],
+      "memory_context_sha256": "f777de76ca0e7c2640caf38df7682206673d35c5ba216c6b34a66cfb482670b9",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "41ea2e10f3f76d6b3cd9e7ccb735ec3c595f20e6dca17accba7e89578fd4700d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cut half of the Australian dollar-kiwi short and keep 5 million. Spot at 1.2266 is still a z-score of 2.34 and the 96th percentile, with kiwi-dollar at 0.5628 on the 4th percentile, so a higher kiwi can still drag the cross lower. The full 10 million would not be reopened after a 1.2 percent five-day decline that has already broken the range. New Zealand yields are research-only, so the residual stays in spot.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "Cut half of the Australian dollar-kiwi short and keep 5 million. Spot at 1.2266 is still a z-score of 2.34 and the 96th percentile, with kiwi-dollar at 0.5628 on the 4th percentile, so a higher kiwi can still drag the cross lower. The full 10 million would not be reopened after a 1.2 percent five-day decline that has already broken the range. New Zealand yields are research-only, so the residual stays in spot."
     }
   ],
   "schema_version": 1,

@@ -1,0 +1,64 @@
+{
+  "identities": "standing_traders_and_automated_pms",
+  "manifest_sha256": "1f0523000c61816c5f1675a832b77e42cf1d57e71e7b383991a147db1fe2ef6b",
+  "obligations": [
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "2ce2a3f06bc7d2d89ca8047b31682986fd332bf20e790ccb66b2df7476c211c1",
+      "obligation_id": "pmd-792fc0fb7c9b",
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "reference": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
+      "source_run_id": "overnight-20261109"
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "2ce2a3f06bc7d2d89ca8047b31682986fd332bf20e790ccb66b2df7476c211c1",
+      "obligation_id": "pmd-b6d58713e98c",
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "reference": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3",
+      "source_run_id": "overnight-20261109"
+    },
+    {
+      "kind": "performance_reflection",
+      "memory_context_sha256": "35e1b04c950106a9e58f942d55da642711fa6b4187eb30cfd4a6e1845c2d94ad",
+      "obligation_id": "rfd-7da7d2ec1462",
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "reference": "rfd-7da7d2ec1462",
+      "source_run_id": null
+    },
+    {
+      "kind": "performance_reflection",
+      "memory_context_sha256": "d0a12b1008d3a713c7f6508f400fb38db892f1c618f3495424f392c2b74f717d",
+      "obligation_id": "rfd-f8b170567279",
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "reference": "rfd-f8b170567279",
+      "source_run_id": null
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "b4ab17382e0ce230fbb75b36ab28920dd3140e457ae20efb13075fc7e6187dbd",
+      "obligation_id": "pmd-5d577c502ce7",
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-carry-is-king-pos-524ab67108ee",
+      "source_run_id": "overnight-20261110"
+    },
+    {
+      "kind": "performance_reflection",
+      "memory_context_sha256": "d8eebf603b2f6f6c979dc8a2a95e5448c8afa4b6b8a43651b4970225c3c3b8b6",
+      "obligation_id": "rfd-f78197170f19",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "reference": "rfd-f78197170f19",
+      "source_run_id": null
+    }
+  ],
+  "overnight_run_id": "overnight-20261111",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "type": "LEARNING_OBLIGATION_MANIFEST"
+}

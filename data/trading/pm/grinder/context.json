@@ -1,12 +1,17 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-10T07:01:14.515030-05:00",
+  "as_of": "2026-11-11T07:39:44.097318-05:00",
   "calibration": {
-    "average_holding_seconds": null,
-    "average_realized_pnl_usd": null,
+    "average_holding_seconds": 684212,
+    "average_realized_pnl_usd": 152195.05,
     "breakeven": 0,
-    "by_asset_class": {},
-    "closed_trade_count": 0,
+    "by_asset_class": {
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": 152195.05
+      }
+    },
+    "closed_trade_count": 1,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -19,18 +24,18 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": 152195.05,
+        "count": 1,
+        "hit_rate": 1.0
       }
     },
     "losses": 0,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 0.0,
-    "wins": 0
+    "total_realized_pnl_usd": 152195.05,
+    "wins": 1
   },
   "capital_owner": {
-    "allocator_pressure": 22,
+    "allocator_pressure": 23,
     "credible_opportunities": "present",
     "force_deployment": false,
     "hurdle": "SOFR",
@@ -46,28 +51,28 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 346788.96,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 372295.64,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
     "competition_rank": 4,
     "competitive_rank": 4,
-    "drawdown_usd": 10.81,
-    "gap_to_best_trader_usd": -207434.45,
-    "high_water_nav_usd": 1000139365.32,
+    "drawdown_usd": 10.78,
+    "gap_to_best_trader_usd": -220187.79,
+    "high_water_nav_usd": 1000152118.63,
     "max_drawdown_usd": 50000000.0,
-    "net_after_funding_pnl_usd": 139354.51,
+    "net_after_funding_pnl_usd": 152107.85,
     "pressure_flags": [
       "behind_leading_pm",
       "best_trader_ahead",
       "competitive_pressure"
     ],
     "raw_pnl_rank": 4,
-    "spread_to_leader_pm_usd": -4321199.86,
+    "spread_to_leader_pm_usd": -4691046.96,
     "status": "ok",
-    "total_pnl_usd": 139430.93
+    "total_pnl_usd": 152195.05
   },
   "learning": {
     "competition_eligible": true,
@@ -76,84 +81,52 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "872545a3adda09efede3add904bccb477b69196d95cb52151c50f74500b56584",
-  "open_positions": [
+  "learning_obligations": [
     {
-      "asset_class": "spot_fx",
-      "conviction": 58,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 1.25,
-      "harvest": {
+      "kind": "postmortem",
+      "obligation_id": "pmd-b9f14cbbc954",
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "reference": "trd-pm-grinder-pm-grinder-9366bc9ee048",
+      "source_run_id": "overnight-20261111"
+    }
+  ],
+  "memory_context_sha256": "8a758d69c973a33495a6122de7aab70e3a6562529a597b4327446dcbc7fe67b9",
+  "open_positions": [],
+  "owner_id": "grinder",
+  "owner_type": "pm",
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-11T07:34:32.370603-05:00",
+      "created_run_id": "overnight-20261111",
+      "facts": {
         "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "No single event required; kiwi cheapness versus both Australia and the dollar is already extreme, and the Australian March tightening premium looks largely in the cross.",
-        "current_mark": 1.2281966001478197,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 1.2455636090977256,
-        "expected_mark_direction": "lower",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 595814,
-        "horizon_elapsed_fraction": 0.1724,
-        "horizon_status": "within",
+        "closed_at": "2026-11-11T07:34:32.370603-05:00",
+        "conviction": 58,
+        "entry_mark": 1.25,
+        "exit_mark": 1.23,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 684212,
         "instrument": "AUDNZD",
-        "intended_horizon_days": 40,
-        "mae_usd": -0.0,
-        "mechanical_order": false,
-        "mfe_usd": 139430.93,
-        "move_versus_entry_intent": "with_intent",
-        "order_policy": "review_only",
-        "pending_review": {
-          "mechanical_order": false,
-          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 10000000.0,
-          "status": "due",
-          "triggers": [
-            "material_winner"
-          ]
-        },
-        "position_id": "pm-grinder-9366bc9ee048",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "Profit if AUDNZD leaves the 99.6 extreme and trades lower toward the recent distribution; cut if the stretch persists or extends through 1.255.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 139430.93,
-        "retained_mfe_fraction": 1.0,
-        "review_move_bp": null,
-        "review_required": true,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [
-          "material_winner"
-        ],
-        "risk_context": "legacy_or_spot",
+        "invalidation": "Exit if AUDNZD holds the extreme and prints through 1.255, if Australian implied tightening keeps repricing the Aussie higher versus kiwi, or if a Hormuz shock produces a one-way commodity-FX move that prevents mean reversion.",
+        "opened_at": "2026-11-03T09:30:59.662793-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 152195.05,
         "side": "short",
-        "total_pnl_usd": 139430.93,
-        "trade_id": "trd-pm-grinder-pm-grinder-9366bc9ee048",
-        "unrealized_pnl_usd": 139430.93
+        "thesis": null
       },
-      "instrument": "AUDNZD",
-      "opened_at": "2026-11-03T09:30:59.662793-05:00",
-      "position_id": "pm-grinder-9366bc9ee048",
-      "risk_capital_usd": 100000.0,
-      "side": "short",
+      "postmortem_id": "pmd-b9f14cbbc954",
       "trade_id": "trd-pm-grinder-pm-grinder-9366bc9ee048"
     }
   ],
-  "owner_id": "grinder",
-  "owner_type": "pm",
-  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [
-      "pm-grinder-9366bc9ee048"
-    ],
+    "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "review_required_position_ids": [
-      "pm-grinder-9366bc9ee048"
-    ]
+    "review_required_position_ids": []
   },
   "psychology": {
     "active_flags": [
@@ -225,17 +198,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261106"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261109"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261110"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261111"
       }
     ],
     "required_checks": {
@@ -245,14 +218,26 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "4e2229fbf2bd334e850ff891946ad2e3efbe39108a75c77a0b6182035e87f53b",
+    "state_sha256": "8b4d7a709146a7462e60b408dfd113f5ecb30274435392b84c9eea254fec5094",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }
   },
-  "recent_closed_trades": [],
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-11T07:34:32.370603-05:00",
+      "conviction": 58,
+      "holding_duration_seconds": 684212,
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-03T09:30:59.662793-05:00",
+      "realized_pnl_usd": 152195.05,
+      "side": "short",
+      "trade_id": "trd-pm-grinder-pm-grinder-9366bc9ee048"
+    }
+  ],
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],

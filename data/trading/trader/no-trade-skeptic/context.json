@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-10T04:50:36.940059-05:00",
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "13162fb55d89a1e9cbaca8942ff95e70c20208436e9d543211bc56f5e1ef8faa",
+  "memory_context_sha256": "34ae864bb5b091c631666c77600743db02c74190bc820bde3218640f0ddd54af",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -130,30 +130,40 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261106"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261109"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261110"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261111"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "21e7cea92b2428ef50f863e3a229e8c771e04daf973ca362e686f1c87fc70938",
+    "state_sha256": "43d16d7c251df185d878cd886c585002ed0223c635ba5e9796a75ae719843125",
     "streaks": {
-      "flat_cycles": 29,
+      "flat_cycles": 30,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-09",
+        "percent_rate": 3.88,
+        "rate": 3.88
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Realized funding into the December contract should print about where that 4.28 curve already sits after the inflation print, so the book remains at the zero official funding benchmark. Paying funding on shocked-risk capital to chase or fade that path is not alpha.",
+      "sr3_forward_view": "December SR3 implies 4.28 percent, forty basis points above the 3.88 official fixing, and that is the relevant forward-funding mark into the December meeting."
+    },
     {
       "current_sofr": "Official NY Fed SOFR is 3.89 percent effective 2026-11-06, ACT/360.",
       "forward_funding_assessment": "higher",
@@ -176,17 +186,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Realized funding should print about the same as this hike strip, so the book stays at the zero official SOFR benchmark of 3.94 percent and does not pay SOFR on shocked risk capital.",
       "sr3_forward_view": "The strip is a hiking path versus 3.94 percent cash, with implied rates of 4.115 in December 2026, 4.24 in March 2027, 4.335 in June 2027 and 4.365 in September 2027."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-11-03",
-        "percent_rate": 3.97,
-        "rate": 3.97,
-        "source": "NY_FED"
-      },
-      "forward_funding_assessment": "lower",
-      "implication": "Remain at the zero official-SOFR benchmark. Overnight realized funding at 3.97 prints below the December-to-September strip. Paying SOFR on shocked-risk capital to own a hike path already in the strip is not alpha.",
-      "sr3_forward_view": "Strip is a hiking path versus official SOFR 3.97: December 4.165, March 4.36, June 4.475, September 4.505. Overnight realized funding is the official 3.97 fixing, not the term curve."
     }
   ],
   "recent_performance_reflections": [],

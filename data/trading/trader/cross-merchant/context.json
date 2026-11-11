@@ -101,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-10T04:50:36.940059-05:00",
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
   "calibration": {
     "average_holding_seconds": 960070,
     "average_realized_pnl_usd": 22901.3,
@@ -139,23 +139,23 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 4,
-    "competitive_rank": 4,
-    "drawdown_usd": 65.33,
-    "giveback_usd": 65.33,
-    "high_water_nav_usd": 100166241.95,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 21.61,
+    "giveback_usd": 21.61,
+    "high_water_nav_usd": 100346810.57,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100166176.62,
-    "net_pnl_usd": 166176.62,
+    "nav_usd": 100346788.96,
+    "net_pnl_usd": 346788.96,
     "pressure_flags": [],
     "prior_competition_rank": 1,
-    "rank_change": 3,
-    "raw_pnl_rank": 4,
+    "rank_change": 0,
+    "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": -180612.34,
+    "session_pnl_change_usd": -25506.68,
     "status": "ok"
   },
   "learning": {
@@ -165,72 +165,61 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "performance_reflection",
-      "obligation_id": "rfd-f78197170f19",
-      "owner_id": "cross-merchant",
-      "owner_type": "trader",
-      "reference": "rfd-f78197170f19",
-      "source_run_id": null
-    }
-  ],
-  "memory_context_sha256": "9c8138b04592bd88d250abc65f830cbeb01a70786919e97a9969c7f641f3d43e",
+  "learning_obligations": [],
+  "memory_context_sha256": "e894236c14a856a11be7c5c684f5e42fe35057b9ba6d1f82d42916e8513337e4",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 56,
-      "current_notional_usd": 20000000.0,
+      "current_notional_usd": 10000000.0,
       "entry_mark": 1.25,
       "harvest": {
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The edge is the extreme cross location versus a 3.5-percentile NZDUSD that mixes in the dollar; it is exhausted if AUDNZD holds a new high through 1.2456 or if a New Zealand cash or policy gap starts paying Australia as hard as the listed Australia-Canada cash wedge.",
-        "current_mark": 1.2394461538461539,
+        "current_mark": 1.2281966001478197,
         "current_notional_usd": 20000000.0,
         "entry_mark": 1.2455636090977256,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 180633.95,
-        "holding_seconds": 592059,
-        "horizon_elapsed_fraction": 0.1523,
+        "giveback_usd": 0.0,
+        "holding_seconds": 684150,
+        "horizon_elapsed_fraction": 0.176,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 45,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 278861.86,
+        "mfe_usd": 431056.91,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "pending_review": {
           "mechanical_order": false,
           "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 20000000.0,
+          "residual_notional_usd": 10000000.0,
           "status": "due",
           "triggers": [
-            "material_winner",
-            "giveback"
+            "material_winner"
           ]
         },
         "position_id": "pos-525ff12dcad9",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": 152195.05,
         "recorded_mfe_usd": 278861.86,
-        "retained_mfe_fraction": 0.3522,
+        "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
         "review_required": true,
         "review_threshold_usd": 200000.0,
         "review_triggers": [
-          "material_winner",
-          "giveback"
+          "material_winner"
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 98227.91,
+        "total_pnl_usd": 431056.91,
         "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
-        "unrealized_pnl_usd": 98227.91
+        "unrealized_pnl_usd": 278861.86
       },
       "instrument": "AUDNZD",
       "opened_at": "2026-11-03T08:22:57.179127-05:00",
@@ -262,12 +251,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
         "trend": "up",
-        "value": 0.19
+        "value": 0.22
       },
       "defensiveness": {
         "band": "calm",
@@ -276,12 +265,12 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.12
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.11
       },
       "revenge_pressure": {
@@ -291,7 +280,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.53
       },
       "thesis_attachment": {
@@ -311,11 +300,6 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.18807014000000002,
-        "run_id": "overnight-20261109"
-      },
-      {
-        "kind": "session_gain",
         "magnitude": 0.36122468,
         "run_id": "overnight-20261110"
       },
@@ -323,11 +307,16 @@
         "kind": "rank_gain_major",
         "magnitude": 1.0,
         "run_id": "overnight-20261110"
+      },
+      {
+        "kind": "self_report_admission_overconfidence",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261111"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ab3553f00c14f9f42640cd062d3b2b3b594afabde7b54cd1b1016bbe11dfd30f",
+    "state_sha256": "945dd911f135875ed74330bff0354e41923cf20fe0806e63777b4854480e348e",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -374,6 +363,22 @@
     {
       "attribution": [
         "expression",
+        "variance_luck"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The standing slip was path around an intact Australia-versus-New Zealand short that later extended, so the original process remains sound: the cross was the right expression, the closed Australia-Canada fade stays shut, and a multi-week richness book is not abandoned because standing dipped for a session.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-89b1038f8f1c",
+      "run_id": "overnight-20261111",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The Australian dollar-kiwi short was expected to keep paying as a multi-week fade of five-year richness without a one-session air pocket in standing. Standing slipped while the short was still onside, and the same cross later extended and made a fresh open-profit high with spot at 1.2266."
+    },
+    {
+      "attribution": [
+        "expression",
         "positioning_crowding",
         "variance_luck"
       ],
@@ -389,26 +394,7 @@
       "what_happened_vs_expected": "The oil-supported CADJPY long was expected to keep overnight relative-value standing stable; instead competition rank moved from 8 to 12 with about 67780 of net and drawdown while the live long is still above the 110.90 entry and the Australia-Canada cash wedge is unchanged."
     }
   ],
-  "reflections_due": [
-    {
-      "created_at": "2026-11-10T04:50:36.940059-05:00",
-      "created_run_id": null,
-      "facts": {
-        "competition_rank": 4,
-        "drawdown_usd": 65.33,
-        "lesson_ids": [],
-        "net_pnl_usd": 166176.62,
-        "prior_competition_rank": 1,
-        "trade_ids": [
-          "trd-trader-cross-merchant-pos-525ff12dcad9"
-        ]
-      },
-      "reflection_due_id": "rfd-f78197170f19",
-      "trigger_ids": [
-        "profit_giveback"
-      ]
-    }
-  ],
+  "reflections_due": [],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

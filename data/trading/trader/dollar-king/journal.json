@@ -1956,6 +1956,62 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "Waller has a December hike in play and is open to 50bp if inflation keeps accelerating, and the strip already leans that way, with cash SOFR at 3.89 versus March 2027 SOFR at 4.315. USDJPY near 158 is around the middle of its one-year range, so that nominal impulse still has room, while the euro, the kiwi, the Swiss franc and the Canadian dollar already embed a rich dollar. October CPI is unknown, and the existing USDJPY long is the dollar expression through the print. WTI at 86.85 leaves USDCAD, already extended, as a finished dollar move."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 68,
+      "decision_fingerprint": "38e36ca50159e79a272edb0dc4a64d3ab75ff402b83f322d0a6b0eac5bc2ab34",
+      "event_id": "jde-9bb19ee2bf174fb8",
+      "funding_view": null,
+      "invalidation": "The long is invalidated if dollar-yen sustains below the 158.06 entry after the two-year has reached 4.73, or if December futures converge back toward 3.88 cash and the hike premium leaves the pair.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c4b6580a9a8fffa87cc3408c1702765c86ee1072691bb2e1a60c4e8ac4e578c2",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "eac784b014fdac96b09b408c3655116e63631d11c0e3ba4b1747a8d2a1745451"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "A 0.4 percent inflation print lifted the two-year to 4.73 and the ten-year to 4.98, with December futures at 4.28 against cash at 3.88. Dollar-yen at 158.18 is back through the 158.06 entry and in the 88th percentile of five years, so the existing long is the dollar spot that took the hike premium. The euro rose on the day, and dollar-Canada or the Australian dollar would each add a second central bank. The 20 million long stays.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "A 0.4 percent inflation print lifted the two-year to 4.73 and the ten-year to 4.98, with December futures at 4.28 against cash at 3.88. Dollar-yen at 158.18 is back through the 158.06 entry and in the 88th percentile of five years, so the existing long is the dollar spot that took the hike premium. The euro rose on the day, and dollar-Canada or the Australian dollar would each add a second central bank. The 20 million long stays."
     }
   ],
   "schema_version": 1,

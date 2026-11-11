@@ -51,6 +51,32 @@
       "postmortem_id": "pmd-661371860aba",
       "status": "submitted",
       "trade_id": "trd-trader-trend-follower-pos-06e7a6ec76da"
+    },
+    {
+      "created_at": "2026-11-11T06:25:27.481006-05:00",
+      "created_run_id": "overnight-20261111",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-11T06:25:27.481006-05:00",
+        "conviction": 64,
+        "entry_mark": 4.33,
+        "exit_mark": 4.53,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 781009,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Exit if the US two-year reclaims and holds 4.67, or if March SOFR implied prints higher while two-year, five-year and ten-year yields reverse higher together.",
+        "opened_at": "2026-11-02T05:28:38.279813-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -30937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-fa1a2ebadbd1",
+      "status": "due",
+      "trade_id": "trd-trader-trend-follower-pos-96a63a1df145"
     }
   ],
   "schema_version": 1,

@@ -2009,6 +2009,79 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "March SOFR at 4.315 versus 3.89 cash and March CORRA at 2.885 versus 2.52 cash already carry a public December hike, so a new front-end pay chases a repriced path and a new receive is the obvious trade ahead of an unreleased CPI. The March 2027 CORRA pay is the stale line: sold at 3.00 and marked 2.835, so that bucket has already been received. Ten million of the 25 million short-duration notional comes off, and a 15 million stub stays. AUDNZD stays short from 1.25 to 1.239 with the cross still at the 82nd percentile. The NZDUSD jump at the fourth percentile can still be a squeeze, so there is no add."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 5000000,
+          "position_id": "pos-be9eaa63695e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-df316f59e974",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "8aebffac822175e7f9399dfc985a0c0825cfae4b07be109c22cab8f616307555",
+      "event_id": "jde-e00eccf4fce64faf",
+      "funding_view": null,
+      "invalidation": "The cut is early if the cross reclaims the 1.2453 entry and rebuilds the extreme while the residual is still on. The Canada hold is wrong if March implied falls back through the 2.885 book mark.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-be9eaa63695e",
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-be9eaa63695e"
+      ],
+      "memory_context_sha256": "231fefdc89eb905889a8a664c315c09e05deb54cb8de886e1d7d9a5af9b0221d",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9e525102071fe8ad749ca4fd9d8ae9fb542527185e416a780736a4f7ac0c0f56"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The crowded tape is the new US hike pay. Cash is 3.88, December futures are 4.28, and the two-year rose 17 basis points to 4.73. A fresh pay joins that consensus, and this freeze has no positioning report that separates ownership from the print. The Canada March short stays. The Australian dollar-kiwi short is the cut: it is a material winner at 1.2266, still the 96th percentile, and already through the recent range. Five million comes off and five million stays.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "The crowded tape is the new US hike pay. Cash is 3.88, December futures are 4.28, and the two-year rose 17 basis points to 4.73. A fresh pay joins that consensus, and this freeze has no positioning report that separates ownership from the print. The Canada March short stays. The Australian dollar-kiwi short is the cut: it is a material winner at 1.2266, still the 96th percentile, and already through the recent range. Five million comes off and five million stays."
     }
   ],
   "schema_version": 1,

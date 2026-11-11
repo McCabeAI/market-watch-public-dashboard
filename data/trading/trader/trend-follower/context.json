@@ -67,18 +67,18 @@
       ]
     }
   ],
-  "as_of": "2026-11-10T04:50:36.940059-05:00",
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
   "calibration": {
-    "average_holding_seconds": 1456497,
-    "average_realized_pnl_usd": -94375.0,
+    "average_holding_seconds": 1231334,
+    "average_realized_pnl_usd": -73229.17,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 2,
-        "total_realized_pnl_usd": -188750.0
+        "count": 3,
+        "total_realized_pnl_usd": -219687.5
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": -112500.0,
@@ -91,14 +91,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -76250.0,
-        "count": 1,
+        "average_pnl_usd": -53593.75,
+        "count": 2,
         "hit_rate": 0.0
       }
     },
-    "losses": 2,
+    "losses": 3,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -188750.0,
+    "total_realized_pnl_usd": -219687.5,
     "wins": 0
   },
   "capital_owner": null,
@@ -107,21 +107,21 @@
     "competition_eligible": true,
     "competition_rank": 14,
     "competitive_rank": 14,
-    "drawdown_usd": 251750.34,
-    "giveback_usd": 251750.34,
+    "drawdown_usd": 257388.85,
+    "giveback_usd": 257388.85,
     "high_water_nav_usd": 100062016.81,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99810266.47,
-    "net_pnl_usd": -189733.53,
+    "nav_usd": 99804627.96,
+    "net_pnl_usd": -195372.04,
     "pressure_flags": [],
-    "prior_competition_rank": 14,
-    "rank_change": 0,
+    "prior_competition_rank": 15,
+    "rank_change": -1,
     "raw_pnl_rank": 14,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 125000.0,
     "risk_capital_utilization": 0.0125,
-    "session_pnl_change_usd": 5638.51,
+    "session_pnl_change_usd": 26888.47,
     "status": "ok"
   },
   "learning": {
@@ -132,58 +132,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "972c0c1d1dca4f20f69fa180761545983010be908339c9615e26933264d6f8c2",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 64,
-      "current_notional_usd": 50000000.0,
-      "entry_mark": 4.33,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": "2026-11-20",
-        "catalyst_logic": "Edge is realized if March stays below 4.325 while two-year stays below 4.67; it is exhausted if two-year reclaims 4.67 or March implied prints higher as coupons reverse.",
-        "current_mark": 4.27,
-        "current_notional_usd": 50000000.0,
-        "entry_mark": 4.2825,
-        "expected_mark_direction": "lower",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 3750.0,
-        "holding_seconds": 688918,
-        "horizon_elapsed_fraction": 0.3987,
-        "horizon_status": "within",
-        "instrument": "SOFR_2027-03",
-        "intended_horizon_days": 20,
-        "mae_usd": -4062.5,
-        "mechanical_order": false,
-        "mfe_usd": 5312.5,
-        "move_versus_entry_intent": "with_intent",
-        "order_policy": "review_only",
-        "position_id": "pos-96a63a1df145",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "March implied continues lower with the 1d/5d/1m US coupon downtrend rather than mean-reverting up toward a confirmed backup.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 5312.5,
-        "retained_mfe_fraction": 0.2941,
-        "review_move_bp": 10.0,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "instrument_dv01_small_move",
-        "side": "long",
-        "total_pnl_usd": 1562.5,
-        "trade_id": "trd-trader-trend-follower-pos-96a63a1df145",
-        "unrealized_pnl_usd": 1562.5
-      },
-      "instrument": "SOFR_2027-03",
-      "opened_at": "2026-11-02T05:28:38.279813-05:00",
-      "position_id": "pos-96a63a1df145",
-      "risk_capital_usd": 500000.0,
-      "side": "long",
-      "trade_id": "trd-trader-trend-follower-pos-96a63a1df145"
-    }
-  ],
+  "memory_context_sha256": "11538aeb215b009b8d552e22a8db8985ff946f3dbd9e351fc30ca120ac9aa5d3",
+  "open_positions": [],
   "owner_id": "trend-follower",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -212,7 +162,7 @@
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.21
+        "value": 0.2
       },
       "external_pressure": {
         "band": "calm",
@@ -251,7 +201,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e53afa9f0bd6e2166ff809adc3059dc45284a9eac1312e4a80be2f05323770bd",
+    "state_sha256": "d62c64da5f3ab99eeb27c8886eb2d66f4d74489aa2baa07bf5411f57d0a1cd0c",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
@@ -259,6 +209,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 64,
+      "holding_duration_seconds": 781009,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-11-02T05:28:38.279813-05:00",
+      "realized_pnl_usd": -30937.5,
+      "side": "long",
+      "trade_id": "trd-trader-trend-follower-pos-96a63a1df145"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-10-23T15:46:45.247147-04:00",

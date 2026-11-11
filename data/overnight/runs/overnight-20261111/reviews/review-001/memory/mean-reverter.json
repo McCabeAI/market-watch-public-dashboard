@@ -1,0 +1,233 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
+  "calibration": {
+    "average_holding_seconds": 4088939,
+    "average_realized_pnl_usd": 250.0,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": 250.0
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 250.0,
+        "count": 1,
+        "hit_rate": 1.0
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 250.0,
+    "wins": 1
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 6,
+    "competitive_rank": 6,
+    "drawdown_usd": 10.81,
+    "giveback_usd": 10.81,
+    "high_water_nav_usd": 100113526.56,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100113515.75,
+    "net_pnl_usd": 113515.75,
+    "pressure_flags": [],
+    "prior_competition_rank": 6,
+    "rank_change": 0,
+    "raw_pnl_rank": 6,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "f777de76ca0e7c2640caf38df7682206673d35c5ba216c6b34a66cfb482670b9",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 60,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 1.25,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The cross at 1.2453 has left a flat Australian policy path behind, and kiwi-dollar at the 3rd percentile confirms the cheap leg.",
+        "current_mark": 1.2281966001478197,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 1.242376354537996,
+        "expected_mark_direction": "lower",
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 0.0,
+        "holding_seconds": 431978,
+        "horizon_elapsed_fraction": 0.5,
+        "horizon_status": "within",
+        "instrument": "AUDNZD",
+        "intended_horizon_days": 10,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": 114134.13,
+        "move_versus_entry_intent": "with_intent",
+        "order_policy": "review_only",
+        "pending_review": {
+          "mechanical_order": false,
+          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+          "residual_notional_usd": 10000000.0,
+          "status": "due",
+          "triggers": [
+            "material_winner"
+          ]
+        },
+        "position_id": "pos-9a020b7cffca",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The short pays if Australian-kiwi falls off the 99th percentile through the jobs report and the following sessions.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 114134.13,
+        "retained_mfe_fraction": 1.0,
+        "review_move_bp": null,
+        "review_required": true,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [
+          "material_winner"
+        ],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 114134.13,
+        "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca",
+        "unrealized_pnl_usd": 114134.13
+      },
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-06T06:25:49.281876-05:00",
+      "position_id": "pos-9a020b7cffca",
+      "risk_capital_usd": 100000.0,
+      "side": "short",
+      "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca"
+    }
+  ],
+  "owner_id": "mean-reverter",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [
+      "pos-9a020b7cffca"
+    ],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": [
+      "pos-9a020b7cffca"
+    ]
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.11
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.51
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "session_gain",
+        "magnitude": 0.18107573999999999,
+        "run_id": "overnight-20261110"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "41ea2e10f3f76d6b3cd9e7ccb735ec3c595f20e6dca17accba7e89578fd4700d",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 1
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-06T06:25:49.281876-05:00",
+      "conviction": 56,
+      "holding_duration_seconds": 4088939,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 250.0,
+      "side": "long",
+      "trade_id": "trd-trader-mean-reverter-pos-1477172adb86"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

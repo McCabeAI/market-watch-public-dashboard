@@ -19,36 +19,28 @@
       "reflection_ids": [],
       "reinforcement_count": 1,
       "scope": {
-        "instruments": [
-          "CORRA_2027-03",
-          "CORRA_2027-06",
-          "CORRA_2027-09",
-          "CORRA_2027-12"
-        ],
-        "instrument_family": "corra",
         "asset_class": "rates",
+        "catalyst_type": null,
         "countries": [
           "CA"
         ],
         "currencies": [
           "CAD"
         ],
-        "setup_type": "futures_strip_average",
-        "market_drivers": [],
-        "catalyst_type": null,
+        "decision_dimension": null,
         "failure_mode": null,
-        "decision_dimension": null
+        "instrument_family": "corra",
+        "instruments": [
+          "CORRA_2027-03",
+          "CORRA_2027-06",
+          "CORRA_2027-09",
+          "CORRA_2027-12"
+        ],
+        "market_drivers": [],
+        "setup_type": "futures_strip_average",
+        "technical_setup": null
       },
-      "source_run_id": "overnight-20260929",
-      "status": "active",
-      "text": "A carry receive is invalidated by a change in cash policy or by a large, persistent re-pricing of the path, not by a small backup in implieds that is the mechanical beta of a headline already known at entry.",
-      "trade_ids": [
-        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
-      ],
-      "updated_at": "2026-09-29T04:44:08.485973-04:00",
       "scope_evidence": {
-        "method": "ledger_identity_fields",
-        "trade_id": "trd-trader-carry-is-king-pos-b97bddbdbd2d",
         "fields": [
           "asset_class",
           "instrument",
@@ -58,11 +50,59 @@
           "paper_expression.expiries",
           "paper_expression.type"
         ],
-        "retrievals_backfilled": false,
-        "text_modified": false,
         "history_modified": false,
-        "status": "scoped_from_trade"
-      }
+        "method": "ledger_identity_fields",
+        "retrievals_backfilled": false,
+        "status": "scoped_from_trade",
+        "text_modified": false,
+        "trade_id": "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A carry receive is invalidated by a change in cash policy or by a large, persistent re-pricing of the path, not by a small backup in implieds that is the mechanical beta of a headline already known at entry.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      ],
+      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-11T06:25:27.481006-05:00",
+      "future_rule": "Receive a short-term rate only when the implied rate is materially above unchanged cash so the carry pays for the hold, and do not flatten an existing positive-carry Canada or short-term receive on a sub-5 basis point implied backup from an oil headline while cash policy is unchanged.",
+      "history": [
+        {
+          "at": "2026-11-11T06:25:27.481006-05:00",
+          "op": "add",
+          "run_id": "overnight-20261111"
+        }
+      ],
+      "lesson_id": "les-8e4e249245a2",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-5d577c502ce7"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261111",
+      "status": "active",
+      "text": "A short-term rate receive entered at or below unchanged cash has no carry cushion, and a far-away cash-regime stop does not contain a few-basis-point path reprice.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-524ab67108ee"
+      ],
+      "updated_at": "2026-11-11T06:25:27.481006-05:00"
     }
   ],
   "schema_version": 1,

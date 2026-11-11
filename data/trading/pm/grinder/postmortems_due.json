@@ -1,5 +1,32 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-11T07:34:32.370603-05:00",
+      "created_run_id": "overnight-20261111",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-11T07:34:32.370603-05:00",
+        "conviction": 58,
+        "entry_mark": 1.25,
+        "exit_mark": 1.23,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 684212,
+        "instrument": "AUDNZD",
+        "invalidation": "Exit if AUDNZD holds the extreme and prints through 1.255, if Australian implied tightening keeps repricing the Aussie higher versus kiwi, or if a Hormuz shock produces a one-way commodity-FX move that prevents mean reversion.",
+        "opened_at": "2026-11-03T09:30:59.662793-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 152195.05,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-b9f14cbbc954",
+      "status": "due",
+      "trade_id": "trd-pm-grinder-pm-grinder-9366bc9ee048"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }
