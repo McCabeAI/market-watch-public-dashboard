@@ -6,6 +6,20 @@ import re
 from typing import Any, Mapping
 
 from scripts.prima_pressure import contract as prima_contract
+from scripts.prima_pressure.transmission_contract import (
+    DISCLAIMER_TX,
+    TRANSMISSION_CHANNEL_ENERGY,
+    TRANSMISSION_CHANNEL_FOOD,
+    TRANSMISSION_CHANNEL_IMPORTED,
+    TRANSMISSION_CHANNELS,
+    TRANSMISSION_METHOD_VERSION,
+    TRANSMISSION_PROVENANCE_LIVE,
+    TRANSMISSION_PROVENANCE_RECON,
+    TRANSMISSION_SCHEMA_VERSION,
+    WEIGHT_BASIS,
+    WEIGHT_FUEL_OIL_PCT,
+    WEIGHT_GASOLINE_PCT,
+)
 
 # Re-exported into render module namespace via import *
 
@@ -1193,6 +1207,398 @@ def _render_prima_shadow(shadow: Any, esc: Any) -> str:
     )
 
 
+_TX_DIR_WORD = {
+    "up": "upward",
+    "down": "downward",
+    "neutral": "neutral",
+    "mixed": "mixed",
+    "unavailable": "unavailable",
+}
+
+_TX_CHANNEL_LABELS = {
+    TRANSMISSION_CHANNEL_ENERGY: "Direct fuel (gasoline and fuel oil)",
+    TRANSMISSION_CHANNEL_IMPORTED: "Imported non-energy goods",
+    TRANSMISSION_CHANNEL_FOOD: "Food and non-energy input costs",
+}
+
+
+def _tx_signed_num(value: float, *, places: int = 2) -> str:
+    rounded = round(value, places)
+    if rounded < 0:
+        return f"−{abs(rounded):.{places}f}"
+    return f"{rounded:.{places}f}"
+
+
+def _tx_pct_display(value: float | None) -> str:
+    if value is None:
+        return "unavailable"
+    return f"{_tx_signed_num(value, places=1)}%"
+
+
+def _tx_pp_display(value: float | None) -> str:
+    if value is None:
+        return "unavailable"
+    return f"{_tx_signed_num(value, places=2)} pp"
+
+
+def _tx_horizon_line(h: Mapping[str, Any] | None) -> str:
+    if not isinstance(h, Mapping):
+        return "unavailable"
+    basis = str(h.get("basis") or "unavailable")
+    direction = _TX_DIR_WORD.get(str(h.get("direction") or ""), str(h.get("direction") or "unavailable"))
+    if basis in ("numerical", "range") and h.get("pp_mid") is not None:
+        try:
+            mid = float(h["pp_mid"])
+        except (TypeError, ValueError):
+            mid = None
+        if mid is not None:
+            bits = [_tx_pp_display(mid)]
+            if basis == "range" and h.get("pp_low") is not None and h.get("pp_high") is not None:
+                try:
+                    lo, hi = float(h["pp_low"]), float(h["pp_high"])
+                    bits.append(f"range {_tx_pp_display(lo)} to {_tx_pp_display(hi)}")
+                except (TypeError, ValueError):
+                    pass
+            bits.append(f"({direction})")
+            if h.get("coverage") == "partial":
+                bits.append("partial coverage")
+            uncovered = h.get("uncovered_interval")
+            if uncovered:
+                bits.append(f"uncovered {uncovered}")
+            return " ".join(bits)
+    if basis == "directional":
+        return f"{direction} (directional)"
+    if basis == "unavailable":
+        return "unavailable"
+    return f"{direction} ({basis})"
+
+
+def _tx_provenance_badge(provenance: str) -> str:
+    if provenance == TRANSMISSION_PROVENANCE_LIVE:
+        return "Live-observed"
+    if provenance == TRANSMISSION_PROVENANCE_RECON:
+        return "Reconstructed from frozen v1 inputs"
+    if provenance == "unavailable":
+        return "Unavailable"
+    return provenance.replace("_", " ")
+
+
+def _tx_sparkline_svg(
+    points: list[Mapping[str, Any]],
+    *,
+    value_key: str,
+    esc: Any,
+    title: str,
+) -> str:
+    series: list[tuple[str, float, str]] = []
+    for row in points:
+        raw = row.get(value_key)
+        if not isinstance(raw, (int, float)):
+            continue
+        date_key = str(row.get("observed_at") or "")[:10]
+        if not date_key:
+            continue
+        prov = str(row.get("provenance") or "")
+        series.append((date_key, float(raw), prov))
+    if len(series) < 3:
+        return ""
+    w, h, pad_l, pad_r, pad_t, pad_b = 280, 56, 4, 4, 14, 20
+    plot_w = w - pad_l - pad_r
+    plot_h = h - pad_t - pad_b
+    vals = [v for _, v, _ in series]
+    lo, hi = min(vals), max(vals)
+    if hi == lo:
+        hi = lo + 1.0
+    n = len(series)
+    dots: list[str] = []
+    for i, (dk, val, prov) in enumerate(series):
+        x = pad_l + (plot_w * i / (n - 1) if n > 1 else plot_w / 2)
+        y = pad_t + plot_h * (1 - (val - lo) / (hi - lo))
+        fill = "var(--mw-accent,#5ea8e4)" if prov == TRANSMISSION_PROVENANCE_LIVE else "var(--mw-muted,#93a5b6)"
+        dots.append(
+            f'<circle cx="{x:.1f}" cy="{y:.1f}" r="3" fill="{fill}">'
+            f'<title>{esc(dk)}: {esc(_tx_signed_num(val, places=2))}</title></circle>'
+        )
+    start, end = series[0][0], series[-1][0]
+    return (
+        f'<figure class="prima-tx-spark" aria-label="{esc(title)}">'
+        f'<svg class="prima-tx-spark-svg" viewBox="0 0 {w} {h}" width="100%" '
+        f'preserveAspectRatio="none" role="img">'
+        f'{"".join(dots)}</svg>'
+        f'<figcaption class="prima-tx-spark-cap">{esc(start)} → {esc(end)} · '
+        f'grey = reconstructed · blue = live</figcaption></figure>'
+    )
+
+
+def _tx_direct_fuel_overview(summary: Mapping[str, Any]) -> tuple[str, str]:
+    df = summary.get("direct_fuel") if isinstance(summary.get("direct_fuel"), Mapping) else {}
+    h1 = df.get("h1_3m") if isinstance(df.get("h1_3m"), Mapping) else {}
+    h3 = df.get("h3_6m") if isinstance(df.get("h3_6m"), Mapping) else {}
+    fuel_line = (
+        f"Direct fuel CPI effect · 1–3m: {_tx_horizon_line(h1)} · "
+        f"3–6m: {_tx_horizon_line(h3)}"
+    )
+    uc = summary.get("underlying_core") if isinstance(summary.get("underlying_core"), Mapping) else {}
+    core_h1 = _TX_DIR_WORD.get(str(uc.get("direction_h1_3m") or ""), str(uc.get("direction_h1_3m") or "neutral"))
+    core_h3 = _TX_DIR_WORD.get(str(uc.get("direction_h3_6m") or ""), str(uc.get("direction_h3_6m") or "neutral"))
+    core_line = f"Underlying core · 1–3m {core_h1} · 3–6m {core_h3} (directional only; not added to fuel)"
+    return fuel_line, core_line
+
+
+def _tx_caption(tx: Mapping[str, Any]) -> str:
+    cpi = str(tx.get("cpi_reference_period") or "latest CPI")
+    baseline = (
+        (tx.get("channels") or {}).get(TRANSMISSION_CHANNEL_ENERGY, {})
+        .get("remaining", {})
+        .get("h1_3m", {})
+        .get("reference_baseline")
+    )
+    baseline_s = str(baseline or "Brent-in-CAD listed front, same-contract 1m")
+    weight = WEIGHT_GASOLINE_PCT + WEIGHT_FUEL_OIL_PCT
+    return (
+        f"Baseline {baseline_s} · horizons 1–3m / 3–6m CPI level pp · "
+        f"CPI weight {weight:.2f}% (gasoline {WEIGHT_GASOLINE_PCT:.2f} + "
+        f"fuel oil {WEIGHT_FUEL_OIL_PCT:.2f}, {WEIGHT_BASIS}) · "
+        f"~1 month pass-through with 1.10 tax factor on marginal cost"
+    )
+
+
+def _tx_observed_change_text(ch: Mapping[str, Any]) -> str:
+    obs = ch.get("observed_change") if isinstance(ch.get("observed_change"), Mapping) else {}
+    metric = str(obs.get("metric") or "")
+    window = obs.get("window") if isinstance(obs.get("window"), Mapping) else {}
+    start = window.get("start")
+    end = window.get("end")
+    win = ""
+    if start and end:
+        win = f" ({start}→{end})"
+    elif end:
+        win = f" (through {end})"
+    decomp = obs.get("decomposition") if isinstance(obs.get("decomposition"), Mapping) else None
+    flags = obs.get("flags") if isinstance(obs.get("flags"), list) else []
+    flag_txt = ""
+    if "fx_window_approximate" in flags:
+        flag_txt = " · FX window approximate"
+    if "fx_leg_missing" in flags:
+        flag_txt = " · FX leg missing (USD-only fallback)"
+    if decomp:
+        usd = decomp.get("usd_leg")
+        fx = decomp.get("fx_leg")
+        combined = decomp.get("combined")
+        parts: list[str] = []
+        if isinstance(usd, (int, float)):
+            parts.append(f"USD leg {_tx_signed_num(float(usd) * 100, places=1)}%")
+        if isinstance(fx, (int, float)):
+            parts.append(f"FX leg {_tx_signed_num(float(fx) * 100, places=1)}%")
+        if isinstance(combined, (int, float)):
+            parts.append(f"combined {_tx_signed_num(float(combined) * 100, places=1)}% (counted once)")
+        body = "; ".join(parts)
+        return f"{body}{win}{flag_txt}"
+    val = obs.get("value")
+    if isinstance(val, dict):
+        bits = []
+        for key, v in sorted(val.items()):
+            if isinstance(v, (int, float)):
+                bits.append(f"{key} {_tx_signed_num(float(v), places=2)}%")
+        return "; ".join(bits) + win + flag_txt if bits else f"Observed {metric}{win}"
+    if isinstance(val, (int, float)):
+        return f"{metric} {_tx_signed_num(float(val), places=2)}{win}{flag_txt}"
+    return f"Observed change not available{win}"
+
+
+def _tx_evidence_rows(rows: Any, esc: Any) -> str:
+    if not isinstance(rows, list) or not rows:
+        return "<p>No stored transmission evidence for this channel.</p>"
+    parts: list[str] = []
+    for row in rows:
+        if not isinstance(row, Mapping):
+            continue
+        label = str(row.get("label") or row.get("series_id") or "series")
+        period = str(row.get("period") or "")
+        rel = str(row.get("release_date") or row.get("release_time") or "")[:10]
+        value = row.get("value")
+        units = str(row.get("units") or "")
+        stale = " · stale" if row.get("stale") else ""
+        val_s = ""
+        if isinstance(value, (int, float)):
+            val_s = f" {_tx_signed_num(float(value), places=4)} {units}".strip()
+        parts.append(
+            f"<p>{esc(label)}{': ' + esc(period) if period else ''}"
+            f"{val_s} · release {esc(rel) if rel else 'n/a'}{stale}</p>"
+        )
+    return "".join(parts)
+
+
+def _tx_remaining_block(rem: Mapping[str, Any] | None) -> str:
+    if not isinstance(rem, Mapping):
+        return "<p>Remaining effect unavailable.</p>"
+    h1 = _tx_horizon_line(rem.get("h1_3m") if isinstance(rem.get("h1_3m"), Mapping) else None)
+    h3 = _tx_horizon_line(rem.get("h3_6m") if isinstance(rem.get("h3_6m"), Mapping) else None)
+    return f"<p>1–3m: {h1}</p><p>3–6m: {h3}</p>"
+
+
+def _render_transmission_context(tx: Mapping[str, Any], esc: Any) -> str:
+    producer = tx.get("producer_stage") if isinstance(tx.get("producer_stage"), list) else []
+    core = tx.get("underlying_core_evidence") if isinstance(tx.get("underlying_core_evidence"), Mapping) else {}
+    policy = tx.get("policy_context") if isinstance(tx.get("policy_context"), Mapping) else {}
+    prod_bits: list[str] = []
+    for row in producer:
+        if not isinstance(row, Mapping):
+            continue
+        label = str(row.get("label") or row.get("series_id") or "")
+        chg = row.get("change_display") or row.get("change")
+        period = str(row.get("period") or "")
+        stale = " (stale)" if row.get("stale") else ""
+        chg_s = str(chg) if chg is not None else "n/a"
+        prod_bits.append(f"<li>{esc(label)} {esc(period)}: {esc(chg_s)}{stale}</li>")
+    core_bits = []
+    if core:
+        core_bits.append(
+            f"CPI breadth / trim · 1–3m {_TX_DIR_WORD.get(str(core.get('direction_h1_3m')), core.get('direction_h1_3m', 'n/a'))} · "
+            f"3–6m {_TX_DIR_WORD.get(str(core.get('direction_h3_6m')), core.get('direction_h3_6m', 'n/a'))}"
+        )
+    pol_note = ""
+    if policy:
+        corra = policy.get("corra_rate")
+        gap = policy.get("gap")
+        if isinstance(corra, (int, float)) and isinstance(gap, (int, float)):
+            pol_note = (
+                f"CORRA {corra:.2f}% vs 2.75% neutral — gap {_tx_signed_num(float(gap), places=2)} pp "
+                f"· context only, not a pressure input"
+            )
+    return (
+        f'<div class="prima-tx-context">'
+        f'<p class="prima-tx-context-kicker">Observed transmission — not added to fuel arithmetic</p>'
+        f'<ul class="prima-tx-producer">{"".join(prod_bits) if prod_bits else f"<li>{esc('Producer stage readings unavailable')}</li>"}</ul>'
+        f'<p class="prima-tx-core-evidence">{esc(" · ".join(core_bits) if core_bits else "Underlying core evidence unavailable")}</p>'
+        f'<p class="prima-tx-policy">{esc(pol_note or "Policy context unavailable")}</p>'
+        f"</div>"
+    )
+
+
+def _render_transmission_method(tx: Mapping[str, Any], esc: Any) -> str:
+    missing = tx.get("missing_inputs") if isinstance(tx.get("missing_inputs"), list) else []
+    miss_lines = [
+        f"<div>{esc(str(m.get('input') or ''))}: {esc(str(m.get('reason') or ''))}</div>"
+        for m in missing
+        if isinstance(m, Mapping)
+    ]
+    body = [
+        f"<div>{esc(DISCLAIMER_TX)}</div>",
+        f"<div>Schema {esc(TRANSMISSION_SCHEMA_VERSION)} · method {esc(TRANSMISSION_METHOD_VERSION)}</div>",
+        f"<div>Provenance {esc(str(tx.get('provenance') or ''))} · as of {esc(str(tx.get('as_of') or ''))}</div>",
+        "<div>Numerical support: direct fuel CPI components only (gasoline + fuel oil weights). "
+        "Imported goods and food are directional. Producer indices and CORRA are context.</div>",
+        "<div>This is not the Bank of Canada&apos;s PRiMA model.</div>",
+    ] + miss_lines
+    return (
+        f'<details class="prima-raw" data-prima-raw="tx-method">'
+        f'<summary class="prima-raw-summary">Transmission method and sources</summary>'
+        f'<div class="prima-raw-body">{"".join(body)}</div></details>'
+    )
+
+
+def _render_transmission_channel(
+    channel_id: str,
+    tx: Mapping[str, Any],
+    history: list[Mapping[str, Any]],
+    esc: Any,
+) -> str:
+    channels = tx.get("channels") if isinstance(tx.get("channels"), Mapping) else {}
+    ch = channels.get(channel_id)
+    if not isinstance(ch, Mapping):
+        return ""
+    label = _TX_CHANNEL_LABELS.get(channel_id, channel_id)
+    spark = ""
+    if channel_id == TRANSMISSION_CHANNEL_ENERGY:
+        spark = _tx_sparkline_svg(history, value_key="brent_cad_1m_pct", esc=esc, title="Brent-in-CAD 1m %")
+    elif channel_id == TRANSMISSION_CHANNEL_IMPORTED:
+        spark = _tx_sparkline_svg(history, value_key="usdcad_spot", esc=esc, title="USDCAD spot")
+    assumptions = ch.get("assumptions") if isinstance(ch.get("assumptions"), list) else []
+    assume_bits = [
+        f"<p>{esc(str(a.get('name') or ''))}: {esc(str(a.get('value') or ''))} "
+        f"({esc(str(a.get('source') or ''))})</p>"
+        for a in assumptions
+        if isinstance(a, Mapping)
+    ]
+    notes = ch.get("notes") if isinstance(ch.get("notes"), list) else []
+    note_bits = [f"<p>{esc(str(n))}</p>" for n in notes if isinstance(n, str) and n.strip()]
+    assume_html = ""
+    if assume_bits:
+        assume_html = f'<div class="prima-tx-ch-section"><b>Assumptions</b>{"".join(assume_bits)}</div>'
+    return (
+        f'<details class="prima-tx-ch" data-prima-tx-channel="{esc(channel_id)}">'
+        f'<summary class="prima-tx-ch-summary"><span class="prima-tx-ch-label">{esc(label)}</span></summary>'
+        f'<div class="prima-tx-ch-body">'
+        f'<p class="prima-tx-ch-section"><b>Observed change</b> · {esc(_tx_observed_change_text(ch))}</p>'
+        f'<div class="prima-tx-ch-section"><b>Evidence seen</b>{_tx_evidence_rows(ch.get("transmission_seen"), esc)}</div>'
+        f'<div class="prima-tx-ch-section"><b>Remaining</b>{_tx_remaining_block(ch.get("remaining"))}</div>'
+        f"{assume_html}"
+        f'{"".join(note_bits)}{spark}'
+        f"</div></details>"
+    )
+
+
+def _render_transmission_section(
+    block: Mapping[str, Any],
+    esc: Any,
+) -> str:
+    tx = block.get("transmission")
+    if not isinstance(tx, Mapping):
+        return (
+            f'<section class="prima-tx prima-tx-unavailable" data-prima-tx="unavailable">'
+            f'<h3 class="prima-tx-title">Inflation input-cost transmission (PRiMA-inspired proxy, v2)</h3>'
+            f"<p>Transmission view unavailable — no accepted snapshot could be reconstructed.</p>"
+            f"</section>"
+        )
+    tx_unavailable = str(tx.get("status") or "") == "unavailable"
+    section_class = "prima-tx prima-tx-unavailable" if tx_unavailable else "prima-tx"
+    history = block.get("transmission_history") if isinstance(block.get("transmission_history"), list) else []
+    headlines = tx.get("headline") if isinstance(tx.get("headline"), Mapping) else {}
+    summary = tx.get("summary") if isinstance(tx.get("summary"), Mapping) else {}
+    fuel_line, core_line = _tx_direct_fuel_overview(summary)
+    status = str(tx.get("status_line") or "")
+    badge = _tx_provenance_badge(str(tx.get("provenance") or ""))
+    channel_html = "".join(
+        _render_transmission_channel(cid, tx, history, esc) for cid in TRANSMISSION_CHANNELS
+    )
+    return (
+        f'<section class="{section_class}" data-prima-tx="v2" data-prima-tx-provenance="{esc(str(tx.get("provenance") or ""))}">'
+        f'<h3 class="prima-tx-title">Inflation input-cost transmission (PRiMA-inspired proxy, v2)</h3>'
+        f'<p class="prima-tx-row"><span class="prima-tx-row-label">What changed</span> '
+        f'{esc(str(headlines.get("what_changed") or "Input moves unavailable"))}</p>'
+        f'<p class="prima-tx-row"><span class="prima-tx-row-label">Where it is transmitting</span> '
+        f'{esc(str(headlines.get("where_transmitting") or ""))}</p>'
+        f'<p class="prima-tx-row"><span class="prima-tx-row-label">What remains · 1–3m · 3–6m</span> '
+        f'{esc(str(headlines.get("what_remains") or ""))}</p>'
+        f'<p class="prima-tx-fuel">{esc(fuel_line)}</p>'
+        f'<p class="prima-tx-core">{esc(core_line)}</p>'
+        f'<p class="prima-tx-caption">'
+        f'{esc(_tx_caption(tx))} · <span class="prima-tx-prov-badge">{esc(badge)}</span></p>'
+        f'<div class="prima-tx-channels">{channel_html}</div>'
+        f"{_render_transmission_context(tx, esc)}"
+        f'<p class="prima-tx-status">{esc(status)}</p>'
+        f"{_render_transmission_method(tx, esc)}"
+        f"</section>"
+    )
+
+
+def _tx_glance_chip(tx: Mapping[str, Any]) -> str:
+    summary = tx.get("summary") if isinstance(tx.get("summary"), Mapping) else {}
+    df = summary.get("direct_fuel") if isinstance(summary.get("direct_fuel"), Mapping) else {}
+    h1 = df.get("h1_3m") if isinstance(df.get("h1_3m"), Mapping) else {}
+    basis = str(h1.get("basis") or "")
+    mid = h1.get("pp_mid")
+    coverage = h1.get("coverage")
+    cov_tag = f" ({coverage})" if coverage and coverage != "full" else ""
+    if isinstance(mid, (int, float)) and basis in ("numerical", "range"):
+        return f"Fuel CPI 1–3m {_tx_pp_display(float(mid))}{cov_tag}"
+    direction = _TX_DIR_WORD.get(str(h1.get("direction") or ""), "unavailable")
+    if basis == "unavailable" or h1.get("direction") == "unavailable":
+        return f"Fuel CPI 1–3m unavailable{cov_tag}"
+    return f"Fuel CPI 1–3m {direction}{cov_tag}"
+
+
 def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> str:
     """Build PRIMA pressure card HTML. ``esc`` is the template escaper (_esc)."""
     if not isinstance(block, Mapping):
@@ -1269,7 +1675,9 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f'<summary class="prima-gauge-summary">{gauge_html}'
         f'<span class="prima-gauge-hint">Show history · {run_count} accepted runs</span>'
         f"</summary>"
-        f'<div class="prima-history" data-prima-history>{history_chart}</div>'
+        f'<div class="prima-history" data-prima-history>'
+        f'<p class="prima-legacy-history-label">v1 legacy history</p>'
+        f"{history_chart}</div>"
         f"</details>"
     )
 
@@ -1592,8 +2000,12 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f'<summary class="prima-raw-summary">MPR comparison and quarterly shadow</summary>'
         f'<div class="prima-raw-body">{mpr_body}{shadow_html}</div></details>'
     )
-    return (
-        f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
+    transmission_html = _render_transmission_section(block, esc)
+    legacy_label = (
+        "Legacy comparison · historic five-vote benchmark (v1 method, includes CORRA vote) "
+        "— not the current estimate"
+    )
+    legacy_inner = (
         f"{gauge_details}"
         f"{panel_html}"
         f'<div class="prima-channels">{"".join(channel_html_parts)}</div>'
@@ -1603,6 +2015,14 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f'<details class="prima-raw prima-raw-run" data-prima-raw="run">'
         f'<summary class="prima-raw-summary">Run provenance</summary>'
         f'<div class="prima-raw-body">{"".join(run_raw)}</div></details>'
+    )
+    return (
+        f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
+        f"{transmission_html}"
+        f'<div class="prima-legacy-wrap" data-prima-legacy="v1">'
+        f'<p class="prima-legacy-kicker">{esc(legacy_label)}</p>'
+        f"{legacy_inner}"
+        f"</div>"
         f"</div>"
     )
 
@@ -1610,6 +2030,10 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
 def prima_glance_markup(prima_pressure: Mapping[str, Any] | None, esc: Any) -> str:
     if not isinstance(prima_pressure, Mapping):
         return ""
+    tx = prima_pressure.get("transmission")
+    if isinstance(tx, Mapping):
+        chip = _tx_glance_chip(tx)
+        return f'<span class="prima-glance" data-prima-glance>{esc(chip)}</span>'
     cur = prima_pressure.get("current")
     if not isinstance(cur, Mapping):
         return ""
