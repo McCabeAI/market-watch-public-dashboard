@@ -13,7 +13,10 @@ This is a deterministic Market Watch research view — **not** the Bank of Canad
   bars available else Brent crude), curve adjustment mean(front,3m), and h3_6m mean(3m)→mean(3m,6m).
   Live point estimate uses tax factor **1.10** only (`pp_low = pp_mid = pp_high`).
 - Reconstructed snapshots use a crude-cost-share **range** with `pp_low`/`pp_high` as numeric
-  min/max across share scenarios (`range_basis: crude_cost_share 0.35/0.45/0.55`).
+  min/max across share scenarios (`range_basis: crude_cost_share 0.35/0.45/0.55`; fuel oil
+  0.5/0.6/0.7). Country Detail caption: *crude-cost-share elasticity 0.35/0.45/0.55 (fuel oil
+  0.5/0.6/0.7)* — **not** the live 1.10 tax factor.
+- Live caption: *cost change × 1.10 ad-valorem tax / pump price, ~1 month pass-through*.
 - Imported goods and food/inputs are **directional** (no invented import-price index).
 - CORRA appears in `policy_context` only (legacy vote unchanged).
 
@@ -57,8 +60,16 @@ USDCAD 1.41026 (`ret_1m` −0.87%, `ret_3m` +1.27%); latest CPI month **2026-09*
 | Fuel `h1_3m` `direction` | `down` |
 | `coverage` | `partial` (`2026-09-30 → 2026-10-09`) |
 | Fuel `h3_6m` | directional `down` (front 92.57 > 12m 78.28, backwardation) |
-| Imported goods | `neutral` (FX not material) |
+| Imported goods | `neutral` (FX not material; h1_3m *small, lagged*) |
 | Food/inputs `h3_6m` | `down` (RMPI ex-crude −0.435% beyond band) |
+
+**Country Detail overview (2026-11-10 snapshot, rendered)**
+
+- **What changed** — Brent-in-CAD 1m −9.4% (2026-10-09→2026-11-09)
+- **Where it is transmitting** — Producer stage: IPPI energy +12.1% m/m, RMPI crude +14.4% (Sep); CPI transport +0.3% m/m, breadth 5/8 majors up, trim accel +0.37 pp (Sep)
+- **What remains** — Fuel 1–3m −0.18 pp (range −0.22 pp to −0.14 pp) partial; core mixed; fuel 3–6m down — downward if the futures curve is realised (front 92.57 vs 12m 78.28 USD/bbl)
+- **Status** — Reconstructed inputs 2026-11-10 · CPI 2026-09 · IPPI/RMPI 2026-09 (rel. 2026-10-22) · sector PPI 2026-Q2 (rel. 2026-10-09) · Brent 2026-10-09→2026-11-09; USD/CAD 21 ECB business days to 2026-11-09 · provenance `reconstructed_from_frozen_v1`
+- **Core evidence** — CPI breadth 5/8 majors up · trim accel 0.37 pp (2026-09)
 
 Abbreviated JSON (computed 2026-11-11):
 
