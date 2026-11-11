@@ -1,22 +1,22 @@
 {
-  "as_of": "2026-11-10T07:01:13.551421-05:00",
-  "assembled_dataset": "data/overnight/runs/overnight-20261110/assembled_dataset.json",
+  "as_of": "2026-11-11T07:39:43.199212-05:00",
+  "assembled_dataset": "data/overnight/runs/overnight-20261111/assembled_dataset.json",
   "books_path": "data/overnight/books/latest.json",
   "dry_run": false,
-  "overnight_run_id": "overnight-20261110",
+  "overnight_run_id": "overnight-20261111",
   "publication": {
     "catastrophic_families": [],
     "core_status": "ok",
     "families": {
       "central_bank_research": {
-        "as_of": "2026-11-06T06:25:49.281876-05:00",
-        "blocking": true,
+        "as_of": "2026-11-11T06:25:27.481006-05:00",
+        "blocking": false,
         "catastrophic": false,
-        "digest": "4a903599bf7b7603ff26d41e62568ef2008d1c1daf440e4d69a098063fbbd423",
+        "digest": "f1b914823f34ed67e4c800e7bf22e774d36674655c9c3e919e6510d7e11a667b",
         "notes": [
-          "rolling 30-day central-bank research state is frozen below"
+          "accepted current-cycle ACP central-bank research supplement"
         ],
-        "status": "stale"
+        "status": "fresh"
       },
       "macro_hard": {
         "as_of": "2026-11-10T04:50:36-05:00",
@@ -32,10 +32,10 @@
         "status": "fresh"
       },
       "market_state": {
-        "as_of": "2026-11-10T12:01:12Z",
+        "as_of": "2026-11-11T12:39:42Z",
         "blocking": false,
         "catastrophic": false,
-        "digest": "b89fb1c4af013ee30b551955e3c96f6f42edcae7fba33f2569bfc761623e9058",
+        "digest": "f215431bdc6523ccec903ce15d1a4603abdabb41a9f37eac545fe1c13d179181",
         "notes": [
           "non-preflight source staleness stays visible and does not block the market_state family: NZ_rates",
           "source-isolated unavailable feeds: CME_positioning, NZ_rates"
@@ -43,21 +43,18 @@
         "status": "fresh"
       },
       "news": {
-        "as_of": "2026-11-10T04:50:36.940059-05:00",
+        "as_of": "2026-11-11T06:25:27.481006-05:00",
         "blocking": false,
         "catastrophic": false,
-        "digest": "1a9d51370140a3c8b1a78e3b61d6ef1318b27db39299f1d0617dad9109e223f9",
+        "digest": "3fdd00b15a29d231c667fb084e359e6cd6c1f3352dd17b017dd9235004387d79",
         "notes": [
-          "substantive normalized news items are frozen below",
-          "accepted news kept as baseline; live discovery merged into the current window",
-          "live news acquisition completed",
-          "live news reuters check failed: HTTP Error 401: HTTP Forbidden"
+          "accepted current-cycle ACP research supplement"
         ],
         "status": "fresh"
       }
     },
-    "last_successful_pm_run_id": "overnight-20261110",
-    "last_successful_review_run_id": "overnight-20261110",
+    "last_successful_pm_run_id": "overnight-20261111",
+    "last_successful_review_run_id": "overnight-20261111",
     "may_publish": true,
     "pm_books_status": "fresh",
     "reason": "core inputs are structurally valid",
