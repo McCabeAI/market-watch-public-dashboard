@@ -57,8 +57,9 @@ USDCAD 1.41026 (`ret_1m` −0.87%, `ret_3m` +1.27%); latest CPI month **2026-09*
 | `provenance` | `reconstructed_from_frozen_v1` |
 | Brent-in-CAD `combined` | −9.37% |
 | Fuel `h1_3m` `pp_mid` | −0.183 pp (range −0.222 … −0.143, low = most negative) |
-| Fuel `h1_3m` `direction` | `down` |
+| Fuel `h1_3m` `direction` | `mixed` (`prior_window_opposite_sign`) |
 | `coverage` | `partial` (`2026-09-30 → 2026-10-09`) |
+| `prior_window_evidence` | BZZ26 +20.0% (2026-09-30→2026-10-30); not netted with Jan-27 window |
 | Fuel `h3_6m` | directional `down` (front 92.57 > 12m 78.28, backwardation) |
 | Imported goods | `neutral` (FX not material; h1_3m *small, lagged*) |
 | Food/inputs `h3_6m` | `down` (RMPI ex-crude −0.435% beyond band) |
@@ -67,7 +68,8 @@ USDCAD 1.41026 (`ret_1m` −0.87%, `ret_3m` +1.27%); latest CPI month **2026-09*
 
 - **What changed** — Brent-in-CAD 1m −9.4% (2026-10-09→2026-11-09)
 - **Where it is transmitting** — Producer stage: IPPI energy +12.1% m/m, RMPI crude +14.4% (Sep); CPI transport +0.3% m/m, breadth 5/8 majors up, trim accel +0.37 pp (Sep)
-- **What remains** — Fuel 1–3m −0.18 pp (range −0.22 pp to −0.14 pp) partial; core mixed; fuel 3–6m down — downward if the futures curve is realised (front 92.57 vs 12m 78.28 USD/bbl)
+- **What remains** — Fuel 1–3m −0.18 pp from the Jan-27 repricing 2026-10-09→2026-11-09 only; the Dec-26 contract rose +20.0% 2026-09-30→2026-10-30 (expired), not netted — October CPI fuel may still rise; net sign unresolved; core mixed; fuel 3–6m down — downward if the futures curve is realised (front 92.57 vs 12m 78.28 USD/bbl)
+- **Glance** — Fuel CPI 1–3m mixed (partial)
 - **Status** — Reconstructed inputs 2026-11-10 · CPI 2026-09 · IPPI/RMPI 2026-09 (rel. 2026-10-22) · sector PPI 2026-Q2 (rel. 2026-10-09) · Brent 2026-10-09→2026-11-09; USD/CAD 21 ECB business days to 2026-11-09 · provenance `reconstructed_from_frozen_v1`
 - **Core evidence** — CPI breadth 5/8 majors up · trim accel 0.37 pp (2026-09)
 
@@ -93,7 +95,7 @@ Abbreviated JSON (computed 2026-11-11):
       "remaining": {
         "h1_3m": {
           "basis": "range",
-          "direction": "down",
+          "direction": "mixed",
           "pp_mid": -0.18253725929160808,
           "coverage": "partial",
           "uncovered_interval": "2026-09-30 → 2026-10-09"
@@ -130,6 +132,11 @@ M_c `2026-09` pump 150.0 c/L; M_r `2026-10` pump 155.0 c/L; RBOB wholesale used 
   }
 }
 ```
+
+## Known limitations
+
+- **Roll / uncovered interval:** Reconstructed fuel `h1_3m` pp applies only to the **current front contract's own** 1m Brent-in-CAD window (no splicing across listed contracts). When CPI is partial, accepted snapshots may supply `prior_window_evidence` for the prior prompt contract's same-contract window near month-end; opposite-sign moves set `direction: mixed` and are **not** netted into the pp range.
+- CPI evidence release dates use CPI breadth / `data/temperature_history/ca.json` only — not IPPI/RMPI release times.
 
 ## Public interfaces (`scripts/prima_pressure/transmission.py`)
 
