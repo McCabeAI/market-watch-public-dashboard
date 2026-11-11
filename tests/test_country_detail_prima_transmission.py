@@ -149,6 +149,10 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         html = render_prima_pressure_block({**presentation, "transmission": tx}, _esc)
         self.assertIn("Weekly pump", html)
         self.assertIn("BCPI weekly", html)
+        self.assertIn("0.05 pp", html)
+        self.assertIn("residual 0.02 pp", html)
+        self.assertNotIn("5.00 pp", html)
+        self.assertNotRegex(html, r"\bNone\b")
 
     def test_render_missing_weekly_unavailable_line(self) -> None:
         presentation = _pinned_presentation()

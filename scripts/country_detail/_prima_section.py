@@ -1580,12 +1580,6 @@ def _render_transmission_method(tx: Mapping[str, Any], esc: Any) -> str:
     )
 
 
-def _tx_pp_text(pp: float | None) -> str:
-    if not isinstance(pp, (int, float)):
-        return "n/a"
-    return f"{_tx_signed_num(float(pp) * 100, places=2)} pp"
-
-
 def _tx_pct_decimal(value: float | None, *, places: int = 2) -> str:
     if not isinstance(value, (int, float)):
         return "n/a"
@@ -1607,11 +1601,12 @@ def _tx_energy_weekly_html(ch: Mapping[str, Any], esc: Any) -> str:
             f"Weekly pump {esc(str(wp.get('week_ending') or ''))}: "
             f"{esc(str(wp.get('price_cpl')))} c/L vs M_r {esc(str(wp.get('pump_M_r_cpl')))} c/L"
         )
-        if wp.get("observed_at_pump_pp") is not None:
-            lines.append(
-                f"Stage-C split · observed at pump {_tx_pp_text(float(wp['observed_at_pump_pp']))} "
-                f"· residual {_tx_pp_text(float(wp['residual_unpriced_pp'])) if wp.get('residual_unpriced_pp') is not None else None}"
-            )
+        obs_pp = wp.get("observed_at_pump_pp")
+        res_pp = wp.get("residual_unpriced_pp")
+        if isinstance(obs_pp, (int, float)) or res_pp is not None:
+            obs_s = _tx_pp_display(float(obs_pp)) if isinstance(obs_pp, (int, float)) else "n/a"
+            res_s = _tx_pp_display(float(res_pp)) if isinstance(res_pp, (int, float)) else "n/a"
+            lines.append(f"Stage-C split · observed at pump {obs_s} · residual {res_s}")
         if wp.get("split_note"):
             lines.append(esc(str(wp["split_note"])))
     elif status == "no_week_after_M_r":

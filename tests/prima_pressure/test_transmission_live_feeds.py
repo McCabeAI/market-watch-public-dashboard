@@ -27,7 +27,8 @@ from scripts.prima_pressure.transmission_contract import (
     TRANSMISSION_PROVENANCE_RECON,
     WEIGHT_GASOLINE_PCT,
 )
-from scripts.prima_pressure.transmission_live import build_energy_live
+from scripts.prima_pressure.transmission_live import _classify_pump_gap, build_energy_live
+from scripts.prima_pressure.transmission import _truncate_status_bits
 
 
 SNAPSHOT_PATH = (
@@ -58,8 +59,11 @@ def _base_live(*, nrcan_weekly=None, bcpi_weekly=None):
             "diesel": {
                 "status": "ok",
                 "observations": [
-                    {"week_ending": "2026-10-14", "price_cpl": 250.0},
-                    {"week_ending": "2026-11-10", "price_cpl": 253.0},
+                    {"week_ending": "2026-10-07", "price_cpl": 258.0},
+                    {"week_ending": "2026-10-14", "price_cpl": 255.0},
+                    {"week_ending": "2026-10-21", "price_cpl": 252.0},
+                    {"week_ending": "2026-10-28", "price_cpl": 251.0},
+                    {"week_ending": "2026-11-04", "price_cpl": 253.0},
                 ],
             },
         },
@@ -134,6 +138,7 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
     def test_pump_vs_wholesale_classifications(self) -> None:
         live = _base_live()
         obs = [
+            {"week_ending": "2026-10-07", "price_cpl": 149.0},
             {"week_ending": "2026-10-14", "price_cpl": 150.0},
             {"week_ending": "2026-10-21", "price_cpl": 151.0},
             {"week_ending": "2026-10-28", "price_cpl": 152.0},
@@ -141,6 +146,7 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
         ]
         live["nrcan_weekly"]["series"]["gasoline_regular"]["observations"] = obs
         live["daily_bars"]["rbob"] = [
+            {"date": "2026-10-07", "close": 1.95},
             {"date": "2026-10-14", "close": 2.0},
             {"date": "2026-10-21", "close": 2.05},
             {"date": "2026-10-28", "close": 2.08},
@@ -172,7 +178,7 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
                 "W.AGRI": {
                     "status": "ok",
                     "observations": [
-                        {"date": "2026-09-24", "value": 100.0},
+                        {"date": "2026-09-30", "value": 100.0},
                         {"date": "2026-11-04", "value": 110.0},
                     ],
                     "stale": False,
@@ -251,7 +257,7 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
                 "W.AGRI": {
                     "status": "ok",
                     "observations": [
-                        {"date": "2026-09-24", "value": 100.0},
+                        {"date": "2026-09-30", "value": 100.0},
                         {"date": "2026-11-04", "value": 200.0},
                     ],
                 }
@@ -286,7 +292,7 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
                 "W.AGRI": {
                     "status": "ok",
                     "observations": [
-                        {"date": "2026-09-24", "value": 100.0},
+                        {"date": "2026-09-30", "value": 100.0},
                         {"date": "2026-11-04", "value": 200.0},
                     ],
                 }
@@ -387,6 +393,139 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
         self.assertEqual(energy["stages"]["weekly_pump"]["status"], "not_in_frozen_snapshot")
         food = tx["channels"]["food_and_non_energy_inputs"]
         self.assertEqual(food["upstream_weekly"]["status"], "not_in_frozen_snapshot")
+
+    def test_classify_pump_gap_rules(self) -> None:
+        self.assertEqual(_classify_pump_gap(2.0, 8.0), "pump_lagging")
+        self.assertEqual(_classify_pump_gap(10.0, 6.0), "pump_leading")
+        self.assertEqual(_classify_pump_gap(-5.0, 6.0), "opposite_sign")
+        self.assertEqual(_classify_pump_gap(7.0, 6.0), "consistent")
+
+    def test_live_energy_unavailable_overall_partial_retained(self) -> None:
+        bcpi = {
+            "status": "ok",
+            "series": {
+                "W.AGRI": {
+                    "status": "ok",
+                    "observations": [
+                        {"date": "2026-09-30", "value": 100.0},
+                        {"date": "2026-11-04", "value": 110.0},
+                    ],
+                }
+            },
+        }
+        live = _base_live(bcpi_weekly=bcpi)
+        live["brent_front"]["symbol"] = "BZ=F"
+        inputs = {
+            "provenance": TRANSMISSION_PROVENANCE_LIVE,
+            "mode": "live",
+            "bundle": {"oil_curves": {"brent_last_day": {"points": []}}},
+            "live": live,
+            "bcpi_weekly": bcpi,
+            "cpi_reference_period": "2026-09",
+            "usdcad_history": [(date(2026, 9, 30), 1.35), (date(2026, 11, 4), 1.40)],
+        }
+        with mock.patch(
+            "scripts.prima_pressure.proxy.compute_prima_proxy",
+            return_value={"subcomponents": {}},
+        ), mock.patch(
+            "scripts.prima_pressure.proxy.compact_block",
+            return_value={"channel_evidence": {}},
+        ):
+            tx = build_transmission(inputs, as_of=date(2026, 11, 11))
+        self.assertEqual(tx["status"], "partial")
+        self.assertEqual(tx["channels"]["energy_direct_fuel"]["status"], "unavailable")
+        self.assertIn("weekly_pump", tx["channels"]["energy_direct_fuel"].get("stages") or {})
+        snap = {"canada_prima_pressure": {"transmission": tx}, "as_of": "2026-11-11"}
+        self.assertIs(transmission_for_snapshot(snap), tx)
+
+    def test_bcpi_h3_excluded_from_underlying_core(self) -> None:
+        bcpi = {
+            "status": "ok",
+            "series": {
+                "W.AGRI": {
+                    "status": "ok",
+                    "observations": [
+                        {"date": "2026-09-30", "value": 100.0},
+                        {"date": "2026-11-04", "value": 220.0},
+                    ],
+                }
+            },
+        }
+        inputs = {
+            "mode": "live",
+            "legacy_block": {"channel_evidence": {}},
+            "cpi_reference_period": "2026-09",
+            "bcpi_weekly": bcpi,
+            "bundle": {"oil_curves": {"brent_last_day": {"points": []}}},
+            "live": {
+                **_base_live(bcpi_weekly=bcpi),
+                "usdcad_history": [(date(2026, 9, 30), 1.35), (date(2026, 11, 4), 1.35)],
+            },
+            "provenance": TRANSMISSION_PROVENANCE_LIVE,
+        }
+        with mock.patch(
+            "scripts.prima_pressure.proxy.compute_prima_proxy",
+            return_value={"subcomponents": {}},
+        ), mock.patch(
+            "scripts.prima_pressure.proxy.compact_block",
+            return_value={"channel_evidence": {}},
+        ):
+            tx = build_transmission(inputs, as_of=date(2026, 11, 11))
+        food = tx["channels"]["food_and_non_energy_inputs"]
+        self.assertEqual(food["remaining"]["h3_6m"]["direction"], "up")
+        self.assertEqual(food["remaining"]["h3_6m"].get("driver"), "bcpi_weekly_only")
+        core = tx["underlying_core_evidence"]
+        self.assertEqual(core["direction_h3_6m"], "neutral")
+
+    def test_malformed_feeds_do_not_break_build(self) -> None:
+        live = _base_live()
+        live["nrcan_weekly"] = {"status": "ok", "series": "bad"}
+        inputs = {
+            "provenance": TRANSMISSION_PROVENANCE_LIVE,
+            "mode": "live",
+            "cpi_reference_period": "2026-09",
+            "bundle": {"oil_curves": {"brent_last_day": {"points": [{"maturity_months": 0, "symbol": "BZF27.NYM", "contract_month": "2027-01", "price": 80, "observation_date": "2026-11-09", "changes": {"1m": {"pct": 0, "prior_date": "2026-10-09"}}, "final_trade_date": "2026-11-30"}]}}},
+            "live": live,
+            "bcpi_weekly": {"status": "ok", "series": []},
+            "import_prices": {"status": "ok", "series": None},
+            "usdcad_pair": {"ret_1m": 0.0, "ret_3m": 0.0},
+        }
+        with mock.patch(
+            "scripts.prima_pressure.proxy.compute_prima_proxy",
+            return_value={"subcomponents": {}},
+        ), mock.patch(
+            "scripts.prima_pressure.proxy.compact_block",
+            return_value={"channel_evidence": {}},
+        ):
+            tx = build_transmission(inputs, as_of=date(2026, 11, 11))
+        json.dumps(tx)
+        food_up = tx["channels"]["food_and_non_energy_inputs"]["upstream_weekly"]
+        self.assertEqual(food_up.get("reason"), "malformed_feed")
+        imp_ev = tx["channels"]["imported_non_energy_goods"].get("import_price_evidence") or {}
+        self.assertEqual(imp_ev.get("reason"), "malformed_feed")
+        html = render_prima_pressure_block({"transmission": tx}, _esc)
+        self.assertNotIn("None", html)
+
+    def test_status_line_truncates_on_separator(self) -> None:
+        bits = ["a" * 50, "b" * 50, "c" * 50, "d" * 50, "e" * 50]
+        line = _truncate_status_bits(bits, limit=120)
+        self.assertLessEqual(len(line), 120)
+        self.assertFalse(line.endswith("·"))
+        self.assertNotIn("d" * 50, line)
+
+    def test_bcpi_cad_fx_uses_anchor_observation_date(self) -> None:
+        from scripts.prima_pressure.transmission import _bcpi_series_cad_change
+
+        sblock = {
+            "observations": [
+                {"date": "2026-09-24", "value": 100.0},
+                {"date": "2026-11-04", "value": 110.0},
+            ]
+        }
+        anchor = date(2026, 9, 30)
+        fx = [(date(2026, 9, 24), 1.30), (date(2026, 11, 4), 1.40)]
+        out = _bcpi_series_cad_change(sblock, anchor=anchor, fx_history=fx)
+        self.assertIsNotNone(out.get("change_pct_decimal_cad"))
 
     def test_inputs_from_live_passes_feed_keys(self) -> None:
         bundle = {

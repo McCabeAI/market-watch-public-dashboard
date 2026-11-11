@@ -76,6 +76,7 @@ def _horizon_block(
     uncovered_interval: str | None = None,
     flags: Sequence[str] | None = None,
     roll_narrative: str | None = None,
+    driver: str | None = None,
 ) -> dict[str, Any]:
     out: dict[str, Any] = {
         "basis": basis,
@@ -91,6 +92,8 @@ def _horizon_block(
         out["flags"] = list(flags)
     if roll_narrative:
         out["roll_narrative"] = roll_narrative
+    if driver:
+        out["driver"] = driver
     return out
 
 
@@ -656,6 +659,32 @@ def _headline_what_remains(fuel_h1: dict, fuel_h3: dict, core: dict) -> str:
     return "; ".join(bits)[:cap]
 
 
+def _feed_series_map(block: Any) -> tuple[dict[str, Any] | None, str | None]:
+    if not isinstance(block, Mapping):
+        return None, "malformed_feed"
+    if "series" not in block:
+        return {}, None
+    raw = block.get("series")
+    if raw is None or not isinstance(raw, Mapping):
+        return None, "malformed_feed"
+    return dict(raw), None
+
+
+def _truncate_status_bits(bits: list[str], *, limit: int = 300) -> str:
+    if not bits:
+        return ""
+    trimmed = list(bits)
+    while len(trimmed) > 1 and len(" · ".join(trimmed)) > limit:
+        trimmed.pop()
+    line = " · ".join(trimmed)
+    if len(line) <= limit:
+        return line
+    if len(trimmed) == 1 and len(trimmed[0]) > limit:
+        cut = trimmed[0][:limit].rsplit(" ", 1)[0]
+        return cut if cut else trimmed[0][:limit]
+    return line[:limit].rsplit(" ", 1)[0]
+
+
 def _frozen_weekly_placeholder(*, frequency: str = "weekly") -> dict[str, Any]:
     return {
         "status": "not_in_frozen_snapshot",
@@ -712,8 +741,8 @@ def _bcpi_series_cad_change(
     anchor_d = _parse_date(chg.get("anchor_date"))
     cad = None
     fx_missing = False
-    if usd is not None and latest_d:
-        fx_a = _nearest_fx_value(anchor, fx_history)
+    if usd is not None and latest_d and anchor_d:
+        fx_a = _nearest_fx_value(anchor_d, fx_history)
         fx_l = _nearest_fx_value(latest_d, fx_history)
         if fx_a is None or fx_l is None:
             fx_missing = True
@@ -793,7 +822,7 @@ def _build_status_line(
     )
     if missing:
         bits.append(f"missing: {missing[0].get('input')}")
-    return " · ".join(bits)[:300]
+    return _truncate_status_bits(bits, limit=300)
 
 
 def _producer_mom(block: dict, series_id: str) -> float | None:
@@ -1382,8 +1411,15 @@ def _build_imported(inputs: dict) -> dict:
     if inputs.get("mode") != "live":
         import_price_evidence = _frozen_weekly_placeholder(frequency="monthly")
         notes.insert(0, "Import price index not in frozen snapshot (live feed only).")
-    elif not isinstance(import_block, dict) or import_block.get("status") not in ("ok", "partial", "stale"):
-        reason = str(import_block.get("reason") if isinstance(import_block, dict) else "unavailable")
+    elif not isinstance(import_block, dict):
+        import_price_evidence = {
+            "status": "unavailable",
+            "reason": "malformed_feed",
+            "frequency": "monthly",
+        }
+        notes.insert(0, "Import price index malformed in this live build.")
+    elif import_block.get("status") not in ("ok", "partial", "stale"):
+        reason = str(import_block.get("reason") or "unavailable")
         import_price_evidence = {
             "status": "unavailable",
             "reason": reason,
@@ -1391,49 +1427,68 @@ def _build_imported(inputs: dict) -> dict:
         }
         notes.insert(0, "Import price index not available in this live build.")
     else:
-        ser = (import_block.get("series") or {}).get("import_price_total") or {}
-        mom = ser.get("mom_pct_decimal")
-        chg3 = ser.get("change_3m_pct_decimal")
-        if isinstance(mom, (int, float)):
-            obs_value["import_price_total_mom"] = float(mom)
-        if isinstance(chg3, (int, float)):
-            obs_value["import_price_total_3m"] = float(chg3)
-        stale = bool(ser.get("stale"))
-        row = {
-            "series_id": "import_price_total",
-            "vector_id": ser.get("vector_id") or 1566914271,
-            "label": "StatCan import price index · total merchandise (BoP, SA, 2017=100)",
-            "period": str(ser.get("latest_period") or ""),
-            "value": float(mom) if isinstance(mom, (int, float)) else None,
-            "units": "mom",
-            "release_date": str(import_block.get("release_time") or ser.get("release_time") or "")[:10] or None,
-            "stale": stale,
-        }
-        if row.get("value") is not None:
-            transmission_seen.append(row)
-        import_price_evidence = {
-            "status": ser.get("status") or import_block.get("status"),
-            "frequency": "monthly",
-            "table_pid": import_block.get("table_pid"),
-            "latest_period": ser.get("latest_period"),
-            "mom_pct_decimal": mom,
-            "change_3m_pct_decimal": chg3,
-            "stale": stale,
-        }
-        notes.insert(
-            0,
-            "Monthly observed border prices; includes energy products (no ex-energy aggregate in 12-10-0168-01) "
-            "— not additive with the energy channel; direction remains FX-rule.",
-        )
-        assumptions.append(
-            {
-                "name": "import_price_measure_v2",
-                "value": "IMPORT_PRICE_MEASURE_VERIFIED",
-                "source": str(IMPORT_PRICE_MEASURE_VERIFIED.get("documentation", ""))[:240],
+        series_map, series_err = _feed_series_map(import_block)
+        if series_err:
+            import_price_evidence = {
+                "status": "unavailable",
+                "reason": series_err,
+                "frequency": "monthly",
             }
-        )
-        if material and isinstance(chg3, (int, float)) and isinstance(r3, (int, float)) and chg3 * float(r3) < 0:
-            obs_flags.append("import_prices_opposite_fx")
+            notes.insert(0, "Import price index malformed in this live build.")
+        else:
+            ser_entry = (series_map or {}).get("import_price_total")
+            if ser_entry is not None and not isinstance(ser_entry, Mapping):
+                import_price_evidence = {
+                    "status": "unavailable",
+                    "reason": "malformed_feed",
+                    "frequency": "monthly",
+                }
+                notes.insert(0, "Import price index malformed in this live build.")
+            else:
+                ser = dict(ser_entry) if isinstance(ser_entry, Mapping) else {}
+                mom = ser.get("mom_pct_decimal")
+                chg3 = ser.get("change_3m_pct_decimal")
+                if isinstance(mom, (int, float)):
+                    obs_value["import_price_total_mom"] = float(mom)
+                if isinstance(chg3, (int, float)):
+                    obs_value["import_price_total_3m"] = float(chg3)
+                stale = bool(ser.get("stale"))
+                row = {
+                    "series_id": "import_price_total",
+                    "vector_id": ser.get("vector_id") or 1566914271,
+                    "label": "StatCan import price index · total merchandise (BoP, SA, 2017=100)",
+                    "period": str(ser.get("latest_period") or ""),
+                    "value": float(mom) if isinstance(mom, (int, float)) else None,
+                    "units": "mom",
+                    "release_date": str(import_block.get("release_time") or ser.get("release_time") or "")[:10]
+                    or None,
+                    "stale": stale,
+                }
+                if row.get("value") is not None:
+                    transmission_seen.append(row)
+                import_price_evidence = {
+                    "status": ser.get("status") or import_block.get("status"),
+                    "frequency": "monthly",
+                    "table_pid": import_block.get("table_pid"),
+                    "latest_period": ser.get("latest_period"),
+                    "mom_pct_decimal": mom,
+                    "change_3m_pct_decimal": chg3,
+                    "stale": stale,
+                }
+                notes.insert(
+                    0,
+                    "Monthly observed border prices; includes energy products (no ex-energy aggregate in 12-10-0168-01) "
+                    "— not additive with the energy channel; direction remains FX-rule.",
+                )
+                assumptions.append(
+                    {
+                        "name": "import_price_measure_v2",
+                        "value": "IMPORT_PRICE_MEASURE_VERIFIED",
+                        "source": str(IMPORT_PRICE_MEASURE_VERIFIED.get("documentation", ""))[:240],
+                    }
+                )
+                if material and isinstance(chg3, (int, float)) and isinstance(r3, (int, float)) and chg3 * float(r3) < 0:
+                    obs_flags.append("import_prices_opposite_fx")
 
     return {
         "id": TRANSMISSION_CHANNEL_IMPORTED,
@@ -1480,6 +1535,7 @@ def _build_food(inputs: dict, block: dict, *, root: Path | None = None) -> dict:
 
     obs_flags: list[str] = []
     h3_ref = "Input costs 3–9m lag"
+    h3_driver: str | None = None
     notes: list[str] = []
 
     ref_period = _producer_reference_period(block, "rmpi_ex_crude_energy")
@@ -1497,7 +1553,15 @@ def _build_food(inputs: dict, block: dict, *, root: Path | None = None) -> dict:
     else:
         bcpi = inputs.get("bcpi_weekly")
         fx_hist = list((inputs.get("live") or {}).get("usdcad_history") or inputs.get("usdcad_history") or [])
-        if not isinstance(bcpi, dict) or bcpi.get("status") not in ("ok", "partial"):
+        if bcpi is not None and not isinstance(bcpi, Mapping):
+            upstream = {
+                "status": "unavailable",
+                "reason": "malformed_feed",
+                "frequency": "weekly",
+                "nature": "Canadian-produced export commodity prices in USD; not import prices",
+            }
+            notes.append("BoC BCPI weekly malformed in this live build.")
+        elif not isinstance(bcpi, dict) or bcpi.get("status") not in ("ok", "partial"):
             upstream = {
                 "status": "unavailable",
                 "reason": str((bcpi or {}).get("reason") or "bcpi_weekly_missing"),
@@ -1514,48 +1578,75 @@ def _build_food(inputs: dict, block: dict, *, root: Path | None = None) -> dict:
             }
             notes.append("BCPI weekly anchor unavailable.")
         else:
-            series_payload: dict[str, Any] = {}
-            agri_cad: float | None = None
-            for sid, role in (
-                ("W.AGRI", "food_context"),
-                ("W.MTLS", "non_energy_goods_context"),
-                ("W.BCNE", "aggregate_reference_contains_agri_and_metals — not combined"),
-            ):
-                sblock = (bcpi.get("series") or {}).get(sid) or {}
-                converted = _bcpi_series_cad_change(sblock, anchor=anchor, fx_history=fx_hist)
-                converted["role"] = role
-                converted["series_id"] = sid
-                converted["stale"] = bool(sblock.get("stale"))
-                series_payload[sid] = converted
-                if sid == "W.AGRI":
-                    agri_cad = converted.get("change_pct_decimal_cad")
-            upstream = {
-                "status": bcpi.get("status"),
-                "frequency": "weekly",
-                "nature": "Canadian-produced export commodity prices in USD; not import prices",
-                "anchor": anchor.isoformat(),
-                "anchor_period": ref_period,
-                "series": series_payload,
-                "retrieved_at": bcpi.get("retrieved_at"),
-                "published_at": bcpi.get("published_at"),
-            }
-            if rmpi is None and ippi is None and isinstance(agri_cad, (int, float)):
-                if agri_cad > BCPI_DIRECTION_BAND_PCT:
-                    d3 = "up"
-                    h3_ref = f"BCPI agriculture since {anchor.isoformat()} (weekly, USD export-price proxy, CAD-adjusted)"
-                elif agri_cad < -BCPI_DIRECTION_BAND_PCT:
-                    d3 = "down"
-                    h3_ref = f"BCPI agriculture since {anchor.isoformat()} (weekly, USD export-price proxy, CAD-adjusted)"
-            elif isinstance(agri_cad, (int, float)) and d3 in ("up", "down"):
-                agri_dir = "up" if agri_cad > BCPI_DIRECTION_BAND_PCT else (
-                    "down" if agri_cad < -BCPI_DIRECTION_BAND_PCT else "neutral"
-                )
-                if agri_dir not in ("neutral", d3):
-                    obs_flags.append("weekly_commodities_opposite")
-                    notes.append(
-                        "Weekly BCPI agriculture (CAD-adjusted) beyond band in the opposite direction "
-                        "of RMPI/IPPI; h3_6m direction unchanged."
+            bcpi_series, bcpi_series_err = _feed_series_map(bcpi)
+            if bcpi_series_err:
+                upstream = {
+                    "status": "unavailable",
+                    "reason": bcpi_series_err,
+                    "frequency": "weekly",
+                    "nature": "Canadian-produced export commodity prices in USD; not import prices",
+                }
+                notes.append("BoC BCPI weekly malformed in this live build.")
+            else:
+                series_payload: dict[str, Any] = {}
+                agri_cad: float | None = None
+                for sid, role in (
+                    ("W.AGRI", "food_context"),
+                    ("W.MTLS", "non_energy_goods_context"),
+                    ("W.BCNE", "aggregate_reference_contains_agri_and_metals — not combined"),
+                ):
+                    sblock_raw = (bcpi_series or {}).get(sid)
+                    sblock = dict(sblock_raw) if isinstance(sblock_raw, Mapping) else {}
+                    if sblock_raw is not None and not isinstance(sblock_raw, Mapping):
+                        series_payload[sid] = {
+                            "status": "unavailable",
+                            "reason": "malformed_feed",
+                            "series_id": sid,
+                            "role": role,
+                        }
+                        continue
+                    converted = _bcpi_series_cad_change(sblock, anchor=anchor, fx_history=fx_hist)
+                    converted["role"] = role
+                    converted["series_id"] = sid
+                    converted["stale"] = bool(sblock.get("stale"))
+                    series_payload[sid] = converted
+                    if sid == "W.AGRI":
+                        agri_cad = converted.get("change_pct_decimal_cad")
+                upstream = {
+                    "status": bcpi.get("status"),
+                    "frequency": "weekly",
+                    "nature": "Canadian-produced export commodity prices in USD; not import prices",
+                    "anchor": anchor.isoformat(),
+                    "anchor_period": ref_period,
+                    "series": series_payload,
+                    "retrieved_at": bcpi.get("retrieved_at"),
+                    "published_at": bcpi.get("published_at"),
+                }
+                if rmpi is None and ippi is None and isinstance(agri_cad, (int, float)):
+                    if agri_cad > BCPI_DIRECTION_BAND_PCT:
+                        d3 = "up"
+                        h3_driver = "bcpi_weekly_only"
+                        h3_ref = (
+                            f"BCPI agriculture since {anchor.isoformat()} "
+                            f"(weekly, USD export-price proxy, CAD-adjusted)"
+                        )
+                    elif agri_cad < -BCPI_DIRECTION_BAND_PCT:
+                        d3 = "down"
+                        h3_driver = "bcpi_weekly_only"
+                        h3_ref = (
+                            f"BCPI agriculture since {anchor.isoformat()} "
+                            f"(weekly, USD export-price proxy, CAD-adjusted)"
+                        )
+                elif isinstance(agri_cad, (int, float)) and d3 in ("up", "down"):
+                    agri_dir = "up" if agri_cad > BCPI_DIRECTION_BAND_PCT else (
+                        "down" if agri_cad < -BCPI_DIRECTION_BAND_PCT else "neutral"
                     )
+                    if agri_dir not in ("neutral", d3):
+                        obs_flags.append("weekly_commodities_opposite")
+                        notes.append(
+                            "Weekly BCPI agriculture (CAD-adjusted) beyond band in the opposite direction "
+                            "of RMPI/IPPI; h3_6m direction unchanged."
+                        )
 
     return {
         "id": TRANSMISSION_CHANNEL_FOOD,
@@ -1573,7 +1664,12 @@ def _build_food(inputs: dict, block: dict, *, root: Path | None = None) -> dict:
         "transmission_seen": _food_transmission_seen(block, root=root),
         "remaining": {
             "h1_3m": _horizon_block(basis="directional", direction=d1, reference_baseline="RMPI/IPPI bands"),
-            "h3_6m": _horizon_block(basis="directional", direction=d3, reference_baseline=h3_ref),
+            "h3_6m": _horizon_block(
+                basis="directional",
+                direction=d3,
+                reference_baseline=h3_ref,
+                driver=h3_driver,
+            ),
         },
         "cpi_components": [
             {
@@ -1592,7 +1688,10 @@ def _underlying_core(imported: dict, food: dict, block: dict) -> dict[str, Any]:
     dirs = []
     for ch in (imported, food):
         for horizon in ("h1_3m", "h3_6m"):
-            d = (ch.get("remaining") or {}).get(horizon, {}).get("direction")
+            hrow = (ch.get("remaining") or {}).get(horizon) or {}
+            if hrow.get("driver") == "bcpi_weekly_only":
+                continue
+            d = hrow.get("direction")
             if d and d not in ("neutral", "unavailable"):
                 dirs.append(d)
     shadow = block.get("shadow_sector_layer") or {}
@@ -1685,6 +1784,15 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
     imported = _build_imported(inputs)
     food = _build_food(inputs, block, root=root)
 
+    overall_status = tx_status
+    if (
+        inputs.get("mode") == "live"
+        and provenance == TRANSMISSION_PROVENANCE_LIVE
+        and energy.get("status") == "unavailable"
+        and overall_status == "unavailable"
+    ):
+        overall_status = "partial"
+
     cpi_ref = inputs.get("cpi_reference_period") or _latest_cpi_period(block)
     core = _underlying_core(imported, food, block)
     breadth_ev = _breadth_evidence(block, root=root)
@@ -1722,7 +1830,7 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
         "not_bank_of_canada_prima": True,
         "disclaimer": DISCLAIMER_TX,
         "cpi_reference_period": cpi_ref,
-        "status": tx_status,
+        "status": overall_status,
         "channels": {
             TRANSMISSION_CHANNEL_ENERGY: energy,
             TRANSMISSION_CHANNEL_IMPORTED: imported,
@@ -1746,7 +1854,7 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
             "where_transmitting": _headline_where_transmitting(block, breadth_ev),
             "what_remains": _headline_what_remains(fuel_h1, fuel_h3, core),
         },
-        "status_line": status_line[:300],
+        "status_line": status_line,
         "missing_inputs": missing,
     }
     return out

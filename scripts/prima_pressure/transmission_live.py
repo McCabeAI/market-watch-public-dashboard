@@ -657,16 +657,56 @@ def _bar_close_on_or_before(bars: Sequence[dict], target: dt.date) -> float | No
 
 
 def _classify_pump_gap(delta_pump: float, implied: float) -> str:
+    if abs(delta_pump) >= 1e-9 and abs(implied) >= 1e-9:
+        if (delta_pump > 0) != (implied > 0):
+            return "opposite_sign"
     gap = delta_pump - implied
     if abs(gap) < CRUDE_REFINING_DIVERGENCE_CPL:
         return "consistent"
-    if abs(implied) < 1e-9:
-        return "pump_leading" if abs(delta_pump) >= CRUDE_REFINING_DIVERGENCE_CPL else "consistent"
-    if (gap > 0) != (implied > 0):
-        return "opposite_sign"
-    if abs(gap) > abs(implied):
-        return "pump_leading"
-    return "pump_lagging"
+    if abs(delta_pump) < abs(implied):
+        return "pump_lagging"
+    return "pump_leading"
+
+
+def _weekly_four_week_pair(
+    observations: Sequence[dict],
+    *,
+    as_of: dt.date,
+) -> tuple[dict | None, dict | None, str | None]:
+    tail = [
+        row
+        for row in observations
+        if _parse_date(row.get("week_ending")) and _parse_date(row["week_ending"]) <= as_of
+    ]
+    if len(tail) < 5:
+        return None, None, "insufficient_weekly_history"
+    latest = tail[-1]
+    prior = tail[-5]
+    d_latest = _parse_date(latest.get("week_ending"))
+    d_prior = _parse_date(prior.get("week_ending"))
+    if d_latest is None or d_prior is None:
+        return None, None, "malformed_dates"
+    span = (d_latest - d_prior).days
+    if span < 21 or span > 35:
+        return None, None, "weekly_spacing_not_4w"
+    return latest, prior, None
+
+
+def _nrcan_series_block(
+    nrcan_w: Any,
+    series_key: str,
+) -> tuple[Mapping[str, Any] | None, dict[str, Any] | None, str | None]:
+    """Return (block, series_entry, malformed_reason)."""
+    if not isinstance(nrcan_w, Mapping):
+        return None, None, "malformed_feed"
+    raw_series = nrcan_w.get("series")
+    if raw_series is not None and not isinstance(raw_series, Mapping):
+        return nrcan_w, None, "malformed_feed"
+    series_map: Mapping[str, Any] = raw_series or {}
+    entry = series_map.get(series_key)
+    if entry is not None and not isinstance(entry, Mapping):
+        return nrcan_w, None, "malformed_feed"
+    return nrcan_w, dict(entry) if isinstance(entry, Mapping) else {}, None
 
 
 def _attach_weekly_energy_stages(
@@ -691,10 +731,19 @@ def _attach_weekly_energy_stages(
             stages[key] = {"status": "not_in_frozen_snapshot"}
         return None, missing
 
-    gas_series = {}
-    if isinstance(nrcan_w, Mapping):
-        gas_series = (nrcan_w.get("series") or {}).get("gasoline_regular") or {}
-    gas_obs = gas_series.get("observations") or []
+    nrcan_w_map, gas_series, nrcan_malformed = _nrcan_series_block(nrcan_w, "gasoline_regular")
+    if nrcan_malformed:
+        for key in ("weekly_pump", "pump_vs_wholesale", "diesel_weekly"):
+            stages[key] = {
+                "status": "unavailable",
+                "reason": nrcan_malformed,
+                "role": "informational" if key != "weekly_pump" else None,
+            }
+            stages[key] = {k: v for k, v in stages[key].items() if v is not None}
+        return None, missing
+    nrcan_w = nrcan_w_map or {}
+    gas_series = gas_series or {}
+    gas_obs = gas_series.get("observations") if isinstance(gas_series.get("observations"), list) else []
 
     # weekly_pump
     wp: dict[str, Any]
@@ -759,106 +808,117 @@ def _attach_weekly_energy_stages(
     if not gas_obs or _weekly_block_status(nrcan_w) not in ("ok", "partial"):
         pvw = {"status": "unavailable", "reason": "nrcan_weekly_missing", "role": "informational"}
     else:
-        tail = [row for row in gas_obs if _parse_date(row.get("week_ending")) and _parse_date(row["week_ending"]) <= as_of]
-        latest = tail[-1] if tail else None
-        prior = _obs_at_index(tail, 3)
-        if latest is None or prior is None:
-            pvw = {"status": "unavailable", "reason": "insufficient_weekly_history", "role": "informational"}
+        latest, prior, pair_reason = _weekly_four_week_pair(gas_obs, as_of=as_of)
+        if pair_reason or latest is None or prior is None:
+            pvw = {
+                "status": "unavailable",
+                "reason": pair_reason or "insufficient_weekly_history",
+                "role": "informational",
+            }
         else:
             d_latest = _parse_date(latest.get("week_ending"))
             d_prior = _parse_date(prior.get("week_ending"))
+            p_latest = latest.get("price_cpl")
+            p_prior = prior.get("price_cpl")
             if d_latest is None or d_prior is None:
                 pvw = {"status": "unavailable", "reason": "malformed_dates", "role": "informational"}
-            elif (d_latest - d_prior).days < 21 or (d_latest - d_prior).days > 35:
-                pvw = {"status": "unavailable", "reason": "weekly_spacing_not_4w", "role": "informational"}
+            elif not isinstance(p_latest, (int, float)) or not isinstance(p_prior, (int, float)):
+                pvw = {"status": "unavailable", "reason": "missing_prices", "role": "informational"}
             else:
-                p_latest = latest.get("price_cpl")
-                p_prior = prior.get("price_cpl")
-                if not isinstance(p_latest, (int, float)) or not isinstance(p_prior, (int, float)):
-                    pvw = {"status": "unavailable", "reason": "missing_prices", "role": "informational"}
+                delta_pump = float(p_latest) - float(p_prior)
+                use_rbob = bool(rbob_bars)
+                product_bars = rbob_bars if use_rbob else brent_bars
+                unit = "wholesale" if use_rbob else "crude"
+                if not product_bars:
+                    pvw = {"status": "unavailable", "reason": "missing_futures_bars", "role": "informational"}
                 else:
-                    delta_pump = float(p_latest) - float(p_prior)
-                    use_rbob = bool(rbob_bars)
-                    product_bars = rbob_bars if use_rbob else brent_bars
-                    unit = "wholesale" if use_rbob else "crude"
-                    if not product_bars:
-                        pvw = {"status": "unavailable", "reason": "missing_futures_bars", "role": "informational"}
+                    px_l = _bar_close_on_or_before(product_bars, d_latest)
+                    px_p = _bar_close_on_or_before(product_bars, d_prior)
+                    fx_l = _nearest_fx(d_latest, fx_hist) or fx_spot
+                    fx_p = _nearest_fx(d_prior, fx_hist) or fx_spot
+                    if px_l is None or px_p is None or fx_l is None or fx_p is None:
+                        pvw = {"status": "unavailable", "reason": "missing_price_or_fx_leg", "role": "informational"}
                     else:
-                        px_l = _bar_close_on_or_before(product_bars, d_latest)
-                        px_p = _bar_close_on_or_before(product_bars, d_prior)
-                        fx_l = _nearest_fx(d_latest, fx_hist) or fx_spot
-                        fx_p = _nearest_fx(d_prior, fx_hist) or fx_spot
-                        if px_l is None or px_p is None or fx_l is None or fx_p is None:
-                            pvw = {"status": "unavailable", "reason": "missing_price_or_fx_leg", "role": "informational"}
+                        if unit == "wholesale":
+                            cpl_l = _wholesale_cpl(px_l, fx_l)
+                            cpl_p = _wholesale_cpl(px_p, fx_p)
                         else:
-                            if unit == "wholesale":
-                                cpl_l = _wholesale_cpl(px_l, fx_l)
-                                cpl_p = _wholesale_cpl(px_p, fx_p)
-                            else:
-                                cpl_l = _crude_cpl(px_l, fx_l)
-                                cpl_p = _crude_cpl(px_p, fx_p)
-                            delta_cost = cpl_l - cpl_p
-                            implied = delta_cost * TAX_PASS_THROUGH
-                            classification = _classify_pump_gap(delta_pump, implied)
-                            pvw = {
-                                "status": "ok",
-                                "role": "informational",
-                                "classification": classification,
-                                "delta_pump_cpl": delta_pump,
-                                "delta_wholesale_cpl": delta_cost,
-                                "delta_crude_cpl": delta_cost if unit == "crude" else None,
-                                "implied_pump_change_cpl": implied,
-                                "gap_cpl": delta_pump - implied,
-                                "cost_basis": unit,
-                                "window": {
-                                    "start": d_prior.isoformat(),
-                                    "end": d_latest.isoformat(),
-                                },
-                                "cpi_contribution": None,
-                            }
+                            cpl_l = _crude_cpl(px_l, fx_l)
+                            cpl_p = _crude_cpl(px_p, fx_p)
+                        delta_cost = cpl_l - cpl_p
+                        implied = delta_cost * TAX_PASS_THROUGH
+                        classification = _classify_pump_gap(delta_pump, implied)
+                        pvw = {
+                            "status": "ok",
+                            "role": "informational",
+                            "classification": classification,
+                            "delta_pump_cpl": delta_pump,
+                            "delta_wholesale_cpl": delta_cost,
+                            "delta_crude_cpl": delta_cost if unit == "crude" else None,
+                            "implied_pump_change_cpl": implied,
+                            "gap_cpl": delta_pump - implied,
+                            "cost_basis": unit,
+                            "window": {
+                                "start": d_prior.isoformat(),
+                                "end": d_latest.isoformat(),
+                            },
+                            "cpi_contribution": None,
+                        }
     stages["pump_vs_wholesale"] = pvw
 
     # diesel_weekly
-    diesel_series = {}
-    if isinstance(nrcan_w, Mapping):
-        diesel_series = (nrcan_w.get("series") or {}).get("diesel") or {}
-    diesel_obs = diesel_series.get("observations") or []
+    _, diesel_series, diesel_malformed = _nrcan_series_block(nrcan_w, "diesel")
+    diesel_obs = (
+        diesel_series.get("observations")
+        if isinstance(diesel_series, Mapping) and isinstance(diesel_series.get("observations"), list)
+        else []
+    )
     dw: dict[str, Any]
-    if _weekly_block_status(nrcan_w) not in ("ok", "partial"):
+    if diesel_malformed:
+        dw = {
+            "status": "unavailable",
+            "reason": "malformed_feed",
+            "role": "transport_and_producer_cost_context",
+        }
+    elif _weekly_block_status(nrcan_w) not in ("ok", "partial"):
         dw = {"status": "unavailable", "reason": "nrcan_weekly_missing", "role": "transport_and_producer_cost_context"}
     elif not diesel_obs:
         dw = {"status": "unavailable", "reason": "no_diesel_observations", "role": "transport_and_producer_cost_context"}
     else:
-        tail_d = [row for row in diesel_obs if _parse_date(row.get("week_ending")) and _parse_date(row["week_ending"]) <= as_of]
-        latest_d = tail_d[-1] if tail_d else None
-        prior_d = _obs_at_index(tail_d, 3)
+        latest_d, prior_d, diesel_pair_reason = _weekly_four_week_pair(diesel_obs, as_of=as_of)
         change_pct = None
-        if latest_d and prior_d:
+        if diesel_pair_reason or latest_d is None or prior_d is None:
+            dw = {
+                "status": "unavailable",
+                "reason": diesel_pair_reason or "insufficient_weekly_history",
+                "role": "transport_and_producer_cost_context",
+            }
+        else:
             a, b = latest_d.get("price_cpl"), prior_d.get("price_cpl")
             if isinstance(a, (int, float)) and isinstance(b, (int, float)) and b != 0:
                 change_pct = float(a) / float(b) - 1.0
-        ulsd_chg = None
-        if ulsd and isinstance(ulsd, Mapping) and tail_d:
-            ho_bars = (live.get("daily_bars") or {}).get("ulsd") or (live.get("daily_bars") or {}).get("ho") or []
-            d_end = _parse_date(latest_d.get("week_ending"))
-            d_start = _parse_date(prior_d.get("week_ending")) if prior_d else None
-            if d_end and d_start and ho_bars:
-                p_end = _bar_close_on_or_before(ho_bars, d_end)
-                p_start = _bar_close_on_or_before(ho_bars, d_start)
-                fx_e = _nearest_fx(d_end, fx_hist) or fx_spot
-                fx_s = _nearest_fx(d_start, fx_hist) or fx_spot
-                if p_end and p_start and fx_e and fx_s:
-                    ulsd_chg = _wholesale_cpl(p_end, fx_e) / _wholesale_cpl(p_start, fx_s) - 1.0
-        dw = {
-            "status": "ok" if latest_d else "unavailable",
-            "role": "transport_and_producer_cost_context",
-            "frequency": "weekly",
-            "latest_week_ending": (latest_d or {}).get("week_ending"),
-            "price_cpl": (latest_d or {}).get("price_cpl"),
-            "change_4w_pct_decimal": change_pct,
-            "ulsd_futures_4w_pct_decimal": ulsd_chg,
-            "cpi_contribution": None,
-            "note": "not added to household gasoline/fuel-oil pp",
-        }
+            ulsd_chg = None
+            if ulsd and isinstance(ulsd, Mapping):
+                ho_bars = (live.get("daily_bars") or {}).get("ulsd") or (live.get("daily_bars") or {}).get("ho") or []
+                d_end = _parse_date(latest_d.get("week_ending"))
+                d_start = _parse_date(prior_d.get("week_ending"))
+                if d_end and d_start and ho_bars:
+                    p_end = _bar_close_on_or_before(ho_bars, d_end)
+                    p_start = _bar_close_on_or_before(ho_bars, d_start)
+                    fx_e = _nearest_fx(d_end, fx_hist) or fx_spot
+                    fx_s = _nearest_fx(d_start, fx_hist) or fx_spot
+                    if p_end and p_start and fx_e and fx_s:
+                        ulsd_chg = _wholesale_cpl(p_end, fx_e) / _wholesale_cpl(p_start, fx_s) - 1.0
+            dw = {
+                "status": "ok",
+                "role": "transport_and_producer_cost_context",
+                "frequency": "weekly",
+                "latest_week_ending": latest_d.get("week_ending"),
+                "price_cpl": latest_d.get("price_cpl"),
+                "change_4w_pct_decimal": change_pct,
+                "ulsd_futures_4w_pct_decimal": ulsd_chg,
+                "cpi_contribution": None,
+                "note": "not added to household gasoline/fuel-oil pp",
+            }
     stages["diesel_weekly"] = dw
     return weekly_ref, missing

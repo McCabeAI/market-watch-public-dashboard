@@ -119,19 +119,20 @@ Abbreviated JSON (computed 2026-11-11):
 }
 ```
 
-## Example — live (network E2E 2026-11-11)
+## Example — live (network E2E, run date 2026-11-11)
 
-Collected with `build_observation_bundle(2026-11-11, allow_network=True)` and ECB USDCAD history
-(same path as `market_state.build_snapshot`). Yahoo front contract inactive in this run; weekly
-context still attached.
+Collected with `build_observation_bundle(2026-11-11, allow_network=True)` and ECB USDCAD via
+`fetch_fx(start)["USDCAD"]`. **Limitation:** Yahoo returned HTTP 429 for Brent/RBOB/HO — listed
+front inactive, Stage C absent, energy `h1_3m` unavailable; weekly pump / BCPI / import evidence
+still attach and overall `status` is `partial`.
 
 | Field | Value |
 |-------|-------|
-| `weekly_pump` week / price | 2026-11-10 · 166.1 c/L vs M_r pump 155 c/L |
-| `observed_at_pump_pp` | ≈ −0.370 pp (split of Stage C; not additive) |
-| BCPI `W.AGRI` USD / CAD | −1.9% / CAD n/a when FX spot absent at anchor |
-| Import price `2026-09` m/m | +0.87% (total merchandise, includes energy) |
-| `status_line` (truncated) | …NRCan wkly gas 2026-11-10 · BCPI wk 2026-11-04 · import px 2026-09 (rel. 2026-11-04)… |
+| Weekly gasoline | 2026-11-10 **166.1 c/L** vs Oct-2026 NRCan monthly **183.0 c/L** |
+| `observed_at_pump_pp` | **−0.370 pp** (= 4.01×(166.1/183.0−1)); residual **n/a** (no Stage C) |
+| Diesel weekly | **253.3 c/L**; 4w **−2.99%** (261.1 on 2026-10-13 → 253.3); `cpi_contribution` null |
+| BCPI anchor 2026-09-30 | AGRI USD −1.87% / CAD −3.58%; MTLS USD −3.85% / CAD −5.53%; BCNE USD −2.65% / CAD −4.35% (reference, not combined) |
+| Import price | 2026-09 m/m **+0.866%**, 3m **+0.464%** (rel. 2026-11-04); channel direction **neutral** (FX-rule) |
 
 Artifact: `/opt/cursor/artifacts/prima_e2e/transmission_live_2026-11-11.json`.
 
