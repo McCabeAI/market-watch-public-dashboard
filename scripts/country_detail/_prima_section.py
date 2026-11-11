@@ -1250,9 +1250,34 @@ def _tx_pp_display(value: float | None) -> str:
     return f"{_tx_signed_num(value, places=2)} pp"
 
 
+def _tx_assumption_lines(ch: Mapping[str, Any], tx: Mapping[str, Any]) -> list[str]:
+    if str(ch.get("id") or "") != TRANSMISSION_CHANNEL_ENERGY:
+        return []
+    prov = str(tx.get("provenance") or "")
+    weight_line = (
+        f"CPI weights {WEIGHT_GASOLINE_PCT:.2f}% gasoline + {WEIGHT_FUEL_OIL_PCT:.2f}% fuel oil "
+        f"({WEIGHT_BASIS})"
+    )
+    if prov == TRANSMISSION_PROVENANCE_LIVE:
+        return [
+            "Ad-valorem tax 1.10 on cost change (GST/HST/QST approx.)",
+            "Full cost pass-through within ~1 month",
+            weight_line,
+        ]
+    return [
+        "Crude-cost-share elasticity 0.35 / 0.45 / 0.55 (gasoline); "
+        "0.50 / 0.60 / 0.70 (fuel oil)",
+        weight_line,
+        "~1 month pass-through via crude-cost share (reconstructed; no 1.10 tax factor)",
+    ]
+
+
 def _tx_horizon_line(h: Mapping[str, Any] | None) -> str:
     if not isinstance(h, Mapping):
         return "unavailable"
+    roll = h.get("roll_narrative")
+    if isinstance(roll, str) and roll.strip():
+        return roll.strip()
     basis = str(h.get("basis") or "unavailable")
     direction = _TX_DIR_WORD.get(str(h.get("direction") or ""), str(h.get("direction") or "unavailable"))
     ref = str(h.get("reference_baseline") or "").strip()
@@ -1462,10 +1487,11 @@ def _tx_evidence_rows(rows: Any, esc: Any) -> str:
             v = float(value)
             if units in ("mom", "qoq") or abs(v) < 2:
                 pct = v * 100.0
+                freq = " m/m" if units == "mom" else (" q/q" if units == "qoq" else "")
                 if abs(pct) < 0.005:
-                    val_s = " 0.00%"
+                    val_s = f" 0.00%{freq}"
                 else:
-                    val_s = f" {_tx_signed_num(pct, places=2)}%"
+                    val_s = f" {_tx_signed_num(pct, places=2)}%{freq}"
             else:
                 val_s = f" {_tx_signed_num(v, places=2)} {units}".strip()
         parts.append(
@@ -1568,13 +1594,8 @@ def _render_transmission_channel(
         spark = _tx_sparkline_svg(history, value_key="brent_cad_1m_pct", esc=esc, title="Brent-in-CAD 1m %")
     elif channel_id == TRANSMISSION_CHANNEL_IMPORTED:
         spark = _tx_sparkline_svg(history, value_key="usdcad_spot", esc=esc, title="USDCAD spot")
-    assumptions = ch.get("assumptions") if isinstance(ch.get("assumptions"), list) else []
-    assume_bits = [
-        f"<p>{esc(str(a.get('name') or ''))}: {esc(str(a.get('value') or ''))} "
-        f"({esc(str(a.get('source') or ''))})</p>"
-        for a in assumptions
-        if isinstance(a, Mapping)
-    ]
+    assumptions = _tx_assumption_lines(ch, tx)
+    assume_bits = [f"<p>{esc(line)}</p>" for line in assumptions]
     notes = ch.get("notes") if isinstance(ch.get("notes"), list) else []
     note_bits = [f"<p>{esc(str(n))}</p>" for n in notes if isinstance(n, str) and n.strip()]
     assume_html = ""
@@ -1645,6 +1666,8 @@ def _tx_glance_chip(tx: Mapping[str, Any]) -> str:
     mid = h1.get("pp_mid")
     coverage = h1.get("coverage")
     cov_tag = f" ({coverage})" if coverage and coverage != "full" else ""
+    if str(h1.get("direction") or "") == "mixed":
+        return f"Fuel CPI 1–3m mixed{cov_tag or ' (partial)'}"
     if isinstance(mid, (int, float)) and basis in ("numerical", "range"):
         return f"Fuel CPI 1–3m {_tx_pp_display(float(mid))}{cov_tag}"
     direction = _TX_DIR_WORD.get(str(h1.get("direction") or ""), "unavailable")
