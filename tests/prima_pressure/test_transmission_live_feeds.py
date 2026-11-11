@@ -595,6 +595,102 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
                     html = render_prima_pressure_block({"transmission": tx}, _esc)
                     _assert_html_has_no_leaked_values(self, html)
 
+    def test_malformed_per_series_feed_entries(self) -> None:
+        unavailable_feed = {"status": "unavailable", "reason": "off"}
+        per_series_cases = (
+            (
+                "bcpi_weekly",
+                {
+                    "status": "ok",
+                    "series": {
+                        "W.BCNE": [1, 2],
+                        "W.AGRI": {"observations": []},
+                        "W.MTLS": {"observations": []},
+                    },
+                },
+            ),
+            (
+                "bcpi_weekly",
+                {
+                    "status": "ok",
+                    "series": {
+                        "W.AGRI": "x",
+                        "W.BCNE": {"observations": []},
+                        "W.MTLS": {"observations": []},
+                    },
+                },
+            ),
+            (
+                "bcpi_weekly",
+                {"status": "ok", "series": {"W.BCNE": {"latest": "x"}, "W.AGRI": {"observations": []}}},
+            ),
+            (
+                "import_prices",
+                {"status": "ok", "series": {"import_price_total": "oops"}},
+            ),
+            (
+                "import_prices",
+                {
+                    "status": "ok",
+                    "series": {"import_price_total": {"latest_period": None, "latest": [1]}},
+                },
+            ),
+            (
+                "nrcan_weekly",
+                {
+                    "status": "ok",
+                    "series": {
+                        "gasoline_regular": "oops",
+                        "diesel": {"observations": []},
+                    },
+                },
+            ),
+            (
+                "nrcan_weekly",
+                {
+                    "status": "ok",
+                    "series": {
+                        "gasoline_regular": {"observations": []},
+                        "diesel": [1, 2],
+                    },
+                },
+            ),
+        )
+        baseline_live = _base_live()
+        baseline_live["nrcan_weekly"] = unavailable_feed
+        baseline_live["bcpi_weekly"] = unavailable_feed
+        baseline_live["import_prices"] = unavailable_feed
+        baseline_tx = self._build_live_tx(self._live_build_inputs(baseline_live))
+        base_energy = baseline_tx["channels"]["energy_direct_fuel"]["remaining"]["h1_3m"]
+        base_core = baseline_tx["underlying_core_evidence"]["direction_h1_3m"]
+
+        for feed_key, feed_object in per_series_cases:
+            with self.subTest(feed=feed_key, feed_object=feed_object):
+                live = _base_live()
+                live["nrcan_weekly"] = unavailable_feed
+                live["bcpi_weekly"] = unavailable_feed
+                live["import_prices"] = unavailable_feed
+                live[feed_key] = feed_object
+                inputs = self._live_build_inputs(live)
+                inputs["nrcan_weekly"] = live["nrcan_weekly"]
+                inputs["bcpi_weekly"] = live["bcpi_weekly"]
+                inputs["import_prices"] = live["import_prices"]
+                inputs[feed_key] = feed_object
+                tx = self._build_live_tx(inputs)
+                energy = tx["channels"]["energy_direct_fuel"]["remaining"]["h1_3m"]
+                self.assertEqual(energy.get("pp_mid"), base_energy.get("pp_mid"))
+                self.assertEqual(
+                    tx["underlying_core_evidence"]["direction_h1_3m"],
+                    base_core,
+                )
+                line = tx.get("status_line") or ""
+                if feed_key == "bcpi_weekly":
+                    self.assertNotIn("BCPI wk", line)
+                if feed_key == "import_prices":
+                    self.assertNotIn("import px", line)
+                html = render_prima_pressure_block({"transmission": tx}, _esc)
+                _assert_html_has_no_leaked_values(self, html)
+
     def test_malformed_feeds_do_not_break_build(self) -> None:
         live = _base_live()
         live["nrcan_weekly"] = {"status": "ok", "series": "bad"}

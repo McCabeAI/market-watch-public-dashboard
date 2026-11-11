@@ -838,10 +838,14 @@ def _build_status_line(
         bcpi_series, bcpi_series_err = _feed_series_map(bcpi)
         if not bcpi_series_err:
             for sid in ("W.BCNE", "W.AGRI"):
-                srow = (bcpi_series or {}).get(sid) or {}
-                latest = srow.get("latest") or {}
-                if latest.get("date"):
-                    bits.append(f"BCPI wk {latest['date']}")
+                srow_raw = (bcpi_series or {}).get(sid)
+                if not isinstance(srow_raw, Mapping):
+                    continue
+                latest_raw = srow_raw.get("latest")
+                if not isinstance(latest_raw, Mapping):
+                    continue
+                if latest_raw.get("date"):
+                    bits.append(f"BCPI wk {latest_raw['date']}")
                     break
     imp = (inputs or {}).get("import_prices") if isinstance(inputs, Mapping) else None
     if imp is None and isinstance(live_in, Mapping):
@@ -849,7 +853,8 @@ def _build_status_line(
     if isinstance(imp, Mapping) and imp.get("status") in ("ok", "partial", "stale"):
         imp_series, imp_series_err = _feed_series_map(imp)
         if not imp_series_err:
-            ser = (imp_series or {}).get("import_price_total") or {}
+            ser_raw = (imp_series or {}).get("import_price_total")
+            ser = ser_raw if isinstance(ser_raw, Mapping) else {}
             period = ser.get("latest_period")
             rel = str(imp.get("release_time") or ser.get("release_time") or "")[:10]
             if period:
