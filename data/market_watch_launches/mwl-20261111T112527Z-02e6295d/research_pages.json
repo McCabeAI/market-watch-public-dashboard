@@ -1,0 +1,348 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-11T11:48:47+00:00",
+      "release_sha256": "f60f119dfab05617f4b1462ebc4692dd4f28e59f69e5e67367e53c6f92f4b181",
+      "run_attempt": "1",
+      "run_id": "43011711418",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/43011711418",
+      "site_sha256": "0888a9f224584e0d13fe15f3af4952be9116a73cbbbb6d39ada5433433ab3322"
+    }
+  ],
+  "launch_id": "mwl-20261111T112527Z-02e6295d",
+  "launch_terminal": false,
+  "packet_sha256": "5adab04edf4578d53cc56ad9a58629cf02235b8e3f72b5ba94ebf6fdce4add9b",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-10T07:01:13.551421-05:00",
+      "as_of": "2026-11-10T04:50:36.940059-05:00",
+      "books_run_id": "overnight-20261110",
+      "overnight_run_id": "overnight-20261110",
+      "packet_sha256": "edfb349f95e00fe73809a934fb69c50acf0b72ff2db1520b76e1b3282205659f"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-11T06:25:27.481006-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-11T06:25:27.481006-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 14,
+          "unverified_source": 2
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Falling US Bond Futures Offer No Relief as Fed Hike Bets Grow",
+          "id": "news:8181f50162f523e5",
+          "published_at": "2026-11-10T20:52:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-11/falling-us-bond-futures-offer-no-relief-as-fed-hike-bets-grow",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Consumer prices rose 0.4% in October, more than expected, complicating Fed's inflation fight",
+          "id": "news:d2d19cfe6731e316",
+          "published_at": "2026-11-10T17:53:58-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/10/cpi-inflation-report-october-2026.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "reuters_credit",
+          "headline": "Bonds reel as hot inflation fuels jumbo Fed hike fears",
+          "id": "news:1ed28aa1b1c2bc4e",
+          "published_at": "2026-11-10T13:05:00-05:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/business/media-telecom/global-markets-global-markets-2026-11-11/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "House Oversight calls on DOJ to interview key Epstein witnesses, says govt. \u2018failed\u2019 survivors",
+          "id": "news:f29e64f3c3ec9581",
+          "published_at": "2026-11-10T10:17:20-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/10/jeffrey-epstein-house-oversight-doj.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Millions of dollars poured into prediction markets on election night, trading on Democratic control of Congress and Texas governor's race",
+          "id": "news:73b8caf2883a2c9f",
+          "published_at": "2026-11-10T09:22:38-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/09/millions-of-dollars-poured-into-prediction-markets-on-election-night.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "bloomberg_politics",
+          "headline": "Thune Wins Another Term as Senate GOP Leader After Midterm Rout",
+          "id": "news:6baedf9926298896",
+          "published_at": "2026-11-10T07:44:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-10/thune-wins-another-term-as-senate-gop-leader-after-midterm-rout",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "CoreWeave earnings put debt-fueled AI build-out under scrutiny",
+          "id": "news:ad3c6db0f5002573",
+          "published_at": "2026-11-10T09:01:21-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/10/coreweave-earnings-preview-debt-capex.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Homeowners tap equity as HELOC balances post biggest jump since 2005: New York Fed report",
+          "id": "news:17ba8868c5bd7e80",
+          "published_at": "2026-11-10T15:37:43-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/10/heloc-balances-new-york-fed.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-11T06:25:27.481006-05:00",
+      "news_family_digest": "369796f3a92cb78fe57f9606647a4eb595463ad4640225410f5d280ab0dc9b77",
+      "packet_sha256": "5adab04edf4578d53cc56ad9a58629cf02235b8e3f72b5ba94ebf6fdce4add9b",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-11T06:25:27.481006-05:00",
+        "start": "2026-11-10T06:25:27.481006-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/freeze_binding.json",
+        "sha256": "1c25744653ee2f7d1e4d376dacee68963e98001cf5af4f35a4120b77aee8b515"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/remote_freeze.json",
+        "sha256": "d9fa63ab92800c6f0438877bf50463f92bab8befe8b1cd30dd6ef882cb6b315c"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/artifacts/00_authenticate.json",
+        "sha256": "11414cc0a5b0ac7ebc7a3ebfa76ed46bf7500f4d7d3072425e5c77d786fdc1ca"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/artifacts/01_ingest.json",
+        "sha256": "7e41a6b466452556f6fdacfff1822fd2c6c5c39bba08868679e52c1ef7740866"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/artifacts/02_acquire.json",
+        "sha256": "abeaad4b287df99d5868969ca834999667a182b564c36b3ef202ee210a3af723"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/artifacts/03_quality_gate.json",
+        "sha256": "40b437d06f3f6f13fbce294b66503ab582ceb2d37f3528730f1d132ddf9bb559"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/artifacts/04_freeze.json",
+        "sha256": "18502edf1194a1ba229c31cac5e65eb4c37d93bd7c52246fef5f87f7ff58bddf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/temperature_scores.json",
+        "sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/history/ca.json",
+        "sha256": "4550a1c46e623fddb40aa8a658ee80bde32d36fa4471a7191574b44fa9f23405"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/history/ea.json",
+        "sha256": "4ff434b23ffcd9f4b9c46f12e89e2fecd988ee6b1945404093fd90a2bf02ab3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261111T112527Z-02e6295d/lineage/history/us.json",
+        "sha256": "77ac84b396934b4bfff16593c677476dd1fa7e074a2e37c1b4e690ff418d49c9"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261111/reviews/review-001/evidence_snapshot.json",
+        "sha256": "9a25ddfe210275d74a7f3fca9fe2474a806e6b0f5f1410ffed3bba16bda653a9"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "a8b0ae4c59b9f933b90af7285e33fab495f5382ce15fc45f6de884fe22e414c3"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261110/assembled_dataset.json",
+        "sha256": "7b5ea417c425abecc56c850a8f286b7803afbb60a4d8652ff02c888f75fd40b7"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "67065d34b519f02a8073bfc1232e27bd3adf0f882a77aa701bf9c3ee32682e91"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "44310aec76acfe01b421ebe0371dd541747ec2fc49a66cec1999f7957ce76773"
+      }
+    ],
+    "launch_id": "mwl-20261111T112527Z-02e6295d",
+    "market_state": {
+      "as_of": "2026-11-11T11:47:41Z",
+      "digest": "3b03922b9b5d0b0dc0c817a6b5cc4f4287f589983efe9f1346d10637c78a2ad4",
+      "generated_at": "2026-11-11T11:47:41Z"
+    },
+    "news": {
+      "age_label": "25 h before this freeze",
+      "as_of": "2026-11-10T04:50:36.940059-05:00",
+      "current_session": false,
+      "digest": "f7900b2b1e422f55b5b8a6911e921a080d7bba8f3dd4513d7f2642a7bf6ad9d1",
+      "mode": "current-cycle-news-commentary-missing",
+      "overnight_run_id": "overnight-20261110",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261111",
+    "packet_sha256": "5adab04edf4578d53cc56ad9a58629cf02235b8e3f72b5ba94ebf6fdce4add9b",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "d7d17794c777ca9f2e8a224a13800b6fdc05cee2",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 0,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-11T11:25:27Z",
+      "inputs_last_ingested_at": "2026-11-10T09:50:36Z",
+      "score_state_sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a"
+    },
+    "session_date": "2026-11-11",
+    "site_sha256": "0888a9f224584e0d13fe15f3af4952be9116a73cbbbb6d39ada5433433ab3322",
+    "source_commit": "0fbf6f2b4eaddf66a5eee1ac4e2dd6cbc5a63556",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261111",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "f60f119dfab05617f4b1462ebc4692dd4f28e59f69e5e67367e53c6f92f4b181",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-11",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
