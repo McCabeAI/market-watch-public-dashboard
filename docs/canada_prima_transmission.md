@@ -8,8 +8,12 @@ This is a deterministic Market Watch research view — **not** the Bank of Canad
 - **Numerical** direct-fuel coverage only (gasoline 4.01% + fuel oil 0.24%, 2025 basket).
 - Brent listed **front** same-contract 1m USD change combined with **USDCAD** (CAD per USD) once:
   `combined = (1+r_usd)(1+r_fx)−1`.
-- Reconstructed snapshots use a crude-cost-share **range** [0.35, 0.45, 0.55] for gasoline and
-  [0.5, 0.6, 0.7] for fuel oil when pump/NRCan staging is unavailable.
+- **Live path** (`provenance: live_observed`): staged gasoline/fuel-oil pp with auditable
+  `stages.{B,C,curve}` — Stage B retail gap (NRCan), Stage C cost-to-pump (RBOB wholesale when
+  bars available else Brent crude), curve adjustment mean(front,3m), and h3_6m mean(3m)→mean(3m,6m).
+  Live point estimate uses tax factor **1.10** only (`pp_low = pp_mid = pp_high`).
+- Reconstructed snapshots use a crude-cost-share **range** with `pp_low`/`pp_high` as numeric
+  min/max across share scenarios (`range_basis: crude_cost_share 0.35/0.45/0.55`).
 - Imported goods and food/inputs are **directional** (no invented import-price index).
 - CORRA appears in `policy_context` only (legacy vote unchanged).
 

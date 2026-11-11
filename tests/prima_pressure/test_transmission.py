@@ -16,6 +16,7 @@ if str(ROOT) not in sys.path:
 from scripts.prima_pressure import contract
 from scripts.prima_pressure.handoff import prima_block_for_snapshot, unavailable_block
 from scripts.prima_pressure.proxy import compact_block, compute_prima_proxy
+from scripts.prima_pressure.handoff import prima_block_for_snapshot
 from scripts.prima_pressure.transmission import (
     build_transmission,
     collect_fx_history_points,
@@ -24,6 +25,7 @@ from scripts.prima_pressure.transmission import (
     transmission_for_snapshot,
     unavailable_transmission,
 )
+from scripts.prima_pressure.transmission_live import build_energy_live
 from scripts.prima_pressure.transmission_contract import TRANSMISSION_PROVENANCE_RECON
 
 SNAPSHOT_PATH = (
@@ -243,6 +245,163 @@ class TestTransmission(unittest.TestCase):
             "combined"
         ]
         self.assertAlmostEqual(combined, -0.0937, delta=0.005)
+        self.assertLess(fuel["pp_low"], fuel["pp_high"])
+        self.assertIn("range_basis", fuel)
+
+    def _live_fixture(self, *, nrcan=None, brent_price=80.0, extra_bars=None):
+        oct_bars = [{"date": f"2026-10-{d:02d}", "close": brent_price} for d in range(1, 12)]
+        nov_bars = [{"date": "2026-11-09", "close": brent_price}]
+        brent_bars = oct_bars + nov_bars
+        if extra_bars:
+            brent_bars.extend(extra_bars)
+        rbob_bars = [{"date": f"2026-10-{d:02d}", "close": 2.0} for d in range(1, 12)] + [
+            {"date": "2026-11-09", "close": 2.35}
+        ]
+        fx = [(date(2026, 10, d), 1.40) for d in range(1, 12)] + [(date(2026, 11, 9), 1.40)]
+        if nrcan is None:
+            nrcan = {
+                "status": "ok",
+                "through_period": "2026-10",
+                "gasoline_by_month": {"2026-09": 150.0, "2026-10": 155.0},
+                "furnace_oil_by_month": {"2026-10": 120.0},
+            }
+        return {
+            "cpi_reference_period": "2026-09",
+            "usdcad_history": fx,
+            "usdcad_latest": (date(2026, 11, 9), 1.40),
+            "brent_front": {
+                "symbol": "BZF27.NYM",
+                "contract_month": "2027-01",
+                "price_usd_bbl": brent_price,
+                "observation_date": "2026-11-09",
+                "change_1m_base_date": "2026-10-09",
+                "change_1m_pct": 0.0,
+                "final_trade_date": "2026-11-30",
+            },
+            "brent_3m": {"price_usd_bbl": brent_price, "symbol": "BZG27.NYM"},
+            "brent_6m": {"price_usd_bbl": brent_price - 1.0, "symbol": "BZJ27.NYM"},
+            "brent_12m": {"price_usd_bbl": 75.0, "symbol": "BZF28.NYM"},
+            "rbob_front": {
+                "symbol": "RBZ26.NYM",
+                "price_usd_gal": 2.35,
+                "observation_date": "2026-11-09",
+            },
+            "ulsd_front": {"symbol": "HOZ26.NYM", "price_usd_gal": 2.5, "observation_date": "2026-11-09"},
+            "nrcan": nrcan,
+            "daily_bars": {"brent_front": brent_bars, "rbob": rbob_bars},
+        }
+
+    def test_live_staged_hand_computed_stage_b(self) -> None:
+        live = self._live_fixture()
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        stage_b = ch["stages"]["B"]["pp_gasoline"]
+        expected = 4.01 * (155.0 / 150.0 - 1.0)
+        self.assertAlmostEqual(stage_b, expected, places=4)
+        self.assertEqual(ch["remaining"]["h1_3m"]["basis"], "numerical")
+
+    def test_live_nrcan_missing_stage_b_unavailable_not_zero(self) -> None:
+        live = self._live_fixture(nrcan={"status": "unavailable", "gasoline_by_month": {}})
+        ch, missing, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        self.assertEqual(ch["stages"]["B"]["status"], "unavailable")
+        self.assertIsNone(ch["stages"]["B"].get("pp_gasoline"))
+
+    def test_live_mr_equals_mc_stage_b_zero_label(self) -> None:
+        nrcan = {
+            "through_period": "2026-09",
+            "gasoline_by_month": {"2026-09": 150.0},
+        }
+        live = self._live_fixture(nrcan=nrcan)
+        live["cpi_reference_period"] = "2026-09"
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        self.assertEqual(ch["stages"]["B"]["pp_gasoline"], 0.0)
+        self.assertEqual(ch["stages"]["B"]["label"], "no retail month after CPI")
+
+    def test_live_reversal_stage_c_near_zero(self) -> None:
+        live = self._live_fixture(brent_price=80.0)
+        live["rbob_front"]["price_usd_gal"] = 2.0
+        ch1, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        b1 = ch1["stages"]["B"]["pp_gasoline"]
+        live2 = dict(live)
+        live2["rbob_front"] = {**live["rbob_front"], "price_usd_gal": 2.0}
+        ch2, _, _ = build_energy_live(live2, as_of=date(2026, 11, 10))
+        self.assertAlmostEqual(ch2["stages"]["C"]["pp_gasoline"], 0.0, delta=0.02)
+        self.assertAlmostEqual(ch2["stages"]["B"]["pp_gasoline"], b1)
+
+    def test_live_crude_refining_divergence_flag(self) -> None:
+        live = self._live_fixture(brent_price=85.0)
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        flags = ch["observed_change"]["flags"]
+        self.assertIn("crude_refining_divergence", flags)
+
+    def test_live_missing_3m_6m_h3_directional(self) -> None:
+        live = self._live_fixture()
+        live["brent_3m"] = None
+        live["brent_6m"] = None
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        self.assertEqual(ch["remaining"]["h3_6m"]["basis"], "directional")
+
+    def test_live_expired_front_unavailable(self) -> None:
+        live = self._live_fixture()
+        live["brent_front"]["symbol"] = "BZ=F"
+        ch, _, status = build_energy_live(live, as_of=date(2026, 11, 10))
+        self.assertEqual(status, "unavailable")
+        self.assertIsNone(ch["remaining"]["h1_3m"]["pp_mid"])
+
+    def test_live_e2e_frozen_round_trip(self) -> None:
+        live = self._live_fixture()
+        inputs = {
+            "provenance": "live_observed",
+            "mode": "live",
+            "bundle": {"producer_prices": {"series": []}, "cpi_breadth_inputs": {"series": [{"period": "2026-09"}]}, "oil_curves": {"brent_last_day": {"points": []}}},
+            "live": live,
+        }
+        tx = build_transmission(inputs, as_of=date(2026, 11, 10))
+        self.assertEqual(tx["provenance"], "live_observed")
+        block = {"transmission": tx, "direction": "STABLE"}
+        snap = {"canada_prima_pressure": block, "as_of": "2026-11-10"}
+        self.assertIs(transmission_for_snapshot(snap), tx)
+
+    def test_handoff_live_transmission_provenance(self) -> None:
+        bundle = {
+            "as_of": "2026-11-09",
+            "oil_curves": {
+                "brent_last_day": {
+                    "points": [
+                        {
+                            "maturity_months": 0,
+                            "symbol": "BZF27.NYM",
+                            "contract_month": "2027-01",
+                            "price": 80.0,
+                            "observation_date": "2026-11-09",
+                            "changes": {"1m": {"pct": 0.0, "prior_date": "2026-10-09"}},
+                            "final_trade_date": "2026-11-30",
+                        }
+                    ]
+                },
+                "wti": {"points": []},
+            },
+            "producer_prices": {"series": [], "sector_ppi": {"status": "unavailable"}},
+            "cpi_breadth_inputs": {"series": [{"period": "2026-09", "series_id": "x", "latest_mom": 0.0}]},
+            "demand_inputs": {"corra": {"status": "unavailable"}},
+            "mpr_anchor": contract.LAST_MPR_ANCHOR,
+            "nrcan_fuel": {
+                "gasoline_by_month": {"2026-09": 150.0, "2026-10": 155.0},
+                "through_period": "2026-10",
+                "status": "ok",
+            },
+            "transmission_daily_bars": self._live_fixture()["daily_bars"],
+        }
+        with mock.patch(
+            "scripts.prima_pressure.bundle.build_observation_bundle",
+            return_value=bundle,
+        ):
+            block = prima_block_for_snapshot(
+                date(2026, 11, 10),
+                include_cross_assets=True,
+                usdcad_history=[(date(2026, 11, 9), 1.40)],
+            )
+        self.assertEqual(block["transmission"]["provenance"], "live_observed")
+        self.assertIn("stages", block["transmission"]["channels"]["energy_direct_fuel"])
 
     def test_reversal_near_zero_remaining(self) -> None:
         block = _shock_block(r_usd=0.08)

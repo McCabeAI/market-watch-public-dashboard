@@ -21,7 +21,7 @@ from scripts.prima_pressure.contract import (
     sector_ppi_unavailable,
 )
 from scripts.canadian_cpi_release.sources.nrcan import collect_nrcan
-from scripts.prima_pressure.curve import build_curve, build_refinery_margin
+from scripts.prima_pressure.curve import build_curve, build_refinery_margin, contract_history
 from scripts.prima_pressure.mpr import build_mpr_comparison
 from scripts.prima_pressure.producer import build_cpi_breadth_inputs, build_producer_prices
 
@@ -196,6 +196,32 @@ def _nrcan_through_period(as_of: date) -> str:
     return f"{y:04d}-{m:02d}"
 
 
+def attach_transmission_daily_bars(bundle: dict[str, Any], as_of: date, opener: Opener) -> None:
+    """Attach front-contract daily bars for transmission staging (additive bundle field)."""
+    bars: dict[str, list[dict[str, Any]]] = {}
+    brent = (bundle.get("oil_curves") or {}).get("brent_last_day") or {}
+    front = next((p for p in brent.get("points") or [] if p.get("maturity_months") == 0), None)
+    if front and front.get("contract_month"):
+        y, m = int(front["contract_month"][:4]), int(front["contract_month"][5:7])
+        hist, _ = contract_history("BZ", y, m, as_of, opener)
+        bars["brent_front"] = [{"date": iso_date(d), "close": c, "source_id": front.get("symbol")} for d, c in hist]
+    rm = bundle.get("refinery_margin") or {}
+    for key, root in (("rbob", "RB"), ("heating_oil", "HO")):
+        leg = rm.get(key)
+        if not leg or not leg.get("symbol"):
+            continue
+        try:
+            from scripts.prima_pressure.expiry import parse_listed_symbol
+
+            _root, y, m = parse_listed_symbol(str(leg["symbol"]))
+        except Exception:
+            continue
+        hist, _ = contract_history(root, y, m, as_of, opener)
+        bars[key] = [{"date": iso_date(d), "close": c, "source_id": leg.get("symbol")} for d, c in hist]
+    if bars:
+        bundle["transmission_daily_bars"] = bars
+
+
 def _build_nrcan_fuel(as_of: date, opener: Opener) -> dict[str, Any]:
     through = _nrcan_through_period(as_of)
     out: dict[str, Any] = {
@@ -325,4 +351,5 @@ def build_observation_bundle(
     bundle["demand_inputs"] = build_demand_inputs(as_of, effective_opener)
     bundle["mpr_comparison"] = build_mpr_comparison(oil_curves, as_of=as_of)
     bundle["nrcan_fuel"] = _build_nrcan_fuel(as_of, effective_opener)
+    attach_transmission_daily_bars(bundle, as_of, effective_opener)
     return bundle

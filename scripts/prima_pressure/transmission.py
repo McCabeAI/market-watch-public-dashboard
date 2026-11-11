@@ -148,14 +148,11 @@ def _combined_brent_cad(r_usd: float, r_fx: float | None) -> tuple[float | None,
     return combined, decomp, flags
 
 
-def _recon_pp_range(combined: float) -> tuple[float, float, float]:
-    gas_low = WEIGHT_GASOLINE_PCT * CRUDE_COST_SHARES[0] * combined
-    gas_mid = WEIGHT_GASOLINE_PCT * CRUDE_COST_SHARES[1] * combined
-    gas_high = WEIGHT_GASOLINE_PCT * CRUDE_COST_SHARES[2] * combined
-    fo_low = WEIGHT_FUEL_OIL_PCT * FUEL_OIL_COST_SHARES[0] * combined
-    fo_mid = WEIGHT_FUEL_OIL_PCT * FUEL_OIL_COST_SHARES[1] * combined
-    fo_high = WEIGHT_FUEL_OIL_PCT * FUEL_OIL_COST_SHARES[2] * combined
-    return gas_low + fo_low, gas_mid + fo_mid, gas_high + fo_high
+def _recon_pp_range(combined: float) -> tuple[float, float, float, str]:
+    gas = [WEIGHT_GASOLINE_PCT * s * combined for s in CRUDE_COST_SHARES]
+    fo = [WEIGHT_FUEL_OIL_PCT * s * combined for s in FUEL_OIL_COST_SHARES]
+    totals = sorted([g + f for g, f in zip(gas, fo)])
+    return totals[0], totals[1], totals[2], "crude_cost_share 0.35/0.45/0.55"
 
 
 def _find_shock_front(block: dict) -> dict | None:
@@ -378,6 +375,43 @@ def _change_pct_from_point(pt: dict) -> tuple[float | None, dt.date | None, dt.d
     return None, base, obs
 
 
+def _point_price(pt: dict | None, field: str = "price") -> float | None:
+    if not pt:
+        return None
+    val = pt.get(field) or pt.get("price")
+    return float(val) if isinstance(val, (int, float)) else None
+
+
+def _normalize_brent_point(pt: dict | None) -> dict[str, Any] | None:
+    if not pt:
+        return None
+    ch = (pt.get("changes") or {}).get("1m") or {}
+    return {
+        "symbol": pt.get("symbol"),
+        "contract_month": pt.get("contract_month"),
+        "price_usd_bbl": _point_price(pt),
+        "observation_date": pt.get("observation_date"),
+        "change_1m_base_date": ch.get("prior_date") or pt.get("change_1m_base_date"),
+        "change_1m_pct": ch.get("pct") or pt.get("change_1m_pct"),
+        "final_trade_date": pt.get("final_trade_date"),
+        "source_id": pt.get("symbol"),
+        "units": "USD/bbl",
+    }
+
+
+def _normalize_product_leg(leg: dict | None) -> dict[str, Any] | None:
+    if not leg:
+        return None
+    return {
+        "symbol": leg.get("symbol"),
+        "price_usd_gal": leg.get("price"),
+        "observation_date": leg.get("observation_date"),
+        "change_1m_pct": leg.get("change_1m_pct"),
+        "change_1m_base_date": leg.get("change_1m_base_date"),
+        "units": "USD/gallon",
+    }
+
+
 def inputs_from_live(
     bundle: Mapping[str, Any],
     *,
@@ -386,25 +420,50 @@ def inputs_from_live(
     as_of: dt.date,
 ) -> dict[str, Any]:
     b = dict(bundle)
-    history = list(usdcad_history or [])
+    history = sorted(set(tuple(row) for row in (usdcad_history or [])))
+    cpi_period = (b.get("transmission_live_inputs") or {}).get("cpi_reference_period")
     prod = b.get("producer_prices") or {}
-    cpi_period = None
     for row in prod.get("series") or []:
         if isinstance(row, dict) and row.get("period"):
-            cpi_period = str(row["period"])
-            break
+            cpi_period = cpi_period or str(row["period"])
     cpi_in = b.get("cpi_breadth_inputs") or {}
     for row in cpi_in.get("series") or []:
         if isinstance(row, dict) and row.get("period"):
             cpi_period = cpi_period or str(row["period"])
+
+    oil = b.get("oil_curves") or b.get("oil_curve") or {}
+    brent = oil.get("brent_last_day") or {}
+    points = {int(p.get("maturity_months")): p for p in brent.get("points") or [] if p.get("maturity_months") is not None}
+    rm = b.get("refinery_margin") or {}
+    extra = b.get("transmission_live_inputs") or {}
+    daily = b.get("transmission_daily_bars") or extra.get("daily_bars") or {}
+
+    usdcad_latest = None
+    if history:
+        usdcad_latest = history[-1]
+
+    live_payload = {
+        "cpi_reference_period": cpi_period,
+        "usdcad_history": history,
+        "usdcad_latest": usdcad_latest,
+        "brent_front": extra.get("brent_front") or _normalize_brent_point(points.get(0)),
+        "brent_3m": extra.get("brent_3m") or _normalize_brent_point(points.get(3)),
+        "brent_6m": extra.get("brent_6m") or _normalize_brent_point(points.get(6)),
+        "brent_12m": extra.get("brent_12m") or _normalize_brent_point(points.get(12)),
+        "rbob_front": extra.get("rbob_front") or _normalize_product_leg(rm.get("rbob")),
+        "ulsd_front": extra.get("ulsd_front") or _normalize_product_leg(rm.get("heating_oil")),
+        "nrcan": dict(nrcan) if isinstance(nrcan, dict) else (extra.get("nrcan") or None),
+        "daily_bars": daily,
+        "producer_rows": list(prod.get("series") or []),
+    }
 
     return {
         "provenance": TRANSMISSION_PROVENANCE_LIVE,
         "mode": "live",
         "as_of": as_of,
         "bundle": b,
-        "usdcad_history": history,
-        "nrcan": dict(nrcan) if isinstance(nrcan, dict) else None,
+        "live": live_payload,
+        "usdcad_pair": {},
         "cpi_reference_period": cpi_period,
     }
 
@@ -482,6 +541,7 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
     basis = "range"
     direction = "unavailable"
     pp_low = pp_mid = pp_high = None
+    range_basis = None
     if not guard_ok:
         basis = "unavailable"
         missing.append({"input": "brent_front", "reason": guard_reason or "oil_guard"})
@@ -495,7 +555,7 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
         basis = "directional"
         direction = _pp_direction(combined * WEIGHT_GASOLINE_PCT * CRUDE_COST_SHARES[1] if combined else None)
     else:
-        pp_low, pp_mid, pp_high = _recon_pp_range(combined)
+        pp_low, pp_mid, pp_high, range_basis = _recon_pp_range(combined)
         direction = _pp_direction(pp_mid)
 
     h1 = _horizon_block(
@@ -508,6 +568,8 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
         coverage=coverage if basis == "range" else ("none" if basis == "unavailable" else "partial"),
         uncovered_interval=uncovered,
     )
+    if basis == "range" and pp_mid is not None:
+        h1["range_basis"] = range_basis
 
     h3_basis = "directional"
     h3_dir = "neutral"
@@ -581,10 +643,35 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
     return channel, missing, status
 
 
+def _fx_rets_from_history(history: Sequence[tuple[dt.date, float]]) -> tuple[float | None, float | None]:
+    if not history:
+        return None, None
+    items = sorted(history)
+    latest = items[-1][1]
+    if latest == 0:
+        return None, None
+
+    def ret(n: int) -> float | None:
+        if len(items) <= n:
+            return None
+        old = items[-1 - n][1]
+        if old == 0:
+            return None
+        return 100.0 * (latest / old - 1.0)
+
+    return ret(21), ret(63)
+
+
 def _build_imported(inputs: dict) -> dict:
-    pair = inputs.get("usdcad_pair") or {}
+    pair = dict(inputs.get("usdcad_pair") or {})
     r1 = pair.get("ret_1m")
     r3 = pair.get("ret_3m")
+    if r1 is None and inputs.get("mode") == "live":
+        live_hist = (inputs.get("live") or {}).get("usdcad_history") or inputs.get("usdcad_history")
+        r1, r3 = _fx_rets_from_history(live_hist or [])
+        sorted_hist = sorted(live_hist or [])
+        if sorted_hist:
+            pair.setdefault("as_of", iso_date(sorted_hist[-1][0]))
     material = False
     if isinstance(r3, (int, float)) and abs(float(r3)) >= IMPORTED_FX_MATERIAL_3M_PCT:
         material = True
@@ -738,19 +825,28 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
     inputs = dict(inputs)
     provenance = inputs.get("provenance", TRANSMISSION_PROVENANCE_RECON)
     block = inputs.get("legacy_block") or {}
+    missing: list[dict] = []
 
     if inputs.get("mode") == "live":
-        block = {}
-        proxy_bundle = inputs.get("bundle") or {}
-        # Synthesize minimal block from live bundle for shared channel builders
-        from scripts.prima_pressure.proxy import compute_prima_proxy, compact_block
+        from scripts.prima_pressure.proxy import compact_block, compute_prima_proxy
+        from scripts.prima_pressure.transmission_live import build_energy_live
 
+        proxy_bundle = inputs.get("bundle") or {}
         proxy = compute_prima_proxy(proxy_bundle)
         block = compact_block(proxy)
+        energy, missing, tx_status = build_energy_live(
+            inputs.get("live") or {}, as_of=as_of
+        )
+        pair = {}
+        if inputs.get("live", {}).get("usdcad_latest"):
+            d, s = inputs["live"]["usdcad_latest"]
+            pair = {"as_of": d.isoformat(), "spot": s}
+        inputs = {**inputs, "usdcad_pair": pair}
+    else:
+        energy, missing, tx_status = _build_energy_reconstructed(
+            {**inputs, "legacy_block": block}, as_of
+        )
 
-    energy, missing, tx_status = _build_energy_reconstructed(
-        {**inputs, "legacy_block": block}, as_of
-    )
     imported = _build_imported(inputs)
     food = _build_food(block)
 
