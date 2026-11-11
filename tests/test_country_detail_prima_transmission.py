@@ -119,6 +119,45 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         self.assertIn('data-prima-raw="tx-method"', html)
         self.assertIn("not the Bank of Canada", html)
 
+    def test_rendered_text_no_none_nan_leaks(self) -> None:
+        from scripts.prima_pressure.transmission import unavailable_transmission
+
+        cases = [
+            {"transmission": unavailable_transmission("offline")},
+            build_presentation(ROOT),
+        ]
+        tx_markers = (
+            'class="prima-tx"',
+            'class="prima-tx-unavailable"',
+        )
+        for block in cases:
+            html = render_prima_pressure_block(block, _esc)
+            tx_html = html
+            for marker in tx_markers:
+                if marker in html:
+                    start = html.index(marker)
+                    end = html.find("</section>", start)
+                    tx_html = html[start:end if end > start else len(html)]
+                    break
+            self.assertNotIn("None", tx_html)
+            self.assertNotRegex(tx_html, r"\b[nN]a[nN]\b")
+            self.assertNotRegex(tx_html, r"\bnull\b")
+            self.assertNotIn("()", tx_html)
+
+    def test_imported_observed_labels_human_readable(self) -> None:
+        presentation = build_presentation(ROOT)
+        html = render_prima_pressure_block(presentation, _esc)
+        chunk = html.split('data-prima-tx-channel="imported_non_energy_goods"', 1)[1][:900]
+        self.assertIn("USD/CAD 1m", chunk)
+        self.assertNotIn("ret_1m", chunk)
+        self.assertNotIn("-0.00%", chunk)
+
+    def test_reconstructed_caption_uses_cost_share_not_tax(self) -> None:
+        presentation = build_presentation(ROOT)
+        html = render_prima_pressure_block(presentation, _esc)
+        self.assertIn("crude-cost-share elasticity", html)
+        self.assertNotIn("1.10 tax factor", html.split("prima-tx-caption", 1)[1][:500])
+
 
 if __name__ == "__main__":
     unittest.main()

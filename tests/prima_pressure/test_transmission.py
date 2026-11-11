@@ -247,6 +247,74 @@ class TestTransmission(unittest.TestCase):
         self.assertAlmostEqual(combined, -0.0937, delta=0.005)
         self.assertLess(fuel["pp_low"], fuel["pp_high"])
         self.assertIn("range_basis", fuel)
+        self.assertGreaterEqual(len(a["channels"]["energy_direct_fuel"]["transmission_seen"]), 2)
+        self.assertIn("Producer stage", a["headline"]["where_transmitting"])
+        obs = a["channels"]["energy_direct_fuel"]["observed_change"]
+        self.assertEqual(obs["metric"], "brent_in_cad_1m")
+        self.assertAlmostEqual(obs["value"], combined, delta=1e-6)
+        self.assertIn("breadth_positive_majors", a["underlying_core_evidence"])
+
+    def test_live_observed_change_is_brent_not_pp(self) -> None:
+        live = self._live_fixture()
+        live["brent_front"]["change_1m_pct"] = 0.05
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        obs = ch["observed_change"]
+        self.assertEqual(obs["metric"], "brent_in_cad_1m")
+        self.assertNotEqual(obs.get("units"), "cpi_pp")
+        mid = ch["remaining"]["h1_3m"]["pp_mid"]
+        if isinstance(obs["value"], (int, float)) and isinstance(mid, (int, float)):
+            self.assertNotAlmostEqual(obs["value"], mid, places=1)
+
+    def test_fuel_oil_unavailable_not_counted_as_zero(self) -> None:
+        live = self._live_fixture()
+        live["nrcan"] = {
+            "through_period": "2026-10",
+            "gasoline_by_month": {"2026-09": 150.0, "2026-10": 155.0},
+        }
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        fo = ch["stages"]["fuel_oil"]
+        self.assertEqual(fo["status"], "unavailable")
+        self.assertIsNone(fo.get("pp"))
+        self.assertIn("Fuel oil leg unavailable", " ".join(ch.get("notes") or []))
+
+    def test_live_recon_fallback_missing_fx_directional(self) -> None:
+        live = self._live_fixture(nrcan={"status": "unavailable", "gasoline_by_month": {}})
+        live["usdcad_history"] = []
+        live["usdcad_latest"] = None
+        live["brent_front"]["change_1m_pct"] = 0.05
+        ch, _, _ = build_energy_live(live, as_of=date(2026, 11, 10))
+        h1 = ch["remaining"]["h1_3m"]
+        self.assertEqual(h1["basis"], "directional")
+        self.assertIsNone(h1["pp_mid"])
+        self.assertIn("fx_leg_missing", ch["observed_change"]["flags"])
+        self.assertNotIn("None", h1["reference_baseline"])
+
+    def test_missing_brent_leg_leaves_decomposition_null(self) -> None:
+        block = _shock_block()
+        block["channel_evidence"]["shock_persistence"]["inputs"][0].pop("change_1m_pct", None)
+        pair = {"ret_1m": -0.87, "as_of": "2026-11-09"}
+        tx = build_transmission(
+            inputs_from_frozen(block, usdcad_pair=pair, as_of=date(2026, 11, 10)),
+            as_of=date(2026, 11, 10),
+        )
+        obs = tx["channels"]["energy_direct_fuel"]["observed_change"]
+        self.assertIsNone(obs.get("decomposition"))
+        self.assertIn("usd_leg_missing", obs.get("flags") or [])
+
+    def test_cpi_period_from_breadth_majors(self) -> None:
+        block = _shock_block(cpi_period="2026-08")
+        block["channel_evidence"]["consumer_price_breadth"]["inputs"] = [
+            {
+                "breadth_positive_majors": 4,
+                "breadth_majors_with_mom": 8,
+                "trim_accel_pp": 0.1,
+                "majors": [{"period": "2026-09", "series_id": "cpi_nsa_food", "latest_mom": 0.01}],
+            }
+        ]
+        block["channel_evidence"]["production_network_pressure"]["inputs"][0]["period"] = "2026-07"
+        from scripts.prima_pressure.transmission import _latest_cpi_period
+
+        self.assertEqual(_latest_cpi_period(block), "2026-09")
 
     def _live_fixture(self, *, nrcan=None, brent_price=80.0, extra_bars=None):
         oct_bars = [{"date": f"2026-10-{d:02d}", "close": brent_price} for d in range(1, 12)]
