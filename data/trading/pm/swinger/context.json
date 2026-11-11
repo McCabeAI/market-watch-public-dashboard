@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-11T06:25:27.481006-05:00",
+  "as_of": "2026-11-11T07:34:32.776541-05:00",
   "calibration": {
     "average_holding_seconds": 2939013,
     "average_realized_pnl_usd": 327500.0,
@@ -73,8 +73,8 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 346788.96,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 372295.64,
+    "best_trader_outearn_streak": 0,
     "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -82,7 +82,7 @@
     "competition_rank": 1,
     "competitive_rank": 1,
     "drawdown_usd": 324.17,
-    "gap_to_best_trader_usd": 4113765.41,
+    "gap_to_best_trader_usd": 4088258.73,
     "high_water_nav_usd": 1004460878.54,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 4460554.37,
@@ -99,17 +99,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "performance_reflection",
-      "obligation_id": "rfd-f8b170567279",
-      "owner_id": "swinger",
-      "owner_type": "pm",
-      "reference": "rfd-f8b170567279",
-      "source_run_id": null
-    }
-  ],
-  "memory_context_sha256": "d0a12b1008d3a713c7f6508f400fb38db892f1c618f3495424f392c2b74f717d",
+  "learning_obligations": [],
+  "memory_context_sha256": "e989c92b56787f1c345339262b3853298bad96d6c945509f3f61c383512f8320",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -126,33 +117,23 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 680068,
-        "horizon_elapsed_fraction": 0.3748,
+        "giveback_usd": 382923.77,
+        "holding_seconds": 684213,
+        "horizon_elapsed_fraction": 0.3771,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 21,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 4182927.83,
+        "mfe_usd": 4565851.6,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
-        "pending_review": {
-          "mechanical_order": false,
-          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 300000000.0,
-          "status": "due",
-          "triggers": [
-            "material_winner",
-            "giveback"
-          ]
-        },
         "position_id": "pm-swinger-f8f9feb515d2",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Cross mean-reverts from 1.2456 toward 1.20-1.22 as New Zealand cheapness versus Australia normalizes off the five-year tail.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 4182927.83,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 4565851.6,
+        "retained_mfe_fraction": 0.9161,
         "review_move_bp": null,
         "review_required": true,
         "review_threshold_usd": 3000000.0,
@@ -179,9 +160,7 @@
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [
-      "pm-swinger-f8f9feb515d2"
-    ],
+    "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
     "review_required_position_ids": [
@@ -195,7 +174,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "complacency": {
         "band": "calm",
@@ -210,11 +189,11 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.27
+        "value": 0.25
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -245,17 +224,12 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261105"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261106"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "77d63928880417225106d2962caae821182d79be1b684301512e22d9a56f386c",
+    "state_sha256": "14c3ca6a5f0b44b68669d7cb74fc1b9a4a01ffc9ddb5998932510b49b795d719",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -276,27 +250,26 @@
     }
   ],
   "recent_funding_views": [],
-  "recent_performance_reflections": [],
-  "reflections_due": [
+  "recent_performance_reflections": [
     {
-      "created_at": "2026-11-10T06:54:50.243918-05:00",
-      "created_run_id": null,
-      "facts": {
-        "competition_rank": 1,
-        "drawdown_usd": 980.0,
-        "lesson_ids": [],
-        "net_pnl_usd": 1751369.3,
-        "prior_competition_rank": 1,
-        "trade_ids": [
-          "trd-pm-swinger-pm-swinger-f8f9feb515d2"
-        ]
-      },
-      "reflection_due_id": "rfd-f8b170567279",
+      "attribution": [
+        "variance",
+        "thesis",
+        "timing"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The giveback on this Australian dollar-kiwi short was bounded variance around a position that is still a material winner from 1.24556 to 1.22661, and the prior process remains sound because the five-year z is still 2.34 and the 96th percentile was never invalidated by the dip.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-6874863499ee",
+      "run_id": "overnight-20261111",
+      "skill_vs_luck": "mixed",
       "trigger_ids": [
         "profit_giveback"
-      ]
+      ],
+      "what_happened_vs_expected": "The Australian dollar-kiwi short from 1.24556 was expected to work because the pair was a five-year extreme, with an uneven path allowed. It is a material winner at fresh spot 1.22661, but open profit gave back while rank was still first, before the latest five-day decline and the close beyond the prior 20-session range."
     }
   ],
+  "reflections_due": [],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

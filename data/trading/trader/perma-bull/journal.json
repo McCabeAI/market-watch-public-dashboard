@@ -2466,6 +2466,109 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "The US funds path is already a hike path, with cash SOFR at 3.89 versus 4.165 for December and 4.315 for March 2027, so another short-duration add just pays up for Waller. The under-discounted cyclical is the kiwi. NZDUSD at 0.5613 is still near the fourth percentile of the past year after only a 1.26 percent bounce, while copper at 6.33, Brent at 92.57 and equities still firm say growth is not what broke. The existing SOFR, CORRA and AONIA shorts stay, and a small NZDUSD long is the new expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-78563c24fe05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-0c736b9e5e13",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "90b0ffbc0dae8ba922a938d9f4229b85d8865929f60fac1d5e27d5b680eb78cd",
+      "event_id": "jde-c85a0fa4b9c84331",
+      "funding_view": null,
+      "invalidation": "The pays are wrong if the two-year gives back the 17 basis point jump and December futures converge back toward 3.88 cash.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-0c736b9e5e13",
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-0c736b9e5e13"
+      ],
+      "memory_context_sha256": "d79dca907e297dc8310223742a80164378c4b858f62a2fc65c581ccaeb53c062",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4ff84307a592ee066c9a6d5330619ecb118266f702d81974d43ee7de046cc210"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "North American growth is firm enough to keep the front-end pays. March SOFR at 4.53 still sits below June and September, while cash at 3.88 already trails the December contract at 4.28. Canada March at 2.965 still faces a February terminal near 2.77, and Australia March at 4.885 remains a small premium to 4.85 cash with Brent near 91.50. Kiwi spot near the 4th percentile is the weaker expression of the same resilience, so that long comes off and the three pays stay.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "North American growth is firm enough to keep the front-end pays. March SOFR at 4.53 still sits below June and September, while cash at 3.88 already trails the December contract at 4.28. Canada March at 2.965 still faces a February terminal near 2.77, and Australia March at 4.885 remains a small premium to 4.85 cash with Brent near 91.50. Kiwi spot near the 4th percentile is the weaker expression of the same resilience, so that long comes off and the three pays stay."
     }
   ],
   "schema_version": 1,

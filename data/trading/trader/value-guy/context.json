@@ -121,7 +121,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -13264.61,
     "status": "ok"
   },
   "learning": {
@@ -132,7 +132,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "a09e462df1cf79ba326dc8bad67eb8588652335c0f5ea45c822d0485ca4599e2",
+  "memory_context_sha256": "03cc7a634e04c02f45bdb0beea982ddeebf25047f58189fabcf30709d49389ae",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -149,7 +149,7 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 6383.38,
         "holding_seconds": 431978,
         "horizon_elapsed_fraction": 0.1667,
         "horizon_status": "within",
@@ -157,15 +157,15 @@
         "intended_horizon_days": 30,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 68697.76,
+        "mfe_usd": 75081.14,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-65b06053d4c6",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Realize the short if Australian-kiwi falls clearly off the 99th percentile, and otherwise exit at 30 days if the cross has not made a new high.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 68697.76,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 75081.14,
+        "retained_mfe_fraction": 0.915,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -198,7 +198,7 @@
         "expected_mark_direction": null,
         "framing": "structural",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 6892.01,
         "holding_seconds": 92090,
         "horizon_elapsed_fraction": 0.0089,
         "horizon_status": "within",
@@ -206,15 +206,15 @@
         "intended_horizon_days": 120,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 0.0,
+        "mfe_usd": 6892.01,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-5760dbd4ac3e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The euro's joint cheapness versus sterling, the dollar and the yen is realized as EURGBP drifts back toward the middle of its one-year range.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 6892.01,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -250,13 +250,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.14
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.18
+        "trend": "down",
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
@@ -265,13 +265,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.2
+        "trend": "down",
+        "value": 0.19
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.13
+        "trend": "down",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -311,7 +311,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "dfc7e7eaa4e30ac9f8330122a6308e83389c5c2b7fe7519771b03b88fd8c8bfa",
+    "state_sha256": "32936c4defb0ddb4edb99b7439c9bc80ade8902fdf6e83d62f2ed2377088ccc2",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -4,7 +4,7 @@
   "closed_at": null,
   "closed_run_id": null,
   "conviction": 60,
-  "current_notional_usd": 10000000.0,
+  "current_notional_usd": 5000000.0,
   "entry_lifecycle": {
     "anchored_at": "2026-11-06T06:25:49.281876-05:00",
     "catalyst_by": null,
@@ -49,10 +49,25 @@
       "realized_pnl_increment_usd": 0.0,
       "run_id": "overnight-20261109",
       "source_journal_event_id": "jde-27d96b98a3624d20"
+    },
+    {
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "event_id": "tle-4daa7ceffae3",
+      "exit_reason_category": null,
+      "kind": "REDUCE",
+      "mark": 1.23,
+      "mark_as_of": "2026-11-10",
+      "mark_source": "market_state.fx.AUDNZD.spot",
+      "notional_change_usd": 5000000.0,
+      "rationale": "REDUCE AUDNZD keeps the decision inside the frozen marks without opening a new expression.",
+      "rationale_status": "present",
+      "realized_pnl_increment_usd": 63465.5,
+      "run_id": "overnight-20261111",
+      "source_journal_event_id": "jde-f17eb402e96c49a1"
     }
   ],
-  "evidence_cutoff": "2026-11-09T05:37:50.499948-05:00",
-  "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
+  "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+  "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
   "evidence_packet_id": null,
   "exit_mark": null,
   "exit_mark_as_of": null,
@@ -64,14 +79,14 @@
     "order_policy": "review_only",
     "position_id": "pos-9a020b7cffca",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "residual_notional_usd": 10000000.0,
-    "run_id": "overnight-20261110",
+    "residual_notional_usd": 5000000.0,
+    "run_id": "overnight-20261111",
     "status": "due",
     "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca",
     "triggers": [
       "material_winner"
     ],
-    "updated_at": "2026-11-10T04:50:36.940059-05:00"
+    "updated_at": "2026-11-11T06:25:27.481006-05:00"
   },
   "hedge_of_position_id": null,
   "hedge_trade_id": null,
@@ -79,9 +94,9 @@
   "initial_notional_usd": 5000000.0,
   "instrument": "AUDNZD",
   "invalidation": "The cross short is wrong if Australian-kiwi holds or extends this 99th-percentile print while oil stays firm near Brent 98.29, or if kiwi-dollar breaks below 0.5622.",
-  "last_mark": 1.2281966001478197,
+  "last_mark": 1.226606747106624,
   "last_mark_as_of": "2026-11-06",
-  "last_unrealized_pnl_usd": 114134.13,
+  "last_unrealized_pnl_usd": 63465.5,
   "lifecycle": {
     "anchored_at": "2026-11-06T06:25:49.281876-05:00",
     "catalyst_by": null,
@@ -103,14 +118,14 @@
   "position_id": "pos-9a020b7cffca",
   "priced_or_disagreed": null,
   "provenance": {
-    "evidence_hash": "d6a07c1fe0c99d14617ea5efc0d0af5a58a409264a1635799f243d50bd79be92",
-    "overnight_run_id": "overnight-20261109",
+    "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+    "overnight_run_id": "overnight-20261111",
     "review_id": "review-001",
     "review_packet_id": null,
     "review_packet_sha256": null,
     "trader_room_run_id": null
   },
-  "realized_pnl_usd": 0.0,
+  "realized_pnl_usd": 63465.5,
   "schema_version": 1,
   "side": "short",
   "source_decision_id": null,

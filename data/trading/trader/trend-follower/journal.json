@@ -1978,6 +1978,64 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "The ten-year rally is still the trend in force: the ten-year is 4.88, well below last year's highs, with no reversal in the marks. The March 2027 SOFR receive is on that side, live implied 4.315 versus a 4.33 entry. The funds path from 3.89 cash to 4.435 by September 2027 is the curve already priced, and a 50 million line does not get more size with October CPI still unknown. That receive stays. The one-day kiwi jump and the flat dollar-yen do not replace it."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pos-96a63a1df145",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 70,
+      "decision_fingerprint": "52f6ed4d9982323ead7598c32a1d13076a7280ddafc2b15dee495bec4cf0ac84",
+      "event_id": "jde-9824adc702dc4e0c",
+      "funding_view": null,
+      "invalidation": "The close is wrong if March SOFR trades back through 4.315 toward the 4.28 entry and the two-year gives back the 17 basis point jump.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-96a63a1df145"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-96a63a1df145"
+      ],
+      "memory_context_sha256": "4762d6710eb6ec159889e01e645355c1c16f9e1507c9b761e0facfc2c8425db7",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e53afa9f0bd6e2166ff809adc3059dc45284a9eac1312e4a80be2f05323770bd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The US front end is in a higher-yield trend after the inflation print. The two-year is 4.73 and the ten-year is 4.98. March SOFR at 4.53 is above both the 4.28 entry and the 4.32 book mark, so the receive that expected a lower mark is offside. The long comes off. The Australian dollar-kiwi five-day drop is a short swing inside a cross that is still historically rich, so it is not the continuation.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "The US front end is in a higher-yield trend after the inflation print. The two-year is 4.73 and the ten-year is 4.98. March SOFR at 4.53 is above both the 4.28 entry and the 4.32 book mark, so the receive that expected a lower mark is offside. The long comes off. The Australian dollar-kiwi five-day drop is a short swing inside a cross that is still historically rich, so it is not the continuation."
     }
   ],
   "schema_version": 1,

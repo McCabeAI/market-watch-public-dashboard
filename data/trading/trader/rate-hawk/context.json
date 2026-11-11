@@ -42,14 +42,14 @@
     "nav_usd": 99880269.72,
     "net_pnl_usd": -119730.28,
     "pressure_flags": [],
-    "prior_competition_rank": 13,
-    "rank_change": 0,
+    "prior_competition_rank": 14,
+    "rank_change": -1,
     "raw_pnl_rank": 13,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 531800.18,
     "risk_capital_utilization": 0.0532,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -40283.63,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "6b469068d02943cf873c31e1b3d271573dafde5ae152ed7ef38d5b5f72d599a4",
+  "memory_context_sha256": "a629d2b2f53157113a2501a91bebcc77593b01c34553b6746baefaee1b1826ad",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -224,7 +224,7 @@
         "expected_mark_direction": "higher",
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 2875.0,
         "holding_seconds": 431978,
         "horizon_elapsed_fraction": 0.25,
         "horizon_status": "within",
@@ -232,15 +232,15 @@
         "intended_horizon_days": 20,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 1250.0,
+        "mfe_usd": 4125.0,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-6c7bcf0fe6af",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if December SOFR implied yield rises as the jobs-report gap closes and the 12bp front-end rally is retraced.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 1250.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 4125.0,
+        "retained_mfe_fraction": 0.303,
         "review_move_bp": 5.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -261,7 +261,7 @@
     {
       "asset_class": "rates",
       "conviction": 64,
-      "current_notional_usd": 10000000.0,
+      "current_notional_usd": 20000000.0,
       "entry_mark": 4.71,
       "harvest": {
         "asset_class": "rates",
@@ -279,7 +279,7 @@
         "horizon_status": "within",
         "instrument": "AONIA_2027-09",
         "intended_horizon_days": 90,
-        "mae_usd": 0.0,
+        "mae_usd": -34.05,
         "mechanical_order": false,
         "mfe_usd": 0.0,
         "move_versus_entry_intent": "flat",
@@ -377,15 +377,20 @@
         "kind": "session_loss",
         "magnitude": 0.0913868,
         "run_id": "overnight-20261106"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.08056726,
+        "run_id": "overnight-20261111"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e31ed7b7cfe2ec26c18c7ee0d559d137d17b1a86adf8c0ae36f08b8565e28547",
+    "state_sha256": "ceb3302612e26243f029b7d3bf98cb5b9e73e38cf3845a721a7aa76e96fe0646",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 3,
-      "session_win": 0
+      "session_loss": 0,
+      "session_win": 1
     }
   },
   "recent_closed_trades": [],

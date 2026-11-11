@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-11T06:25:27.481006-05:00",
+  "as_of": "2026-11-11T07:34:32.920542-05:00",
   "calibration": {
     "average_holding_seconds": 1736823,
     "average_realized_pnl_usd": 184000.0,
@@ -84,8 +84,8 @@
     "stress_regime": "unknown"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 346788.96,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 372295.64,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -93,7 +93,7 @@
     "competition_rank": 2,
     "competitive_rank": 2,
     "drawdown_usd": 183.69,
-    "gap_to_best_trader_usd": 1192667.93,
+    "gap_to_best_trader_usd": 1167161.25,
     "high_water_nav_usd": 1001539640.58,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1539456.89,
@@ -113,17 +113,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "performance_reflection",
-      "obligation_id": "rfd-7da7d2ec1462",
-      "owner_id": "pragmatist",
-      "owner_type": "pm",
-      "reference": "rfd-7da7d2ec1462",
-      "source_run_id": null
-    }
-  ],
-  "memory_context_sha256": "35e1b04c950106a9e58f942d55da642711fa6b4187eb30cfd4a6e1845c2d94ad",
+  "learning_obligations": [],
+  "memory_context_sha256": "a7803e847d1209f01b2d7bba041c560390634be13a9f343d487a4f6172079ccd",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -141,7 +132,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 4519963,
+        "holding_seconds": 4524108,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -177,7 +168,7 @@
     {
       "asset_class": "spot_fx",
       "conviction": 64,
-      "current_notional_usd": 20000000.0,
+      "current_notional_usd": 10000000.0,
       "entry_mark": 1.25,
       "harvest": {
         "asset_class": "spot_fx",
@@ -190,30 +181,29 @@
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 680068,
-        "horizon_elapsed_fraction": 0.2624,
+        "holding_seconds": 684213,
+        "horizon_elapsed_fraction": 0.264,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 30,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 278861.86,
+        "mfe_usd": 431056.91,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "pending_review": {
           "mechanical_order": false,
           "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 20000000.0,
+          "residual_notional_usd": 10000000.0,
           "status": "due",
           "triggers": [
-            "material_winner",
-            "giveback"
+            "material_winner"
           ]
         },
         "position_id": "pm-pragmatist-fb7a9dedff4a",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Cross mean-reverts from the 99th-percentile print as kiwi cheapness fades versus a still-soft Aussie; take the single if AUDNZD backs off the extreme toward the recent mid-range.",
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": 152195.05,
         "recorded_mfe_usd": 278861.86,
         "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
@@ -224,7 +214,7 @@
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 278861.86,
+        "total_pnl_usd": 431056.91,
         "trade_id": "trd-pm-pragmatist-pm-pragmatist-fb7a9dedff4a",
         "unrealized_pnl_usd": 278861.86
       },
@@ -258,12 +248,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.16
+        "value": 0.17
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "defensiveness": {
         "band": "calm",
@@ -273,12 +263,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "up",
-        "value": 0.27
+        "value": 0.33
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.12
+        "trend": "flat",
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -287,8 +277,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "down",
+        "value": 0.48
       },
       "thesis_attachment": {
         "band": "calm",
@@ -308,17 +298,27 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261106"
+        "run_id": "overnight-20261110"
+      },
+      {
+        "kind": "self_report_admission_overconfidence",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261111"
+      },
+      {
+        "kind": "self_report_admission_pressure_distorting",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261111"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261110"
+        "run_id": "overnight-20261111"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "dc9313a79883e736e346d2958c1e92bf9e4d8318db61c7080bb9b3e4316102d2",
+    "state_sha256": "55f442969e18c4613a2c433903b3f464cdf8cdb96f8d28825240d2768cd11f9e",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -339,27 +339,25 @@
     }
   ],
   "recent_funding_views": [],
-  "recent_performance_reflections": [],
-  "reflections_due": [
+  "recent_performance_reflections": [
     {
-      "created_at": "2026-11-10T06:54:50.438682-05:00",
-      "created_run_id": null,
-      "facts": {
-        "competition_rank": 2,
-        "drawdown_usd": 555.33,
-        "lesson_ids": [],
-        "net_pnl_usd": 1434006.63,
-        "prior_competition_rank": 2,
-        "trade_ids": [
-          "trd-pm-pragmatist-pm-pragmatist-fb7a9dedff4a"
-        ]
-      },
-      "reflection_due_id": "rfd-7da7d2ec1462",
+      "attribution": [
+        "sizing",
+        "expression"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The giveback is bounded variance around a short that is still in the money, fresh spot 1.22661 versus entry 1.24556, a stall inside the winner and not a reversal through entry. The prior process remains sound because a full-size hold already has to clear a would-initiate test, and that test fails at 1.22661, so the existing harvest rule cuts the line in half.",
+      "pressure_effect": "distorting",
+      "reflection_id": "prf-ae903249ebb0",
+      "run_id": "overnight-20261111",
+      "skill_vs_luck": "mixed",
       "trigger_ids": [
         "profit_giveback"
-      ]
+      ],
+      "what_happened_vs_expected": "The Australian dollar-kiwi short was expected to keep extending once it was in the money from the 1.24556 entry. Instead open profit was given back while the book sat second, with fresh spot still 1.22661 versus that entry and only a small step through the 1.22820 book mark."
     }
   ],
+  "reflections_due": [],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

@@ -47,14 +47,14 @@
     "nav_usd": 100113515.75,
     "net_pnl_usd": 113515.75,
     "pressure_flags": [],
-    "prior_competition_rank": 6,
-    "rank_change": 0,
+    "prior_competition_rank": 5,
+    "rank_change": 1,
     "raw_pnl_rank": 6,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -12786.09,
     "status": "ok"
   },
   "learning": {
@@ -65,12 +65,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f777de76ca0e7c2640caf38df7682206673d35c5ba216c6b34a66cfb482670b9",
+  "memory_context_sha256": "984fa52c076ebec6a7a4d487fc0629a22565adad4a457ddbb5aeb018519319e7",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 60,
-      "current_notional_usd": 10000000.0,
+      "current_notional_usd": 5000000.0,
       "entry_mark": 1.25,
       "harvest": {
         "asset_class": "spot_fx",
@@ -90,13 +90,13 @@
         "intended_horizon_days": 10,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 114134.13,
+        "mfe_usd": 177599.63,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "pending_review": {
           "mechanical_order": false,
           "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 10000000.0,
+          "residual_notional_usd": 5000000.0,
           "status": "due",
           "triggers": [
             "material_winner"
@@ -105,7 +105,7 @@
         "position_id": "pos-9a020b7cffca",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if Australian-kiwi falls off the 99th percentile through the jobs report and the following sessions.",
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": 63465.5,
         "recorded_mfe_usd": 114134.13,
         "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
@@ -116,7 +116,7 @@
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 114134.13,
+        "total_pnl_usd": 177599.63,
         "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca",
         "unrealized_pnl_usd": 114134.13
       },
@@ -154,7 +154,7 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.11
       },
       "defensiveness": {
@@ -205,7 +205,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "41ea2e10f3f76d6b3cd9e7ccb735ec3c595f20e6dca17accba7e89578fd4700d",
+    "state_sha256": "76fb5a72b6349a617b5e40558cc0f3e9781e91f43cb40cbce4fbc3ccbcf9ff56",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

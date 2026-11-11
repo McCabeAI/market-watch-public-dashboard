@@ -1,5 +1,37 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-11T07:34:32.150410-05:00",
+      "attribution": [
+        "sizing",
+        "expression"
+      ],
+      "causal": {
+        "assumptions_right": "The spot cross stayed tradable and was the correct sleeve while New Zealand yields are research-only, and the short from 1.24556 still has directional content.",
+        "assumptions_wrong_or_underweighted": "Residual downside once the cross was already near the book mark was thinner than the original entry, and rank raised the hurdle to bank open profit and kept full size through the giveback.",
+        "causal_divergence": "The profit path diverged from the full-size hold because the cross stopped extending while the short thesis from 1.24556 had not broken.",
+        "decision_quality_attribution": "sizing",
+        "future_implication": "Full size on this short requires a would-initiate test at the fresh spot. That test fails at 1.22661, so the line is cut to 10 million. Rank is not a reason to add.",
+        "observed_reality": "Spot 1.22661 versus entry 1.24556 is still a winner, with the book mark at 1.22820. Open profit was given back while rank was high, and several traders are trimming the same cross.",
+        "original_belief": "Australia would keep underperforming New Zealand on a tradable spot cross, and the full 20 million short could be held while that move was in motion.",
+        "same_information_counterfactual": "With the entry, the book mark, fresh spot still near that mark, and a giveback flag, the same information supports buying back half the short rather than re-litigating a full hold at 1.22661."
+      },
+      "chase_or_revenge": "no",
+      "no_new_lesson": "The giveback is bounded variance around a short that is still in the money, fresh spot 1.22661 versus entry 1.24556, a stall inside the winner and not a reversal through entry. The prior process remains sound because a full-size hold already has to clear a would-initiate test, and that test fails at 1.22661, so the existing harvest rule cuts the line in half.",
+      "overconfidence_risk": "yes",
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "pressure_effect": "distorting",
+      "reflection_due_id": "rfd-7da7d2ec1462",
+      "reflection_id": "prf-ae903249ebb0",
+      "run_id": "overnight-20261111",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The Australian dollar-kiwi short was expected to keep extending once it was in the money from the 1.24556 entry. Instead open profit was given back while the book sat second, with fresh spot still 1.22661 versus that entry and only a small step through the 1.22820 book mark."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_PERFORMANCE_REFLECTIONS"
 }

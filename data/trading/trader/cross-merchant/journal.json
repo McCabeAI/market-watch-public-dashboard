@@ -1962,6 +1962,64 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "AUDNZD at 1.228 is still in the 82nd percentile of its one-year range after a five-day drop of 1.39 percent, so the short from 1.25 is ahead with the richness intact. NZDUSD rose 1.26 percent after the incumbent kept a path to govern and remains near the bottom of its range, while AUDUSD is softer over five days. That governance relief is a New Zealand premium inside a cross that is still historically high. The short cross carries the antipodean split through the US inflation release without taking a direct dollar bet."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": 10000000,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 51,
+      "decision_fingerprint": "2cb5d45c0ccc44ff0cf5632c7e7804b5116a9c3e303682c93695548e3f2d52ee",
+      "event_id": "jde-914e081b44f5487c",
+      "funding_view": null,
+      "invalidation": "Cover the residual if the cross reclaims the broken range and holds back through 1.2456, or if it settles through about 1.212 and the five-year richness is gone. Do not replace the residual with Australian dollar-Canada.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-525ff12dcad9"
+      ],
+      "memory_context_sha256": "d8eebf603b2f6f6c979dc8a2a95e5448c8afa4b6b8a43651b4970225c3c3b8b6",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ab3553f00c14f9f42640cd062d3b2b3b594afabde7b54cd1b1016bbe11dfd30f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Short Australian dollar-kiwi remains the clean non-dollar expression of a rich Australia against a cheap kiwi. Spot is 1.2266, a five-year z-score of 2.34 and the 96th percentile, after a 1.2 percent five-day decline and a close through the prior 20-session range. A fresh flat book would not reopen the full 20 million at this low, so 10 million comes off and 10 million stays while the extreme is unfinished. New Zealand yields stay research context. The spot cross is the leg.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "Short Australian dollar-kiwi remains the clean non-dollar expression of a rich Australia against a cheap kiwi. Spot is 1.2266, a five-year z-score of 2.34 and the 96th percentile, after a 1.2 percent five-day decline and a close through the prior 20-session range. A fresh flat book would not reopen the full 20 million at this low, so 10 million comes off and 10 million stays while the extreme is unfinished. New Zealand yields stay research context. The spot cross is the leg."
     }
   ],
   "schema_version": 1,

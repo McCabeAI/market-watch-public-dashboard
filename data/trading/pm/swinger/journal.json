@@ -2011,6 +2011,62 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "AUDNZD at 1.228 is still in the 82nd percentile after a 1.39 percent five-day decline, so the short from 1.25 is ahead without having closed the gap between a heavy Australian dollar and a kiwi that is up 1.26 percent and still near a one-year low. The existing 300 million short is already the full concentrated expression. A squeeze back through the entry is the adverse path being carried, and adding would only stack the same cross. October CPI is unreleased, so no new dollar or US-rate risk is put on before the print."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pm-swinger-f8f9feb515d2",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T07:34:31.194486-05:00",
+      "conviction": 76,
+      "decision_fingerprint": "dcde4b1b39e8e7adc7b4b051d7cf80fd7f9c1f41004bacec90333f9bd75030d7",
+      "event_id": "jde-985eddf6dcd2433e",
+      "funding_view": null,
+      "invalidation": "The short is invalid if spot reverses back inside the prior range and trades back toward the 1.2456 entry, or if the five-year reading leaves a z-score of 2.34 and the 96th percentile.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-f8f9feb515d2"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d0a12b1008d3a713c7f6508f400fb38db892f1c618f3495424f392c2b74f717d",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "77d63928880417225106d2962caae821182d79be1b684301512e22d9a56f386c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "09fdab53b4e13903bc4fa87d57346968d7f0f88a643a759e347de38b51f15fd6",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261111-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Australian dollar-kiwi at 1.2266 is still a five-year z-score of 2.34 and the 96th percentile, so the extreme that justified the short from 1.2456 has not closed. The five-day decline and the close beyond the prior range say that extreme is breaking lower. The same 300 million short would be initiated from a flat book here, because a one percent adverse move is about 3 million of shock inside the 100 million limit. Desks cutting the cross reduce crowding. They do not remove the extreme.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "Australian dollar-kiwi at 1.2266 is still a five-year z-score of 2.34 and the 96th percentile, so the extreme that justified the short from 1.2456 has not closed. The five-day decline and the close beyond the prior range say that extreme is breaking lower. The same 300 million short would be initiated from a flat book here, because a one percent adverse move is about 3 million of shock inside the 100 million limit. Desks cutting the cross reduce crowding. They do not remove the extreme."
     }
   ],
   "schema_version": 1,

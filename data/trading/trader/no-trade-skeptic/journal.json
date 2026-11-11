@@ -2516,6 +2516,79 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "Waller's December hike, including openness to 50bp, is already in the strip. March 2027 SOFR implies 4.315 against cash SOFR at 3.89, December SR3 implies 4.165, and the ten-year at 4.88 carries the same message. October CPI is still ahead at 8:30 and unknown, so a rates or dollar position from this clock is a coin flip on shocked capital. NZDUSD sits near the bottom of its range after a bounce, EURUSD is historically cheap, and AUDNZD is still elevated after a five-day fall. Oil at these marks does not clear a funding rate that is set to realize above cash SOFR."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 72,
+      "decision_fingerprint": "53216e88930a83071c13681ce32fd9e0f206ffc551273b273aa7853aaed9b562",
+      "event_id": "jde-0daf78c2bd9d4964",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-09",
+          "percent_rate": 3.88,
+          "rate": 3.88
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Realized funding into the December contract should print about where that 4.28 curve already sits after the inflation print, so the book remains at the zero official funding benchmark. Paying funding on shocked-risk capital to chase or fade that path is not alpha.",
+        "sr3_forward_view": "December SR3 implies 4.28 percent, forty basis points above the 3.88 official fixing, and that is the relevant forward-funding mark into the December meeting."
+      },
+      "invalidation": "A later tape where December futures or the two-year move off 4.28 and 4.73 by a gap whose expected edge clears official funding on shocked-risk capital would make a rates expression actionable. The same standard applies if the cross reclaims the broken range and a cleaner Australia-New Zealand rates expression appears.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "13162fb55d89a1e9cbaca8942ff95e70c20208436e9d543211bc56f5e1ef8faa",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-09",
+            "percent_rate": 3.88,
+            "rate": 3.88
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Realized funding into the December contract should print about where that 4.28 curve already sits after the inflation print, so the book remains at the zero official funding benchmark. Paying funding on shocked-risk capital to chase or fade that path is not alpha.",
+          "sr3_forward_view": "December SR3 implies 4.28 percent, forty basis points above the 3.88 official fixing, and that is the relevant forward-funding mark into the December meeting."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "21e7cea92b2428ef50f863e3a229e8c771e04daf973ca362e686f1c87fc70938"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays in cash. Official funding is 3.88 percent and December futures already imply 4.28, with the two-year at 4.73 after the inflation print. The Australian dollar-kiwi break lower is also already in the spot. Paying funding on new shocked-risk capital to chase or fade that path does not clear the hurdle, and flat cash itself is not a source of alpha.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "The book stays in cash. Official funding is 3.88 percent and December futures already imply 4.28, with the two-year at 4.73 after the inflation print. The Australian dollar-kiwi break lower is also already in the spot. Paying funding on new shocked-risk capital to chase or fade that path does not clear the hurdle, and flat cash itself is not a source of alpha."
     }
   ],
   "schema_version": 1,

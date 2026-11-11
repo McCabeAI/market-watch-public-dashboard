@@ -107,6 +107,60 @@
       "run_id": "overnight-20261110",
       "schema_version": 1,
       "thesis": "Five-session and one-month closes disagree on the crosses that actually moved, and the rest are too small to call. USDCAD and NZDCAD have flipped sign between the week and the month, GBPUSD is up on the month and flat on the week, and EURUSD, USDJPY, and NZDUSD are noise on both marks. AUDNZD is the only cross lower on the day, the week, and the month, but the day already did most of that damage and AUDUSD bounced. There is no close-based adverse level to hang a short on, so the book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "conviction": 40,
+      "decision_fingerprint": "bda8115da585d5a4643866584b39346a7cb281e7a47d507fd4595375bb8b7a6f",
+      "event_id": "jde-79c835a5aca746e3",
+      "funding_view": null,
+      "invalidation": "There is no open spot risk. A later close that signs the Australian dollar-kiwi break and agrees with the five-day direction would be the first chart that could be traded.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ca283eb6733175beec7f93c74e59f6f06393ca59c3b829b0bb13ce1088f51eab",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "faa8606b4c0f247c6936b298597483cf8c7e383df303032ea885a9fb8d8a3718"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
+        "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+        "overnight_run_id": "overnight-20261111",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "No spot is opened. Australian dollar-kiwi closed beyond its recent range at 1.2266 and is still a multi-year rich cross, but the five-day decline and that richness do not agree as a clean continuation. The other notable closes failed back inside their ranges or are mixed, and dollar-yen is not a fresh break. Percentile location alone is not a reversal signal.",
+      "run_id": "overnight-20261111",
+      "schema_version": 1,
+      "thesis": "No spot is opened. Australian dollar-kiwi closed beyond its recent range at 1.2266 and is still a multi-year rich cross, but the five-day decline and that richness do not agree as a clean continuation. The other notable closes failed back inside their ranges or are mixed, and dollar-yen is not a fresh break. Percentile location alone is not a reversal signal."
     }
   ],
   "schema_version": 1,

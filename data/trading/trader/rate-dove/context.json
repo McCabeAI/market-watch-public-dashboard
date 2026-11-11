@@ -42,14 +42,14 @@
     "nav_usd": 100141120.79,
     "net_pnl_usd": 141120.79,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 6,
+    "rank_change": -2,
     "raw_pnl_rank": 4,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 425000.0,
     "risk_capital_utilization": 0.0425,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 40420.81,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3c9b112d8a401502f5c86568f638ac642a5efe6163689551092ecc58de17ba7a",
+  "memory_context_sha256": "3053554c75b2fa6a8398df217a6e0a48029499ed8eed241fcdefe632fad2f207",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -129,8 +129,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
@@ -144,13 +144,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -176,14 +176,25 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.08084161999999999,
+        "run_id": "overnight-20261111"
+      },
+      {
+        "kind": "rank_drop_minor",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261111"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b8e8a4a7986249de56e7babb1c7aab70612e54efd3369d80a799cd30179d7f3c",
+    "state_sha256": "ef37e9d97c79e373a6b324d365717f67c44c1dd62eb5bfd4e399358ac64359e3",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 0,
-      "session_win": 1
+      "session_loss": 1,
+      "session_win": 0
     }
   },
   "recent_closed_trades": [],

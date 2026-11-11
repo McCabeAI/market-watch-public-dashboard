@@ -901,6 +901,61 @@
       "run_id": "overnight-20261110",
       "seq": 37,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          62500.0,
+          25000.0,
+          100000.0,
+          100000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "event_id": "pse-000038",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261111",
+      "seq": 38,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-11T06:25:27.481006-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0002,
+        "complacency": 0.0044,
+        "defensiveness": -0.0005,
+        "external_pressure": -0.0003,
+        "frustration": -0.0005,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.0016
+      },
+      "event_id": "pse-000039",
+      "kind": "session_gain",
+      "magnitude": 0.08056726,
+      "mismatch": false,
+      "owner_id": "rate-hawk",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261111",
+      "scale": 1.0,
+      "seq": 39,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 40283.63
+      }
     }
   ],
   "owner_id": "rate-hawk",
