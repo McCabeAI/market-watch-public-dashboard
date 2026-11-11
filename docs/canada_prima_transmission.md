@@ -17,7 +17,9 @@ This is a deterministic Market Watch research view — **not** the Bank of Canad
   0.5/0.6/0.7). Country Detail caption: *crude-cost-share elasticity 0.35/0.45/0.55 (fuel oil
   0.5/0.6/0.7)* — **not** the live 1.10 tax factor.
 - Live caption: *cost change × 1.10 ad-valorem tax / pump price, ~1 month pass-through*.
-- Imported goods and food/inputs are **directional** (no invented import-price index).
+- Imported goods and food/inputs are **directional**; live path adds **observed** StatCan import
+  price index (total merchandise, includes energy) and BoC BCPI weekly export-price context (not
+  additive with fuel pp arithmetic).
 - CORRA appears in `policy_context` only (legacy vote unchanged).
 
 ### Source identifiers
@@ -28,15 +30,25 @@ This is a deterministic Market Watch research view — **not** the Bank of Canad
 | USDCAD | ECB SDMX crosses in `scripts/market_state.py` (`build_fx_crosses`) |
 | IPPI / RMPI | StatCan WDS vectors (`18-10-0265-01`, `18-10-0268-01`) |
 | Sector PPI | `18-10-0292-01` (shadow layer) |
-| NRCan pump (live only) | `scripts/canadian_cpi_release/sources/nrcan.py`, locationID 66 |
+| NRCan pump monthly (live) | `collect_nrcan`, locationID 66 Canada, c/L incl. taxes |
+| NRCan pump weekly (live) | `collect_nrcan_weekly`, products 1 (regular gas) & 5 (diesel), Tuesday week-ending, ~1d latency, no publish timestamp |
+| BoC BCPI weekly | `collect_bcpi_weekly`, Valet `W.BCNE` / `W.AGRI` / `W.MTLS`, 1972=100 **USD**, 5 business days ending Wednesday, latest ~7d lag, no publish timestamp |
+| StatCan import prices (live) | `collect_import_prices`, table `12-10-0168-01` vector `1566914271`, monthly BoP SA index 2017=100 CAD (total merchandise **includes energy**) |
 | CPI weights | `scripts/canadian_cpi_release/weights.py` (2025-01 vintage) |
 
-### Not wired (this build)
+### Not wired / limitations
 
-- **Weekly NRCan** — monthly national fetch only; weekly frequency not implemented.
-- **BoC BCPI** (`W.BCNE`, `W.AGRI`) — metadata verified on Valet (weekly, export-price index) but no fetcher added; food channel uses RMPI/IPPI bands only.
-- **CPI gasoline vector** (`v41691136`) — optional per plan; not added.
-- **Import price index** — remains `IMPORT_PRICE_MEASURE` unavailable.
+- **Ex-energy import price aggregate** — not published in 12-10-0168-01; live path uses total merchandise only.
+- **NRCan / BCPI publish timestamps** — sources provide no reliable per-release time (`published_at` null).
+- **CPI gasoline vector** (`v41691136`) — optional; not added.
+- **v1 legacy proxy** still uses `contract.IMPORT_PRICE_MEASURE` unchanged; v2 cites `IMPORT_PRICE_MEASURE_VERIFIED`.
+
+### No double-count (live)
+
+- Weekly pump split (`observed_at_pump_pp` + `residual_unpriced_pp`) is a **Stage C decomposition only**; `h1_3m` pp unchanged.
+- Import price index is evidence/context in the imported channel; direction rule remains FX.material.
+- BCPI weekly is food/non-energy **context**; not summed with RMPI/IPPI votes or fuel pp.
+- StatCan import total includes energy — do not add to the energy channel.
 
 ### FX dating (reconstructed)
 
@@ -106,6 +118,22 @@ Abbreviated JSON (computed 2026-11-11):
   }
 }
 ```
+
+## Example — live (network E2E 2026-11-11)
+
+Collected with `build_observation_bundle(2026-11-11, allow_network=True)` and ECB USDCAD history
+(same path as `market_state.build_snapshot`). Yahoo front contract inactive in this run; weekly
+context still attached.
+
+| Field | Value |
+|-------|-------|
+| `weekly_pump` week / price | 2026-11-10 · 166.1 c/L vs M_r pump 155 c/L |
+| `observed_at_pump_pp` | ≈ −0.370 pp (split of Stage C; not additive) |
+| BCPI `W.AGRI` USD / CAD | −1.9% / CAD n/a when FX spot absent at anchor |
+| Import price `2026-09` m/m | +0.87% (total merchandise, includes energy) |
+| `status_line` (truncated) | …NRCan wkly gas 2026-11-10 · BCPI wk 2026-11-04 · import px 2026-09 (rel. 2026-11-04)… |
+
+Artifact: `/opt/cursor/artifacts/prima_e2e/transmission_live_2026-11-11.json`.
 
 ## Example — live (synthetic fixture, offline test)
 

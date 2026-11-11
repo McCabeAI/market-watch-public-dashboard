@@ -1444,6 +1444,8 @@ def _tx_observed_change_text(ch: Mapping[str, Any]) -> str:
             "ret_3m": "USD/CAD 3m",
             "rmpi_ex_crude_energy": "RMPI ex-crude energy",
             "ippi_ex_energy": "IPPI ex-energy",
+            "import_price_total_mom": "Import price total",
+            "import_price_total_3m": "Import price 3m",
         }
 
         fx_pct_keys = frozenset({"ret_1m", "ret_3m"})
@@ -1578,6 +1580,100 @@ def _render_transmission_method(tx: Mapping[str, Any], esc: Any) -> str:
     )
 
 
+def _tx_pp_text(pp: float | None) -> str:
+    if not isinstance(pp, (int, float)):
+        return "n/a"
+    return f"{_tx_signed_num(float(pp) * 100, places=2)} pp"
+
+
+def _tx_pct_decimal(value: float | None, *, places: int = 2) -> str:
+    if not isinstance(value, (int, float)):
+        return "n/a"
+    pct = float(value) * 100.0
+    if abs(pct) < 0.005:
+        return "0.00%"
+    return f"{_tx_signed_num(pct, places=places)}%"
+
+
+def _tx_energy_weekly_html(ch: Mapping[str, Any], esc: Any) -> str:
+    stages = ch.get("stages") if isinstance(ch.get("stages"), Mapping) else {}
+    lines: list[str] = []
+    wp = stages.get("weekly_pump") if isinstance(stages.get("weekly_pump"), Mapping) else {}
+    status = str(wp.get("status") or "")
+    if status == "not_in_frozen_snapshot":
+        return ""
+    if status == "ok":
+        lines.append(
+            f"Weekly pump {esc(str(wp.get('week_ending') or ''))}: "
+            f"{esc(str(wp.get('price_cpl')))} c/L vs M_r {esc(str(wp.get('pump_M_r_cpl')))} c/L"
+        )
+        if wp.get("observed_at_pump_pp") is not None:
+            lines.append(
+                f"Stage-C split · observed at pump {_tx_pp_text(float(wp['observed_at_pump_pp']))} "
+                f"· residual {_tx_pp_text(float(wp['residual_unpriced_pp'])) if wp.get('residual_unpriced_pp') is not None else None}"
+            )
+        if wp.get("split_note"):
+            lines.append(esc(str(wp["split_note"])))
+    elif status == "no_week_after_M_r":
+        lines.append(f"Weekly pump: no week after M_r {esc(str(wp.get('M_r') or ''))}")
+    elif status in ("stale", "unavailable"):
+        lines.append(f"Weekly pump unavailable: {esc(str(wp.get('reason') or status))}")
+
+    pvw = stages.get("pump_vs_wholesale") if isinstance(stages.get("pump_vs_wholesale"), Mapping) else {}
+    if pvw.get("status") == "ok":
+        lines.append(
+            f"4w pump vs wholesale ({esc(str(pvw.get('cost_basis') or ''))}): "
+            f"{esc(str(pvw.get('classification') or ''))} · Δ pump {esc(str(pvw.get('delta_pump_cpl')))} c/L"
+        )
+    elif pvw.get("status") not in (None, "not_in_frozen_snapshot"):
+        lines.append(f"Pump vs wholesale: unavailable ({esc(str(pvw.get('reason') or pvw.get('status')))})")
+
+    dw = stages.get("diesel_weekly") if isinstance(stages.get("diesel_weekly"), Mapping) else {}
+    if dw.get("status") == "ok":
+        chg = dw.get("change_4w_pct_decimal")
+        lines.append(
+            f"Diesel weekly {esc(str(dw.get('latest_week_ending') or ''))} "
+            f"{esc(str(dw.get('price_cpl')))} c/L · 4w {_tx_pct_decimal(chg) if isinstance(chg, (int, float)) else 'n/a'} "
+            f"(transport/producer context; not in fuel pp)"
+        )
+    elif dw.get("status") not in (None, "not_in_frozen_snapshot") and dw.get("reason"):
+        lines.append(f"Diesel weekly unavailable: {esc(str(dw.get('reason')))}")
+    if not lines:
+        return ""
+    return '<div class="prima-tx-ch-section"><b>Weekly energy context</b>' + "".join(
+        f"<p>{line}</p>" for line in lines
+    ) + "</div>"
+
+
+def _tx_food_upstream_html(ch: Mapping[str, Any], esc: Any) -> str:
+    up = ch.get("upstream_weekly") if isinstance(ch.get("upstream_weekly"), Mapping) else {}
+    status = str(up.get("status") or "")
+    if status == "not_in_frozen_snapshot":
+        return ""
+    if status != "ok" and status != "partial":
+        reason = up.get("reason") or status or "unavailable"
+        return f'<p class="prima-tx-ch-section">BCPI weekly unavailable: {esc(str(reason))}</p>'
+    series = up.get("series") if isinstance(up.get("series"), Mapping) else {}
+    lines: list[str] = []
+    anchor = up.get("anchor")
+    if anchor:
+        lines.append(f"Anchor {esc(str(anchor))} (export prices, not import prices)")
+    for sid in ("W.AGRI", "W.MTLS", "W.BCNE"):
+        row = series.get(sid) if isinstance(series.get(sid), Mapping) else {}
+        if not row:
+            continue
+        usd = _tx_pct_decimal(row.get("change_pct_decimal_usd")) if row.get("change_pct_decimal_usd") is not None else "n/a"
+        cad = _tx_pct_decimal(row.get("change_pct_decimal_cad")) if row.get("change_pct_decimal_cad") is not None else "n/a"
+        role = row.get("role") or sid
+        stale = " · stale" if row.get("stale") else ""
+        lines.append(f"{esc(str(sid))} ({esc(str(role))}): USD {usd} · CAD {cad}{stale}")
+    if not lines:
+        return ""
+    return '<div class="prima-tx-ch-section"><b>BCPI weekly</b>' + "".join(
+        f"<p>{line}</p>" for line in lines
+    ) + "</div>"
+
+
 def _render_transmission_channel(
     channel_id: str,
     tx: Mapping[str, Any],
@@ -1601,12 +1697,18 @@ def _render_transmission_channel(
     assume_html = ""
     if assume_bits:
         assume_html = f'<div class="prima-tx-ch-section"><b>Assumptions</b>{"".join(assume_bits)}</div>'
+    extra = ""
+    if channel_id == TRANSMISSION_CHANNEL_ENERGY:
+        extra = _tx_energy_weekly_html(ch, esc)
+    elif channel_id == TRANSMISSION_CHANNEL_FOOD:
+        extra = _tx_food_upstream_html(ch, esc)
     return (
         f'<details class="prima-tx-ch" data-prima-tx-channel="{esc(channel_id)}">'
         f'<summary class="prima-tx-ch-summary"><span class="prima-tx-ch-label">{esc(label)}</span></summary>'
         f'<div class="prima-tx-ch-body">'
         f'<p class="prima-tx-ch-section"><b>Observed change</b> · {esc(_tx_observed_change_text(ch))}</p>'
         f'<div class="prima-tx-ch-section"><b>Evidence seen</b>{_tx_evidence_rows(ch.get("transmission_seen"), esc)}</div>'
+        f"{extra}"
         f'<div class="prima-tx-ch-section"><b>Remaining</b>{_tx_remaining_block(ch.get("remaining"))}</div>'
         f"{assume_html}"
         f'{"".join(note_bits)}{spark}'

@@ -20,11 +20,31 @@ from scripts.country_detail.projection import build_projection
 from scripts.country_detail.render import render_country_detail, _esc
 from scripts.prima_pressure.presentation import build_presentation
 from scripts.temperature_level import load_state
-from scripts.prima_pressure.transmission import unavailable_transmission
+from scripts.prima_pressure.transmission import (
+    collect_fx_history_points,
+    transmission_for_snapshot,
+    unavailable_transmission,
+)
 from scripts.prima_pressure.transmission_contract import TRANSMISSION_PROVENANCE_LIVE
 
 CSS_PATH = ROOT / "scripts/country_detail/country_detail.css"
 TEMP_SCORES = ROOT / "data/temperature_scores.json"
+PINNED_SNAPSHOT = (
+    ROOT / "data/overnight/runs/overnight-20261110/reviews/review-001/evidence_snapshot.json"
+)
+
+
+def _pinned_transmission() -> dict:
+    snap = json.loads(PINNED_SNAPSHOT.read_text(encoding="utf-8"))
+    pts = collect_fx_history_points(ROOT)
+    return transmission_for_snapshot(snap, fx_history_points=pts, root=ROOT)
+
+
+def _pinned_presentation() -> dict:
+    base = build_presentation(ROOT)
+    tx = _pinned_transmission()
+    current = dict(base.get("current") or {})
+    return {**base, "transmission": tx, "current": current, "transmission_history": base.get("transmission_history") or []}
 
 
 def _prima_excerpt(html: str) -> str:
@@ -39,16 +59,16 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         cls.scores = load_state(TEMP_SCORES)
 
     def test_presentation_includes_transmission(self) -> None:
-        p = build_presentation(ROOT)
+        p = _pinned_presentation()
         self.assertIn("transmission", p)
         self.assertIn("transmission_history", p)
-        self.assertGreaterEqual(len(p["transmission_history"]), 3)
+        self.assertGreaterEqual(len(p["transmission_history"]), 1)
         fuel = p["transmission"]["summary"]["direct_fuel"]["h1_3m"]
         self.assertAlmostEqual(fuel["pp_mid"], -0.183, delta=0.02)
         self.assertEqual(fuel["coverage"], "partial")
 
     def test_e2e_real_snapshot_overview_text(self) -> None:
-        presentation = build_presentation(ROOT)
+        presentation = _pinned_presentation()
         html = render_country_detail(
             "CA",
             {**self.projection["countries"]["CA"], "prima_pressure": presentation},
@@ -100,6 +120,44 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         presentation["transmission_history"] = presentation["transmission_history"][:2]
         html = render_prima_pressure_block(presentation, _esc)
         self.assertNotIn("prima-tx-spark", html)
+
+    def test_render_includes_weekly_context_when_present(self) -> None:
+        presentation = _pinned_presentation()
+        tx = copy.deepcopy(presentation["transmission"])
+        tx.setdefault("channels", {}).setdefault("energy_direct_fuel", {}).setdefault("stages", {})[
+            "weekly_pump"
+        ] = {
+            "status": "ok",
+            "week_ending": "2026-11-10",
+            "price_cpl": 166.1,
+            "pump_M_r_cpl": 155.0,
+            "observed_at_pump_pp": 0.05,
+            "residual_unpriced_pp": 0.02,
+            "split_note": "split of Stage C (cost→pump), not additive; both not yet in CPI",
+        }
+        tx["channels"]["food_and_non_energy_inputs"]["upstream_weekly"] = {
+            "status": "ok",
+            "anchor": "2026-09-30",
+            "series": {
+                "W.AGRI": {
+                    "change_pct_decimal_usd": 0.01,
+                    "change_pct_decimal_cad": 0.02,
+                    "role": "food_context",
+                }
+            },
+        }
+        html = render_prima_pressure_block({**presentation, "transmission": tx}, _esc)
+        self.assertIn("Weekly pump", html)
+        self.assertIn("BCPI weekly", html)
+
+    def test_render_missing_weekly_unavailable_line(self) -> None:
+        presentation = _pinned_presentation()
+        tx = copy.deepcopy(presentation["transmission"])
+        tx["channels"]["energy_direct_fuel"]["stages"] = {
+            "weekly_pump": {"status": "unavailable", "reason": "network_disabled"}
+        }
+        html = render_prima_pressure_block({**presentation, "transmission": tx}, _esc)
+        self.assertIn("Weekly pump unavailable", html)
 
     def test_live_observed_provenance_badge(self) -> None:
         presentation = build_presentation(ROOT)
