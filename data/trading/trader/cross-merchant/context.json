@@ -101,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-10T04:50:36.940059-05:00",
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
   "calibration": {
     "average_holding_seconds": 960070,
     "average_realized_pnl_usd": 22901.3,
@@ -139,23 +139,23 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 4,
-    "competitive_rank": 4,
-    "drawdown_usd": 65.33,
-    "giveback_usd": 65.33,
-    "high_water_nav_usd": 100166241.95,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 21.61,
+    "giveback_usd": 21.61,
+    "high_water_nav_usd": 100346810.57,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100166176.62,
-    "net_pnl_usd": 166176.62,
+    "nav_usd": 100346788.96,
+    "net_pnl_usd": 346788.96,
     "pressure_flags": [],
     "prior_competition_rank": 1,
-    "rank_change": 3,
-    "raw_pnl_rank": 4,
+    "rank_change": 0,
+    "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": -180612.34,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -175,7 +175,7 @@
       "source_run_id": null
     }
   ],
-  "memory_context_sha256": "9c8138b04592bd88d250abc65f830cbeb01a70786919e97a9969c7f641f3d43e",
+  "memory_context_sha256": "d8eebf603b2f6f6c979dc8a2a95e5448c8afa4b6b8a43651b4970225c3c3b8b6",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -186,15 +186,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The edge is the extreme cross location versus a 3.5-percentile NZDUSD that mixes in the dollar; it is exhausted if AUDNZD holds a new high through 1.2456 or if a New Zealand cash or policy gap starts paying Australia as hard as the listed Australia-Canada cash wedge.",
-        "current_mark": 1.2394461538461539,
+        "current_mark": 1.2281966001478197,
         "current_notional_usd": 20000000.0,
         "entry_mark": 1.2455636090977256,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 180633.95,
-        "holding_seconds": 592059,
-        "horizon_elapsed_fraction": 0.1523,
+        "giveback_usd": 0.0,
+        "holding_seconds": 684150,
+        "horizon_elapsed_fraction": 0.176,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 45,
@@ -218,19 +218,18 @@
         "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 278861.86,
-        "retained_mfe_fraction": 0.3522,
+        "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
         "review_required": true,
         "review_threshold_usd": 200000.0,
         "review_triggers": [
-          "material_winner",
-          "giveback"
+          "material_winner"
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 98227.91,
+        "total_pnl_usd": 278861.86,
         "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
-        "unrealized_pnl_usd": 98227.91
+        "unrealized_pnl_usd": 278861.86
       },
       "instrument": "AUDNZD",
       "opened_at": "2026-11-03T08:22:57.179127-05:00",

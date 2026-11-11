@@ -40,7 +40,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-10T04:50:36.940059-05:00",
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
   "calibration": {
     "average_holding_seconds": 1390817,
     "average_realized_pnl_usd": -13645.83,
@@ -80,21 +80,21 @@
     "competition_eligible": true,
     "competition_rank": 11,
     "competitive_rank": 11,
-    "drawdown_usd": 75969.42,
-    "giveback_usd": 75969.42,
+    "drawdown_usd": 89773.45,
+    "giveback_usd": 89773.45,
     "high_water_nav_usd": 100073982.29,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99998012.87,
-    "net_pnl_usd": -1987.13,
+    "nav_usd": 99984208.84,
+    "net_pnl_usd": -15791.16,
     "pressure_flags": [],
     "prior_competition_rank": 11,
     "rank_change": 0,
     "raw_pnl_rank": 11,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 500000.0,
-    "risk_capital_utilization": 0.05,
-    "session_pnl_change_usd": 13804.03,
+    "risk_capital_usd": 250000.0,
+    "risk_capital_utilization": 0.025,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -104,8 +104,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "e2083492878fca9bd379bb7958b7fa5fdc7b3c81bb0492293178eaaa044b8f86",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-5d577c502ce7",
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-carry-is-king-pos-524ab67108ee",
+      "source_run_id": "overnight-20261110"
+    }
+  ],
+  "memory_context_sha256": "b4ab17382e0ce230fbb75b36ab28920dd3140e457ae20efb13075fc7e6187dbd",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -116,15 +125,15 @@
         "asset_class": "rates",
         "catalyst_by": "2027-03-16",
         "catalyst_logic": "Cooling labor and 1.85 underlying inflation keep the Bank of Canada on hold; oil headlines without a cash-rate or reaction-function change do not exhaust the unused-hike carry.",
-        "current_mark": 2.835,
+        "current_mark": 2.885,
         "current_notional_usd": 25000000.0,
         "entry_mark": 2.995,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 1715309,
-        "horizon_elapsed_fraction": 0.2206,
+        "giveback_usd": 12500.0,
+        "holding_seconds": 1807399,
+        "horizon_elapsed_fraction": 0.2324,
         "horizon_status": "within",
         "instrument": "CORRA_2027-03",
         "intended_horizon_days": 90,
@@ -138,16 +147,16 @@
         "realization_logic": "Implied-minus-realized: CRAH27 at 2.995 cheapens if cash CORRA stays near 2.26 and the priced 73.5bp of hikes is not delivered.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 40000.0,
-        "retained_mfe_fraction": 1.0,
+        "retained_mfe_fraction": 0.6875,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 250000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 40000.0,
+        "total_pnl_usd": 27500.0,
         "trade_id": "trd-trader-carry-is-king-pos-23b8d2f30846",
-        "unrealized_pnl_usd": 40000.0
+        "unrealized_pnl_usd": 27500.0
       },
       "instrument": "CORRA_2027-03",
       "opened_at": "2026-10-21T08:22:07.869994-04:00",
@@ -159,7 +168,31 @@
   ],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-10T04:50:36.940059-05:00",
+      "created_run_id": "overnight-20261110",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-10T04:50:36.940059-05:00",
+        "conviction": 62,
+        "entry_mark": 4.83,
+        "exit_mark": 4.88,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 3366579,
+        "instrument": "AONIA_2027-03",
+        "invalidation": "Stand down if persistent RBA easing breaks the 4.60 cash regime, or if a large persistent AONIA path reprice higher turns the 23bp premium into a dominant hike-premium fade. Ordinary oil or risk-beta noise is not invalidation.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -13750.0,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-5d577c502ce7",
+      "trade_id": "trd-trader-carry-is-king-pos-524ab67108ee"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

@@ -1,0 +1,400 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If the live implied has not retraced the priced policy path (spot CORRA 2.30 vs Mar27 3.125), treat rank and mark shocks as non-signals: hold or reduce only, never add to a recovering leaderboard.",
+      "lesson_id": "les-4e8a63b10376",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-20093ee1f067"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A rank drop that dwarfs a 0.5bp adverse tick in the live implied is competition variance, not a thesis break, and a recovered rank is not permission to add.",
+      "trade_ids": []
+    }
+  ],
+  "as_of": "2026-11-11T06:25:27.481006-05:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 15,
+    "competitive_rank": 15,
+    "drawdown_usd": 208853.27,
+    "giveback_usd": 208853.27,
+    "high_water_nav_usd": 100009786.12,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99800932.85,
+    "net_pnl_usd": -199067.15,
+    "pressure_flags": [],
+    "prior_competition_rank": 15,
+    "rank_change": 0,
+    "raw_pnl_rank": 15,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 1400000.0,
+    "risk_capital_utilization": 0.14,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "d79dca907e297dc8310223742a80164378c4b858f62a2fc65c581ccaeb53c062",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 63,
+      "current_notional_usd": 50000000,
+      "entry_mark": 3.13,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 2.885,
+        "current_notional_usd": 50000000.0,
+        "entry_mark": 3.13,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 132500.0,
+        "holding_seconds": 4520917,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "CORRA_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -147500.0,
+        "mechanical_order": false,
+        "mfe_usd": 10000.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-dd6fdaf39119",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 10000.0,
+        "retained_mfe_fraction": -12.25,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 500000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": -122500.0,
+        "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119",
+        "unrealized_pnl_usd": -122500.0
+      },
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "position_id": "pos-dd6fdaf39119",
+      "risk_capital_usd": 500000.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 70,
+      "current_notional_usd": 35000000.0,
+      "entry_mark": 4.76,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 4.885,
+        "current_notional_usd": 35000000.0,
+        "entry_mark": 4.797857142857143,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 13250.0,
+        "holding_seconds": 1993057,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "AONIA_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 43750.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-78563c24fe05",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 43750.0,
+        "retained_mfe_fraction": 0.6971,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 350000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 30500.0,
+        "trade_id": "trd-trader-perma-bull-pos-78563c24fe05",
+        "unrealized_pnl_usd": 30500.0
+      },
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-10-19T04:47:49.555730-04:00",
+      "position_id": "pos-78563c24fe05",
+      "risk_capital_usd": 350000.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-78563c24fe05"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": 67,
+      "current_notional_usd": 50000000.0,
+      "entry_mark": 4.52,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": null,
+        "current_mark": 4.315,
+        "current_notional_usd": 50000000.0,
+        "entry_mark": 4.52,
+        "expected_mark_direction": null,
+        "framing": null,
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 117500.0,
+        "holding_seconds": 1889647,
+        "horizon_elapsed_fraction": null,
+        "horizon_status": "unspecified",
+        "instrument": "SOFR_2027-03",
+        "intended_horizon_days": null,
+        "mae_usd": -140000.0,
+        "mechanical_order": false,
+        "mfe_usd": 15000.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-35db4e56bf42",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": null,
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 15000.0,
+        "retained_mfe_fraction": -6.8333,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 500000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": -102500.0,
+        "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42",
+        "unrealized_pnl_usd": -102500.0
+      },
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-10-20T09:31:20.120731-04:00",
+      "position_id": "pos-35db4e56bf42",
+      "risk_capital_usd": 500000.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42"
+    },
+    {
+      "asset_class": "spot_fx",
+      "conviction": 64,
+      "current_notional_usd": 5000000.0,
+      "entry_mark": 0.56,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The incumbent kept a path to govern and the pair is still the fourth percentile after a 1.26 percent bounce.",
+        "current_mark": 0.5613058522641793,
+        "current_notional_usd": 5000000.0,
+        "entry_mark": 0.5613058522641793,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 92090,
+        "horizon_elapsed_fraction": 0.0426,
+        "horizon_status": "within",
+        "instrument": "NZDUSD",
+        "intended_horizon_days": 25,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-0c736b9e5e13",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "NZDUSD lifts off the one-year floor as the governance discount keeps closing and pro-cyclical FX catches copper and oil.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-perma-bull-pos-0c736b9e5e13",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "NZDUSD",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "position_id": "pos-0c736b9e5e13",
+      "risk_capital_usd": 50000.0,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bull-pos-0c736b9e5e13"
+    }
+  ],
+  "owner_id": "perma-bull",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.22
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.15
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.13
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.06
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.49
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.41
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "session_loss",
+        "magnitude": 0.16777361999999998,
+        "run_id": "overnight-20261106"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.09820824,
+        "run_id": "overnight-20261110"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "4ff84307a592ee066c9a6d5330619ecb118266f702d81974d43ee7de046cc210",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 1
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "variance_luck",
+        "variance",
+        "sizing"
+      ],
+      "lesson_id": "les-4e8a63b10376",
+      "no_new_lesson": null,
+      "pressure_effect": "sharpening",
+      "reflection_id": "prf-20093ee1f067",
+      "run_id": "overnight-20260929",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "The CAD implieds pay was expected to track a still-priced BoC hike path, not a leaderboard crash. At trigger, rank fell 4 to 8 with a drawdown of 15107.64 and net result of -5321.52, but frozen Mar27 CORRA only moved 3.13 to 3.125 while spot CORRA 2.30 versus 3.125 still priced tightening. Rank has since recovered to 4 and the shock was mark-to-market and competition variance around an intact rates thesis, not a broken growth/oil-into-BoC story."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
