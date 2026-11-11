@@ -527,9 +527,18 @@ def _render_history_chart(points: list[dict[str, Any]], esc: Any) -> str:
     if n >= 1:
         for idx in dict.fromkeys((0, n // 2, n - 1)):
             if idx < len(points):
+                anchor = "middle"
+                x_pos = xs[idx]
+                if idx == n - 1:
+                    anchor = "end"
+                    x_pos = min(x_pos, _HIST_CHART_W - _HIST_PAD_R)
+                elif idx == 0:
+                    anchor = "start"
+                    x_pos = max(x_pos, _HIST_PAD_L)
                 x_labels.append(
-                    f'<text x="{xs[idx]:.1f}" y="{_HIST_CHART_H - 4:.1f}" '
-                    f'text-anchor="middle" class="prima-history-x">{esc(points[idx]["short_date"])}</text>'
+                    f'<text x="{x_pos:.1f}" y="{_HIST_CHART_H - 4:.1f}" '
+                    f'text-anchor="{anchor}" class="prima-history-x">'
+                    f'{esc(points[idx]["short_date"])}</text>'
                 )
 
     if latest_plotted_idx is not None:
@@ -1246,6 +1255,9 @@ def _tx_horizon_line(h: Mapping[str, Any] | None) -> str:
         return "unavailable"
     basis = str(h.get("basis") or "unavailable")
     direction = _TX_DIR_WORD.get(str(h.get("direction") or ""), str(h.get("direction") or "unavailable"))
+    ref = str(h.get("reference_baseline") or "").strip()
+    if basis == "directional" and ref and len(ref) > 20:
+        return f"{direction} ({ref})"
     if basis in ("numerical", "range") and h.get("pp_mid") is not None:
         try:
             mid = float(h["pp_mid"])
@@ -1346,20 +1358,26 @@ def _tx_direct_fuel_overview(summary: Mapping[str, Any]) -> tuple[str, str]:
 
 
 def _tx_caption(tx: Mapping[str, Any]) -> str:
-    cpi = str(tx.get("cpi_reference_period") or "latest CPI")
-    baseline = (
+    baseline_s = (
         (tx.get("channels") or {}).get(TRANSMISSION_CHANNEL_ENERGY, {})
         .get("remaining", {})
         .get("h1_3m", {})
         .get("reference_baseline")
     )
-    baseline_s = str(baseline or "Brent-in-CAD listed front, same-contract 1m")
+    baseline_s = str(baseline_s or "Brent-in-CAD listed front, same-contract 1m")
     weight = WEIGHT_GASOLINE_PCT + WEIGHT_FUEL_OIL_PCT
+    prov = str(tx.get("provenance") or "")
+    if prov == TRANSMISSION_PROVENANCE_LIVE:
+        method = "cost change × 1.10 ad-valorem tax / pump price, ~1 month pass-through"
+    else:
+        method = (
+            "crude-cost-share elasticity 0.35/0.45/0.55 "
+            "(fuel oil 0.5/0.6/0.7)"
+        )
     return (
         f"Baseline {baseline_s} · horizons 1–3m / 3–6m CPI level pp · "
         f"CPI weight {weight:.2f}% (gasoline {WEIGHT_GASOLINE_PCT:.2f} + "
-        f"fuel oil {WEIGHT_FUEL_OIL_PCT:.2f}, {WEIGHT_BASIS}) · "
-        f"~1 month pass-through with 1.10 tax factor on marginal cost"
+        f"fuel oil {WEIGHT_FUEL_OIL_PCT:.2f}, {WEIGHT_BASIS}) · {method}"
     )
 
 
@@ -1396,10 +1414,30 @@ def _tx_observed_change_text(ch: Mapping[str, Any]) -> str:
         return f"{body}{win}{flag_txt}"
     val = obs.get("value")
     if isinstance(val, dict):
+        label_map = {
+            "ret_1m": "USD/CAD 1m",
+            "ret_3m": "USD/CAD 3m",
+            "rmpi_ex_crude_energy": "RMPI ex-crude energy",
+            "ippi_ex_energy": "IPPI ex-energy",
+        }
+
+        fx_pct_keys = frozenset({"ret_1m", "ret_3m"})
+
+        def _mom_pct(key: str, v: float) -> str:
+            if key in fx_pct_keys:
+                pct = float(v)
+            else:
+                pct = float(v) * 100.0
+            if abs(pct) < 0.005:
+                return "0.00%"
+            return f"{_tx_signed_num(pct, places=2)}%"
+
         bits = []
         for key, v in sorted(val.items()):
-            if isinstance(v, (int, float)):
-                bits.append(f"{key} {_tx_signed_num(float(v), places=2)}%")
+            if not isinstance(v, (int, float)):
+                continue
+            label = label_map.get(str(key), str(key))
+            bits.append(f"{label} {_mom_pct(str(key), float(v))}")
         return "; ".join(bits) + win + flag_txt if bits else f"Observed {metric}{win}"
     if isinstance(val, (int, float)):
         return f"{metric} {_tx_signed_num(float(val), places=2)}{win}{flag_txt}"
@@ -1421,7 +1459,15 @@ def _tx_evidence_rows(rows: Any, esc: Any) -> str:
         stale = " · stale" if row.get("stale") else ""
         val_s = ""
         if isinstance(value, (int, float)):
-            val_s = f" {_tx_signed_num(float(value), places=4)} {units}".strip()
+            v = float(value)
+            if units in ("mom", "qoq") or abs(v) < 2:
+                pct = v * 100.0
+                if abs(pct) < 0.005:
+                    val_s = " 0.00%"
+                else:
+                    val_s = f" {_tx_signed_num(pct, places=2)}%"
+            else:
+                val_s = f" {_tx_signed_num(v, places=2)} {units}".strip()
         parts.append(
             f"<p>{esc(label)}{': ' + esc(period) if period else ''}"
             f"{val_s} · release {esc(rel) if rel else 'n/a'}{stale}</p>"
@@ -1452,11 +1498,19 @@ def _render_transmission_context(tx: Mapping[str, Any], esc: Any) -> str:
         chg_s = str(chg) if chg is not None else "n/a"
         prod_bits.append(f"<li>{esc(label)} {esc(period)}: {esc(chg_s)}{stale}</li>")
     core_bits = []
-    if core:
-        core_bits.append(
-            f"CPI breadth / trim · 1–3m {_TX_DIR_WORD.get(str(core.get('direction_h1_3m')), core.get('direction_h1_3m', 'n/a'))} · "
-            f"3–6m {_TX_DIR_WORD.get(str(core.get('direction_h3_6m')), core.get('direction_h3_6m', 'n/a'))}"
-        )
+    if core.get("breadth_majors_with_mom") is not None:
+        pos = core.get("breadth_positive_majors")
+        total = core.get("breadth_majors_with_mom")
+        trim = core.get("trim_accel_pp")
+        period = str(core.get("period") or "")
+        seg = f"CPI breadth {pos}/{total} majors up"
+        if isinstance(trim, (int, float)):
+            seg += f" · trim accel {_tx_signed_num(float(trim), places=2)} pp"
+        if period:
+            seg += f" ({period})"
+        core_bits.append(seg)
+    elif core:
+        core_bits.append("CPI breadth / trim data unavailable")
     pol_note = ""
     if policy:
         corra = policy.get("corra_rate")
