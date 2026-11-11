@@ -28,7 +28,10 @@ from scripts.prima_pressure.transmission_contract import (
     WEIGHT_GASOLINE_PCT,
 )
 from scripts.prima_pressure.transmission_live import _classify_pump_gap, build_energy_live
-from scripts.prima_pressure.transmission import _truncate_status_bits
+from scripts.prima_pressure.transmission import (
+    _build_status_line,
+    _truncate_status_bits,
+)
 
 
 SNAPSHOT_PATH = (
@@ -512,6 +515,102 @@ class TransmissionLiveFeedsTest(unittest.TestCase):
         self.assertLessEqual(len(line), 120)
         self.assertFalse(line.endswith("·"))
         self.assertNotIn("d" * 50, line)
+
+    def test_status_line_drops_low_priority_before_provenance(self) -> None:
+        fuel_h1 = {
+            "direction": "down",
+            "basis": "range",
+            "pp_mid": -0.18,
+        }
+        energy_ch = {
+            "observed_change": {
+                "window": {"start": "2026-10-09", "end": "2026-11-09"},
+                "flags": [],
+            },
+            "stages": {"weekly_pump": {"status": "ok", "week_ending": "2026-11-10"}},
+        }
+        block = {
+            "shadow_sector_layer": {
+                "direct_energy": {
+                    "monthly_ippi_energy": {
+                        "period": "2026-09",
+                        "release_time": "2026-10-15",
+                    },
+                    "monthly_rmpi_crude_energy": {
+                        "period": "2026-09",
+                        "release_time": "2026-10-15",
+                    },
+                    "quarterly": {
+                        "series_id": "sector_ppi_energy",
+                        "period": "2026-Q3",
+                        "release_time": "2026-10-10",
+                    },
+                }
+            }
+        }
+        inputs = {
+            "bcpi_weekly": {
+                "status": "ok",
+                "series": {
+                    "W.BCNE": {"latest": {"date": "2026-11-05"}},
+                },
+            },
+            "import_prices": {
+                "status": "ok",
+                "release_time": "2026-10-20",
+                "series": {"import_price_total": {"latest_period": "2026-09"}},
+            },
+        }
+        line = _build_status_line(
+            provenance=TRANSMISSION_PROVENANCE_LIVE,
+            as_of=date(2026, 11, 11),
+            cpi_ref="2026-09",
+            block=block,
+            fuel_h1=fuel_h1,
+            energy_ch=energy_ch,
+            missing=[{"input": "optional_feed", "reason": "test"}],
+            inputs=inputs,
+        )
+        self.assertLessEqual(len(line), 300)
+        self.assertTrue(line.startswith("Live inputs 2026-11-11"))
+        self.assertIn("provenance live_observed", line)
+        self.assertNotIn("missing:", line)
+        self.assertNotIn("import px", line)
+
+    def test_render_energy_delta_formats_float_noise(self) -> None:
+        presentation = {"transmission": {"provenance": "live_observed", "channels": {}}}
+        tx = {
+            "provenance": "live_observed",
+            "channels": {
+                "energy_direct_fuel": {
+                    "stages": {
+                        "weekly_pump": {
+                            "status": "ok",
+                            "week_ending": "2026-11-10",
+                            "price_cpl": 166.1,
+                            "M_r": "2026-09",
+                            "pump_M_r_cpl": 155.0,
+                        },
+                        "pump_vs_wholesale": {
+                            "status": "ok",
+                            "cost_basis": "wholesale",
+                            "classification": "mostly_explained",
+                            "delta_pump_cpl": -13.400000000000006,
+                            "implied_pump_change_cpl": -12.05,
+                            "window": {
+                                "start": "2026-10-13",
+                                "end": "2026-11-10",
+                            },
+                        },
+                    }
+                }
+            },
+        }
+        html = render_prima_pressure_block({**presentation, "transmission": tx}, _esc)
+        self.assertIn("−13.4 c/L", html)
+        self.assertIn("implied pump Δ −12.1 c/L", html)
+        self.assertIn("2026-09 NRCan monthly avg", html)
+        self.assertNotIn("000000000000006", html)
 
     def test_bcpi_cad_fx_uses_anchor_observation_date(self) -> None:
         from scripts.prima_pressure.transmission import _bcpi_series_cad_change

@@ -670,19 +670,53 @@ def _feed_series_map(block: Any) -> tuple[dict[str, Any] | None, str | None]:
     return dict(raw), None
 
 
+def _status_bit_drop_priority(bit: str, *, index: int) -> int | None:
+    if index == 0:
+        return None
+    if bit.startswith("fuel h1_3m "):
+        return None
+    if bit.startswith("missing:"):
+        return 0
+    if bit.startswith("import px "):
+        return 1
+    if bit.startswith("BCPI wk "):
+        return 2
+    if bit.startswith("NRCan wkly gas "):
+        return 3
+    if bit.startswith("sector PPI "):
+        return 4
+    return 5
+
+
 def _truncate_status_bits(bits: list[str], *, limit: int = 300) -> str:
     if not bits:
         return ""
+
+    def joined_len(items: list[str]) -> int:
+        return len(" · ".join(items))
+
     trimmed = list(bits)
-    while len(trimmed) > 1 and len(" · ".join(trimmed)) > limit:
-        trimmed.pop()
+    while joined_len(trimmed) > limit and len(trimmed) > 1:
+        candidates: list[tuple[int, int]] = []
+        for i, bit in enumerate(trimmed):
+            pri = _status_bit_drop_priority(bit, index=i)
+            if pri is not None:
+                candidates.append((pri, i))
+        if not candidates:
+            break
+        candidates.sort(key=lambda row: (row[0], -row[1]))
+        trimmed.pop(candidates[0][1])
+
     line = " · ".join(trimmed)
     if len(line) <= limit:
         return line
     if len(trimmed) == 1 and len(trimmed[0]) > limit:
         cut = trimmed[0][:limit].rsplit(" ", 1)[0]
         return cut if cut else trimmed[0][:limit]
-    return line[:limit].rsplit(" ", 1)[0]
+    if len(line) > limit:
+        cut = line[:limit].rsplit(" ", 1)[0]
+        return cut if cut else line[:limit]
+    return line
 
 
 def _frozen_weekly_placeholder(*, frequency: str = "weekly") -> dict[str, Any]:

@@ -143,7 +143,14 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
                     "change_pct_decimal_usd": 0.01,
                     "change_pct_decimal_cad": 0.02,
                     "role": "food_context",
-                }
+                    "latest_date": "2026-11-05",
+                },
+                "W.BCNE": {
+                    "change_pct_decimal_usd": -0.01,
+                    "change_pct_decimal_cad": 0.0,
+                    "role": "aggregate_reference_contains_agri_and_metals — not combined",
+                    "latest_date": "2026-11-05",
+                },
             },
         }
         html = render_prima_pressure_block({**presentation, "transmission": tx}, _esc)
@@ -152,6 +159,14 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         self.assertIn("0.05 pp", html)
         self.assertIn("residual 0.02 pp", html)
         self.assertNotIn("5.00 pp", html)
+        self.assertIn("Since 2026-09-30", html)
+        self.assertIn("export prices, not import prices", html)
+        self.assertIn("Agriculture (food context)", html)
+        self.assertIn(
+            "Ex-energy aggregate (reference; contains agriculture and metals, not combined)",
+            html,
+        )
+        self.assertNotIn("aggregate_reference_contains", html)
         self.assertNotRegex(html, r"\bNone\b")
 
     def test_render_missing_weekly_unavailable_line(self) -> None:

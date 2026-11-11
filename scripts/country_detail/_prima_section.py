@@ -1589,6 +1589,49 @@ def _tx_pct_decimal(value: float | None, *, places: int = 2) -> str:
     return f"{_tx_signed_num(pct, places=places)}%"
 
 
+def _tx_cpl_level(value: Any) -> str:
+    if not isinstance(value, (int, float)):
+        return "n/a"
+    return f"{float(value):.1f} c/L"
+
+
+def _tx_cpl_delta(value: Any) -> str:
+    if not isinstance(value, (int, float)):
+        return "n/a"
+    return f"{_tx_signed_num(float(value), places=1)} c/L"
+
+
+def _tx_nrcan_monthly_ref(period: Any) -> str:
+    text = str(period or "").strip()
+    if not text:
+        return "NRCan monthly avg"
+    return f"{text} NRCan monthly avg"
+
+
+_BCPI_SERIES_LABELS = {
+    "W.AGRI": "Agriculture (food context)",
+    "W.MTLS": "Metals & minerals (non-energy goods context)",
+    "W.BCNE": (
+        "Ex-energy aggregate (reference; contains agriculture and metals, not combined)"
+    ),
+}
+
+_BCPI_ROLE_LABELS = {
+    "food_context": _BCPI_SERIES_LABELS["W.AGRI"],
+    "non_energy_goods_context": _BCPI_SERIES_LABELS["W.MTLS"],
+    "aggregate_reference_contains_agri_and_metals — not combined": _BCPI_SERIES_LABELS[
+        "W.BCNE"
+    ],
+}
+
+
+def _bcpi_series_label(sid: str, role: Any) -> str:
+    if sid in _BCPI_SERIES_LABELS:
+        return _BCPI_SERIES_LABELS[sid]
+    role_s = str(role or "").strip()
+    return _BCPI_ROLE_LABELS.get(role_s, role_s or sid)
+
+
 def _tx_energy_weekly_html(ch: Mapping[str, Any], esc: Any) -> str:
     stages = ch.get("stages") if isinstance(ch.get("stages"), Mapping) else {}
     lines: list[str] = []
@@ -1597,9 +1640,11 @@ def _tx_energy_weekly_html(ch: Mapping[str, Any], esc: Any) -> str:
     if status == "not_in_frozen_snapshot":
         return ""
     if status == "ok":
+        mr_ref = _tx_nrcan_monthly_ref(wp.get("M_r"))
         lines.append(
             f"Weekly pump {esc(str(wp.get('week_ending') or ''))}: "
-            f"{esc(str(wp.get('price_cpl')))} c/L vs M_r {esc(str(wp.get('pump_M_r_cpl')))} c/L"
+            f"{esc(_tx_cpl_level(wp.get('price_cpl')))} vs "
+            f"{esc(mr_ref)} {esc(_tx_cpl_level(wp.get('pump_M_r_cpl')))}"
         )
         obs_pp = wp.get("observed_at_pump_pp")
         res_pp = wp.get("residual_unpriced_pp")
@@ -1610,15 +1655,28 @@ def _tx_energy_weekly_html(ch: Mapping[str, Any], esc: Any) -> str:
         if wp.get("split_note"):
             lines.append(esc(str(wp["split_note"])))
     elif status == "no_week_after_M_r":
-        lines.append(f"Weekly pump: no week after M_r {esc(str(wp.get('M_r') or ''))}")
+        lines.append(
+            f"Weekly pump: no week after {esc(_tx_nrcan_monthly_ref(wp.get('M_r')))}"
+        )
     elif status in ("stale", "unavailable"):
         lines.append(f"Weekly pump unavailable: {esc(str(wp.get('reason') or status))}")
 
     pvw = stages.get("pump_vs_wholesale") if isinstance(stages.get("pump_vs_wholesale"), Mapping) else {}
     if pvw.get("status") == "ok":
+        win = pvw.get("window") if isinstance(pvw.get("window"), Mapping) else {}
+        win_s = ""
+        if win.get("start") and win.get("end"):
+            win_s = f" ({win['start']}→{win['end']})"
+        implied = pvw.get("implied_pump_change_cpl")
+        implied_s = (
+            f" · implied pump Δ {esc(_tx_cpl_delta(implied))}"
+            if isinstance(implied, (int, float))
+            else ""
+        )
         lines.append(
-            f"4w pump vs wholesale ({esc(str(pvw.get('cost_basis') or ''))}): "
-            f"{esc(str(pvw.get('classification') or ''))} · Δ pump {esc(str(pvw.get('delta_pump_cpl')))} c/L"
+            f"4w pump vs wholesale ({esc(str(pvw.get('cost_basis') or ''))}){esc(win_s)}: "
+            f"{esc(str(pvw.get('classification') or ''))} · Δ pump "
+            f"{esc(_tx_cpl_delta(pvw.get('delta_pump_cpl')))}{implied_s}"
         )
     elif pvw.get("status") not in (None, "not_in_frozen_snapshot"):
         lines.append(f"Pump vs wholesale: unavailable ({esc(str(pvw.get('reason') or pvw.get('status')))})")
@@ -1628,7 +1686,8 @@ def _tx_energy_weekly_html(ch: Mapping[str, Any], esc: Any) -> str:
         chg = dw.get("change_4w_pct_decimal")
         lines.append(
             f"Diesel weekly {esc(str(dw.get('latest_week_ending') or ''))} "
-            f"{esc(str(dw.get('price_cpl')))} c/L · 4w {_tx_pct_decimal(chg) if isinstance(chg, (int, float)) else 'n/a'} "
+            f"{esc(_tx_cpl_level(dw.get('price_cpl')))} · 4w "
+            f"{_tx_pct_decimal(chg) if isinstance(chg, (int, float)) else 'n/a'} "
             f"(transport/producer context; not in fuel pp)"
         )
     elif dw.get("status") not in (None, "not_in_frozen_snapshot") and dw.get("reason"):
@@ -1652,16 +1711,26 @@ def _tx_food_upstream_html(ch: Mapping[str, Any], esc: Any) -> str:
     lines: list[str] = []
     anchor = up.get("anchor")
     if anchor:
-        lines.append(f"Anchor {esc(str(anchor))} (export prices, not import prices)")
+        lines.append(
+            f"Since {esc(str(anchor))} (export prices, not import prices)"
+        )
+    latest_week = ""
+    for sid in ("W.AGRI", "W.MTLS", "W.BCNE"):
+        row = series.get(sid) if isinstance(series.get(sid), Mapping) else {}
+        if row.get("latest_date"):
+            latest_week = str(row["latest_date"])
+            break
+    if latest_week:
+        lines.append(f"Latest week {esc(latest_week)}")
     for sid in ("W.AGRI", "W.MTLS", "W.BCNE"):
         row = series.get(sid) if isinstance(series.get(sid), Mapping) else {}
         if not row:
             continue
         usd = _tx_pct_decimal(row.get("change_pct_decimal_usd")) if row.get("change_pct_decimal_usd") is not None else "n/a"
         cad = _tx_pct_decimal(row.get("change_pct_decimal_cad")) if row.get("change_pct_decimal_cad") is not None else "n/a"
-        role = row.get("role") or sid
+        label = _bcpi_series_label(sid, row.get("role"))
         stale = " · stale" if row.get("stale") else ""
-        lines.append(f"{esc(str(sid))} ({esc(str(role))}): USD {usd} · CAD {cad}{stale}")
+        lines.append(f"{esc(label)}: USD {usd} · CAD {cad}{stale}")
     if not lines:
         return ""
     return '<div class="prima-tx-ch-section"><b>BCPI weekly</b>' + "".join(
