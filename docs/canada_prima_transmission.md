@@ -1,0 +1,100 @@
+# Canada PRiMA CPI transmission (v2)
+
+Additive `transmission` block alongside the legacy five-vote `canada_prima_pressure_v1` proxy.
+This is a deterministic Market Watch research view — **not** the Bank of Canada's proprietary PRiMA.
+
+## Method (summary)
+
+- **Numerical** direct-fuel coverage only (gasoline 4.01% + fuel oil 0.24%, 2025 basket).
+- Brent listed **front** same-contract 1m USD change combined with **USDCAD** (CAD per USD) once:
+  `combined = (1+r_usd)(1+r_fx)−1`.
+- Reconstructed snapshots use a crude-cost-share **range** [0.35, 0.45, 0.55] for gasoline and
+  [0.5, 0.6, 0.7] for fuel oil when pump/NRCan staging is unavailable.
+- Imported goods and food/inputs are **directional** (no invented import-price index).
+- CORRA appears in `policy_context` only (legacy vote unchanged).
+
+### Source identifiers
+
+| Input | Source |
+|-------|--------|
+| Brent / WTI / RBOB / HO | NYMEX listed symbols via Yahoo chart (`scripts/prima_pressure/curve.py`) |
+| USDCAD | ECB SDMX crosses in `scripts/market_state.py` (`build_fx_crosses`) |
+| IPPI / RMPI | StatCan WDS vectors (`18-10-0265-01`, `18-10-0268-01`) |
+| Sector PPI | `18-10-0292-01` (shadow layer) |
+| NRCan pump (live only) | `scripts/canadian_cpi_release/sources/nrcan.py`, locationID 66 |
+| CPI weights | `scripts/canadian_cpi_release/weights.py` (2025-01 vintage) |
+
+### Not wired (this build)
+
+- **Weekly NRCan** — monthly national fetch only; weekly frequency not implemented.
+- **BoC BCPI** (`W.BCNE`, `W.AGRI`) — metadata verified on Valet (weekly, export-price index) but no fetcher added; food channel uses RMPI/IPPI bands only.
+- **CPI gasoline vector** (`v41691136`) — optional per plan; not added.
+- **Import price index** — remains `IMPORT_PRICE_MEASURE` unavailable.
+
+### FX dating (reconstructed)
+
+Accepted overnight snapshots supply USDCAD **spot** + **as_of** in
+`families.market_state.data.fx.pairs.USDCAD`. Dated spots within 5 calendar days of Brent
+`change_1m_base_date` / `observation_date` are preferred (`collect_fx_history_points`).
+If no accepted snapshot has a spot on **2026-10-09** (nearest prior in-repo is **2026-10-20**,
+beyond the 5-day window), reconstruction falls back to the same snapshot's `ret_1m`
+(21 ECB business days) with `fx_window_approximate: true`.
+
+## Example — reconstructed from `overnight-20261110/review-001`
+
+Snapshot inputs: BZF27 front 92.57 USD/bbl (obs 2026-11-09), 1m −8.57% from 2026-10-09;
+USDCAD 1.41026 (`ret_1m` −0.87%, `ret_3m` +1.27%); latest CPI month **2026-09**.
+
+| Field | Value |
+|-------|-------|
+| `provenance` | `reconstructed_from_frozen_v1` |
+| Brent-in-CAD `combined` | −9.37% |
+| Fuel `h1_3m` `pp_mid` | −0.183 pp (range −0.143 … −0.222) |
+| Fuel `h1_3m` `direction` | `down` |
+| `coverage` | `partial` (`2026-09-30 → 2026-10-09`) |
+| Fuel `h3_6m` | directional `down` (front 92.57 > 12m 78.28, backwardation) |
+| Imported goods | `neutral` (FX not material) |
+| Food/inputs `h3_6m` | `down` (RMPI ex-crude −0.435% beyond band) |
+
+Abbreviated JSON (computed 2026-11-11):
+
+```json
+{
+  "schema_version": "canada_prima_transmission_v2",
+  "method_version": "ca_prima_tx_2026_11_v1",
+  "provenance": "reconstructed_from_frozen_v1",
+  "as_of": "2026-11-10",
+  "cpi_reference_period": "2026-09",
+  "channels": {
+    "energy_direct_fuel": {
+      "observed_change": {
+        "decomposition": {
+          "usd_leg": -0.08572839807581019,
+          "fx_leg": -0.008698197633086546,
+          "combined": -0.09368091315966542
+        },
+        "flags": ["fx_window_approximate"]
+      },
+      "remaining": {
+        "h1_3m": {
+          "basis": "range",
+          "direction": "down",
+          "pp_mid": -0.18253725929160808,
+          "coverage": "partial",
+          "uncovered_interval": "2026-09-30 → 2026-10-09"
+        },
+        "h3_6m": { "basis": "directional", "direction": "down" }
+      }
+    }
+  }
+}
+```
+
+## Public interfaces (`scripts/prima_pressure/transmission.py`)
+
+- `build_transmission(inputs, *, as_of) -> dict`
+- `inputs_from_live(bundle, *, usdcad_history, nrcan, as_of) -> dict`
+- `inputs_from_frozen(block, *, usdcad_pair, fx_history_points=(), as_of) -> dict`
+- `transmission_for_snapshot(snapshot, *, fx_history_points=(), root=None) -> dict`
+- `unavailable_transmission(reason) -> dict`
+- `collect_fx_history_points(root) -> list[tuple[date, float, str]]`
