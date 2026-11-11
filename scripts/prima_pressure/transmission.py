@@ -184,19 +184,311 @@ def _find_shock_horizon(block: dict, months: int) -> dict | None:
 
 def _latest_cpi_period(block: dict) -> str | None:
     ce = block.get("channel_evidence") or {}
-    for ch in ("consumer_price_breadth", "production_network_pressure", "imported_pressure"):
+    cb = ce.get("consumer_price_breadth") or {}
+    for inp in cb.get("inputs") or []:
+        if not isinstance(inp, dict):
+            continue
+        for major in inp.get("majors") or []:
+            if isinstance(major, dict) and major.get("period"):
+                return str(major["period"])
+        if inp.get("period"):
+            return str(inp["period"])
+    for ch in ("production_network_pressure", "imported_pressure"):
         for row in (ce.get(ch) or {}).get("inputs") or []:
             if isinstance(row, dict) and row.get("period"):
                 return str(row["period"])
     shadow = block.get("shadow_sector_layer") or {}
-    leg = (shadow.get("legacy_vs_shadow") or {}).get("legacy_scored") or {}
-    for key in ("production_network_input",):
-        pass
     direct = shadow.get("direct_energy") or {}
     for sub in (direct.get("monthly_ippi_energy"), direct.get("monthly_rmpi_crude_energy")):
         if isinstance(sub, dict) and sub.get("period"):
             return str(sub["period"])
     return None
+
+
+def _seen_from_shadow(row: dict[str, Any] | None) -> dict[str, Any] | None:
+    if not isinstance(row, dict):
+        return None
+    rel = row.get("release_time") or row.get("release_date")
+    rel_s = str(rel)[:10] if rel else None
+    kind = str(row.get("change_kind") or "mom")
+    units = "qoq" if kind == "qoq" else "mom"
+    val = row.get("change")
+    if not isinstance(val, (int, float)):
+        return None
+    return {
+        "series_id": str(row.get("series_id") or ""),
+        "label": str(row.get("label") or row.get("series_id") or ""),
+        "period": str(row.get("period") or ""),
+        "value": float(val),
+        "units": units,
+        "release_date": rel_s,
+        "stale": bool(row.get("stale")),
+    }
+
+
+_CPI_MAJOR_LABELS = {
+    "cpi_nsa_food": "CPI food",
+    "cpi_nsa_clothing": "CPI clothing",
+    "cpi_nsa_household_ops": "CPI household operations",
+    "cpi_nsa_transportation": "CPI transportation",
+}
+
+
+def _cpi_major_seen(block: dict, series_suffix: str) -> dict[str, Any] | None:
+    ce = block.get("channel_evidence") or {}
+    cb = ce.get("consumer_price_breadth") or {}
+    for inp in cb.get("inputs") or []:
+        if not isinstance(inp, dict):
+            continue
+        for major in inp.get("majors") or []:
+            if not isinstance(major, dict):
+                continue
+            sid = str(major.get("series_id") or "")
+            if sid != series_suffix:
+                continue
+            mom = major.get("latest_mom")
+            if not isinstance(mom, (int, float)):
+                continue
+            period = str(major.get("period") or "")
+            label = _CPI_MAJOR_LABELS.get(sid, sid.replace("cpi_nsa_", "CPI "))
+            return {
+                "series_id": sid,
+                "label": label,
+                "period": period,
+                "value": float(mom),
+                "units": "mom",
+                "release_date": _cpi_release_date(block, period),
+                "stale": False,
+            }
+    return None
+
+
+def _cpi_release_date(block: dict, period: str | None) -> str | None:
+    if not period:
+        return None
+    ce = block.get("channel_evidence") or {}
+    for ch in ce.values():
+        if not isinstance(ch, dict):
+            continue
+        for row in ch.get("inputs") or []:
+            if isinstance(row, dict) and row.get("period") == period and row.get("release_time"):
+                return str(row["release_time"])[:10]
+    return None
+
+
+def _breadth_evidence(block: dict) -> dict[str, Any]:
+    ce = block.get("channel_evidence") or {}
+    cb = ce.get("consumer_price_breadth") or {}
+    for inp in cb.get("inputs") or []:
+        if not isinstance(inp, dict):
+            continue
+        pos = inp.get("breadth_positive_majors")
+        total = inp.get("breadth_majors_with_mom")
+        trim = inp.get("trim_accel_pp")
+        period = None
+        for major in inp.get("majors") or []:
+            if isinstance(major, dict) and major.get("period"):
+                period = str(major["period"])
+                break
+        if total is None:
+            continue
+        out: dict[str, Any] = {
+            "breadth_positive_majors": int(pos) if isinstance(pos, int) else pos,
+            "breadth_majors_with_mom": int(total) if isinstance(total, int) else total,
+            "trim_accel_pp": float(trim) if isinstance(trim, (int, float)) else None,
+            "period": period,
+            "release_date": _cpi_release_date(block, period),
+        }
+        if isinstance(pos, int) and isinstance(total, int) and total:
+            out["breadth_share"] = pos / total
+        return out
+    return {}
+
+
+def _energy_transmission_seen(block: dict) -> list[dict[str, Any]]:
+    shadow = block.get("shadow_sector_layer") or {}
+    direct = shadow.get("direct_energy") or {}
+    rows: list[dict[str, Any]] = []
+    for key in ("monthly_ippi_energy", "monthly_rmpi_crude_energy"):
+        seen = _seen_from_shadow(direct.get(key))
+        if seen:
+            rows.append(seen)
+    q = direct.get("quarterly")
+    if isinstance(q, dict) and q.get("series_id") == "sector_ppi_energy":
+        seen = _seen_from_shadow(q)
+        if seen:
+            rows.append(seen)
+    trans = _cpi_major_seen(block, "cpi_nsa_transportation")
+    if trans:
+        rows.append(trans)
+    return rows
+
+
+def _imported_transmission_seen(block: dict) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for suffix in ("clothing", "household_ops"):
+        seen = _cpi_major_seen(block, f"cpi_nsa_{suffix}")
+        if seen:
+            rows.append(seen)
+    ce = block.get("channel_evidence") or {}
+    for row in (ce.get("production_network_pressure") or {}).get("inputs") or []:
+        if isinstance(row, dict) and row.get("series_id") == "ippi_ex_energy":
+            mom = row.get("mom")
+            if isinstance(mom, (int, float)):
+                rows.append(
+                    {
+                        "series_id": "ippi_ex_energy",
+                        "label": "IPPI ex-energy",
+                        "period": str(row.get("period") or ""),
+                        "value": float(mom),
+                        "units": "mom",
+                        "release_date": str(row.get("release_time") or "")[:10] or None,
+                        "stale": bool(row.get("stale")),
+                    }
+                )
+    return rows
+
+
+def _food_transmission_seen(block: dict) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    food = _cpi_major_seen(block, "cpi_nsa_food")
+    if food:
+        rows.append(food)
+    ce = block.get("channel_evidence") or {}
+    for row in (ce.get("imported_pressure") or {}).get("inputs") or []:
+        if isinstance(row, dict) and row.get("series_id") == "rmpi_ex_crude_energy":
+            mom = row.get("mom")
+            if isinstance(mom, (int, float)):
+                rows.append(
+                    {
+                        "series_id": "rmpi_ex_crude_energy",
+                        "label": "RMPI ex-crude energy",
+                        "period": str(row.get("period") or ""),
+                        "value": float(mom),
+                        "units": "mom",
+                        "release_date": str(row.get("release_time") or "")[:10] or None,
+                        "stale": bool(row.get("stale")),
+                    }
+                )
+    shadow = block.get("shadow_sector_layer") or {}
+    for sec in shadow.get("other_sectors") or []:
+        if isinstance(sec, dict) and sec.get("series_id") == "sector_ppi_non_energy":
+            seen = _seen_from_shadow(sec)
+            if seen:
+                rows.append(seen)
+            break
+    return rows
+
+
+def _pct_text(value: float, *, places: int = 1) -> str:
+    pct = value * 100.0
+    if abs(pct) < 0.005:
+        return f"{0:.{places}f}%"
+    sign = "+" if pct > 0 else "−"
+    return f"{sign}{abs(pct):.{places}f}%"
+
+
+def _pp_text(value: float | None) -> str:
+    if value is None:
+        return "n/a"
+    sign = "−" if value < 0 else ""
+    return f"{sign}{abs(value):.2f} pp"
+
+
+def _headline_where_transmitting(block: dict, breadth: dict[str, Any]) -> str:
+    parts: list[str] = []
+    shadow = block.get("shadow_sector_layer") or {}
+    direct = shadow.get("direct_energy") or {}
+    ippi = direct.get("monthly_ippi_energy") or {}
+    rmpi = direct.get("monthly_rmpi_crude_energy") or {}
+    if isinstance(ippi, dict) and ippi.get("change_display"):
+        parts.append(f"IPPI energy {ippi['change_display']} m/m")
+    if isinstance(rmpi, dict) and rmpi.get("change_display"):
+        parts.append(f"RMPI crude {rmpi['change_display']}")
+    trans = _cpi_major_seen(block, "cpi_nsa_transportation")
+    if trans:
+        parts.append(f"CPI transport {_pct_text(trans['value'], places=1)} m/m")
+    if breadth.get("breadth_positive_majors") is not None and breadth.get("breadth_majors_with_mom"):
+        parts.append(
+            f"breadth {breadth['breadth_positive_majors']}/{breadth['breadth_majors_with_mom']} majors up"
+        )
+    if isinstance(breadth.get("trim_accel_pp"), (int, float)):
+        parts.append(f"trim accel {breadth['trim_accel_pp']:+.2f} pp")
+    if breadth.get("period"):
+        parts.append(f"({breadth['period']})")
+    text = "Producer stage: " + ", ".join(parts) if parts else "Producer stage evidence sparse."
+    return text[:200]
+
+
+def _headline_what_remains(fuel_h1: dict, fuel_h3: dict, core: dict) -> str:
+    bits: list[str] = []
+    mid = fuel_h1.get("pp_mid")
+    if isinstance(mid, (int, float)) and fuel_h1.get("basis") in ("numerical", "range"):
+        seg = f"Fuel 1–3m {_pp_text(mid)}"
+        if fuel_h1.get("basis") == "range":
+            lo, hi = fuel_h1.get("pp_low"), fuel_h1.get("pp_high")
+            if isinstance(lo, (int, float)) and isinstance(hi, (int, float)):
+                seg += f" (range {_pp_text(lo)} to {_pp_text(hi)})"
+        if fuel_h1.get("coverage") == "partial":
+            seg += " partial"
+        bits.append(seg)
+    elif fuel_h1.get("direction"):
+        bits.append(f"Fuel 1–3m {fuel_h1.get('direction')} ({fuel_h1.get('basis')})")
+    core_d = core.get("direction_h1_3m")
+    if core_d:
+        bits.append(f"Core {core_d}")
+    h3_ref = str(fuel_h3.get("reference_baseline") or "")
+    h3_dir = fuel_h3.get("direction")
+    if fuel_h3.get("basis") == "directional" and h3_ref:
+        bits.append(f"Fuel 3–6m {h3_dir} — {h3_ref}")
+    else:
+        bits.append(f"Fuel 3–6m {h3_dir} ({fuel_h3.get('basis')})")
+    return "; ".join(bits)[:200]
+
+
+def _build_status_line(
+    *,
+    provenance: str,
+    as_of: dt.date,
+    cpi_ref: str | None,
+    block: dict,
+    fuel_h1: dict,
+    energy_ch: dict,
+    missing: list[dict],
+) -> str:
+    bits = [
+        f"{'Live' if provenance == TRANSMISSION_PROVENANCE_LIVE else 'Reconstructed'} inputs {as_of.isoformat()}",
+        f"CPI {cpi_ref or 'unknown'}",
+    ]
+    shadow = block.get("shadow_sector_layer") or {}
+    direct = shadow.get("direct_energy") or {}
+    ippi = direct.get("monthly_ippi_energy") or {}
+    rmpi = direct.get("monthly_rmpi_crude_energy") or {}
+    if isinstance(ippi, dict) and ippi.get("period"):
+        rel = str(ippi.get("release_time") or "")[:10]
+        bits.append(f"IPPI {ippi['period']}" + (f" (rel. {rel})" if rel else ""))
+    if isinstance(rmpi, dict) and rmpi.get("period"):
+        rel = str(rmpi.get("release_time") or "")[:10]
+        bits.append(f"RMPI {rmpi['period']}" + (f" (rel. {rel})" if rel else ""))
+    q = direct.get("quarterly")
+    if isinstance(q, dict) and q.get("period") and q.get("series_id") == "sector_ppi_energy":
+        rel = str(q.get("release_time") or "")[:10]
+        bits.append(f"sector PPI {q['period']}" + (f" (rel. {rel})" if rel else ""))
+    obs = energy_ch.get("observed_change") or {}
+    flags = obs.get("flags") or []
+    win = obs.get("window") or {}
+    if win.get("start") and win.get("end"):
+        win_s = f"Brent {win['start']}→{win['end']}"
+        if "fx_window_approximate" in flags:
+            win_s += f"; USD/CAD 21 ECB business days to {win.get('end')}"
+        bits.append(win_s)
+    bits.append(
+        f"fuel h1_3m {fuel_h1.get('direction')} ({fuel_h1.get('basis')}) · "
+        f"provenance {provenance}"
+    )
+    if missing:
+        bits.append(f"missing: {missing[0].get('input')}")
+    return " · ".join(bits)[:300]
 
 
 def _producer_mom(block: dict, series_id: str) -> float | None:
@@ -522,10 +814,13 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
     else:
         flags.append("fx_leg_missing")
 
-    combined, decomp, comb_flags = _combined_brent_cad(r_usd or 0.0, r_fx)
-    flags.extend(comb_flags)
     if r_usd is None:
         combined = None
+        decomp = None
+        flags.append("usd_leg_missing")
+    else:
+        combined, decomp, comb_flags = _combined_brent_cad(float(r_usd), r_fx)
+        flags.extend(comb_flags)
 
     uncovered = None
     coverage = "full"
@@ -573,32 +868,37 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
 
     h3_basis = "directional"
     h3_dir = "neutral"
+    h3_ref = "Front vs 12m listed Brent (if curve realised)"
     if front and p12:
         fp = front.get("price")
         p12p = p12.get("price")
         if isinstance(fp, (int, float)) and isinstance(p12p, (int, float)):
             if fp > p12p + contract.STABLE_USD:
                 h3_dir = "down"
+                h3_ref = (
+                    f"downward if the futures curve is realised "
+                    f"(front {float(fp):.2f} vs 12m {float(p12p):.2f} USD/bbl)"
+                )
             elif fp < p12p - contract.STABLE_USD:
                 h3_dir = "up"
+                h3_ref = (
+                    f"upward if the futures curve is realised "
+                    f"(front {float(fp):.2f} vs 12m {float(p12p):.2f} USD/bbl)"
+                )
     h3 = _horizon_block(
         basis=h3_basis,
         direction=h3_dir,
-        reference_baseline="Front vs 12m listed Brent (if curve realised)",
+        reference_baseline=h3_ref,
         coverage="partial" if coverage == "partial" else "full",
         uncovered_interval=uncovered,
     )
     if h3_dir == "down" and basis == "directional":
         h3["notes"] = ["Backwardation: down if curve realised"]
 
-    metric_value = combined
-    if metric_value is not None and basis == "directional" and "fx_leg_missing" in flags:
-        metric_value = r_usd
-
     observed = {
         "metric": "brent_in_cad_1m",
-        "units": "decimal_change",
-        "value": metric_value,
+        "units": "pct",
+        "value": combined,
         "window": {
             "start": base_date.isoformat() if base_date else None,
             "end": obs_date.isoformat() if obs_date else None,
@@ -612,7 +912,7 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
         "label": "Direct fuel (gasoline & fuel oil)",
         "status": "ok" if guard_ok and combined is not None else "partial",
         "observed_change": observed,
-        "transmission_seen": [],
+        "transmission_seen": _energy_transmission_seen(block),
         "remaining": {"h1_3m": h1, "h3_6m": h3},
         "cpi_components": [
             {
@@ -663,6 +963,7 @@ def _fx_rets_from_history(history: Sequence[tuple[dt.date, float]]) -> tuple[flo
 
 
 def _build_imported(inputs: dict) -> dict:
+    block = dict(inputs.get("legacy_block") or {})
     pair = dict(inputs.get("usdcad_pair") or {})
     r1 = pair.get("ret_1m")
     r3 = pair.get("ret_3m")
@@ -684,12 +985,21 @@ def _build_imported(inputs: dict) -> dict:
     else:
         direction = "neutral"
 
+    h3_dir = direction
+    if not material:
+        h1_dir = "neutral"
+    else:
+        h1_dir = h3_dir
     h1 = _horizon_block(
         basis="directional",
-        direction=direction if direction != "neutral" else "neutral",
+        direction=h1_dir,
+        reference_baseline="small, lagged",
+    )
+    h3 = _horizon_block(
+        basis="directional",
+        direction=h3_dir,
         reference_baseline="USDCAD (CAD per USD); not additive with fuel FX leg",
     )
-    h3 = dict(h1)
     return {
         "id": TRANSMISSION_CHANNEL_IMPORTED,
         "label": "Imported non-energy goods",
@@ -702,7 +1012,7 @@ def _build_imported(inputs: dict) -> dict:
             "decomposition": None,
             "flags": [] if material else ["not_material"],
         },
-        "transmission_seen": [],
+        "transmission_seen": _imported_transmission_seen(block),
         "remaining": {"h1_3m": h1, "h3_6m": h3},
         "cpi_components": [],
         "assumptions": [],
@@ -731,7 +1041,7 @@ def _build_food(block: dict) -> dict:
     d3 = band_dir(rmpi, rmpi_band)
     if d3 == "neutral":
         d3 = band_dir(ippi, ippi_band)
-    d1 = "neutral" if d3 == "neutral" else d3
+    d1 = "neutral"
     if rmpi is not None and abs(rmpi) > rmpi_band:
         d1 = band_dir(rmpi, rmpi_band)
 
@@ -747,7 +1057,7 @@ def _build_food(block: dict) -> dict:
             "decomposition": None,
             "flags": [],
         },
-        "transmission_seen": [],
+        "transmission_seen": _food_transmission_seen(block),
         "remaining": {
             "h1_3m": _horizon_block(basis="directional", direction=d1, reference_baseline="RMPI/IPPI bands"),
             "h3_6m": _horizon_block(basis="directional", direction=d3, reference_baseline="Input costs 3–9m lag"),
@@ -841,7 +1151,8 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
         if inputs.get("live", {}).get("usdcad_latest"):
             d, s = inputs["live"]["usdcad_latest"]
             pair = {"as_of": d.isoformat(), "spot": s}
-        inputs = {**inputs, "usdcad_pair": pair}
+        inputs = {**inputs, "usdcad_pair": pair, "legacy_block": block}
+        energy["transmission_seen"] = _energy_transmission_seen(block)
     else:
         energy, missing, tx_status = _build_energy_reconstructed(
             {**inputs, "legacy_block": block}, as_of
@@ -852,24 +1163,31 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
 
     cpi_ref = inputs.get("cpi_reference_period") or _latest_cpi_period(block)
     core = _underlying_core(imported, food, block)
+    breadth_ev = _breadth_evidence(block)
     fuel_h1 = energy["remaining"]["h1_3m"]
     fuel_h3 = energy["remaining"]["h3_6m"]
 
     headline_changed = ""
     obs = energy.get("observed_change") or {}
-    if obs.get("value") is not None:
+    decomp = obs.get("decomposition") if isinstance(obs.get("decomposition"), dict) else {}
+    combined = decomp.get("combined")
+    if combined is None and isinstance(obs.get("value"), (int, float)):
+        combined = float(obs["value"])
+    if isinstance(combined, (int, float)):
         headline_changed = (
-            f"Brent-in-CAD 1m {float(obs['value']):+.1%} "
+            f"Brent-in-CAD 1m {_pct_text(float(combined), places=1)} "
             f"({obs.get('window', {}).get('start')}→{obs.get('window', {}).get('end')})"
         )[:200]
 
-    status_line = (
-        f"{'Live' if provenance == TRANSMISSION_PROVENANCE_LIVE else 'Reconstructed'} inputs "
-        f"{as_of.isoformat()} · CPI {cpi_ref or 'unknown'} · "
-        f"fuel h1_3m {fuel_h1.get('direction')} ({fuel_h1.get('basis')})"
+    status_line = _build_status_line(
+        provenance=provenance,
+        as_of=as_of,
+        cpi_ref=cpi_ref,
+        block=block,
+        fuel_h1=fuel_h1,
+        energy_ch=energy,
+        missing=missing,
     )
-    if missing:
-        status_line += f" · missing: {missing[0].get('input')}"
 
     out = {
         "schema_version": TRANSMISSION_SCHEMA_VERSION,
@@ -885,7 +1203,7 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
             TRANSMISSION_CHANNEL_IMPORTED: imported,
             TRANSMISSION_CHANNEL_FOOD: food,
         },
-        "underlying_core_evidence": core,
+        "underlying_core_evidence": {**breadth_ev, **core},
         "producer_stage": _producer_stage(block),
         "policy_context": _policy_context(block),
         "summary": {
@@ -900,11 +1218,8 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
         },
         "headline": {
             "what_changed": headline_changed or "Observable input moves in energy and FX.",
-            "where_transmitting": "Direct fuel numerical/range where supported; core channels directional.",
-            "what_remains": (
-                f"Fuel 1–3m {fuel_h1.get('direction')} ({fuel_h1.get('basis')}); "
-                f"3–6m {fuel_h3.get('direction')} ({fuel_h3.get('basis')})"
-            )[:200],
+            "where_transmitting": _headline_where_transmitting(block, breadth_ev),
+            "what_remains": _headline_what_remains(fuel_h1, fuel_h3, core),
         },
         "status_line": status_line[:300],
         "missing_inputs": missing,

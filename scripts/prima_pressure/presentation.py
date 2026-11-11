@@ -455,8 +455,6 @@ def _transmission_history_point(
     usd = decomp.get("usd_leg")
     fx = decomp.get("fx_leg")
     combined = decomp.get("combined")
-    if combined is None and isinstance(obs_chg.get("value"), (int, float)):
-        combined = float(obs_chg["value"])
     spot = _usdcad_spot_from_snapshot(snapshot) if snapshot else None
     pp_mid = h1.get("pp_mid") if isinstance(h1, dict) else None
     return {

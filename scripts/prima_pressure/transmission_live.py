@@ -346,34 +346,82 @@ def build_energy_live(
     else:
         stages["curve"] = {"status": "unavailable", "pp_gasoline_h1": None}
 
-    # Fuel oil (simplified parallel)
-    fo_pp = 0.0
+    # Fuel oil (HO/ULSD wholesale c/L vs NRCan furnace pump month avg)
+    fo_pp: float | None = None
+    ho_bars = (live.get("daily_bars") or {}).get("ulsd") or (live.get("daily_bars") or {}).get("ho") or []
     pump_mr_fo = _pump(nrcan, str(mr), fuel="fo") if mr else None
-    if pump_mr_fo and ulsd and ulsd.get("price_usd_gal") and fx_spot:
-        ho_now = _wholesale_cpl(float(ulsd["price_usd_gal"]), fx_spot)
-        fo_pp = (ho_now - ho_now) * TAX_PASS_THROUGH / pump_mr_fo * WEIGHT_FUEL_OIL_PCT
-        stages["fuel_oil"] = {"status": "ok", "pp": fo_pp, "note": "placeholder when no HO month avg"}
-    elif pump_mr_fo and fp and fx_spot:
-        fo_pp = 0.0
-        stages["fuel_oil"] = {"status": "partial", "pp": 0.0, "basis": "crude_proxy"}
+    cost_ho_now: float | None = None
+    if ulsd and ulsd.get("price_usd_gal") and fx_spot:
+        cost_ho_now = _wholesale_cpl(float(ulsd["price_usd_gal"]), fx_spot)
+    avg_ho_mr: float | None = None
+    ho_bar_count = 0
+    if mr and ho_bars:
+        avg_ho_mr, ho_bar_count = _monthly_avg_cpl(ho_bars, mr, fx_hist, unit="wholesale")
+    if pump_mr_fo and cost_ho_now is not None and avg_ho_mr is not None:
+        fo_pp = (cost_ho_now - avg_ho_mr) * TAX_PASS_THROUGH / pump_mr_fo * WEIGHT_FUEL_OIL_PCT
+        stages["fuel_oil"] = {
+            "status": "ok",
+            "pp": fo_pp,
+            "pump_furnace_cpl": pump_mr_fo,
+            "cost_now_cpl": cost_ho_now,
+            "cost_avg_M_r_cpl": avg_ho_mr,
+            "bars_in_M_r": ho_bar_count,
+        }
+    elif pump_mr_fo and cost_ho_now is not None and base_date and brent_bars and fp:
+        avg_crude_mr, _ = (
+            _monthly_avg_cpl(brent_bars, mr, fx_hist, unit="crude")
+            if mr
+            else (None, 0)
+        )
+        if avg_crude_mr is not None:
+            fo_pp = (cost_ho_now - avg_crude_mr) * TAX_PASS_THROUGH / pump_mr_fo * WEIGHT_FUEL_OIL_PCT
+            stages["fuel_oil"] = {
+                "status": "partial",
+                "pp": fo_pp,
+                "basis": "crude_proxy",
+                "cost_now_cpl": cost_ho_now,
+                "crude_avg_M_r_cpl": avg_crude_mr,
+            }
+        else:
+            stages["fuel_oil"] = {"status": "unavailable", "pp": None, "reason": "missing_ho_month_avg"}
+    else:
+        stages["fuel_oil"] = {
+            "status": "unavailable",
+            "pp": None,
+            "reason": "missing_furnace_pump_or_ho_cost",
+        }
+        flags.append("fuel_oil_leg_unavailable")
 
     # Total h1
-    pp_parts = [x for x in (stage_b_pp, stage_c_pp, curve_pp, fo_pp) if isinstance(x, (int, float))]
+    pp_parts = [
+        x
+        for x in (stage_b_pp, stage_c_pp, curve_pp, fo_pp)
+        if isinstance(x, (int, float))
+    ]
     use_recon_fallback = pump_mr is None
     if use_recon_fallback:
         flags.append("pump_level_missing")
+        from scripts.prima_pressure.transmission import _combined_brent_cad
+
         r_usd = front.get("change_1m_pct")
-        if isinstance(r_usd, (int, float)) and base_date and obs_date:
-            r_fx = None
-            s = _nearest_fx(base_date, fx_hist)
-            e = _nearest_fx(obs_date, fx_hist)
-            if s and e:
-                r_fx = e / s - 1.0
-            combined = (1 + float(r_usd)) * (1 + (r_fx or 0)) - 1
-            low, mid, high, rb = _recon_pp_range(combined)
+        r_usd_f = float(r_usd) if isinstance(r_usd, (int, float)) else None
+        r_fx = None
+        if base_date and obs_date:
+            spot_s = _nearest_fx(base_date, fx_hist)
+            spot_e = _nearest_fx(obs_date, fx_hist)
+            if spot_s and spot_e:
+                r_fx = spot_e / spot_s - 1.0
+        if r_usd_f is not None and r_fx is not None:
+            combined, _, _ = _combined_brent_cad(r_usd_f, r_fx)
+            low, mid, high, rb = _recon_pp_range(combined)  # type: ignore[arg-type]
             h1_basis = "range"
             pp_low, pp_mid, pp_high = low, mid, high
             range_basis = rb
+        elif r_usd_f is not None:
+            flags.append("fx_leg_missing")
+            h1_basis = "directional"
+            pp_low = pp_mid = pp_high = None
+            range_basis = None
         else:
             h1_basis = "unavailable"
             pp_low = pp_mid = pp_high = None
@@ -448,24 +496,46 @@ def build_energy_live(
         "pp_low": pp_low,
         "pp_mid": pp_mid,
         "pp_high": pp_high,
-        "reference_baseline": f"Staged live · CPI {mc} · NRCan {mr}",
+        "reference_baseline": f"Staged live · CPI {mc or 'unknown'} · NRCan {mr or 'unavailable'}",
         "coverage": coverage,
         "uncovered_interval": uncovered,
     }
     if range_basis:
         h1["range_basis"] = range_basis
 
+    from scripts.prima_pressure.transmission import _combined_brent_cad
+
+    r_usd_obs = front.get("change_1m_pct")
+    r_usd_f = float(r_usd_obs) if isinstance(r_usd_obs, (int, float)) else None
+    r_fx_obs = None
+    if base_date and obs_date:
+        spot_s = _nearest_fx(base_date, fx_hist)
+        spot_e = _nearest_fx(obs_date, fx_hist)
+        if spot_s and spot_e:
+            r_fx_obs = spot_e / spot_s - 1.0
+    combined_obs = None
+    decomp_obs = None
+    if r_usd_f is not None:
+        combined_obs, decomp_obs, comb_flags = _combined_brent_cad(r_usd_f, r_fx_obs)
+        flags.extend(comb_flags)
+
     observed = {
-        "metric": "staged_pump_and_cost",
-        "units": "cpi_pp",
-        "value": pp_mid,
+        "metric": "brent_in_cad_1m",
+        "units": "pct",
+        "value": combined_obs,
         "window": {
             "start": base_date.isoformat() if base_date else None,
             "end": obs_date.isoformat() if obs_date else None,
         },
-        "decomposition": None,
+        "decomposition": decomp_obs,
         "flags": sorted(set(flags)),
     }
+
+    live_notes = [
+        "Live staging: Stage B retail gap, Stage C wholesale/crude to pump, curve adjustment.",
+    ]
+    if stages.get("fuel_oil", {}).get("status") == "unavailable":
+        live_notes.append("Fuel oil leg unavailable; not summed in h1–3m.")
 
     channel = {
         "id": TRANSMISSION_CHANNEL_ENERGY,
@@ -483,7 +553,7 @@ def build_energy_live(
             {"name": "tax_pass_through", "value": TAX_PASS_THROUGH, "source": "GST/HST/QST approx."},
             {"name": "live_numerical_band", "value": "point", "source": "single tax factor 1.10; no ±tax band on live point"},
         ],
-        "notes": ["Live staging: Stage B retail gap, Stage C wholesale/crude to pump, curve adjustment."],
+        "notes": live_notes,
     }
     tx_status = "ok" if channel["status"] == "ok" else "partial"
     return channel, missing, tx_status
