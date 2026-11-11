@@ -20,6 +20,7 @@ from scripts.prima_pressure.contract import (
     iso_date,
     sector_ppi_unavailable,
 )
+from scripts.canadian_cpi_release.sources.nrcan import collect_nrcan
 from scripts.prima_pressure.curve import build_curve, build_refinery_margin
 from scripts.prima_pressure.mpr import build_mpr_comparison
 from scripts.prima_pressure.producer import build_cpi_breadth_inputs, build_producer_prices
@@ -186,6 +187,49 @@ def _unavailable_curve(curve_id: str, as_of: date, *, reason: str) -> dict[str, 
     }
 
 
+def _nrcan_through_period(as_of: date) -> str:
+    y, m = as_of.year, as_of.month
+    m -= 1
+    if m < 1:
+        m = 12
+        y -= 1
+    return f"{y:04d}-{m:02d}"
+
+
+def _build_nrcan_fuel(as_of: date, opener: Opener) -> dict[str, Any]:
+    through = _nrcan_through_period(as_of)
+    out: dict[str, Any] = {
+        "status": "unavailable",
+        "through_period": through,
+        "gasoline_cpl": None,
+        "furnace_oil_cpl": None,
+    }
+    try:
+        observations, _pages, notes = collect_nrcan(
+            opener=opener,
+            sleeper=None,
+            retrieved_at=iso_date(as_of),
+            through_period=through,
+            require_full_history=False,
+        )
+        by_id: dict[str, dict[str, float]] = {}
+        for obs in observations:
+            by_id.setdefault(obs.canonical_id, {})[obs.period] = obs.value
+        gas = by_id.get("nrcan_gasoline") or {}
+        fo = by_id.get("nrcan_furnace_oil") or {}
+        if through in gas:
+            out["gasoline_cpl"] = gas[through]
+        if through in fo:
+            out["furnace_oil_cpl"] = fo[through]
+        out["gasoline_by_month"] = gas
+        out["furnace_oil_by_month"] = fo
+        out["notes"] = notes
+        out["status"] = "ok" if through in gas else "partial"
+    except Exception as exc:
+        out["reason"] = f"{type(exc).__name__}: {exc}"
+    return out
+
+
 def build_demand_inputs(as_of: date, opener: Opener) -> dict[str, Any]:
     neutral = LAST_MPR_ANCHOR["neutral_rate"]
     out: dict[str, Any] = {
@@ -264,6 +308,10 @@ def build_observation_bundle(
             },
         }
         bundle["mpr_comparison"] = build_mpr_comparison(oil_curves, as_of=as_of)
+        bundle["nrcan_fuel"] = {
+            "status": "unavailable",
+            "reason": "network_disabled",
+        }
         return bundle
 
     oil_curves = {
@@ -276,4 +324,5 @@ def build_observation_bundle(
     bundle["cpi_breadth_inputs"] = build_cpi_breadth_inputs(as_of, effective_opener)
     bundle["demand_inputs"] = build_demand_inputs(as_of, effective_opener)
     bundle["mpr_comparison"] = build_mpr_comparison(oil_curves, as_of=as_of)
+    bundle["nrcan_fuel"] = _build_nrcan_fuel(as_of, effective_opener)
     return bundle

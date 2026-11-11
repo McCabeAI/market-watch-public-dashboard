@@ -10,6 +10,8 @@ from scripts.prima_pressure.proxy import compact_block, compute_prima_proxy
 
 
 def unavailable_block(reason: str) -> dict[str, Any]:
+    from scripts.prima_pressure.transmission import unavailable_transmission
+
     return {
         "title": "Canada Prima-pressure proxy",
         "direction": "UNAVAILABLE",
@@ -29,6 +31,7 @@ def unavailable_block(reason: str) -> dict[str, Any]:
         "status": "unavailable",
         "reason": reason,
         "channel_evidence": {},
+        "transmission": unavailable_transmission(reason),
     }
 
 
@@ -36,15 +39,33 @@ def prima_block_for_snapshot(
     as_of: datetime.date,
     *,
     include_cross_assets: bool,
+    usdcad_history: list[tuple[datetime.date, float]] | None = None,
 ) -> dict[str, Any]:
     if not include_cross_assets:
         return unavailable_block("cross_asset_collection_disabled")
     try:
         from scripts.prima_pressure.bundle import build_observation_bundle
+        from scripts.prima_pressure.transmission import (
+            build_transmission,
+            inputs_from_live,
+            unavailable_transmission,
+        )
 
         bundle = build_observation_bundle(as_of, allow_network=True)
         proxy = compute_prima_proxy(bundle)
-        return compact_block(proxy)
+        transmission = None
+        try:
+            nrcan = bundle.get("nrcan_fuel")
+            tx_inputs = inputs_from_live(
+                bundle,
+                usdcad_history=usdcad_history or (),
+                nrcan=nrcan if isinstance(nrcan, dict) else None,
+                as_of=as_of,
+            )
+            transmission = build_transmission(tx_inputs, as_of=as_of)
+        except Exception as tx_exc:
+            transmission = unavailable_transmission(f"{type(tx_exc).__name__}: {tx_exc}")
+        return compact_block(proxy, transmission=transmission)
     except Exception as exc:
         return unavailable_block(f"{type(exc).__name__}: {exc}")
 

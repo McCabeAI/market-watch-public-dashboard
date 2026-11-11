@@ -852,7 +852,7 @@ def _build_channel_evidence(subcomponents: dict[str, dict]) -> dict[str, dict]:
     return evidence
 
 
-def compact_block(proxy: dict) -> dict:
+def compact_block(proxy: dict, *, transmission: dict | None = None) -> dict:
     proxy = proxy or {}
     mpr = proxy.get("mpr_comparison") or {}
     subs = proxy.get("subcomponents") or {}
@@ -885,4 +885,6 @@ def compact_block(proxy: dict) -> dict:
     shadow = proxy.get("shadow_sector_layer")
     if isinstance(shadow, dict):
         block["shadow_sector_layer"] = shadow
+    if transmission is not None:
+        block["transmission"] = transmission
     return block
