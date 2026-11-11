@@ -4785,11 +4785,34 @@
     },
     "08_pages": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "dispatch_confirmed": true,
+        "dispatch_receipt": {
+          "event": "workflow_dispatch",
+          "head_sha": "301ec751772965aec111f80354efa5d062888099",
+          "launch_id": "mwl-20261111T112527Z-02e6295d",
+          "ref": "main",
+          "run_id": "43022283670",
+          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/43022283670",
+          "workflow": "deploy-pages.yml"
+        },
+        "dispatched": true,
+        "dry_run": false,
+        "executed": false,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20261111T112527Z-02e6295d",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": false,
+        "publication_state": "dispatch_confirmed"
+      },
       "finished_at": null,
-      "input_sha256": null,
+      "input_sha256": "5adab04edf4578d53cc56ad9a58629cf02235b8e3f72b5ba94ebf6fdce4add9b",
       "output_sha256": null,
-      "reason": null,
+      "reason": "pages_dispatch_requested",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
