@@ -391,7 +391,10 @@ def _strip_energy_numerics(tx: dict[str, Any], *, reason: str) -> dict[str, Any]
         h["pp_high"] = None
         h["basis"] = "unavailable"
         h["direction"] = "unavailable"
+        h.pop("roll_narrative", None)
+        h.pop("flags", None)
         rem[horizon] = h
+    energy.pop("prior_window_evidence", None)
     energy["status"] = "unavailable"
     energy.setdefault("notes", [])
     if reason not in energy["notes"]:

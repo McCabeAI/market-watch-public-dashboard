@@ -71,8 +71,10 @@ def _horizon_block(
     reference_baseline: str = "",
     coverage: str = "full",
     uncovered_interval: str | None = None,
+    flags: Sequence[str] | None = None,
+    roll_narrative: str | None = None,
 ) -> dict[str, Any]:
-    return {
+    out: dict[str, Any] = {
         "basis": basis,
         "direction": direction,
         "pp_low": pp_low,
@@ -82,6 +84,21 @@ def _horizon_block(
         "coverage": coverage,
         "uncovered_interval": uncovered_interval,
     }
+    if flags:
+        out["flags"] = list(flags)
+    if roll_narrative:
+        out["roll_narrative"] = roll_narrative
+    return out
+
+
+PRIOR_WINDOW_MIN_ABS_CHANGE = 0.02
+
+_SECTOR_PPI_EVIDENCE_LABELS = {
+    "sector_ppi_energy": "Sector PPI energy (q/q)",
+    "sector_ppi_non_energy": "Sector PPI non-energy goods (q/q)",
+    "sector_ppi_goods": "Sector PPI goods (q/q)",
+    "sector_ppi_services": "Sector PPI services (q/q)",
+}
 
 
 def _pp_direction(pp_mid: float | None) -> str:
@@ -215,9 +232,11 @@ def _seen_from_shadow(row: dict[str, Any] | None) -> dict[str, Any] | None:
     val = row.get("change")
     if not isinstance(val, (int, float)):
         return None
+    sid = str(row.get("series_id") or "")
+    label = _SECTOR_PPI_EVIDENCE_LABELS.get(sid) or str(row.get("label") or sid or "")
     return {
-        "series_id": str(row.get("series_id") or ""),
-        "label": str(row.get("label") or row.get("series_id") or ""),
+        "series_id": sid,
+        "label": label,
         "period": str(row.get("period") or ""),
         "value": float(val),
         "units": units,
@@ -234,7 +253,144 @@ _CPI_MAJOR_LABELS = {
 }
 
 
-def _cpi_major_seen(block: dict, series_suffix: str) -> dict[str, Any] | None:
+def _contract_month_label(contract_month: str | None, symbol: str | None = None) -> str:
+    if contract_month and len(contract_month) >= 7:
+        try:
+            y, m = int(contract_month[:4]), int(contract_month[5:7])
+            return f"{calendar.month_abbr[m]}-{y % 100:02d}"
+        except (ValueError, TypeError):
+            pass
+    if symbol:
+        return str(symbol).replace(".NYM", "")
+    return "listed front"
+
+
+def _implied_base_price(price: Any, change_pct: float | None) -> float | None:
+    if not isinstance(price, (int, float)) or change_pct is None:
+        return None
+    denom = 1.0 + float(change_pct)
+    if denom == 0:
+        return None
+    return float(price) / denom
+
+
+def _prior_window_row_from_front(front: dict, source_id: str) -> dict[str, Any] | None:
+    base = _parse_date(front.get("change_1m_base_date"))
+    obs = _parse_date(front.get("observation_date"))
+    chg = front.get("change_1m_pct")
+    price = front.get("price")
+    if base is None or obs is None or not isinstance(chg, (int, float)):
+        return None
+    bpse = _implied_base_price(price, float(chg))
+    return {
+        "source_id": source_id,
+        "symbol": str(front.get("symbol") or ""),
+        "contract_month": str(front.get("contract_month") or ""),
+        "base_date": base.isoformat(),
+        "base_price": round(bpse, 4) if bpse is not None else None,
+        "obs_date": obs.isoformat(),
+        "price": float(price) if isinstance(price, (int, float)) else None,
+        "change_1m_pct": float(chg),
+        "final_trade_date": str(front.get("final_trade_date") or "")[:10] or None,
+        "note": "same-contract window; not spliced with the current front",
+    }
+
+
+def _find_prior_window_evidence(
+    root: Path,
+    *,
+    cpi_end: dt.date,
+    current_front: dict | None,
+) -> dict[str, Any] | None:
+    from scripts.prima_pressure.presentation import _collect_observations
+
+    observations, _ = _collect_observations(root)
+    earliest_base = cpi_end - dt.timedelta(days=5)
+    cur_sym = str((current_front or {}).get("symbol") or "")
+    cur_base = _parse_date((current_front or {}).get("change_1m_base_date"))
+    cur_obs = _parse_date((current_front or {}).get("observation_date"))
+
+    candidates: list[tuple[dt.date, str, dict[str, Any]]] = []
+    for obs in observations:
+        block = obs.get("block")
+        if not isinstance(block, dict):
+            continue
+        front = _find_shock_front(block)
+        if not front:
+            continue
+        base = _parse_date(front.get("change_1m_base_date"))
+        obs_d = _parse_date(front.get("observation_date"))
+        if base is None or obs_d is None:
+            continue
+        if base < earliest_base or base > cpi_end + dt.timedelta(days=5):
+            continue
+        sym = str(front.get("symbol") or "")
+        differs = sym != cur_sym if cur_sym else True
+        ends_before = cur_base is not None and obs_d < cur_base
+        if not differs and not ends_before:
+            continue
+        if (
+            cur_sym
+            and sym == cur_sym
+            and cur_base
+            and base == cur_base
+            and cur_obs
+            and obs_d == cur_obs
+        ):
+            continue
+        row = _prior_window_row_from_front(front, str(obs.get("source_id") or ""))
+        if row is None:
+            continue
+        candidates.append((obs_d, str(obs.get("source_id") or ""), row))
+
+    if not candidates:
+        return None
+    candidates.sort(key=lambda item: (item[0], item[1]))
+    return candidates[-1][2]
+
+
+def _prior_roll_narrative(
+    h1: dict,
+    current_front: dict,
+    prior: dict[str, Any],
+    *,
+    covered_usd_pct: float | None,
+    opposite: bool,
+) -> str:
+    cur_lbl = _contract_month_label(
+        str(current_front.get("contract_month") or ""),
+        str(current_front.get("symbol") or ""),
+    )
+    pp = _pp_text(h1.get("pp_mid"))
+    cwin = f"{current_front.get('change_1m_base_date')}→{current_front.get('observation_date')}"
+    prior_lbl = _contract_month_label(
+        str(prior.get("contract_month") or ""),
+        str(prior.get("symbol") or ""),
+    )
+    pmov = _pct_text(float(prior["change_1m_pct"]))
+    pwin = f"{prior.get('base_date')}→{prior.get('obs_date')}"
+    expired = ""
+    ftd = prior.get("final_trade_date")
+    if ftd and str(prior.get("obs_date") or "")[:10] == str(ftd)[:10]:
+        expired = " (expired)"
+    elif ftd and _parse_date(prior.get("obs_date")) and _parse_date(ftd):
+        if _parse_date(prior.get("obs_date")) >= _parse_date(ftd):
+            expired = " (expired)"
+    opener = (
+        f"Fuel 1–3m: {pp} from the {cur_lbl} repricing {cwin} only; "
+        f"the {prior_lbl} contract {'rose' if float(prior['change_1m_pct']) > 0 else 'fell'} "
+        f"{pmov} {pwin}{expired}, not netted"
+    )
+    if opposite:
+        return (
+            f"{opener} — October CPI fuel may still rise; net sign unresolved"
+        )
+    return f"{opener} — same sign as covered window; not netted across rolls"
+
+
+def _cpi_major_seen(
+    block: dict, series_suffix: str, *, root: Path | None = None
+) -> dict[str, Any] | None:
     ce = block.get("channel_evidence") or {}
     cb = ce.get("consumer_price_breadth") or {}
     for inp in cb.get("inputs") or []:
@@ -257,26 +413,68 @@ def _cpi_major_seen(block: dict, series_suffix: str) -> dict[str, Any] | None:
                 "period": period,
                 "value": float(mom),
                 "units": "mom",
-                "release_date": _cpi_release_date(block, period),
+                "release_date": _cpi_release_date(block, period, root=root),
                 "stale": False,
             }
     return None
 
 
-def _cpi_release_date(block: dict, period: str | None) -> str | None:
-    if not period:
+def _cpi_release_from_ca_history(root: Path, period: str) -> str | None:
+    path = root / "data" / "temperature_history" / "ca.json"
+    if not path.is_file():
         return None
-    ce = block.get("channel_evidence") or {}
-    for ch in ce.values():
-        if not isinstance(ch, dict):
-            continue
-        for row in ch.get("inputs") or []:
-            if isinstance(row, dict) and row.get("period") == period and row.get("release_time"):
-                return str(row["release_time"])[:10]
+    try:
+        import json
+
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    components = payload.get("components") if isinstance(payload.get("components"), dict) else {}
+    if not components:
+        components = payload.get("series") if isinstance(payload.get("series"), dict) else {}
+    headline = components.get("Inflation.headline")
+    if isinstance(headline, dict):
+        cov = headline.get("coverage") if isinstance(headline.get("coverage"), dict) else {}
+        if cov.get("latest_reference_period") == period:
+            rel = cov.get("latest_release_date")
+            if rel:
+                return str(rel)[:10]
+        for obs in headline.get("observations") or []:
+            if not isinstance(obs, dict):
+                continue
+            if obs.get("reference_period") == period and obs.get("release_date"):
+                return str(obs["release_date"])[:10]
     return None
 
 
-def _breadth_evidence(block: dict) -> dict[str, Any]:
+def _cpi_release_date(
+    block: dict, period: str | None, *, root: Path | None = None
+) -> str | None:
+    if not period:
+        return None
+    ce = block.get("channel_evidence") or {}
+    cb = ce.get("consumer_price_breadth") or {}
+    for inp in cb.get("inputs") or []:
+        if not isinstance(inp, dict):
+            continue
+        if inp.get("period") == period and inp.get("release_time"):
+            return str(inp["release_time"])[:10]
+        for major in inp.get("majors") or []:
+            if not isinstance(major, dict):
+                continue
+            if major.get("period") != period:
+                continue
+            sid = str(major.get("series_id") or "")
+            if not sid.startswith("cpi"):
+                continue
+            if major.get("release_time"):
+                return str(major["release_time"])[:10]
+    if root is not None:
+        return _cpi_release_from_ca_history(root, period)
+    return None
+
+
+def _breadth_evidence(block: dict, *, root: Path | None = None) -> dict[str, Any]:
     ce = block.get("channel_evidence") or {}
     cb = ce.get("consumer_price_breadth") or {}
     for inp in cb.get("inputs") or []:
@@ -297,7 +495,7 @@ def _breadth_evidence(block: dict) -> dict[str, Any]:
             "breadth_majors_with_mom": int(total) if isinstance(total, int) else total,
             "trim_accel_pp": float(trim) if isinstance(trim, (int, float)) else None,
             "period": period,
-            "release_date": _cpi_release_date(block, period),
+            "release_date": _cpi_release_date(block, period, root=root),
         }
         if isinstance(pos, int) and isinstance(total, int) and total:
             out["breadth_share"] = pos / total
@@ -305,7 +503,7 @@ def _breadth_evidence(block: dict) -> dict[str, Any]:
     return {}
 
 
-def _energy_transmission_seen(block: dict) -> list[dict[str, Any]]:
+def _energy_transmission_seen(block: dict, *, root: Path | None = None) -> list[dict[str, Any]]:
     shadow = block.get("shadow_sector_layer") or {}
     direct = shadow.get("direct_energy") or {}
     rows: list[dict[str, Any]] = []
@@ -318,16 +516,16 @@ def _energy_transmission_seen(block: dict) -> list[dict[str, Any]]:
         seen = _seen_from_shadow(q)
         if seen:
             rows.append(seen)
-    trans = _cpi_major_seen(block, "cpi_nsa_transportation")
+    trans = _cpi_major_seen(block, "cpi_nsa_transportation", root=root)
     if trans:
         rows.append(trans)
     return rows
 
 
-def _imported_transmission_seen(block: dict) -> list[dict[str, Any]]:
+def _imported_transmission_seen(block: dict, *, root: Path | None = None) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for suffix in ("clothing", "household_ops"):
-        seen = _cpi_major_seen(block, f"cpi_nsa_{suffix}")
+        seen = _cpi_major_seen(block, f"cpi_nsa_{suffix}", root=root)
         if seen:
             rows.append(seen)
     ce = block.get("channel_evidence") or {}
@@ -349,9 +547,9 @@ def _imported_transmission_seen(block: dict) -> list[dict[str, Any]]:
     return rows
 
 
-def _food_transmission_seen(block: dict) -> list[dict[str, Any]]:
+def _food_transmission_seen(block: dict, *, root: Path | None = None) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
-    food = _cpi_major_seen(block, "cpi_nsa_food")
+    food = _cpi_major_seen(block, "cpi_nsa_food", root=root)
     if food:
         rows.append(food)
     ce = block.get("channel_evidence") or {}
@@ -421,9 +619,17 @@ def _headline_where_transmitting(block: dict, breadth: dict[str, Any]) -> str:
 
 
 def _headline_what_remains(fuel_h1: dict, fuel_h3: dict, core: dict) -> str:
-    bits: list[str] = []
+    roll = fuel_h1.get("roll_narrative")
+    if isinstance(roll, str) and roll.strip():
+        bits: list[str] = [roll.strip()]
+    else:
+        bits = []
     mid = fuel_h1.get("pp_mid")
-    if isinstance(mid, (int, float)) and fuel_h1.get("basis") in ("numerical", "range"):
+    if (
+        not bits
+        and isinstance(mid, (int, float))
+        and fuel_h1.get("basis") in ("numerical", "range")
+    ):
         seg = f"Fuel 1–3m {_pp_text(mid)}"
         if fuel_h1.get("basis") == "range":
             lo, hi = fuel_h1.get("pp_low"), fuel_h1.get("pp_high")
@@ -432,7 +638,7 @@ def _headline_what_remains(fuel_h1: dict, fuel_h3: dict, core: dict) -> str:
         if fuel_h1.get("coverage") == "partial":
             seg += " partial"
         bits.append(seg)
-    elif fuel_h1.get("direction"):
+    elif not bits and fuel_h1.get("direction"):
         bits.append(f"Fuel 1–3m {fuel_h1.get('direction')} ({fuel_h1.get('basis')})")
     core_d = core.get("direction_h1_3m")
     if core_d:
@@ -443,7 +649,8 @@ def _headline_what_remains(fuel_h1: dict, fuel_h3: dict, core: dict) -> str:
         bits.append(f"Fuel 3–6m {h3_dir} — {h3_ref}")
     else:
         bits.append(f"Fuel 3–6m {h3_dir} ({fuel_h3.get('basis')})")
-    return "; ".join(bits)[:200]
+    cap = 420 if fuel_h1.get("roll_narrative") else 200
+    return "; ".join(bits)[:cap]
 
 
 def _build_status_line(
@@ -623,6 +830,7 @@ def inputs_from_frozen(
     usdcad_pair: Mapping[str, Any] | None,
     fx_history_points: Sequence[tuple[dt.date, float, str]] = (),
     as_of: dt.date,
+    root: Path | None = None,
 ) -> dict[str, Any]:
     history: list[tuple[dt.date, float]] = [
         (d, spot) for d, spot, _sid in fx_history_points
@@ -643,6 +851,7 @@ def inputs_from_frozen(
         "usdcad_pair": pair_metrics,
         "usdcad_history": history,
         "cpi_reference_period": _latest_cpi_period(dict(block)),
+        "root": root,
     }
 
 
@@ -866,6 +1075,37 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
     if basis == "range" and pp_mid is not None:
         h1["range_basis"] = range_basis
 
+    root = inputs.get("root")
+    prior_evidence: dict[str, Any] | None = None
+    roll_notes: list[str] = []
+    if coverage == "partial" and cpi_end and root is not None and front and isinstance(root, Path):
+        prior_evidence = _find_prior_window_evidence(root, cpi_end=cpi_end, current_front=front)
+        if prior_evidence and abs(float(prior_evidence["change_1m_pct"])) >= PRIOR_WINDOW_MIN_ABS_CHANGE:
+            covered_move = r_usd if isinstance(r_usd, (int, float)) else combined
+            opposite = (
+                isinstance(covered_move, (int, float))
+                and covered_move * float(prior_evidence["change_1m_pct"]) < 0
+            )
+            narrative = _prior_roll_narrative(
+                h1,
+                front,
+                prior_evidence,
+                covered_usd_pct=float(r_usd) if isinstance(r_usd, (int, float)) else None,
+                opposite=opposite,
+            )
+            if opposite and basis == "range":
+                h1["direction"] = "mixed"
+                h1["flags"] = list({*(h1.get("flags") or []), "prior_window_opposite_sign"})
+                h1["roll_narrative"] = narrative
+                flags.append("prior_window_opposite_sign")
+            elif not opposite:
+                roll_notes.append(
+                    f"Prior-month same-contract window ({prior_evidence['symbol']} "
+                    f"{_pct_text(float(prior_evidence['change_1m_pct']))} "
+                    f"{prior_evidence['base_date']}→{prior_evidence['obs_date']}) "
+                    "same sign as covered leg; not spliced."
+                )
+
     h3_basis = "directional"
     h3_dir = "neutral"
     h3_ref = "Front vs 12m listed Brent (if curve realised)"
@@ -912,7 +1152,7 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
         "label": "Direct fuel (gasoline & fuel oil)",
         "status": "ok" if guard_ok and combined is not None else "partial",
         "observed_change": observed,
-        "transmission_seen": _energy_transmission_seen(block),
+        "transmission_seen": _energy_transmission_seen(block, root=root if isinstance(root, Path) else None),
         "remaining": {"h1_3m": h1, "h3_6m": h3},
         "cpi_components": [
             {
@@ -929,14 +1169,36 @@ def _build_energy_reconstructed(inputs: dict, as_of: dt.date) -> tuple[dict, lis
             },
         ],
         "assumptions": [
-            {"name": "tax_pass_through", "value": TAX_PASS_THROUGH, "source": "GST/HST/QST approx."},
-            {"name": "crude_cost_share", "value": list(CRUDE_COST_SHARES), "source": "NRCan pump breakdown"},
+            {
+                "name": "crude_cost_share_gasoline",
+                "value": "0.35 / 0.45 / 0.55",
+                "source": "NRCan pump breakdown (gasoline)",
+            },
+            {
+                "name": "crude_cost_share_fuel_oil",
+                "value": "0.50 / 0.60 / 0.70",
+                "source": "NRCan pump breakdown (fuel oil)",
+            },
+            {
+                "name": "cpi_weights",
+                "value": f"{WEIGHT_GASOLINE_PCT:.2f}% gasoline + {WEIGHT_FUEL_OIL_PCT:.2f}% fuel oil",
+                "source": f"{WEIGHT_BASIS}",
+            },
+            {
+                "name": "pass_through_timing",
+                "value": "~1 month crude-cost elasticity",
+                "source": "reconstructed range (no live tax/pump staging)",
+            },
         ],
         "notes": [
             "CAD move counted once via Brent-in-CAD decomposition.",
             "Reconstructed path: crude-cost elasticity range; no live pump/NRCan staging.",
         ],
     }
+    if prior_evidence:
+        channel["prior_window_evidence"] = prior_evidence
+    if roll_notes:
+        channel["notes"].extend(roll_notes)
     if fx_approx:
         channel["notes"].append("FX 1m from ECB window approximation when dated spots absent.")
     status = "ok" if channel["status"] == "ok" else "partial"
@@ -1012,7 +1274,10 @@ def _build_imported(inputs: dict) -> dict:
             "decomposition": None,
             "flags": [] if material else ["not_material"],
         },
-        "transmission_seen": _imported_transmission_seen(block),
+        "transmission_seen": _imported_transmission_seen(
+            block,
+            root=inputs.get("root") if isinstance(inputs.get("root"), Path) else None,
+        ),
         "remaining": {"h1_3m": h1, "h3_6m": h3},
         "cpi_components": [],
         "assumptions": [],
@@ -1023,7 +1288,7 @@ def _build_imported(inputs: dict) -> dict:
     }
 
 
-def _build_food(block: dict) -> dict:
+def _build_food(block: dict, *, root: Path | None = None) -> dict:
     rmpi = _producer_mom(block, "rmpi_ex_crude_energy")
     ippi = _producer_mom(block, "ippi_ex_energy")
     rmpi_band = contract.RMPI_EX_ENERGY_MOM_BAND
@@ -1057,7 +1322,7 @@ def _build_food(block: dict) -> dict:
             "decomposition": None,
             "flags": [],
         },
-        "transmission_seen": _food_transmission_seen(block),
+        "transmission_seen": _food_transmission_seen(block, root=root),
         "remaining": {
             "h1_3m": _horizon_block(basis="directional", direction=d1, reference_baseline="RMPI/IPPI bands"),
             "h3_6m": _horizon_block(basis="directional", direction=d3, reference_baseline="Input costs 3–9m lag"),
@@ -1135,6 +1400,7 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
     inputs = dict(inputs)
     provenance = inputs.get("provenance", TRANSMISSION_PROVENANCE_RECON)
     block = inputs.get("legacy_block") or {}
+    root = inputs.get("root") if isinstance(inputs.get("root"), Path) else None
     missing: list[dict] = []
 
     if inputs.get("mode") == "live":
@@ -1152,18 +1418,18 @@ def build_transmission(inputs: Mapping[str, Any], *, as_of: dt.date) -> dict[str
             d, s = inputs["live"]["usdcad_latest"]
             pair = {"as_of": d.isoformat(), "spot": s}
         inputs = {**inputs, "usdcad_pair": pair, "legacy_block": block}
-        energy["transmission_seen"] = _energy_transmission_seen(block)
+        energy["transmission_seen"] = _energy_transmission_seen(block, root=root)
     else:
         energy, missing, tx_status = _build_energy_reconstructed(
             {**inputs, "legacy_block": block}, as_of
         )
 
     imported = _build_imported(inputs)
-    food = _build_food(block)
+    food = _build_food(block, root=root)
 
     cpi_ref = inputs.get("cpi_reference_period") or _latest_cpi_period(block)
     core = _underlying_core(imported, food, block)
-    breadth_ev = _breadth_evidence(block)
+    breadth_ev = _breadth_evidence(block, root=root)
     fuel_h1 = energy["remaining"]["h1_3m"]
     fuel_h3 = energy["remaining"]["h3_6m"]
 
@@ -1270,5 +1536,6 @@ def transmission_for_snapshot(
         usdcad_pair=pair if isinstance(pair, dict) else None,
         fx_history_points=pts,
         as_of=as_of,
+        root=root,
     )
     return build_transmission(inputs, as_of=as_of)
