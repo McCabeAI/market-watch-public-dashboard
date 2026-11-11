@@ -239,8 +239,14 @@ class TestTransmission(unittest.TestCase):
         fuel = a["channels"]["energy_direct_fuel"]["remaining"]["h1_3m"]
         self.assertEqual(fuel["basis"], "range")
         self.assertAlmostEqual(fuel["pp_mid"], -0.183, delta=0.02)
-        self.assertEqual(fuel["direction"], "down")
+        self.assertEqual(fuel["direction"], "mixed")
         self.assertEqual(fuel["coverage"], "partial")
+        prior = a["channels"]["energy_direct_fuel"].get("prior_window_evidence") or {}
+        self.assertEqual(prior.get("symbol"), "BZZ26.NYM")
+        self.assertEqual(prior.get("base_date"), "2026-09-30")
+        self.assertAlmostEqual(prior.get("change_1m_pct", 0), 0.20004, places=4)
+        self.assertIn("prior_window_opposite_sign", fuel.get("flags") or [])
+        self.assertIn("October CPI fuel may still rise", a["headline"]["what_remains"])
         combined = a["channels"]["energy_direct_fuel"]["observed_change"]["decomposition"][
             "combined"
         ]
@@ -300,6 +306,61 @@ class TestTransmission(unittest.TestCase):
         obs = tx["channels"]["energy_direct_fuel"]["observed_change"]
         self.assertIsNone(obs.get("decomposition"))
         self.assertIn("usd_leg_missing", obs.get("flags") or [])
+
+    def test_cpi_release_date_from_temperature_history_not_producer(self) -> None:
+        self.assertTrue(SNAPSHOT_PATH.is_file())
+        snap = json.loads(SNAPSHOT_PATH.read_text(encoding="utf-8"))
+        block = snap["canada_prima_pressure"]
+        from scripts.prima_pressure.transmission import _cpi_major_seen
+
+        row = _cpi_major_seen(block, "cpi_nsa_transportation", root=ROOT)
+        self.assertIsNotNone(row)
+        self.assertEqual(row.get("release_date"), "2026-10-19")
+        self.assertNotEqual(row.get("release_date"), "2026-10-22")
+
+    def test_prior_window_none_without_root(self) -> None:
+        block = _shock_block()
+        pair = {"ret_1m": -0.87, "as_of": "2026-11-09"}
+        tx = build_transmission(
+            inputs_from_frozen(block, usdcad_pair=pair, as_of=date(2026, 11, 10)),
+            as_of=date(2026, 11, 10),
+        )
+        self.assertNotIn("prior_window_evidence", tx["channels"]["energy_direct_fuel"])
+
+    def test_prior_window_same_sign_keeps_direction(self) -> None:
+        block = _shock_block(r_usd=-0.0857)
+        pair = {"ret_1m": -0.87, "as_of": "2026-11-09"}
+        prior_front = {
+            "maturity_months": 0,
+            "horizon_role_months": 0,
+            "symbol": "BZZ26.NYM",
+            "contract_month": "2026-12",
+            "change_1m_pct": -0.05,
+            "change_1m_base_date": "2026-09-30",
+            "observation_date": "2026-10-28",
+            "price": 95.0,
+        }
+        fake_obs = [
+            {
+                "source_id": "overnight-fake/review-001",
+                "block": {
+                    "channel_evidence": {
+                        "shock_persistence": {"inputs": [prior_front]},
+                    }
+                },
+            }
+        ]
+        with mock.patch(
+            "scripts.prima_pressure.presentation._collect_observations",
+            side_effect=lambda root: (fake_obs, []),
+        ):
+            tx = build_transmission(
+                inputs_from_frozen(block, usdcad_pair=pair, as_of=date(2026, 11, 10), root=ROOT),
+                as_of=date(2026, 11, 10),
+            )
+        h1 = tx["channels"]["energy_direct_fuel"]["remaining"]["h1_3m"]
+        self.assertEqual(h1["direction"], "down")
+        self.assertNotIn("prior_window_opposite_sign", h1.get("flags") or [])
 
     def test_cpi_period_from_breadth_majors(self) -> None:
         block = _shock_block(cpi_period="2026-08")

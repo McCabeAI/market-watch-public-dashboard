@@ -60,7 +60,8 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         self.assertIn("Where it is transmitting", tx)
         self.assertIn("What remains · 1–3m · 3–6m", tx)
         self.assertIn("−0.18 pp", tx)
-        self.assertIn("partial coverage", tx)
+        self.assertIn("not netted", tx)
+        self.assertIn("October CPI fuel may still rise", tx)
         self.assertIn("2026-09-30", tx)
         self.assertIn("Reconstructed from frozen v1 inputs", tx)
         self.assertIn("context only, not a pressure input", tx)
@@ -84,6 +85,8 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
             h["pp_low"] = h["pp_mid"] = h["pp_high"] = None
             h["basis"] = "unavailable"
             h["direction"] = "unavailable"
+            h.pop("roll_narrative", None)
+        energy.pop("prior_window_evidence", None)
         energy["status"] = "unavailable"
         tx["summary"]["direct_fuel"]["h1_3m"]["pp_mid"] = None
         pres = {**presentation, "transmission": tx}
@@ -151,6 +154,27 @@ class CountryDetailPrimaTransmissionTest(unittest.TestCase):
         self.assertIn("USD/CAD 1m", chunk)
         self.assertNotIn("ret_1m", chunk)
         self.assertNotIn("-0.00%", chunk)
+
+    def test_reconstructed_assumptions_exclude_tax_factor(self) -> None:
+        presentation = build_presentation(ROOT)
+        html = render_prima_pressure_block(presentation, _esc)
+        fuel = html.split('data-prima-tx-channel="energy_direct_fuel"', 1)[1][:2500]
+        self.assertIn("Crude-cost-share elasticity", fuel)
+        self.assertNotIn("tax_pass_through", fuel)
+
+    def test_sector_ppi_energy_label_qoq(self) -> None:
+        presentation = build_presentation(ROOT)
+        html = render_prima_pressure_block(presentation, _esc)
+        self.assertIn("Sector PPI energy (q/q)", html)
+        self.assertIn("19.85% q/q", html)
+
+    def test_glance_mixed_when_prior_roll_opposite(self) -> None:
+        from scripts.country_detail._prima_section import _tx_glance_chip
+
+        presentation = build_presentation(ROOT)
+        chip = _tx_glance_chip(presentation["transmission"])
+        self.assertIn("mixed", chip.lower())
+        self.assertNotIn("−0.18", chip)
 
     def test_reconstructed_caption_uses_cost_share_not_tax(self) -> None:
         presentation = build_presentation(ROOT)
