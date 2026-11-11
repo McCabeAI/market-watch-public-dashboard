@@ -53,7 +53,7 @@ USDCAD 1.41026 (`ret_1m` −0.87%, `ret_3m` +1.27%); latest CPI month **2026-09*
 |-------|-------|
 | `provenance` | `reconstructed_from_frozen_v1` |
 | Brent-in-CAD `combined` | −9.37% |
-| Fuel `h1_3m` `pp_mid` | −0.183 pp (range −0.143 … −0.222) |
+| Fuel `h1_3m` `pp_mid` | −0.183 pp (range −0.222 … −0.143, low = most negative) |
 | Fuel `h1_3m` `direction` | `down` |
 | `coverage` | `partial` (`2026-09-30 → 2026-10-09`) |
 | Fuel `h3_6m` | directional `down` (front 92.57 > 12m 78.28, backwardation) |
@@ -88,6 +88,32 @@ Abbreviated JSON (computed 2026-11-11):
           "uncovered_interval": "2026-09-30 → 2026-10-09"
         },
         "h3_6m": { "basis": "directional", "direction": "down" }
+      }
+    }
+  }
+}
+```
+
+## Example — live (synthetic fixture, offline test)
+
+M_c `2026-09` pump 150.0 c/L; M_r `2026-10` pump 155.0 c/L; RBOB wholesale used for Stage C.
+
+- **Stage B** = `4.01 × (155/150 − 1)` ≈ **+0.134 pp**
+- **Stage C** = `(cost_now − avg_oct_wholesale) × 1.10 / 155 × 4.01` (wholesale c/L, ≥11 daily bars in M_r)
+- **h1_3m** numerical sum of B + C + curve (≈ **+0.50 pp** in default fixture with RBOB 2.35 vs Oct avg 2.0)
+
+```json
+{
+  "provenance": "live_observed",
+  "channels": {
+    "energy_direct_fuel": {
+      "stages": {
+        "B": { "pp_gasoline": 0.1337, "M_c": "2026-09", "M_r": "2026-10" },
+        "C": { "pp_gasoline": 0.3684, "cost_basis": "wholesale" },
+        "curve": { "pp_gasoline_h1": 0.0 }
+      },
+      "remaining": {
+        "h1_3m": { "basis": "numerical", "pp_mid": 0.502, "direction": "up" }
       }
     }
   }
