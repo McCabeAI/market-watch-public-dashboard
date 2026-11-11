@@ -189,18 +189,36 @@ def build_energy_live(
             "coverage": "none",
             "uncovered_interval": None,
         }
+        stages_early: dict[str, Any] = {}
+        mr_early = _latest_nrcan_month(nrcan)
+        pump_mr_early = _pump(nrcan, str(mr_early), fuel="gas") if mr_early else None
+        _, wm = _attach_weekly_energy_stages(
+            stages_early,
+            live=live,
+            as_of=as_of,
+            mr=mr_early,
+            pump_mr=pump_mr_early,
+            stage_c_pp=None,
+            fx_hist=fx_hist,
+            fx_spot=fx_spot if isinstance(fx_spot, (int, float)) else None,
+            brent_bars=brent_bars,
+            rbob_bars=rbob_bars,
+            ulsd=ulsd,
+        )
         ch = {
             "id": TRANSMISSION_CHANNEL_ENERGY,
             "label": "Direct fuel (gasoline & fuel oil)",
             "status": "unavailable",
             "observed_change": None,
-            "stages": {},
+            "stages": stages_early,
             "remaining": {"h1_3m": un, "h3_6m": dict(un)},
             "cpi_components": [],
             "assumptions": [{"name": "tax_pass_through", "value": TAX_PASS_THROUGH}],
             "notes": ["Front contract not active as of collection date."],
         }
-        return ch, [{"input": "brent_front", "reason": "expired_or_inactive"}], "unavailable"
+        missing_early = [{"input": "brent_front", "reason": "expired_or_inactive"}]
+        missing_early.extend(wm)
+        return ch, missing_early, "unavailable"
 
     pump_mc = _pump(nrcan, str(mc), fuel="gas") if mc else None
     pump_mr = _pump(nrcan, str(mr), fuel="gas") if mr else None
@@ -496,7 +514,6 @@ def build_energy_live(
         "pp_low": pp_low,
         "pp_mid": pp_mid,
         "pp_high": pp_high,
-        "reference_baseline": f"Staged live · CPI {mc or 'unknown'} · NRCan {mr or 'unavailable'}",
         "coverage": coverage,
         "uncovered_interval": uncovered,
     }
@@ -531,11 +548,31 @@ def build_energy_live(
         "flags": sorted(set(flags)),
     }
 
+    weekly_ref, live_missing = _attach_weekly_energy_stages(
+        stages,
+        live=live,
+        as_of=as_of,
+        mr=mr,
+        pump_mr=pump_mr,
+        stage_c_pp=stage_c_pp,
+        fx_hist=fx_hist,
+        fx_spot=fx_spot,
+        brent_bars=brent_bars,
+        rbob_bars=rbob_bars,
+        ulsd=ulsd,
+    )
+    missing.extend(live_missing)
+
     live_notes = [
         "Live staging: Stage B retail gap, Stage C wholesale/crude to pump, curve adjustment.",
     ]
     if stages.get("fuel_oil", {}).get("status") == "unavailable":
         live_notes.append("Fuel oil leg unavailable; not summed in h1–3m.")
+
+    ref_base = f"Staged live · CPI {mc or 'unknown'} · NRCan {mr or 'unavailable'}"
+    if weekly_ref:
+        ref_base += f" · {weekly_ref}"
+    h1["reference_baseline"] = ref_base
 
     channel = {
         "id": TRANSMISSION_CHANNEL_ENERGY,
@@ -557,3 +594,271 @@ def build_energy_live(
     }
     tx_status = "ok" if channel["status"] == "ok" else "partial"
     return channel, missing, tx_status
+
+
+def _month_end_from_period(period: str | None) -> dt.date | None:
+    if not period or len(period) < 7:
+        return None
+    try:
+        y, m = int(period[:4]), int(period[5:7])
+        last = calendar.monthrange(y, m)[1]
+        return dt.date(y, m, last)
+    except ValueError:
+        return None
+
+
+def _weekly_block_status(block: Mapping[str, Any] | None) -> str:
+    if not isinstance(block, Mapping):
+        return "unavailable"
+    return str(block.get("status") or "unavailable")
+
+
+def _eligible_weekly_latest(
+    observations: Sequence[dict],
+    *,
+    as_of: dt.date,
+    max_stale_days: int = 14,
+) -> tuple[dict | None, str | None]:
+    if not observations:
+        return None, "no_observations"
+    eligible = []
+    floor = as_of - dt.timedelta(days=max_stale_days)
+    for row in observations:
+        we = _parse_date(row.get("week_ending"))
+        if we is None or we > as_of or we < floor:
+            continue
+        eligible.append(row)
+    if not eligible:
+        latest_we = _parse_date(observations[-1].get("week_ending"))
+        if latest_we and latest_we < floor:
+            return None, "stale"
+        return None, "no_eligible_week"
+    return eligible[-1], None
+
+
+def _obs_at_index(observations: Sequence[dict], index_back: int) -> dict | None:
+    if len(observations) <= index_back:
+        return None
+    return observations[-1 - index_back]
+
+
+def _bar_close_on_or_before(bars: Sequence[dict], target: dt.date) -> float | None:
+    best: tuple[dt.date, float] | None = None
+    for row in bars:
+        d = _parse_date(row.get("date"))
+        close = row.get("close")
+        if d is None or not isinstance(close, (int, float)):
+            continue
+        if d > target:
+            continue
+        if best is None or d > best[0]:
+            best = (d, float(close))
+    return best[1] if best else None
+
+
+def _classify_pump_gap(delta_pump: float, implied: float) -> str:
+    gap = delta_pump - implied
+    if abs(gap) < CRUDE_REFINING_DIVERGENCE_CPL:
+        return "consistent"
+    if abs(implied) < 1e-9:
+        return "pump_leading" if abs(delta_pump) >= CRUDE_REFINING_DIVERGENCE_CPL else "consistent"
+    if (gap > 0) != (implied > 0):
+        return "opposite_sign"
+    if abs(gap) > abs(implied):
+        return "pump_leading"
+    return "pump_lagging"
+
+
+def _attach_weekly_energy_stages(
+    stages: dict[str, Any],
+    *,
+    live: Mapping[str, Any],
+    as_of: dt.date,
+    mr: str | None,
+    pump_mr: float | None,
+    stage_c_pp: float | None,
+    fx_hist: Sequence[tuple[dt.date, float]],
+    fx_spot: float | None,
+    brent_bars: Sequence[dict],
+    rbob_bars: Sequence[dict],
+    ulsd: Mapping[str, Any] | None,
+) -> tuple[str | None, list[dict]]:
+    missing: list[dict] = []
+    weekly_ref: str | None = None
+    nrcan_w = live.get("nrcan_weekly")
+    if _weekly_block_status(nrcan_w) == "not_in_frozen_snapshot":
+        for key in ("weekly_pump", "pump_vs_wholesale", "diesel_weekly"):
+            stages[key] = {"status": "not_in_frozen_snapshot"}
+        return None, missing
+
+    gas_series = {}
+    if isinstance(nrcan_w, Mapping):
+        gas_series = (nrcan_w.get("series") or {}).get("gasoline_regular") or {}
+    gas_obs = gas_series.get("observations") or []
+
+    # weekly_pump
+    wp: dict[str, Any]
+    if _weekly_block_status(nrcan_w) != "ok" and _weekly_block_status(nrcan_w) != "partial":
+        wp = {
+            "status": "unavailable",
+            "reason": (nrcan_w or {}).get("reason") if isinstance(nrcan_w, Mapping) else "feed_missing",
+            "frequency": "weekly",
+        }
+        if gas_series.get("status") == "unavailable":
+            missing.append({"input": "nrcan_weekly_gasoline", "reason": str(gas_series.get("reason") or "unavailable")})
+    else:
+        latest_row, inelig = _eligible_weekly_latest(gas_obs, as_of=as_of)
+        mr_end = _month_end_from_period(mr)
+        if latest_row is None:
+            wp = {
+                "status": "stale" if inelig == "stale" else "unavailable",
+                "reason": inelig or "no_weekly",
+                "frequency": "weekly",
+            }
+            missing.append({"input": "nrcan_weekly_gasoline", "reason": inelig or "unavailable"})
+        elif pump_mr is None or mr is None:
+            wp = {"status": "unavailable", "reason": "pump_M_r_missing", "frequency": "weekly"}
+        else:
+            week_end = _parse_date(latest_row.get("week_ending"))
+            price_cpl = latest_row.get("price_cpl")
+            if week_end is None or not isinstance(price_cpl, (int, float)):
+                wp = {"status": "unavailable", "reason": "malformed_weekly", "frequency": "weekly"}
+            elif mr_end and week_end <= mr_end:
+                wp = {
+                    "status": "no_week_after_M_r",
+                    "frequency": "weekly",
+                    "week_ending": week_end.isoformat(),
+                    "M_r": mr,
+                    "pump_M_r_cpl": pump_mr,
+                }
+            else:
+                observed_pp = WEIGHT_GASOLINE_PCT * (float(price_cpl) / pump_mr - 1.0)
+                residual = None
+                if isinstance(stage_c_pp, (int, float)):
+                    residual = float(stage_c_pp) - observed_pp
+                wp = {
+                    "status": "ok",
+                    "frequency": "weekly",
+                    "week_ending": week_end.isoformat(),
+                    "price_cpl": float(price_cpl),
+                    "M_r": mr,
+                    "pump_M_r_cpl": pump_mr,
+                    "observed_at_pump_pp": observed_pp,
+                    "residual_unpriced_pp": residual,
+                    "split_note": "split of Stage C (cost→pump), not additive; both not yet in CPI",
+                    "source": "nrcan_weekly_gasoline_regular",
+                    "product_id": gas_series.get("product_id"),
+                    "retrieved_at": (nrcan_w or {}).get("retrieved_at") if isinstance(nrcan_w, Mapping) else None,
+                    "published_at": (nrcan_w or {}).get("published_at") if isinstance(nrcan_w, Mapping) else None,
+                }
+                weekly_ref = f"NRCan weekly to {week_end.isoformat()}"
+    stages["weekly_pump"] = wp
+
+    # pump_vs_wholesale
+    pvw: dict[str, Any]
+    if not gas_obs or _weekly_block_status(nrcan_w) not in ("ok", "partial"):
+        pvw = {"status": "unavailable", "reason": "nrcan_weekly_missing", "role": "informational"}
+    else:
+        tail = [row for row in gas_obs if _parse_date(row.get("week_ending")) and _parse_date(row["week_ending"]) <= as_of]
+        latest = tail[-1] if tail else None
+        prior = _obs_at_index(tail, 3)
+        if latest is None or prior is None:
+            pvw = {"status": "unavailable", "reason": "insufficient_weekly_history", "role": "informational"}
+        else:
+            d_latest = _parse_date(latest.get("week_ending"))
+            d_prior = _parse_date(prior.get("week_ending"))
+            if d_latest is None or d_prior is None:
+                pvw = {"status": "unavailable", "reason": "malformed_dates", "role": "informational"}
+            elif (d_latest - d_prior).days < 21 or (d_latest - d_prior).days > 35:
+                pvw = {"status": "unavailable", "reason": "weekly_spacing_not_4w", "role": "informational"}
+            else:
+                p_latest = latest.get("price_cpl")
+                p_prior = prior.get("price_cpl")
+                if not isinstance(p_latest, (int, float)) or not isinstance(p_prior, (int, float)):
+                    pvw = {"status": "unavailable", "reason": "missing_prices", "role": "informational"}
+                else:
+                    delta_pump = float(p_latest) - float(p_prior)
+                    use_rbob = bool(rbob_bars)
+                    product_bars = rbob_bars if use_rbob else brent_bars
+                    unit = "wholesale" if use_rbob else "crude"
+                    if not product_bars:
+                        pvw = {"status": "unavailable", "reason": "missing_futures_bars", "role": "informational"}
+                    else:
+                        px_l = _bar_close_on_or_before(product_bars, d_latest)
+                        px_p = _bar_close_on_or_before(product_bars, d_prior)
+                        fx_l = _nearest_fx(d_latest, fx_hist) or fx_spot
+                        fx_p = _nearest_fx(d_prior, fx_hist) or fx_spot
+                        if px_l is None or px_p is None or fx_l is None or fx_p is None:
+                            pvw = {"status": "unavailable", "reason": "missing_price_or_fx_leg", "role": "informational"}
+                        else:
+                            if unit == "wholesale":
+                                cpl_l = _wholesale_cpl(px_l, fx_l)
+                                cpl_p = _wholesale_cpl(px_p, fx_p)
+                            else:
+                                cpl_l = _crude_cpl(px_l, fx_l)
+                                cpl_p = _crude_cpl(px_p, fx_p)
+                            delta_cost = cpl_l - cpl_p
+                            implied = delta_cost * TAX_PASS_THROUGH
+                            classification = _classify_pump_gap(delta_pump, implied)
+                            pvw = {
+                                "status": "ok",
+                                "role": "informational",
+                                "classification": classification,
+                                "delta_pump_cpl": delta_pump,
+                                "delta_wholesale_cpl": delta_cost,
+                                "delta_crude_cpl": delta_cost if unit == "crude" else None,
+                                "implied_pump_change_cpl": implied,
+                                "gap_cpl": delta_pump - implied,
+                                "cost_basis": unit,
+                                "window": {
+                                    "start": d_prior.isoformat(),
+                                    "end": d_latest.isoformat(),
+                                },
+                                "cpi_contribution": None,
+                            }
+    stages["pump_vs_wholesale"] = pvw
+
+    # diesel_weekly
+    diesel_series = {}
+    if isinstance(nrcan_w, Mapping):
+        diesel_series = (nrcan_w.get("series") or {}).get("diesel") or {}
+    diesel_obs = diesel_series.get("observations") or []
+    dw: dict[str, Any]
+    if _weekly_block_status(nrcan_w) not in ("ok", "partial"):
+        dw = {"status": "unavailable", "reason": "nrcan_weekly_missing", "role": "transport_and_producer_cost_context"}
+    elif not diesel_obs:
+        dw = {"status": "unavailable", "reason": "no_diesel_observations", "role": "transport_and_producer_cost_context"}
+    else:
+        tail_d = [row for row in diesel_obs if _parse_date(row.get("week_ending")) and _parse_date(row["week_ending"]) <= as_of]
+        latest_d = tail_d[-1] if tail_d else None
+        prior_d = _obs_at_index(tail_d, 3)
+        change_pct = None
+        if latest_d and prior_d:
+            a, b = latest_d.get("price_cpl"), prior_d.get("price_cpl")
+            if isinstance(a, (int, float)) and isinstance(b, (int, float)) and b != 0:
+                change_pct = float(a) / float(b) - 1.0
+        ulsd_chg = None
+        if ulsd and isinstance(ulsd, Mapping) and tail_d:
+            ho_bars = (live.get("daily_bars") or {}).get("ulsd") or (live.get("daily_bars") or {}).get("ho") or []
+            d_end = _parse_date(latest_d.get("week_ending"))
+            d_start = _parse_date(prior_d.get("week_ending")) if prior_d else None
+            if d_end and d_start and ho_bars:
+                p_end = _bar_close_on_or_before(ho_bars, d_end)
+                p_start = _bar_close_on_or_before(ho_bars, d_start)
+                fx_e = _nearest_fx(d_end, fx_hist) or fx_spot
+                fx_s = _nearest_fx(d_start, fx_hist) or fx_spot
+                if p_end and p_start and fx_e and fx_s:
+                    ulsd_chg = _wholesale_cpl(p_end, fx_e) / _wholesale_cpl(p_start, fx_s) - 1.0
+        dw = {
+            "status": "ok" if latest_d else "unavailable",
+            "role": "transport_and_producer_cost_context",
+            "frequency": "weekly",
+            "latest_week_ending": (latest_d or {}).get("week_ending"),
+            "price_cpl": (latest_d or {}).get("price_cpl"),
+            "change_4w_pct_decimal": change_pct,
+            "ulsd_futures_4w_pct_decimal": ulsd_chg,
+            "cpi_contribution": None,
+            "note": "not added to household gasoline/fuel-oil pp",
+        }
+    stages["diesel_weekly"] = dw
+    return weekly_ref, missing

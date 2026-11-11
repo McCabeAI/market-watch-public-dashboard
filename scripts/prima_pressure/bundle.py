@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import time
-from datetime import date
+from datetime import date, datetime, timezone
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse, urlunparse
@@ -20,7 +20,9 @@ from scripts.prima_pressure.contract import (
     iso_date,
     sector_ppi_unavailable,
 )
-from scripts.canadian_cpi_release.sources.nrcan import collect_nrcan
+from scripts.canadian_cpi_release.sources.nrcan import collect_nrcan, collect_nrcan_weekly
+from scripts.prima_pressure.bcpi import collect_bcpi_weekly
+from scripts.prima_pressure.import_prices import collect_import_prices
 from scripts.prima_pressure.curve import build_curve, build_refinery_margin, contract_history
 from scripts.prima_pressure.mpr import build_mpr_comparison
 from scripts.prima_pressure.producer import build_cpi_breadth_inputs, build_producer_prices
@@ -157,7 +159,7 @@ def _fetch_yahoo_chart(url: str) -> bytes:
     raise last_exc or RuntimeError("yahoo chart fetch failed")
 
 
-def _urllib_opener(url: str, data: bytes | None = None) -> bytes:
+def _urllib_opener(url: str, data: bytes | None = None, **_: Any) -> bytes:
     if data is None and _is_yahoo_chart_url(url):
         return _fetch_yahoo_chart(url)
 
@@ -338,6 +340,8 @@ def build_observation_bundle(
             "status": "unavailable",
             "reason": "network_disabled",
         }
+        for key in ("nrcan_weekly", "bcpi_weekly", "import_prices"):
+            bundle[key] = {"status": "unavailable", "reason": "network_disabled"}
         return bundle
 
     oil_curves = {
@@ -352,4 +356,18 @@ def build_observation_bundle(
     bundle["mpr_comparison"] = build_mpr_comparison(oil_curves, as_of=as_of)
     bundle["nrcan_fuel"] = _build_nrcan_fuel(as_of, effective_opener)
     attach_transmission_daily_bars(bundle, as_of, effective_opener)
+    retrieved_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    for key, collector in (
+        ("nrcan_weekly", lambda: collect_nrcan_weekly(as_of=as_of, opener=effective_opener, retrieved_at=retrieved_at)),
+        ("bcpi_weekly", lambda: collect_bcpi_weekly(as_of=as_of, opener=effective_opener, retrieved_at=retrieved_at)),
+        ("import_prices", lambda: collect_import_prices(as_of=as_of, opener=effective_opener, retrieved_at=retrieved_at)),
+    ):
+        try:
+            bundle[key] = collector()
+        except Exception as exc:
+            bundle[key] = {
+                "status": "unavailable",
+                "reason": f"{type(exc).__name__}: {exc}",
+                "retrieved_at": retrieved_at,
+            }
     return bundle
