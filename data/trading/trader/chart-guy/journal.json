@@ -161,6 +161,64 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "No spot is opened. Australian dollar-kiwi closed beyond its recent range at 1.2266 and is still a multi-year rich cross, but the five-day decline and that richness do not agree as a clean continuation. The other notable closes failed back inside their ranges or are mixed, and dollar-yen is not a fresh break. Percentile location alone is not a reversal signal."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": "Short 10 million EURUSD on the aligned 5-day and 20-day breakdown.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "a01a8005e42b9ce58bf1d11ff9d68498cceb132ab3fbf8ed11e91a387d825696",
+      "event_id": "jde-12c2aba8d5904ece",
+      "funding_view": null,
+      "invalidation": "A daily close in EURUSD above the 20-day average at 1.1195.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-a4867f05b3bb"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-chart-guy-pos-a4867f05b3bb"
+      ],
+      "memory_context_sha256": "3d7480afaad399c22ad1e5927c3f7291d9c39cd7040f0aab1d12332c32f4001d",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "62bc111ea42836000be6b5b31cf713d97e111505ad47147a39fee1d33e427329"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "EURUSD and AUDUSD are both down on the 5-day and 20-day marks. EURUSD at 1.1127 is the cleaner short: the 11 November close is a 20-session breakdown at the bottom of the range, the upside break has failed, and the close sits under the 20-day, 50-day, and 200-day averages. USDJPY and USDCAD agree higher, but USDJPY's shorter averages are still under the 200-day, and USDCAD's five-day spike sits on a nearly flat twenty-day change. AUDNZD is stretched lower with the 20-day breakdown failed, so that cross stays untouched.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "EURUSD and AUDUSD are both down on the 5-day and 20-day marks. EURUSD at 1.1127 is the cleaner short: the 11 November close is a 20-session breakdown at the bottom of the range, the upside break has failed, and the close sits under the 20-day, 50-day, and 200-day averages. USDJPY and USDCAD agree higher, but USDJPY's shorter averages are still under the 200-day, and USDCAD's five-day spike sits on a nearly flat twenty-day change. AUDNZD is stretched lower with the 20-day breakdown failed, so that cross stays untouched."
     }
   ],
   "schema_version": 1,

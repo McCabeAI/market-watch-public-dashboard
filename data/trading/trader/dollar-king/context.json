@@ -134,14 +134,14 @@
     "nav_usd": 100169964.45,
     "net_pnl_usd": 169964.45,
     "pressure_flags": [],
-    "prior_competition_rank": 4,
-    "rank_change": 0,
+    "prior_competition_rank": 3,
+    "rank_change": 1,
     "raw_pnl_rank": 4,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -133727.81,
     "status": "ok"
   },
   "learning": {
@@ -152,7 +152,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3ebf415686dc104a9dc89c6834158b24f42e2c708a00f7cf7cabb043794754c5",
+  "memory_context_sha256": "78af1df0c86a2ce55bfb4d6a5df6f60603d78af8787fa5372378b35282fd64fa",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -169,7 +169,7 @@
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 35153.62,
+        "giveback_usd": 133749.37,
         "holding_seconds": 1117038,
         "horizon_elapsed_fraction": 0.2873,
         "horizon_status": "within",
@@ -177,15 +177,15 @@
         "intended_horizon_days": 45,
         "mae_usd": -102370.52,
         "mechanical_order": false,
-        "mfe_usd": 50082.09,
+        "mfe_usd": 148677.84,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-012b8f0c252c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Dollar-yen grinds higher as the 271 basis-point SOFR-TONA cash gap and the March 2027 4.39 versus 1.67 path gap keep paying after a hold, not as a one-day devaluation spike.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 50082.09,
-        "retained_mfe_fraction": 0.2981,
+        "recorded_mfe_usd": 148677.84,
+        "retained_mfe_fraction": 0.1004,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 200000.0,
@@ -222,12 +222,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.16
       },
       "defensiveness": {
         "band": "calm",
@@ -237,12 +237,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.28
+        "value": 0.26
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -251,8 +251,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.56
+        "trend": "up",
+        "value": 0.57
       },
       "thesis_attachment": {
         "band": "calm",
@@ -270,11 +270,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_drop_minor",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261109"
-      },
-      {
         "kind": "session_loss",
         "magnitude": 0.09575212,
         "run_id": "overnight-20261110"
@@ -283,15 +278,20 @@
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261110"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.26745562,
+        "run_id": "overnight-20261112"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "9337e4889c0c5876f9b700278cff69bb1329c6162190271faab01f00c6ebbff2",
+    "state_sha256": "8e33f4df1594e496403fea7d41d0bc94d3851b1817855235f2bfe0bea902fa4f",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
-      "session_win": 0
+      "session_loss": 0,
+      "session_win": 1
     }
   },
   "recent_closed_trades": [

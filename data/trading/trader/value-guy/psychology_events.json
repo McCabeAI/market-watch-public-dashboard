@@ -1286,6 +1286,64 @@
       "run_id": "overnight-20261111",
       "seq": 53,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          800000.0,
+          250000.0,
+          50000.0,
+          50000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "event_id": "pse-000054",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261112",
+      "seq": 54,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0071,
+        "defensiveness": -0.0005,
+        "frustration": -0.0007,
+        "revenge_pressure": -0.0003,
+        "self_trust": 0.0038,
+        "thesis_attachment": -0.0009
+      },
+      "event_id": "pse-000055",
+      "kind": "trade_win_close",
+      "magnitude": 0.13531906,
+      "mismatch": false,
+      "owner_id": "value-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261112",
+      "scale": 1.0,
+      "seq": 55,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "AUDNZD",
+        "notional_usd": 5000000.0,
+        "realized_pnl_usd": 67659.53,
+        "side": "short",
+        "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
+      }
     }
   ],
   "owner_id": "value-guy",

@@ -65,8 +65,8 @@
   ],
   "as_of": "2026-11-12T04:50:23.662182-05:00",
   "calibration": {
-    "average_holding_seconds": 457863,
-    "average_realized_pnl_usd": 68099.67,
+    "average_holding_seconds": 471566,
+    "average_realized_pnl_usd": 67989.64,
     "breakeven": 1,
     "by_asset_class": {
       "rates_rv": {
@@ -74,11 +74,11 @@
         "total_realized_pnl_usd": -56000.0
       },
       "spot_fx": {
-        "count": 1,
-        "total_realized_pnl_usd": 260299.02
+        "count": 2,
+        "total_realized_pnl_usd": 327958.55
       }
     },
-    "closed_trade_count": 3,
+    "closed_trade_count": 4,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -91,15 +91,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 68099.67,
-        "count": 3,
-        "hit_rate": 0.5
+        "average_pnl_usd": 67989.64,
+        "count": 4,
+        "hit_rate": 0.6667
       }
     },
     "losses": 1,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 204299.02,
-    "wins": 1
+    "total_realized_pnl_usd": 271958.55,
+    "wins": 2
   },
   "capital_owner": null,
   "consequence": {
@@ -114,14 +114,14 @@
     "nav_usd": 100285304.99,
     "net_pnl_usd": 285304.99,
     "pressure_flags": [],
-    "prior_competition_rank": 3,
-    "rank_change": 0,
+    "prior_competition_rank": 4,
+    "rank_change": -1,
     "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 3057.47,
     "status": "ok"
   },
   "learning": {
@@ -132,57 +132,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b462395d8fe16629983891305075e251140bfaec4cc8bfd162993621797ffa8f",
+  "memory_context_sha256": "b097dcaf3857be77644ad378a198ee435c758f18553d2fd48f8aa7d3d400d038",
   "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 61,
-      "current_notional_usd": 5000000.0,
-      "entry_mark": 1.25,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "The joint extreme is already the condition: the cross is at the 99th percentile while kiwi-dollar is at the 3rd, and oil at 90.52 is not what holds the gap open.",
-        "current_mark": 1.226606747106624,
-        "current_notional_usd": 5000000.0,
-        "entry_mark": 1.2453065552298384,
-        "expected_mark_direction": "lower",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 512674,
-        "horizon_elapsed_fraction": 0.1978,
-        "horizon_status": "within",
-        "instrument": "AUDNZD",
-        "intended_horizon_days": 30,
-        "mae_usd": -0.0,
-        "mechanical_order": false,
-        "mfe_usd": 75081.14,
-        "move_versus_entry_intent": "with_intent",
-        "order_policy": "review_only",
-        "position_id": "pos-65b06053d4c6",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "Realize the short if Australian-kiwi falls clearly off the 99th percentile, and otherwise exit at 30 days if the cross has not made a new high.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 75081.14,
-        "retained_mfe_fraction": 1.0,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "short",
-        "total_pnl_usd": 75081.14,
-        "trade_id": "trd-trader-value-guy-pos-65b06053d4c6",
-        "unrealized_pnl_usd": 75081.14
-      },
-      "instrument": "AUDNZD",
-      "opened_at": "2026-11-06T06:25:49.281876-05:00",
-      "position_id": "pos-65b06053d4c6",
-      "risk_capital_usd": 50000.0,
-      "side": "short",
-      "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
-    },
     {
       "asset_class": "spot_fx",
       "conviction": 61,
@@ -198,7 +149,7 @@
         "expected_mark_direction": null,
         "framing": "structural",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 4374.92,
         "holding_seconds": 172786,
         "horizon_elapsed_fraction": 0.0167,
         "horizon_status": "within",
@@ -206,15 +157,15 @@
         "intended_horizon_days": 120,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 6892.01,
+        "mfe_usd": 11266.93,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-5760dbd4ac3e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The euro's joint cheapness versus sterling, the dollar and the yen is realized as EURGBP drifts back toward the middle of its one-year range.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 6892.01,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 11266.93,
+        "retained_mfe_fraction": 0.6117,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -251,11 +202,11 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.17
       },
       "defensiveness": {
@@ -266,7 +217,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.19
+        "value": 0.18
       },
       "frustration": {
         "band": "calm",
@@ -307,11 +258,16 @@
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261110"
+      },
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.13531906,
+        "run_id": "overnight-20261112"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "32936c4defb0ddb4edb99b7439c9bc80ade8902fdf6e83d62f2ed2377088ccc2",
+    "state_sha256": "9fa32b11a5cb9cb7e5809bad236ffcc580736628c5305e833ab9a6967d2e58ab",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -319,6 +275,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": 61,
+      "holding_duration_seconds": 512674,
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-06T06:25:49.281876-05:00",
+      "realized_pnl_usd": 67659.53,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-05T04:53:53.458055-05:00",

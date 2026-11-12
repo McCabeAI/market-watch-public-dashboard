@@ -65,6 +65,36 @@
       "trade_ids": [
         "trd-trader-trend-follower-pos-06e7a6ec76da"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not open or hold a SOFR receive once the US two-year reclaims 4.67, or once that contract's implied is rising while the curve reverses higher together. Stand with the higher-yield trend until one of those conditions breaks.",
+      "lesson_id": "les-ca8f7625127e",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-fa1a2ebadbd1"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261112",
+      "status": "active",
+      "text": "Do not receive SOFR in front of a live hike reprice. A receive is only a trend trade after the front end has actually reversed. When March implied is printing higher and the two-year and ten-year are reversing higher together, the trend is higher yields and the receive is a premature fade.",
+      "trade_ids": [
+        "trd-trader-trend-follower-pos-96a63a1df145"
+      ]
     }
   ],
   "as_of": "2026-11-12T04:50:23.662182-05:00",
@@ -131,45 +161,62 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
+  "learning_obligations": [],
+  "memory_context_sha256": "54e97b84de9edf6a80e23afd9206301d681d2dcf5f5a1222407cc5cb8c193308",
+  "open_positions": [
     {
-      "kind": "postmortem",
-      "obligation_id": "pmd-fa1a2ebadbd1",
-      "owner_id": "trend-follower",
-      "owner_type": "trader",
-      "reference": "trd-trader-trend-follower-pos-96a63a1df145",
-      "source_run_id": "overnight-20261111"
+      "asset_class": "spot_fx",
+      "conviction": null,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 159.23,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The dollar breakout remains the expression while the two-year holds above 4.67 and March 2027 SOFR implied holds the move from 4.33 to 4.53.",
+        "current_mark": 159.23429495820977,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 159.23,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "USDJPY",
+        "intended_horizon_days": 30,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-111b627e5627",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The long is paid if USDJPY holds the 20-day upside breakout, with EURUSD and AUDUSD staying heavy and USDCAD staying bid.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-trend-follower-pos-111b627e5627",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "USDJPY",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "position_id": "pos-111b627e5627",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-trend-follower-pos-111b627e5627"
     }
   ],
-  "memory_context_sha256": "f007ac094eb0defae8ffd8602f8add3d7731eff7a297a98114b8f84d3ead9448",
-  "open_positions": [],
   "owner_id": "trend-follower",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-11T06:25:27.481006-05:00",
-      "created_run_id": "overnight-20261111",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-11T06:25:27.481006-05:00",
-        "conviction": 64,
-        "entry_mark": 4.33,
-        "exit_mark": 4.53,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 781009,
-        "instrument": "SOFR_2027-03",
-        "invalidation": "Exit if the US two-year reclaims and holds 4.67, or if March SOFR implied prints higher while two-year, five-year and ten-year yields reverse higher together.",
-        "opened_at": "2026-11-02T05:28:38.279813-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -30937.5,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-fa1a2ebadbd1",
-      "trade_id": "trd-trader-trend-follower-pos-96a63a1df145"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -234,7 +281,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d62c64da5f3ab99eeb27c8886eb2d66f4d74489aa2baa07bf5411f57d0a1cd0c",
+    "state_sha256": "5e31b868ad9f1469c022965666ccf3f096ad1924f2b02c77f355d5c4814e9940",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

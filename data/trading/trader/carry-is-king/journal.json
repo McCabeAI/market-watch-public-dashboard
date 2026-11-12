@@ -2238,6 +2238,62 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The Canada March 2027 receive stays at 25 million. Cash is unchanged at 2.52 and the fresh implied rate is 2.965, still about 44 basis points over cash and below the 2.995 entry, so the book is paid to wait. The backup from the book mark is not a change in cash policy. A new US receive would fight the post-inflation path, and Australia at 4.885 versus 4.85 cash does not pay enough to re-enter."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Hold the 25 million CORRA March 2027 receive. Do not flatten a sub-5bp move while cash policy is unchanged, and do not add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "8e17b87e05bece88eb15f5d4b7b2f8a5a35206e687c312d2a638b46e5c32703c",
+      "event_id": "jde-ce57e1043ad44c63",
+      "funding_view": null,
+      "invalidation": "The receive comes off if the cash policy rate is raised, or if CORRA March 2027 implied backs up by more than five basis points from 2.965.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4a02963feec828e15dc5bd2dda47b54b1d9a96da3bed70daaca1ce6c59c57826",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "865342bbe48e3d1393e03c7993cd61f704033f3a75c0d8777c2e53ecdb98635e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The CORRA March 2027 receive stays. The mark at 2.965 versus the 2.995 entry is three basis points in favor, and that is not a cash-policy change. Official SOFR is 3.88 percent against Dec26 at 4.28 and Mar27 at 4.53, so the hot CPI and the hike rhetoric are a US shock, not a Canada policy reversal. WTI at 86.53 and Brent at 92.76 are a risk to the receive, not a reason to flatten a three-basis-point gain while the cash rate is unchanged.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The CORRA March 2027 receive stays. The mark at 2.965 versus the 2.995 entry is three basis points in favor, and that is not a cash-policy change. Official SOFR is 3.88 percent against Dec26 at 4.28 and Mar27 at 4.53, so the hot CPI and the hike rhetoric are a US shock, not a Canada policy reversal. WTI at 86.53 and Brent at 92.76 are a risk to the receive, not a reason to flatten a three-basis-point gain while the cash rate is unchanged."
     }
   ],
   "schema_version": 1,

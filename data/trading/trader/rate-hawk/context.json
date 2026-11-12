@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 538619.17,
     "risk_capital_utilization": 0.0539,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -19051.11,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "eb016fe98a7af45364426b233a542c4eae9dca148df2eee740458f53645e4e80",
+  "memory_context_sha256": "c49ecaef51f3801f2f527b06befea63f41a9ce13bfbd9127efb47d44b7dc3dcd",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -224,7 +224,7 @@
         "expected_mark_direction": "higher",
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 375.0,
         "holding_seconds": 512674,
         "horizon_elapsed_fraction": 0.2967,
         "horizon_status": "within",
@@ -232,15 +232,15 @@
         "intended_horizon_days": 20,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 4125.0,
+        "mfe_usd": 4500.0,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-6c7bcf0fe6af",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if December SOFR implied yield rises as the jobs-report gap closes and the 12bp front-end rally is retraced.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 4125.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 4500.0,
+        "retained_mfe_fraction": 0.9167,
         "review_move_bp": 5.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -273,7 +273,7 @@
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 609.15,
         "holding_seconds": 172786,
         "horizon_elapsed_fraction": 0.0222,
         "horizon_status": "within",
@@ -281,15 +281,15 @@
         "intended_horizon_days": 90,
         "mae_usd": -34.05,
         "mechanical_order": false,
-        "mfe_usd": 0.0,
+        "mfe_usd": 575.1,
         "move_versus_entry_intent": "against_intent",
         "order_policy": "review_only",
         "position_id": "pos-069ec6c19021",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "September AONIA implied rises from 4.71 back through cash at 4.85 as the priced cut is removed.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 575.1,
+        "retained_mfe_fraction": -0.0592,
         "review_move_bp": 10.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -306,6 +306,55 @@
       "risk_capital_usd": 200000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021"
+    },
+    {
+      "asset_class": "rates",
+      "conviction": null,
+      "current_notional_usd": 8231044.0,
+      "entry_mark": 4.65,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": "2026-12-08",
+        "catalyst_logic": "Australian CPI on 25 November is the domestic test, and the 8 December RBA decision is the policy response.",
+        "current_mark": 4.65,
+        "current_notional_usd": 8231044.0,
+        "entry_mark": 4.65,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "AONIA_2027-12",
+        "intended_horizon_days": 40,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-1b79b84070a7",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The short gains if the December 2027 implied cash rate rises from 4.65 toward the higher Australian cash anchor as the priced ease is taken out.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "AONIA_2027-12",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "position_id": "pos-1b79b84070a7",
+      "risk_capital_usd": 82310.44,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
     }
   ],
   "owner_id": "rate-hawk",
@@ -336,12 +385,12 @@
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.21
+        "value": 0.2
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "frustration": {
         "band": "calm",
@@ -374,11 +423,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.0913868,
-        "run_id": "overnight-20261106"
-      },
-      {
         "kind": "session_gain",
         "magnitude": 0.08056726,
         "run_id": "overnight-20261111"
@@ -386,7 +430,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ceb3302612e26243f029b7d3bf98cb5b9e73e38cf3845a721a7aa76e96fe0646",
+    "state_sha256": "7a41028fdb2ff8257191171b45c68b34c4e19c5218565052ed2fc1356129b6c9",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

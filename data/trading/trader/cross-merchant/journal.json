@@ -2020,6 +2020,62 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "Short Australian dollar-kiwi remains the clean non-dollar expression of a rich Australia against a cheap kiwi. Spot is 1.2266, a five-year z-score of 2.34 and the 96th percentile, after a 1.2 percent five-day decline and a close through the prior 20-session range. A fresh flat book would not reopen the full 20 million at this low, so 10 million comes off and 10 million stays while the extreme is unfinished. New Zealand yields stay research context. The spot cross is the leg."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": "Hold the full 10 million AUDNZD short. The twenty-day decline is intact, and the failed breakdown is not a reason to add or to flip the cross.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "00243aaf727300869c274a9a9525a1781649d74d972e29bdfdc42285ba4968e3",
+      "event_id": "jde-7acc88a289b341c9",
+      "funding_view": null,
+      "invalidation": "The short changes if AUDNZD reclaims the 1.2456 entry and lifts off the range floor while AUDCAD and EURAUD stop marking the Australian dollar as the weak leg.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3f6832d0ff2057d5b50b7bda81ff35dc995e0fe8dbaf2114b17ca0f8375ac260",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "945dd911f135875ed74330bff0354e41923cf20fe0806e63777b4854480e348e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Short AUDNZD is the clean relative-value expression outside the dollar. The cross at 1.2285 is down 1.29% over five days and 1.61% over twenty, and AUDCAD and EURAUD still mark the Australian dollar as the weak leg. Spot sits at a 0.07 range position after a failed breakdown, so the ten million short from 1.2456 stays a multi-week hold: no add into the floor. EURGBP is a different valuation extreme and is not this position.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "Short AUDNZD is the clean relative-value expression outside the dollar. The cross at 1.2285 is down 1.29% over five days and 1.61% over twenty, and AUDCAD and EURAUD still mark the Australian dollar as the weak leg. Spot sits at a 0.07 range position after a failed breakdown, so the ten million short from 1.2456 stays a multi-week hold: no add into the floor. EURGBP is a different valuation extreme and is not this position."
     }
   ],
   "schema_version": 1,

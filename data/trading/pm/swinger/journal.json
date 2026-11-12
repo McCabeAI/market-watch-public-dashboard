@@ -2067,6 +2067,64 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "Australian dollar-kiwi at 1.2266 is still a five-year z-score of 2.34 and the 96th percentile, so the extreme that justified the short from 1.2456 has not closed. The five-day decline and the close beyond the prior range say that extreme is breaking lower. The same 300 million short would be initiated from a flat book here, because a one percent adverse move is about 3 million of shock inside the 100 million limit. Desks cutting the cross reduce crowding. They do not remove the extreme."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pm-swinger-f8f9feb515d2",
+          "rationale": "Close the full 300 million short. The breakdown that justified the concentration failed at range position 0.07.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T06:25:17.427247-05:00",
+      "conviction": null,
+      "decision_fingerprint": "47b481bab579d5d6e8bcf721ade5f1782ed5e372716b45140886a087b6d39489",
+      "event_id": "jde-2830c716555b4285",
+      "funding_view": null,
+      "invalidation": "The flat book changes if AUDNZD closes and holds under the 20-day low because the floor gave way rather than rejected, or if a further hawkish shock lifts December SOFR clear of 4.295 while USDJPY holds the breakout.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-f8f9feb515d2"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+      ],
+      "memory_context_sha256": "f8c77c217a944bb9614be8810c06b7f6049fb9229c0d5eb3343132e269981841",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "14c3ca6a5f0b44b68669d7cb74fc1b9a4a01ffc9ddb5998932510b49b795d719"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "c6922ad5dd8d219396f96a1a997c908e28656c57300aef4494378af7cfc7d31d",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261112-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The AUDNZD short was a breakdown continuation. The cross is still lower on the tape, but it sits at range position 0.07 after a failed 20-day breakdown, and the 11 November spot at 1.2285 is back through the 1.2266 book mark. From this floor the continuation is spent, and a rejection back into the range is the move that hurts a 300 million short, so the position comes off in full. December SOFR at 4.295 against cash SOFR at 3.88 shows the hike is already in the front end and does not clear a fresh pay or a chased dollar add.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The AUDNZD short was a breakdown continuation. The cross is still lower on the tape, but it sits at range position 0.07 after a failed 20-day breakdown, and the 11 November spot at 1.2285 is back through the 1.2266 book mark. From this floor the continuation is spent, and a rejection back into the range is the move that hurts a 300 million short, so the position comes off in full. December SOFR at 4.295 against cash SOFR at 3.88 shows the hike is already in the front end and does not clear a fresh pay or a chased dollar add."
     }
   ],
   "schema_version": 1,

@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "causal": {
+        "assumptions_right": "Defining the invalidation as a full bounce retrace or SOFR March 2027 through 4.435 gave a clear exit. Equity risk appetite was not the thing that broke: the S&P is still 7520.93 and VIX is 19.46.",
+        "assumptions_wrong_or_underweighted": "Underweighted how fast a hot US inflation path would dominate a small NZD bounce through the dollar, and treated NZD spot as a substitute for the rates view once SOFR was the actual invalidation gauge.",
+        "causal_divergence": "The bounce was a fade of a dollar squeeze. The squeeze resumed because the US front end repriced higher, so the long never left the entry and the later spot is softer.",
+        "decision_quality_attribution": "variance_luck",
+        "future_implication": "Leave NZDUSD alone while March 2027 SOFR holds above 4.435. The held SOFR, AONIA, and CORRA payers are the expression of resilient nominal growth.",
+        "observed_reality": "The long was exited at 0.56. NZDUSD is now 0.5584, March 2027 SOFR is 4.53, and the dollar is breaking up against the euro, the Australian dollar, and the Canadian dollar while equities and VIX have not signaled a growth break.",
+        "original_belief": "A long NZDUSD from 0.56 would extend if global risk appetite stayed intact and the bounce held.",
+        "same_information_counterfactual": "With the same growth view and the same SOFR invalidation level, the position to keep was the US front-end short, not a new NZDUSD long."
+      },
+      "expression_assessment": null,
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-11T06:25:27.481006-05:00",
+        "conviction": 64,
+        "entry_mark": 0.56,
+        "exit_mark": 0.56,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 92090,
+        "instrument": "NZDUSD",
+        "invalidation": "NZDUSD fully retraces the 1.26 percent bounce, or March 2027 SOFR trades up through the September 2027 mark at 4.435 and the dollar squeeze overwhelms the re-rating.",
+        "opened_at": "2026-11-10T04:50:36.940059-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 13403.45,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": null,
+      "lesson": null,
+      "no_new_lesson": "This was bounded variance around a rule that already existed. The invalidation was a full retrace of the bounce or March 2027 SOFR through 4.435 in a dollar squeeze, and the scratch followed that rule before the cross could become a loss. The prior process remains sound: do not reopen NZDUSD while that dollar-squeeze condition is live, and keep the pro-growth expression in the rates book.",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-89f28f04c3ff",
+      "run_id": "overnight-20261112",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "The NZDUSD long was a bounce off 0.56 that never extended. It was scratched at the entry, and by this cutoff March 2027 SOFR is 4.53, through 4.435, with NZDUSD at 0.5584.",
+      "timing_assessment": null,
+      "trade_id": "trd-trader-perma-bull-pos-0c736b9e5e13",
+      "what_failed": "The bounce failed to extend, but the pre-committed exit contained it at the entry price. The miss was using NZD spot to express a view whose real trigger was the US front end.",
+      "what_worked": null
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

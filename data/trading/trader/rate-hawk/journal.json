@@ -2907,6 +2907,139 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "US consumer prices rose 0.4 percent, the two-year is 4.73, and the ten-year is 4.98. Cash funding is 3.88, December futures are 4.28, March 2027 is 4.53, and September 2027 is 4.655, so the US pays stay because the hikes are already the book rather than a new chase. Canada cash at 2.52 against March at 2.965 is the same story in smaller size. September Australia at 4.705 is still 14 basis points under 4.85 cash, so that priced cut is the add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Hold September 2027 SOFR. The stored mark is 4.655 versus a 4.755 entry, and the 11 November strip is already 4.735, so this is not the place to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Hold the March 2027 CORRA pay. The mark is 2.965 versus a 3.06 entry, and the US CPI print does not identify a larger Bank of Canada step.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-06",
+          "notional_usd": null,
+          "position_id": "pos-9cbf3f27dfff",
+          "rationale": "Hold June 2027 AONIA. It is near cash, not the contract that prices the later ease.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2026-12",
+          "notional_usd": null,
+          "position_id": "pos-6c7bcf0fe6af",
+          "rationale": "Hold December 2026 SOFR. The pay is ahead of the 4.115 entry, and the December meeting step is already in the price.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-069ec6c19021",
+          "rationale": "Hold September 2027 AONIA at the current size. The wider gap is December 2027, so new risk goes there rather than a second add here.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-12",
+          "notional_usd": 8231044,
+          "position_id": null,
+          "rationale": "Pay December 2027 AONIA. The frozen implied is 4.65, under the cash rate already on the front of the same strip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "450059f43938d2bc1667251483c8dd6465589312cf77624ea28a15637d2971ad",
+      "event_id": "jde-0c6943f6228e46c3",
+      "funding_view": null,
+      "invalidation": "The new pay is wrong if December 2027 AONIA falls further below 4.65 while the front of the Australian strip drops back and the US December step is marked back toward an unchanged path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-069ec6c19021",
+        "pos-1b79b84070a7",
+        "pos-2709875e8c9c",
+        "pos-6c7bcf0fe6af",
+        "pos-9cbf3f27dfff",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-1b79b84070a7"
+      ],
+      "memory_context_sha256": "eb016fe98a7af45364426b233a542c4eae9dca148df2eee740458f53645e4e80",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ceb3302612e26243f029b7d3bf98cb5b9e73e38cf3845a721a7aa76e96fe0646"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "October prices rose 0.4 percent and the US two-year is 4.73, but the front of the US strip has already done the hawkish work: December SOFR implied is 4.295 against cash SOFR at 3.88. Australia has not. The frozen December 2027 AONIA implied is 4.65, below the cash rate already in the Australian strip, while the front of that strip is flat. Keep every existing pay. Add a short in December 2027 AONIA rather than chasing the US contracts that have already repriced.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "October prices rose 0.4 percent and the US two-year is 4.73, but the front of the US strip has already done the hawkish work: December SOFR implied is 4.295 against cash SOFR at 3.88. Australia has not. The frozen December 2027 AONIA implied is 4.65, below the cash rate already in the Australian strip, while the front of that strip is flat. Keep every existing pay. Add a short in December 2027 AONIA rather than chasing the US contracts that have already repriced."
     }
   ],
   "schema_version": 1,

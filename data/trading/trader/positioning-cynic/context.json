@@ -133,7 +133,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 8193.17,
     "status": "ok"
   },
   "learning": {
@@ -144,7 +144,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "16dc4765e792b8328a6af5fa02e4f16962e2405eebf5eed627b7ad462461d666",
+  "memory_context_sha256": "5852fed5a5fa1158041fa2daf1d237e0d23fde40404d875a6a75b43cac5855c8",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -221,15 +221,6 @@
         "mfe_usd": 150162.28,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
-        "pending_review": {
-          "mechanical_order": false,
-          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 5000000.0,
-          "status": "due",
-          "triggers": [
-            "material_winner"
-          ]
-        },
         "position_id": "pos-be9eaa63695e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if Australian-kiwi mean-reverts off the 99th percentile while kiwi-dollar stays cheap at 0.5622.",
@@ -262,9 +253,7 @@
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [
-      "pos-be9eaa63695e"
-    ],
+    "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
     "review_required_position_ids": [
@@ -333,7 +322,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "9ff9da9c7fde0645f01313ca41ed6f3e1f1107b9de83a06be150bd3abd989844",
+    "state_sha256": "de8f63262580284ac36923920b95f8e626e15dfec43fc71cdb600f078d412356",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

@@ -73,6 +73,32 @@
       "postmortem_id": "pmd-855908a87c6b",
       "status": "submitted",
       "trade_id": "trd-trader-value-guy-pos-63923b5f6571"
+    },
+    {
+      "created_at": "2026-11-12T04:50:23.662182-05:00",
+      "created_run_id": "overnight-20261112",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-12T04:50:23.662182-05:00",
+        "conviction": 61,
+        "entry_mark": 1.25,
+        "exit_mark": 1.23,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 512674,
+        "instrument": "AUDNZD",
+        "invalidation": "Cover the short if Australian-kiwi extends above 1.2453 while WTI returns toward 102, or if the cross is still at or above 1.2453 after thirty days.",
+        "opened_at": "2026-11-06T06:25:49.281876-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 67659.53,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-08b78abf6476",
+      "status": "due",
+      "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
     }
   ],
   "schema_version": 1,

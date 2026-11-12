@@ -2012,6 +2012,62 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "A 0.4 percent inflation print lifted the two-year to 4.73 and the ten-year to 4.98, with December futures at 4.28 against cash at 3.88. Dollar-yen at 158.18 is back through the 158.06 entry and in the 88th percentile of five years, so the existing long is the dollar spot that took the hike premium. The euro rose on the day, and dollar-Canada or the Australian dollar would each add a second central bank. The 20 million long stays."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": "Hold the 20 million dollar-yen long. The fresher spot is 159.23, a 20-day breakout, and dollar-Canada is not a fresh entry while oil is elevated into a dual central-bank week.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "c8756cd45890b951af4fb9cd0ad3d499f06cdcad4534caa6c1e6def9ad8c6c65",
+      "event_id": "jde-6167247f71df4eeb",
+      "funding_view": null,
+      "invalidation": "The long is invalidated if dollar-yen loses the 20-day breakout and trades back through the 158.06 entry while the two-year gives back 4.73, or if the 13 November producer-price print kills the hike rhetoric and the dollar bid reverses together.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3ebf415686dc104a9dc89c6834158b24f42e2c708a00f7cf7cabb043794754c5",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9337e4889c0c5876f9b700278cff69bb1329c6162190271faab01f00c6ebbff2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hot October CPI and hike rhetoric have the dollar bid. Euro 1.1127 broke down over 20 days, Aussie 0.6859 broke down, and dollar-yen 159.23 broke out through the 158.06 entry. The two-year at 4.73 and the ten-year at 4.98 carry that bid into producer prices on 13 November and the 9 December meeting. Dollar-Canada at 1.4235 is also breaking higher, but Brent at 92.76 is still elevated and December has both the Fed and the Bank of Canada, so Canada is not a fresh dollar entry. The 20 million dollar-yen long stays.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "Hot October CPI and hike rhetoric have the dollar bid. Euro 1.1127 broke down over 20 days, Aussie 0.6859 broke down, and dollar-yen 159.23 broke out through the 158.06 entry. The two-year at 4.73 and the ten-year at 4.98 carry that bid into producer prices on 13 November and the 9 December meeting. Dollar-Canada at 1.4235 is also breaking higher, but Brent at 92.76 is still elevated and December has both the Fed and the Bank of Canada, so Canada is not a fresh dollar entry. The 20 million dollar-yen long stays."
     }
   ],
   "schema_version": 1,

@@ -2346,6 +2346,79 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The Canada March receive stays at 150 million. The fresh mid at 2.965 is still through the 3.13 entry and about 44 basis points above cash at 2.52, so the receive still points at a lower implied rate. The Australian dollar-kiwi short is cut from 20 million to 10 million because a full-size hold would not be initiated again at 1.2266. The Australia September pay at 4.705 versus 4.85 cash is skipped. The gap is too tight, and a higher Australia rate leans against the cross short."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-4e0cbc4e0b05",
+          "rationale": "Keep the 150 million CORRA March 2027 receive. Canada at 2.965 versus US March 2027 SOFR at 4.53 is still the clean gap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pm-pragmatist-fb7a9dedff4a",
+          "rationale": "Flatten the 10 million AUDNZD short. The residual is complete at range position 0.07.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T06:25:17.642533-05:00",
+      "conviction": null,
+      "decision_fingerprint": "5bde276cfa4c6a86386b34720c42970f88f86365e1651628ac4ff109483b1b90",
+      "event_id": "jde-99aec56c9845416d",
+      "funding_view": null,
+      "invalidation": "The view changes if CORRA March 2027 reprices back through 3.13, or if AUDNZD accepts under the failed breakdown and leaves range position 0.07 behind.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-pragmatist-4e0cbc4e0b05",
+        "pm-pragmatist-fb7a9dedff4a"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-pragmatist-pm-pragmatist-fb7a9dedff4a"
+      ],
+      "memory_context_sha256": "1f3c55faafc3785125f44e23b91c257be26e3971d11d2d0a4df6a93ddae1e1ed",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "55f442969e18c4613a2c433903b3f464cdf8cdb96f8d28825240d2768cd11f9e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "0445fb35f08d4a7b2e639319b81d79873c4cd730ad5bd8a420ab0a7421da5d2d",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261112-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hot October CPI leaves December 2026 SOFR implied at 4.295 and March 2027 at 4.53, so the US tightening is priced, while the CORRA March 2027 receive at 2.965 is ahead of the 3.13 entry and remains the clean Canada-versus-US gap. AUDNZD at 1.2285 sits at range position 0.07 after a failed breakdown, and that short residual is finished. Cover the cross and keep the receive. A new pay in SOFR, the US 10-year, or AONIA does not improve the book.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "Hot October CPI leaves December 2026 SOFR implied at 4.295 and March 2027 at 4.53, so the US tightening is priced, while the CORRA March 2027 receive at 2.965 is ahead of the 3.13 entry and remains the clean Canada-versus-US gap. AUDNZD at 1.2285 sits at range position 0.07 after a failed breakdown, and that short residual is finished. Cover the cross and keep the receive. A new pay in SOFR, the US 10-year, or AONIA does not improve the book."
     }
   ],
   "schema_version": 1,

@@ -2034,6 +2034,64 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "Cut half of the Australian dollar-kiwi short and keep 5 million. Spot at 1.2266 is still a z-score of 2.34 and the 96th percentile, with kiwi-dollar at 0.5628 on the 4th percentile, so a higher kiwi can still drag the cross lower. The full 10 million would not be reopened after a 1.2 percent five-day decline that has already broken the range. New Zealand yields are research-only, so the residual stays in spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pos-9a020b7cffca",
+          "rationale": "Cover the full 5 million AUDNZD short. A fresh short at 1.2285 would not be opened.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "4bc60bdee29d13bed6d1a8dff71a3acad513d9af1796efad276f237d51947454",
+      "event_id": "jde-788152149ef74cbf",
+      "funding_view": null,
+      "invalidation": "The cover is wrong if AUDNZD closes and holds below the 20-day floor at 1.2266, so the failed breakdown becomes a fresh range break.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9a020b7cffca"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-9a020b7cffca"
+      ],
+      "memory_context_sha256": "5be3c89a23d01986e12a3d82f94db57dfc913960fd6eb6d7489200cf7a9950f2",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "76fb5a72b6349a617b5e40558cc0f3e9781e91f43cb40cbce4fbc3ccbcf9ff56"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Australian-kiwi fade has already arrived at the 20-day floor. Spot is 1.2285, range position is 0.07, and the downside break has failed, so the open short is late. The one-year z-score has cooled to +0.94. The five-year richness is a reason to look again only after a bounce back into the range, not a reason to stay short on the floor. Euro-dollar at 1.1127 remains a live 20-day breakdown, so a dollar fade is the wrong substitute. Cover the 5 million.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The Australian-kiwi fade has already arrived at the 20-day floor. Spot is 1.2285, range position is 0.07, and the downside break has failed, so the open short is late. The one-year z-score has cooled to +0.94. The five-year richness is a reason to look again only after a bounce back into the range, not a reason to stay short on the floor. Euro-dollar at 1.1127 remains a live 20-day breakdown, so a dollar fade is the wrong substitute. Cover the 5 million."
     }
   ],
   "schema_version": 1,

@@ -2589,6 +2589,79 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The book stays in cash. Official funding is 3.88 percent and December futures already imply 4.28, with the two-year at 4.73 after the inflation print. The Australian dollar-kiwi break lower is also already in the spot. Paying funding on new shocked-risk capital to chase or fade that path does not clear the hurdle, and flat cash itself is not a source of alpha."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The hike, the dollar, and the crosses look already priced. No new risk before PPI.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "5d2630cd4532df7e606ade326a27d20e9389d42bbbda22fd89cc4bcebea1ad0b",
+      "event_id": "jde-deb970c7f51f4132",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-09",
+          "rate": 3.88,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Realized funding is judged about the same as that strip, so staying at the zero official-SOFR benchmark does not leave an unpriced funding edge, and paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
+        "sr3_forward_view": "From cash SOFR 3.88 the strip already prices Dec26 at 4.28, Mar27 at 4.53 and Sep27 at 4.655, a front-loaded hike with little left between March and September."
+      },
+      "invalidation": "The view changes if the 13 November PPI pushes the SOFR strip off 4.28, 4.53 and 4.655 in the same direction as a fresh dollar extension that holds beyond the breaks already printed, or if the strip falls back toward cash 3.88 and those spots reverse together before the 9 December meeting.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "34ae864bb5b091c631666c77600743db02c74190bc820bde3218640f0ddd54af",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-09",
+            "rate": 3.88,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Realized funding is judged about the same as that strip, so staying at the zero official-SOFR benchmark does not leave an unpriced funding edge, and paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
+          "sr3_forward_view": "From cash SOFR 3.88 the strip already prices Dec26 at 4.28, Mar27 at 4.53 and Sep27 at 4.655, a front-loaded hike with little left between March and September."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "43d16d7c251df185d878cd886c585002ed0223c635ba5e9796a75ae719843125"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cash SOFR is 3.88 against a strip that already has Dec26 at 4.28, Mar27 at 4.53 and Sep27 at 4.655, and with the US 2-year at 4.73 and the 10-year at 4.98 the October 0.4% CPI is the public story already in the price. EURUSD at 1.1127, USDJPY at 159.23, AUDUSD at 0.6859 and USDCAD at 1.4235 have already broken. A new dollar long or a new paid front end into PPI on 13 November is a crowded chase with the information one session away. Flat cash at the 3.88 fixing is the zero benchmark.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "Cash SOFR is 3.88 against a strip that already has Dec26 at 4.28, Mar27 at 4.53 and Sep27 at 4.655, and with the US 2-year at 4.73 and the 10-year at 4.98 the October 0.4% CPI is the public story already in the price. EURUSD at 1.1127, USDJPY at 159.23, AUDUSD at 0.6859 and USDCAD at 1.4235 have already broken. A new dollar long or a new paid front end into PPI on 13 November is a crowded chase with the information one session away. Flat cash at the 3.88 fixing is the zero benchmark."
     }
   ],
   "schema_version": 1,

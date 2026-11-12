@@ -76,14 +76,14 @@
     "nav_usd": 99961685.41,
     "net_pnl_usd": -38314.59,
     "pressure_flags": [],
-    "prior_competition_rank": 13,
-    "rank_change": 0,
+    "prior_competition_rank": 11,
+    "rank_change": 2,
     "raw_pnl_rank": 13,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1350000.0,
     "risk_capital_utilization": 0.135,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -23604.5,
     "status": "ok"
   },
   "learning": {
@@ -93,17 +93,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-89f28f04c3ff",
-      "owner_id": "perma-bull",
-      "owner_type": "trader",
-      "reference": "trd-trader-perma-bull-pos-0c736b9e5e13",
-      "source_run_id": "overnight-20261111"
-    }
-  ],
-  "memory_context_sha256": "1099d3263c067064468524c4e76cc26632b5788cc66c9e3b1a3c4db74880b9d0",
+  "learning_obligations": [],
+  "memory_context_sha256": "4ae3aac2bc21d1502d099cd29e74deade34ec7b8791d6735529af560417fd247",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -218,7 +209,7 @@
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 10000.0,
+        "giveback_usd": 17500.0,
         "holding_seconds": 1970343,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -226,15 +217,15 @@
         "intended_horizon_days": null,
         "mae_usd": -140000.0,
         "mechanical_order": false,
-        "mfe_usd": 15000.0,
+        "mfe_usd": 22500.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-35db4e56bf42",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 15000.0,
-        "retained_mfe_fraction": 0.3333,
+        "recorded_mfe_usd": 22500.0,
+        "retained_mfe_fraction": 0.2222,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 500000.0,
@@ -255,31 +246,7 @@
   ],
   "owner_id": "perma-bull",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-11T06:25:27.481006-05:00",
-      "created_run_id": "overnight-20261111",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-11T06:25:27.481006-05:00",
-        "conviction": 64,
-        "entry_mark": 0.56,
-        "exit_mark": 0.56,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 92090,
-        "instrument": "NZDUSD",
-        "invalidation": "NZDUSD fully retraces the 1.26 percent bounce, or March 2027 SOFR trades up through the September 2027 mark at 4.435 and the dollar squeeze overwhelms the re-rating.",
-        "opened_at": "2026-11-10T04:50:36.940059-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 13403.45,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-89f28f04c3ff",
-      "trade_id": "trd-trader-perma-bull-pos-0c736b9e5e13"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -299,23 +266,23 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.13
+        "trend": "flat",
+        "value": 0.12
       },
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.22
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.12
+        "trend": "flat",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -324,7 +291,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.5
       },
       "thesis_attachment": {
@@ -355,7 +322,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "cdea1099560e80553980bb504341d885abf18640b522e274f8f6570e785b97ce",
+    "state_sha256": "5fb885c3afa8659443e774b0f47ed7dc03308f4caa75c33a0eb3d73cb7628f8e",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

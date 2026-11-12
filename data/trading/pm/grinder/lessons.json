@@ -1,5 +1,45 @@
 {
-  "lessons": [],
+  "lessons": [
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-12T06:25:17.857174-05:00",
+      "future_rule": "Do not re-open a closed cross short in the same swing unless price resets to a fresh extreme and the original invalidation is clearly not in force. A failed floor, peer covering, or a firm commodity tape is a reason to stay flat until a new extreme exists.",
+      "history": [
+        {
+          "at": "2026-11-12T06:25:17.857174-05:00",
+          "op": "add",
+          "run_id": "overnight-20261112"
+        }
+      ],
+      "lesson_id": "les-d7456a210515",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-b9f14cbbc954"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261112",
+      "status": "active",
+      "text": "A cross short that has already fallen through the entry extreme is a completed expression. Re-opening it just below the exit, into a failed nearby floor while commodities are bid and other shorts are covering, treats a finished trade as a new one.",
+      "trade_ids": [
+        "trd-pm-grinder-pm-grinder-9366bc9ee048"
+      ],
+      "updated_at": "2026-11-12T06:25:17.857174-05:00"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_LESSONS"
 }

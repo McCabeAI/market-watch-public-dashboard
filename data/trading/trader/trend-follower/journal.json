@@ -2036,6 +2036,64 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The US front end is in a higher-yield trend after the inflation print. The two-year is 4.73 and the ten-year is 4.98. March SOFR at 4.53 is above both the 4.28 entry and the 4.32 book mark, so the receive that expected a lower mark is offside. The long comes off. The Australian dollar-kiwi five-day drop is a short swing inside a cross that is still historically rich, so it is not the continuation."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": "Open a 10 million USDJPY long with the 20-day breakout. Do not pay the ten-year without a confirmed new yield high.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "49e56765ff33a18ea2c601f4d4dacf288f123897fd4fc20493676f1ace3796c1",
+      "event_id": "jde-691404d0812545b6",
+      "funding_view": null,
+      "invalidation": "The view changes if USDJPY falls back inside the pre-breakout 20-day range, or if the hike reprice fails with the US two-year back below 4.67 and March 2027 SOFR implied back below 4.53.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-111b627e5627"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-111b627e5627"
+      ],
+      "memory_context_sha256": "f007ac094eb0defae8ffd8602f8add3d7731eff7a297a98114b8f84d3ead9448",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d62c64da5f3ab99eeb27c8886eb2d66f4d74489aa2baa07bf5411f57d0a1cd0c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The live trend is a higher US policy path after October CPI at +0.4 percent: the two-year is 4.73, through 4.67, and March 2027 SOFR implied is 4.53 after a receive was stopped out from 4.33. The dollar is already trading that trend. USDJPY at 159.23 is a 20-day upside breakout, with EURUSD and AUDUSD breaking down and USDCAD breaking up over the same window. Long USDJPY is the continuation. A ten-year pay at 4.98 stays off until that tenor prints a confirmed new yield high, which is not established.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The live trend is a higher US policy path after October CPI at +0.4 percent: the two-year is 4.73, through 4.67, and March 2027 SOFR implied is 4.53 after a receive was stopped out from 4.33. The dollar is already trading that trend. USDJPY at 159.23 is a 20-day upside breakout, with EURUSD and AUDUSD breaking down and USDCAD breaking up over the same window. Long USDJPY is the continuation. A ten-year pay at 4.98 stays off until that tenor prints a confirmed new yield high, which is not established."
     }
   ],
   "schema_version": 1,

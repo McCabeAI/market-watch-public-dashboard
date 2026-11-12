@@ -1932,6 +1932,60 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The book stays flat. Producer prices on 13 November are a two-sided gap, and the expression that would own that gap is long gamma. This freeze has no option premium, strike, or implied volatility to buy. A directional rates or spot stand-in would be a sign bet on a print that can go either way, and equity volatility near 20 does not mark that event."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No listed option surface is in the freeze, so no premium is invented and no spot substitute is opened.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "4cc3b3cbfd01c79d1f4f402ef8b5ea372c842895f4dd7146615fb262ed48bbc1",
+      "event_id": "jde-acd7981415ca466f",
+      "funding_view": null,
+      "invalidation": "The flat stance changes if a quoted FX option premium and implied vol appear on EURUSD, USDJPY, or AUDUSD that can be marked against this realized tape.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5cbd44a8456840f802f513fa1676bf56ac77723dbce1cd9cabba743659777d65",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "38802a6e1f28b94ecd5b56a58ebf192b988a0ab7397d58dd3f17b1d877aa0046"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "EURUSD realized volatility near 5.7 sits at the bottom of its 20-day range after spot broke down through 1.1127, so the break and the vol compression disagree. USDJPY's upside break at 159.23 leaves a linear long wearing gap risk, and AUDUSD is in the same kind of breakdown at 0.6859. Equity VIX at 19.46 does not price any of those FX paths. The expression that fits is owned convexity, and the freeze has no listed FX option premium or implied vol to mark, so the book stays flat.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "EURUSD realized volatility near 5.7 sits at the bottom of its 20-day range after spot broke down through 1.1127, so the break and the vol compression disagree. USDJPY's upside break at 159.23 leaves a linear long wearing gap risk, and AUDUSD is in the same kind of breakdown at 0.6859. Equity VIX at 19.46 does not price any of those FX paths. The expression that fits is owned convexity, and the freeze has no listed FX option premium or implied vol to mark, so the book stays flat."
     }
   ],
   "schema_version": 1,

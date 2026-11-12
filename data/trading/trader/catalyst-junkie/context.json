@@ -47,8 +47,8 @@
     "nav_usd": 99976401.08,
     "net_pnl_usd": -23598.92,
     "pressure_flags": [],
-    "prior_competition_rank": 11,
-    "rank_change": 0,
+    "prior_competition_rank": 12,
+    "rank_change": -1,
     "raw_pnl_rank": 11,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -65,8 +65,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d5e496e2471680c486dfe9282d08e4d1baf5de984bc4d76e6357fe3d1677f721",
-  "open_positions": [],
+  "memory_context_sha256": "c9becb6ff4208f3e8a20d748d4622e245ff1e996bc8c587c4f116c5d0d20ebb7",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": null,
+      "current_notional_usd": 2000000.0,
+      "entry_mark": 4.29,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": "2026-12-09",
+        "catalyst_logic": "October producer prices on 13 November are the first check. If they do not extend the consumer-price rise, the pay is finished.",
+        "current_mark": 4.295,
+        "current_notional_usd": 2000000.0,
+        "entry_mark": 4.29,
+        "expected_mark_direction": null,
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "SOFR_2026-12",
+        "intended_horizon_days": 27,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-29b4571dd270",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The book gains if the December SOFR implied yield rises because the 9 December meeting is marked for a larger step than the path already in the contract.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-catalyst-junkie-pos-29b4571dd270",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "SOFR_2026-12",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "position_id": "pos-29b4571dd270",
+      "risk_capital_usd": 20000.0,
+      "side": "short",
+      "trade_id": "trd-trader-catalyst-junkie-pos-29b4571dd270"
+    }
+  ],
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -84,8 +134,8 @@
     "axes": {
       "chase_pressure": {
         "band": "elevated",
-        "trend": "flat",
-        "value": 0.43
+        "trend": "down",
+        "value": 0.38
       },
       "complacency": {
         "band": "calm",
@@ -100,12 +150,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.29
+        "value": 0.27
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.17
+        "trend": "down",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -135,11 +185,6 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261109"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261110"
       },
       {
@@ -150,9 +195,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ccec1114d6206a0613b8985f64039967239020e3bad23178c68d275bab8c3295",
+    "state_sha256": "e0f67c85254e4cde63cf22aada74a4b64d5171af3d594ae60ea0562d9e961065",
     "streaks": {
-      "flat_cycles": 10,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

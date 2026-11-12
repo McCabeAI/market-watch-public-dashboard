@@ -1966,6 +1966,64 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "Nothing is opened. The inflation print is already in the two-year at 4.73, the ten-year at 4.98, and December futures at 4.28 against a 3.88 fixing. Producer prices on 13 November and the December meeting are real dates, but the freeze does not show a remaining gap between those events and the instruments that already moved. The Australian dollar-kiwi range break is also already in the spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2026-12",
+          "notional_usd": 2000000,
+          "position_id": null,
+          "rationale": "Open a 2 million short in December 2026 SOFR into the 13 November producer-price print.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "91485c81d10f3c2ec6c150f0c7ef69adfdfaa0e86c3feec3eb5f6f6e4bbc4c4f",
+      "event_id": "jde-d367ed1a325141d0",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if the 13 November producer-price release does not extend the October consumer-price rise, or if December SOFR fails to hold 4.295.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-29b4571dd270"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-29b4571dd270"
+      ],
+      "memory_context_sha256": "d5e496e2471680c486dfe9282d08e4d1baf5de984bc4d76e6357fe3d1677f721",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ccec1114d6206a0613b8985f64039967239020e3bad23178c68d275bab8c3295"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "October consumer prices rose 0.4 percent and the two-year is already 4.73, so the level of the hike is no longer the open gap. Cash SOFR is still 3.88 while December three-month SOFR is 4.295. Producer prices on 13 November are the inflation check the committee gets before it meets on 9 December. Pay December SOFR in small size so a confirmed cost shock can lift that contract before the meeting, and get out if the 13 November print does not extend the consumer-price move.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "October consumer prices rose 0.4 percent and the two-year is already 4.73, so the level of the hike is no longer the open gap. Cash SOFR is still 3.88 while December three-month SOFR is 4.295. Producer prices on 13 November are the inflation check the committee gets before it meets on 9 December. Pay December SOFR in small size so a confirmed cost shock can lift that contract before the meeting, and get out if the 13 November print does not extend the consumer-price move."
     }
   ],
   "schema_version": 1,

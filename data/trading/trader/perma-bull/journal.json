@@ -2569,6 +2569,92 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "North American growth is firm enough to keep the front-end pays. March SOFR at 4.53 still sits below June and September, while cash at 3.88 already trails the December contract at 4.28. Canada March at 2.965 still faces a February terminal near 2.77, and Australia March at 4.885 remains a small premium to 4.85 cash with Brent near 91.50. Kiwi spot near the 4th percentile is the weaker expression of the same resilience, so that long comes off and the three pays stay."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Hold the 50 million SOFR March 2027 pay. The mark is 4.53 versus a 4.52 entry, and the implied has not retraced enough to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Hold the 35 million AONIA March 2027 pay. The mark is 4.885 versus 4.798, and a working mark is not permission to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Hold the 50 million CORRA March 2027 pay. Canada at 2.965 is behind the 3.13 entry, and that gap is not a thesis break.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "36cb9d8e152a4260b70b6dd875b5960c2d94626fe4a45b61e77141f06f683e9d",
+      "event_id": "jde-47f68cc253814cb8",
+      "funding_view": null,
+      "invalidation": "Cut the payers if March 2027 SOFR trades back below 4.435 and the 20-day dollar breaks in the euro, the Australian dollar, and the Canadian dollar reverse.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1099d3263c067064468524c4e76cc26632b5788cc66c9e3b1a3c4db74880b9d0",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cdea1099560e80553980bb504341d885abf18640b522e274f8f6570e785b97ce"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The expansion is absorbing a hot October CPI print of +0.4% rather than cracking: equities are still at the highs, VIX is 19.46, and oil is firm, so the growth-resilient trade is a higher policy path, not a rush back into duration. That view is already on in the March 2027 payers, with SOFR only a basis point through the 4.52 entry at 4.53, AONIA working from 4.798 to 4.885, and CORRA the laggard at 2.965 against SOFR at 4.53. All three stay on. The rank rule bars an add until the live implied retraces the path that was sold.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The expansion is absorbing a hot October CPI print of +0.4% rather than cracking: equities are still at the highs, VIX is 19.46, and oil is firm, so the growth-resilient trade is a higher policy path, not a rush back into duration. That view is already on in the March 2027 payers, with SOFR only a basis point through the 4.52 entry at 4.53, AONIA working from 4.798 to 4.885, and CORRA the laggard at 2.965 against SOFR at 4.53. All three stay on. The rank rule bars an add until the live implied retraces the path that was sold."
     }
   ],
   "schema_version": 1,

@@ -155,7 +155,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 14850.94,
     "status": "ok"
   },
   "learning": {
@@ -166,7 +166,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3f6832d0ff2057d5b50b7bda81ff35dc995e0fe8dbaf2114b17ca0f8375ac260",
+  "memory_context_sha256": "ed66c3e801fdaf6f876d2ce1e46da5762fd7fed110a43669241f417553652472",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -194,15 +194,6 @@
         "mfe_usd": 304390.1,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
-        "pending_review": {
-          "mechanical_order": false,
-          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 10000000.0,
-          "status": "due",
-          "triggers": [
-            "material_winner"
-          ]
-        },
         "position_id": "pos-525ff12dcad9",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
@@ -235,9 +226,7 @@
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [
-      "pos-525ff12dcad9"
-    ],
+    "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
     "review_required_position_ids": [
@@ -255,8 +244,8 @@
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.22
+        "trend": "down",
+        "value": 0.21
       },
       "defensiveness": {
         "band": "calm",
@@ -271,7 +260,7 @@
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "revenge_pressure": {
         "band": "calm",
@@ -281,7 +270,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.53
+        "value": 0.52
       },
       "thesis_attachment": {
         "band": "calm",
@@ -316,7 +305,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "945dd911f135875ed74330bff0354e41923cf20fe0806e63777b4854480e348e",
+    "state_sha256": "e75ea392a40b63d496d9579b3ee0bb1b327590f0d4d5508fa33803538cf9ae77",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

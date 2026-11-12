@@ -2082,6 +2082,91 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The crowded tape is the new US hike pay. Cash is 3.88, December futures are 4.28, and the two-year rose 17 basis points to 4.73. A fresh pay joins that consensus, and this freeze has no positioning report that separates ownership from the print. The Canada March short stays. The Australian dollar-kiwi short is the cut: it is a material winner at 1.2266, still the 96th percentile, and already through the recent range. Five million comes off and five million stays."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": "Pay the US 10-year at 4.98. This book does not already own that duration beta.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Keep the existing March CORRA pay. Do not add. The pay is about 3bp behind 2.995, and a new receive is not the trade.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pos-be9eaa63695e",
+          "rationale": "Keep the existing 5 million AUDNZD short. Do not add. The cross is near its 20-day low and several seats are already short.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "6d31afbaabbba029e9d2bcec4747947a16b54870c141399934fe2210a5ac40d0",
+      "event_id": "jde-a6ddd72421c64dca",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if the 10-year yield falls back through 4.98 and stays lower while March SOFR remains bid, or if the next positioning report shows the real-money 10-year long back in the middle of its range.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-be9eaa63695e",
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "16dc4765e792b8328a6af5fa02e4f16962e2405eebf5eed627b7ad462461d666",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9ff9da9c7fde0645f01313ca41ed6f3e1f1107b9de83a06be150bd3abd989844"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The CPI hike story is already owned here as a March CORRA pay and an AUDNZD short. Do not add either, and do not receive March CORRA while that contract is the crowded Canada expression. The better ownership asymmetry is the real-money long in the US 10-year, which the frozen positioning print still shows as an extreme, against a cash 10-year at 4.98. Pay the 10-year. That long is what has to be reduced if the hike narrative sticks, and it is not another copy of the Canada pay or the Aussie-kiwi short.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The CPI hike story is already owned here as a March CORRA pay and an AUDNZD short. Do not add either, and do not receive March CORRA while that contract is the crowded Canada expression. The better ownership asymmetry is the real-money long in the US 10-year, which the frozen positioning print still shows as an extreme, against a cash 10-year at 4.98. Pay the 10-year. That long is what has to be reduced if the hike narrative sticks, and it is not another copy of the Canada pay or the Aussie-kiwi short."
     }
   ],
   "schema_version": 1,

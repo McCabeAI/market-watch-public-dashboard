@@ -65,23 +65,40 @@
     "position_id": "pos-525ff12dcad9",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
     "residual_notional_usd": 10000000.0,
-    "run_id": "overnight-20261111",
-    "status": "due",
+    "run_id": "overnight-20261112",
+    "status": "satisfied",
     "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
     "triggers": [
       "material_winner"
     ],
-    "updated_at": "2026-11-11T06:25:27.481006-05:00"
+    "updated_at": "2026-11-12T04:50:23.662182-05:00"
   },
+  "harvest_reviews": [
+    {
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "mechanical_order": false,
+      "order_policy": "review_only",
+      "position_id": "pos-525ff12dcad9",
+      "remaining_edge": true,
+      "remaining_edge_reason": "Hold the full 10 million AUDNZD short. The twenty-day decline is intact, and the failed breakdown is not a reason to add or to flip the cross.",
+      "run_id": "overnight-20261112",
+      "thesis_still_valid": true,
+      "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
+      "triggers": [
+        "material_winner"
+      ],
+      "would_initiate_flat": "yes"
+    }
+  ],
   "hedge_of_position_id": null,
   "hedge_trade_id": null,
   "holding_duration_seconds": null,
   "initial_notional_usd": 20000000.0,
   "instrument": "AUDNZD",
   "invalidation": "The short is wrong if Australian dollar-New Zealand holds a new high through 1.2456, or if New Zealand cheapness is only a dollar bounce and the kiwi rises while the cross stays rich. It is also wrong if a later tape shows an Australia-New Zealand cash or policy gap that pays Australia as hard as cash Australia versus Canada already pays.",
-  "last_mark": 1.226606747106624,
+  "last_mark": 1.2284551843175933,
   "last_mark_as_of": "2026-11-02",
-  "last_unrealized_pnl_usd": 152195.05,
+  "last_unrealized_pnl_usd": 137354.89,
   "lifecycle": {
     "anchored_at": "2026-11-03T08:22:57.179127-05:00",
     "catalyst_by": null,

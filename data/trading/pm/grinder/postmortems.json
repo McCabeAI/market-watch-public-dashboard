@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-12T06:25:17.857174-05:00",
+      "causal": {
+        "assumptions_right": "The cross had room to fall from 1.25 without a fresh relative-rate shock interrupting the window, and a defined extreme plus a hard invalidation was the right expression.",
+        "assumptions_wrong_or_underweighted": "How little residual would remain once 1.23 traded was underweighted, as was the chance that a firm commodity tape would make any add-on a different trade from the original extreme.",
+        "causal_divergence": "Price and the short thesis agreed: the cross fell and the invalidations did not hit. The only gap versus a larger target is the small slip from the 1.23 exit to 1.2285, which is not a new signal.",
+        "decision_quality_attribution": "thesis",
+        "future_implication": "Keep the extreme-and-invalidate framework and the habit of closing once the cross has fallen. Do not recycle this short at 1.2285.",
+        "observed_reality": "From 3 November to 11 November the cross fell from 1.25 to 1.23 and the short was closed after that fall. It now sits at 1.2285 on a failed 20-day floor, with Brent at 92.76 and other desks closing small shorts.",
+        "original_belief": "AUDNZD at 1.25 was extended and would fall unless it held through 1.255, Australian implied tightening repriced the Aussie up versus the kiwi, or a one-way commodity shock arrived.",
+        "same_information_counterfactual": "On the 3 November information, the short at 1.25 with invalidation through 1.255 was still the position to hold. Re-shorting after the close, once the cross had already fallen and oil was firm, would not have been the same trade."
+      },
+      "expression_assessment": null,
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-11T07:34:32.370603-05:00",
+        "conviction": 58,
+        "entry_mark": 1.25,
+        "exit_mark": 1.23,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 684212,
+        "instrument": "AUDNZD",
+        "invalidation": "Exit if AUDNZD holds the extreme and prints through 1.255, if Australian implied tightening keeps repricing the Aussie higher versus kiwi, or if a Hormuz shock produces a one-way commodity-FX move that prevents mean reversion.",
+        "opened_at": "2026-11-03T09:30:59.662793-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 152195.05,
+        "side": "short",
+        "thesis": null
+      },
+      "future_rule": "Do not re-open a closed cross short in the same swing unless price resets to a fresh extreme and the original invalidation is clearly not in force. A failed floor, peer covering, or a firm commodity tape is a reason to stay flat until a new extreme exists.",
+      "lesson": "A cross short that has already fallen through the entry extreme is a completed expression. Re-opening it just below the exit, into a failed nearby floor while commodities are bid and other shorts are covering, treats a finished trade as a new one.",
+      "no_new_lesson": null,
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "postmortem_id": "pmd-b9f14cbbc954",
+      "run_id": "overnight-20261112",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": "The belief that 1.25 was an unstable extreme was confirmed by the decline to 1.23. The close matched the preservation rule of taking the break rather than converting a finished short into a lower-entry add-on. Firm Brent at 92.76 is the commodity condition that argued against staying short even though the cross ticked a little lower after the exit.",
+      "timing_assessment": null,
+      "trade_id": "trd-pm-grinder-pm-grinder-9366bc9ee048",
+      "what_failed": null,
+      "what_worked": "The short was opened at 1.25 on 3 November with invalidation if the cross held through 1.255, if Australian implied tightening repriced the Aussie higher versus the kiwi, or if a one-way commodity shock hit. None of those conditions printed during the hold. The cross fell and the short was closed at 1.23 on 11 November."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

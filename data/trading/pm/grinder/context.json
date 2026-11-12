@@ -1,6 +1,37 @@
 {
-  "active_lessons": [],
-  "as_of": "2026-11-12T04:50:23.662182-05:00",
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not re-open a closed cross short in the same swing unless price resets to a fresh extreme and the original invalidation is clearly not in force. A failed floor, peer covering, or a firm commodity tape is a reason to stay flat until a new extreme exists.",
+      "lesson_id": "les-d7456a210515",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-b9f14cbbc954"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261112",
+      "status": "active",
+      "text": "A cross short that has already fallen through the entry extreme is a completed expression. Re-opening it just below the exit, into a failed nearby floor while commodities are bid and other shorts are covering, treats a finished trade as a new one.",
+      "trade_ids": [
+        "trd-pm-grinder-pm-grinder-9366bc9ee048"
+      ]
+    }
+  ],
+  "as_of": "2026-11-12T06:25:18.590630-05:00",
   "calibration": {
     "average_holding_seconds": 684212,
     "average_realized_pnl_usd": 152195.05,
@@ -35,8 +66,8 @@
     "wins": 1
   },
   "capital_owner": {
-    "allocator_pressure": 23,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 24,
+    "credible_opportunities": "present",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -51,8 +82,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 372295.64,
-    "best_trader_outearn_streak": 1,
+    "best_trader_net_pnl_usd": 357444.7,
+    "best_trader_outearn_streak": 0,
     "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -60,7 +91,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 10.78,
-    "gap_to_best_trader_usd": -220187.79,
+    "gap_to_best_trader_usd": -205336.85,
     "high_water_nav_usd": 1000152118.63,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 152107.85,
@@ -81,45 +112,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-b9f14cbbc954",
-      "owner_id": "grinder",
-      "owner_type": "pm",
-      "reference": "trd-pm-grinder-pm-grinder-9366bc9ee048",
-      "source_run_id": "overnight-20261111"
-    }
-  ],
-  "memory_context_sha256": "ed054bf5192806d29e6453995ddf24b52c359951c936db9cd79f8ce8ff0fe59b",
+  "learning_obligations": [],
+  "memory_context_sha256": "a280a0e67416fd9b2aabef214149450fe2cbdf5b7b59c7574f1b6aa6f5c247ae",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-11T07:34:32.370603-05:00",
-      "created_run_id": "overnight-20261111",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-11T07:34:32.370603-05:00",
-        "conviction": 58,
-        "entry_mark": 1.25,
-        "exit_mark": 1.23,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 684212,
-        "instrument": "AUDNZD",
-        "invalidation": "Exit if AUDNZD holds the extreme and prints through 1.255, if Australian implied tightening keeps repricing the Aussie higher versus kiwi, or if a Hormuz shock produces a one-way commodity-FX move that prevents mean reversion.",
-        "opened_at": "2026-11-03T09:30:59.662793-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 152195.05,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-b9f14cbbc954",
-      "trade_id": "trd-pm-grinder-pm-grinder-9366bc9ee048"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -198,17 +196,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261109"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261110"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261111"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261112"
       }
     ],
     "required_checks": {
@@ -218,9 +216,9 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "8b4d7a709146a7462e60b408dfd113f5ecb30274435392b84c9eea254fec5094",
+    "state_sha256": "6f8d8b8f47e94fae582538b6a222b42df0354a5891abf3465152bc1aa60acf39",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

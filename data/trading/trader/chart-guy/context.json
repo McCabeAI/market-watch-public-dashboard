@@ -60,8 +60,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3d7480afaad399c22ad1e5927c3f7291d9c39cd7040f0aab1d12332c32f4001d",
-  "open_positions": [],
+  "memory_context_sha256": "b2491d9b3164c12d4e009d3256aacae0c2be26853474527118c2de607e970d31",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": null,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 1.11,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The catalyst is the 11 November close at the 20-session low after the failed upside break. The position is technical only.",
+        "current_mark": 1.1127,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 1.11,
+        "expected_mark_direction": null,
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "EURUSD",
+        "intended_horizon_days": 5,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-a4867f05b3bb",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Enter at the 1.1127 close and exit at the fifth daily mark, or earlier on a close above 1.1195.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "EURUSD",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "position_id": "pos-a4867f05b3bb",
+      "risk_capital_usd": 100000.0,
+      "side": "short",
+      "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb"
+    }
+  ],
   "owner_id": "chart-guy",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -79,8 +129,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.15
+        "trend": "down",
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
@@ -94,13 +144,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.12
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.12
+        "trend": "flat",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -135,9 +185,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "62bc111ea42836000be6b5b31cf713d97e111505ad47147a39fee1d33e427329",
+    "state_sha256": "9bbace855cd10692be8afa5cb9b0c54bd922b062c4ff5693fbff102f1aed2553",
     "streaks": {
-      "flat_cycles": 3,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

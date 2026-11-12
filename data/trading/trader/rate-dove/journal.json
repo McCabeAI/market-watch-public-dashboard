@@ -2006,6 +2006,62 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The Canada 2027 receive stays at full size. Cash is 2.52, March is 2.965, and the strip is still marked near 3.04 against a 3.40 entry, so the book is receiving a hike premium the US inflation print has not removed. The US path already contains that print, with December futures at 4.28 and the two-year at 4.73. Australia is flat to cash, so there is nowhere better to add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Hold the 42.5 million Canada 2027 receive. Do not add a US receive against a strip that already prices a higher US path.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": null,
+      "decision_fingerprint": "53de95da4580d5849cb93411a0e63624e793da5492f7238eca70c330aff1360d",
+      "event_id": "jde-16f0093a1ed44831",
+      "funding_view": null,
+      "invalidation": "The receive comes off if the 2027 Canada curve is marked back at the 3.40 entry, or if the 16 November Canada consumer-price print matches the US 0.4 percent rise and the curve keeps trading up through that entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "1284cf35c11c7cf55dd3768f1badeb2d11a2c25639147c320c2176ff2c042a50",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ef37e9d97c79e373a6b324d365717f67c44c1dd62eb5bfd4e399358ac64359e3"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "40a775c6d29a3c2b4f5df0e2ec7b9b682856033c62352d9755b12193910c6f7a",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Canada 2027 receive stays at full size. The mark is 3.13875 against a 3.40 entry, about 26 basis points through the entry, into a 0.4 percent US consumer-price rise, a two-year at 4.73 and a ten-year at 4.98. Williams has asked for more information on price risks, and that does not open a fresh easing path or a reason to add. Canada prices on 16 November are still ahead, so this curve has not confirmed the US heat.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "The Canada 2027 receive stays at full size. The mark is 3.13875 against a 3.40 entry, about 26 basis points through the entry, into a 0.4 percent US consumer-price rise, a two-year at 4.73 and a ten-year at 4.98. Williams has asked for more information on price risks, and that does not open a fresh easing path or a reason to add. Canada prices on 16 November are still ahead, so this curve has not confirmed the US heat."
     }
   ],
   "schema_version": 1,

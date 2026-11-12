@@ -2058,6 +2058,62 @@
       "run_id": "overnight-20261111",
       "schema_version": 1,
       "thesis": "The 10 million Australian dollar-kiwi short is closed. It is a material winner from 1.2456 to 1.2266, and a full-size short would not be initiated again from here. The handoff to pay September Australia at 4.705 versus 4.85 cash is a priced easing path, not excess edge over funding. The two-year at 4.73 already contains the inflation jump. The book goes flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "NO_TRADE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "None of the markable expressions clears official SOFR charged on shocked-risk capital.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-12T06:25:17.857174-05:00",
+      "conviction": null,
+      "decision_fingerprint": "05a4532e84609c4994a8a61c870f03e7fcd26162ddadfe4acc11e971390c85ab",
+      "event_id": "jde-d9bf422cde264089",
+      "funding_view": null,
+      "invalidation": "The flat stance changes if December 2026 SOFR trades and holds above 4.40 while the ten-year holds above 5.05, or if dollar-yen clears 160 and stays there as euro extends below 1.10.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "ed054bf5192806d29e6453995ddf24b52c359951c936db9cd79f8ce8ff0fe59b",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8b4d7a709146a7462e60b408dfd113f5ecb30274435392b84c9eea254fec5094"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-12T04:50:23.662182-05:00",
+        "evidence_hash": "93c607e70ecb1da1e339931bb09912ba0b4f2386d428dc39afa2d1e0751d0b19",
+        "overnight_run_id": "overnight-20261112",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261112-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "December 2026 SOFR at 4.295 already sits well above the 3.88 official fix, with March 2027 at 4.53 and September 2027 at 4.655, so the hike path from a public CPI print is in the strip. Euro at 1.1127 and dollar-yen at 159.23 are that same dollar bid after the breaks. AUDNZD at 1.2285 is a failed floor after the short from 1.25 was already closed at 1.23, so the cross is no longer an extreme. None of the new expressions clears the funding hurdle.",
+      "run_id": "overnight-20261112",
+      "schema_version": 1,
+      "thesis": "December 2026 SOFR at 4.295 already sits well above the 3.88 official fix, with March 2027 at 4.53 and September 2027 at 4.655, so the hike path from a public CPI print is in the strip. Euro at 1.1127 and dollar-yen at 159.23 are that same dollar bid after the breaks. AUDNZD at 1.2285 is a failed floor after the short from 1.25 was already closed at 1.23, so the cross is no longer an extreme. None of the new expressions clears the funding hurdle."
     }
   ],
   "schema_version": 1,

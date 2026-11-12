@@ -65,23 +65,40 @@
     "position_id": "pos-be9eaa63695e",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
     "residual_notional_usd": 5000000.0,
-    "run_id": "overnight-20261111",
-    "status": "due",
+    "run_id": "overnight-20261112",
+    "status": "satisfied",
     "trade_id": "trd-trader-positioning-cynic-pos-be9eaa63695e",
     "triggers": [
       "material_winner"
     ],
-    "updated_at": "2026-11-11T06:25:27.481006-05:00"
+    "updated_at": "2026-11-12T04:50:23.662182-05:00"
   },
+  "harvest_reviews": [
+    {
+      "at": "2026-11-12T04:50:23.662182-05:00",
+      "mechanical_order": false,
+      "order_policy": "review_only",
+      "position_id": "pos-be9eaa63695e",
+      "remaining_edge": true,
+      "remaining_edge_reason": "Keep the existing 5 million AUDNZD short. Do not add. The cross is near its 20-day low and several seats are already short.",
+      "run_id": "overnight-20261112",
+      "thesis_still_valid": true,
+      "trade_id": "trd-trader-positioning-cynic-pos-be9eaa63695e",
+      "triggers": [
+        "material_winner"
+      ],
+      "would_initiate_flat": "yes"
+    }
+  ],
   "hedge_of_position_id": null,
   "hedge_trade_id": null,
   "holding_duration_seconds": null,
   "initial_notional_usd": 10000000.0,
   "instrument": "AUDNZD",
   "invalidation": "The cross fade is invalidated if Australian-kiwi holds 1.2453 and extends while kiwi-dollar stays pinned at 0.5622. The residual Canada short is invalidated if March implied yield keeps falling toward cash at 2.52.",
-  "last_mark": 1.226606747106624,
+  "last_mark": 1.2284551843175933,
   "last_mark_as_of": "2026-11-05",
-  "last_unrealized_pnl_usd": 75081.14,
+  "last_unrealized_pnl_usd": 67659.53,
   "lifecycle": {
     "anchored_at": "2026-11-06T06:25:49.281876-05:00",
     "catalyst_by": null,
