@@ -1,0 +1,346 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-12T10:09:01+00:00",
+      "release_sha256": "b007efb6212bc3314b6a5b4099608e709e9799667bcb68eb2946bae431005de1",
+      "run_attempt": "1",
+      "run_id": "43194884509",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/43194884509",
+      "site_sha256": "c3982c6bbb3de67d39ce557dca7bd13dafd8db71983dcf7258a8333eb3d10fec"
+    }
+  ],
+  "launch_id": "mwl-20261112T095023Z-6aac0cf8",
+  "launch_terminal": false,
+  "packet_sha256": "95cbce50764ed30e94ba07c50310da384b369460610759ff2b669a5eab469ab6",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-11T07:39:43.199212-05:00",
+      "as_of": "2026-11-11T06:25:27.481006-05:00",
+      "books_run_id": "overnight-20261111",
+      "overnight_run_id": "overnight-20261111",
+      "packet_sha256": "5adab04edf4578d53cc56ad9a58629cf02235b8e3f72b5ba94ebf6fdce4add9b"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-12T04:50:23.662182-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-12T04:50:23.662182-05:00",
+      "counts": {
+        "considered": 23,
+        "eligible": 8,
+        "rejected": {
+          "out_of_window": 1,
+          "over_cap": 2,
+          "unattributed": 12
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Fed's Goolsbee calls inflation report 'borderline disturbing' as central bank weighs more hikes",
+          "id": "news:9e718f170e9174a8",
+          "published_at": "2026-11-11T10:49:02-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/11/goolsbee-october-inflation-fed-rates-disturbing-distressing.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Scott Colom wins Mississippi Senate election over incumbent Republican Hyde-Smith",
+          "id": "news:3b8903e813f34061",
+          "published_at": "2026-11-11T17:31:37-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/11/democrat-scott-colom-projected-to-win-mississippi-senate-election-over-incumbent-hyde-smith.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg_credit",
+          "headline": "Forget Nvidia. Anthropic Is the AI Trade\u2019s Litmus Test",
+          "id": "news:71a55c38e35eec66",
+          "published_at": "2026-11-11T20:30:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/opinion/articles/2026-11-12/forget-nvidia-anthropic-is-the-ai-trade-s-litmus-test",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Analysis: Is Nvidia too big to fail?\u00a0Its AI financing web raises the stakes",
+          "id": "news:20a495e85cbbc28a",
+          "published_at": "2026-11-11T16:59:33-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/11/nvidia-jensen-huang-ai-financial-system-risk.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Stick with high-quality AI bonds as debt worries persist, says Morgan Stanley",
+          "id": "news:14703098a408973f",
+          "published_at": "2026-11-11T13:59:09-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/11/morgan-stanley-ai-bonds-hyperscalers-credit.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg_credit",
+          "headline": "Alphabet Kicks Off Asia Bond Sale as AI Firms Face Scrutiny",
+          "id": "news:a27917a701c9c5b6",
+          "published_at": "2026-11-11T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-12/alphabet-kicks-off-asia-bond-sale-as-ai-firms-face-scrutiny",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields edge higher as investors await fresh inflation and housing data",
+          "id": "news:fcc1837fc6e71e20",
+          "published_at": "2026-11-12T01:38:45-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/12/us-treasurys-bonds-yields.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Social Security could pay full benefits until 2059 if taxable payroll kept pace with GDP: AARP report",
+          "id": "news:0cb2a88c3e2e2066",
+          "published_at": "2026-11-11T13:54:27-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/11/social-security-benefits-taxable-payroll-gdp.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-12T04:50:23.662182-05:00",
+      "news_family_digest": "60e59dca20660fc1190cc5c6679c0bdd2a6ccad25fef26c2001d1b1906376b91",
+      "packet_sha256": "95cbce50764ed30e94ba07c50310da384b369460610759ff2b669a5eab469ab6",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-12T04:50:23.662182-05:00",
+        "start": "2026-11-11T06:25:27.481006-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/freeze_binding.json",
+        "sha256": "8d7df3f27ee7c45a7a2548812293d83f0d0c8f57bc98ce61df48cf3ea6d8bbcc"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/remote_freeze.json",
+        "sha256": "a08bb19c874d0e4b71b07ff20e87a87d5ff10a50c26e90312b77918bd9d38b98"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/artifacts/00_authenticate.json",
+        "sha256": "19aa0ffd471e95eefff916765c564c8c49a894798e499b2ede98b679c30e3f68"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/artifacts/01_ingest.json",
+        "sha256": "65bff67ac351156255326e2ee48aded4ac0839692a310ebed5775fa110ec8948"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/artifacts/02_acquire.json",
+        "sha256": "9e08c81162a1eb072648dff5ad23ba4a124c4ca2d5e533902be5f95d30b97167"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/artifacts/03_quality_gate.json",
+        "sha256": "563521f1d6eaff3351cc0b6356efab595dc5961abe56477f5b7b5a5b7c7b69bc"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/artifacts/04_freeze.json",
+        "sha256": "fb50a73b5c302a393c171a3e8f3560fca7f1d6d420151e7de87d487331b5d9e5"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/temperature_scores.json",
+        "sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/history/ca.json",
+        "sha256": "4550a1c46e623fddb40aa8a658ee80bde32d36fa4471a7191574b44fa9f23405"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/history/ea.json",
+        "sha256": "4ff434b23ffcd9f4b9c46f12e89e2fecd988ee6b1945404093fd90a2bf02ab3f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261112T095023Z-6aac0cf8/lineage/history/us.json",
+        "sha256": "77ac84b396934b4bfff16593c677476dd1fa7e074a2e37c1b4e690ff418d49c9"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261112/reviews/review-001/evidence_snapshot.json",
+        "sha256": "a73323bbdf0948efe2b3bbca469f1ad5058af1513953233450d8c789ed5b90d5"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "08993df35819744b8ddffe3e1aa121dea830bade906b9aed99180fd8ed7f7d4d"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261111/assembled_dataset.json",
+        "sha256": "f2426e9aa514da46adbeff732a7a85476f798682909092de318be1e9b0659bb0"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "f3c182960e059faeef16e2aa869beff159d18957ee4fb5f54ce5bb9d4de5b92e"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "4729afe576cb526a322bd362518b19ce15829cf43facd6864dd49d9b8d500d5d"
+      }
+    ],
+    "launch_id": "mwl-20261112T095023Z-6aac0cf8",
+    "market_state": {
+      "as_of": "2026-11-12T10:07:57Z",
+      "digest": "984f58f4dbe07d9e19f66accfa4b66f528eeb59aa01f1232e4a4fa6d56c98d15",
+      "generated_at": "2026-11-12T10:07:57Z"
+    },
+    "news": {
+      "age_label": "22 h before this freeze",
+      "as_of": "2026-11-11T06:25:27.481006-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261111",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261112",
+    "packet_sha256": "95cbce50764ed30e94ba07c50310da384b369460610759ff2b669a5eab469ab6",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.spending",
+        "CA.Consumer.retail",
+        "CA.Consumer.income",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Consumer.income",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.wages",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "80a09c69cdcfe4952268d3c2050728c6ae455c60",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 0,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-12T09:50:23Z",
+      "inputs_last_ingested_at": "2026-11-10T09:50:36Z",
+      "score_state_sha256": "acf1d46960a4b30f5e2660598cc218781e88acb5a80d653a35768a3be79b640a"
+    },
+    "session_date": "2026-11-12",
+    "site_sha256": "c3982c6bbb3de67d39ce557dca7bd13dafd8db71983dcf7258a8333eb3d10fec",
+    "source_commit": "1485136c448c5f6bd6a128997ea9cd7804f9945a",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261112",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "b007efb6212bc3314b6a5b4099608e709e9799667bcb68eb2946bae431005de1",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-12",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
