@@ -67,7 +67,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-11T06:25:27.481006-05:00",
+  "as_of": "2026-11-12T04:50:23.662182-05:00",
   "calibration": {
     "average_holding_seconds": 1231334,
     "average_realized_pnl_usd": -73229.17,
@@ -105,23 +105,23 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 14,
-    "competitive_rank": 14,
-    "drawdown_usd": 257388.85,
-    "giveback_usd": 257388.85,
+    "competition_rank": 15,
+    "competitive_rank": 15,
+    "drawdown_usd": 284277.32,
+    "giveback_usd": 284277.32,
     "high_water_nav_usd": 100062016.81,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99804627.96,
-    "net_pnl_usd": -195372.04,
+    "nav_usd": 99777739.49,
+    "net_pnl_usd": -222260.51,
     "pressure_flags": [],
     "prior_competition_rank": 15,
-    "rank_change": -1,
-    "raw_pnl_rank": 14,
+    "rank_change": 0,
+    "raw_pnl_rank": 15,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 125000.0,
-    "risk_capital_utilization": 0.0125,
-    "session_pnl_change_usd": 26888.47,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -131,12 +131,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "11538aeb215b009b8d552e22a8db8985ff946f3dbd9e351fc30ca120ac9aa5d3",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-fa1a2ebadbd1",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "reference": "trd-trader-trend-follower-pos-96a63a1df145",
+      "source_run_id": "overnight-20261111"
+    }
+  ],
+  "memory_context_sha256": "f007ac094eb0defae8ffd8602f8add3d7731eff7a297a98114b8f84d3ead9448",
   "open_positions": [],
   "owner_id": "trend-follower",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-11T06:25:27.481006-05:00",
+      "created_run_id": "overnight-20261111",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-11T06:25:27.481006-05:00",
+        "conviction": 64,
+        "entry_mark": 4.33,
+        "exit_mark": 4.53,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 781009,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Exit if the US two-year reclaims and holds 4.67, or if March SOFR implied prints higher while two-year, five-year and ten-year yields reverse higher together.",
+        "opened_at": "2026-11-02T05:28:38.279813-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -30937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-fa1a2ebadbd1",
+      "trade_id": "trd-trader-trend-follower-pos-96a63a1df145"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

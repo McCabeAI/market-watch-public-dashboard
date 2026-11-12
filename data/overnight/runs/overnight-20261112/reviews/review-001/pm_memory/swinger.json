@@ -1,0 +1,275 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not reopen the same CORRA receive within a few basis points of a just-booked exit unless a new dislocation appears versus cash or versus the announced Bank of Canada path.",
+      "lesson_id": "les-adbfc686c595",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-81b056918e01"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261026",
+      "status": "active",
+      "text": "A realized receive that has already compressed to the event-implied print is finished; the next 10bp is meeting-week binary, not the original mispricing.",
+      "trade_ids": [
+        "trd-pm-swinger-pm-swinger-2070479ca321"
+      ]
+    }
+  ],
+  "as_of": "2026-11-12T04:50:23.662182-05:00",
+  "calibration": {
+    "average_holding_seconds": 2939013,
+    "average_realized_pnl_usd": 327500.0,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": 327500.0
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": 327500.0,
+        "count": 1,
+        "hit_rate": 1.0
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 327500.0,
+    "wins": 1
+  },
+  "capital_owner": {
+    "force_deployment": false,
+    "mandate": "swinger",
+    "notes": [],
+    "pressure_flags": [],
+    "standing": "good_standing"
+  },
+  "consequence": {
+    "best_trader_net_pnl_usd": 372295.64,
+    "best_trader_outearn_streak": 0,
+    "best_trader_seat": "cross-merchant",
+    "capital_normalized": false,
+    "competition_cohort_size": 4,
+    "competition_eligible": true,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 323.33,
+    "gap_to_best_trader_usd": 4470859.17,
+    "high_water_nav_usd": 1004843478.14,
+    "max_drawdown_usd": 50000000.0,
+    "net_after_funding_pnl_usd": 4843154.81,
+    "pressure_flags": [],
+    "raw_pnl_rank": 1,
+    "spread_to_leader_pm_usd": 0.0,
+    "status": "ok",
+    "total_pnl_usd": 4893351.6
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "f8c77c217a944bb9614be8810c06b7f6049fb9229c0d5eb3343132e269981841",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 70,
+      "current_notional_usd": 300000000.0,
+      "entry_mark": 1.25,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The late-October New Zealand policy surprise is already in the kiwi and does not justify AUDNZD at a five-year extreme versus a modest yield gap; a kiwi bounce off the cheap tail is the path, not a new Australian shock.",
+        "current_mark": 1.226606747106624,
+        "current_notional_usd": 300000000.0,
+        "entry_mark": 1.2455636090977256,
+        "expected_mark_direction": "lower",
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 0.0,
+        "holding_seconds": 760764,
+        "horizon_elapsed_fraction": 0.4193,
+        "horizon_status": "within",
+        "instrument": "AUDNZD",
+        "intended_horizon_days": 21,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": 4565851.6,
+        "move_versus_entry_intent": "with_intent",
+        "order_policy": "review_only",
+        "position_id": "pm-swinger-f8f9feb515d2",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Cross mean-reverts from 1.2456 toward 1.20-1.22 as New Zealand cheapness versus Australia normalizes off the five-year tail.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 4565851.6,
+        "retained_mfe_fraction": 1.0,
+        "review_move_bp": null,
+        "review_required": true,
+        "review_threshold_usd": 3000000.0,
+        "review_triggers": [
+          "material_winner"
+        ],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 4565851.6,
+        "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2",
+        "unrealized_pnl_usd": 4565851.6
+      },
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-03T09:30:59.132629-05:00",
+      "position_id": "pm-swinger-f8f9feb515d2",
+      "risk_capital_usd": 3000000.0,
+      "side": "short",
+      "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+    }
+  ],
+  "owner_id": "swinger",
+  "owner_type": "pm",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": [
+      "pm-swinger-f8f9feb515d2"
+    ]
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.16
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.25
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.5
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261106"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "14c3ca6a5f0b44b68669d7cb74fc1b9a4a01ffc9ddb5998932510b49b795d719",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-10-23T23:16:17.729526-04:00",
+      "conviction": 72,
+      "holding_duration_seconds": 2939013,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:52:44.433062-04:00",
+      "realized_pnl_usd": 327500.0,
+      "side": "long",
+      "trade_id": "trd-pm-swinger-pm-swinger-2070479ca321"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "variance",
+        "thesis",
+        "timing"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The giveback on this Australian dollar-kiwi short was bounded variance around a position that is still a material winner from 1.24556 to 1.22661, and the prior process remains sound because the five-year z is still 2.34 and the 96th percentile was never invalidated by the dip.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-6874863499ee",
+      "run_id": "overnight-20261111",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The Australian dollar-kiwi short from 1.24556 was expected to work because the pair was a five-year extreme, with an uneven path allowed. It is a material winner at fresh spot 1.22661, but open profit gave back while rank was still first, before the latest five-day decline and the close beyond the prior 20-session range."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

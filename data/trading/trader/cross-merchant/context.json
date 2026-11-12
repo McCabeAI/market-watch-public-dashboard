@@ -101,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-11T06:25:27.481006-05:00",
+  "as_of": "2026-11-12T04:50:23.662182-05:00",
   "calibration": {
     "average_holding_seconds": 960070,
     "average_realized_pnl_usd": 22901.3,
@@ -141,21 +141,21 @@
     "competition_eligible": true,
     "competition_rank": 1,
     "competitive_rank": 1,
-    "drawdown_usd": 21.61,
-    "giveback_usd": 21.61,
-    "high_water_nav_usd": 100346810.57,
+    "drawdown_usd": 21.57,
+    "giveback_usd": 21.57,
+    "high_water_nav_usd": 100372317.21,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100346788.96,
-    "net_pnl_usd": 346788.96,
+    "nav_usd": 100372295.64,
+    "net_pnl_usd": 372295.64,
     "pressure_flags": [],
     "prior_competition_rank": 1,
     "rank_change": 0,
     "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 200000.0,
-    "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": -25506.68,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -166,7 +166,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e894236c14a856a11be7c5c684f5e42fe35057b9ba6d1f82d42916e8513337e4",
+  "memory_context_sha256": "3f6832d0ff2057d5b50b7bda81ff35dc995e0fe8dbaf2114b17ca0f8375ac260",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -177,21 +177,21 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The edge is the extreme cross location versus a 3.5-percentile NZDUSD that mixes in the dollar; it is exhausted if AUDNZD holds a new high through 1.2456 or if a New Zealand cash or policy gap starts paying Australia as hard as the listed Australia-Canada cash wedge.",
-        "current_mark": 1.2281966001478197,
-        "current_notional_usd": 20000000.0,
+        "current_mark": 1.226606747106624,
+        "current_notional_usd": 10000000.0,
         "entry_mark": 1.2455636090977256,
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 0.0,
-        "holding_seconds": 684150,
-        "horizon_elapsed_fraction": 0.176,
+        "holding_seconds": 764846,
+        "horizon_elapsed_fraction": 0.1967,
         "horizon_status": "within",
         "instrument": "AUDNZD",
         "intended_horizon_days": 45,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 431056.91,
+        "mfe_usd": 304390.1,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "pending_review": {
@@ -217,14 +217,14 @@
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 431056.91,
+        "total_pnl_usd": 304390.1,
         "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
-        "unrealized_pnl_usd": 278861.86
+        "unrealized_pnl_usd": 152195.05
       },
       "instrument": "AUDNZD",
       "opened_at": "2026-11-03T08:22:57.179127-05:00",
       "position_id": "pos-525ff12dcad9",
-      "risk_capital_usd": 200000.0,
+      "risk_capital_usd": 100000.0,
       "side": "short",
       "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
     }
