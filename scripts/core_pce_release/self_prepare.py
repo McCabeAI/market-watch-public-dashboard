@@ -19,7 +19,7 @@ from pathlib import Path
 from xml.etree import ElementTree as ET
 
 from scripts.core_pce_release.acquire import cached_cpi_series, fetch_plan, load_registry
-from scripts.core_pce_release.bea_workbook import parse_bea_workbook, workbook_sha256
+from scripts.core_pce_release.bea_workbook import parse_bea_monthly_sheet, parse_bea_workbook, workbook_sha256
 from scripts.core_pce_release.bls import fetch_series
 from scripts.core_pce_release.calculator import calculate
 from scripts.core_pce_release.classify import classify_source
@@ -33,8 +33,10 @@ from scripts.core_pce_release.report import render_detailed, render_flash
 from scripts.core_pce_release.snapshot import REPO_ROOT, load_snapshot, residual_weight, validate_snapshot
 
 BEA_URL = "https://apps.bea.gov/national/Release/XLS/Underlying/Section2All_xls.xlsx"
+SURVEY_URL = "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx"
 CROSSWALK_URL = "https://www.bea.gov/sites/default/files/2026-10/FAQ521-Sep26-update.xlsx"
 PCEPILFE_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE"
+PCEPILFE_FETCH_TIMEOUT_SECONDS = 8
 
 FROZEN_WORKBOOK_SHA = "7c96d36e8a6e8fcf42385a9d3eed14be90055488e935baf858a4c1adb2c7a1ea"
 FROZEN_PCEPILFE_SHA = "8aa0635d4a3e066a0365551faeabc030547a7a313c58c3b18f87b7f0ff1d5f18"
@@ -64,6 +66,9 @@ class OfficialSources:
     cpi_raw_sha256: str | None
     ppi_fetched: dict | None
     ppi_error: str | None
+    survey_url: str = SURVEY_URL
+    survey_body: bytes | None = None
+    survey_error: str | None = None
 
 
 def _http_get(url: str, *, timeout: float, transport) -> tuple[bytes | None, str | None]:
@@ -86,10 +91,15 @@ def fetch_official_sources(release: str, *, transport=None, clock=None) -> Offic
     retrieved = clock() if clock is not None else __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()
     bea_body, bea_error = _http_get(BEA_URL, timeout=45, transport=transport)
     crosswalk_body, crosswalk_error = _http_get(CROSSWALK_URL, timeout=20, transport=transport)
-    pcepilfe_body, pcepilfe_error = _http_get(PCEPILFE_URL, timeout=20, transport=transport)
+    pcepilfe_body, pcepilfe_error = _http_get(PCEPILFE_URL, timeout=PCEPILFE_FETCH_TIMEOUT_SECONDS, transport=transport)
     pcepilfe_csv = None
     if pcepilfe_body is not None:
         pcepilfe_csv = pcepilfe_body.decode("utf-8", errors="replace")
+    anchor = shift_month(release, -1)
+    survey_body: bytes | None = None
+    survey_error: str | None = None
+    if not _fred_covers_anchor(pcepilfe_csv, anchor) and not _underlying_covers_anchor(bea_body, anchor):
+        survey_body, survey_error = _http_get(SURVEY_URL, timeout=45, transport=transport)
     cpi_points = None
     cpi_error = None
     cpi_requests = 0
@@ -133,6 +143,9 @@ def fetch_official_sources(release: str, *, transport=None, clock=None) -> Offic
         cpi_raw_sha256=cpi_raw_sha,
         ppi_fetched=None,
         ppi_error=None,
+        survey_url=SURVEY_URL,
+        survey_body=survey_body,
+        survey_error=survey_error,
     )
 
 
@@ -172,6 +185,156 @@ def _parse_pcepilfe(csv_text: str) -> dict[str, str]:
         period = raw_date[:7]
         levels[period] = str(value)
     return levels
+
+
+def _fred_covers_anchor(csv_text: str | None, anchor: str) -> bool:
+    if not csv_text:
+        return False
+    return anchor in _parse_pcepilfe(csv_text)
+
+
+def _match_core_pce_row(monthly: dict) -> tuple[int, dict] | None:
+    matches: list[tuple[int, dict]] = []
+    for line, row in monthly.items():
+        code = str(row.get("series_code") or "").strip().upper()
+        name = str(row.get("name") or "").lower()
+        if code != "DPCCRG":
+            continue
+        if "pce excluding food and energy" not in name:
+            continue
+        if "housing" in name:
+            continue
+        matches.append((line, row))
+    if len(matches) != 1:
+        return None
+    return matches[0]
+
+
+def _bea_core_pce_levels(
+    *,
+    monthly: dict,
+    index_base: str | None,
+    anchor: str,
+) -> tuple[dict[str, str] | None, int | None, str | None]:
+    if index_base != "2017=100":
+        return None, None, "underlying_index_base"
+    matched = _match_core_pce_row(monthly)
+    if matched is None:
+        return None, None, "underlying_identity"
+    line, row = matched
+    indexes = dict(row.get("indexes") or {})
+    if anchor not in indexes:
+        return None, None, "underlying_missing_anchor"
+    return indexes, line, None
+
+
+def _pcepilfe_csv_text(levels: dict[str, str], anchor: str) -> str:
+    lines = ["observation_date,PCEPILFE"]
+    for period in sorted(levels):
+        if period <= anchor:
+            lines.append(f"{period}-01,{levels[period]}")
+    return "\n".join(lines) + "\n"
+
+
+def _fred_attempt_record(
+    *,
+    anchor: str,
+    csv_text: str | None,
+    transport_error: str | None,
+    stale: bool,
+) -> dict:
+    if csv_text is None:
+        attempt_error = transport_error or "missing"
+    elif stale:
+        attempt_error = "stale_anchor"
+    else:
+        attempt_error = transport_error or "stale_anchor"
+    return {
+        "url": PCEPILFE_URL,
+        "error": attempt_error,
+        "period": anchor,
+        "sha256": _csv_sha256(csv_text),
+    }
+
+
+def _underlying_core_pce_source(
+    workbook: dict,
+    bea_body: bytes,
+    anchor: str,
+    fred_attempt: dict,
+) -> dict | None:
+    levels, line, reject = _bea_core_pce_levels(
+        monthly=workbook.get("monthly") or {},
+        index_base=workbook.get("index_base"),
+        anchor=anchor,
+    )
+    if levels is None or reject:
+        return None
+    csv_text = _pcepilfe_csv_text(levels, anchor)
+    return {
+        "levels": {k: v for k, v in levels.items() if k <= anchor},
+        "provenance": "bea_underlying_u20404_m",
+        "url": BEA_URL,
+        "published": workbook.get("published"),
+        "index_base": "2017=100",
+        "sha256": workbook_sha256(bea_body),
+        "levels_sha256": _csv_sha256(csv_text),
+        "anchor_period": anchor,
+        "period": anchor,
+        "bea_line": line,
+        "bea_series_code": "DPCCRG",
+        "series": "PCEPILFE",
+        "fred_attempt": fred_attempt,
+        "error": None,
+    }
+
+
+def _survey_core_pce_source(
+    survey_body: bytes,
+    anchor: str,
+    underlying_published: str | None,
+    fred_attempt: dict,
+) -> tuple[dict | None, str | None]:
+    parsed = parse_bea_monthly_sheet(survey_body, "T20804-M")
+    levels, line, reject = _bea_core_pce_levels(
+        monthly=parsed.get("monthly") or {},
+        index_base=parsed.get("index_base"),
+        anchor=anchor,
+    )
+    survey_pub = parsed.get("published")
+    if levels is None:
+        return None, reject or "survey_row_unacceptable"
+    if not survey_pub or not underlying_published or survey_pub != underlying_published:
+        return None, "survey_vintage_mismatch"
+    csv_text = _pcepilfe_csv_text(levels, anchor)
+    return {
+        "levels": {k: v for k, v in levels.items() if k <= anchor},
+        "provenance": "bea_survey_t20804_m",
+        "url": SURVEY_URL,
+        "published": survey_pub,
+        "index_base": "2017=100",
+        "sha256": workbook_sha256(survey_body),
+        "levels_sha256": _csv_sha256(csv_text),
+        "anchor_period": anchor,
+        "period": anchor,
+        "bea_line": line,
+        "bea_series_code": "DPCCRG",
+        "series": "PCEPILFE",
+        "fred_attempt": fred_attempt,
+        "error": None,
+    }, None
+
+
+def _underlying_covers_anchor(bea_body: bytes | None, anchor: str) -> bool:
+    if bea_body is None:
+        return False
+    workbook = parse_bea_workbook(bea_body)
+    levels, _, reject = _bea_core_pce_levels(
+        monthly=workbook.get("monthly") or {},
+        index_base=workbook.get("index_base"),
+        anchor=anchor,
+    )
+    return levels is not None and reject is None
 
 
 def _parse_crosswalk(body: bytes) -> dict[int, dict]:
@@ -360,17 +523,110 @@ def build_cpi_packet(release: str, sources: OfficialSources, dest: Path) -> dict
             problems.extend(workbook["errors"])
 
     pcepilfe_levels: dict[str, str] = {}
-    if sources.pcepilfe_csv is None:
-        audit["missing"].append(
-            {"name": "pcepilfe", "url": sources.pcepilfe_url, "error": sources.pcepilfe_error or "missing", "period": anchor}
-        )
-        problems.append("pcepilfe_missing")
-    else:
-        pcepilfe_levels = _parse_pcepilfe(sources.pcepilfe_csv)
+    pcepilfe_meta: dict | None = None
+    use_fred = _fred_covers_anchor(sources.pcepilfe_csv, anchor)
+    fred_attempt: dict | None = None
+    if use_fred:
+        pcepilfe_levels = _parse_pcepilfe(sources.pcepilfe_csv or "")
         _record_source("pcepilfe", sources.pcepilfe_url, pcepilfe_sha, sources.pcepilfe_error)
+    else:
+        stale = sources.pcepilfe_csv is not None
+        fred_attempt = _fred_attempt_record(
+            anchor=anchor,
+            csv_text=sources.pcepilfe_csv,
+            transport_error=sources.pcepilfe_error,
+            stale=stale,
+        )
+        if workbook is not None and sources.bea_body is not None:
+            accepted = _underlying_core_pce_source(workbook, sources.bea_body, anchor, fred_attempt)
+            if accepted is not None:
+                pcepilfe_levels = accepted["levels"]
+                pcepilfe_meta = accepted
+                _record_source(
+                    "pcepilfe",
+                    accepted["url"],
+                    accepted["sha256"],
+                    None,
+                    provenance=accepted["provenance"],
+                    series=accepted["series"],
+                    bea_series_code=accepted["bea_series_code"],
+                    published=accepted["published"],
+                    index_base=accepted["index_base"],
+                    levels_sha256=accepted["levels_sha256"],
+                    anchor_period=accepted["anchor_period"],
+                    period=accepted["period"],
+                    bea_line=accepted["bea_line"],
+                    fred_attempt=accepted["fred_attempt"],
+                )
+        if not pcepilfe_levels and sources.survey_body is not None and workbook is not None:
+            survey_accepted, survey_problem = _survey_core_pce_source(
+                sources.survey_body,
+                anchor,
+                workbook.get("published"),
+                fred_attempt,
+            )
+            if survey_accepted is not None:
+                pcepilfe_levels = survey_accepted["levels"]
+                pcepilfe_meta = survey_accepted
+                _record_source(
+                    "pcepilfe",
+                    survey_accepted["url"],
+                    survey_accepted["sha256"],
+                    None,
+                    provenance=survey_accepted["provenance"],
+                    series=survey_accepted["series"],
+                    bea_series_code=survey_accepted["bea_series_code"],
+                    published=survey_accepted["published"],
+                    index_base=survey_accepted["index_base"],
+                    levels_sha256=survey_accepted["levels_sha256"],
+                    anchor_period=survey_accepted["anchor_period"],
+                    period=survey_accepted["period"],
+                    bea_line=survey_accepted["bea_line"],
+                    fred_attempt=survey_accepted["fred_attempt"],
+                )
+            elif survey_problem == "survey_vintage_mismatch":
+                problems.append("survey_vintage_mismatch")
+        if not pcepilfe_levels:
+            audit["missing"].append(
+                {
+                    "name": "pcepilfe",
+                    "series": "PCEPILFE",
+                    "url": sources.pcepilfe_url,
+                    "error": fred_attempt["error"] if fred_attempt else (sources.pcepilfe_error or "missing"),
+                    "period": anchor,
+                }
+            )
+            underlying_error = sources.bea_error or "missing"
+            if sources.bea_body and workbook is not None:
+                _, _, underlying_error = _bea_core_pce_levels(
+                    monthly=workbook.get("monthly") or {},
+                    index_base=workbook.get("index_base"),
+                    anchor=anchor,
+                )
+                underlying_error = underlying_error or "underlying_identity"
+            audit["missing"].append(
+                {
+                    "name": "bea_underlying_u20404_m",
+                    "series": "PCEPILFE",
+                    "url": sources.bea_url,
+                    "error": underlying_error,
+                    "period": anchor,
+                }
+            )
+            if sources.survey_body is None and sources.survey_error:
+                audit["missing"].append(
+                    {
+                        "name": "bea_survey_t20804_m",
+                        "series": "PCEPILFE",
+                        "url": sources.survey_url,
+                        "error": sources.survey_error,
+                        "period": anchor,
+                    }
+                )
+            problems.append("pcepilfe_missing")
+    if pcepilfe_levels:
         if release in pcepilfe_levels:
             problems.append("pcepilfe_already_published_target")
-        needed_start = shift_month(anchor, -9)
         if any(shift_month(anchor, -offset) not in pcepilfe_levels for offset in range(10)):
             problems.append("pcepilfe_not_through_anchor")
 
@@ -397,6 +653,8 @@ def build_cpi_packet(release: str, sources: OfficialSources, dest: Path) -> dict
         _record_source("crosswalk", sources.crosswalk_url, crosswalk_sha, sources.crosswalk_error)
 
     if problems or workbook is None:
+        dest.mkdir(parents=True, exist_ok=True)
+        (dest / "source_audit.json").write_text(json.dumps(audit, indent=2) + "\n", encoding="utf-8")
         return {
             "release": release,
             "anchor_period": anchor,
@@ -572,14 +830,33 @@ def build_cpi_packet(release: str, sources: OfficialSources, dest: Path) -> dict
             "rounding_residual_millions": audit.get("rounding_residual_millions"),
             "leaf_identity": "verified_2026-09_lines_and_signs",
         },
-        "pcepilfe": {
-            "series": "PCEPILFE",
-            "bea_line": 374,
-            "url": sources.pcepilfe_url,
-            "sha256": pcepilfe_sha,
-            "through": anchor,
-            "fingerprint": {k: v for k, v in pcepilfe_levels.items() if k <= anchor},
-        },
+        "pcepilfe": (
+            {
+                "series": pcepilfe_meta["series"],
+                "bea_series_code": pcepilfe_meta["bea_series_code"],
+                "provenance": pcepilfe_meta["provenance"],
+                "url": pcepilfe_meta["url"],
+                "published": pcepilfe_meta["published"],
+                "index_base": pcepilfe_meta["index_base"],
+                "sha256": pcepilfe_meta["sha256"],
+                "levels_sha256": pcepilfe_meta["levels_sha256"],
+                "anchor_period": anchor,
+                "period": anchor,
+                "bea_line": pcepilfe_meta["bea_line"],
+                "fred_attempt": pcepilfe_meta["fred_attempt"],
+                "through": anchor,
+                "fingerprint": {k: v for k, v in pcepilfe_levels.items() if k <= anchor},
+            }
+            if pcepilfe_meta
+            else {
+                "series": "PCEPILFE",
+                "bea_line": 374,
+                "url": sources.pcepilfe_url,
+                "sha256": pcepilfe_sha,
+                "through": anchor,
+                "fingerprint": {k: v for k, v in pcepilfe_levels.items() if k <= anchor},
+            }
+        ),
         "component_count": len(components),
         "weight_share_sum": format(weight_sum, "f"),
     }
@@ -699,6 +976,14 @@ def _render_cpi_comment(release: str, bundle: dict, calculated: dict, audit: dic
         lines.append(
             f"source {source.get('name')} url {source.get('url')} sha256 {source.get('sha256')} error {source.get('error')}"
         )
+        if source.get("provenance"):
+            lines.append(
+                "pcepilfe_provenance: "
+                f"{source.get('provenance')} series {source.get('series')} "
+                f"bea_series {source.get('bea_series_code')} published {source.get('published')} "
+                f"index_base {source.get('index_base')} anchor {source.get('anchor_period')} "
+                f"period {source.get('period')} sha256 {source.get('sha256')}"
+            )
     lines.append(f"retrieved_at: {audit.get('retrieved_at')}")
     lines.append(f"published: {source_published(audit)}")
     lines.append("")

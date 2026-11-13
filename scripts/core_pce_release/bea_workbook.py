@@ -203,6 +203,25 @@ def _parse_data_sheet(
     return parsed, errors
 
 
+def _find_index_base(rows: dict[int, dict[int, str]]) -> str | None:
+    needle = "2017=100"
+    for row_num in sorted(rows)[:25]:
+        bucket = rows[row_num]
+        for value in bucket.values():
+            collapsed = re.sub(r"\s+", "", str(value))
+            search = 0
+            while True:
+                idx = collapsed.find(needle, search)
+                if idx == -1:
+                    break
+                end = idx + len(needle)
+                if end < len(collapsed) and collapsed[end].isdigit():
+                    search = idx + 1
+                    continue
+                return "2017=100"
+    return None
+
+
 def _metadata_from_sheet(rows: dict[int, dict[int, str]]) -> tuple[str | None, str | None]:
     published: str | None = None
     file_created: str | None = None
@@ -217,6 +236,40 @@ def _metadata_from_sheet(rows: dict[int, dict[int, str]]) -> tuple[str | None, s
     return published, file_created
 
 
+def parse_bea_monthly_sheet(body: bytes, sheet_name: str) -> dict:
+    """Parse one monthly price-index sheet (e.g. U20404-M or T20804-M)."""
+    digest = workbook_sha256(body)
+    errors: list[str] = []
+    monthly: dict = {}
+    published: str | None = None
+    file_created: str | None = None
+    index_base: str | None = None
+    try:
+        with zipfile.ZipFile(BytesIO(body)) as zf:
+            shared = _parse_shared_strings(zf.read("xl/sharedStrings.xml")) if "xl/sharedStrings.xml" in zf.namelist() else []
+            paths = _sheet_path_map(zf)
+            if sheet_name not in paths:
+                errors.append(f"bea_sheet_missing:{sheet_name}")
+            else:
+                rows = _sheet_rows(zf.read(paths[sheet_name]), shared)
+                pub, created = _metadata_from_sheet(rows)
+                published = pub or published
+                file_created = created or file_created
+                index_base = _find_index_base(rows)
+                monthly, parse_errors = _parse_data_sheet(rows, quarterly=False)
+                errors.extend(parse_errors)
+    except (zipfile.BadZipFile, KeyError, OSError) as exc:
+        errors.append(f"bea_workbook_unreadable:{type(exc).__name__}")
+    return {
+        "sha256": digest,
+        "published": published,
+        "file_created": file_created,
+        "index_base": index_base,
+        "monthly": monthly,
+        "errors": errors,
+    }
+
+
 def parse_bea_workbook(body: bytes) -> dict:
     """Return sha256, published, file_created, monthly, quarterly, errors."""
     digest = workbook_sha256(body)
@@ -225,6 +278,7 @@ def parse_bea_workbook(body: bytes) -> dict:
     quarterly: dict = {}
     published: str | None = None
     file_created: str | None = None
+    index_base: str | None = None
     try:
         with zipfile.ZipFile(BytesIO(body)) as zf:
             shared = _parse_shared_strings(zf.read("xl/sharedStrings.xml")) if "xl/sharedStrings.xml" in zf.namelist() else []
@@ -238,6 +292,7 @@ def parse_bea_workbook(body: bytes) -> dict:
                 pub, created = _metadata_from_sheet(rows)
                 published = pub or published
                 file_created = created or file_created
+                index_base = _find_index_base(rows)
                 monthly, parse_errors = _parse_data_sheet(rows, quarterly=False)
                 errors.extend(parse_errors)
             if quarterly_name not in paths:
@@ -252,6 +307,7 @@ def parse_bea_workbook(body: bytes) -> dict:
         "sha256": digest,
         "published": published,
         "file_created": file_created,
+        "index_base": index_base,
         "monthly": monthly,
         "quarterly": quarterly,
         "errors": errors,

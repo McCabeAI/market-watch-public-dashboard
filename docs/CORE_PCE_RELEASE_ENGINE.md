@@ -30,7 +30,7 @@ The scenario band is **not** a confidence interval. Classification uses unrounde
 A target month is `YYYY-MM`. The anchor month is the previous month.
 
 1. A human with admin, maintain, or write permission opens an issue titled exactly `[run-cpi] YYYY-MM`. No snapshot edit, no CPI cache edit, no `release_index` edit, and no git commit.
-2. The workflow fetches the latest BEA workbook, the FAQ crosswalk when it is still published, FRED `PCEPILFE`, and BLS CPI (at most four requests), builds the packet, and comments the post-CPI baseline or `NOT READY` with the missing source.
+2. The workflow fetches the latest BEA workbook, the FAQ crosswalk when it is still published, FRED `PCEPILFE`, and BLS CPI (at most four requests), builds the packet, and comments the post-CPI baseline or `NOT READY` with the missing source. If FRED `PCEPILFE` fails on transport, returns empty, or does not reach the anchor month, the packet falls back to the BEA underlying Table 2.4.4U `DPCCRG` price index (`2017=100`) from the workbook already downloaded, and to the survey `DPCCRG` sheet only when that row fails identity and its publication date matches the underlying workbook. If neither source covers the anchor, the comment is `NOT READY` and lists the sources tried.
 3. After PPI is out, a second human issue `[run-ppi] YYYY-MM` reuses the frozen CPI packet artifact when that packet is valid, fetches PPI once, and comments the CPI-time baseline and the updated estimate. If the packet is missing or BEA/CPI vintages changed, the comment labels `reprojected_baseline` separately from `cpi_time_baseline`.
 4. September `[run-ppi] 2026-09` is unchanged.
 5. `release_index.json` remains a historical audit of September and October. It is not a gate for a later month.
