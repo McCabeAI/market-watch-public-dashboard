@@ -25,6 +25,24 @@ stage: awaiting current PPI
 
 The scenario band is **not** a confidence interval. Classification uses unrounded 3-month and 6-month momentum deltas (strictly positive for HOT, strictly negative for COLD, otherwise NEUTRAL). The 9-month direction and gap to 2% are reported separately. For this baseline the classification is **sensitive** (central HOT, low NEUTRAL, high HOT).
 
+## Monthly operator contract
+
+A target month is `YYYY-MM`. The anchor month is the previous month.
+
+1. A human with admin, maintain, or write permission opens an issue titled exactly `[run-cpi] YYYY-MM`. No snapshot edit, no CPI cache edit, no `release_index` edit, and no git commit.
+2. The workflow fetches the latest BEA workbook, the FAQ crosswalk when it is still published, FRED `PCEPILFE`, and BLS CPI (at most four requests), builds the packet, and comments the post-CPI baseline or `NOT READY` with the missing source. If FRED `PCEPILFE` fails on transport, returns empty, or does not reach the anchor month, the packet falls back to the BEA underlying Table 2.4.4U `DPCCRG` price index (`2017=100`) from the workbook already downloaded, and to the survey `DPCCRG` sheet only when that row fails identity and its publication date matches the underlying workbook. If neither source covers the anchor, the comment is `NOT READY` and lists the sources tried.
+3. After PPI is out, a second human issue `[run-ppi] YYYY-MM` reuses the frozen CPI packet artifact when that packet is valid, fetches PPI once, and comments the CPI-time baseline and the updated estimate. If the packet is missing or BEA/CPI vintages changed, the comment labels `reprojected_baseline` separately from `cpi_time_baseline`.
+4. September `[run-ppi] 2026-09` is unchanged.
+5. `release_index.json` remains a historical audit of September and October. It is not a gate for a later month.
+
+Limits: BEA monthly history must already cover the anchor month. The weight quarter is the latest published quarter ending on or before the anchor and is labeled when it lags. Raw PPI is `modeled_not_bea_sa`. If a source is unpublished the run is `NOT READY` and does not invent a number. There is no schedule.
+
+Missing PPI is `ppi_not_yet_applied` and does not block the post-CPI baseline.
+
+September 2026 post-CPI central (pre-PPI): `0.3688405280179773205064998201`. September 2026 post-PPI: `0.3674603939775941051607229995`. October 2026 post-CPI: `0.2777814111959602086682108972`. October 2026 post-PPI: `0.2976893241979532386598166555`.
+
+Core CPI `CUSR0000SA0L1E` stays context only. Raw PPI stays `modeled_not_bea_sa`. October 2026 inputs are the October 29, 2026 BEA vintage (Table 2.4.4U through September, 2026Q3 weights on the verified leaf lines), the November 10, 2026 CPI release, and the November 13, 2026 PPI release. The reproduced October centrals are in `data/core_pce_release/october_2026_reference.json`. The September forecast is unchanged; `september_2026_official_comparison.json` records the October 29 BEA index ratio next to that locked forecast.
+
 Raw BLS PPI enters through `source_news_bridge` or `current_raw_proxy_not_bea_sa` with output seasonal status `modeled_not_bea_sa`. It is never labeled BEA-SA.
 
 `INCOMPLETE` / `integrity blocked` is reserved for snapshot validation failure, missing component history, shared-series divergence, and other integrity guards—not for missing PPI.
@@ -33,7 +51,7 @@ C7 point-in-time backtesting and G8 model selection are **not** part of these co
 
 ## Operator commands
 
-A chat message does not run this calculator. There is no cron and no listener workflow. The one-shot path is an issue titled exactly `[run-ppi] 2026-09`, opened by a human collaborator with admin, maintain, or write permission, with the event sender equal to the issue author. The workflow authenticates that creator, runs `run-ppi` once, comments the numbers, uploads `audit.json`, and exits. It does not arm the listener, poll, retry later, deploy, or call a model.
+A chat message does not run this calculator. There is no cron and no listener workflow. The manual path is an issue titled exactly `[run-cpi] YYYY-MM` or `[run-ppi] YYYY-MM`, opened by a human collaborator with admin, maintain, or write permission, with the event sender equal to the issue author. `[run-ppi] 2026-09` is still that path for the locked September packet. The workflow authenticates the creator, runs one command, comments the numbers, uploads the audit, and exits. It does not arm the listener, poll, retry later, deploy, or call a model.
 
 Missing, stale, or unpublished September PPI is commented as `NOT YET AVAILABLE`. A throttled or failed BLS response is commented as `ERROR`. Neither case replaces the offline baseline.
 
@@ -77,7 +95,8 @@ python -m unittest tests.core_pce_release.test_delivery \
   tests.core_pce_release.test_forecasting \
   tests.core_pce_release.test_model_preparation \
   tests.core_pce_release.test_run_ppi_oneshot \
-  tests.core_pce_release.test_import_price_incremental
+  tests.core_pce_release.test_import_price_incremental \
+  tests.core_pce_release.test_monthly_release
 ```
 
 Packets under `--out` are runtime output; `data/core_pce_release/packets/` is gitignored.

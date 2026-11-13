@@ -47,6 +47,38 @@ def _cpi_context(observations: list[dict]) -> dict | None:
     return None
 
 
+def _refused_inputs(target_period: str, reason: str) -> dict:
+    """No numerical forecast when the caller did not supply that month's bundle."""
+    anchor = shift_month(target_period, -1)
+    return {
+        "headline": "INCOMPLETE",
+        "low_headline": "INCOMPLETE",
+        "high_headline": "INCOMPLETE",
+        "headline_reason": reason,
+        "classification_sensitive": False,
+        "nine_month_direction": None,
+        "gap_to_two_percent": {},
+        "target_period": target_period,
+        "anchor_period": anchor,
+        "projected_core_pce_mom_percent": None,
+        "central_mom_percent": None,
+        "low_mom_percent": None,
+        "high_mom_percent": None,
+        "horizons": {},
+        "coverage": {},
+        "components": [],
+        "attribution": [],
+        "rejected_observations": [],
+        "cpi_context": None,
+        "information_stage": "blocked",
+        "integrity": {"blocked": True, "reasons": [reason]},
+        "method_version": METHOD_VERSION,
+        "approximation": "first_order_signed_expenditure_share",
+        "not_official_pce": True,
+        "scenario_range_is_confidence_interval": False,
+    }
+
+
 def calculate(
     components: list[dict],
     levels: dict[str, Decimal],
@@ -55,15 +87,23 @@ def calculate(
     *,
     residual_weight: Decimal = Decimal(0),
     baseline: dict | None = None,
+    history: dict | None = None,
+    cpi_points: dict | None = None,
+    registry: dict | None = None,
 ) -> dict:
     anchor = shift_month(target_period, -1)
     anchor_level = levels.get(anchor)
 
     if baseline is None:
-        history = load_component_history()
-        cpi_cache = load_cpi_cache()
-        registry = load_registry()
-        cpi_points = cpi_cache["points"]
+        supplied = (history, cpi_points, registry)
+        if any(item is not None for item in supplied) and any(item is None for item in supplied):
+            return _refused_inputs(target_period, "incomplete_inputs")
+        if all(item is None for item in supplied):
+            if target_period != "2026-09":
+                return _refused_inputs(target_period, "stale_default_inputs")
+            history = load_component_history()
+            cpi_points = load_cpi_cache()["points"]
+            registry = load_registry()
         baseline = build_baseline(
             components,
             history,

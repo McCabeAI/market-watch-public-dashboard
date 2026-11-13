@@ -1,0 +1,66 @@
+{
+  "schema": "core_pce_october_2026_reference_v1",
+  "method_version": "nowcast_repair_v1",
+  "release": "2026-10",
+  "anchor_period": "2026-09",
+  "label": "Reproducible nowcast from the frozen October packet. Not an official BEA print.",
+  "post_cpi_pre_ppi": {
+    "central_mom_percent": "0.2777814111959602086682108972",
+    "low_mom_percent": "0.1361000066096017682991659181",
+    "high_mom_percent": "0.4250930306419929941886611628",
+    "central_class": "NEUTRAL",
+    "low_class": "COLD",
+    "high_class": "HOT",
+    "information_stage": "post_cpi_pre_ppi",
+    "nine_month_direction": "decelerating",
+    "classification_sensitive": true,
+    "horizons_before_annualized_percent": {
+      "3": "2.902521881183449698502289400",
+      "6": "2.922699721995193041895438600",
+      "9": "3.287042862626859425729020900"
+    },
+    "horizons_after_annualized_percent": {
+      "3": "3.479423611228259871154280100",
+      "6": "2.912234484459267779167880700",
+      "9": "3.125928602507440397590861600"
+    },
+    "gap_to_two_percent": {
+      "3": "1.479423611228259871154280100",
+      "6": "0.912234484459267779167880700",
+      "9": "1.125928602507440397590861600"
+    }
+  },
+  "post_ppi": {
+    "central_mom_percent": "0.2976893241979532386598166555",
+    "low_mom_percent": "0.1598027966259293631705900248",
+    "high_mom_percent": "0.4444378042420054595621598879",
+    "central_class": "HOT",
+    "low_class": "NEUTRAL",
+    "high_class": "HOT",
+    "information_stage": "ppi_partial",
+    "nine_month_direction": "decelerating",
+    "classification_sensitive": true,
+    "horizons_before_annualized_percent": {
+      "3": "2.902521881183449698502289400",
+      "6": "2.922699721995193041895438600",
+      "9": "3.287042862626859425729020900"
+    },
+    "horizons_after_annualized_percent": {
+      "3": "3.561622195324752614344320000",
+      "6": "2.953100390159596196776885100",
+      "9": "3.153227304350182230553223600"
+    },
+    "gap_to_two_percent": {
+      "3": "1.561622195324752614344320000",
+      "6": "0.953100390159596196776885100",
+      "9": "1.153227304350182230553223600"
+    }
+  },
+  "core_cpi_context": {
+    "series_id": "CUSR0000SA0L1E",
+    "index_level": "339.900",
+    "prior_index_level": "338.896",
+    "used_in_core_pce": false,
+    "mom_percent": "0.296256078560974458240876300"
+  }
+}

@@ -7,7 +7,7 @@ from decimal import Decimal
 from pathlib import Path
 
 from scripts.core_pce_release.classify import classify_source
-from scripts.core_pce_release.history import load_levels
+from scripts.core_pce_release.history import load_levels, shift_month
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SNAPSHOT = REPO_ROOT / "data" / "core_pce_release" / "snapshot_2026-09-30"
@@ -18,7 +18,11 @@ def load_snapshot(path: Path | None = None) -> dict:
     root = path or DEFAULT_SNAPSHOT
     manifest = json.loads((root / "manifest.json").read_text(encoding="utf-8"))
     components = json.loads((root / "components.json").read_text(encoding="utf-8"))["components"]
-    bridge = json.loads((root / "august_bridge_disposition.json").read_text(encoding="utf-8"))["rows"]
+    bridge_path = root / "august_bridge_disposition.json"
+    if bridge_path.is_file():
+        bridge = json.loads(bridge_path.read_text(encoding="utf-8"))["rows"]
+    else:
+        bridge = []
     levels = load_levels(root / "pcepilfe.csv")
     return {
         "root": root,
@@ -46,6 +50,14 @@ def residual_weight(snapshot: dict) -> Decimal:
 
 
 def validate_snapshot(snapshot: dict) -> list[str]:
+    manifest = snapshot["manifest"]
+    target = manifest.get("target_release")
+    if target not in (None, "2026-09"):
+        return _validate_monthly_snapshot(snapshot)
+    return _validate_september_snapshot(snapshot)
+
+
+def _validate_september_snapshot(snapshot: dict) -> list[str]:
     problems: list[str] = []
     manifest = snapshot["manifest"]
     components = snapshot["components"]
@@ -106,4 +118,67 @@ def validate_snapshot(snapshot: dict) -> list[str]:
             problems.append(f"pcepilfe:{period}")
     if "2026-09" in snapshot["levels"]:
         problems.append("pcepilfe_includes_unreleased_september")
+    return problems
+
+
+def _validate_monthly_snapshot(snapshot: dict) -> list[str]:
+    """Checks for a non-September bundle. The September lock stays above."""
+    problems: list[str] = []
+    manifest = snapshot["manifest"]
+    components = snapshot["components"]
+    release = str(manifest.get("target_release") or "")
+    anchor = str(manifest.get("anchor_period") or "")
+    if len(release) != 7 or shift_month(release, -1) != anchor:
+        problems.append("anchor_period")
+    expenditures = manifest.get("expenditures") or {}
+    try:
+        official = Decimal(expenditures["official_core_pce_millions"])
+        signed = Decimal(expenditures["signed_partition_millions"])
+        residual = Decimal(expenditures["rounding_residual_millions"])
+    except (KeyError, ArithmeticError):
+        problems.append("expenditures")
+        official = None
+    else:
+        if residual != official - signed:
+            problems.append("rounding_residual")
+        if official <= 0:
+            problems.append("core_denominator")
+    lines = [int(row["line"]) for row in components]
+    if len(lines) != len(set(lines)):
+        problems.append("duplicate_line")
+    selected = set(lines)
+    if selected & EXCLUSION_LINES:
+        problems.append("food_or_energy_included")
+    try:
+        weight_sum = sum((Decimal(row["weight_share"]) for row in components), Decimal(0))
+        if weight_sum != Decimal(manifest["weight_share_sum"]):
+            problems.append("weight_sum_manifest")
+    except (KeyError, ArithmeticError):
+        problems.append("weight_sum_manifest")
+    for row in components:
+        family, policy = classify_source(row.get("source_text"), row.get("seasonal_status"))
+        if family != row["source_family"] or policy != row["policy"]:
+            problems.append(f"reclassify_mismatch:{row['line']}")
+            break
+        if selected.intersection(row["ancestor_lines"]):
+            problems.append(f"double_count:{row['line']}")
+            break
+        if official is not None and row.get("q3_2026_millions") not in (None, ""):
+            expected = (Decimal(int(row["sign"])) * Decimal(row["q3_2026_millions"])) / official
+            if Decimal(row["weight_share"]) != expected:
+                problems.append(f"weight:{row['line']}")
+                break
+    fingerprint = (manifest.get("pcepilfe") or {}).get("fingerprint") or {}
+    if not fingerprint:
+        problems.append("pcepilfe_fingerprint")
+    for period, expected in fingerprint.items():
+        actual = snapshot["levels"].get(period)
+        if actual is None or actual != Decimal(expected):
+            problems.append(f"pcepilfe:{period}")
+    if release and release in snapshot["levels"]:
+        problems.append("pcepilfe_includes_target_month")
+    if anchor and anchor not in snapshot["levels"]:
+        problems.append("pcepilfe_missing_anchor")
+    if manifest.get("component_count") not in (None, len(components)):
+        problems.append("component_count")
     return problems

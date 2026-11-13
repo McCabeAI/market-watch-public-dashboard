@@ -21,9 +21,17 @@ from scripts.core_pce_release.acquire import fetch_plan, load_registry
 from scripts.core_pce_release.bls import API_URL, _registration_key, _scrub_secret, fetch_series
 from scripts.core_pce_release.bls_quota import bls_message_indicates_quota, redact_registration_key
 from scripts.core_pce_release.calculator import calculate
+from scripts.core_pce_release.history import shift_month
 from scripts.core_pce_release.normalize import build_observations
 from scripts.core_pce_release.observations import derive_mom
-from scripts.core_pce_release.packet import _attach_cpi_context, load_packet, prepare
+from scripts.core_pce_release.packet import (
+    _attach_cpi_context,
+    _cpi_context_from_points,
+    load_packet,
+    prepare,
+)
+from scripts.core_pce_release.prepare_model import load_component_history, load_cpi_cache
+from scripts.core_pce_release.release_bundle import parse_issue_title, parse_release_month, resolve_release
 from scripts.core_pce_release.report import render_detailed, render_flash
 from scripts.core_pce_release.snapshot import REPO_ROOT, load_snapshot, residual_weight
 
@@ -65,8 +73,11 @@ def _shape_reason(
     author_type: str,
     sender_login: str,
     sender_type: str,
+    *,
+    expected_kind: str | None = "ppi",
 ) -> str | None:
-    if title != EXACT_ISSUE_TITLE:
+    parsed = parse_issue_title(title)
+    if parsed is None or (expected_kind is not None and parsed[0] != expected_kind):
         return "unrelated_title"
     if author_type != "User" or sender_type != "User":
         return "not_human"
@@ -100,6 +111,42 @@ def authorize_run_ppi_issue(
         "reason": "authorized",
         "author": author_login,
         "permission": permission,
+        "kind": "ppi",
+        "release": parse_issue_title(title)[1],
+    }
+
+
+def authorize_release_issue(
+    *,
+    title: str,
+    author_login: str,
+    author_type: str,
+    sender_login: str,
+    sender_type: str,
+    permission: str | None,
+) -> dict:
+    """Accept [run-cpi] YYYY-MM or [run-ppi] YYYY-MM from a human write collaborator."""
+    parsed = parse_issue_title(title)
+    reason = _shape_reason(
+        title,
+        author_login,
+        author_type,
+        sender_login,
+        sender_type,
+        expected_kind=None,
+    )
+    if reason:
+        return {"authorized": False, "reason": reason}
+    if permission not in ALLOWED_PERMISSIONS:
+        return {"authorized": False, "reason": "untrusted_permission"}
+    assert parsed is not None
+    return {
+        "authorized": True,
+        "reason": "authorized",
+        "author": author_login,
+        "permission": permission,
+        "kind": parsed[0],
+        "release": parsed[1],
     }
 
 
@@ -155,12 +202,27 @@ def _NoRedirect_opener():
 
 
 def authorize_from_environment(env: Mapping[str, str], *, opener=None) -> dict:
+    return _authorize_env(env, expected_kind="ppi", opener=opener)
+
+
+def authorize_release_from_environment(env: Mapping[str, str], *, opener=None) -> dict:
+    return _authorize_env(env, expected_kind=None, opener=opener)
+
+
+def _authorize_env(env: Mapping[str, str], *, expected_kind: str | None, opener=None) -> dict:
     title = env.get("ISSUE_TITLE") or ""
     author_login = env.get("ISSUE_AUTHOR_LOGIN") or ""
     author_type = env.get("ISSUE_AUTHOR_TYPE") or ""
     sender_login = env.get("ISSUE_SENDER_LOGIN") or ""
     sender_type = env.get("ISSUE_SENDER_TYPE") or ""
-    reason = _shape_reason(title, author_login, author_type, sender_login, sender_type)
+    reason = _shape_reason(
+        title,
+        author_login,
+        author_type,
+        sender_login,
+        sender_type,
+        expected_kind=expected_kind,
+    )
     if reason:
         return {"authorized": False, "reason": reason}
     permission = lookup_repository_permission(
@@ -169,7 +231,16 @@ def authorize_from_environment(env: Mapping[str, str], *, opener=None) -> dict:
         env.get("GH_TOKEN") or env.get("GITHUB_TOKEN") or "",
         opener=opener,
     )
-    return authorize_run_ppi_issue(
+    if expected_kind == "ppi":
+        return authorize_run_ppi_issue(
+            title=title,
+            author_login=author_login,
+            author_type=author_type,
+            sender_login=sender_login,
+            sender_type=sender_type,
+            permission=permission,
+        )
+    return authorize_release_issue(
         title=title,
         author_login=author_login,
         author_type=author_type,
@@ -206,6 +277,59 @@ def _matches_reference(result: dict) -> bool:
         if row.get("after") != reference["horizons_after_annualized_percent"][months]:
             return False
         if row.get("before") != reference["horizons_before_annualized_percent"][months]:
+            return False
+    return True
+
+
+def _ppi_reason(release: str, key: str) -> str:
+    september = {
+        "unpublished": "september_ppi_unpublished",
+        "stale": "stale_september_ppi",
+        "validated": "september_ppi_validated",
+        "invalid": "invalid_september_observation",
+        "without_anchor": "september_without_anchor",
+    }
+    generic = {
+        "unpublished": "ppi_unpublished",
+        "stale": "stale_ppi",
+        "validated": "ppi_validated",
+        "invalid": "invalid_observation",
+        "without_anchor": "target_without_anchor",
+    }
+    table = september if release == TARGET_RELEASE else generic
+    return table[key]
+
+
+def _reference_for(release: str) -> dict | None:
+    if release == TARGET_RELEASE:
+        return _load_reference()
+    bundle = resolve_release(release)
+    if bundle is None or bundle.get("reference") is None:
+        return None
+    path = bundle["reference"]
+    if not path.is_file():
+        return None
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return document.get("post_cpi_pre_ppi")
+
+
+def _matches_locked_baseline(result: dict, release: str) -> bool:
+    reference = _reference_for(release)
+    if reference is None:
+        return release != TARGET_RELEASE and result.get("central_mom_percent") not in (None, "")
+    if result.get("headline") != reference.get("central_class"):
+        return False
+    for field in ("central_mom_percent", "low_mom_percent", "high_mom_percent"):
+        if result.get(field) != reference.get(field):
+            return False
+    horizons = result.get("horizons") or {}
+    after = reference.get("horizons_after_annualized_percent") or {}
+    before = reference.get("horizons_before_annualized_percent") or {}
+    for months in ("3", "6", "9"):
+        row = horizons.get(months) or {}
+        if after and row.get("after") != after.get(months):
+            return False
+        if before and row.get("before") != before.get(months):
             return False
     return True
 
@@ -328,43 +452,49 @@ def _succeeded(fetched: dict) -> bool:
     return False
 
 
-def _assess_series(series_id: str, series_points: dict[str, str]) -> dict:
+def _assess_series(
+    series_id: str,
+    series_points: dict[str, str],
+    *,
+    release: str = TARGET_RELEASE,
+    anchor: str = ANCHOR_PERIOD,
+) -> dict:
     latest = max(series_points) if series_points else None
-    if TARGET_RELEASE not in series_points:
-        if latest and latest < TARGET_RELEASE:
+    if release not in series_points:
+        if latest and latest < release:
             return {"series_id": series_id, "state": "stale", "latest": latest, "reason": "stale_period"}
         return {"series_id": series_id, "state": "unpublished", "latest": latest, "reason": "unpublished"}
-    if latest is None or latest < TARGET_RELEASE:
+    if latest is None or latest < release:
         return {"series_id": series_id, "state": "stale", "latest": latest, "reason": "stale_period"}
-    if ANCHOR_PERIOD not in series_points:
+    if anchor not in series_points:
         return {
             "series_id": series_id,
             "state": "invalid",
             "latest": latest,
-            "reason": "september_without_anchor",
+            "reason": _ppi_reason(release, "without_anchor"),
         }
     try:
-        current = Decimal(series_points[TARGET_RELEASE])
-        prior = Decimal(series_points[ANCHOR_PERIOD])
+        current = Decimal(series_points[release])
+        prior = Decimal(series_points[anchor])
     except ArithmeticError:
         return {"series_id": series_id, "state": "invalid", "latest": latest, "reason": "invalid_mom"}
     if current <= 0 or prior <= 0:
         return {"series_id": series_id, "state": "invalid", "latest": latest, "reason": "non_positive_index"}
     mom = (current / prior - 1) * 100
-    _value, error = derive_mom({"mom_percent": format(mom, "f"), "index_level": series_points[TARGET_RELEASE], "prior_index_level": series_points[ANCHOR_PERIOD]})
+    _value, error = derive_mom({"mom_percent": format(mom, "f"), "index_level": series_points[release], "prior_index_level": series_points[anchor]})
     if error or _value is None:
         return {"series_id": series_id, "state": "invalid", "latest": latest, "reason": error or "invalid_mom"}
-    return {"series_id": series_id, "state": "fresh", "latest": latest, "reason": "september_ppi_validated"}
+    return {"series_id": series_id, "state": "fresh", "latest": latest, "reason": _ppi_reason(release, "validated")}
 
 
-def _observation_ok(observation: dict) -> bool:
+def _observation_ok(observation: dict, *, release: str = TARGET_RELEASE, anchor: str = ANCHOR_PERIOD) -> bool:
     if observation.get("simulated"):
         return False
     if observation.get("source_family") != "PPI":
         return False
     if observation.get("seasonal_status") in {"BEA_SA", "SA"}:
         return False
-    if observation.get("period") not in {TARGET_RELEASE, ANCHOR_PERIOD}:
+    if observation.get("period") not in {release, anchor}:
         return False
     mom, error = derive_mom(observation)
     return error is None and mom is not None
@@ -397,15 +527,34 @@ def _empty_http() -> dict:
     }
 
 
-def _base_audit(baseline: dict, *, availability: str, reason: str) -> dict:
-    summary = _summary(baseline) if baseline.get("horizons") else _reference_summary()
-    if not summary.get("central_mom_percent"):
-        summary = _reference_summary()
+def _base_audit(baseline: dict, *, availability: str, reason: str, release: str = TARGET_RELEASE) -> dict:
+    if release != TARGET_RELEASE:
+        if baseline.get("horizons") and baseline.get("central_mom_percent"):
+            summary = _summary(baseline)
+        else:
+            summary = {
+                "headline": "INCOMPLETE",
+                "low_headline": "INCOMPLETE",
+                "high_headline": "INCOMPLETE",
+                "central_mom_percent": None,
+                "low_mom_percent": None,
+                "high_mom_percent": None,
+                "information_stage": "blocked",
+                "horizons": {},
+                "gap_to_two_percent": {},
+                "nine_month_direction": None,
+                "attribution": [],
+                "classification_sensitive": False,
+            }
+    else:
+        summary = _summary(baseline) if baseline.get("horizons") else _reference_summary()
+        if not summary.get("central_mom_percent"):
+            summary = _reference_summary()
     revised = dict(summary)
     revised["changed"] = False
     return {
         "schema": SCHEMA,
-        "release": TARGET_RELEASE,
+        "release": release,
         "availability": availability,
         "reason": reason,
         "estimate": "unchanged",
@@ -466,7 +615,7 @@ def render_issue_comment(audit: dict, *, flash: str | None = None) -> str:
     baseline = audit["offline_baseline"]
     revised = audit["revised"]
     lines = [
-        EXACT_ISSUE_TITLE,
+        f"[run-ppi] {audit.get('release') or TARGET_RELEASE}",
         f"availability: {audit['availability']}",
         f"reason: {audit['reason']}",
         f"estimate: {audit['estimate']}",
@@ -533,7 +682,7 @@ def render_issue_comment(audit: dict, *, flash: str | None = None) -> str:
     repository = os.environ.get("GITHUB_REPOSITORY")
     if server and repository and run_id:
         lines.append(f"workflow_run: {server}/{repository}/actions/runs/{run_id}")
-        lines.append(f"artifact: run-ppi-2026-09-{run_id}")
+        lines.append(f"artifact: run-ppi-{audit.get('release') or TARGET_RELEASE}-{run_id}")
     if flash:
         lines.append("")
         lines.append("display:")
@@ -585,22 +734,38 @@ def _emit(out_dir: Path, audit: dict, *, flash: str | None) -> None:
     )
 
 
-def _finish_without_fetch(out_dir: Path, reason: str, baseline: dict | None = None) -> dict:
-    seed = baseline if baseline and _matches_reference(baseline) else {}
-    audit = _base_audit(seed or {}, availability=AVAILABILITY_ERROR, reason=reason)
-    if not seed:
-        reference = _reference_summary()
-        audit["offline_baseline"] = reference
-        revised = dict(reference)
-        revised["changed"] = False
-        audit["revised"] = revised
+def _finish_without_fetch(out_dir: Path, reason: str, baseline: dict | None = None, *, release: str = TARGET_RELEASE) -> dict:
+    if release == TARGET_RELEASE:
+        seed = baseline if baseline and _matches_reference(baseline) else {}
+        audit = _base_audit(seed or {}, availability=AVAILABILITY_ERROR, reason=reason, release=release)
+        if not seed:
+            reference = _reference_summary()
+            audit["offline_baseline"] = reference
+            revised = dict(reference)
+            revised["changed"] = False
+            audit["revised"] = revised
+        _emit(out_dir, audit, flash=None)
+        return _scrub_obj(audit)
+    audit = _base_audit(baseline or {}, availability=AVAILABILITY_ERROR, reason=reason, release=release)
     _emit(out_dir, audit, flash=None)
     return _scrub_obj(audit)
 
 
-def write_unexpected_error(out_dir: Path) -> None:
+def _not_published(out_dir: Path, release: str, reason: str, gaps: list | None = None) -> dict:
+    """Exact missing-input audit. Does not copy another month's forecast."""
+    audit = _base_audit({}, availability="NOT READY", reason=reason, release=release)
+    audit["estimate"] = "not_published"
+    audit["gaps"] = list(gaps or [{"code": reason}])
+    _emit(out_dir, audit, flash=None)
+    return _scrub_obj(audit)
+
+
+def write_unexpected_error(out_dir: Path, release: str = TARGET_RELEASE) -> None:
     """Write an error comment that does not include exception text."""
-    audit = _base_audit({}, availability=AVAILABILITY_ERROR, reason="unexpected_error")
+    if release != TARGET_RELEASE:
+        _not_published(out_dir, release, "unexpected_error")
+        return
+    audit = _base_audit({}, availability=AVAILABILITY_ERROR, reason="unexpected_error", release=release)
     reference = _reference_summary()
     audit["offline_baseline"] = reference
     revised = dict(reference)
@@ -609,38 +774,80 @@ def write_unexpected_error(out_dir: Path) -> None:
     _emit(out_dir, audit, flash=None)
 
 
+def _committed_ppi_fetch(path: Path, release: str) -> dict:
+    document = json.loads(path.read_text(encoding="utf-8"))
+    if document.get("release") != release:
+        raise ValueError("ppi points release does not match the target month")
+    points = document.get("points") or {}
+    return {
+        "points": points,
+        "latest": {series_id: max(series) if series else None for series_id, series in points.items()},
+        "footnotes": {},
+        "errors": [],
+        "raw_documents": [
+            {
+                "status": "REQUEST_SUCCEEDED",
+                "message": [],
+                "Results": {"series": []},
+                "source": "committed_ppi_points",
+                "path": str(path),
+            }
+        ],
+        "source_latency_seconds": 0,
+        "requested": list(document.get("priority_series") or points),
+        "requests_made": 0,
+        "budget_exhausted": False,
+        "key_present": False,
+    }
+
+
 def run_oneshot(
     out_dir: Path,
     *,
     poster=None,
     sleep=None,
     release: str = TARGET_RELEASE,
+    ppi_points_path: Path | None = None,
+    bundle: dict | None = None,
 ) -> dict:
     """Prepare the offline baseline and apply at most one BLS response.
 
     Missing, stale, throttled, and failed responses leave the baseline number
-    in place and are not labeled fresh.
+    in place and are not labeled fresh. A month without a frozen bundle writes
+    a missing-input audit and does not reuse another month's number.
     """
-    if release != TARGET_RELEASE:
-        raise ValueError("release must be 2026-09")
+    if parse_release_month(release) is None:
+        raise ValueError("release must be YYYY-MM")
+    anchor = shift_month(release, -1)
     out_dir.mkdir(parents=True, exist_ok=True)
-    code, _text = prepare("ppi", release, out_dir)
+    existing_state = out_dir / "pre_release_state.json"
+    if existing_state.exists():
+        existing = json.loads(existing_state.read_text(encoding="utf-8"))
+        if existing.get("release") not in (None, release):
+            return _not_published(out_dir, release, "snapshot_release_mismatch")
+    if bundle is None and resolve_release(release) is None:
+        return _not_published(out_dir, release, "release_bundle_missing")
+    code, _text = prepare("ppi", release, out_dir, bundle=bundle)
     detailed_path = out_dir / "detailed.json"
     if code != 0 or not detailed_path.exists():
-        return _finish_without_fetch(out_dir, "baseline_not_ready")
+        if release == TARGET_RELEASE:
+            return _finish_without_fetch(out_dir, "baseline_not_ready", release=release)
+        return _not_published(out_dir, release, "baseline_not_ready")
     baseline_text = detailed_path.read_text(encoding="utf-8")
     baseline = json.loads(baseline_text)
     (out_dir / "baseline_detailed.json").write_text(baseline_text, encoding="utf-8")
-    if not _matches_reference(baseline):
-        return _finish_without_fetch(out_dir, "baseline_mismatch", baseline)
+    if not _matches_locked_baseline(baseline, release):
+        return _finish_without_fetch(out_dir, "baseline_mismatch", baseline, release=release)
     packet = load_packet(out_dir)
+    if packet.get("release") != release:
+        return _not_published(out_dir, release, "snapshot_release_mismatch")
     if packet.get("listener") != "not_armed" or packet.get("status") != "READY":
-        return _finish_without_fetch(out_dir, "baseline_not_ready", baseline)
+        return _finish_without_fetch(out_dir, "baseline_not_ready", baseline, release=release)
 
     registry = load_registry()
     planned = fetch_plan(registry, "ppi")
     if not planned or len(planned) > ONESHOT_SERIES_CAP:
-        audit = _base_audit(baseline, availability=AVAILABILITY_ERROR, reason="source_validation_failed")
+        audit = _base_audit(baseline, availability=AVAILABILITY_ERROR, reason="source_validation_failed", release=release)
         audit["series"]["requested"] = list(planned)
         audit["source_problems"] = ["priority_plan_not_one_request"]
         _emit(out_dir, audit, flash=(out_dir / "flash.txt").read_text(encoding="utf-8"))
@@ -653,17 +860,23 @@ def run_oneshot(
         if sleep is not None:
             sleep(seconds)
 
-    fetched = fetch_series(
-        planned,
-        start_year="2026",
-        end_year="2026",
-        timeout=ONESHOT_TIMEOUT_SECONDS,
-        max_requests=ONESHOT_MAX_REQUESTS,
-        max_elapsed_seconds=ONESHOT_MAX_ELAPSED_SECONDS,
-        max_attempts_per_request=ONESHOT_MAX_ATTEMPTS,
-        sleep=_sleep,
-        **({"poster": poster} if poster is not None else {}),
-    )
+    if ppi_points_path is not None:
+        try:
+            fetched = _committed_ppi_fetch(ppi_points_path, release)
+        except (OSError, json.JSONDecodeError, ValueError):
+            return _not_published(out_dir, release, "ppi_points_unreadable")
+    else:
+        fetched = fetch_series(
+            planned,
+            start_year=anchor[:4],
+            end_year=release[:4],
+            timeout=ONESHOT_TIMEOUT_SECONDS,
+            max_requests=ONESHOT_MAX_REQUESTS,
+            max_elapsed_seconds=ONESHOT_MAX_ELAPSED_SECONDS,
+            max_attempts_per_request=ONESHOT_MAX_ATTEMPTS,
+            sleep=_sleep,
+            **({"poster": poster} if poster is not None else {}),
+        )
     fetched = _scrub_obj(fetched)
     flash = (out_dir / "flash.txt").read_text(encoding="utf-8")
     http = _empty_http()
@@ -693,7 +906,7 @@ def run_oneshot(
         source_problems.append("bls_throttled")
 
     def _error(reason: str, *, series_errors: list[dict] | None = None) -> dict:
-        audit = _base_audit(baseline, availability=AVAILABILITY_ERROR, reason=reason)
+        audit = _base_audit(baseline, availability=AVAILABILITY_ERROR, reason=reason, release=release)
         audit["http"] = http
         audit["series"]["requested"] = list(planned)
         audit["series"]["errors"] = series_errors or []
@@ -723,14 +936,17 @@ def run_oneshot(
             return _error("transport_error", series_errors=errors)
         if any(error.get("reason") == "bls_status" for error in errors):
             return _error("bls_status", series_errors=errors)
-        if fetched.get("budget_exhausted") or http["requests_made"] == 0:
+        if fetched.get("budget_exhausted") or (ppi_points_path is None and http["requests_made"] == 0):
             return _error("attempt_budget", series_errors=errors)
         return _error("bls_status", series_errors=errors)
 
     points = fetched.get("points") or {}
     planned_set = set(planned)
-    assessments = [_assess_series(series_id, points.get(series_id) or {}) for series_id in planned]
-    observations, gaps = build_observations(registry, points, TARGET_RELEASE)
+    assessments = [
+        _assess_series(series_id, points.get(series_id) or {}, release=release, anchor=anchor)
+        for series_id in planned
+    ]
+    observations, gaps = build_observations(registry, points, release)
     gaps = [gap for gap in gaps if gap.get("series_id") in planned_set]
     observations = [row for row in observations if row.get("series_id") in planned_set]
     _attach_footnotes(observations, fetched.get("footnotes") or {})
@@ -740,15 +956,15 @@ def run_oneshot(
     for row in assessments:
         series_id = row["series_id"]
         if row["state"] == "fresh":
-            september = [
+            current = [
                 observation
                 for observation in observations
-                if observation.get("series_id") == series_id and observation.get("period") == TARGET_RELEASE
+                if observation.get("series_id") == series_id and observation.get("period") == release
             ]
-            if september and all(_observation_ok(observation) for observation in september):
+            if current and all(_observation_ok(observation, release=release, anchor=anchor) for observation in current):
                 fresh_ids.append(series_id)
                 continue
-            series_errors.append({"series_id": series_id, "reason": row["reason"] if not september else "invalid_mom"})
+            series_errors.append({"series_id": series_id, "reason": row["reason"] if not current else "invalid_mom"})
             continue
         if row["state"] == "invalid":
             series_errors.append({"series_id": series_id, "reason": row["reason"]})
@@ -764,15 +980,15 @@ def run_oneshot(
 
     if not fresh_ids:
         if series_errors:
-            reason = "invalid_september_observation"
+            reason = _ppi_reason(release, "invalid")
             availability = AVAILABILITY_ERROR
         elif any(row["reason"] == "stale_period" for row in not_yet):
-            reason = "stale_september_ppi"
+            reason = _ppi_reason(release, "stale")
             availability = AVAILABILITY_NOT_YET
         else:
-            reason = "september_ppi_unpublished"
+            reason = _ppi_reason(release, "unpublished")
             availability = AVAILABILITY_NOT_YET
-        audit = _base_audit(baseline, availability=availability, reason=reason)
+        audit = _base_audit(baseline, availability=availability, reason=reason, release=release)
         audit["http"] = http
         audit["series"] = {
             "requested": list(planned),
@@ -790,17 +1006,33 @@ def run_oneshot(
     usable = [
         observation
         for observation in observations
-        if observation.get("series_id") in set(fresh_ids) and _observation_ok(observation)
+        if observation.get("series_id") in set(fresh_ids) and _observation_ok(observation, release=release, anchor=anchor)
     ]
-    snapshot = load_snapshot()
+    release_bundle = bundle if bundle is not None else resolve_release(release)
+    if release != TARGET_RELEASE and release_bundle is None:
+        return _not_published(out_dir, release, "release_bundle_missing")
+    snapshot = load_snapshot(None if release == TARGET_RELEASE else release_bundle["snapshot_dir"])
+    calc_kwargs = {}
+    if release != TARGET_RELEASE:
+        calc_kwargs = {
+            "history": load_component_history(release_bundle["component_history"]),
+            "cpi_points": load_cpi_cache(release_bundle["cpi_cache"])["points"],
+            "registry": load_registry(release_bundle["registry"]),
+        }
     revised_full = calculate(
         snapshot["components"],
         snapshot["levels"],
-        TARGET_RELEASE,
+        release,
         usable,
         residual_weight=residual_weight(snapshot),
+        **calc_kwargs,
     )
-    revised_full = _attach_cpi_context(revised_full, TARGET_RELEASE)
+    if release == TARGET_RELEASE:
+        revised_full = _attach_cpi_context(revised_full, TARGET_RELEASE)
+    else:
+        context = _cpi_context_from_points(load_cpi_cache(release_bundle["cpi_cache"]), release)
+        if context is not None:
+            revised_full["cpi_context"] = context
     revised_full["latency"] = {
         "source_latency_seconds": http["source_latency_seconds"],
         "official_publication_latency": "UNMEASURED",
@@ -814,8 +1046,8 @@ def run_oneshot(
     )
     revised["changed"] = changed
     availability = AVAILABILITY_FRESH
-    reason = "september_ppi_validated"
-    audit = _base_audit(baseline, availability=availability, reason=reason)
+    reason = _ppi_reason(release, "validated")
+    audit = _base_audit(baseline, availability=availability, reason=reason, release=release)
     audit["revised"] = revised
     audit["estimate"] = "revised" if changed else "unchanged"
     audit["http"] = http
