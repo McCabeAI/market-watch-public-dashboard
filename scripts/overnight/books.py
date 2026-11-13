@@ -37,6 +37,10 @@ from scripts.overnight.constants import (
 )
 from scripts.overnight.errors import FreshnessError, SchemaError
 from scripts.overnight.expression import expression_rule, remit, selected_asset_class, validate_expression_memo
+from scripts.overnight.plan_continuity import (
+    history_extra_for_action,
+    project_seat_continuity,
+)
 from scripts.overnight.public_prose import public_alerts, sanitize_public_prose, sanitize_public_value
 from scripts.overnight.freshness import assert_action_allowed
 from scripts.risk_capital import (
@@ -851,8 +855,15 @@ def apply_action(
                 reason=reason,
             )
 
+    continuity_extra = history_extra_for_action(seat_book, action)
+
     if kind == "OPEN":
         _open_position(seat_book, action, memo=memo, run_id=run_id, when=stamp, market_state=market_state)
+        opened = _find_position(seat_book, str(action.get("position_id") or ""))
+        if action.get("horizon_days") is not None:
+            opened["horizon_days"] = action["horizon_days"]
+        if action.get("realization_logic"):
+            opened["realization_logic"] = action["realization_logic"]
     elif kind == "ADD":
         _resize(seat_book, action, factor=1, run_id=run_id, when=stamp, market_state=market_state)
     elif kind == "REDUCE":
@@ -880,6 +891,9 @@ def apply_action(
     seat_book["required_pitch"] = action.get("required_pitch")
     seat_book["risk_put_on"] = action.get("risk_put_on") if "risk_put_on" in action else action.get("risk")
     seat_book["evidence_cutoff"] = action.get("evidence_cutoff") or seat_book.get("evidence_cutoff")
+    history_extra = {"blocked_families": blocked}
+    if continuity_extra:
+        history_extra.update(continuity_extra)
     seat_book["history"].append(
         _history_entry(
             action,
@@ -892,7 +906,7 @@ def apply_action(
                 if action.get("fill_status") in {"zero_lot", "size_rejected"}
                 else "applied"
             ),
-            extra={"blocked_families": blocked},
+            extra=history_extra,
         )
     )
     return mark_to_market(seat_book, when=stamp, run_id=run_id)
@@ -1671,10 +1685,10 @@ def validate_books(
     return books
 
 
-def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
+def public_books_view(books: dict[str, Any], *, position_plans: dict[str, Any] | None = None) -> dict[str, Any]:
     """Dashboard-safe projection: no secrets, no private research."""
 
-    def public_position(p: dict[str, Any]) -> dict[str, Any]:
+    def public_position(p: dict[str, Any], continuity: dict[str, Any] | None) -> dict[str, Any]:
         row = {
             "position_id": p["position_id"],
             "instrument": p["instrument"],
@@ -1720,12 +1734,49 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 for leg in legs
                 if isinstance(leg, dict)
             ]
+        cont = continuity or {}
+        row["governing_invalidation"] = sanitize_public_prose(
+            cont.get("governing_invalidation"), max_chars=400, fallback=""
+        )
+        row["stated_invalidation"] = sanitize_public_prose(cont.get("stated_invalidation"), max_chars=400, fallback="")
+        row["plan_status"] = cont.get("plan_status") or "governing"
+        row["plan_note"] = sanitize_public_prose(cont.get("plan_note"), max_chars=500, fallback="")
+        row["current_note"] = sanitize_public_prose(cont.get("current_note"), max_chars=400, fallback="")
+        row["current_action"] = cont.get("current_action")
+        row["horizon_days"] = cont.get("horizon_days")
+        row["horizon_label"] = cont.get("horizon_label") or ""
+        row["entry_thesis"] = sanitize_public_prose(cont.get("entry_thesis"), max_chars=700, fallback="")
         return row
 
     validate_books(books)
     seats = []
     changes = []
     for seat, item in books["seats"].items():
+        continuity = project_seat_continuity(item, position_plans=position_plans)
+        desk_note = sanitize_public_prose(
+            continuity.get("desk_note"),
+            max_chars=1200,
+            fallback=sanitize_public_prose(item.get("thesis"), max_chars=1200, fallback=""),
+        )
+        seat_invalidation = sanitize_public_prose(item.get("invalidation"), max_chars=500, fallback="")
+        if continuity.get("public_invalidation"):
+            seat_invalidation = sanitize_public_prose(
+                continuity.get("public_invalidation"),
+                max_chars=500,
+                fallback=seat_invalidation,
+            )
+        session_actions = []
+        for row in continuity.get("session_actions") or []:
+            session_actions.append(
+                {
+                    "action": row.get("action"),
+                    "instrument": row.get("instrument"),
+                    "position_id": row.get("position_id"),
+                    "notional_usd": row.get("notional_usd"),
+                    "note": sanitize_public_prose(row.get("note"), max_chars=400, fallback=""),
+                }
+            )
+        position_cont = continuity.get("positions") or {}
         seats.append(
             {
                 "seat": seat,
@@ -1751,7 +1802,14 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "pnl_unavailable": item["pnl_unavailable"],
                 "conviction": item["conviction"],
                 "thesis": sanitize_public_prose(item.get("thesis"), max_chars=700, fallback=""),
-                "invalidation": sanitize_public_prose(item.get("invalidation"), max_chars=500, fallback=""),
+                "invalidation": seat_invalidation,
+                "desk_note": desk_note,
+                "session_actions": session_actions,
+                "plan_status": continuity.get("plan_status") or "governing",
+                "plan_note": sanitize_public_prose(continuity.get("plan_note"), max_chars=500, fallback=""),
+                "stated_invalidation": sanitize_public_prose(
+                    continuity.get("stated_invalidation"), max_chars=500, fallback=""
+                ),
                 "last_action": item.get("last_action"),
                 "prior_action": item.get("prior_action"),
                 "alerts": public_alerts(item.get("alerts")),
@@ -1768,7 +1826,10 @@ def public_books_view(books: dict[str, Any]) -> dict[str, Any]:
                 "drawdown_usd": item.get("drawdown_usd"),
                 "risk_stopped": item.get("risk_stopped", False),
                 "risk_stop_pending": item.get("risk_stop_pending", False),
-                "positions": [public_position(p) for p in item["positions"]],
+                "positions": [
+                    public_position(p, position_cont.get(str(p.get("position_id") or "")))
+                    for p in item["positions"]
+                ],
                 "required_pitch": sanitize_public_value(item.get("required_pitch"), max_chars=700),
                 "risk_put_on": sanitize_public_value(item.get("risk_put_on"), max_chars=700),
             }
