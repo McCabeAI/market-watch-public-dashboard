@@ -54,7 +54,7 @@ jobs:
     if: startsWith(github.event.pull_request.title, '[overnight-output]')
     needs: inspect
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     concurrency:
       group: overnight-accept-${{ needs.inspect.outputs.run_id }}
       cancel-in-progress: false

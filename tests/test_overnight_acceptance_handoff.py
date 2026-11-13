@@ -93,8 +93,10 @@ class AcceptanceWorkflowContractTests(unittest.TestCase):
         self.assertNotIn("schedule:", workflow)
         self.assertNotIn("cron:", workflow)
         accept_job, _, finalize_job = workflow.partition("  finalize-and-dispatch:")
-        self.assertIn("timeout-minutes: 20", accept_job)
+        self.assertIn("timeout-minutes: 30", accept_job)
+        self.assertNotIn("timeout-minutes: 20", accept_job)
         self.assertIn("timeout-minutes: 20", finalize_job)
+        self.assertNotIn("timeout-minutes: 30", finalize_job)
         self.assertNotIn(
             "git add data/market_watch_launches data/overnight data/pm data/trading",
             workflow,
