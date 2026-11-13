@@ -2125,6 +2125,78 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "The AUDNZD short was a breakdown continuation. The cross is still lower on the tape, but it sits at range position 0.07 after a failed 20-day breakdown, and the 11 November spot at 1.2285 is back through the 1.2266 book mark. From this floor the continuation is spent, and a rejection back into the range is the move that hurts a 300 million short, so the position comes off in full. December SOFR at 4.295 against cash SOFR at 3.88 shows the hike is already in the front end and does not clear a fresh pay or a chased dollar add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Flat sleeve remains. The new risk is the March SOFR pay, not a second overlay.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 4000000000,
+          "position_id": null,
+          "rationale": "Pay March 2027 SOFR. Notional is set so a 100 basis point shock stays inside the 100 million risk-capital limit and near the 60 million adverse path the book can live with.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-13T07:15:27.559705-05:00",
+      "conviction": null,
+      "decision_fingerprint": "a7bc78439bbc0183c16b8695f8ce7d840c5877b6e20ee1704f153bfa2d348777",
+      "event_id": "jde-b24146789942496f",
+      "funding_view": null,
+      "invalidation": "Close the pay if March 2027 SOFR trades at or below 4.40, which would unwind the inflation impulse. Do not add a euro short or a yen short to soften it.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-169e52b857c1"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-169e52b857c1"
+      ],
+      "memory_context_sha256": "6464c1bf951743fa1fabf394df77a1fbccb70d1b994447babad2a771223b0f8e",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5cf95b4908e36324c34849a49541bbad0cd81ab2e7540787cfe0790d1438efe2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "cae9b1d3dccb54879e8ba3b9a2cc9131b11a89a10c64994f44d8c951f78893c8",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261113-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "October CPI at 0.4 percent and Brent at 95.82 leave cash SOFR at 3.89 low versus a path that is only 4.615 by March 2027. The two-year at 4.86 and the ten-year at 5.1 show the impulse is already in the cash curve, which is a reason to size the pay so a squeeze does not threaten the book, not a reason to receive in front of oil and the CPI print. Canada and Australia are different paths. Dollar-yen at 159.70 is the wrong dollar expression. The concentrated book is one outright March SOFR pay, plus a flat hold so the book is not only that new risk.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "October CPI at 0.4 percent and Brent at 95.82 leave cash SOFR at 3.89 low versus a path that is only 4.615 by March 2027. The two-year at 4.86 and the ten-year at 5.1 show the impulse is already in the cash curve, which is a reason to size the pay so a squeeze does not threaten the book, not a reason to receive in front of oil and the CPI print. Canada and Australia are different paths. Dollar-yen at 159.70 is the wrong dollar expression. The concentrated book is one outright March SOFR pay, plus a flat hold so the book is not only that new risk."
     }
   ],
   "schema_version": 1,

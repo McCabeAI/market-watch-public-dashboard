@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-13T06:22:15.706647-05:00",
+  "as_of": "2026-11-13T07:15:28.438982-05:00",
   "calibration": {
     "average_holding_seconds": 1251640,
     "average_realized_pnl_usd": 236774.97,
@@ -88,8 +88,8 @@
     "stress_regime": "unknown"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 357444.7,
-    "best_trader_outearn_streak": 0,
+    "best_trader_net_pnl_usd": 365085.28,
+    "best_trader_outearn_streak": 1,
     "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -97,7 +97,7 @@
     "competition_rank": 2,
     "competitive_rank": 2,
     "drawdown_usd": 102351.27,
-    "gap_to_best_trader_usd": 1079844.61,
+    "gap_to_best_trader_usd": 1072204.03,
     "high_water_nav_usd": 1001539640.58,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1437289.31,
@@ -117,17 +117,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-f603c2341244",
-      "owner_id": "pragmatist",
-      "owner_type": "pm",
-      "reference": "trd-pm-pragmatist-pm-pragmatist-fb7a9dedff4a",
-      "source_run_id": "overnight-20261112"
-    }
-  ],
-  "memory_context_sha256": "c57b26fa7fbb40ed790849a76e53f6c6c7b8a913de64b73990338e7c56cb3bbb",
+  "learning_obligations": [],
+  "memory_context_sha256": "9ef328fac2688a77f9492a4233837116696d466236767d382460247d93f0acd0",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -145,7 +136,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 90000.0,
-        "holding_seconds": 4692571,
+        "holding_seconds": 4695763,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -181,31 +172,7 @@
   ],
   "owner_id": "pragmatist",
   "owner_type": "pm",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-12T06:25:17.642533-05:00",
-      "created_run_id": "overnight-20261112",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-12T06:25:17.642533-05:00",
-        "conviction": 64,
-        "entry_mark": 1.25,
-        "exit_mark": 1.23,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 766458,
-        "instrument": "AUDNZD",
-        "invalidation": "The receive is wrong if March Canada implieds reverse back through 3.13 on an oil-led Bank of Canada re-hike. The cross is wrong if AUDNZD holds above 1.2456 and extends on a Hormuz risk-off that keeps liquidating kiwi. Flatten the new FX if the 99th-percentile stretch persists without any mean-reversion over the tactical window.",
-        "opened_at": "2026-11-03T09:30:59.388258-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 289549.94,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-f603c2341244",
-      "trade_id": "trd-pm-pragmatist-pm-pragmatist-fb7a9dedff4a"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -226,7 +193,7 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "defensiveness": {
         "band": "calm",
@@ -234,9 +201,9 @@
         "value": 0.2
       },
       "external_pressure": {
-        "band": "calm",
+        "band": "elevated",
         "trend": "up",
-        "value": 0.34
+        "value": 0.36
       },
       "frustration": {
         "band": "calm",
@@ -269,16 +236,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "self_report_admission_overconfidence",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261111"
-      },
-      {
-        "kind": "self_report_admission_pressure_distorting",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261111"
-      },
-      {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261111"
@@ -287,11 +244,16 @@
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261112"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261113"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "20c88382bbfe19b46c172f53733f982381e4f9494281114d4c80929e46b705a0",
+    "state_sha256": "b6fdb763f7ad3b3f6a0d0de8d1a5b45f25c6d29456d3c040127a4fd702358c89",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

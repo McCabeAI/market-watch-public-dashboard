@@ -1026,6 +1026,64 @@
       "run_id": "overnight-20261112",
       "seq": 43,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          500000.0,
+          100000.0,
+          150000.0,
+          100000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "event_id": "pse-000044",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "seq": 44,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0129,
+        "defensiveness": -0.0012,
+        "frustration": -0.0015,
+        "revenge_pressure": -0.0007,
+        "self_trust": 0.0104,
+        "thesis_attachment": -0.0015
+      },
+      "event_id": "pse-000045",
+      "kind": "trade_win_close",
+      "magnitude": 0.29313432,
+      "mismatch": false,
+      "owner_id": "positioning-cynic",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "scale": 1.0,
+      "seq": 45,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "AUDNZD",
+        "notional_usd": 10000000.0,
+        "realized_pnl_usd": 146567.16,
+        "side": "short",
+        "trade_id": "trd-trader-positioning-cynic-pos-be9eaa63695e"
+      }
     }
   ],
   "owner_id": "positioning-cynic",

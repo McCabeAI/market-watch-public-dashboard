@@ -49,7 +49,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 425000.0,
     "risk_capital_utilization": 0.0425,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 40420.92,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "a5b95fb92ce1ba85122d01a2b060d8c95b1466b6c2e4b49eb770087109d95030",
+  "memory_context_sha256": "f288d5668549709ad3e80d1ca5d2841e6aae59653dce3801f9c3947494c31b78",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -129,7 +129,7 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.13
       },
       "complacency": {
@@ -140,16 +140,16 @@
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.2
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.13
       },
       "revenge_pressure": {
@@ -186,14 +186,19 @@
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261111"
+      },
+      {
+        "kind": "session_loss",
+        "magnitude": 0.08084184,
+        "run_id": "overnight-20261113"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0654f9f0b25064f5e4fdeb06d944550e785c8cd7dba206c5a21d3192cbac0e44",
+    "state_sha256": "78987a050cac8161292404bab8793be1a9ddbad8c34e446a72f0918c7f12878e",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 1,
+      "session_loss": 2,
       "session_win": 0
     }
   },

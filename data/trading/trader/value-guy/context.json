@@ -121,7 +121,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 1383.8,
     "status": "ok"
   },
   "learning": {
@@ -131,17 +131,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-08b78abf6476",
-      "owner_id": "value-guy",
-      "owner_type": "trader",
-      "reference": "trd-trader-value-guy-pos-65b06053d4c6",
-      "source_run_id": "overnight-20261112"
-    }
-  ],
-  "memory_context_sha256": "b81b6a29e5103370a9cc61f041af7b401a29e9b4fde44a3a50c4770ab42907fc",
+  "learning_obligations": [],
+  "memory_context_sha256": "dbea6621ba0d803304c2c81ab60e3c03c3a68a8a3f3195220e24b7dafdc11ad3",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -195,31 +186,7 @@
   ],
   "owner_id": "value-guy",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-12T04:50:23.662182-05:00",
-      "created_run_id": "overnight-20261112",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-12T04:50:23.662182-05:00",
-        "conviction": 61,
-        "entry_mark": 1.25,
-        "exit_mark": 1.23,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 512674,
-        "instrument": "AUDNZD",
-        "invalidation": "Cover the short if Australian-kiwi extends above 1.2453 while WTI returns toward 102, or if the cross is still at or above 1.2453 after thirty days.",
-        "opened_at": "2026-11-06T06:25:49.281876-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 67659.53,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-08b78abf6476",
-      "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -234,13 +201,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.13
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.17
+        "trend": "down",
+        "value": 0.16
       },
       "defensiveness": {
         "band": "calm",
@@ -250,12 +217,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.12
+        "trend": "flat",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -283,11 +250,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_gain",
-        "magnitude": 0.09032482,
-        "run_id": "overnight-20261110"
-      },
-      {
         "kind": "rank_drop_minor",
         "magnitude": 1.0,
         "run_id": "overnight-20261110"
@@ -300,7 +262,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "9fa32b11a5cb9cb7e5809bad236ffcc580736628c5305e833ab9a6967d2e58ab",
+    "state_sha256": "c7a4c4543ef46931c7ccc1fa363361669db35681a7622b4c1930b1f5e4f851d8",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

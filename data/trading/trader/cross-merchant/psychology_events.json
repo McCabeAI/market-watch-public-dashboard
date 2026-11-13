@@ -1213,6 +1213,62 @@
       "run_id": "overnight-20261112",
       "seq": 50,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0,
+          200000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "event_id": "pse-000051",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "seq": 51,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.03,
+        "defensiveness": -0.0024,
+        "frustration": -0.0031,
+        "revenge_pressure": -0.0016,
+        "self_trust": 0.017,
+        "thesis_attachment": -0.003
+      },
+      "event_id": "pse-000052",
+      "kind": "trade_win_close",
+      "magnitude": 0.5944026600000001,
+      "mismatch": false,
+      "owner_id": "cross-merchant",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "scale": 1.0,
+      "seq": 52,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "AUDNZD",
+        "notional_usd": 20000000.0,
+        "realized_pnl_usd": 297201.33,
+        "side": "short",
+        "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
+      }
     }
   ],
   "owner_id": "cross-merchant",

@@ -2114,6 +2114,62 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "December 2026 SOFR at 4.295 already sits well above the 3.88 official fix, with March 2027 at 4.53 and September 2027 at 4.655, so the hike path from a public CPI print is in the strip. Euro at 1.1127 and dollar-yen at 159.23 are that same dollar bid after the breaks. AUDNZD at 1.2285 is a failed floor after the short from 1.25 was already closed at 1.23, so the cross is no longer an extreme. None of the new expressions clears the funding hurdle."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No candidate clears the official SOFR hurdle on shocked risk capital into today's producer prices.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T07:15:27.992503-05:00",
+      "conviction": null,
+      "decision_fingerprint": "2569c8b63aa6f0f00376c2c9ad3f56614bd1ceb767b691839b1a363acf75a571",
+      "event_id": "jde-211b2e3c58bc45d3",
+      "funding_view": null,
+      "invalidation": "The flat stance changes after producer prices only if a markable rate or spot then offers expected adverse-path edge above official SOFR on shocked risk capital.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3d95d28f36903db7a4548f5cff29310c259578cfb966b1c284accf5c1fb07315",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6f8d8b8f47e94fae582538b6a222b42df0354a5891abf3465152bc1aa60acf39"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "dcfa454a688e3747cc59836bf2eff65c311e298cbea7d88424164bf44de7da61",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261113-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat versus official SOFR at 3.89. March SOFR at 4.615, with December at 4.315 and September at 4.815, already prices the hike, and the two-year at 4.86 sits in the 98th percentile after a 13 basis point selloff. Euro-dollar at 1.1081 is already down 1.27 percent over five days. Producer prices are today, so a new pay or a new dollar short is print risk rather than an edge over SOFR charged on shocked risk capital.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Stay flat versus official SOFR at 3.89. March SOFR at 4.615, with December at 4.315 and September at 4.815, already prices the hike, and the two-year at 4.86 sits in the 98th percentile after a 13 basis point selloff. Euro-dollar at 1.1081 is already down 1.27 percent over five days. Producer prices are today, so a new pay or a new dollar short is print risk rather than an edge over SOFR charged on shocked risk capital."
     }
   ],
   "schema_version": 1,

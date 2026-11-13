@@ -1,5 +1,45 @@
 {
-  "lessons": [],
+  "lessons": [
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-13T06:22:15.706647-05:00",
+      "future_rule": "Do not use a finished Australia-kiwi normalization to fade the dollar or the front end while the inflation catalyst is still ahead of the entry.",
+      "history": [
+        {
+          "at": "2026-11-13T06:22:15.706647-05:00",
+          "op": "add",
+          "run_id": "overnight-20261113"
+        }
+      ],
+      "lesson_id": "les-f683d77b3624",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-398011348f57"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261113",
+      "status": "active",
+      "text": "A completed cross normalization is ordinary bounded variance around a fade whose direction matched the anchor, and it does not loosen the rule that a live catalyst blocks the next fade.",
+      "trade_ids": [
+        "trd-trader-mean-reverter-pos-9a020b7cffca"
+      ],
+      "updated_at": "2026-11-13T06:22:15.706647-05:00"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_LESSONS"
 }

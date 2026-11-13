@@ -29,9 +29,39 @@
       "trade_ids": [
         "trd-pm-swinger-pm-swinger-2070479ca321"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not re-open an Australia-kiwi short after a realized 1.25 to 1.23 decline unless a new policy or terms-of-trade divergence appears.",
+      "lesson_id": "les-2969f2cd1359",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-957c0dbbfe05"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261113",
+      "status": "active",
+      "text": "A finished relative-value decline that stalls is not a signal to reload the same short.",
+      "trade_ids": [
+        "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+      ]
     }
   ],
-  "as_of": "2026-11-13T06:22:15.706647-05:00",
+  "as_of": "2026-11-13T07:15:28.318306-05:00",
   "calibration": {
     "average_holding_seconds": 1852735,
     "average_realized_pnl_usd": 2224073.29,
@@ -77,8 +107,8 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 357444.7,
-    "best_trader_outearn_streak": 1,
+    "best_trader_net_pnl_usd": 365085.28,
+    "best_trader_outearn_streak": 2,
     "best_trader_seat": "cross-merchant",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -86,7 +116,7 @@
     "competition_rank": 1,
     "competitive_rank": 1,
     "drawdown_usd": 445851.67,
-    "gap_to_best_trader_usd": 4040181.77,
+    "gap_to_best_trader_usd": 4032541.19,
     "high_water_nav_usd": 1004843478.14,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 4397626.47,
@@ -103,45 +133,62 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
+  "learning_obligations": [],
+  "memory_context_sha256": "8b0c055aaf0252495cca3719d26af2db1c1fa4c8d60c39db2c7e6cbd9edb1cc7",
+  "open_positions": [
     {
-      "kind": "postmortem",
-      "obligation_id": "pmd-957c0dbbfe05",
-      "owner_id": "swinger",
-      "owner_type": "pm",
-      "reference": "trd-pm-swinger-pm-swinger-f8f9feb515d2",
-      "source_run_id": "overnight-20261112"
+      "asset_class": "rates",
+      "conviction": null,
+      "current_notional_usd": 4000000000.0,
+      "entry_mark": 4.62,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": "Producer prices today either confirm the October CPI impulse or they do not. The swing is the subsequent pull of the March forward, not a one-print scalp.",
+        "current_mark": 4.615,
+        "current_notional_usd": 4000000000.0,
+        "entry_mark": 4.62,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "SOFR_2027-03",
+        "intended_horizon_days": 25,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pm-swinger-169e52b857c1",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "March 2027 implied SOFR reprices higher from 4.615 if the path off 3.89 cash catches up with a repeated inflation impulse and Brent near 96.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 40000000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-pm-swinger-pm-swinger-169e52b857c1",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-11-13T07:15:27.559705-05:00",
+      "position_id": "pm-swinger-169e52b857c1",
+      "risk_capital_usd": 40000000.0,
+      "side": "short",
+      "trade_id": "trd-pm-swinger-pm-swinger-169e52b857c1"
     }
   ],
-  "memory_context_sha256": "6464c1bf951743fa1fabf394df77a1fbccb70d1b994447babad2a771223b0f8e",
-  "open_positions": [],
   "owner_id": "swinger",
   "owner_type": "pm",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-12T06:25:17.427247-05:00",
-      "created_run_id": "overnight-20261112",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-12T06:25:17.427247-05:00",
-        "conviction": 70,
-        "entry_mark": 1.25,
-        "exit_mark": 1.23,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 766458,
-        "instrument": "AUDNZD",
-        "invalidation": "Cover if AUDNZD holds above 1.27 or if a Hormuz-driven oil bid sends the cross to a new high while NZDUSD breaks 0.55.",
-        "opened_at": "2026-11-03T09:30:59.132629-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 4120646.59,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-957c0dbbfe05",
-      "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -157,11 +204,11 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.15
       },
       "defensiveness": {
@@ -172,11 +219,11 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.24
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.11
       },
       "revenge_pressure": {
@@ -186,7 +233,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.52
       },
       "thesis_attachment": {
@@ -212,7 +259,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5cf95b4908e36324c34849a49541bbad0cd81ab2e7540787cfe0790d1438efe2",
+    "state_sha256": "6adaa3e4a7c4387d2aa7af9e37c15d281e7213447690640d50b03f0085d5a221",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

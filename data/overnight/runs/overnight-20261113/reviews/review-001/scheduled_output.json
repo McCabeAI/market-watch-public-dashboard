@@ -1,0 +1,2376 @@
+{
+  "agent_packet": {
+    "base_evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+    "base_packet_sha256": "6c36616a0dacacd23bb150494b925d9a365a5c9f51b64f37c3002b0a11521137",
+    "competition": {
+      "flat_book_pnl": "A flat seat has zero net financing/competition P&L: paper NAV earning SOFR is benchmarked at SOFR, so those flows cancel, and shocked-risk financing is zero.",
+      "funding_basis": "Official NY Fed SOFR ACT/360 is the zero-return competition benchmark, not free alpha. Every seat has $100m paper NAV that may be described as earning SOFR, but that capital is equally funded/benchmarked at SOFR so those flows cancel. Deployed shocked-risk capital pays the same official SOFR on trusted standard-shock risk capital: the absolute MTM loss from a 1% adverse spot move, a 100bp (1 percentage point) adverse outright rate move, or a 100bp adverse curve/RV spread move. Supported STIR contracts use exchange DV01 and currency conversion; historical rows without that stamp keep the legacy duration-one vintage and are not silently restated. Equal risk capital receives equal financing treatment across asset classes. Notional is descriptive, not the funding base. A completely flat book \u2014 including no-trade-skeptic \u2014 therefore has zero net financing/competition P&L from SOFR cash or funding economics. Positive financing/carry alpha requires an explicit markable strategy that earns above SOFR or funds below SOFR. Weekends and holidays carry the last applicable published fixing until the next fixing. If official fixing history cannot be established, new funding accrual fails closed and prior canonical balances are preserved.",
+      "funding_convention": "ACT/360",
+      "funding_day_count": 360,
+      "funding_observation_date": "2026-11-10",
+      "funding_rate_annual": 0.0389,
+      "funding_source": "NY_FED",
+      "funding_source_url": "https://www.newyorkfed.org/markets/reference-rates/sofr",
+      "instruction": "Do not optimize for gross notional or fill available capacity. Size risk from plausible adverse paths and historical excursions while staying inside the trusted risk-capital and drawdown limits. Flat cash at SOFR is the zero benchmark, not a source of alpha. The no-trade-skeptic must include a structured funding_view on every new risk or NO_TRADE thesis: the frozen official SOFR fixing, the relevant SR3 forward-curve view, its own assessment of whether realized funding will print higher, lower, or about the same as the curve, and the implication for remaining at the zero SOFR benchmark versus paying SOFR on shocked-risk capital.",
+      "metric": "net_pnl_after_funding",
+      "no_trade_allowed": true,
+      "objective": "Finish with the highest cumulative net paper P&L across the 14 standing seats.",
+      "risk_limits": {
+        "max_drawdown_usd": 5000000,
+        "paper_nav_usd": 100000000,
+        "risk_capital_limit_usd": 10000000,
+        "risk_capital_method": "mtm_standard_1pct_move"
+      }
+    },
+    "economic_calendar": {
+      "allow_network": false,
+      "as_of": "2026-11-13T06:22:15.706647-05:00",
+      "content_hash": "3750f88db7d6f2529842b76b4cf2284858302ab438f9403864ddab3ed1427a9c",
+      "coverage_gaps": [
+        {
+          "country": "NZ",
+          "kind": "policy_calendar",
+          "reason": "policy calendar status='unavailable'",
+          "source_url": "https://www.rbnz.govt.nz/news-and-events/how-we-release-information/ocr-decision-dates-and-financial-stability-report-dates-to-feb-2028"
+        }
+      ],
+      "events": [
+        {
+          "clock": "tba",
+          "country": "EA",
+          "event_family": "ea_gdp_flash",
+          "event_id": "EA:ea_gdp_flash:2026-11-13:2026-Q3",
+          "local_date": "2026-11-13",
+          "locale": "EA",
+          "provenance": "Eurostat QNA release calendar PDF: 2026Q3 EMP and GDP flash release printed for 13.11.2026; no release clock on this row. PDF states dates are PROVISIONAL until confirmed in the weekly calendar. Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Eurostat",
+          "reference_period": "2026-Q3",
+          "release_validity": "provisional",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "EA.Activity.gdp_components",
+            "EA.Activity.gdp_domestic_demand"
+          ],
+          "source_url": "https://ec.europa.eu/eurostat/documents/24987/6642470/QNA_release_calendar.pdf",
+          "time": "",
+          "timezone": "Europe/Luxembourg",
+          "title": "GDP and employment flash estimate"
+        },
+        {
+          "clock": "verified",
+          "country": "US",
+          "event_family": "us_ppi",
+          "event_id": "US:us_ppi:2026-11-13:2026-10",
+          "local_date": "2026-11-13",
+          "locale": "US",
+          "provenance": "October 2026 -> 2026-11-13 08:30 (BLS schedule table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Bureau of Labor Statistics",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Inflation.ppi_final_demand"
+          ],
+          "source_url": "https://www.bls.gov/schedule/news_release/ppi.htm",
+          "time": "08:30",
+          "timezone": "America/New_York",
+          "title": "Producer Price Index"
+        },
+        {
+          "clock": "standing",
+          "country": "CA",
+          "event_family": "ca_cpi",
+          "event_id": "CA:ca_cpi:2026-11-16:2026-10",
+          "local_date": "2026-11-16",
+          "locale": "CA",
+          "provenance": "Consumer Price Index \u2014 release date 2026-11-16, reference period 'October 2026' (Statistics Canada 2026\u20132027 major economic releases table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Statistics Canada",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "CA.Inflation.headline",
+            "CA.Inflation.underlying"
+          ],
+          "source_url": "https://www150.statcan.gc.ca/n1/release-diffusion/2026-eng.pdf",
+          "time": "08:30",
+          "timezone": "America/Toronto",
+          "title": "Consumer Price Index"
+        },
+        {
+          "clock": "verified",
+          "country": "JP",
+          "event_family": "jp_gdp",
+          "event_id": "JP:jp_gdp:2026-11-16:2026-Q3",
+          "local_date": "2026-11-16",
+          "locale": "JP",
+          "provenance": "Cabinet Office GDP schedule row: Jul.-Sep. 2026 (The First Preliminary) / Monday, November 16, 2026 / 8:50AM (JST) Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Cabinet Office",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "JP.Activity.domestic_demand",
+            "JP.Activity.gdp_domestic_demand"
+          ],
+          "source_url": "https://www.esri.cao.go.jp/en/sna/kouhyou/kouhyou_top.html",
+          "time": "08:50",
+          "timezone": "Asia/Tokyo",
+          "title": "Quarterly GDP first preliminary"
+        },
+        {
+          "clock": "tba",
+          "country": "NZ",
+          "event_family": "nz_selected_prices",
+          "event_id": "NZ:nz_selected_prices:2026-11-17:2026-10",
+          "local_date": "2026-11-17",
+          "locale": "NZ",
+          "provenance": "Calendar export line SUMMARY:\"Selected price indexes: October 2026\"; DTSTART date 2026-11-17 (ICS includes a default time; per-release clock not printed on the row \u2014 time TBA). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Stats NZ",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [],
+          "source_url": "https://www.stats.govt.nz/release-calendar/",
+          "time": "",
+          "timezone": "Pacific/Auckland",
+          "title": "Selected price indexes"
+        },
+        {
+          "clock": "verified",
+          "country": "AU",
+          "event_family": "au_wpi",
+          "event_id": "AU:au_wpi:2026-11-18:2026-Q3",
+          "local_date": "2026-11-18",
+          "locale": "AU",
+          "provenance": "ABS WPI product page (trimmed): Wage Price Index, Australia, September 2026 | 18/11/2026 11:30am AEDT Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Australian Bureau of Statistics",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "AU.Labor.wages"
+          ],
+          "source_url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/wage-price-index-australia",
+          "time": "11:30",
+          "timezone": "Australia/Sydney",
+          "title": "Wage Price Index"
+        },
+        {
+          "clock": "tba",
+          "country": "EA",
+          "event_family": "ea_hicp",
+          "event_id": "EA:ea_hicp:2026-11-18:2026-10",
+          "local_date": "2026-11-18",
+          "locale": "EA",
+          "provenance": "ECB HICP statistical calendar row: Euro area seasonally adjusted HICP (Dataset: HICP) Reference period: Oct-2026 \u2014 page prints 12:00 without a timezone (excerpt does not name CET/CEST/Central European Time or Frankfurt time). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "European Central Bank",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "EA.Inflation.headline",
+            "EA.Inflation.underlying"
+          ],
+          "source_url": "https://www.ecb.europa.eu/press/calendars/statscal/ges/html/sthicp.en.html",
+          "time": "",
+          "timezone": "Europe/Luxembourg",
+          "title": "Euro area HICP"
+        },
+        {
+          "clock": "tba",
+          "country": "NZ",
+          "event_family": "nz_business_prices",
+          "event_id": "NZ:nz_business_prices:2026-11-18:2026-Q3",
+          "local_date": "2026-11-18",
+          "locale": "NZ",
+          "provenance": "Calendar export line SUMMARY:\"Business price indexes: September 2026 quarter\"; DTSTART date 2026-11-18 (ICS includes a default time; per-release clock not printed on the row \u2014 time TBA). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Stats NZ",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "NZ.Inflation.export_price_index",
+            "NZ.Inflation.import_price_index",
+            "NZ.Inflation.ppi"
+          ],
+          "source_url": "https://www.stats.govt.nz/release-calendar/",
+          "time": "",
+          "timezone": "Pacific/Auckland",
+          "title": "Business price indexes"
+        },
+        {
+          "clock": "verified",
+          "country": "AU",
+          "event_family": "au_labour_force",
+          "event_id": "AU:au_labour_force:2026-11-19:2026-10",
+          "local_date": "2026-11-19",
+          "locale": "AU",
+          "provenance": "ABS November 2026 future-release calendar (trimmed): Labour Force, Australia | reference October 2026 | time cell: 11:30am Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Australian Bureau of Statistics",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "AU.Labor.employment",
+            "AU.Labor.participation",
+            "AU.Labor.unemployment"
+          ],
+          "source_url": "https://www.abs.gov.au/release-calendar/future-releases-calendar/202611",
+          "time": "11:30",
+          "timezone": "Australia/Sydney",
+          "title": "Labour Force, Australia"
+        },
+        {
+          "clock": "standing",
+          "country": "CA",
+          "event_family": "ca_retail",
+          "event_id": "CA:ca_retail:2026-11-20:2026-09",
+          "local_date": "2026-11-20",
+          "locale": "CA",
+          "provenance": "Retail trade \u2014 release date 2026-11-20, reference period 'September 2026' (Statistics Canada 2026\u20132027 major economic releases table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Statistics Canada",
+          "reference_period": "2026-09",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "CA.Consumer.retail",
+            "CA.Consumer.retail_sales_volume"
+          ],
+          "source_url": "https://www150.statcan.gc.ca/n1/release-diffusion/2026-eng.pdf",
+          "time": "08:30",
+          "timezone": "America/Toronto",
+          "title": "Retail trade"
+        },
+        {
+          "clock": "verified",
+          "country": "JP",
+          "event_family": "jp_cpi",
+          "event_id": "JP:jp_cpi:2026-11-20:2026-10",
+          "local_date": "2026-11-20",
+          "locale": "JP",
+          "provenance": "e-Stat release calendar segment: 2026-11-20 08:30 \u7dcf\u52d9\u7701 \u6d88\u8cbb\u8005\u7269\u4fa1\u6307\u6570 \u5168\u56fd(2026\u5e7410\u6708\u5206) Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Statistics Bureau of Japan",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "JP.Inflation.headline",
+            "JP.Inflation.underlying"
+          ],
+          "source_url": "https://www.e-stat.go.jp/release-calendar",
+          "time": "08:30",
+          "timezone": "Asia/Tokyo",
+          "title": "Consumer Price Index, national"
+        },
+        {
+          "clock": "tba",
+          "country": "NZ",
+          "event_family": "nz_retail",
+          "event_id": "NZ:nz_retail:2026-11-23:2026-Q3",
+          "local_date": "2026-11-23",
+          "locale": "NZ",
+          "provenance": "Calendar export line SUMMARY:\"Retail trade survey: September 2026 quarter\"; DTSTART date 2026-11-23 (ICS includes a default time; per-release clock not printed on the row \u2014 time TBA). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Stats NZ",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "NZ.Consumer.retail"
+          ],
+          "source_url": "https://www.stats.govt.nz/release-calendar/",
+          "time": "",
+          "timezone": "Pacific/Auckland",
+          "title": "Retail trade survey"
+        },
+        {
+          "clock": "verified",
+          "country": "AU",
+          "event_family": "au_cpi",
+          "event_id": "AU:au_cpi:2026-11-25:2026-10",
+          "local_date": "2026-11-25",
+          "locale": "AU",
+          "provenance": "ABS November 2026 future-release calendar (trimmed): Consumer Price Index, Australia | reference October 2026 | time cell: 11:30am Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Australian Bureau of Statistics",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "AU.Inflation.headline",
+            "AU.Inflation.underlying"
+          ],
+          "source_url": "https://www.abs.gov.au/release-calendar/future-releases-calendar/202611",
+          "time": "11:30",
+          "timezone": "Australia/Sydney",
+          "title": "Consumer Price Index, Australia"
+        },
+        {
+          "clock": "verified",
+          "country": "US",
+          "event_family": "us_gdp",
+          "event_id": "US:us_gdp:2026-11-25:2026-Q3",
+          "local_date": "2026-11-25",
+          "locale": "US",
+          "provenance": "2026-11-25 8:30 AM \u2014 GDP (Second Estimate) and Corporate Profits, 3rd Quarter 2026 Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "U.S. Bureau of Economic Analysis",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Activity.gdp_domestic_demand",
+            "US.Activity.gdp_level"
+          ],
+          "source_url": "https://www.bea.gov/news/schedule",
+          "time": "08:30",
+          "timezone": "America/New_York",
+          "title": "GDP (Second Estimate) and Corporate Profits, 3rd Quarter 2026"
+        },
+        {
+          "clock": "verified",
+          "country": "US",
+          "event_family": "us_pce",
+          "event_id": "US:us_pce:2026-11-25:2026-10",
+          "local_date": "2026-11-25",
+          "locale": "US",
+          "provenance": "2026-11-25 8:30 AM \u2014 Personal Income and Outlays, October 2026 Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "U.S. Bureau of Economic Analysis",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Consumer.income",
+            "US.Consumer.spending",
+            "US.Inflation.core_pce",
+            "US.Inflation.pce_headline"
+          ],
+          "source_url": "https://www.bea.gov/news/schedule",
+          "time": "08:30",
+          "timezone": "America/New_York",
+          "title": "Personal Income and Outlays, October 2026"
+        },
+        {
+          "clock": "standing",
+          "country": "CA",
+          "event_family": "ca_gdp_expenditure",
+          "event_id": "CA:ca_gdp_expenditure:2026-11-30:2026-Q3",
+          "local_date": "2026-11-30",
+          "locale": "CA",
+          "provenance": "Gross domestic product, income and expenditure \u2014 release date 2026-11-30, reference period 'Third quarter 2026' (Statistics Canada 2026\u20132027 major economic releases table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Statistics Canada",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "CA.Activity.gdp_domestic_demand"
+          ],
+          "source_url": "https://www150.statcan.gc.ca/n1/release-diffusion/2026-eng.pdf",
+          "time": "08:30",
+          "timezone": "America/Toronto",
+          "title": "Gross domestic product, income and expenditure"
+        },
+        {
+          "clock": "standing",
+          "country": "CA",
+          "event_family": "ca_gdp_industry",
+          "event_id": "CA:ca_gdp_industry:2026-11-30:2026-09",
+          "local_date": "2026-11-30",
+          "locale": "CA",
+          "provenance": "Gross domestic product by industry \u2014 release date 2026-11-30, reference period 'September 2026' (Statistics Canada 2026\u20132027 major economic releases table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Statistics Canada",
+          "reference_period": "2026-09",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "CA.Activity.gdp_domestic_demand"
+          ],
+          "source_url": "https://www150.statcan.gc.ca/n1/release-diffusion/2026-eng.pdf",
+          "time": "08:30",
+          "timezone": "America/Toronto",
+          "title": "Gross domestic product by industry"
+        },
+        {
+          "clock": "tba",
+          "country": "NZ",
+          "event_family": "nz_employment_indicators",
+          "event_id": "NZ:nz_employment_indicators:2026-11-30:2026-10",
+          "local_date": "2026-11-30",
+          "locale": "NZ",
+          "provenance": "Calendar export line SUMMARY:\"Employment indicators: October 2026\"; DTSTART date 2026-11-30 (ICS includes a default time; per-release clock not printed on the row \u2014 time TBA). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Stats NZ",
+          "reference_period": "2026-10",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [],
+          "source_url": "https://www.stats.govt.nz/release-calendar/",
+          "time": "",
+          "timezone": "Pacific/Auckland",
+          "title": "Employment indicators"
+        },
+        {
+          "clock": "tba",
+          "country": "EA",
+          "event_family": "ea_hicp_flash",
+          "event_id": "EA:ea_hicp_flash:2026-12-01:2026-11",
+          "local_date": "2026-12-01",
+          "locale": "EA",
+          "provenance": "ECB HICP statistical calendar row: Euro area seasonally adjusted HICP flash estimate (Dataset: HICP) Reference period: Nov-2026 \u2014 page prints 15:00 without a timezone (excerpt does not name CET/CEST/Central European Time or Frankfurt time). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "European Central Bank",
+          "reference_period": "2026-11",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "EA.Inflation.headline",
+            "EA.Inflation.hicp_flash"
+          ],
+          "source_url": "https://www.ecb.europa.eu/press/calendars/statscal/ges/html/sthicp.en.html",
+          "time": "",
+          "timezone": "Europe/Luxembourg",
+          "title": "Euro area HICP flash estimate"
+        },
+        {
+          "clock": "standing",
+          "country": "US",
+          "event_family": "us_ism_manufacturing",
+          "event_id": "US:us_ism_manufacturing:2026-12-01:December 2026",
+          "local_date": "2026-12-01",
+          "locale": "US",
+          "provenance": "December 2026 \u2014 Manufacturing day 1, Services day 3; standing time 10:00 from ISM schedule page text. Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Institute for Supply Management",
+          "reference_period": "December 2026",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Activity.manufacturing_surveys"
+          ],
+          "source_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/rob-report-calendar/",
+          "time": "10:00",
+          "timezone": "America/New_York",
+          "title": "ISM Manufacturing PMI"
+        },
+        {
+          "clock": "standing",
+          "country": "US",
+          "event_family": "us_ism_services",
+          "event_id": "US:us_ism_services:2026-12-03:December 2026",
+          "local_date": "2026-12-03",
+          "locale": "US",
+          "provenance": "December 2026 \u2014 Manufacturing day 1, Services day 3; standing time 10:00 from ISM schedule page text. Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Institute for Supply Management",
+          "reference_period": "December 2026",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Activity.services_surveys"
+          ],
+          "source_url": "https://www.ismworld.org/supply-management-news-and-reports/reports/rob-report-calendar/",
+          "time": "10:00",
+          "timezone": "America/New_York",
+          "title": "ISM Services PMI"
+        },
+        {
+          "clock": "standing",
+          "country": "CA",
+          "event_family": "ca_lfs",
+          "event_id": "CA:ca_lfs:2026-12-04:2026-11",
+          "local_date": "2026-12-04",
+          "locale": "CA",
+          "provenance": "Labour Force Survey \u2014 release date 2026-12-04, reference period 'November 2026' (Statistics Canada 2026\u20132027 major economic releases table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Statistics Canada",
+          "reference_period": "2026-11",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "CA.Labor.employment",
+            "CA.Labor.participation",
+            "CA.Labor.unemployment",
+            "CA.Labor.wages"
+          ],
+          "source_url": "https://www150.statcan.gc.ca/n1/release-diffusion/2026-eng.pdf",
+          "time": "08:30",
+          "timezone": "America/Toronto",
+          "title": "Labour Force Survey"
+        },
+        {
+          "clock": "verified",
+          "country": "US",
+          "event_family": "us_empsit",
+          "event_id": "US:us_empsit:2026-12-04:2026-11",
+          "local_date": "2026-12-04",
+          "locale": "US",
+          "provenance": "November 2026 -> 2026-12-04 08:30 (BLS schedule table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Bureau of Labor Statistics",
+          "reference_period": "2026-11",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Labor.participation",
+            "US.Labor.payrolls",
+            "US.Labor.unemployment",
+            "US.Labor.wages"
+          ],
+          "source_url": "https://www.bls.gov/schedule/news_release/empsit.htm",
+          "time": "08:30",
+          "timezone": "America/New_York",
+          "title": "Employment Situation"
+        },
+        {
+          "clock": "tba",
+          "country": "EA",
+          "event_family": "ea_gdp",
+          "event_id": "EA:ea_gdp:2026-12-07:2026-Q3",
+          "local_date": "2026-12-07",
+          "locale": "EA",
+          "provenance": "Eurostat QNA release calendar PDF: 2026Q3 GDP, EMP and main aggregates release printed for 07.12.2026; no release clock on this row. PDF states dates are PROVISIONAL until confirmed in the weekly calendar. Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Eurostat",
+          "reference_period": "2026-Q3",
+          "release_validity": "provisional",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "EA.Activity.gdp_components",
+            "EA.Activity.gdp_domestic_demand"
+          ],
+          "source_url": "https://ec.europa.eu/eurostat/documents/24987/6642470/QNA_release_calendar.pdf",
+          "time": "",
+          "timezone": "Europe/Luxembourg",
+          "title": "GDP and main aggregates"
+        },
+        {
+          "clock": "verified",
+          "country": "JP",
+          "event_family": "jp_gdp",
+          "event_id": "JP:jp_gdp:2026-12-08:2026-Q3",
+          "local_date": "2026-12-08",
+          "locale": "JP",
+          "provenance": "Cabinet Office GDP schedule row: Jul.-Sep. 2026 (The Second Preliminary) / Tuesday, December 8, 2026 / 8:50AM (JST) Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Cabinet Office",
+          "reference_period": "2026-Q3",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "JP.Activity.domestic_demand",
+            "JP.Activity.gdp_domestic_demand"
+          ],
+          "source_url": "https://www.esri.cao.go.jp/en/sna/kouhyou/kouhyou_top.html",
+          "time": "08:50",
+          "timezone": "Asia/Tokyo",
+          "title": "Quarterly GDP second preliminary"
+        },
+        {
+          "clock": "tba",
+          "country": "CA",
+          "event_family": "ca_boc",
+          "event_id": "CA:ca_boc:2026-12-09:",
+          "local_date": "2026-12-09",
+          "locale": "CA",
+          "provenance": "Bank of Canada key interest rate page \u2014 Schedule for 2026: December\u00a09 / Interest rate announcement Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Bank of Canada",
+          "reference_period": "",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [],
+          "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+          "time": "",
+          "timezone": "America/Toronto",
+          "title": "Bank of Canada interest rate announcement"
+        },
+        {
+          "clock": "verified",
+          "country": "NZ",
+          "event_family": "nz_ocr",
+          "event_id": "NZ:nz_ocr:2026-12-09:2026-12-09",
+          "local_date": "2026-12-09",
+          "locale": "NZ",
+          "provenance": "RBNZ statistics page: Official Cash Rate line with Next update and date as printed. Extracted clock 14:00. Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Reserve Bank of New Zealand",
+          "reference_period": "2026-12-09",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [],
+          "source_url": "https://www.rbnz.govt.nz/statistics",
+          "time": "14:00",
+          "timezone": "Pacific/Auckland",
+          "title": "Official Cash Rate decision"
+        },
+        {
+          "clock": "tba",
+          "country": "US",
+          "event_family": "us_fomc",
+          "event_id": "US:us_fomc:2026-12-09:2026-12-08/2026-12-09",
+          "local_date": "2026-12-09",
+          "locale": "US",
+          "provenance": "Meeting week 8-9 \u2014 \n            <div class=\"col-xs-12 col-md-4 col-lg-2\">\n            </div>\n            <div class=\"col-xs-12 col-md-4 col-lg-3\">\n                <br>\n            </div>\n            <div class=\"col-xs-1 Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Federal Reserve Board",
+          "reference_period": "2026-12-08/2026-12-09",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [],
+          "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+          "time": "",
+          "timezone": "America/New_York",
+          "title": "FOMC monetary policy meeting"
+        },
+        {
+          "clock": "verified",
+          "country": "US",
+          "event_family": "us_cpi",
+          "event_id": "US:us_cpi:2026-12-10:2026-11",
+          "local_date": "2026-12-10",
+          "locale": "US",
+          "provenance": "November 2026 -> 2026-12-10 08:30 (BLS schedule table). Retained from committed cache fetched 2026-11-06T18:00:00Z because the live fetch failed or returned no dates.",
+          "publisher": "Bureau of Labor Statistics",
+          "reference_period": "2026-11",
+          "release_validity": "confirmed",
+          "retrieved_at": "2026-11-06T18:00:00Z",
+          "series_ids": [
+            "US.Inflation.cpi_core",
+            "US.Inflation.cpi_headline"
+          ],
+          "source_url": "https://www.bls.gov/schedule/news_release/cpi.htm",
+          "time": "08:30",
+          "timezone": "America/New_York",
+          "title": "Consumer Price Index"
+        }
+      ],
+      "policy_decisions": {
+        "AU": {
+          "count": 5,
+          "decisions": [
+            {
+              "clock": "verified",
+              "decision_date": "2026-12-08",
+              "effective_date": "2026-12-09",
+              "local_time": "14:30",
+              "meeting_start": "2026-12-07",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
+              "timezone": "Australia/Sydney"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-02-09",
+              "effective_date": "2027-02-10",
+              "local_time": "14:30",
+              "meeting_start": "2027-02-08",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
+              "timezone": "Australia/Sydney"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-03-23",
+              "effective_date": "2027-03-24",
+              "local_time": "14:30",
+              "meeting_start": "2027-03-22",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
+              "timezone": "Australia/Sydney"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-05-04",
+              "effective_date": "2027-05-05",
+              "local_time": "14:30",
+              "meeting_start": "2027-05-03",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
+              "timezone": "Australia/Sydney"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-06-22",
+              "effective_date": "2027-06-23",
+              "local_time": "14:30",
+              "meeting_start": "2027-06-21",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
+              "timezone": "Australia/Sydney"
+            }
+          ],
+          "retrieved_at": "2026-11-13T11:31:59Z",
+          "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
+          "timezone": "Australia/Sydney"
+        },
+        "CA": {
+          "count": 5,
+          "decisions": [
+            {
+              "clock": "verified",
+              "decision_date": "2026-12-09",
+              "effective_date": "2026-12-10",
+              "local_time": "09:45",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+              "timezone": "America/Toronto"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-01-27",
+              "effective_date": "2027-01-28",
+              "local_time": "09:45",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+              "timezone": "America/Toronto"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-03-03",
+              "effective_date": "2027-03-04",
+              "local_time": "09:45",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+              "timezone": "America/Toronto"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-04-28",
+              "effective_date": "2027-04-29",
+              "local_time": "09:45",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+              "timezone": "America/Toronto"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-06-02",
+              "effective_date": "2027-06-03",
+              "local_time": "09:45",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+              "timezone": "America/Toronto"
+            }
+          ],
+          "retrieved_at": "2026-11-13T11:31:59Z",
+          "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
+          "timezone": "America/Toronto"
+        },
+        "EA": {
+          "count": 5,
+          "decisions": [
+            {
+              "clock": "verified",
+              "decision_date": "2026-12-17",
+              "effective_date": "2026-12-23",
+              "local_time": "14:15",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+              "timezone": "Europe/Berlin"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-02-04",
+              "effective_date": "2027-02-10",
+              "local_time": "14:15",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+              "timezone": "Europe/Berlin"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-03-18",
+              "effective_date": "2027-03-24",
+              "local_time": "14:15",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+              "timezone": "Europe/Berlin"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-04-29",
+              "effective_date": "2027-05-05",
+              "local_time": "14:15",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+              "timezone": "Europe/Berlin"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-06-10",
+              "effective_date": "2027-06-16",
+              "local_time": "14:15",
+              "meeting_start": null,
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+              "timezone": "Europe/Berlin"
+            }
+          ],
+          "retrieved_at": "2026-11-13T11:31:59Z",
+          "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+          "timezone": "Europe/Berlin"
+        },
+        "JP": {
+          "count": 5,
+          "decisions": [
+            {
+              "clock": "tba",
+              "decision_date": "2026-12-18",
+              "effective_date": "2026-12-21",
+              "local_time": null,
+              "meeting_start": "2026-12-17",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "clock": "tba",
+              "decision_date": "2027-01-22",
+              "effective_date": "2027-01-25",
+              "local_time": null,
+              "meeting_start": "2027-01-21",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "clock": "tba",
+              "decision_date": "2027-03-18",
+              "effective_date": "2027-03-19",
+              "local_time": null,
+              "meeting_start": "2027-03-17",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "clock": "tba",
+              "decision_date": "2027-04-28",
+              "effective_date": "2027-04-29",
+              "local_time": null,
+              "meeting_start": "2027-04-27",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
+              "timezone": "Asia/Tokyo"
+            },
+            {
+              "clock": "tba",
+              "decision_date": "2027-06-11",
+              "effective_date": "2027-06-14",
+              "local_time": null,
+              "meeting_start": "2027-06-10",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
+              "timezone": "Asia/Tokyo"
+            }
+          ],
+          "retrieved_at": "2026-11-13T11:31:59Z",
+          "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
+          "timezone": "Asia/Tokyo"
+        },
+        "NZ": {
+          "clock": "verified",
+          "count": 0,
+          "decisions": [],
+          "retrieved_at": null,
+          "source_url": "https://www.rbnz.govt.nz/news-and-events/how-we-release-information/ocr-decision-dates-and-financial-stability-report-dates-to-feb-2028",
+          "timezone": "Pacific/Auckland"
+        },
+        "US": {
+          "count": 5,
+          "decisions": [
+            {
+              "clock": "verified",
+              "decision_date": "2026-12-09",
+              "effective_date": "2026-12-10",
+              "local_time": "14:00",
+              "meeting_start": "2026-12-08",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "timezone": "America/New_York"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-01-27",
+              "effective_date": "2027-01-28",
+              "local_time": "14:00",
+              "meeting_start": "2027-01-26",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "timezone": "America/New_York"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-03-17",
+              "effective_date": "2027-03-18",
+              "local_time": "14:00",
+              "meeting_start": "2027-03-16",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "timezone": "America/New_York"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-04-28",
+              "effective_date": "2027-04-29",
+              "local_time": "14:00",
+              "meeting_start": "2027-04-27",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "timezone": "America/New_York"
+            },
+            {
+              "clock": "verified",
+              "decision_date": "2027-06-09",
+              "effective_date": "2027-06-10",
+              "local_time": "14:00",
+              "meeting_start": "2027-06-08",
+              "retrieved_at": "2026-11-13T11:31:59Z",
+              "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+              "timezone": "America/New_York"
+            }
+          ],
+          "retrieved_at": "2026-11-13T11:31:59Z",
+          "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+          "timezone": "America/New_York"
+        }
+      },
+      "schedule_sources": {
+        "cache_path": "data/dashboard_repair/official_release_cache.json",
+        "countries_attempted": [
+          "US",
+          "CA",
+          "EA",
+          "AU",
+          "NZ",
+          "JP"
+        ],
+        "policy_calendar_path": "data/policy_meetings.json"
+      },
+      "window_end_exclusive": "2026-12-13",
+      "window_start": "2026-11-13"
+    },
+    "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+    "learning_obligations": {
+      "manifest_sha256": "be2307b76055c417a4a71fe1c8200ee178c055894244d93e9efe9b8fee7dff3b",
+      "obligation_count": 6
+    },
+    "overnight_run_id": "overnight-20261113",
+    "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+    "research_supplement": {
+      "central_bank_research": [],
+      "news": [
+        {
+          "headline": "Falling US Bond Futures Offer No Relief as Fed Hike Bets Grow",
+          "published_at": "2026-11-10T20:52:00-05:00",
+          "source_name": "Bloomberg",
+          "summary": "Derivatives trading suggests a retreat in US Treasuries is set to continue as faster-than-expected inflation data cemented the prospects for more aggressive interest-rate hikes from the Federal ..."
+        },
+        {
+          "headline": "Bonds reel as hot inflation fuels jumbo Fed hike fears",
+          "published_at": "2026-11-10T13:05:00-05:00",
+          "source_name": "Reuters",
+          "summary": "Global bonds tumbled and the dollar stayed firm after a hot US inflation print and hawkish central bank rhetoric raised the risk of an outsized \u200bhalf-point rate hike from the Federal Reserve next ..."
+        },
+        {
+          "headline": "AI \u2018Supply Shock\u2019 Pushes Bond Market to Limit, Wells Fargo Says",
+          "published_at": "2026-11-12T06:45:00-05:00",
+          "source_name": "Bloomberg",
+          "summary": "Technology giants racing to build artificial intelligence infrastructure are hitting the limit of how much they can raise in global bond markets, according to Wells Fargo & Co."
+        },
+        {
+          "headline": "Forget Nvidia. Anthropic Is the AI Trade\u2019s Litmus Test",
+          "published_at": "2026-11-11T20:30:00-05:00",
+          "source_name": "Bloomberg",
+          "summary": "For an industry that needs to spend at least $30 billion just to build a data center that handles one gigawatt of computing power, access to financing is key."
+        },
+        {
+          "headline": "Alphabet Kicks Off Asia Bond Sale as AI Firms Face Scrutiny",
+          "published_at": "2026-11-11T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "summary": "Alphabet Inc. began marketing its inaugural Hong Kong and Singapore dollar bond sale, testing investor interest at a time of increasing volatility for companies focused on artificial intelligence."
+        },
+        {
+          "headline": "Top Pension Fund to Buy More India State Bonds on High Yields",
+          "published_at": "2026-11-12T14:38:00-05:00",
+          "source_name": "Bloomberg",
+          "summary": "India\u2019s largest pension fund plans to step up purchases of state debt, expecting their yield premium over the federal government bonds will widen further."
+        }
+      ],
+      "sources": [],
+      "summary": "U.S. rates led the session. Two-year through ten-year yields rose 12 to 14 basis points, the ten-year is back above 5 at 5.1, and those yields sit in the top decile of the past year's levels. SOFR futures still price policy well above cash SOFR of 3.89, after October consumer prices rose 0.4 percent and Fed commentary turned toward another inflation fight. The dollar firmed with that move. Dollar-Canada and dollar-Swiss are near the top of their one-year ranges, while the euro, sterling, the Australian dollar, and the New Zealand dollar weakened. Canada's yields rose with Treasuries. Australia's cash rate and forward path are flat to easier, not the same further-hike path. Euro-area and Japanese long yields barely moved. Brent is 95.82 and WTI is 88.74. Equities are still high and the VIX is 17.5, so this is a rates and dollar story rather than an equity break. Today's U.S. producer prices and the euro-area GDP flash are the next test, with Canada CPI and Japan GDP on Monday."
+    },
+    "review_id": "review-001",
+    "schema_version": 1,
+    "trade_permissions": {
+      "block_why": null,
+      "blocked_expressions": [],
+      "blocked_legs": [],
+      "blocked_sources": [],
+      "countries": {
+        "AU": {
+          "eligible": true,
+          "gaps": [
+            "AU.Activity.business_surveys",
+            "AU.Consumer.confidence",
+            "AU.Consumer.retail"
+          ],
+          "scored_status": "partial"
+        },
+        "CA": {
+          "eligible": true,
+          "gaps": [
+            "CA.Consumer.confidence",
+            "CA.Consumer.income",
+            "CA.Consumer.retail",
+            "CA.Consumer.spending"
+          ],
+          "scored_status": "partial"
+        },
+        "EA": {
+          "eligible": true,
+          "gaps": [
+            "EA.Consumer.income",
+            "EA.Labor.wages",
+            "EA.Consumer.spending",
+            "EA.Labor.employment"
+          ],
+          "scored_status": "partial"
+        },
+        "JP": {
+          "eligible": true,
+          "gaps": [
+            "JP.Activity.business_surveys",
+            "JP.Activity.gdp_domestic_demand",
+            "JP.Labor.wages"
+          ],
+          "scored_status": "partial"
+        },
+        "NZ": {
+          "eligible": true,
+          "gaps": [
+            "NZ.Consumer.confidence",
+            "NZ.Activity.business_surveys",
+            "NZ.Consumer.income"
+          ],
+          "scored_status": "blocked",
+          "sovereign_admission": "research_only"
+        },
+        "US": {
+          "eligible": true,
+          "gaps": [],
+          "scored_status": "ok"
+        }
+      },
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "expansion_rule": "country_and_expression_specific",
+      "hold_decisions_emitted": 0,
+      "partial_expressions": [
+        "activity:US",
+        "activity:CA",
+        "activity:AU",
+        "activity:NZ",
+        "activity:EA",
+        "activity:JP",
+        "macro:AU",
+        "macro:NZ"
+      ],
+      "partial_legs": [
+        "NZ_rates"
+      ],
+      "quarantine_mode": null,
+      "quarantine_reason": null,
+      "quarantined_positions": [],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Consumer.income",
+        "EA.Labor.wages",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "restricted_seats": [],
+      "seat_risk": {},
+      "source_health": [
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-Q2",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Activity.gdp_domestic_demand"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.confidence"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Inflation.core_pce"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.income"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-08",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.retail"
+        },
+        {
+          "blocks_new_risk": false,
+          "carried_forward": true,
+          "classification": "transient_fetch",
+          "country": "US",
+          "fetch_error": "The read operation timed out",
+          "observation_period": "2026-07",
+          "research_status": "previous release retained",
+          "retrieved_at": "2026-09-21T14:41:19Z",
+          "series_id": "US.Consumer.spending"
+        }
+      ],
+      "synthetic_holds": false,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_eligible": true,
+      "trader_execution": "allowed"
+    },
+    "type": "OVERNIGHT_AGENT_EVIDENCE_PACKET"
+  },
+  "base_packet_sha256": "6c36616a0dacacd23bb150494b925d9a365a5c9f51b64f37c3002b0a11521137",
+  "decisions": {
+    "carry-is-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "CORRA_2027-03",
+              "rationale": "Receive March CORRA because the premium over cash still pays if the Bank does not deliver the full hike path."
+            },
+            "rationale": "Receive March CORRA because the premium over cash still pays if the Bank does not deliver the full hike path.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDCAD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "CORRA_2027-03",
+          "note": "Keep the CORRA March receive. The premium over cash is intact and there is no harvest flag.",
+          "position_id": "pos-23b8d2f30846"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The hold fails if Monday's Canada CPI reprices CORRA March up through the June implied rate of 3.185, or lifts expected cash high enough to erase the premium over 2.52.",
+      "memory_context_sha256": "104ec3d0bf21f9b114fa217b6c941250dffecb46c94e4f594e2d877b72e1bb9f",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "carry-is-king",
+      "thesis": "Hold the CORRA March receive. Cash CORRA is 2.52 and March is 3.025, so the contract still carries a premium over cash even after a 3 basis point mark against the 2.995 entry. The U.S. strip prices a steeper hike path, and Australia's March premium over cash is only about 6 basis points. Monday's Canada CPI can overwhelm the carry, so the receive is kept and not added."
+    },
+    "catalyst-junkie": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "SOFR_2026-12",
+              "rationale": "The front SOFR pay is small and already with the public hike story. Do not add into the print."
+            },
+            "rationale": "The front SOFR pay is small and already with the public hike story. Do not add into the print.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "SOFR_2026-12",
+          "note": "Keep the 2 million December SOFR pay. The catalyst is already in the price.",
+          "position_id": "pos-29b4571dd270"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "Cover the December SOFR short if the implied rate trades back through the 4.295 entry, which would mean the post-CPI hike premium has been given back.",
+      "memory_context_sha256": "2117018f5fd4f2a971e7456d5d0574a7c1344fe2c5441dd99ab75a8fe37b3d13",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "catalyst-junkie",
+      "thesis": "Hold the small December SOFR pay. It is marked from 4.295 to 4.315, with cash at 3.89 and March at 4.615, and the 0.4 percent CPI print is already the public story. Producer prices, the euro-area GDP flash and Monday's Canada CPI are not adds: the front end has already sold off, and Canada's two-year is already up 12 basis points into Monday. There is no second contract and no euro-dollar overlay."
+    },
+    "chart-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The euro short is with the five-session and one-month decline. Do not add a rate.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "The euro short is with the five-session and one-month decline. Do not add a rate."
+            }
+          },
+          "instrument": "EURUSD",
+          "note": "Hold the 10 million euro-dollar short. Both the five-session and one-month closes are down.",
+          "position_id": "pos-a4867f05b3bb"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "No adverse close bound was supplied, so none is invented. The short stays on while the five-session and one-month closes remain down. A close back through the 1.1127 entry would take the position off.",
+      "memory_context_sha256": "b0d6157531abc34bb08d6c9951c63ee205f35378062e02ec3811b95e85657d30",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "chart-guy",
+      "thesis": "Hold the euro-dollar short. The close is 1.1081 against an entry of 1.1127, the five-session close return is down 1.27 percent, and the one-month close return is down 1.02 percent. The one-year close percentile is at the bottom of the range, so the decline is extended and there is no lower close target to justify an add. Australian dollar, dollar-yen and dollar-Canada closes agree that the dollar is bid, and they are context only. No new cross."
+    },
+    "cross-merchant": {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The cross is the right relative expression, but the remaining decline is not a short to open here.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDNZD",
+              "rationale": "The cross is the right relative expression, but the remaining decline is not a short to open here."
+            }
+          },
+          "harvest_review": {
+            "position_id": "pos-525ff12dcad9",
+            "remaining_edge": false,
+            "remaining_edge_reason": "From 1.2275 the next decline needs New Zealand still tighter than Australia after a five-day drop, and that curve is not in the packet. Brent at 95.82 bids the Australian dollar. A flat book would not open this short here.",
+            "thesis_still_valid": true,
+            "would_initiate_flat": "no"
+          },
+          "instrument": "AUDNZD",
+          "note": "Close the 10 million Australia-kiwi short. A flat book would not re-initiate it at 1.2275.",
+          "position_id": "pos-525ff12dcad9"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The close is wrong only if a restored New Zealand curve still prices a clearly tighter path than Australia at this same 1.2275 cross and oil stops bidding the Australian dollar. Nothing available now restores that forward edge.",
+      "memory_context_sha256": "13a195e40f72af4a7eb782037b2843f1196e3cadd1b1267bc0af2df0cf1df4e9",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "cross-merchant",
+      "thesis": "The Australia-versus-New-Zealand short has already fallen from 1.2456 to 1.2275, down 1.43 percent over five days. Australia's forwards are only flat to easier, New Zealand yields are not available, and Brent at 95.82 still bids the Australian commodity complex. That is not a fresh 10 million short at this level. Close it. Euro-sterling has no policy fact here and is not the replacement."
+    },
+    "dollar-king": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Dollar-yen is the working dollar long.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDJPY",
+              "rationale": "Dollar-yen is the working dollar long."
+            }
+          },
+          "instrument": "USDJPY",
+          "note": "Keep the 20 million dollar-yen long. It is working from 158.06 to 159.70 and does not need to be added.",
+          "position_id": "pos-012b8f0c252c"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Sell euro-dollar as the incremental dollar. Dollar-Canada and dollar-Swiss are already at extremes.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Sell euro-dollar as the incremental dollar. Dollar-Canada and dollar-Swiss are already at extremes."
+            }
+          },
+          "instrument": "EURUSD",
+          "lifecycle": {
+            "catalyst_logic": "Today's producer prices are the test of whether the 0.4 percent CPI impulse and the ten-year at 5.1 keep the dollar bid.",
+            "framing": "tactical",
+            "horizon_days": 5,
+            "realization_logic": "Euro-dollar at 1.1081 is already in a five-day decline, and the short pays if that dollar bid extends through the producer-price reaction."
+          },
+          "note": "Sell 10 million euro-dollar. The euro is the cleaner incremental dollar than adding yen or chasing dollar-Canada.",
+          "notional_usd": 10000000,
+          "setup_fingerprint": {
+            "asset_class": "spot_fx",
+            "catalyst_type": "inflation_print",
+            "countries": [
+              "US",
+              "EA"
+            ],
+            "currencies": [
+              "USD",
+              "EUR"
+            ],
+            "decision_dimension": "thesis",
+            "failure_mode": "dollar_breadth_fails",
+            "instrument_family": "g10_spot",
+            "instruments": [
+              "EURUSD"
+            ],
+            "market_drivers": [
+              "cpi",
+              "ust_selloff"
+            ],
+            "setup_type": "dollar_trend",
+            "technical_setup": null
+          },
+          "side": "short"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The long-dollar book fails if producer prices disappoint and the ten-year gives back the 12 basis point rise, or if euro, sterling, Australia and New Zealand stabilize together. The existing dollar-yen long is invalidated by a move back through 158.06.",
+      "memory_context_sha256": "3510e53c2dd12c8b0830f4164cad2c6db9853244819f546fcb4072659d54949b",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "dollar-king",
+      "thesis": "The dollar is the clean expression of the rates bid. The book is already long dollar-yen from 158.06 to 159.70. Euro, sterling, the Australian dollar and the kiwi have all fallen, while dollar-Canada and dollar-Swiss are already near one-year highs. Hold the yen long and sell 10 million euro-dollar as the incremental dollar, rather than adding more yen or chasing the extremes."
+    },
+    "mean-reverter": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The stretch is real and the catalyst is still live. No fade yet.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "note": "The stretch is real and the catalyst is still live. No fade yet."
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The flat stance changes only once producer prices are out and the extreme fails to extend: the two-year does not hold a new high beyond 4.86, or euro-dollar and the kiwi do not make fresh lows. Price stretch before the print is not an entry.",
+      "memory_context_sha256": "b7d654b90f815e180d6010bfbfc2bee19cae979f836f5bf7a51ccdb1ec772a96",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "The cross did fall in the direction of the short, and covering once that decline had printed matched the original target.",
+            "assumptions_wrong_or_underweighted": "Further open-ended downside through 1.23 was overstated once the kiwi was already extremely weak on a one-year view.",
+            "causal_divergence": "The sign matched. The only gap is that the move stalled near 1.23 instead of extending.",
+            "decision_quality_attribution": "thesis",
+            "future_implication": "Do not re-open an AUDNZD short from a finished 1.25 to 1.23 decline unless a new policy or terms-of-trade break appears.",
+            "observed_reality": "The short was closed after AUDNZD moved from 1.25 to 1.23, and the cross has since only drifted to 1.2275.",
+            "original_belief": "The fade treated AUDNZD near 1.25 as rich versus Australia's flatter path and expected the cross to fall.",
+            "same_information_counterfactual": "With the same entry the short would still be put on from 1.25, and with the same exit it would still be covered rather than reloaded."
+          },
+          "future_rule": "Do not use a finished Australia-kiwi normalization to fade the dollar or the front end while the inflation catalyst is still ahead of the entry.",
+          "lesson": "A completed cross normalization is ordinary bounded variance around a fade whose direction matched the anchor, and it does not loosen the rule that a live catalyst blocks the next fade.",
+          "postmortem_id": "pmd-398011348f57",
+          "thesis_assessment": "The rich-cross fade was confirmed by the subsequent price and does not generalize to fading a new extreme in front of a scheduled inflation print.",
+          "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca",
+          "what_worked": "The short captured the move from 1.25 to 1.23 and was closed once that normalization had printed."
+        }
+      ],
+      "review_id": "review-001",
+      "seat": "mean-reverter",
+      "thesis": "Stay flat. Euro-dollar is at the bottom of its one-year range and the kiwi is at the first percentile, while the U.S. two-year is at the 98th percentile of its level. Brent is firm and the VIX is not an exhaustion spike. A stretch is not a fade while producer prices are still ahead of the cutoff, because a hot print can extend 4.86 and push the dollar through the lows. The closed Australia-kiwi short was a completed normalization and does not license a new fade."
+    },
+    "no-trade-skeptic": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No new risk into the producer-price print. The hike and the dollar are already in the price.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "note": "No new risk into the producer-price print. The hike and the dollar are already in the price."
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-10",
+          "rate": 3.89,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Realized funding is judged about the same as that strip, so staying at the zero official SOFR benchmark does not leave an unpriced funding edge. Paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
+        "sr3_forward_view": "From cash SOFR 3.89 the strip prices December 2026 at 4.315, March 2027 at 4.615 and September 2027 at 4.815."
+      },
+      "invalidation": "A trade becomes actionable only after producer prices are out and the response is observable: a soft print that cheapens the strip versus cash, or a hot print that fails to extend the front end and the dollar. Until one of those is in the price, there is no entry.",
+      "memory_context_sha256": "063d8c31885496859f44fa156846d159e8deb34a25a4502237de2b4961db4925",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "no-trade-skeptic",
+      "thesis": "The apparent edge is already priced. October CPI of 0.4 percent is the public story, the two-year is 4.86 after a 13 basis point rise, and euro-dollar, dollar-yen and dollar-Canada have already moved. The SOFR strip prices funding far above the 3.89 fixing. A new pay or a new dollar long restates a path the front end and the spots have marked, into a producer-price print that is still ahead. Flat matches the evidence."
+    },
+    "perma-bear": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "US_10Y",
+              "rationale": "The ten-year long is the defensive rates expression already on the book."
+            },
+            "rationale": "The ten-year long is the defensive rates expression already on the book.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "US_10Y",
+          "note": "Hold the ten-year long. The 92nd-percentile yield already contains the inflation news, and equity volatility does not price the growth damage from the hike path.",
+          "position_id": "pos-5ac8fc69cb81"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "Cut the ten-year long if the yield trades back to the 5.24 entry, or if producer prices extend the selloff while the VIX stays near 17.49 and the S&P holds 7619. A lower yield with a higher VIX confirms the hold.",
+      "memory_context_sha256": "7c11b05da08163e5e1696a74a9295f2447d6d0473c1d9f96e9824b1a2554a09b",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "perma-bear",
+      "thesis": "Hold the existing U.S. ten-year duration long. The yield is 5.1 after a 12 basis point rise and sits in the 92nd percentile, with the two-year at 4.86 and SOFR September at 4.815 versus cash SOFR of 3.89. Equities are still at the highs and the VIX is 17.49, so the priced hike path is a growth risk that risk assets have not marked. A commodity-currency short is a weak defensive case until equities actually break."
+    },
+    "perma-bull": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "SOFR_2027-03",
+              "rationale": "Keep the March 2027 SOFR pay. Cash SOFR is 3.89 and March is 4.615, with equities still high, VIX at 17.49 and Brent at 95.82. The pay from 4.52 to 4.615 is with the move, and the two-year at the 98th percentile means the hold stays at current size."
+            },
+            "rationale": "Keep the March 2027 SOFR pay. Cash SOFR is 3.89 and March is 4.615, with equities still high, VIX at 17.49 and Brent at 95.82. The pay from 4.52 to 4.615 is with the move, and the two-year at the 98th percentile means the hold stays at current size.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "SOFR_2027-03",
+          "note": "Keep the March 2027 SOFR pay. Cash SOFR is 3.89 and March is 4.615, with equities still high, VIX at 17.49 and Brent at 95.82. The pay from 4.52 to 4.615 is with the move, and the two-year at the 98th percentile means the hold stays at current size.",
+          "position_id": "pos-35db4e56bf42"
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "AONIA_2027-03",
+              "rationale": "Keep the March 2027 AONIA pay. It is 4.91 versus a 4.85 cash rate and is the peak of a strip that then prices ease. The move from 4.798 agrees with firm commodities."
+            },
+            "rationale": "Keep the March 2027 AONIA pay. It is 4.91 versus a 4.85 cash rate and is the peak of a strip that then prices ease. The move from 4.798 agrees with firm commodities.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "AONIA_2027-03",
+          "note": "Keep the March 2027 AONIA pay. It is 4.91 versus a 4.85 cash rate and is the peak of a strip that then prices ease. The move from 4.798 agrees with firm commodities.",
+          "position_id": "pos-78563c24fe05"
+        },
+        {
+          "action": "CLOSE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Remove the Canada March pay. SOFR March rose from 4.52 to 4.615 while CORRA March fell from 3.13 to 3.025, and dollar-Canada at 1.4249 is already at a one-year extreme. Canada is the wrong leg of the optimistic hike book.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "note": "Remove the Canada March pay. SOFR March rose from 4.52 to 4.615 while CORRA March fell from 3.13 to 3.025, and dollar-Canada at 1.4249 is already at a one-year extreme. Canada is the wrong leg of the optimistic hike book.",
+          "position_id": "pos-dd6fdaf39119"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The Canada exit is wrong if CORRA March trades back through 3.13 and Monday's CPI re-synchronizes Canada with SOFR. The SOFR hold fails if March implied falls back through 4.52. The AONIA hold fails if March implied falls through 4.798 and the later contracts pull it onto a cut path.",
+      "memory_context_sha256": "491c1a0b22e81a1804fdb140971d6eebacf64a48ecaf0769448acf85edc779d5",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "perma-bull",
+      "thesis": "The optimistic book stays with the U.S. and Australian March pays. Growth, equities and oil are still resilient, and SOFR March at 4.615 versus cash 3.89 is the live hike path after a 0.4 percent CPI print. The Canada March pay is the wrong country: it has been marked down from 3.13 to 3.025 while the U.S. premium has been marked up, and the Canadian dollar is already the weak leg."
+    },
+    "positioning-cynic": {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The cross short is no longer the under-owned expression.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDNZD",
+              "rationale": "The cross short is no longer the under-owned expression."
+            }
+          },
+          "harvest_review": {
+            "position_id": "pos-be9eaa63695e",
+            "remaining_edge": false,
+            "remaining_edge_reason": "The short has already run from 1.2453 to 1.2275. A flat book would not sell it again at this level.",
+            "thesis_still_valid": false,
+            "would_initiate_flat": "no"
+          },
+          "instrument": "AUDNZD",
+          "note": "Cover the Australia-kiwi short. The move from 1.2453 to 1.2275 is already the visible trade.",
+          "position_id": "pos-be9eaa63695e"
+        },
+        {
+          "action": "CLOSE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Canada is not the ownership extreme. The extreme is the U.S. two-year.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "CORRA_2027-03",
+          "note": "Cover the CORRA March pay. It sits with the crowded hike story and is the wrong way versus the 2.995 entry.",
+          "position_id": "pos-df316f59e974"
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "expected_mark_direction": "lower",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "US_2Y",
+              "rationale": "Receive the two-year because that is where the hike crowd is most extreme."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "rationale": "Canada and Australia repeats are not the crowded U.S. front end.",
+                "status": "not_compelling"
+              },
+              "curve": {
+                "rationale": "A curve package is not cleaner than the outright two-year.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "rationale": "The five-year moved with the same selloff and is not a separate expression.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "two_year",
+              "selection_rationale": "The two-year is the crowded policy point. The other buckets are the same story or already in the book.",
+              "stir_policy_path": {
+                "rationale": "SOFR March 2027 already prices a large hike over cash and is not the cleaner fade.",
+                "status": "not_compelling"
+              },
+              "ten_year": {
+                "rationale": "The ten-year is the headline level, not the ownership extreme.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "asset_class": "rates",
+                "instrument": "US_2Y",
+                "rationale": "The two-year yield is the percentile extreme in the hike story.",
+                "status": "candidate"
+              }
+            },
+            "rationale": "Receive the two-year because that is where the hike crowd is most extreme.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "US_2Y",
+          "lifecycle": {
+            "catalyst_logic": "Producer prices today are the test of whether the 98th-percentile front end can extend or whether the crowd is already long the hike.",
+            "framing": "swing",
+            "horizon_days": 15,
+            "realization_logic": "The receive gains if the two-year yield falls from 4.86 as the crowded hike narrative stops extending after producer prices."
+          },
+          "note": "Receive 10 million of the U.S. two-year at 4.86. The percentile extreme is the front end, and the size stays well inside the risk budget.",
+          "notional_usd": 10000000,
+          "setup_fingerprint": {
+            "asset_class": "rates",
+            "catalyst_type": "inflation_print",
+            "countries": [
+              "US"
+            ],
+            "currencies": [
+              "USD"
+            ],
+            "decision_dimension": "thesis",
+            "failure_mode": "hike_path_extends",
+            "instrument_family": "ust",
+            "instruments": [
+              "US_2Y"
+            ],
+            "market_drivers": [
+              "cpi",
+              "fed_hike_headlines"
+            ],
+            "setup_type": "crowded_hike_fade",
+            "technical_setup": null
+          },
+          "side": "long"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The two-year receive fails if hike pricing extends from these prints: SOFR March rises further above 4.615 with cash still 3.89 and the two-year holds above 4.86.",
+      "memory_context_sha256": "1e0d9bb94a48018ac560fc7ab5323f93bf0f50cb34831728680dec9ec968573c",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "positioning-cynic",
+      "thesis": "The crowded book is the U.S. hike and the dollar long: the two-year is at the 98th percentile, SOFR March is 4.615 versus cash 3.89, and the headlines are about more Fed hikes. Cover the Australia-kiwi short, which has already run from 1.2453 to 1.2275 and would not be opened flat here. Cover the CORRA March pay, which is lined up with that same hike crowd and is marked the wrong way. Receive the U.S. two-year. That is the rates expression of the crowded hike. Euro-dollar at the bottom of its range is the same dollar-long story and is the weaker fade."
+    },
+    "rate-dove": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "CORRA_2027H-Z",
+              "rationale": "The Canada 2027 strip still prices hikes over cash. That is the receive."
+            },
+            "rationale": "The Canada 2027 strip still prices hikes over cash. That is the receive.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "CORRA_2027H-Z",
+          "note": "Hold the Canada curve receive. The hike premium over cash is the underpriced-ease gap, and Monday's CPI is the test rather than a reason to flip.",
+          "position_id": "pos-9849cf751c27"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The receive fails if Monday's Canada CPI lifts the CORRA 2027 curve mark sustainably above the 3.40 entry and extends December above 3.385. A soft print is not an exit.",
+      "memory_context_sha256": "a5b95fb92ce1ba85122d01a2b060d8c95b1466b6c2e4b49eb770087109d95030",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "rate-dove",
+      "thesis": "Hold the existing Canada 2027 curve receive. Cash CORRA is 2.52, March is 3.025 and December is 3.385, so the strip still embeds a hike extension that easing has not been paid for. The U.S. path is a fresh hike reprice, with SOFR March at 4.615 versus cash 3.89, and there is no new labor or disinflation fact that would justify a new U.S. receive. Australia already prices ease after March. Euro-area yields eased and Japan was flat."
+    },
+    "rate-hawk": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "SOFR_2027-09",
+              "rationale": "September SOFR is the working U.S. terminal pay."
+            },
+            "rationale": "September SOFR is the working U.S. terminal pay.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "SOFR_2027-09",
+          "note": "Keep the September SOFR pay. It is marked up from 4.755 to 4.815. Do not add size at a 98th-percentile two-year.",
+          "position_id": "pos-c9184707c12b"
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "CORRA_2027-03",
+              "rationale": "Canada's cash yield rose with the U.S. even though the futures pay is only slightly through entry."
+            },
+            "rationale": "Canada's cash yield rose with the U.S. even though the futures pay is only slightly through entry.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDCAD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "CORRA_2027-03",
+          "note": "Keep the Canada March pay. The two-year backup is the confirmation, and the contract is still near the entry.",
+          "position_id": "pos-2709875e8c9c"
+        },
+        {
+          "action": "CLOSE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "A down-marked Australian tenor is not a U.S. CPI trade.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-06",
+          "note": "Exit the June AONIA pay. The strip steps down from March and this pay is marked from 4.91 to 4.86.",
+          "position_id": "pos-9cbf3f27dfff"
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "SOFR_2026-12",
+              "rationale": "The front SOFR pay is with the hike reprice."
+            },
+            "rationale": "The front SOFR pay is with the hike reprice.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "SOFR_2026-12",
+          "note": "Keep the December SOFR pay. It is marked up from 4.115 to 4.315 against cash at 3.89.",
+          "position_id": "pos-6c7bcf0fe6af"
+        },
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "AONIA_2027-09",
+              "rationale": "September is the Australian tenor still marked in the direction of the pay."
+            },
+            "rationale": "September is the Australian tenor still marked in the direction of the pay.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "AUDUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "AONIA_2027-09",
+          "note": "Keep the September AONIA pay. It is marked up from 4.7075 to 4.75. Add nothing further in Australia.",
+          "position_id": "pos-069ec6c19021"
+        },
+        {
+          "action": "CLOSE",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "The back of the Australian strip prices ease, not a further hike.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "instrument": "AONIA_2027-12",
+          "note": "Exit the December AONIA pay. The strip prices 4.635 against cash of 4.85.",
+          "position_id": "pos-1b79b84070a7"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The U.S. pays fail if December SOFR trades back through 4.115 and September SOFR trades back through 4.755. The Canada pay fails if the Canada two-year gives back today's rise and CORRA March stays below 3.025. The September AONIA pay fails if it trades back through 4.7075.",
+      "memory_context_sha256": "89aa250d81080e205974cbaddc945f83f4e8d5e99cd73b61b35135247164be0e",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "rate-hawk",
+      "thesis": "U.S. pays stay on. The two-year is 4.86 after a 13 basis point rise, cash SOFR is 3.89, and the SOFR strip is 4.315 in December, 4.615 in March and 4.815 in September. The Canada two-year rose 12 basis points while CORRA March is only slightly through the entry, so that pay stays. The Australian strip is flat to lower, so the June and December pays that have been marked down come off. The September Australia pay, which has been marked up, stays. No new Australia on a U.S. CPI print."
+    },
+    "trend-follower": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Dollar-yen is the live continuation. Do not fade the yield backup just because the level is high.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "USDJPY",
+              "rationale": "Dollar-yen is the live continuation. Do not fade the yield backup just because the level is high."
+            }
+          },
+          "instrument": "USDJPY",
+          "note": "Hold the dollar-yen long. The five-day dollar advance is intact and there is no reversal signal.",
+          "position_id": "pos-111b627e5627"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "The hold fails if dollar-yen trades back through 159.23 and the five-day dollar gain is gone, with the euro and Australian dollar no longer declining and the yield backup reversed.",
+      "memory_context_sha256": "d71be8e3313f552d2dcb3f8bc90f276d21c32b73f929e75ff2efcc216000c98a",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "trend-follower",
+      "thesis": "Hold the dollar-yen long. The pair is 159.70, up 0.78 percent over five days, and the long from 159.23 is with the move. Euro-dollar and Australian dollar are in persistent declines, and the U.S. yield backup agrees with long dollars. Spot is the cleaner continuation because the dollar trend is already there across five-day and one-month closes, while the rates backup is a same-session rise."
+    },
+    "value-guy": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Euro-sterling is the valuation long already on the book. A rates spread is not cheap just because the euro is cheap.",
+            "selected": "spot",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURGBP",
+              "rationale": "Euro-sterling is the valuation long already on the book. A rates spread is not cheap just because the euro is cheap."
+            }
+          },
+          "instrument": "EURGBP",
+          "note": "Hold the 5 million euro-sterling long. It is still in the cheap tail and is not being added.",
+          "position_id": "pos-5760dbd4ac3e"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "Exit the euro-sterling long if its past-year rank leaves the cheap tail that is the only anchor available now, or if a later fundamental anchor reclassifies 0.8360 as equilibrium.",
+      "memory_context_sha256": "b81b6a29e5103370a9cc61f041af7b401a29e9b4fde44a3a50c4770ab42907fc",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "The cross did fall in the direction of the short, and covering once that decline had printed matched the original target.",
+            "assumptions_wrong_or_underweighted": "Further open-ended downside through 1.23 was overstated once the kiwi was already extremely weak on a one-year view.",
+            "causal_divergence": "The sign matched. The only gap is that the move stalled near 1.23 instead of extending.",
+            "decision_quality_attribution": "thesis",
+            "future_implication": "Do not re-open an AUDNZD short from a finished 1.25 to 1.23 decline unless a new policy or terms-of-trade break appears.",
+            "observed_reality": "The short was closed after AUDNZD moved from 1.25 to 1.23, and the cross has since only drifted to 1.2275.",
+            "original_belief": "The valuation book treated AUDNZD near 1.25 as rich versus Australia's flatter path and expected the cross to fall.",
+            "same_information_counterfactual": "With the same entry the short would still be put on from 1.25, and with the same exit it would still be covered rather than reloaded."
+          },
+          "no_new_lesson": "The drift from the 1.23 exit to 1.2275 is ordinary bounded variance. The prior process remains sound: once a valuation short converges, the residual is a new question.",
+          "postmortem_id": "pmd-08b78abf6476",
+          "thesis_assessment": "The rich-cross short converged from 1.25 to 1.23 and the close treated the residual as a new question rather than a reload.",
+          "trade_id": "trd-trader-value-guy-pos-65b06053d4c6",
+          "what_worked": "The short was held while it converged and closed once that convergence had printed."
+        }
+      ],
+      "review_id": "review-001",
+      "seat": "value-guy",
+      "thesis": "Hold the euro-sterling long. It is still in the fourth percentile of the past year, from 0.8343 to 0.8360, and nothing here says that cheapness has converged. Euro-dollar at the bottom of its one-year range and the kiwi at the first percentile are more extreme ranks, but a rank is not a new spot long. Rates are not cleaner: there is no cross-market spread to show the currency is cheap because the rate is cheap. The closed Australia-kiwi short is a finished convergence, not a re-entry."
+    },
+    "vol-convexity": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No listed option premium is in the freeze, so no option is opened.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "note": "No listed option premium is in the freeze, so no option is opened."
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "invalidation": "This hold ceases if a listed premium, strike and implied vol appear on equity downside, euro-dollar or dollar-yen. It also ceases if the ten-year gives back the rise and the euro lifts off 1.1081 before any option mark appears.",
+      "memory_context_sha256": "80d34af4a88e0db8db8574bc445af7967f66b2c5a9f41abd2cf7166dd2c38dcf",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "review_id": "review-001",
+      "seat": "vol-convexity",
+      "thesis": "Stay flat. The VIX is 17.49, equities are still high, and the freeze has no listed option premium, strike or implied vol. The rates jump and the euro at a one-year extreme would favor bounded options over spot once a premium can be marked. Until then there is nothing to book. Options become the expression only after a listed mark exists and either the ten-year extends through 5.1 while equities slip, the euro breaks or squeezes off 1.1081, or dollar-yen extends through 159.70."
+    }
+  },
+  "execution": {
+    "allowed_subagent_models": [
+      "composer-2.5",
+      "grok-4.7"
+    ],
+    "auto_used": false,
+    "composer_cap": 2,
+    "declared_composer_calls": 2,
+    "declared_grok_calls": 19,
+    "declared_total_model_calls": 21,
+    "grok_cap": 19,
+    "other_models_calls": 0,
+    "parent_model": "grok-4.7",
+    "total_model_cap": 21
+  },
+  "launch_id": "mwl-20261113T112215Z-72ba187b",
+  "learning_quality_review": {
+    "assessments": [
+      {
+        "adequate": false,
+        "owner_id": "chatgpt",
+        "owner_type": "pm",
+        "reasons": [
+          "No submission was provided for this obligation."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-792fc0fb7c9b",
+        "submission_state": "missing"
+      },
+      {
+        "adequate": false,
+        "owner_id": "chatgpt",
+        "owner_type": "pm",
+        "reasons": [
+          "No submission was provided for this obligation."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-b6d58713e98c",
+        "submission_state": "missing"
+      },
+      {
+        "adequate": true,
+        "owner_id": "pragmatist",
+        "owner_type": "pm",
+        "reasons": [
+          "The causal chain links the Australia-kiwi short to the delivered decline and a sound cover."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-f603c2341244",
+        "submission_state": "adequate"
+      },
+      {
+        "adequate": true,
+        "owner_id": "swinger",
+        "owner_type": "pm",
+        "reasons": [
+          "The causal chain separates the completed decline from a reason to reload it."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-957c0dbbfe05",
+        "submission_state": "adequate"
+      },
+      {
+        "adequate": true,
+        "owner_id": "mean-reverter",
+        "owner_type": "trader",
+        "reasons": [
+          "The completed normalization is tied to a live-catalyst rule for the next fade."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-398011348f57",
+        "submission_state": "adequate"
+      },
+      {
+        "adequate": true,
+        "owner_id": "value-guy",
+        "owner_type": "trader",
+        "reasons": [
+          "The close is treated as delivered convergence, and the residual drift is bounded variance."
+        ],
+        "submission_kind": "postmortem",
+        "submission_ref": "pmd-08b78abf6476",
+        "submission_state": "adequate"
+      }
+    ],
+    "call_count": 1,
+    "model": "composer-2.5",
+    "role": "learning_quality_examiner"
+  },
+  "overnight_run_id": "overnight-20261113",
+  "pm_decisions": {
+    "grinder": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "No candidate clears the official SOFR hurdle on shocked risk capital into today's producer prices.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "note": "No candidate clears the official SOFR hurdle on shocked risk capital into today's producer prices."
+        }
+      ],
+      "deployment_hurdle": {
+        "benchmark": "Official NY Fed SOFR at 3.89 on 2026-11-10, ACT/360, charged on shocked risk capital.",
+        "candidate_assessments": [
+          {
+            "asset_class": "spot_fx",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "missing consumer surveys",
+              "New Zealand sovereign yields"
+            ],
+            "instrument": "EURUSD",
+            "markable": true,
+            "rationale": "Euro-dollar is markable at 1.1081 after a 1.27 percent five-day decline. A new dollar short into today's producer prices is a timing problem, so expected edge stays below official SOFR on shocked risk capital."
+          },
+          {
+            "asset_class": "rates",
+            "hurdle_result": "does_not_clear",
+            "ignored_unrelated_gaps": [
+              "missing consumer surveys",
+              "New Zealand sovereign yields"
+            ],
+            "instrument": "SOFR_2027-03",
+            "markable": true,
+            "rationale": "March SOFR at 4.615 versus cash 3.89 already prices the hike. A new pay into producer prices buys a path the strip has discounted, and a new receive takes the same print the other way."
+          }
+        ],
+        "chosen_action_rationale": "Stay at the official SOFR benchmark. Both euro-dollar and March SOFR are markable and both fail on their own economics into today's producer prices."
+      },
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "execution": {
+        "principal_model": "grok-4.7",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "The flat stance changes after producer prices only if a markable rate or spot then offers expected adverse-path edge above official SOFR on shocked risk capital.",
+      "memory_context_sha256": "3d95d28f36903db7a4548f5cff29310c259578cfb966b1c284accf5c1fb07315",
+      "opportunity_scan": [
+        {
+          "instrument": "SOFR_2027-03",
+          "rationale": "The strip already embeds the hike. The print blocks a new pay or receive."
+        },
+        {
+          "instrument": "EURUSD",
+          "rationale": "The five-day decline is already in the spot. No edge over official SOFR."
+        }
+      ],
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "pm_id": "grinder",
+      "review_id": "review-001",
+      "thesis": "Stay flat versus official SOFR at 3.89. March SOFR at 4.615, with December at 4.315 and September at 4.815, already prices the hike, and the two-year at 4.86 sits in the 98th percentile after a 13 basis point selloff. Euro-dollar at 1.1081 is already down 1.27 percent over five days. Producer prices are today, so a new pay or a new dollar short is print risk rather than an edge over SOFR charged on shocked risk capital."
+    },
+    "pragmatist": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "CORRA_2027-03",
+              "rationale": "The working Canada receive stays. The U.S. two-year receive and the euro short do not improve it."
+            },
+            "rationale": "The working Canada receive stays. The U.S. two-year receive and the euro short do not improve it.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "CORRA_2027-03",
+          "note": "Keep the 150 million CORRA March receive. Do not add before Monday's CPI.",
+          "position_id": "pm-pragmatist-4e0cbc4e0b05"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "execution": {
+        "principal_model": "grok-4.7",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "The receive fails if CORRA March reprices back through 3.13 and the gap versus cash widens, especially if Monday's Canada CPI is hot enough to drag Canada toward the larger U.S. hike premium. A sustained move above 3.20 after that print ends the hold.",
+      "memory_context_sha256": "c57b26fa7fbb40ed790849a76e53f6c6c7b8a913de64b73990338e7c56cb3bbb",
+      "opportunity_scan": [
+        {
+          "instrument": "CORRA_2027-03",
+          "rationale": "Working receive. Best action is to hold rather than add before Monday."
+        },
+        {
+          "instrument": "US_2Y",
+          "rationale": "A receive fights the CPI print and duplicates Canada duration."
+        },
+        {
+          "instrument": "EURUSD",
+          "rationale": "Supported by the dollar bid, but 1.1081 does not change the book."
+        }
+      ],
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "pm_id": "pragmatist",
+      "portfolio_construction": {
+        "adverse_scenario": "The adverse path is a hot Canada CPI on Monday that lifts CORRA March back through 3.13. A stronger dollar or a further U.S. selloff does not hedge that gap.",
+        "candidate_interactions": [
+          {
+            "instrument": "EURUSD",
+            "interaction": "diversify",
+            "rationale": "A euro short adds dollar spot risk beside a Canada rate position and does not offset Monday's CORRA gap."
+          },
+          {
+            "instrument": "US_2Y",
+            "interaction": "duplicate_beta",
+            "rationale": "Receiving the U.S. two-year stacks another front-end duration position onto the open Canada receive into the same inflation prints."
+          }
+        ],
+        "chosen_actions_rationale": "Hold the CORRA receive and add nothing. The position is already the single, and Monday's CPI is the invalidation. Unused risk capacity is unused because no new expression is clean.",
+        "existing_book_summary": "One position: long CORRA March, notional 150 million, entry implied 3.13, live 3.025. Canadian cash is 2.52, so the contract still prices roughly 50 basis points of hike premium, less than SOFR March at 4.615 over cash 3.89. Event risk is Canada CPI on Monday.",
+        "independent_handoff_opportunities": [
+          {
+            "asset_class": "spot_fx",
+            "instrument": "EURUSD",
+            "markable": true,
+            "rationale": "A new 10 million euro-dollar short is markable at 1.1081 and is the dollar expression in the trader challenge set."
+          },
+          {
+            "asset_class": "rates",
+            "instrument": "US_2Y",
+            "markable": true,
+            "rationale": "A U.S. two-year receive at 4.86 is markable and is the crowded-hike fade in the trader challenge set."
+          }
+        ],
+        "rejected_complements": [
+          {
+            "instrument": "EURUSD",
+            "reason": "A 10 million short does not cover the Canada CPI gap, and 1.1081 is not a fresh dislocation."
+          },
+          {
+            "instrument": "US_2Y",
+            "reason": "Receiving 4.86 after a hot CPI and before producer prices duplicates the Canada receive and fades a print that still stands."
+          }
+        ]
+      },
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "The cross did fall in the direction of the short, and covering once that decline had printed matched the original target.",
+            "assumptions_wrong_or_underweighted": "Further open-ended downside through 1.23 was overstated once the kiwi was already extremely weak on a one-year view.",
+            "causal_divergence": "The sign matched. The only gap is that the move stalled near 1.23 instead of extending.",
+            "decision_quality_attribution": "thesis",
+            "future_implication": "Do not re-open an AUDNZD short from a finished 1.25 to 1.23 decline unless a new policy or terms-of-trade break appears.",
+            "observed_reality": "The short was closed after AUDNZD moved from 1.25 to 1.23, and the cross has since only drifted to 1.2275.",
+            "original_belief": "Pragmatist treated AUDNZD near 1.25 as rich versus Australia's flatter path and expected the cross to fall.",
+            "same_information_counterfactual": "With the same entry the short would still be put on from 1.25, and with the same exit it would still be covered rather than reloaded."
+          },
+          "no_new_lesson": "The move from 1.25 to 1.23 was ordinary bounded variance around a short that was right on sign. The prior process remains sound: cover once the move is delivered instead of reloading a winning close.",
+          "postmortem_id": "pmd-f603c2341244",
+          "thesis_assessment": "The Australia-kiwi short was confirmed on sign and was covered when the move from 1.25 to 1.23 had been delivered.",
+          "trade_id": "trd-pm-pragmatist-pm-pragmatist-fb7a9dedff4a"
+        }
+      ],
+      "review_id": "review-001",
+      "thesis": "Hold the Canada front-end receive. CORRA March at 3.025 is below the 3.13 entry and still about 50 basis points over Canadian cash at 2.52, a smaller hike premium than SOFR March at 4.615 versus cash 3.89. Hot U.S. CPI and Brent at 95.82 keep a U.S. pay impulse alive into producer prices, so neither paying more U.S. front end nor receiving the two-year is a clean add. Monday's Canada CPI is the invalidation, not a reason to bolt on unrelated dollar risk."
+    },
+    "swinger": {
+      "actions": [
+        {
+          "action": "HOLD",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": null,
+            "rationale": "Flat sleeve remains. The new risk is the March SOFR pay, not a second overlay.",
+            "selected": "none",
+            "spot_candidate": null
+          },
+          "note": "Flat sleeve remains. The new risk is the March SOFR pay, not a second overlay."
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "expected_mark_direction": "higher",
+          "expression_memo": {
+            "options_candidate": null,
+            "rates_candidate": {
+              "asset_class": "rates",
+              "instrument": "SOFR_2027-03",
+              "rationale": "Pay March 2027 SOFR. Cash at 3.89 versus 4.615 still has room if the inflation impulse persists, and the size is the risk budget rather than a second currency overlay."
+            },
+            "rates_tenor_scan": {
+              "cross_market_rv": {
+                "rationale": "Other countries are not the same further-hike path.",
+                "status": "not_compelling"
+              },
+              "curve": {
+                "rationale": "A curve package is not cleaner than the futures pay.",
+                "status": "not_compelling"
+              },
+              "five_year": {
+                "rationale": "The five-year is the same selloff, not a separate policy gap.",
+                "status": "not_compelling"
+              },
+              "selected_bucket": "stir_policy_path",
+              "selection_rationale": "March SOFR is the futures point with room above 4.615 toward the cash curve.",
+              "stir_policy_path": {
+                "asset_class": "rates",
+                "instrument": "SOFR_2027-03",
+                "rationale": "March SOFR is the futures point with room above 4.615 toward the cash curve.",
+                "status": "candidate"
+              },
+              "ten_year": {
+                "rationale": "The ten-year mixes term premium with the policy path.",
+                "status": "not_compelling"
+              },
+              "two_year": {
+                "rationale": "The two-year has already jumped and is the crowded cash point.",
+                "status": "not_compelling"
+              }
+            },
+            "rationale": "Pay March 2027 SOFR. Cash at 3.89 versus 4.615 still has room if the inflation impulse persists, and the size is the risk budget rather than a second currency overlay.",
+            "selected": "rates",
+            "spot_candidate": {
+              "asset_class": "spot_fx",
+              "instrument": "EURUSD",
+              "rationale": "Spot is the alternative expression and is already extended."
+            }
+          },
+          "instrument": "SOFR_2027-03",
+          "lifecycle": {
+            "catalyst_logic": "Producer prices today either confirm the October CPI impulse or they do not. The swing is the subsequent pull of the March forward, not a one-print scalp.",
+            "framing": "swing",
+            "horizon_days": 25,
+            "realization_logic": "March 2027 implied SOFR reprices higher from 4.615 if the path off 3.89 cash catches up with a repeated inflation impulse and Brent near 96."
+          },
+          "note": "Pay March 2027 SOFR. Notional is set so a 100 basis point shock stays inside the 100 million risk-capital limit and near the 60 million adverse path the book can live with.",
+          "notional_usd": 4000000000,
+          "setup_fingerprint": {
+            "asset_class": "rates",
+            "catalyst_type": "inflation_data",
+            "countries": [
+              "US"
+            ],
+            "currencies": [
+              "USD"
+            ],
+            "decision_dimension": "thesis",
+            "failure_mode": "soft_ppi_unwind",
+            "instrument_family": "sofr_futures",
+            "instruments": [
+              "SOFR_2027-03"
+            ],
+            "market_drivers": [
+              "cpi",
+              "brent"
+            ],
+            "setup_type": "inflation_policy_reprice",
+            "technical_setup": null
+          },
+          "side": "short"
+        }
+      ],
+      "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+      "execution": {
+        "principal_model": "grok-4.7",
+        "subagent_count": 0,
+        "subagent_models": []
+      },
+      "invalidation": "Close the pay if March 2027 SOFR trades at or below 4.40, which would unwind the inflation impulse. Do not add a euro short or a yen short to soften it.",
+      "memory_context_sha256": "6464c1bf951743fa1fabf394df77a1fbccb70d1b994447babad2a771223b0f8e",
+      "opportunity_scan": [
+        {
+          "instrument": "SOFR_2027-03",
+          "rationale": "Selected. Cash 3.89 versus March at 4.615 is the concentrated pay."
+        },
+        {
+          "instrument": "EURUSD",
+          "rationale": "Rejected. A euro short piles into a dollar expression other books already hold."
+        },
+        {
+          "instrument": "USDJPY",
+          "rationale": "Rejected. 159.70 is too close to intervention for a fresh dollar long."
+        }
+      ],
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+      "pm_id": "swinger",
+      "postmortems": [
+        {
+          "causal": {
+            "assumptions_right": "The cross did fall in the direction of the short, and covering once that decline had printed matched the original target.",
+            "assumptions_wrong_or_underweighted": "Further open-ended downside through 1.23 was overstated once the kiwi was already extremely weak on a one-year view.",
+            "causal_divergence": "The sign matched. The only gap is that the move stalled near 1.23 instead of extending.",
+            "decision_quality_attribution": "thesis",
+            "future_implication": "Do not re-open an AUDNZD short from a finished 1.25 to 1.23 decline unless a new policy or terms-of-trade break appears.",
+            "observed_reality": "The short was closed after AUDNZD moved from 1.25 to 1.23, and the cross has since only drifted to 1.2275.",
+            "original_belief": "Swinger treated AUDNZD near 1.25 as rich versus Australia's flatter path and expected the cross to fall.",
+            "same_information_counterfactual": "With the same entry the short would still be put on from 1.25, and with the same exit it would still be covered rather than reloaded."
+          },
+          "future_rule": "Do not re-open an Australia-kiwi short after a realized 1.25 to 1.23 decline unless a new policy or terms-of-trade divergence appears.",
+          "lesson": "A finished relative-value decline that stalls is not a signal to reload the same short.",
+          "postmortem_id": "pmd-957c0dbbfe05",
+          "thesis_assessment": "The Australia-kiwi short from 1.25 to 1.23 realized the decline it was put on for, and the cross has only drifted a few pips through the exit.",
+          "trade_id": "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+        }
+      ],
+      "review_id": "review-001",
+      "thesis": "October CPI at 0.4 percent and Brent at 95.82 leave cash SOFR at 3.89 low versus a path that is only 4.615 by March 2027. The two-year at 4.86 and the ten-year at 5.1 show the impulse is already in the cash curve, which is a reason to size the pay so a squeeze does not threaten the book, not a reason to receive in front of oil and the CPI print. Canada and Australia are different paths. Dollar-yen at 159.70 is the wrong dollar expression. The concentrated book is one outright March SOFR pay, plus a flat hold so the book is not only that new risk."
+    }
+  },
+  "review_id": "review-001",
+  "schedule_id": "market-watch-weekday-0205",
+  "schema_version": 1,
+  "type": "OVERNIGHT_SCHEDULED_OUTPUT"
+}

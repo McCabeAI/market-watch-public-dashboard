@@ -2094,6 +2094,62 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "The live trend is a higher US policy path after October CPI at +0.4 percent: the two-year is 4.73, through 4.67, and March 2027 SOFR implied is 4.53 after a receive was stopped out from 4.33. The dollar is already trading that trend. USDJPY at 159.23 is a 20-day upside breakout, with EURUSD and AUDUSD breaking down and USDCAD breaking up over the same window. Long USDJPY is the continuation. A ten-year pay at 4.98 stays off until that tenor prints a confirmed new yield high, which is not established."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-111b627e5627",
+          "rationale": "Hold the dollar-yen long. The five-day dollar advance is intact and there is no reversal signal.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "22030702b30cd17d75135b069360568bb875333290cae06ae92a59d2ce530ffb",
+      "event_id": "jde-a0e66373536f4881",
+      "funding_view": null,
+      "invalidation": "The hold fails if dollar-yen trades back through 159.23 and the five-day dollar gain is gone, with the euro and Australian dollar no longer declining and the yield backup reversed.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-111b627e5627"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d71be8e3313f552d2dcb3f8bc90f276d21c32b73f929e75ff2efcc216000c98a",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5e31b868ad9f1469c022965666ccf3f096ad1924f2b02c77f355d5c4814e9940"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the dollar-yen long. The pair is 159.70, up 0.78 percent over five days, and the long from 159.23 is with the move. Euro-dollar and Australian dollar are in persistent declines, and the U.S. yield backup agrees with long dollars. Spot is the cleaner continuation because the dollar trend is already there across five-day and one-month closes, while the rates backup is a same-session rise.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Hold the dollar-yen long. The pair is 159.70, up 0.78 percent over five days, and the long from 159.23 is with the move. Euro-dollar and Australian dollar are in persistent declines, and the U.S. yield backup agrees with long dollars. Spot is the cleaner continuation because the dollar trend is already there across five-day and one-month closes, while the rates backup is a same-session rise."
     }
   ],
   "schema_version": 1,

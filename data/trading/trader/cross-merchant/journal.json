@@ -2076,6 +2076,64 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "Short AUDNZD is the clean relative-value expression outside the dollar. The cross at 1.2285 is down 1.29% over five days and 1.61% over twenty, and AUDCAD and EURAUD still mark the Australian dollar as the weak leg. Spot sits at a 0.07 range position after a failed breakdown, so the ten million short from 1.2456 stays a multi-week hold: no add into the floor. EURGBP is a different valuation extreme and is not this position."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pos-525ff12dcad9",
+          "rationale": "Close the 10 million Australia-kiwi short. A flat book would not re-initiate it at 1.2275.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "eb4a6bb66ec7d450f9f28c277d490c814b3c36672dcbaa38b2917955cdefd880",
+      "event_id": "jde-4cbb9483c58e4ba2",
+      "funding_view": null,
+      "invalidation": "The close is wrong only if a restored New Zealand curve still prices a clearly tighter path than Australia at this same 1.2275 cross and oil stops bidding the Australian dollar. Nothing available now restores that forward edge.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-525ff12dcad9"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-525ff12dcad9"
+      ],
+      "memory_context_sha256": "13a195e40f72af4a7eb782037b2843f1196e3cadd1b1267bc0af2df0cf1df4e9",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e75ea392a40b63d496d9579b3ee0bb1b327590f0d4d5508fa33803538cf9ae77"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Australia-versus-New-Zealand short has already fallen from 1.2456 to 1.2275, down 1.43 percent over five days. Australia's forwards are only flat to easier, New Zealand yields are not available, and Brent at 95.82 still bids the Australian commodity complex. That is not a fresh 10 million short at this level. Close it. Euro-sterling has no policy fact here and is not the replacement.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "The Australia-versus-New-Zealand short has already fallen from 1.2456 to 1.2275, down 1.43 percent over five days. Australia's forwards are only flat to easier, New Zealand yields are not available, and Brent at 95.82 still bids the Australian commodity complex. That is not a fresh 10 million short at this level. Close it. Euro-sterling has no policy fact here and is not the replacement."
     }
   ],
   "schema_version": 1,

@@ -1050,6 +1050,122 @@
       "run_id": "overnight-20261112",
       "seq": 44,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          500000.0,
+          100000.0,
+          50000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "event_id": "pse-000045",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "seq": 45,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0002,
+        "complacency": 0.01,
+        "defensiveness": -0.0007,
+        "external_pressure": -0.0003,
+        "frustration": -0.0008,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.0023
+      },
+      "event_id": "pse-000046",
+      "kind": "session_gain",
+      "magnitude": 0.11470824,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "scale": 1.0,
+      "seq": 46,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 57354.12
+      }
+    },
+    {
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.0011,
+        "defensiveness": 0.0039,
+        "frustration": 0.0075,
+        "revenge_pressure": 0.0084,
+        "self_trust": -0.0031,
+        "thesis_attachment": 0.0024
+      },
+      "event_id": "pse-000047",
+      "kind": "trade_loss_close",
+      "magnitude": 0.105,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "scale": 1.0,
+      "seq": 47,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "corra",
+        "notional_usd": 50000000,
+        "realized_pnl_usd": -52500.0,
+        "side": "short",
+        "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
+      }
+    },
+    {
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0032,
+        "complacency": 0.0483,
+        "external_pressure": -0.0108,
+        "frustration": -0.0033,
+        "self_trust": 0.01
+      },
+      "event_id": "pse-000048",
+      "kind": "rank_gain_major",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261113",
+      "scale": 1.0,
+      "seq": 48,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "rank_change": -4
+      }
     }
   ],
   "owner_id": "perma-bull",

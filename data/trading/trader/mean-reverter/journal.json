@@ -2092,6 +2092,60 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "The Australian-kiwi fade has already arrived at the 20-day floor. Spot is 1.2285, range position is 0.07, and the downside break has failed, so the open short is late. The one-year z-score has cooled to +0.94. The five-year richness is a reason to look again only after a bounce back into the range, not a reason to stay short on the floor. Euro-dollar at 1.1127 remains a live 20-day breakdown, so a dollar fade is the wrong substitute. Cover the 5 million."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The stretch is real and the catalyst is still live. No fade yet.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "e4ab1955cfe5674f843f8e550a7c537b422d9cfaff0823769bc0f38efed80c1e",
+      "event_id": "jde-b11407fe43d2401c",
+      "funding_view": null,
+      "invalidation": "The flat stance changes only once producer prices are out and the extreme fails to extend: the two-year does not hold a new high beyond 4.86, or euro-dollar and the kiwi do not make fresh lows. Price stretch before the print is not an entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b7d654b90f815e180d6010bfbfc2bee19cae979f836f5bf7a51ccdb1ec772a96",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "7b962b35b877df8457da505b941b2bf781b8a87c7baba56544b462e9a9556ed5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Euro-dollar is at the bottom of its one-year range and the kiwi is at the first percentile, while the U.S. two-year is at the 98th percentile of its level. Brent is firm and the VIX is not an exhaustion spike. A stretch is not a fade while producer prices are still ahead of the cutoff, because a hot print can extend 4.86 and push the dollar through the lows. The closed Australia-kiwi short was a completed normalization and does not license a new fade.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Stay flat. Euro-dollar is at the bottom of its one-year range and the kiwi is at the first percentile, while the U.S. two-year is at the 98th percentile of its level. Brent is firm and the VIX is not an exhaustion spike. A stretch is not a fade while producer prices are still ahead of the cutoff, because a hot print can extend 4.86 and push the dollar through the lows. The closed Australia-kiwi short was a completed normalization and does not license a new fade."
     }
   ],
   "schema_version": 1,

@@ -103,16 +103,16 @@
   ],
   "as_of": "2026-11-13T06:22:15.706647-05:00",
   "calibration": {
-    "average_holding_seconds": 960070,
-    "average_realized_pnl_usd": 22901.3,
+    "average_holding_seconds": 934242,
+    "average_realized_pnl_usd": 91476.31,
     "breakeven": 0,
     "by_asset_class": {
       "spot_fx": {
-        "count": 3,
-        "total_realized_pnl_usd": 68703.9
+        "count": 4,
+        "total_realized_pnl_usd": 365905.23
       }
     },
-    "closed_trade_count": 3,
+    "closed_trade_count": 4,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -125,15 +125,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 22901.3,
-        "count": 3,
-        "hit_rate": 0.3333
+        "average_pnl_usd": 91476.31,
+        "count": 4,
+        "hit_rate": 0.5
       }
     },
     "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 68703.9,
-    "wins": 1
+    "total_realized_pnl_usd": 365905.23,
+    "wins": 2
   },
   "capital_owner": null,
   "consequence": {
@@ -155,7 +155,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -7640.58,
     "status": "ok"
   },
   "learning": {
@@ -166,60 +166,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "13a195e40f72af4a7eb782037b2843f1196e3cadd1b1267bc0af2df0cf1df4e9",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 56,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 1.25,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "The edge is the extreme cross location versus a 3.5-percentile NZDUSD that mixes in the dollar; it is exhausted if AUDNZD holds a new high through 1.2456 or if a New Zealand cash or policy gap starts paying Australia as hard as the listed Australia-Canada cash wedge.",
-        "current_mark": 1.2284551843175933,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 1.2455636090977256,
-        "expected_mark_direction": "lower",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 856758,
-        "horizon_elapsed_fraction": 0.2204,
-        "horizon_status": "within",
-        "instrument": "AUDNZD",
-        "intended_horizon_days": 45,
-        "mae_usd": -0.0,
-        "mechanical_order": false,
-        "mfe_usd": 289549.94,
-        "move_versus_entry_intent": "with_intent",
-        "order_policy": "review_only",
-        "position_id": "pos-525ff12dcad9",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "AUDNZD pays if the 99.6 five-year richness fades over weeks as New Zealand cheapness is expressed against Australia rather than against the dollar, not as a two-to-three-day mean-reversion spike.",
-        "realized_pnl_usd": 152195.05,
-        "recorded_mfe_usd": 278861.86,
-        "retained_mfe_fraction": 1.0,
-        "review_move_bp": null,
-        "review_required": true,
-        "review_threshold_usd": 200000.0,
-        "review_triggers": [
-          "material_winner"
-        ],
-        "risk_context": "legacy_or_spot",
-        "side": "short",
-        "total_pnl_usd": 289549.94,
-        "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9",
-        "unrealized_pnl_usd": 137354.89
-      },
-      "instrument": "AUDNZD",
-      "opened_at": "2026-11-03T08:22:57.179127-05:00",
-      "position_id": "pos-525ff12dcad9",
-      "risk_capital_usd": 100000.0,
-      "side": "short",
-      "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
-    }
-  ],
+  "memory_context_sha256": "94ffa98eb1ea37ffe7ce796283eb217677664ec86ab4b719e1be249c4f166e8d",
+  "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -229,9 +177,7 @@
     "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "review_required_position_ids": [
-      "pos-525ff12dcad9"
-    ]
+    "review_required_position_ids": []
   },
   "psychology": {
     "active_flags": [],
@@ -239,13 +185,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.13
+        "trend": "flat",
+        "value": 0.12
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.21
+        "trend": "up",
+        "value": 0.22
       },
       "defensiveness": {
         "band": "calm",
@@ -269,8 +215,8 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.52
+        "trend": "up",
+        "value": 0.54
       },
       "thesis_attachment": {
         "band": "calm",
@@ -288,24 +234,19 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_gain",
-        "magnitude": 0.36122468,
-        "run_id": "overnight-20261110"
-      },
-      {
-        "kind": "rank_gain_major",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261110"
-      },
-      {
         "kind": "self_report_admission_overconfidence",
         "magnitude": 1.0,
         "run_id": "overnight-20261111"
+      },
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.5944026600000001,
+        "run_id": "overnight-20261113"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e75ea392a40b63d496d9579b3ee0bb1b327590f0d4d5508fa33803538cf9ae77",
+    "state_sha256": "7c53d6b45a09be49f3a4f708277d39ac8c84a5b408e07ba85fa2374995871b4e",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -313,6 +254,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": 56,
+      "holding_duration_seconds": 856758,
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-03T08:22:57.179127-05:00",
+      "realized_pnl_usd": 297201.33,
+      "side": "short",
+      "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-10-26T07:37:10.682323-04:00",

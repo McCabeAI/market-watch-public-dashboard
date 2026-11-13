@@ -134,14 +134,14 @@
     "nav_usd": 100303692.26,
     "net_pnl_usd": 303692.26,
     "pressure_flags": [],
-    "prior_competition_rank": 3,
-    "rank_change": 0,
+    "prior_competition_rank": 2,
+    "rank_change": 1,
     "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -58498.62,
     "status": "ok"
   },
   "learning": {
@@ -152,7 +152,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3510e53c2dd12c8b0830f4164cad2c6db9853244819f546fcb4072659d54949b",
+  "memory_context_sha256": "a1d04c711eb4579ee48ef5eb24d68f5640a5b60b2cf12be21fd35bb10fba5664",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -169,7 +169,7 @@
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 58520.23,
         "holding_seconds": 1208950,
         "horizon_elapsed_fraction": 0.3109,
         "horizon_status": "within",
@@ -177,19 +177,30 @@
         "intended_horizon_days": 45,
         "mae_usd": -102370.52,
         "mechanical_order": false,
-        "mfe_usd": 148677.84,
+        "mfe_usd": 207198.07,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
+        "pending_review": {
+          "mechanical_order": false,
+          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+          "residual_notional_usd": 20000000.0,
+          "status": "due",
+          "triggers": [
+            "material_winner"
+          ]
+        },
         "position_id": "pos-012b8f0c252c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Dollar-yen grinds higher as the 271 basis-point SOFR-TONA cash gap and the March 2027 4.39 versus 1.67 path gap keep paying after a hold, not as a one-day devaluation spike.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 148677.84,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 207198.07,
+        "retained_mfe_fraction": 0.7176,
         "review_move_bp": null,
-        "review_required": false,
+        "review_required": true,
         "review_threshold_usd": 200000.0,
-        "review_triggers": [],
+        "review_triggers": [
+          "material_winner"
+        ],
         "risk_context": "legacy_or_spot",
         "side": "long",
         "total_pnl_usd": 148677.84,
@@ -202,6 +213,55 @@
       "risk_capital_usd": 200000.0,
       "side": "long",
       "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c"
+    },
+    {
+      "asset_class": "spot_fx",
+      "conviction": null,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 1.11,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "Today's producer prices are the test of whether the 0.4 percent CPI impulse and the ten-year at 5.1 keep the dollar bid.",
+        "current_mark": 1.1081,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 1.11,
+        "expected_mark_direction": null,
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "EURUSD",
+        "intended_horizon_days": 5,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-d419ff966f72",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Euro-dollar at 1.1081 is already in a five-day decline, and the short pays if that dollar bid extends through the producer-price reaction.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "EURUSD",
+      "opened_at": "2026-11-13T06:22:15.706647-05:00",
+      "position_id": "pos-d419ff966f72",
+      "risk_capital_usd": 100000.0,
+      "side": "short",
+      "trade_id": "trd-trader-dollar-king-pos-d419ff966f72"
     }
   ],
   "owner_id": "dollar-king",
@@ -210,10 +270,14 @@
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [],
+    "obligations_due": [
+      "pos-012b8f0c252c"
+    ],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "review_required_position_ids": []
+    "review_required_position_ids": [
+      "pos-012b8f0c252c"
+    ]
   },
   "psychology": {
     "active_flags": [],
@@ -222,27 +286,27 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.16
+        "trend": "flat",
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.23
+        "value": 0.22
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.26
+        "value": 0.24
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -251,7 +315,7 @@
       },
       "self_trust": {
         "band": "steady",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.57
       },
       "thesis_attachment": {
@@ -270,28 +334,23 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "session_loss",
-        "magnitude": 0.09575212,
-        "run_id": "overnight-20261110"
-      },
-      {
-        "kind": "rank_drop_minor",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261110"
-      },
-      {
         "kind": "session_gain",
         "magnitude": 0.26745562,
         "run_id": "overnight-20261112"
+      },
+      {
+        "kind": "session_gain",
+        "magnitude": 0.11699724,
+        "run_id": "overnight-20261113"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "8e33f4df1594e496403fea7d41d0bc94d3851b1817855235f2bfe0bea902fa4f",
+    "state_sha256": "8e10e97e18dd2ca996b08a9ac78db5c98e38c7e2c0a8e7ddaf03e2357429f908",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 1
+      "session_win": 2
     }
   },
   "recent_closed_trades": [

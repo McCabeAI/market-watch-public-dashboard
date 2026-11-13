@@ -2,16 +2,21 @@
   "active_lessons": [],
   "as_of": "2026-11-13T06:22:15.706647-05:00",
   "calibration": {
-    "average_holding_seconds": null,
-    "average_realized_pnl_usd": null,
+    "average_holding_seconds": 1906295,
+    "average_realized_pnl_usd": -6287.85,
     "breakeven": 0,
-    "by_asset_class": {},
-    "closed_trade_count": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 2,
+        "total_realized_pnl_usd": -12575.69
+      }
+    },
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": -12500.0,
+        "count": 1,
+        "hit_rate": 0.0
       },
       "low": {
         "average_pnl_usd": null,
@@ -24,9 +29,9 @@
         "hit_rate": null
       }
     },
-    "losses": 0,
+    "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 0.0,
+    "total_realized_pnl_usd": -12575.69,
     "wins": 0
   },
   "capital_owner": null,
@@ -42,14 +47,14 @@
     "nav_usd": 99939604.46,
     "net_pnl_usd": -60395.54,
     "pressure_flags": [],
-    "prior_competition_rank": 14,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": 1,
     "raw_pnl_rank": 14,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 543606.28,
     "risk_capital_utilization": 0.0544,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -17237.36,
     "status": "ok"
   },
   "learning": {
@@ -60,7 +65,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "89aa250d81080e205974cbaddc945f83f4e8d5e99cd73b61b35135247164be0e",
+  "memory_context_sha256": "1e1b242decbe1b929b8ed2036e2318891c2ddd1aa086d17074fd20c3b4244c8a",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -162,55 +167,6 @@
     },
     {
       "asset_class": "rates",
-      "conviction": 70,
-      "current_notional_usd": 25000000.0,
-      "entry_mark": 4.91,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": null,
-        "current_mark": 4.865,
-        "current_notional_usd": 25000000.0,
-        "entry_mark": 4.91,
-        "expected_mark_direction": null,
-        "framing": null,
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 23750.0,
-        "holding_seconds": 3720678,
-        "horizon_elapsed_fraction": null,
-        "horizon_status": "unspecified",
-        "instrument": "AONIA_2027-06",
-        "intended_horizon_days": null,
-        "mae_usd": -25000.0,
-        "mechanical_order": false,
-        "mfe_usd": 12500.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-9cbf3f27dfff",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": null,
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 12500.0,
-        "retained_mfe_fraction": -0.9,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 250000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "short",
-        "total_pnl_usd": -11250.0,
-        "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff",
-        "unrealized_pnl_usd": -11250.0
-      },
-      "instrument": "AONIA_2027-06",
-      "opened_at": "2026-10-01T04:50:57.400664-04:00",
-      "position_id": "pos-9cbf3f27dfff",
-      "risk_capital_usd": 250000.0,
-      "side": "short",
-      "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
-    },
-    {
-      "asset_class": "rates",
       "conviction": 60,
       "current_notional_usd": 10000000.0,
       "entry_mark": 4.12,
@@ -224,7 +180,7 @@
         "expected_mark_direction": "higher",
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 500.0,
         "holding_seconds": 604586,
         "horizon_elapsed_fraction": 0.3499,
         "horizon_status": "within",
@@ -232,15 +188,15 @@
         "intended_horizon_days": 20,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 4500.0,
+        "mfe_usd": 5000.0,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "position_id": "pos-6c7bcf0fe6af",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if December SOFR implied yield rises as the jobs-report gap closes and the 12bp front-end rally is retraced.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 4500.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 5000.0,
+        "retained_mfe_fraction": 0.9,
         "review_move_bp": 5.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -306,55 +262,6 @@
       "risk_capital_usd": 200000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021"
-    },
-    {
-      "asset_class": "rates",
-      "conviction": null,
-      "current_notional_usd": 8231044.0,
-      "entry_mark": 4.65,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": "2026-12-08",
-        "catalyst_logic": "Australian CPI on 25 November is the domestic test, and the 8 December RBA decision is the policy response.",
-        "current_mark": 4.65,
-        "current_notional_usd": 8231044.0,
-        "entry_mark": 4.65,
-        "expected_mark_direction": null,
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
-        "holding_seconds": 91912,
-        "horizon_elapsed_fraction": 0.0266,
-        "horizon_status": "within",
-        "instrument": "AONIA_2027-12",
-        "intended_horizon_days": 40,
-        "mae_usd": 0.0,
-        "mechanical_order": false,
-        "mfe_usd": 0.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-1b79b84070a7",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The short gains if the December 2027 implied cash rate rises from 4.65 toward the higher Australian cash anchor as the priced ease is taken out.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
-        "review_move_bp": 10.0,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "instrument_dv01_small_move",
-        "side": "short",
-        "total_pnl_usd": 0.0,
-        "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7",
-        "unrealized_pnl_usd": 0.0
-      },
-      "instrument": "AONIA_2027-12",
-      "opened_at": "2026-11-12T04:50:23.662182-05:00",
-      "position_id": "pos-1b79b84070a7",
-      "risk_capital_usd": 82310.44,
-      "side": "short",
-      "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
     }
   ],
   "owner_id": "rate-hawk",
@@ -375,7 +282,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
@@ -390,7 +297,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
@@ -430,14 +337,37 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "7a41028fdb2ff8257191171b45c68b34c4e19c5218565052ed2fc1356129b6c9",
+    "state_sha256": "4ba5bee3b21f3eac7f09ea3817c59c971d9f3f1dcae810071df8547d1b23d104",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 1
     }
   },
-  "recent_closed_trades": [],
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": 70,
+      "holding_duration_seconds": 3720678,
+      "instrument": "AONIA_2027-06",
+      "opened_at": "2026-10-01T04:50:57.400664-04:00",
+      "realized_pnl_usd": -12500.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 91912,
+      "instrument": "AONIA_2027-12",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "realized_pnl_usd": -75.69,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
+    }
+  ],
   "recent_funding_views": [],
   "recent_performance_reflections": [],
   "reflections_due": [],

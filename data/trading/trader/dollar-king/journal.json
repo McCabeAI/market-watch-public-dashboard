@@ -2068,6 +2068,79 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "Hot October CPI and hike rhetoric have the dollar bid. Euro 1.1127 broke down over 20 days, Aussie 0.6859 broke down, and dollar-yen 159.23 broke out through the 158.06 entry. The two-year at 4.73 and the ten-year at 4.98 carry that bid into producer prices on 13 November and the 9 December meeting. Dollar-Canada at 1.4235 is also breaking higher, but Brent at 92.76 is still elevated and December has both the Fed and the Bank of Canada, so Canada is not a fresh dollar entry. The 20 million dollar-yen long stays."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": "Keep the 20 million dollar-yen long. It is working from 158.06 to 159.70 and does not need to be added.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": "Sell 10 million euro-dollar. The euro is the cleaner incremental dollar than adding yen or chasing dollar-Canada.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "8c47ca0c17d59213f6e55b75fff8815534649d2e13ddf4d69c66248555d196da",
+      "event_id": "jde-dab0b92def6c4cf2",
+      "funding_view": null,
+      "invalidation": "The long-dollar book fails if producer prices disappoint and the ten-year gives back the 12 basis point rise, or if euro, sterling, Australia and New Zealand stabilize together. The existing dollar-yen long is invalidated by a move back through 158.06.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c",
+        "pos-d419ff966f72"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-d419ff966f72"
+      ],
+      "memory_context_sha256": "3510e53c2dd12c8b0830f4164cad2c6db9853244819f546fcb4072659d54949b",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8e33f4df1594e496403fea7d41d0bc94d3851b1817855235f2bfe0bea902fa4f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar is the clean expression of the rates bid. The book is already long dollar-yen from 158.06 to 159.70. Euro, sterling, the Australian dollar and the kiwi have all fallen, while dollar-Canada and dollar-Swiss are already near one-year highs. Hold the yen long and sell 10 million euro-dollar as the incremental dollar, rather than adding more yen or chasing the extremes.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "The dollar is the clean expression of the rates bid. The book is already long dollar-yen from 158.06 to 159.70. Euro, sterling, the Australian dollar and the kiwi have all fallen, while dollar-Canada and dollar-Swiss are already near one-year highs. Hold the yen long and sell 10 million euro-dollar as the incremental dollar, rather than adding more yen or chasing the extremes."
     }
   ],
   "schema_version": 1,

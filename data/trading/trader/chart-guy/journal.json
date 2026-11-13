@@ -219,6 +219,62 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "EURUSD and AUDUSD are both down on the 5-day and 20-day marks. EURUSD at 1.1127 is the cleaner short: the 11 November close is a 20-session breakdown at the bottom of the range, the upside break has failed, and the close sits under the 20-day, 50-day, and 200-day averages. USDJPY and USDCAD agree higher, but USDJPY's shorter averages are still under the 200-day, and USDCAD's five-day spike sits on a nearly flat twenty-day change. AUDNZD is stretched lower with the 20-day breakdown failed, so that cross stays untouched."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pos-a4867f05b3bb",
+          "rationale": "Hold the 10 million euro-dollar short. Both the five-session and one-month closes are down.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "4be7b89736cfd0ec04a6e78b176323f29ee24f4304266a22d2ce3b9487791151",
+      "event_id": "jde-6c1fb4bc1fa74083",
+      "funding_view": null,
+      "invalidation": "No adverse close bound was supplied, so none is invented. The short stays on while the five-session and one-month closes remain down. A close back through the 1.1127 entry would take the position off.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-a4867f05b3bb"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b0d6157531abc34bb08d6c9951c63ee205f35378062e02ec3811b95e85657d30",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9bbace855cd10692be8afa5cb9b0c54bd922b062c4ff5693fbff102f1aed2553"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the euro-dollar short. The close is 1.1081 against an entry of 1.1127, the five-session close return is down 1.27 percent, and the one-month close return is down 1.02 percent. The one-year close percentile is at the bottom of the range, so the decline is extended and there is no lower close target to justify an add. Australian dollar, dollar-yen and dollar-Canada closes agree that the dollar is bid, and they are context only. No new cross.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Hold the euro-dollar short. The close is 1.1081 against an entry of 1.1127, the five-session close return is down 1.27 percent, and the one-month close return is down 1.02 percent. The one-year close percentile is at the bottom of the range, so the decline is extended and there is no lower close target to justify an add. Australian dollar, dollar-yen and dollar-Canada closes agree that the dollar is bid, and they are context only. No new cross."
     }
   ],
   "schema_version": 1,

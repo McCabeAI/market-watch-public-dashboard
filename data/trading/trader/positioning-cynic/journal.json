@@ -2167,6 +2167,94 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "The CPI hike story is already owned here as a March CORRA pay and an AUDNZD short. Do not add either, and do not receive March CORRA while that contract is the crowded Canada expression. The better ownership asymmetry is the real-money long in the US 10-year, which the frozen positioning print still shows as an extreme, against a cash 10-year at 4.98. Pay the 10-year. That long is what has to be reduced if the hike narrative sticks, and it is not another copy of the Canada pay or the Aussie-kiwi short."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDNZD",
+          "notional_usd": null,
+          "position_id": "pos-be9eaa63695e",
+          "rationale": "Cover the Australia-kiwi short. The move from 1.2453 to 1.2275 is already the visible trade.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-df316f59e974",
+          "rationale": "Cover the CORRA March pay. It sits with the crowded hike story and is the wrong way versus the 2.995 entry.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_2Y",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": "Receive 10 million of the U.S. two-year at 4.86. The percentile extreme is the front end, and the size stays well inside the risk budget.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "02e6ef40ec30894b55ca9d5bc478d8dad71f9a67054ce6d6e0d27379709c04cd",
+      "event_id": "jde-46f0f67cf4574c69",
+      "funding_view": null,
+      "invalidation": "The two-year receive fails if hike pricing extends from these prints: SOFR March rises further above 4.615 with cash still 3.89 and the two-year holds above 4.86.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-be9eaa63695e",
+        "pos-df316f59e974"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-be9eaa63695e",
+        "trd-trader-positioning-cynic-pos-df316f59e974"
+      ],
+      "memory_context_sha256": "1e0d9bb94a48018ac560fc7ab5323f93bf0f50cb34831728680dec9ec968573c",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "de8f63262580284ac36923920b95f8e626e15dfec43fc71cdb600f078d412356"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The crowded book is the U.S. hike and the dollar long: the two-year is at the 98th percentile, SOFR March is 4.615 versus cash 3.89, and the headlines are about more Fed hikes. Cover the Australia-kiwi short, which has already run from 1.2453 to 1.2275 and would not be opened flat here. Cover the CORRA March pay, which is lined up with that same hike crowd and is marked the wrong way. Receive the U.S. two-year. That is the rates expression of the crowded hike. Euro-dollar at the bottom of its range is the same dollar-long story and is the weaker fade.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "The crowded book is the U.S. hike and the dollar long: the two-year is at the 98th percentile, SOFR March is 4.615 versus cash 3.89, and the headlines are about more Fed hikes. Cover the Australia-kiwi short, which has already run from 1.2453 to 1.2275 and would not be opened flat here. Cover the CORRA March pay, which is lined up with that same hike crowd and is marked the wrong way. Receive the U.S. two-year. That is the rates expression of the crowded hike. Euro-dollar at the bottom of its range is the same dollar-long story and is the weaker fade."
     }
   ],
   "schema_version": 1,

@@ -1,10 +1,10 @@
 {
   "asset_class": "spot_fx",
   "catalysts": [],
-  "closed_at": null,
-  "closed_run_id": null,
+  "closed_at": "2026-11-13T06:22:15.706647-05:00",
+  "closed_run_id": "overnight-20261113",
   "conviction": 56,
-  "current_notional_usd": 5000000.0,
+  "current_notional_usd": 0.0,
   "entry_lifecycle": {
     "anchored_at": "2026-11-06T06:25:49.281876-05:00",
     "catalyst_by": null,
@@ -49,29 +49,44 @@
       "realized_pnl_increment_usd": 75081.14,
       "run_id": "overnight-20261111",
       "source_journal_event_id": "jde-e00eccf4fce64faf"
+    },
+    {
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "event_id": "tle-9982e68c43c7",
+      "exit_reason_category": null,
+      "kind": "CLOSE",
+      "mark": 1.23,
+      "mark_as_of": "2026-11-12",
+      "mark_source": "market_state.fx.AUDNZD.spot",
+      "notional_change_usd": 5000000.0,
+      "rationale": "Cover the Australia-kiwi short. The move from 1.2453 to 1.2275 is already the visible trade.",
+      "rationale_status": "present",
+      "realized_pnl_increment_usd": 71486.02,
+      "run_id": "overnight-20261113",
+      "source_journal_event_id": "jde-46f0f67cf4574c69"
     }
   ],
-  "evidence_cutoff": "2026-11-11T06:25:27.481006-05:00",
-  "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
+  "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+  "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
   "evidence_packet_id": null,
-  "exit_mark": null,
-  "exit_mark_as_of": null,
-  "exit_mark_source": null,
-  "exit_rationale": null,
+  "exit_mark": 1.23,
+  "exit_mark_as_of": "2026-11-12",
+  "exit_mark_source": "market_state.fx.AUDNZD.spot",
+  "exit_rationale": "Cover the Australia-kiwi short. The move from 1.2453 to 1.2275 is already the visible trade.",
   "exit_reason_category": null,
   "harvest_obligation": {
     "mechanical_order": false,
     "order_policy": "review_only",
     "position_id": "pos-be9eaa63695e",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "residual_notional_usd": 5000000.0,
-    "run_id": "overnight-20261112",
-    "status": "satisfied",
+    "residual_notional_usd": 0.0,
+    "run_id": "overnight-20261113",
+    "status": "retired",
     "trade_id": "trd-trader-positioning-cynic-pos-be9eaa63695e",
     "triggers": [
       "material_winner"
     ],
-    "updated_at": "2026-11-12T04:50:23.662182-05:00"
+    "updated_at": "2026-11-13T06:22:15.706647-05:00"
   },
   "harvest_reviews": [
     {
@@ -92,7 +107,7 @@
   ],
   "hedge_of_position_id": null,
   "hedge_trade_id": null,
-  "holding_duration_seconds": null,
+  "holding_duration_seconds": 604586,
   "initial_notional_usd": 10000000.0,
   "instrument": "AUDNZD",
   "invalidation": "The cross fade is invalidated if Australian-kiwi holds 1.2453 and extends while kiwi-dollar stays pinned at 0.5622. The residual Canada short is invalidated if March implied yield keeps falling toward cash at 2.52.",
@@ -120,18 +135,18 @@
   "position_id": "pos-be9eaa63695e",
   "priced_or_disagreed": null,
   "provenance": {
-    "evidence_hash": "619078c0ce184dce883b6725f123f80bf3fe525560df578f73b3eeeed068aacc",
-    "overnight_run_id": "overnight-20261111",
+    "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+    "overnight_run_id": "overnight-20261113",
     "review_id": "review-001",
     "review_packet_id": null,
     "review_packet_sha256": null,
     "trader_room_run_id": null
   },
-  "realized_pnl_usd": 75081.14,
+  "realized_pnl_usd": 146567.16,
   "schema_version": 1,
   "side": "short",
   "source_decision_id": null,
   "source_journal_event_id": "jde-cc00664e99484ecd",
-  "status": "open",
+  "status": "closed",
   "trade_id": "trd-trader-positioning-cynic-pos-be9eaa63695e"
 }

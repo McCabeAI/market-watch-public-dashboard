@@ -2655,6 +2655,94 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "The expansion is absorbing a hot October CPI print of +0.4% rather than cracking: equities are still at the highs, VIX is 19.46, and oil is firm, so the growth-resilient trade is a higher policy path, not a rush back into duration. That view is already on in the March 2027 payers, with SOFR only a basis point through the 4.52 entry at 4.53, AONIA working from 4.798 to 4.885, and CORRA the laggard at 2.965 against SOFR at 4.53. All three stay on. The rank rule bars an add until the live implied retraces the path that was sold."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Keep the March 2027 SOFR pay. Cash SOFR is 3.89 and March is 4.615, with equities still high, VIX at 17.49 and Brent at 95.82. The pay from 4.52 to 4.615 is with the move, and the two-year at the 98th percentile means the hold stays at current size.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Keep the March 2027 AONIA pay. It is 4.91 versus a 4.85 cash rate and is the peak of a strip that then prices ease. The move from 4.798 agrees with firm commodities.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-dd6fdaf39119",
+          "rationale": "Remove the Canada March pay. SOFR March rose from 4.52 to 4.615 while CORRA March fell from 3.13 to 3.025, and dollar-Canada at 1.4249 is already at a one-year extreme. Canada is the wrong leg of the optimistic hike book.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "765bda82e6ffafa5bd7ed1ab6e9e3ea690bd4b6c05f16e2e424d985e1d14115b",
+      "event_id": "jde-d35e3b6503664969",
+      "funding_view": null,
+      "invalidation": "The Canada exit is wrong if CORRA March trades back through 3.13 and Monday's CPI re-synchronizes Canada with SOFR. The SOFR hold fails if March implied falls back through 4.52. The AONIA hold fails if March implied falls through 4.798 and the later contracts pull it onto a cut path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05",
+        "pos-dd6fdaf39119"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-dd6fdaf39119"
+      ],
+      "memory_context_sha256": "491c1a0b22e81a1804fdb140971d6eebacf64a48ecaf0769448acf85edc779d5",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5fb885c3afa8659443e774b0f47ed7dc03308f4caa75c33a0eb3d73cb7628f8e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The optimistic book stays with the U.S. and Australian March pays. Growth, equities and oil are still resilient, and SOFR March at 4.615 versus cash 3.89 is the live hike path after a 0.4 percent CPI print. The Canada March pay is the wrong country: it has been marked down from 3.13 to 3.025 while the U.S. premium has been marked up, and the Canadian dollar is already the weak leg.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "The optimistic book stays with the U.S. and Australian March pays. Growth, equities and oil are still resilient, and SOFR March at 4.615 versus cash 3.89 is the live hike path after a 0.4 percent CPI print. The Canada March pay is the wrong country: it has been marked down from 3.13 to 3.025 while the U.S. premium has been marked up, and the Canadian dollar is already the weak leg."
     }
   ],
   "schema_version": 1,

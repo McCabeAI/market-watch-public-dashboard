@@ -1986,6 +1986,60 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "EURUSD realized volatility near 5.7 sits at the bottom of its 20-day range after spot broke down through 1.1127, so the break and the vol compression disagree. USDJPY's upside break at 159.23 leaves a linear long wearing gap risk, and AUDUSD is in the same kind of breakdown at 0.6859. Equity VIX at 19.46 does not price any of those FX paths. The expression that fits is owned convexity, and the freeze has no listed FX option premium or implied vol to mark, so the book stays flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No listed option premium is in the freeze, so no option is opened.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "1905e07582d785340c250ec295eef03cf0b56d3cb3696f0135f6c7f8505d075e",
+      "event_id": "jde-8f562dbaba02422b",
+      "funding_view": null,
+      "invalidation": "This hold ceases if a listed premium, strike and implied vol appear on equity downside, euro-dollar or dollar-yen. It also ceases if the ten-year gives back the rise and the euro lifts off 1.1081 before any option mark appears.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "80d34af4a88e0db8db8574bc445af7967f66b2c5a9f41abd2cf7166dd2c38dcf",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c13cbb1bf9e3390801813a46294a91fb6d66c3828e51870df96f4cc3c841305b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. The VIX is 17.49, equities are still high, and the freeze has no listed option premium, strike or implied vol. The rates jump and the euro at a one-year extreme would favor bounded options over spot once a premium can be marked. Until then there is nothing to book. Options become the expression only after a listed mark exists and either the ten-year extends through 5.1 while equities slip, the euro breaks or squeezes off 1.1081, or dollar-yen extends through 159.70.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Stay flat. The VIX is 17.49, equities are still high, and the freeze has no listed option premium, strike or implied vol. The rates jump and the euro at a one-year extreme would favor bounded options over spot once a premium can be marked. Until then there is nothing to book. Options become the expression only after a listed mark exists and either the ten-year extends through 5.1 while equities slip, the euro breaks or squeezes off 1.1081, or dollar-yen extends through 159.70."
     }
   ],
   "schema_version": 1,

@@ -2087,6 +2087,62 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "EURGBP at 0.8362 still sits at a one-year z-score of -2.43, with only a 0.19% five-day bounce and a 0.91% twenty-day decline. That cross is the valuation dislocation. AUDNZD at 1.2285 has a one-year z-score of only +0.94, a range position of 0.07, and a failed breakdown after a 1.61% twenty-day decline from the 1.2453 entry. The richness that sponsored the short has converged, so that position comes off while the euro-sterling long stays at five million."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": null,
+          "position_id": "pos-5760dbd4ac3e",
+          "rationale": "Hold the 5 million euro-sterling long. It is still in the cheap tail and is not being added.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "15f643af601988d6d31b1d1a7604c2d10aa0c0671abeb9902126fa009f5e8c88",
+      "event_id": "jde-0d769436141b45fd",
+      "funding_view": null,
+      "invalidation": "Exit the euro-sterling long if its past-year rank leaves the cheap tail that is the only anchor available now, or if a later fundamental anchor reclassifies 0.8360 as equilibrium.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5760dbd4ac3e"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b81b6a29e5103370a9cc61f041af7b401a29e9b4fde44a3a50c4770ab42907fc",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "9fa32b11a5cb9cb7e5809bad236ffcc580736628c5305e833ab9a6967d2e58ab"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the euro-sterling long. It is still in the fourth percentile of the past year, from 0.8343 to 0.8360, and nothing here says that cheapness has converged. Euro-dollar at the bottom of its one-year range and the kiwi at the first percentile are more extreme ranks, but a rank is not a new spot long. Rates are not cleaner: there is no cross-market spread to show the currency is cheap because the rate is cheap. The closed Australia-kiwi short is a finished convergence, not a re-entry.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Hold the euro-sterling long. It is still in the fourth percentile of the past year, from 0.8343 to 0.8360, and nothing here says that cheapness has converged. Euro-dollar at the bottom of its one-year range and the kiwi at the first percentile are more extreme ranks, but a rank is not a new spot long. Rates are not cleaner: there is no cross-market spread to show the currency is cheap because the rate is cheap. The closed Australia-kiwi short is a finished convergence, not a re-entry."
     }
   ],
   "schema_version": 1,

@@ -2062,6 +2062,62 @@
       "run_id": "overnight-20261112",
       "schema_version": 1,
       "thesis": "The Canada 2027 receive stays at full size. The mark is 3.13875 against a 3.40 entry, about 26 basis points through the entry, into a 0.4 percent US consumer-price rise, a two-year at 4.73 and a ten-year at 4.98. Williams has asked for more information on price risks, and that does not open a fresh easing path or a reason to add. Canada prices on 16 November are still ahead, so this curve has not confirmed the US heat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Hold the Canada curve receive. The hike premium over cash is the underpriced-ease gap, and Monday's CPI is the test rather than a reason to flip.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "decision_fingerprint": "04dc1f388acf695488194f81af227bdc4766e264edfaea91bf25279ba5395c30",
+      "event_id": "jde-7fe88882063f4d69",
+      "funding_view": null,
+      "invalidation": "The receive fails if Monday's Canada CPI lifts the CORRA 2027 curve mark sustainably above the 3.40 entry and extends December above 3.385. A soft print is not an exit.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "a5b95fb92ce1ba85122d01a2b060d8c95b1466b6c2e4b49eb770087109d95030",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "0654f9f0b25064f5e4fdeb06d944550e785c8cd7dba206c5a21d3192cbac0e44"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-13T06:22:15.706647-05:00",
+        "evidence_hash": "29db21f59908331ee8cd6c13304c83ec04658ceae75cbb9dac2d3904cf556ea0",
+        "overnight_run_id": "overnight-20261113",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the existing Canada 2027 curve receive. Cash CORRA is 2.52, March is 3.025 and December is 3.385, so the strip still embeds a hike extension that easing has not been paid for. The U.S. path is a fresh hike reprice, with SOFR March at 4.615 versus cash 3.89, and there is no new labor or disinflation fact that would justify a new U.S. receive. Australia already prices ease after March. Euro-area yields eased and Japan was flat.",
+      "run_id": "overnight-20261113",
+      "schema_version": 1,
+      "thesis": "Hold the existing Canada 2027 curve receive. Cash CORRA is 2.52, March is 3.025 and December is 3.385, so the strip still embeds a hike extension that easing has not been paid for. The U.S. path is a fresh hike reprice, with SOFR March at 4.615 versus cash 3.89, and there is no new labor or disinflation fact that would justify a new U.S. receive. Australia already prices ease after March. Euro-area yields eased and Japan was flat."
     }
   ],
   "schema_version": 1,

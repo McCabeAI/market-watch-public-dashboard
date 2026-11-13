@@ -31,16 +31,20 @@
   ],
   "as_of": "2026-11-13T06:22:15.706647-05:00",
   "calibration": {
-    "average_holding_seconds": 92090,
-    "average_realized_pnl_usd": 13403.45,
+    "average_holding_seconds": 2392807,
+    "average_realized_pnl_usd": -19548.28,
     "breakeven": 0,
     "by_asset_class": {
+      "rates": {
+        "count": 1,
+        "total_realized_pnl_usd": -52500.0
+      },
       "spot_fx": {
         "count": 1,
         "total_realized_pnl_usd": 13403.45
       }
     },
-    "closed_trade_count": 1,
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -53,14 +57,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 13403.45,
-        "count": 1,
-        "hit_rate": 1.0
+        "average_pnl_usd": -19548.28,
+        "count": 2,
+        "hit_rate": 0.5
       }
     },
-    "losses": 0,
+    "losses": 1,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 13403.45,
+    "total_realized_pnl_usd": -39096.55,
     "wins": 1
   },
   "capital_owner": null,
@@ -75,15 +79,17 @@
     "material_threshold_usd": 2000000.0,
     "nav_usd": 99985289.91,
     "net_pnl_usd": -14710.09,
-    "pressure_flags": [],
-    "prior_competition_rank": 11,
-    "rank_change": 0,
+    "pressure_flags": [
+      "rank_shock"
+    ],
+    "prior_competition_rank": 7,
+    "rank_change": 4,
     "raw_pnl_rank": 11,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 1350000.0,
     "risk_capital_utilization": 0.135,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -57354.12,
     "status": "ok"
   },
   "learning": {
@@ -93,58 +99,18 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "491c1a0b22e81a1804fdb140971d6eebacf64a48ecaf0769448acf85edc779d5",
-  "open_positions": [
+  "learning_obligations": [
     {
-      "asset_class": "rates",
-      "conviction": 63,
-      "current_notional_usd": 50000000,
-      "entry_mark": 3.13,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": null,
-        "current_mark": 2.96,
-        "current_notional_usd": 50000000.0,
-        "entry_mark": 3.13,
-        "expected_mark_direction": null,
-        "framing": null,
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 95000.0,
-        "holding_seconds": 4693525,
-        "horizon_elapsed_fraction": null,
-        "horizon_status": "unspecified",
-        "instrument": "CORRA_2027-03",
-        "intended_horizon_days": null,
-        "mae_usd": -147500.0,
-        "mechanical_order": false,
-        "mfe_usd": 10000.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-dd6fdaf39119",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": null,
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 10000.0,
-        "retained_mfe_fraction": -8.5,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 500000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "short",
-        "total_pnl_usd": -85000.0,
-        "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119",
-        "unrealized_pnl_usd": -85000.0
-      },
-      "instrument": "CORRA_2027-03",
-      "opened_at": "2026-09-19T22:36:50.082404-04:00",
-      "position_id": "pos-dd6fdaf39119",
-      "risk_capital_usd": 500000.0,
-      "side": "short",
-      "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
-    },
+      "kind": "performance_reflection",
+      "obligation_id": "rfd-bb54f08471a1",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "reference": "rfd-bb54f08471a1",
+      "source_run_id": null
+    }
+  ],
+  "memory_context_sha256": "648d2cfbf2827b305fdaecc67297c8a7db16486cc21b273329965c44f5079428",
+  "open_positions": [
     {
       "asset_class": "rates",
       "conviction": 70,
@@ -209,7 +175,7 @@
         "expected_mark_direction": null,
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 25000.0,
         "holding_seconds": 2062255,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
@@ -217,15 +183,15 @@
         "intended_horizon_days": null,
         "mae_usd": -140000.0,
         "mechanical_order": false,
-        "mfe_usd": 22500.0,
+        "mfe_usd": 47500.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-35db4e56bf42",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": null,
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 22500.0,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 47500.0,
+        "retained_mfe_fraction": 0.4737,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 500000.0,
@@ -256,28 +222,42 @@
     "review_required_position_ids": []
   },
   "psychology": {
-    "active_flags": [],
+    "active_flags": [
+      {
+        "basis": "revenge_pressure 0.06 families corra",
+        "check": "required",
+        "families": [
+          "corra"
+        ],
+        "id": "revenge_risk",
+        "relevant_actions": [
+          "OPEN",
+          "ADD"
+        ],
+        "scope": "family"
+      }
+    ],
     "applicable": true,
     "axes": {
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "complacency": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.12
+        "trend": "up",
+        "value": 0.18
       },
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.21
+        "value": 0.22
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.14
+        "trend": "down",
+        "value": 0.12
       },
       "frustration": {
         "band": "calm",
@@ -286,18 +266,18 @@
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.05
+        "trend": "up",
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
-        "trend": "flat",
-        "value": 0.5
+        "trend": "up",
+        "value": 0.51
       },
       "thesis_attachment": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.4
+        "value": 0.41
       }
     },
     "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
@@ -311,25 +291,47 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.09820824,
-        "run_id": "overnight-20261110"
+        "magnitude": 0.11470824,
+        "run_id": "overnight-20261113"
       },
       {
-        "kind": "session_gain",
-        "magnitude": 0.32150512,
-        "run_id": "overnight-20261111"
+        "kind": "trade_loss_close",
+        "magnitude": 0.105,
+        "run_id": "overnight-20261113"
+      },
+      {
+        "kind": "rank_gain_major",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261113"
       }
     ],
-    "required_checks": {},
+    "required_checks": {
+      "revenge_risk": [
+        "would_take_if_flat_and_unscarred",
+        "size_vs_prior_loss",
+        "what_changed_in_evidence"
+      ]
+    },
     "schema_version": 1,
-    "state_sha256": "5fb885c3afa8659443e774b0f47ed7dc03308f4caa75c33a0eb3d73cb7628f8e",
+    "state_sha256": "f1925f7d06e709f4b37ce0f27bbf6f43e79bae90682318cd4205f1d378fa2450",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 2
+      "session_win": 3
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": 63,
+      "holding_duration_seconds": 4693525,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -52500.0,
+      "side": "short",
+      "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-11T06:25:27.481006-05:00",
@@ -362,7 +364,24 @@
       "what_happened_vs_expected": "The CAD implieds pay was expected to track a still-priced BoC hike path, not a leaderboard crash. At trigger, rank fell 4 to 8 with a drawdown of 15107.64 and net result of -5321.52, but frozen Mar27 CORRA only moved 3.13 to 3.125 while spot CORRA 2.30 versus 3.125 still priced tightening. Rank has since recovered to 4 and the shock was mark-to-market and competition variance around an intact rates thesis, not a broken growth/oil-into-BoC story."
     }
   ],
-  "reflections_due": [],
+  "reflections_due": [
+    {
+      "created_at": "2026-11-13T06:22:15.706647-05:00",
+      "created_run_id": null,
+      "facts": {
+        "competition_rank": 11,
+        "drawdown_usd": 24496.21,
+        "lesson_ids": [],
+        "net_pnl_usd": -14710.09,
+        "prior_competition_rank": 7,
+        "trade_ids": []
+      },
+      "reflection_due_id": "rfd-bb54f08471a1",
+      "trigger_ids": [
+        "rank_shock"
+      ]
+    }
+  ],
   "schema_version": 5,
   "type": "IDENTITY_MEMORY_CONTEXT"
 }

@@ -54,7 +54,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 5000.0,
     "risk_capital_utilization": 0.0005,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -99.46,
     "status": "ok"
   },
   "learning": {
@@ -65,7 +65,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "2117018f5fd4f2a971e7456d5d0574a7c1344fe2c5441dd99ab75a8fe37b3d13",
+  "memory_context_sha256": "9d7097b97ad177c6eff4513b1bc7b339151cec477395deaea8184bf576bdf514",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -82,7 +82,7 @@
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 100.0,
         "holding_seconds": 91912,
         "horizon_elapsed_fraction": 0.0394,
         "horizon_status": "within",
@@ -90,15 +90,15 @@
         "intended_horizon_days": 27,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 0.0,
+        "mfe_usd": 100.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-29b4571dd270",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The book gains if the December SOFR implied yield rises because the 9 December meeting is marked for a larger step than the path already in the contract.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 100.0,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": 5.0,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -135,7 +135,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.38
+        "value": 0.33
       },
       "complacency": {
         "band": "calm",
@@ -150,12 +150,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.27
+        "value": 0.25
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -195,7 +195,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "e0f67c85254e4cde63cf22aada74a4b64d5171af3d594ae60ea0562d9e961065",
+    "state_sha256": "b3df8eac15cc77c875492240bf2ce46fb59a1599dfbc03096ffa1703565a5e24",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

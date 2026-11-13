@@ -28,7 +28,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20261026",
       "status": "active",
@@ -37,6 +38,45 @@
         "trd-pm-swinger-pm-swinger-2070479ca321"
       ],
       "updated_at": "2026-10-26T08:50:55.331461-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-13T07:15:27.559705-05:00",
+      "future_rule": "Do not re-open an Australia-kiwi short after a realized 1.25 to 1.23 decline unless a new policy or terms-of-trade divergence appears.",
+      "history": [
+        {
+          "at": "2026-11-13T07:15:27.559705-05:00",
+          "op": "add",
+          "run_id": "overnight-20261113"
+        }
+      ],
+      "lesson_id": "les-2969f2cd1359",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-957c0dbbfe05"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261113",
+      "status": "active",
+      "text": "A finished relative-value decline that stalls is not a signal to reload the same short.",
+      "trade_ids": [
+        "trd-pm-swinger-pm-swinger-f8f9feb515d2"
+      ],
+      "updated_at": "2026-11-13T07:15:27.559705-05:00"
     }
   ],
   "schema_version": 1,

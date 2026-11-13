@@ -73,6 +73,32 @@
       "postmortem_id": "pmd-ecc05f983487",
       "status": "submitted",
       "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
+    },
+    {
+      "created_at": "2026-11-13T06:22:15.706647-05:00",
+      "created_run_id": "overnight-20261113",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-13T06:22:15.706647-05:00",
+        "conviction": 56,
+        "entry_mark": 1.25,
+        "exit_mark": 1.23,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 856758,
+        "instrument": "AUDNZD",
+        "invalidation": "The short is wrong if Australian dollar-New Zealand holds a new high through 1.2456, or if New Zealand cheapness is only a dollar bounce and the kiwi rises while the cross stays rich. It is also wrong if a later tape shows an Australia-New Zealand cash or policy gap that pays Australia as hard as cash Australia versus Canada already pays.",
+        "opened_at": "2026-11-03T08:22:57.179127-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 297201.33,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-44230bb5a215",
+      "status": "due",
+      "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
     }
   ],
   "schema_version": 1,

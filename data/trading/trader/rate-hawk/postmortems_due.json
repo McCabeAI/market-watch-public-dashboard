@@ -1,5 +1,58 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-13T06:22:15.706647-05:00",
+      "created_run_id": "overnight-20261113",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-13T06:22:15.706647-05:00",
+        "conviction": 70,
+        "entry_mark": 4.91,
+        "exit_mark": 4.86,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 3720678,
+        "instrument": "AONIA_2027-06",
+        "invalidation": "The view breaks if the US 10-year reverses away from the 2002 high together with a break in oil while Sep-27 SOFR and Jun-27 AONIA stop repricing higher, or if Jun-27 AONIA trades up through the AU 10-year at 5.245 and the cash-to-contract gap is closed.",
+        "opened_at": "2026-10-01T04:50:57.400664-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -12500.0,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-4e5db6894f03",
+      "status": "due",
+      "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
+    },
+    {
+      "created_at": "2026-11-13T06:22:15.706647-05:00",
+      "created_run_id": "overnight-20261113",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-13T06:22:15.706647-05:00",
+        "conviction": null,
+        "entry_mark": 4.65,
+        "exit_mark": 4.63,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 91912,
+        "instrument": "AONIA_2027-12",
+        "invalidation": "The new pay is wrong if December 2027 AONIA falls further below 4.65 while the front of the Australian strip drops back and the US December step is marked back toward an unchanged path.",
+        "opened_at": "2026-11-12T04:50:23.662182-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -75.69,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-cfd007ec947d",
+      "status": "due",
+      "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }
