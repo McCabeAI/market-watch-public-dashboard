@@ -64,7 +64,7 @@ jobs:
     needs: authorize
     if: needs.authorize.outputs.authorized == 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 8
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -76,6 +76,17 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Restore CPI packet for PPI runs
+        if: startsWith(github.event.issue.title, '[run-ppi] ')
+        env:
+          OUT_DIR: ${{ runner.temp }}/core-pce-release
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          PYTHONPATH=. python3 -m scripts.core_pce_release restore-cpi-packet --out "$OUT_DIR" || true
+
       - name: Calculate once
         id: calc
         env:
@@ -86,6 +97,27 @@ jobs:
         run: |
           set -euo pipefail
           PYTHONPATH=. python3 -m scripts.core_pce_release dispatch-issue --out "$OUT_DIR"
+
+      - name: Upload CPI packet artifact
+        if: steps.calc.outcome == 'success' && startsWith(github.event.issue.title, '[run-cpi] ')
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+          OUT_DIR: ${{ runner.temp }}/core-pce-release
+        run: |
+          set -euo pipefail
+          RELEASE=$(PYTHONPATH=. python3 -c 'import os; from scripts.core_pce_release.release_bundle import parse_issue_title; print(parse_issue_title(os.environ["ISSUE_TITLE"])[1])')
+          test -d "$OUT_DIR/cpi_packet"
+          echo "artifact_release=$RELEASE" >> "$GITHUB_OUTPUT"
+        id: cpi_packet_meta
+
+      - name: Publish CPI packet artifact
+        if: steps.calc.outcome == 'success' && startsWith(github.event.issue.title, '[run-cpi] ')
+        uses: actions/upload-artifact@v4
+        with:
+          name: core-pce-cpi-packet-${{ steps.cpi_packet_meta.outputs.artifact_release }}
+          path: ${{ runner.temp }}/core-pce-release/cpi_packet
+          retention-days: 30
+          if-no-files-found: ignore
 
       - name: Comment numerical result
         if: steps.calc.outcome == 'success'

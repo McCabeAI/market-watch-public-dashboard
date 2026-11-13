@@ -27,22 +27,19 @@ The scenario band is **not** a confidence interval. Classification uses unrounde
 
 ## Monthly operator contract
 
-A target month is `YYYY-MM`. The anchor month is the previous month. `data/core_pce_release/release_index.json` selects one frozen bundle: BEA snapshot, component-history vintage, PCEPILFE file, CPI cache, optional PPI points, and the verified series registry. Adding a later month is a new directory plus an index row. It does not require an edit to the calculator.
+A target month is `YYYY-MM`. The anchor month is the previous month.
 
-Do not point a new month at the September 2026 snapshot or the October 14 CPI cache. Preflight reports that as `stale_cpi_cache` or `snapshot_month_mismatch` and does not call the result READY. Missing PPI is `ppi_not_yet_applied` and does not block the post-CPI baseline.
+1. A human with admin, maintain, or write permission opens an issue titled exactly `[run-cpi] YYYY-MM`. No snapshot edit, no CPI cache edit, no `release_index` edit, and no git commit.
+2. The workflow fetches the latest BEA workbook, the FAQ crosswalk when it is still published, FRED `PCEPILFE`, and BLS CPI (at most four requests), builds the packet, and comments the post-CPI baseline or `NOT READY` with the missing source.
+3. After PPI is out, a second human issue `[run-ppi] YYYY-MM` reuses the frozen CPI packet artifact when that packet is valid, fetches PPI once, and comments the CPI-time baseline and the updated estimate. If the packet is missing or BEA/CPI vintages changed, the comment labels `reprojected_baseline` separately from `cpi_time_baseline`.
+4. September `[run-ppi] 2026-09` is unchanged.
+5. `release_index.json` remains a historical audit of September and October. It is not a gate for a later month.
 
-```bash
-python -m scripts.core_pce_release preflight --release 2026-10
-python -m scripts.core_pce_release prepare cpi --release 2026-10 --out /tmp/pce-2026-10
-python -m scripts.core_pce_release run-ppi --release 2026-10 --out /tmp/pce-2026-10 --ppi-points data/core_pce_release/ppi_points_2026-11-13.json
-```
+Limits: BEA monthly history must already cover the anchor month. The weight quarter is the latest published quarter ending on or before the anchor and is labeled when it lags. Raw PPI is `modeled_not_bea_sa`. If a source is unpublished the run is `NOT READY` and does not invent a number. There is no schedule.
 
-The same two steps can be issues opened by a human collaborator with admin, maintain, or write permission, sender equal to the author:
+Missing PPI is `ppi_not_yet_applied` and does not block the post-CPI baseline.
 
-- `[run-cpi] YYYY-MM` writes the post-CPI / pre-PPI baseline and does not call BLS.
-- `[run-ppi] YYYY-MM` updates that same month from one BLS request, or from committed points when an operator passes `--ppi-points`.
-
-`[run-ppi] 2026-09` remains the locked September issue. There is no cron and no listener.
+September 2026 post-CPI central (pre-PPI): `0.3688405280179773205064998201`. September 2026 post-PPI: `0.3674603939775941051607229995`. October 2026 post-CPI: `0.2777814111959602086682108972`. October 2026 post-PPI: `0.2976893241979532386598166555`.
 
 Core CPI `CUSR0000SA0L1E` stays context only. Raw PPI stays `modeled_not_bea_sa`. October 2026 inputs are the October 29, 2026 BEA vintage (Table 2.4.4U through September, 2026Q3 weights on the verified leaf lines), the November 10, 2026 CPI release, and the November 13, 2026 PPI release. The reproduced October centrals are in `data/core_pce_release/october_2026_reference.json`. The September forecast is unchanged; `september_2026_official_comparison.json` records the October 29 BEA index ratio next to that locked forecast.
 

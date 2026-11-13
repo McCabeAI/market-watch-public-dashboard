@@ -64,7 +64,7 @@ class MonthlyPreflightTests(unittest.TestCase):
     def test_unknown_month_is_not_ready_and_not_a_forecast(self) -> None:
         report = assess_release("2026-11")
         self.assertEqual(report["status"], "NOT READY")
-        self.assertIn("release_bundle_missing", report["blocking_gaps"])
+        self.assertIn("sources_not_yet_acquired", report["blocking_gaps"])
 
 
 class OctoberReplayTests(unittest.TestCase):

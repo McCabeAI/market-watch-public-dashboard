@@ -27,6 +27,12 @@ from scripts.core_pce_release.oneshot import (
     write_unexpected_error,
 )
 from scripts.core_pce_release.packet import load_packet, prepare
+from scripts.core_pce_release.self_prepare import (
+    fetch_official_sources,
+    restore_cpi_packet,
+    run_cpi_trigger,
+    run_ppi_trigger,
+)
 from scripts.core_pce_release.preflight import assess_release, render_preflight
 from scripts.core_pce_release.release_bundle import parse_issue_title, parse_release_month
 from scripts.core_pce_release.report import render_detailed, render_flash
@@ -140,6 +146,9 @@ def main(
     dispatch_parser = sub.add_parser("dispatch-issue")
     dispatch_parser.add_argument("--out", type=Path, required=True)
 
+    restore_parser = sub.add_parser("restore-cpi-packet")
+    restore_parser.add_argument("--out", type=Path, required=True)
+
     arm_parser = sub.add_parser("arm")
     arm_parser.add_argument("--packet", type=Path, required=True)
     arm_parser.add_argument("--inbox", type=Path, required=True)
@@ -176,6 +185,8 @@ def main(
         report = assess_release(args.release)
         print(render_preflight(report), end="", flush=True)
         return 0 if report["status"] == "READY" else 2
+    if args.command == "restore-cpi-packet":
+        return restore_cpi_packet(args.out, env=os.environ)
     if args.command == "dispatch-issue":
         parsed = parse_issue_title(os.environ.get("ISSUE_TITLE") or "")
         if parsed is None:
@@ -183,13 +194,21 @@ def main(
             return 2
         kind, release = parsed
         if kind == "cpi":
-            code, text = prepare("cpi", release, args.out)
-            comment = args.out / "comment.md"
-            if not comment.exists():
-                comment.write_text(text if text.endswith("\n") else text + "\n", encoding="utf-8")
+            if release == "2026-09":
+                code, text = prepare("cpi", release, args.out)
+                comment = args.out / "comment.md"
+                if not comment.exists():
+                    comment.write_text(text if text.endswith("\n") else text + "\n", encoding="utf-8")
+                print(text, end="", flush=True)
+                return code
+            sources = fetch_official_sources(release)
+            code, text = run_cpi_trigger(release, args.out, sources)
             print(text, end="", flush=True)
             return code
-        return _run_ppi(args.out, release, None)
+        if release == "2026-09":
+            return _run_ppi(args.out, release, None)
+        sources = fetch_official_sources(release)
+        return run_ppi_trigger(release, args.out, sources=sources, packet_store=None)
     if args.command == "run-ppi":
         if parse_release_month(args.release) is None:
             print("refusing: release must be YYYY-MM", flush=True)

@@ -808,6 +808,7 @@ def run_oneshot(
     sleep=None,
     release: str = TARGET_RELEASE,
     ppi_points_path: Path | None = None,
+    bundle: dict | None = None,
 ) -> dict:
     """Prepare the offline baseline and apply at most one BLS response.
 
@@ -824,9 +825,9 @@ def run_oneshot(
         existing = json.loads(existing_state.read_text(encoding="utf-8"))
         if existing.get("release") not in (None, release):
             return _not_published(out_dir, release, "snapshot_release_mismatch")
-    if resolve_release(release) is None:
+    if bundle is None and resolve_release(release) is None:
         return _not_published(out_dir, release, "release_bundle_missing")
-    code, _text = prepare("ppi", release, out_dir)
+    code, _text = prepare("ppi", release, out_dir, bundle=bundle)
     detailed_path = out_dir / "detailed.json"
     if code != 0 or not detailed_path.exists():
         if release == TARGET_RELEASE:
@@ -1007,14 +1008,16 @@ def run_oneshot(
         for observation in observations
         if observation.get("series_id") in set(fresh_ids) and _observation_ok(observation, release=release, anchor=anchor)
     ]
-    bundle = resolve_release(release)
-    snapshot = load_snapshot(None if release == TARGET_RELEASE else bundle["snapshot_dir"])
+    release_bundle = bundle if bundle is not None else resolve_release(release)
+    if release != TARGET_RELEASE and release_bundle is None:
+        return _not_published(out_dir, release, "release_bundle_missing")
+    snapshot = load_snapshot(None if release == TARGET_RELEASE else release_bundle["snapshot_dir"])
     calc_kwargs = {}
     if release != TARGET_RELEASE:
         calc_kwargs = {
-            "history": load_component_history(bundle["component_history"]),
-            "cpi_points": load_cpi_cache(bundle["cpi_cache"])["points"],
-            "registry": load_registry(bundle["registry"]),
+            "history": load_component_history(release_bundle["component_history"]),
+            "cpi_points": load_cpi_cache(release_bundle["cpi_cache"])["points"],
+            "registry": load_registry(release_bundle["registry"]),
         }
     revised_full = calculate(
         snapshot["components"],
@@ -1027,7 +1030,7 @@ def run_oneshot(
     if release == TARGET_RELEASE:
         revised_full = _attach_cpi_context(revised_full, TARGET_RELEASE)
     else:
-        context = _cpi_context_from_points(load_cpi_cache(bundle["cpi_cache"]), release)
+        context = _cpi_context_from_points(load_cpi_cache(release_bundle["cpi_cache"]), release)
         if context is not None:
             revised_full["cpi_context"] = context
     revised_full["latency"] = {

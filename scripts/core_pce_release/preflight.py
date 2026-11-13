@@ -38,7 +38,7 @@ def _history_covers(history: dict, line: int, period: str) -> bool:
     return period in (bucket.get("indexes") or {})
 
 
-def assess_release(release: str) -> dict:
+def assess_release(release: str, bundle: dict | None = None) -> dict:
     """Report whether the frozen bundle can produce a post-CPI baseline.
 
     A missing PPI file, or PPI points that do not yet include the target month,
@@ -57,9 +57,16 @@ def assess_release(release: str) -> dict:
         gaps.append(_gap("release_month_invalid", f"release {release!r} is not YYYY-MM", blocking=True))
         return _report(release, None, checks, gaps)
 
-    bundle = resolve_release(parsed)
     if bundle is None:
-        gaps.append(_gap("release_bundle_missing", f"no frozen bundle for {parsed}", blocking=True))
+        bundle = resolve_release(parsed)
+    if bundle is None:
+        gaps.append(
+            _gap(
+                "sources_not_yet_acquired",
+                "open issue [run-cpi] YYYY-MM to acquire sources; release_index is not required",
+                blocking=True,
+            )
+        )
         return _report(parsed, None, checks, gaps)
 
     anchor = bundle["anchor_period"]

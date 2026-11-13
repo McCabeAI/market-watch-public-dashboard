@@ -89,10 +89,17 @@ def _cpi_context_from_points(cache: dict, release: str) -> dict | None:
     }
 
 
-def _prepare_monthly(kind: str, release: str, out_dir: Path, snapshot_dir: Path | None) -> tuple[int, str]:
+def _prepare_monthly(
+    kind: str,
+    release: str,
+    out_dir: Path,
+    snapshot_dir: Path | None,
+    bundle: dict | None = None,
+) -> tuple[int, str]:
     """Post-CPI baseline for a month other than the locked September packet."""
-    report = assess_release(release)
-    bundle = resolve_release(release)
+    report = assess_release(release, bundle=bundle)
+    if bundle is None:
+        bundle = resolve_release(release)
     if bundle is None or report["status"] != "READY":
         problems = list(report["blocking_gaps"]) or ["release_bundle_missing"]
         code, text = _write_not_ready(
@@ -187,11 +194,17 @@ def _prepare_monthly(kind: str, release: str, out_dir: Path, snapshot_dir: Path 
     return 0, flash
 
 
-def prepare(kind: str, release: str, out_dir: Path, snapshot_dir: Path | None = None) -> tuple[int, str]:
+def prepare(
+    kind: str,
+    release: str,
+    out_dir: Path,
+    snapshot_dir: Path | None = None,
+    bundle: dict | None = None,
+) -> tuple[int, str]:
     if kind not in {"cpi", "ppi"}:
         raise ValueError("kind must be cpi or ppi")
     if release != "2026-09":
-        return _prepare_monthly(kind, release, out_dir, snapshot_dir)
+        return _prepare_monthly(kind, release, out_dir, snapshot_dir, bundle=bundle)
     snapshot = load_snapshot(snapshot_dir)
     problems = list(validate_snapshot(snapshot))
     registry = load_registry()
