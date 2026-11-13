@@ -1,0 +1,344 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-13T11:39:43+00:00",
+      "release_sha256": "c87fdcfd44d52dd4641bbb028f5a384915286e7c8447889f826d95dd5aead050",
+      "run_attempt": "1",
+      "run_id": "43416411639",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/43416411639",
+      "site_sha256": "2cda43bc04280f1b888af92cea885eafafb6cc9b428b88808ef7bf0dd8d57bba"
+    }
+  ],
+  "launch_id": "mwl-20261113T112215Z-72ba187b",
+  "launch_terminal": false,
+  "packet_sha256": "6c36616a0dacacd23bb150494b925d9a365a5c9f51b64f37c3002b0a11521137",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-12T07:28:47.929236-05:00",
+      "as_of": "2026-11-12T04:50:23.662182-05:00",
+      "books_run_id": "overnight-20261112",
+      "overnight_run_id": "overnight-20261112",
+      "packet_sha256": "95cbce50764ed30e94ba07c50310da384b369460610759ff2b669a5eab469ab6"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-13T06:22:15.706647-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-13T06:22:15.706647-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 5,
+          "unattributed": 11
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "The Fed expected rate cuts this year. Now it\u2019s bracing for another inflation fight",
+          "id": "news:31f4c15e5c844de6",
+          "published_at": "2026-11-13T04:00:26-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/13/us-inflation-outlook-federal-reserve-rate-hike.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields rise as traders strengthen Fed rate hike bets",
+          "id": "news:c6510d5eb299b6a6",
+          "published_at": "2026-11-13T02:50:43-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/13/treasury-yields-fed-rates.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "10-year Treasury yield jumps back above 5% as oil gains and more Fed rate hikes expected",
+          "id": "news:fcc1837fc6e71e20",
+          "published_at": "2026-11-12T15:04:59-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/12/us-treasurys-bonds-yields.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Scott Colom wins Mississippi Senate election over incumbent Republican Hyde-Smith",
+          "id": "news:3b8903e813f34061",
+          "published_at": "2026-11-12T06:56:27-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/11/democrat-scott-colom-projected-to-win-mississippi-senate-election-over-incumbent-hyde-smith.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Jensen Huang's Nvidia exit casts shadow over Wall Street\u2019s $500 billion AI financing bet",
+          "id": "news:e1b2c516f99345db",
+          "published_at": "2026-11-12T13:33:50-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/12/nvidia-ceo-exit-ai-financing.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg_credit",
+          "headline": "AI \u2018Supply Shock\u2019 Pushes Bond Market to Limit, Wells Fargo Says",
+          "id": "news:3ab1b10894dbd5f1",
+          "published_at": "2026-11-12T06:45:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-12/ai-supply-shock-pushes-bond-market-to-limit-says-wells-fargo",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Stocks could be in for a rude awakening if the Fed hikes rates more than expected",
+          "id": "news:e4b835b34c9e3428",
+          "published_at": "2026-11-12T15:00:10-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/12/stocks-could-be-in-for-a-rude-awakening-if-the-fed-hikes-rates-more-than-expected.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Top Pension Fund to Buy More India State Bonds on High Yields",
+          "id": "news:5aa57088efb34827",
+          "published_at": "2026-11-12T14:38:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-13/top-pension-fund-to-buy-more-india-state-bonds-on-high-yields",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-13T06:22:15.706647-05:00",
+      "news_family_digest": "c4ea2d0a7c6f7bc0cd153a9d52810cc4f83f8ee6e2110ec32d2521b913a53fee",
+      "packet_sha256": "6c36616a0dacacd23bb150494b925d9a365a5c9f51b64f37c3002b0a11521137",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-13T06:22:15.706647-05:00",
+        "start": "2026-11-12T06:22:15.706647-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/freeze_binding.json",
+        "sha256": "fa329dc9e7df5ae6560c722a58259b32ea3f7228f158b4b03d20856b93c85b7d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/remote_freeze.json",
+        "sha256": "5fbdb0da264fd0d6ab7779c42ab885ccfabc2f26ac17b048b872dac8ca465806"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/artifacts/00_authenticate.json",
+        "sha256": "58e97a50de5f383d9d07b96f8a5fad5bdcf294722efdf36ee04234c66e7b4b77"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/artifacts/01_ingest.json",
+        "sha256": "bb0685119461f1a15bbe768291e9ccb775269e25aa848919242042195151a362"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/artifacts/02_acquire.json",
+        "sha256": "694bd9ec4c254a1c1454e66ad0cc48f51f43ad1b59d00250288f532ad9d70b93"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/artifacts/03_quality_gate.json",
+        "sha256": "94cfc813ff7e9fb8ce4acc280b5c8645db94369565d88887f278beca19d667dc"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/artifacts/04_freeze.json",
+        "sha256": "462ccbef6ad801dc36bc1c8189893eb79b422fcb43cbe50bd5215bf8c241b277"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/temperature_scores.json",
+        "sha256": "48a8974a84c5e6f07a3d3db7095334ba40862058962d0f3bc0ac36e6d9b5c4a3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/history/ca.json",
+        "sha256": "4550a1c46e623fddb40aa8a658ee80bde32d36fa4471a7191574b44fa9f23405"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/history/ea.json",
+        "sha256": "819c52e9c14eea3a09f694cac726b1cde44c0f16881b6d2e425ecfab79a21770"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/history/nz.json",
+        "sha256": "f2a5ab366d234fd057eff22c4321e538f30eeadd3473a2c0b597061ac12853a6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261113T112215Z-72ba187b/lineage/history/us.json",
+        "sha256": "77ac84b396934b4bfff16593c677476dd1fa7e074a2e37c1b4e690ff418d49c9"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261113/reviews/review-001/evidence_snapshot.json",
+        "sha256": "1510a389f9d501a0c797e04aae257f4ca9899c3bcf39133e2cfd51d5964bd0b8"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "be6306a88ab36d8a75b4347fb90b9ccf4028ef4a25f50432908af8a072552888"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261112/assembled_dataset.json",
+        "sha256": "cd8336e5952c59114780af9b02820000eb1a422b945af6528ad5b30fa1aaa9b1"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "925c2d78ac31d4cb19faec29d05f74bc49e432717138b2e31624b5f15a87270d"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "5b434b1ef34c36e14ef06cdd6b6791d56e44dae2c0a289451f686a5b85443c45"
+      }
+    ],
+    "launch_id": "mwl-20261113T112215Z-72ba187b",
+    "market_state": {
+      "as_of": "2026-11-13T11:38:36Z",
+      "digest": "2469dd4943cd990a27f314648426bd7df06ed49ab5ea4d700b9bee534f8b2836",
+      "generated_at": "2026-11-13T11:38:36Z"
+    },
+    "news": {
+      "age_label": "25 h before this freeze",
+      "as_of": "2026-11-12T04:50:23.662182-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261112",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261113",
+    "packet_sha256": "6c36616a0dacacd23bb150494b925d9a365a5c9f51b64f37c3002b0a11521137",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:NZ",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "NZ.Activity.business_surveys",
+        "EA.Consumer.income",
+        "EA.Labor.wages",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "d2f134e9081efd45e93ade3617ab658a8d3edda1",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 2,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-13T11:22:15Z",
+      "inputs_last_ingested_at": "2026-11-13T11:22:15Z",
+      "score_state_sha256": "48a8974a84c5e6f07a3d3db7095334ba40862058962d0f3bc0ac36e6d9b5c4a3"
+    },
+    "session_date": "2026-11-13",
+    "site_sha256": "2cda43bc04280f1b888af92cea885eafafb6cc9b428b88808ef7bf0dd8d57bba",
+    "source_commit": "944cd5e7e0644f39a75b8496e2d778c6665bdffb",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261113",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "c87fdcfd44d52dd4641bbb028f5a384915286e7c8447889f826d95dd5aead050",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-13",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
