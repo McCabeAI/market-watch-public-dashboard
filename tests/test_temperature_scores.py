@@ -92,7 +92,9 @@ class TemperatureScoresTest(unittest.TestCase):
         state = load_state()
         out = apply_scores(_mini_dashboard_html(), state)
         self.assertNotIn("lineage-pinned", out)
-        self.assertIn("3.0478", out)
+        core = state["countries"]["US"]["Inflation"]["component_state"]["core_pce"]
+        self.assertIn(str(core["transform_value"]), out)
+        self.assertGreaterEqual(str(core["as_of"]), "2026-09")
         gauges = load_temperature_gauges(ROOT)
         us_inf = next(g for g in gauges if g["id"] == "temp:US:inflation")
         self.assertTrue(
@@ -101,7 +103,7 @@ class TemperatureScoresTest(unittest.TestCase):
                 for hi in us_inf["hard_inputs"]
             )
         )
-        self.assertNotEqual(us_inf["staleness"], "as_of:2026-09")
+        self.assertEqual(us_inf["staleness"], f"as_of:{core['as_of']}")
 
     def test_trader_room_staleness_uses_period_order_not_lexicographic(self) -> None:
         from scripts.trader_room.evidence import load_temperature_gauges

@@ -478,6 +478,14 @@ def merge_scored_points(
         appended.append(entry)
         countries_changed.add(country)
 
+    for country in countries_changed:
+        history = histories.get(country)
+        if not isinstance(history, dict):
+            continue
+        existing = str(history.get("retrieved_at") or "")
+        if not existing or checked_at > existing:
+            history["retrieved_at"] = checked_at
+
     return {
         "appended": appended,
         "skipped": skipped,

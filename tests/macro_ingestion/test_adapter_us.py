@@ -20,6 +20,7 @@ if str(ROOT) not in sys.path:
 from scripts.macro_ingestion.adapters.us import fetch_series
 from scripts.macro_ingestion.contract import load_catalog
 from scripts.macro_ingestion.runner import live_opener, run_ingestion
+from scripts.temperature_level import period_sort_key
 from scripts.macro_ingestion.us_employment.cache import clear_employment_caches
 from scripts.macro_ingestion.us_employment.ism_prnewswire import parse_ism_pmi
 
@@ -328,7 +329,10 @@ class TestUSAdapter(unittest.TestCase):
             )
         self.assertTrue(payload.get("ok"))
         points = payload.get("points") or []
-        scored = next(p for p in points if p.get("transformation") == gdp_spec["transform"])
+        scored = max(
+            (p for p in points if p.get("transformation") == gdp_spec["transform"]),
+            key=lambda p: period_sort_key(p["period"]),
+        )
         self.assertEqual(scored["period"], "2026-Q3")
         self.assertAlmostEqual(float(scored["value"]), 1.25)
         self.assertEqual(payload.get("accepted_source"), "bea_official_fallback")

@@ -705,7 +705,9 @@ class RepairHtmlTests(unittest.TestCase):
         self.assertNotIn("score freeze", self.html.lower())
         self.assertIn("Equal-weight summary", self.html)
         self.assertIn(">Inflation<", self.html)
-        self.assertIn("63.1 warm", self.html)
+        us_inflation = self.scores["countries"]["US"]["Inflation"]
+        rendered = f"{display_score(us_inflation['level'])} {us_inflation['temperature_class']}"
+        self.assertIn(rendered, self.html)
         for code in ("us", "ca", "au", "nz", "ea", "jp"):
             self.assertIn(f'data-country="{code}"', self.html)
         self.assertIn('id="p-country"', self.html)

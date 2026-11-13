@@ -12,6 +12,11 @@ from pathlib import Path
 from typing import Any, Callable
 
 from scripts.macro_freshness import values_close
+from scripts.macro_ingestion.us_official_sources import (
+    OFFICIAL_FALLBACK_CATALOG_IDS,
+    bea_gdp_xlsx_fallback,
+    fetch_official_us_series,
+)
 from scripts.macro_ingestion.us_employment.dispatch import fetch_us_employment
 from scripts.macro_ingestion.us_employment.empsit import (
     footnote_code_for_period,
@@ -34,6 +39,9 @@ US_GDP_DOMESTIC_DEMAND_ID = "US.Activity.gdp_domestic_demand"
 _USER_ID_QUERY = re.compile(r"UserID=[^&\s\"']+", re.IGNORECASE)
 
 _US_LABOR_WAGES_ID = "US.Labor.wages"
+_SCORECARD_WINDOW_MONTHLY = 18
+_SCORECARD_WINDOW_QUARTERLY = 8
+_PERIOD_CANONICAL = re.compile(r"^\d{4}-(?:Q[1-4]|\d{2})$")
 
 _DIRECT_TRANSFORMS = frozenset(
     {
@@ -168,14 +176,109 @@ def _derive_us_labor_wage_points(
     return points
 
 
+def _level_stamp_to_period(stamp: str, cadence: str) -> str:
+    text = str(stamp).strip()
+    # BEA's JSON fallback stores a quarter as the first month (2026-07 = 2026-Q3).
+    # That month form also matches the canonical monthly pattern, so quarterly
+    # series must convert it before the monthly shortcut.
+    if cadence == "quarterly" and re.fullmatch(r"\d{4}-\d{2}", text):
+        return _fred_stamp_to_period(text, "quarterly")
+    if _PERIOD_CANONICAL.fullmatch(text):
+        return text
+    return _fred_stamp_to_period(text, cadence)
+
+
+def _derive_bounded_scorecard_points(
+    spec: dict[str, Any],
+    level_points: list[tuple[str, float]],
+    *,
+    source_url: str,
+    revision_by_period: dict[str, str] | None = None,
+    release_date: str | None = None,
+) -> list[dict[str, Any]]:
+    if not level_points:
+        return []
+    cadence = str(spec.get("cadence") or "monthly")
+    transform = str(spec.get("transform") or "")
+    window = _SCORECARD_WINDOW_QUARTERLY if cadence == "quarterly" else _SCORECARD_WINDOW_MONTHLY
+    period_to_level: dict[str, float] = {}
+    for stamp, raw in level_points:
+        period = _level_stamp_to_period(stamp, cadence)
+        period_to_level[period] = float(raw)
+    if not period_to_level:
+        return []
+    ordered = sorted(period_to_level.keys(), key=period_sort_key)
+    emit_periods = set(ordered[-window:])
+    revisions = revision_by_period or {}
+    points: list[dict[str, Any]] = []
+
+    if transform == "mom_sa_pct":
+        for period in ordered:
+            if period not in emit_periods:
+                continue
+            prev_period = month_before(period)
+            if prev_period is None or prev_period not in period_to_level:
+                continue
+            prev_level = period_to_level[prev_period]
+            if prev_level == 0:
+                continue
+            level_t = period_to_level[period]
+            value = (level_t / prev_level - 1.0) * 100.0
+            point: dict[str, Any] = {
+                "period": period,
+                "value": value,
+                "transformation": transform,
+                "revision_status": revisions.get(period, "final"),
+                "prior": prev_level,
+                "prior_period": prev_period,
+                "prior_level": prev_level,
+                "raw_level": level_t,
+                "source_url": source_url,
+            }
+            if release_date:
+                point["release_date"] = release_date
+            points.append(point)
+        return points
+
+    if transform in _DIRECT_TRANSFORMS:
+        for period in ordered:
+            if period not in emit_periods:
+                continue
+            point = {
+                "period": period,
+                "value": float(period_to_level[period]),
+                "transformation": transform,
+                "revision_status": revisions.get(period, "final"),
+                "source_url": source_url,
+            }
+            if release_date:
+                point["release_date"] = release_date
+            points.append(point)
+        return points
+
+    point = _derive_latest_point(spec, level_points, source_url=source_url)
+    return [point] if point is not None else []
+
+
 def _derive_points_from_levels(
     spec: dict[str, Any],
     level_points: list[tuple[str, float]],
     *,
     source_url: str,
+    revision_by_period: dict[str, str] | None = None,
+    release_date: str | None = None,
 ) -> list[dict[str, Any]]:
     if str(spec.get("id")) == _US_LABOR_WAGES_ID:
         return _derive_us_labor_wage_points(spec, level_points, source_url=source_url)
+    catalog_id = str(spec.get("id") or "")
+    if catalog_id in OFFICIAL_FALLBACK_CATALOG_IDS:
+        return _derive_bounded_scorecard_points(
+            spec,
+            level_points,
+            source_url=source_url,
+            revision_by_period=revision_by_period,
+            release_date=release_date,
+        )
     point = _derive_latest_point(spec, level_points, source_url=source_url)
     return [point] if point is not None else []
 
@@ -293,7 +396,7 @@ def _bea_period_to_fred_stamp(period: str) -> str | None:
     except ValueError:
         return None
     month = (quarter - 1) * 3 + 1
-    return f"{year}-{month:02d}"
+    return f"{year}-{month:02d}-01"
 
 
 def _bea_gdp_row_ok(row: dict[str, Any]) -> bool:
@@ -335,6 +438,100 @@ def _bea_gdp_level_rows(payload: dict[str, Any]) -> list[tuple[str, float]]:
     return sorted(rows, key=lambda item: item[0])
 
 
+def _official_success_from_bundle(
+    spec: dict[str, Any],
+    official: dict[str, Any],
+    *,
+    fred_error: str | None,
+    base: dict[str, Any] | None = None,
+    bea_fallback: str | None = None,
+) -> dict[str, Any]:
+    source_url = str(official.get("source_url") or "")
+    points = _derive_bounded_scorecard_points(
+        spec,
+        official.get("levels") or [],
+        source_url=source_url,
+        revision_by_period=official.get("revision_by_period"),
+        release_date=official.get("release_date"),
+    )
+    scored = _scored_transform_point(points, str(spec.get("transform") or ""))
+    if scored is None:
+        payload = dict(base or {})
+        err = f"{fred_error or 'fred_fetch_failed'}; official_fallback_failed:transform_not_derived"
+        return {
+            **payload,
+            "ok": False,
+            "status": "source_failed",
+            "error": err,
+            "body": official.get("body") or payload.get("body") or b"",
+            "http_status": official.get("http_status") or payload.get("http_status"),
+            "ledger_extra": {
+                "fred_failure": fred_error or "fred_fetch_failed",
+                "accepted_source": None,
+                "bea_fallback": bea_fallback,
+            },
+        }
+    digest = str(official.get("raw_sha256") or _sha256(official.get("body") or b""))
+    ledger: dict[str, Any] = {
+        "fred_failure": fred_error or "fred_fetch_failed",
+        "accepted_source": official.get("accepted_source"),
+    }
+    if bea_fallback:
+        ledger["bea_fallback"] = bea_fallback
+    inherited = dict(base or {})
+    inherited.pop("status", None)
+    inherited.pop("error", None)
+    inherited.pop("ok", None)
+    return {
+        **inherited,
+        "ok": True,
+        "points": points,
+        "vintage": "latest_available",
+        "raw_sha256": digest,
+        "body": official.get("body") or inherited.get("body") or b"",
+        "http_status": official.get("http_status") or inherited.get("http_status"),
+        "accepted_source": official.get("accepted_source"),
+        "source_url": source_url,
+        "ledger_extra": ledger,
+    }
+
+
+def _try_official_us_fallback(
+    spec: dict[str, Any],
+    failure: dict[str, Any],
+    *,
+    opener: Callable[..., dict[str, Any]],
+    timeout: float,
+    fred_error: str | None,
+) -> dict[str, Any]:
+    catalog_id = str(spec.get("id") or "")
+    if catalog_id not in OFFICIAL_FALLBACK_CATALOG_IDS:
+        return failure
+    official = fetch_official_us_series(catalog_id, opener=opener, timeout=timeout)
+    if not official.get("ok"):
+        merged = dict(failure)
+        official_err = str(official.get("error") or "official_fetch_failed")
+        if failure.get("status") == "license_gap":
+            merged["status"] = "license_gap"
+            if failure.get("challenge_page"):
+                merged["challenge_page"] = True
+        merged["error"] = f"{fred_error or failure.get('error') or 'fred_fetch_failed'}; {official_err}"
+        merged["body"] = official.get("body") or failure.get("body") or b""
+        merged["http_status"] = official.get("http_status") or failure.get("http_status")
+        merged["ledger_extra"] = {
+            "fred_failure": fred_error or failure.get("error") or "fred_fetch_failed",
+            "accepted_source": None,
+            "official_error": official_err,
+        }
+        return merged
+    return _official_success_from_bundle(
+        spec,
+        official,
+        fred_error=fred_error or failure.get("error"),
+        base=failure,
+    )
+
+
 def _fetch_bea_real_gdp_fallback(
     spec: dict[str, Any],
     *,
@@ -350,15 +547,28 @@ def _fetch_bea_real_gdp_fallback(
     base: dict[str, Any] = {"http_status": http_status, "body": body}
     fred_note = _redact_bea_secrets(fred_error or "fred_fetch_failed", api_key=api_key)
     if not api_key:
+        xlsx = bea_gdp_xlsx_fallback(opener=opener, timeout=timeout)
+        if xlsx.get("ok"):
+            return _official_success_from_bundle(
+                spec,
+                xlsx,
+                fred_error=fred_error,
+                base=base,
+                bea_fallback="bea_survey_xlsx",
+            )
+        xlsx_err = str(xlsx.get("error") or "bea_xlsx_failed")
         return {
             **base,
             "ok": False,
             "status": "source_failed",
-            "error": fred_note,
+            "error": f"{fred_note}; {xlsx_err}",
+            "body": xlsx.get("body") or body,
+            "http_status": xlsx.get("http_status") or http_status,
             "ledger_extra": _bea_ledger_extra(
                 fred_failure=fred_error or "fred_fetch_failed",
                 bea_fallback="skipped_missing_api_key",
                 api_key=api_key,
+                official_error=xlsx_err,
             ),
         }
     year = (now or datetime.now()).year
@@ -374,85 +584,56 @@ def _fetch_bea_real_gdp_fallback(
         }
     )
     bea_request_url = f"{BEA_NIPA_API_URL}?{params}"
+    def _bea_xlsx_after_api_failure(err_suffix: str, bea_base: dict[str, Any]) -> dict[str, Any]:
+        xlsx = bea_gdp_xlsx_fallback(opener=opener, timeout=timeout)
+        if xlsx.get("ok"):
+            return _official_success_from_bundle(
+                spec,
+                xlsx,
+                fred_error=fred_error,
+                base=bea_base,
+                bea_fallback="bea_survey_xlsx",
+            )
+        xlsx_err = str(xlsx.get("error") or "bea_xlsx_failed")
+        return {
+            **bea_base,
+            "ok": False,
+            "status": "source_failed",
+            "error": _redact_bea_secrets(f"{fred_note}; {err_suffix}; {xlsx_err}", api_key=api_key),
+            "ledger_extra": _bea_ledger_extra(
+                fred_failure=fred_error or "fred_fetch_failed",
+                bea_fallback="failed",
+                api_key=api_key,
+                official_error=xlsx_err,
+            ),
+        }
+
     try:
         response = opener(bea_request_url, timeout=timeout)
     except BaseException as exc:  # noqa: BLE001
         token = f"bea_fallback_failed:{type(exc).__name__}"
-        return {
-            **base,
-            "ok": False,
-            "status": "source_failed",
-            "error": _redact_bea_secrets(f"{fred_note}; {token}", api_key=api_key),
-            "ledger_extra": _bea_ledger_extra(
-                fred_failure=fred_error or "fred_fetch_failed",
-                bea_fallback="failed",
-                api_key=api_key,
-            ),
-        }
+        return _bea_xlsx_after_api_failure(token, base)
     bea_body: bytes = response.get("body") or b""
     bea_base = {"http_status": response.get("http_status"), "body": bea_body}
     if not response.get("ok") or not bea_body:
         err_token = "bea_fallback_failed:fetch_error"
-        return {
-            **bea_base,
-            "ok": False,
-            "status": "source_failed",
-            "error": _redact_bea_secrets(f"{fred_note}; {err_token}", api_key=api_key),
-            "ledger_extra": _bea_ledger_extra(
-                fred_failure=fred_error or "fred_fetch_failed",
-                bea_fallback="failed",
-                api_key=api_key,
-            ),
-        }
+        return _bea_xlsx_after_api_failure(err_token, bea_base)
     try:
         payload = json.loads(bea_body.decode("utf-8", errors="replace"))
     except json.JSONDecodeError:
-        return {
-            **bea_base,
-            "ok": False,
-            "status": "source_failed",
-            "error": _redact_bea_secrets(f"{fred_note}; bea_fallback_failed:invalid_json", api_key=api_key),
-            "ledger_extra": _bea_ledger_extra(
-                fred_failure=fred_error or "fred_fetch_failed",
-                bea_fallback="failed",
-                api_key=api_key,
-            ),
-        }
+        return _bea_xlsx_after_api_failure("bea_fallback_failed:invalid_json", bea_base)
     level_rows = _bea_gdp_level_rows(payload)
     if not level_rows:
-        return {
-            **bea_base,
-            "ok": False,
-            "status": "source_failed",
-            "error": _redact_bea_secrets(f"{fred_note}; bea_fallback_failed:no_gdp_rows", api_key=api_key),
-            "ledger_extra": _bea_ledger_extra(
-                fred_failure=fred_error or "fred_fetch_failed",
-                bea_fallback="failed",
-                api_key=api_key,
-            ),
-        }
-    point = _derive_points_from_levels(spec, level_rows, source_url=public_url)
-    scored = _scored_transform_point(point, str(spec.get("transform") or ""))
+        return _bea_xlsx_after_api_failure("bea_fallback_failed:no_gdp_rows", bea_base)
+    points = _derive_bounded_scorecard_points(spec, level_rows, source_url=public_url)
+    scored = _scored_transform_point(points, str(spec.get("transform") or ""))
     if scored is None:
-        return {
-            **bea_base,
-            "ok": False,
-            "status": "source_failed",
-            "error": _redact_bea_secrets(
-                f"{fred_note}; bea_fallback_failed:transform_not_derived",
-                api_key=api_key,
-            ),
-            "ledger_extra": _bea_ledger_extra(
-                fred_failure=fred_error or "fred_fetch_failed",
-                bea_fallback="failed",
-                api_key=api_key,
-            ),
-        }
+        return _bea_xlsx_after_api_failure("bea_fallback_failed:transform_not_derived", bea_base)
     digest = _sha256(bea_body)
     return {
         **bea_base,
         "ok": True,
-        "points": point,
+        "points": points,
         "vintage": "latest_available",
         "raw_sha256": digest,
         "accepted_source": "bea_official_fallback",
@@ -473,29 +654,37 @@ def _fred_failure_with_optional_bea(
     timeout: float,
     now: datetime | None,
 ) -> dict[str, Any]:
-    if str(spec.get("id")) != US_GDP_DOMESTIC_DEMAND_ID:
-        return failure
-    bea = _fetch_bea_real_gdp_fallback(
+    catalog_id = str(spec.get("id") or "")
+    fred_error = str(failure.get("error") or failure.get("status") or "fred_fetch_failed")
+    if catalog_id == US_GDP_DOMESTIC_DEMAND_ID:
+        bea = _fetch_bea_real_gdp_fallback(
+            spec,
+            opener=opener,
+            timeout=timeout,
+            now=now,
+            fred_error=fred_error,
+            http_status=failure.get("http_status"),
+            body=failure.get("body") or b"",
+        )
+        if bea.get("ok"):
+            return bea
+        merged = dict(failure)
+        merged["ledger_extra"] = bea.get("ledger_extra") or failure.get("ledger_extra")
+        if failure.get("status") == "license_gap":
+            merged["status"] = "license_gap"
+            merged["error"] = failure.get("error") or "fred_challenge_page"
+            if failure.get("challenge_page"):
+                merged["challenge_page"] = True
+        elif bea.get("error"):
+            merged["error"] = bea["error"]
+        return merged
+    return _try_official_us_fallback(
         spec,
+        failure,
         opener=opener,
         timeout=timeout,
-        now=now,
-        fred_error=str(failure.get("error") or failure.get("status") or "fred_fetch_failed"),
-        http_status=failure.get("http_status"),
-        body=failure.get("body") or b"",
+        fred_error=fred_error,
     )
-    if bea.get("ok"):
-        return bea
-    merged = dict(failure)
-    merged["ledger_extra"] = bea.get("ledger_extra") or failure.get("ledger_extra")
-    if failure.get("status") == "license_gap":
-        merged["status"] = "license_gap"
-        merged["error"] = failure.get("error") or "fred_challenge_page"
-        if failure.get("challenge_page"):
-            merged["challenge_page"] = True
-    elif bea.get("error"):
-        merged["error"] = bea["error"]
-    return merged
 
 
 def _fetch_fred_series(
