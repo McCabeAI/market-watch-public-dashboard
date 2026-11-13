@@ -241,9 +241,24 @@
     return MACHINE_PROSE.some(function (pattern) { return pattern.test(text); });
   }
 
+  function cleanStopText(value, fallback, maxChars) {
+    if (!value) return fallback || "";
+    var text = String(value);
+    text = text.replace(/\b(?:FACT|INFERENCE|UNKNOWN|VERIFIED):\s*/gi, "");
+    SCRUB_PROSE.forEach(function (pattern) { text = text.replace(pattern, ""); });
+    text = text.replace(/\s{2,}/g, " ").replace(/\s+([,.;:])/g, "$1").trim();
+    if (!text || hasMachineProse(text)) return fallback || "";
+    var limit = maxChars || 500;
+    if (text.length > limit) text = text.slice(0, limit).replace(/\s+\S*$/, "").replace(/[ ,;:]+$/, "") + "…";
+    return text;
+  }
+
   function cleanBlurb(value, fallback, maxChars) {
     if (!value) return fallback || "";
-    var chunks = String(value).match(/[^.!?]+[.!?]?/g) || [];
+    var raw = String(value)
+      .replace(/(\d)\.(\d)/g, "$1\u0000$2")
+      .replace(/\b([A-Za-z])\.([A-Za-z])\./g, "$1\u0000$2\u0000");
+    var chunks = raw.match(/[^.!?]+[.!?]?/g) || [];
     var kept = chunks.map(function (chunk) {
       var text = chunk.replace(/\b(?:FACT|INFERENCE|UNKNOWN|VERIFIED):\s*/gi, "");
       SCRUB_PROSE.forEach(function (pattern) { text = text.replace(pattern, ""); });
@@ -251,7 +266,7 @@
     }).filter(function (chunk) {
       return chunk && !hasMachineProse(chunk) && !(chunk.length > 420 && (chunk.match(/;/g) || []).length >= 3);
     });
-    var out = kept.join(" ").trim();
+    var out = kept.join(" ").replace(/\u0000/g, ".").trim();
     if (!out) return fallback || "";
     var limit = maxChars || 700;
     if (out.length > limit) out = out.slice(0, limit).replace(/\s+\S*$/, "").replace(/[ ,;:]+$/, "") + "…";
@@ -948,6 +963,53 @@
       sourceHtml + "</span>";
   }
 
+  function positionUsesTicketLayout(pos) {
+    if (!pos) return false;
+    if (pos.governing_invalidation || pos.current_note || pos.entry_thesis) return true;
+    return false;
+  }
+
+  function firstGoverningInvalidation(positions) {
+    var list = positions || [];
+    for (var i = 0; i < list.length; i++) {
+      var cleaned = cleanStopText(list[i].governing_invalidation, "", 400);
+      if (cleaned) return cleaned;
+    }
+    return "";
+  }
+
+  function seatDeskHtml(seat) {
+    var positions = seat.positions || [];
+    var deskFromNote = cleanBlurb(seat.desk_note, "", 1200);
+    var deskFromThesis = cleanBlurb(seat.thesis, "", 700);
+    var deskLead = deskFromNote || deskFromThesis;
+    var html = "";
+    if (deskLead) html += '<p class="tb-desk-note">' + esc(deskLead) + "</p>";
+    if (deskFromThesis && deskFromThesis !== deskLead) {
+      html += '<p class="tb-current-view">' + esc(deskFromThesis) + "</p>";
+    }
+    var ticketsGovern = positions.some(function (pos) {
+      return !!(pos.governing_invalidation && cleanStopText(pos.governing_invalidation, "", 400));
+    });
+    if (!positions.length) {
+      var flatInv = cleanStopText(seat.invalidation, "", 500);
+      if (flatInv) html += '<p class="tb-thesis"><b>Invalidation.</b> ' + esc(flatInv) + "</p>";
+      return html;
+    }
+    if (String(seat.plan_status || "") === "discrepancy") {
+      var planNote = cleanBlurb(seat.plan_note, "", 500);
+      var statedSeat = cleanBlurb(seat.stated_invalidation, "", 500);
+      var booked = firstGoverningInvalidation(positions) || cleanStopText(seat.invalidation, "", 500);
+      html += '<p class="tb-plan-discrepancy" role="note"><b>Discrepancy.</b> ' + esc(planNote) +
+        (booked ? " Booked stop: " + esc(booked) : "") +
+        (statedSeat ? " Today wrote: " + esc(statedSeat) : "") + "</p>";
+    } else if (!ticketsGovern) {
+      var bookInv = cleanStopText(seat.invalidation, "", 500);
+      if (bookInv) html += '<p class="tb-thesis"><b>Invalidation.</b> ' + esc(bookInv) + "</p>";
+    }
+    return html;
+  }
+
   function renderPosition(pos) {
     var kind = directionClass(pos.side);
     var direction = String(pos.side || "").toUpperCase();
@@ -956,14 +1018,51 @@
     var marks = priceBit("Entry", pos.entry_price, pos.entry_price_as_of, pos.entry_price_source) +
       priceBit("Mark", pos.mark_price, pos.mark_price_as_of, pos.mark_price_source);
     var markLine = marks ? '<div class="tb-position-marks">' + marks + "</div>" : "";
-    var publicThesis = cleanBlurb(pos.thesis, "", 500);
-    var publicInvalidation = cleanBlurb(pos.invalidation, "", 400);
-    var thesis = publicThesis
-      ? '<div class="tb-position-reason"><b>Why:</b> ' + esc(publicThesis) + "</div>"
-      : '<div class="tb-position-reason tb-muted"><b>Why:</b> No clean position-specific note recorded.</div>';
-    var invalidation = publicInvalidation
-      ? '<div class="tb-position-invalidation"><b>Invalidation:</b> ' + esc(publicInvalidation) + "</div>"
-      : "";
+    var thesis = "";
+    var invalidation = "";
+    if (positionUsesTicketLayout(pos)) {
+      var actionNote = cleanStopText(pos.current_note, "", 500) || cleanBlurb(pos.current_note, "", 500);
+      if (actionNote) {
+        var actionWord = pos.current_action ? String(pos.current_action).replace(/_/g, " ") : "";
+        thesis = actionWord
+          ? '<div class="tb-position-reason"><b>' + esc(actionWord) + ".</b> " + esc(actionNote) + "</div>"
+          : '<div class="tb-position-reason">' + esc(actionNote) + "</div>";
+      }
+      var govStop = cleanStopText(pos.governing_invalidation, "", 400) || cleanStopText(pos.invalidation, "", 400);
+      if (govStop) {
+        var horizon = pos.horizon_label ? " · " + esc(pos.horizon_label) : "";
+        invalidation = '<div class="tb-position-invalidation"><b>Invalidation.</b> ' + esc(govStop) + horizon + "</div>";
+      }
+      if (pos.plan_status === "amendment") {
+        var statedAmend = cleanBlurb(pos.stated_invalidation, "", 400);
+        if (statedAmend) {
+          invalidation += '<div class="tb-plan-amendment">Proposed today, booked stop unchanged: ' + esc(statedAmend) + "</div>";
+        }
+      }
+      if (pos.plan_status === "discrepancy") {
+        var posPlan = cleanBlurb(pos.plan_note, "", 400);
+        var posStated = cleanBlurb(pos.stated_invalidation, "", 400);
+        var discBits = [];
+        if (posPlan) discBits.push(esc(posPlan));
+        if (posStated) discBits.push(esc(posStated));
+        if (discBits.length) {
+          invalidation += '<div class="tb-plan-amendment">' + discBits.join(" ") + "</div>";
+        }
+      }
+      var archived = cleanBlurb(pos.entry_thesis, "", 500);
+      if (archived) {
+        invalidation += '<details class="tb-entry-thesis"><summary>Entry thesis</summary><p>' + esc(archived) + "</p></details>";
+      }
+    } else {
+      var publicThesis = cleanBlurb(pos.thesis, "", 500);
+      var publicInvalidation = cleanBlurb(pos.invalidation, "", 400);
+      thesis = publicThesis
+        ? '<div class="tb-position-reason"><b>Why:</b> ' + esc(publicThesis) + "</div>"
+        : '<div class="tb-position-reason tb-muted"><b>Why:</b> No clean position-specific note recorded.</div>';
+      invalidation = publicInvalidation
+        ? '<div class="tb-position-invalidation"><b>Invalidation:</b> ' + esc(publicInvalidation) + "</div>"
+        : "";
+    }
     var hedge = "";
     if (pos.hedge_of) {
       var hedgeHuman = humaniseInstrument(pos.hedge_of);
@@ -1400,8 +1499,7 @@
       (seat.expression_rule ? metric("Expression", "<b>" + esc(humaniseRule(seat.expression_rule)) + "</b>") : "") +
       "</div>" +
       (seat.remit ? '<p class="tb-thesis"><b>Remit:</b> ' + esc(seat.remit) + "</p>" : "") +
-      proseBlock("Current book view:", seat.thesis, 700) +
-      proseBlock("Book invalidation:", seat.invalidation, 500) +
+      seatDeskHtml(seat) +
       '<div class="tb-block"><span class="mw-label">Watch items</span>' + listHtml(buckets.watches, "No watch items.") + "</div>" +
       '<div class="tb-block"><span class="mw-label">Risk flags</span>' + listHtml(buckets.flags, "No risk flags on this seat.") + "</div>" +
       (buckets.history && buckets.history.length

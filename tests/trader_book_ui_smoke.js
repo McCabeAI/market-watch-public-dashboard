@@ -40,7 +40,7 @@ const traderPacket = {
   evidence_cutoff: "2026-09-20T02:08:18Z",
   overnight_run_id: "tr-ui-smoke",
   review_status: "fresh",
-  seat_count: 2,
+  seat_count: 4,
   publication: { core_status: "ok", trader_books_status: "fresh" },
   trade_permissions: {
     trade_eligible_countries: ["CA", "NZ", "EA", "JP"],
@@ -89,6 +89,9 @@ const traderPacket = {
       competition_rank: 1,
       last_action: "HOLD",
       remit: "may submit no-trade",
+      desk_note: "No new risk today; macro tape is too mixed for a clean expression.",
+      thesis: "No new risk today; macro tape is too mixed for a clean expression.",
+      invalidation: "A durable break in cross-asset correlation would force a rethink.",
       net_pnl_usd: 0,
       realized_pnl_usd: 0,
       unrealized_pnl_usd: 0,
@@ -102,6 +105,95 @@ const traderPacket = {
       drawdown_usd: 0,
       max_drawdown_usd: 5000000,
       positions: [],
+    },
+    {
+      seat: "chart-guy",
+      competition_rank: 3,
+      last_action: "HOLD",
+      remit: "EURUSD technicals",
+      desk_note:
+        "Hold the 10 million euro-dollar short. Both the five-session and one-month closes are down.",
+      thesis:
+        "Hold the euro-dollar short. The close is 1.1081 against an entry of 1.1127, and the five-session close return is down 1.27 percent.",
+      plan_status: "discrepancy",
+      plan_note:
+        "The booked invalidation still stands. Today's commentary disagrees with it and does not change the stop.",
+      stated_invalidation: "No adverse close bound was supplied for today's session.",
+      invalidation: "A daily close in EURUSD above the 20-day average at 1.1195.",
+      net_pnl_usd: 0,
+      realized_pnl_usd: 0,
+      unrealized_pnl_usd: 41340.88,
+      funding_cost_usd: 0,
+      nav_usd: 100041340.88,
+      risk_capital_limit_usd: 10000000,
+      risk_capital_usd: 1000000,
+      drawdown_usd: 0,
+      max_drawdown_usd: 5000000,
+      positions: [
+        {
+          instrument: "EURUSD",
+          asset_class: "spot_fx",
+          side: "short",
+          notional_usd: 10000000,
+          risk_capital_usd: 1000000,
+          unrealized_pnl_usd: 41340.88,
+          entry_price: 1.1127,
+          mark_price: 1.1081,
+          governing_invalidation:
+            "A daily close in EURUSD above the 20-day average at 1.1195.",
+          invalidation:
+            "A daily close in EURUSD above the 20-day average at 1.1195.",
+          current_action: "HOLD",
+          current_note:
+            "Hold the 10 million euro-dollar short. Both the five-session and one-month closes are down.",
+          horizon_label: "5 sessions",
+          entry_thesis: "20-session breakdown at the bottom of the range",
+          plan_status: "discrepancy",
+          stated_invalidation: "No adverse close bound was supplied for today's session.",
+        },
+      ],
+    },
+    {
+      seat: "rate-hawk",
+      competition_rank: 4,
+      last_action: "HOLD",
+      remit: "G10 rates RV",
+      desk_note:
+        "Keep the SOFR belly long while CAD front stays offered. Add only if the US leg cheapens another 3bp.",
+      net_pnl_usd: 0,
+      unrealized_pnl_usd: 1200,
+      funding_cost_usd: 0,
+      nav_usd: 100001200,
+      risk_capital_limit_usd: 10000000,
+      risk_capital_usd: 2000000,
+      drawdown_usd: 0,
+      max_drawdown_usd: 5000000,
+      positions: [
+        {
+          instrument: "SOFR_2027-09",
+          asset_class: "rates",
+          side: "long",
+          notional_usd: 25000000,
+          risk_capital_usd: 1000000,
+          unrealized_pnl_usd: 800,
+          entry_thesis: "Belly richening as cuts get pulled forward",
+          governing_invalidation: "A close through the June pivot at 96.10",
+          current_note: "Hold belly; payroll risk is two sessions out.",
+          mark_price: 96.25,
+        },
+        {
+          instrument: "USDCAD",
+          asset_class: "spot_fx",
+          side: "short",
+          notional_usd: 15000000,
+          risk_capital_usd: 1000000,
+          unrealized_pnl_usd: 400,
+          entry_thesis: "Oil-led CAD strength fades into month-end",
+          governing_invalidation: "Spot above 1.39 on a NY close",
+          current_note: "Trail stop; only add if USDCAD fails 1.37.",
+          mark_price: 1.382,
+        },
+      ],
     },
   ],
 };
@@ -236,6 +328,47 @@ flush().then(function () {
   check(root.indexOf("Cash yield") === -1, "flat-book cash yield is not shown as alpha");
   check(pms.indexOf("$100m risk limit per 1% standard move") !== -1, "PM risk-limit wording is preserved");
   check(root.indexOf("999999") === -1 && pms.indexOf("888888") === -1, "position P&L is not used as the book total");
+
+  check(root.indexOf("Current book view:") === -1, "legacy Current book view label is absent");
+
+  const chartGuy = sliceBlock(root, 'data-seat="chart-guy"');
+  check(chartGuy.indexOf("Hold the 10 million") !== -1, "chart-guy desk note is visible");
+  check(chartGuy.indexOf("1.1195") !== -1, "chart-guy booked stop level is visible");
+  check(chartGuy.indexOf("5 sessions") !== -1, "chart-guy horizon label is visible");
+  check(chartGuy.indexOf("Discrepancy") !== -1, "chart-guy discrepancy banner is visible");
+  check(chartGuy.indexOf("No adverse close bound") !== -1, "chart-guy denial commentary is visible");
+  check(chartGuy.indexOf("Entry thesis") !== -1, "chart-guy entry thesis control is present");
+  check(chartGuy.indexOf("20-session breakdown") !== -1, "chart-guy archived entry thesis text is present");
+  check(chartGuy.indexOf("SHORT") !== -1 && chartGuy.indexOf("EURUSD") !== -1, "chart-guy SHORT EURUSD");
+  check(chartGuy.indexOf("+$41.3k") !== -1, "chart-guy position P&L uses money() for 41340.88");
+  check(chartGuy.indexOf("tb-current-view") !== -1, "chart-guy longer thesis appears in tb-current-view");
+  check(chartGuy.indexOf("1.1081") !== -1 && chartGuy.indexOf("1. 1081") === -1, "close levels keep their decimal point");
+  check(chartGuy.indexOf("1.27 percent") !== -1, "percent levels are not split into a new sentence");
+  const chartInv = chartGuy.match(/tb-position-invalidation[\s\S]*?<\/div>/);
+  check(Boolean(chartInv), "chart-guy has governing invalidation block");
+  check(
+    chartInv[0].indexOf("No adverse close bound") === -1,
+    "denial sentence is not inside the governing invalidation line"
+  );
+
+  const rateHawk = sliceBlock(root, 'data-seat="rate-hawk"');
+  check(
+    rateHawk.indexOf("Hold belly; payroll risk is two sessions out.") !== -1 &&
+      rateHawk.indexOf("Trail stop; only add if USDCAD fails 1.37.") !== -1,
+    "rate-hawk shows both position current_note strings"
+  );
+  check(rateHawk.indexOf("Belly richening") !== -1 && rateHawk.indexOf("Oil-led CAD") !== -1, "entry theses in details");
+  check(
+    rateHawk.indexOf("<b>Why:</b> Belly richening") === -1 &&
+      rateHawk.indexOf("<b>Why:</b> Oil-led") === -1,
+    "entry theses are not duplicated as visible Why lines"
+  );
+
+  check(skeptic.indexOf("FLAT") !== -1, "flat no-trade seat still shows FLAT");
+  check(skeptic.indexOf("too mixed for a clean expression") !== -1, "flat seat desk note is visible");
+  check(skeptic.indexOf("durable break in cross-asset correlation") !== -1, "flat seat invalidation is visible");
+  check(skeptic.indexOf("tb-plan-discrepancy") === -1, "flat seat has no discrepancy banner");
+
   console.log("trader_book_ui_smoke ok");
 }).catch(function (error) {
   fail(error && error.stack ? error.stack : String(error));

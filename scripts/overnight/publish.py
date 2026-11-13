@@ -184,8 +184,12 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
     canonical_payload: dict[str, Any] | None = None
     if store.books_path().is_file():
         from scripts.overnight.books import public_books_view, validate_books
+        from scripts.overnight.plan_continuity import load_position_plans
 
-        canonical_payload = public_books_view(validate_books(store.read_books()))
+        canonical_payload = public_books_view(
+            validate_books(store.read_books()),
+            position_plans=load_position_plans(store.root),
+        )
 
     if canonical_payload is not None:
         payload = dict(canonical_payload)
@@ -218,6 +222,17 @@ def emit_trader_books_json(store: OvernightStore, site_dir: Path, *, run_id: str
                     max_chars=400,
                     fallback="",
                 )
+            if (
+                seat.get("plan_status") == "discrepancy"
+                and len(seat.get("positions") or []) == 1
+            ):
+                only = (seat.get("positions") or [None])[0]
+                if isinstance(only, dict) and only.get("governing_invalidation"):
+                    seat["invalidation"] = sanitize_public_prose(
+                        strip_unrelated_data_caveat(str(only.get("governing_invalidation") or ""), countries),
+                        max_chars=500,
+                        fallback=seat.get("invalidation") or "",
+                    )
         if dataset is not None:
             pub = dataset["publication"]
             payload["overnight_research"] = _public_research(

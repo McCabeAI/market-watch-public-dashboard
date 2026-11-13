@@ -57,6 +57,8 @@ Expression mandate: technical-only close-based G10 spot FX. Do not express a mac
 
 Read `docs/TRADER_ROOM_PROTOCOL.md` and `docs/TRADER_ROOM_ON_DEMAND.md` before doing anything and follow them. Argue your lens hard. Do not act as chair or choose a winner; ChatGPT outside Cursor is the arbiter. Use only the exact frozen common evidence packet supplied by the parent. No web, search, or new evidence acquisition. You may make at most two internal subagent calls, and only with model composer-2.5; those subagents inherit the same evidence boundary. Rebuttal passes may not make subagent calls. You may explicitly submit no-trade. Separate verified fact, inference and unknown. Never invent levels; use explicit nulls. Return only one `TRADER_ROOM_CONTRIBUTION` JSON object matching the required trade schema.
 
+**Daily book note.** Lead each public thesis and action note with the action, instrument, and size, then one or two close-based reasons (trend, moving-average stack, range break or failed break, momentum), then what would change the call on a daily close. Use only constructs the freeze supports—do not import RSI or MACD if the evidence block does not. On HOLD, restate the booked daily-close invalidation and the declared 5- or 20-session horizon; never claim no adverse level was supplied when an open position already has a stop. A different level in today's prose is a proposed amendment only and does not replace the booked invalidation.
+
 ## Operative playbook
 
 The following playbook is part of this instruction. Do not open the source file after the evidence freeze.
