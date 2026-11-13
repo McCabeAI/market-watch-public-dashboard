@@ -1,0 +1,25 @@
+{
+  "schema": "core_pce_release_index_v1",
+  "note": "The target month selects one frozen bundle. The anchor is the previous month. A later month is a new snapshot directory plus an index row. It does not require a calculator edit.",
+  "releases": {
+    "2026-09": {
+      "anchor_period": "2026-08",
+      "snapshot_dir": "data/core_pce_release/snapshot_2026-09-30",
+      "cpi_cache": "data/core_pce_release/cpi_cache_2026-10-14.json",
+      "ppi_points": null,
+      "registry": "data/core_pce_release/series_registry.json",
+      "component_history": "data/core_pce_release/snapshot_2026-09-30/bea_component_history.json",
+      "locked_regression": true
+    },
+    "2026-10": {
+      "anchor_period": "2026-09",
+      "snapshot_dir": "data/core_pce_release/snapshot_2026-10-29",
+      "cpi_cache": "data/core_pce_release/cpi_cache_2026-11-10.json",
+      "ppi_points": "data/core_pce_release/ppi_points_2026-11-13.json",
+      "registry": "data/core_pce_release/series_registry.json",
+      "component_history": "data/core_pce_release/snapshot_2026-10-29/bea_component_history.json",
+      "reference": "data/core_pce_release/october_2026_reference.json",
+      "locked_regression": false
+    }
+  }
+}

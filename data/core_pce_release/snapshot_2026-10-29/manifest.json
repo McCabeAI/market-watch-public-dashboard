@@ -1,0 +1,59 @@
+{
+  "schema": "core_pce_snapshot_v1",
+  "target_release": "2026-10",
+  "anchor_period": "2026-09",
+  "source_map": {
+    "table": "BEA Table 2.4.4 U-D source crosswalk",
+    "dated": "2026-09-30",
+    "url": "https://www.bea.gov/sites/default/files/2026-10/FAQ521-Sep26-update.xlsx",
+    "sha256": "66c53c60cd0c2b1258589e0d8239beed95d0a1ff9822575a640c3dc5da701c7b",
+    "note": "No newer FAQ521 crosswalk was published as of 2026-11-13. CPI/PPI series identity stays the verified 2026-09-30 map. Source families were not relabeled."
+  },
+  "expenditures": {
+    "table": "BEA Table 2.4.5U",
+    "sheet": "U20405-Q",
+    "period": "2026Q3",
+    "published": "2026-10-29",
+    "url": "https://apps.bea.gov/national/Release/XLS/Underlying/Section2All_xls.xlsx",
+    "sha256": "7c96d36e8a6e8fcf42385a9d3eed14be90055488e935baf858a4c1adb2c7a1ea",
+    "official_core_pce_line": 374,
+    "official_core_pce_millions": "19859826",
+    "signed_partition_millions": "19859830",
+    "rounding_residual_millions": "-4",
+    "food_energy_exclusion_lines": [
+      73,
+      113,
+      169
+    ],
+    "leaf_identity": "verified_2026-09_lines_and_signs",
+    "note": "2026Q3 dollars on the verified leaf lines sum to line 374 within -4 million. A fresh indent recut stops at line 280 and would drop verified CPI lines, so that recut is not used. Weights are sign times 2026Q3 millions over 19859826 and are not renormalized."
+  },
+  "pcepilfe": {
+    "series": "PCEPILFE",
+    "bea_line": 374,
+    "bea_series_code": "DPCCRG",
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+    "bea_table_url": "https://apps.bea.gov/national/Release/XLS/Underlying/Section2All_xls.xlsx",
+    "retrieved_on": "2026-11-13",
+    "published": "2026-10-29",
+    "sha256": "8aa0635d4a3e066a0365551faeabc030547a7a313c58c3b18f87b7f0ff1d5f18",
+    "fingerprint": {
+      "2025-11": "127.363",
+      "2025-12": "127.765",
+      "2026-01": "128.270",
+      "2026-02": "128.701",
+      "2026-03": "129.030",
+      "2026-04": "129.395",
+      "2026-05": "129.796",
+      "2026-06": "129.969",
+      "2026-07": "130.148",
+      "2026-08": "130.489",
+      "2026-09": "130.902"
+    },
+    "through": "2026-09"
+  },
+  "component_history_sha256": "7fa851b8ec978c2f469bb10dfd98b2d1b3b18aa2985e841229b3811df3ea6d0f",
+  "component_count": 215,
+  "weight_share_sum": "1.000000201411633717233977782",
+  "components_sha256": "4e7a2787f42095c93da466a55fe5f10d53c1a0b05d141de68e5ffd7c12dcd874"
+}

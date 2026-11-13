@@ -343,9 +343,18 @@ class OneShotPpiTests(unittest.TestCase):
         self.assertEqual(result["reason"], "source_validation_failed")
         self._assert_baseline_preserved(result)
 
-    def test_only_2026_09_release_is_accepted(self) -> None:
+    def test_missing_bundle_does_not_fetch_or_reuse_september(self) -> None:
+        def poster(*_args, **_kwargs):
+            raise AssertionError("fetch")
+
         with self.assertRaises(ValueError):
-            run_oneshot(self.out, release="2026-08", poster=lambda *args, **kwargs: (_ for _ in ()).throw(AssertionError("fetch")))
+            run_oneshot(self.out, release="2026-13", poster=poster)
+        result = run_oneshot(self.out, release="2026-08", poster=poster)
+        self.assertEqual(result["reason"], "release_bundle_missing")
+        self.assertEqual(result["estimate"], "not_published")
+        self.assertIsNone(result["revised"]["central_mom_percent"])
+        comment = (self.out / "comment.md").read_text(encoding="utf-8")
+        self.assertNotIn(G0["central_mom_percent"], comment)
 
 
 class IssueAuthorizationTests(unittest.TestCase):
@@ -374,10 +383,23 @@ class IssueAuthorizationTests(unittest.TestCase):
             )
             self.assertTrue(decision["authorized"], permission)
             self.assertEqual(decision["reason"], "authorized")
+            self.assertEqual(decision["release"], "2026-09")
+
+    def test_any_exact_month_title_is_authorized(self) -> None:
+        decision = authorize_run_ppi_issue(
+            title="[run-ppi] 2026-10",
+            author_login="analyst",
+            author_type="User",
+            sender_login="analyst",
+            sender_type="User",
+            permission="write",
+        )
+        self.assertTrue(decision["authorized"])
+        self.assertEqual(decision["release"], "2026-10")
 
     def test_unrelated_title_bot_sender_and_read_permission_are_rejected(self) -> None:
         cases = [
-            ("[run-ppi] 2026-10", "analyst", "User", "analyst", "User", "write", "unrelated_title"),
+            ("[run-cpi] 2026-10", "analyst", "User", "analyst", "User", "write", "unrelated_title"),
             ("[run-ppi] 2026-09 ", "analyst", "User", "analyst", "User", "write", "unrelated_title"),
             ("Run PPI", "analyst", "User", "analyst", "User", "admin", "unrelated_title"),
             (EXACT_ISSUE_TITLE, "dependabot[bot]", "Bot", "dependabot[bot]", "Bot", "admin", "not_human"),
@@ -496,14 +518,18 @@ class OneShotCliAndWorkflowTests(unittest.TestCase):
         self.assertEqual(audit["revised"]["central_mom_percent"], G0["central_mom_percent"])
         self.assertIn("+0.3688405280179773205064998201%", (self.out / "comment.md").read_text(encoding="utf-8"))
 
-    def test_cli_refuses_other_releases_without_fetching(self) -> None:
+    def test_cli_missing_bundle_does_not_fetch(self) -> None:
         with mock.patch(
             "scripts.core_pce_release.oneshot.fetch_series",
             side_effect=AssertionError("fetch"),
         ):
             code = main(["run-ppi", "--release", "2026-08", "--out", str(self.out)])
         self.assertEqual(code, 2)
-        self.assertFalse((self.out / "audit.json").exists())
+        audit = json.loads((self.out / "audit.json").read_text(encoding="utf-8"))
+        self.assertEqual(audit["reason"], "release_bundle_missing")
+        self.assertEqual(audit["estimate"], "not_published")
+        self.assertIsNone(audit["revised"]["central_mom_percent"])
+        self.assertNotIn(G0["central_mom_percent"], (self.out / "comment.md").read_text(encoding="utf-8"))
 
     def test_cli_crash_comment_has_no_exception_text(self) -> None:
         secret = "crash-secret-not-for-comment"
@@ -525,22 +551,24 @@ class OneShotCliAndWorkflowTests(unittest.TestCase):
         text = WORKFLOW.read_text(encoding="utf-8")
         self.assertIn("issues:", text)
         self.assertIn("opened", text)
-        self.assertIn("'[run-ppi] 2026-09'", text)
+        self.assertIn("[run-ppi] 2026-09", text)
+        self.assertIn("[run-cpi]", text)
+        self.assertIn("startsWith(github.event.issue.title, '[run-ppi] ')", text)
         self.assertIn("github.event.sender.login == github.event.issue.user.login", text)
         self.assertIn("github.event.issue.user.type == 'User'", text)
         self.assertIn("github.event.sender.type == 'User'", text)
-        self.assertIn("authorize-ppi-issue", text)
-        self.assertIn("run-ppi", text)
+        self.assertIn("authorize-release-issue", text)
+        self.assertIn("dispatch-issue", text)
         self.assertIn("contents: read", text)
         self.assertIn("issues: write", text)
         self.assertIn("actions: write", text)
         self.assertIn("persist-credentials: false", text)
         self.assertIn("actions/upload-artifact@v4", text)
-        self.assertIn("run-ppi-2026-09-${{ github.run_id }}", text)
+        self.assertIn("run-release-${{ github.run_id }}", text)
         self.assertIn("gh issue comment", text)
         self.assertIn("timeout-minutes: 5", text)
         self.assertIn("cancel-in-progress: false", text)
-        self.assertIn("+0.3688405280179773205064998201%", text)
+        self.assertIn("+0.3688405280179773205064998201", text)
         for banned in (
             "schedule:",
             "cron:",

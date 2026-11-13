@@ -25,6 +25,27 @@ stage: awaiting current PPI
 
 The scenario band is **not** a confidence interval. Classification uses unrounded 3-month and 6-month momentum deltas (strictly positive for HOT, strictly negative for COLD, otherwise NEUTRAL). The 9-month direction and gap to 2% are reported separately. For this baseline the classification is **sensitive** (central HOT, low NEUTRAL, high HOT).
 
+## Monthly operator contract
+
+A target month is `YYYY-MM`. The anchor month is the previous month. `data/core_pce_release/release_index.json` selects one frozen bundle: BEA snapshot, component-history vintage, PCEPILFE file, CPI cache, optional PPI points, and the verified series registry. Adding a later month is a new directory plus an index row. It does not require an edit to the calculator.
+
+Do not point a new month at the September 2026 snapshot or the October 14 CPI cache. Preflight reports that as `stale_cpi_cache` or `snapshot_month_mismatch` and does not call the result READY. Missing PPI is `ppi_not_yet_applied` and does not block the post-CPI baseline.
+
+```bash
+python -m scripts.core_pce_release preflight --release 2026-10
+python -m scripts.core_pce_release prepare cpi --release 2026-10 --out /tmp/pce-2026-10
+python -m scripts.core_pce_release run-ppi --release 2026-10 --out /tmp/pce-2026-10 --ppi-points data/core_pce_release/ppi_points_2026-11-13.json
+```
+
+The same two steps can be issues opened by a human collaborator with admin, maintain, or write permission, sender equal to the author:
+
+- `[run-cpi] YYYY-MM` writes the post-CPI / pre-PPI baseline and does not call BLS.
+- `[run-ppi] YYYY-MM` updates that same month from one BLS request, or from committed points when an operator passes `--ppi-points`.
+
+`[run-ppi] 2026-09` remains the locked September issue. There is no cron and no listener.
+
+Core CPI `CUSR0000SA0L1E` stays context only. Raw PPI stays `modeled_not_bea_sa`. October 2026 inputs are the October 29, 2026 BEA vintage (Table 2.4.4U through September, 2026Q3 weights on the verified leaf lines), the November 10, 2026 CPI release, and the November 13, 2026 PPI release. The reproduced October centrals are in `data/core_pce_release/october_2026_reference.json`. The September forecast is unchanged; `september_2026_official_comparison.json` records the October 29 BEA index ratio next to that locked forecast.
+
 Raw BLS PPI enters through `source_news_bridge` or `current_raw_proxy_not_bea_sa` with output seasonal status `modeled_not_bea_sa`. It is never labeled BEA-SA.
 
 `INCOMPLETE` / `integrity blocked` is reserved for snapshot validation failure, missing component history, shared-series divergence, and other integrity guards—not for missing PPI.
@@ -33,7 +54,7 @@ C7 point-in-time backtesting and G8 model selection are **not** part of these co
 
 ## Operator commands
 
-A chat message does not run this calculator. There is no cron and no listener workflow. The one-shot path is an issue titled exactly `[run-ppi] 2026-09`, opened by a human collaborator with admin, maintain, or write permission, with the event sender equal to the issue author. The workflow authenticates that creator, runs `run-ppi` once, comments the numbers, uploads `audit.json`, and exits. It does not arm the listener, poll, retry later, deploy, or call a model.
+A chat message does not run this calculator. There is no cron and no listener workflow. The manual path is an issue titled exactly `[run-cpi] YYYY-MM` or `[run-ppi] YYYY-MM`, opened by a human collaborator with admin, maintain, or write permission, with the event sender equal to the issue author. `[run-ppi] 2026-09` is still that path for the locked September packet. The workflow authenticates the creator, runs one command, comments the numbers, uploads the audit, and exits. It does not arm the listener, poll, retry later, deploy, or call a model.
 
 Missing, stale, or unpublished September PPI is commented as `NOT YET AVAILABLE`. A throttled or failed BLS response is commented as `ERROR`. Neither case replaces the offline baseline.
 
@@ -77,7 +98,8 @@ python -m unittest tests.core_pce_release.test_delivery \
   tests.core_pce_release.test_forecasting \
   tests.core_pce_release.test_model_preparation \
   tests.core_pce_release.test_run_ppi_oneshot \
-  tests.core_pce_release.test_import_price_incremental
+  tests.core_pce_release.test_import_price_incremental \
+  tests.core_pce_release.test_monthly_release
 ```
 
 Packets under `--out` are runtime output; `data/core_pce_release/packets/` is gitignored.

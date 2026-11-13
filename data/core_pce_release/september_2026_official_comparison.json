@@ -1,0 +1,30 @@
+{
+  "schema": "core_pce_official_outcome_comparison_v1",
+  "release": "2026-09",
+  "official_source": {
+    "publisher": "U.S. Bureau of Economic Analysis",
+    "release": "Personal Income and Outlays, September 2026",
+    "release_date": "2026-10-29",
+    "url": "https://www.bea.gov/news/2026/personal-income-and-outlays-september-2026",
+    "stated_core_pce_percent": "0.3",
+    "stated_core_pce_note": "News-release rounding to one decimal. The index ratio is the unrounded comparison.",
+    "table": "BEA Table 2.4.4U line 374",
+    "series_code": "DPCCRG",
+    "workbook_url": "https://apps.bea.gov/national/Release/XLS/Underlying/Section2All_xls.xlsx",
+    "workbook_sha256": "7c96d36e8a6e8fcf42385a9d3eed14be90055488e935baf858a4c1adb2c7a1ea",
+    "workbook_published": "2026-10-29",
+    "index_2026-08": "130.489",
+    "index_2026-09": "130.902",
+    "index_mom_percent": "0.316501774095900803899179200",
+    "fred_series": "PCEPILFE",
+    "fred_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCEPILFE",
+    "fred_sha256": "8aa0635d4a3e066a0365551faeabc030547a7a313c58c3b18f87b7f0ff1d5f18"
+  },
+  "locked_forecast": {
+    "vintage_note": "The locked September nowcast uses the September 30, 2026 BEA vintage, whose August PCEPILFE level was 130.455. The October 29 vintage revised August to 130.489. The locked forecast is not rewritten.",
+    "pre_ppi_central_mom_percent": "0.3688405280179773205064998201",
+    "post_ppi_central_mom_percent": "0.3674603939775941051607229995"
+  },
+  "pre_ppi_minus_official_index_mom_percent": "0.0523387539220765166073206201",
+  "post_ppi_minus_official_index_mom_percent": "0.0509586198816933012615437995"
+}

@@ -21,11 +21,14 @@ from scripts.core_pce_release.calculator import calculate
 from scripts.core_pce_release.listener import run_listener
 from scripts.core_pce_release.oneshot import (
     authorize_from_environment,
+    authorize_release_from_environment,
     run_oneshot,
     write_github_output,
     write_unexpected_error,
 )
 from scripts.core_pce_release.packet import load_packet, prepare
+from scripts.core_pce_release.preflight import assess_release, render_preflight
+from scripts.core_pce_release.release_bundle import parse_issue_title, parse_release_month
 from scripts.core_pce_release.report import render_detailed, render_flash
 from scripts.core_pce_release.snapshot import DEFAULT_SNAPSHOT, load_snapshot, residual_weight
 
@@ -60,6 +63,17 @@ def _run(packet_dir: Path, observations_path: Path) -> tuple[int, str]:
     (packet_dir / "detailed.txt").write_text(detailed, encoding="utf-8")
     (packet_dir / "detailed.json").write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     return 0, detailed
+
+
+def _run_ppi(out_dir: Path, release: str, ppi_points: Path | None) -> int:
+    try:
+        result = run_oneshot(out_dir, release=release, ppi_points_path=ppi_points)
+    except Exception:  # noqa: BLE001 — comment stays free of exception text
+        write_unexpected_error(out_dir, release=release)
+        return 1
+    if result.get("reason") in {"release_bundle_missing", "release_month_invalid", "snapshot_release_mismatch"}:
+        return 2
+    return 0
 
 
 def _parse_not_before(raw: str) -> datetime:
@@ -110,6 +124,7 @@ def main(
     run_ppi_parser = sub.add_parser("run-ppi")
     run_ppi_parser.add_argument("--release", default="2026-09")
     run_ppi_parser.add_argument("--out", type=Path, required=True)
+    run_ppi_parser.add_argument("--ppi-points", type=Path, default=None)
 
     import_price_parser = sub.add_parser("import-price")
     import_price_parser.add_argument("--release", default="2026-09")
@@ -117,6 +132,13 @@ def main(
     import_price_parser.add_argument("--bundle-dir", type=Path, default=None)
 
     sub.add_parser("authorize-ppi-issue")
+    sub.add_parser("authorize-release-issue")
+
+    preflight_parser = sub.add_parser("preflight")
+    preflight_parser.add_argument("--release", required=True)
+
+    dispatch_parser = sub.add_parser("dispatch-issue")
+    dispatch_parser.add_argument("--out", type=Path, required=True)
 
     arm_parser = sub.add_parser("arm")
     arm_parser.add_argument("--packet", type=Path, required=True)
@@ -145,16 +167,34 @@ def main(
         write_github_output(decision)
         print(json.dumps({"authorized": decision["authorized"], "reason": decision["reason"]}), flush=True)
         return 0
-    if args.command == "run-ppi":
-        if args.release != "2026-09":
-            print("refusing: release must be 2026-09", flush=True)
+    if args.command == "authorize-release-issue":
+        decision = authorize_release_from_environment(os.environ)
+        write_github_output(decision)
+        print(json.dumps({"authorized": decision["authorized"], "reason": decision["reason"], "kind": decision.get("kind"), "release": decision.get("release")}), flush=True)
+        return 0 if decision.get("authorized") else 0
+    if args.command == "preflight":
+        report = assess_release(args.release)
+        print(render_preflight(report), end="", flush=True)
+        return 0 if report["status"] == "READY" else 2
+    if args.command == "dispatch-issue":
+        parsed = parse_issue_title(os.environ.get("ISSUE_TITLE") or "")
+        if parsed is None:
+            print("refusing: unrelated_title", flush=True)
             return 2
-        try:
-            run_oneshot(args.out, release=args.release)
-        except Exception:  # noqa: BLE001 — comment stays free of exception text
-            write_unexpected_error(args.out)
-            return 1
-        return 0
+        kind, release = parsed
+        if kind == "cpi":
+            code, text = prepare("cpi", release, args.out)
+            comment = args.out / "comment.md"
+            if not comment.exists():
+                comment.write_text(text if text.endswith("\n") else text + "\n", encoding="utf-8")
+            print(text, end="", flush=True)
+            return code
+        return _run_ppi(args.out, release, None)
+    if args.command == "run-ppi":
+        if parse_release_month(args.release) is None:
+            print("refusing: release must be YYYY-MM", flush=True)
+            return 2
+        return _run_ppi(args.out, args.release, args.ppi_points)
     if args.command == "import-price":
         if args.release != "2026-09":
             print("refusing: release must be 2026-09", flush=True)
