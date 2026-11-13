@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-12T12:23:12Z",
+  "updated_at": "2026-11-13T11:35:40Z",
   "banks": {
     "US": {
       "timezone": "America/New_York",
       "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
       "status": "verified",
-      "retrieved_at": "2026-11-12T12:23:12Z",
-      "last_attempt_at": "2026-11-12T12:23:12Z",
+      "retrieved_at": "2026-11-13T11:35:40Z",
+      "last_attempt_at": "2026-11-13T11:35:40Z",
       "last_error": null,
       "decisions": [
         {
@@ -139,10 +139,10 @@
           "state": "upcoming"
         },
         {
-          "decision_date": "2027-12-08",
-          "meeting_start": "2027-12-07",
+          "decision_date": "2027-11-17",
+          "meeting_start": "2027-11-16",
           "local_time": "14:00",
-          "effective_date": "2027-12-09",
+          "effective_date": "2027-11-18",
           "source_url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
           "state": "upcoming"
         }
@@ -152,8 +152,8 @@
       "timezone": "America/Toronto",
       "source_url": "https://www.bankofcanada.ca/core-functions/monetary-policy/key-interest-rate/",
       "status": "verified",
-      "retrieved_at": "2026-11-12T12:23:12Z",
-      "last_attempt_at": "2026-11-12T12:23:12Z",
+      "retrieved_at": "2026-11-13T11:35:40Z",
+      "last_attempt_at": "2026-11-13T11:35:40Z",
       "last_error": null,
       "decisions": [
         {
@@ -290,8 +290,8 @@
       "timezone": "Australia/Sydney",
       "source_url": "https://www.rba.gov.au/schedules-events/board-meeting-schedules.html",
       "status": "verified",
-      "retrieved_at": "2026-11-12T12:23:12Z",
-      "last_attempt_at": "2026-11-12T12:23:12Z",
+      "retrieved_at": "2026-11-13T11:35:40Z",
+      "last_attempt_at": "2026-11-13T11:35:40Z",
       "last_error": null,
       "decisions": [
         {
@@ -429,7 +429,7 @@
       "source_url": "https://www.rbnz.govt.nz/news-and-events/how-we-release-information/ocr-decision-dates-and-financial-stability-report-dates-to-feb-2028",
       "status": "unavailable",
       "retrieved_at": null,
-      "last_attempt_at": "2026-11-12T12:23:12Z",
+      "last_attempt_at": "2026-11-13T11:35:40Z",
       "last_error": "RBNZ official page returned HTTP 403 from https://www.rbnz.govt.nz/news-and-events/how-we-release-information/ocr-decision-dates-and-financial-stability-report-dates-to-feb-2028. Refusing to substitute a third-party or vendor feed.",
       "decisions": []
     },
@@ -437,8 +437,8 @@
       "timezone": "Europe/Berlin",
       "source_url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
       "status": "verified",
-      "retrieved_at": "2026-11-12T12:23:12Z",
-      "last_attempt_at": "2026-11-12T12:23:12Z",
+      "retrieved_at": "2026-11-13T11:35:40Z",
+      "last_attempt_at": "2026-11-13T11:35:40Z",
       "last_error": null,
       "decisions": [
         {
@@ -583,8 +583,8 @@
       "timezone": "Asia/Tokyo",
       "source_url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/",
       "status": "verified",
-      "retrieved_at": "2026-11-12T12:23:12Z",
-      "last_attempt_at": "2026-11-12T12:23:12Z",
+      "retrieved_at": "2026-11-13T11:35:40Z",
+      "last_attempt_at": "2026-11-13T11:35:40Z",
       "last_error": null,
       "decisions": [
         {
@@ -1089,6 +1089,13 @@
       "decision_date": "2027-07-22",
       "previous_date": null,
       "detected_at": "2026-11-05T21:26:57Z"
+    },
+    {
+      "bank": "US",
+      "kind": "date_changed",
+      "decision_date": "2027-11-17",
+      "previous_date": "2027-12-08",
+      "detected_at": "2026-11-13T11:31:59Z"
     }
   ]
 }

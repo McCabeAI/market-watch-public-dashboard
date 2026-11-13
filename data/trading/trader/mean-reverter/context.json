@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-12T04:50:23.662182-05:00",
+  "as_of": "2026-11-13T06:22:15.706647-05:00",
   "calibration": {
     "average_holding_seconds": 2300806,
     "average_realized_pnl_usd": 59870.94,
@@ -44,21 +44,21 @@
     "competition_eligible": true,
     "competition_rank": 5,
     "competitive_rank": 5,
-    "drawdown_usd": 10.78,
-    "giveback_usd": 10.78,
+    "drawdown_usd": 7455.29,
+    "giveback_usd": 7455.29,
     "high_water_nav_usd": 100126312.62,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100126301.84,
-    "net_pnl_usd": 126301.84,
+    "nav_usd": 100118857.33,
+    "net_pnl_usd": 118857.33,
     "pressure_flags": [],
     "prior_competition_rank": 5,
     "rank_change": 0,
     "raw_pnl_rank": 5,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 50000.0,
-    "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 7444.51,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -68,12 +68,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "8e7a8f14a5dbcf29d47091513c9c96538591d0bbdffe6fb10ad7caedd5d8018c",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-398011348f57",
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "reference": "trd-trader-mean-reverter-pos-9a020b7cffca",
+      "source_run_id": "overnight-20261112"
+    }
+  ],
+  "memory_context_sha256": "b7d654b90f815e180d6010bfbfc2bee19cae979f836f5bf7a51ccdb1ec772a96",
   "open_positions": [],
   "owner_id": "mean-reverter",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-12T04:50:23.662182-05:00",
+      "created_run_id": "overnight-20261112",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-12T04:50:23.662182-05:00",
+        "conviction": 60,
+        "entry_mark": 1.25,
+        "exit_mark": 1.23,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 512674,
+        "instrument": "AUDNZD",
+        "invalidation": "The cross short is wrong if Australian-kiwi holds or extends this 99th-percentile print while oil stays firm near Brent 98.29, or if kiwi-dollar breaks below 0.5622.",
+        "opened_at": "2026-11-06T06:25:49.281876-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 119491.88,
+        "side": "short",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-398011348f57",
+      "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

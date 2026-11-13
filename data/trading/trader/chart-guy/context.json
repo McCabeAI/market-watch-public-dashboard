@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-12T04:50:23.662182-05:00",
+  "as_of": "2026-11-13T06:22:15.706647-05:00",
   "calibration": {
     "average_holding_seconds": null,
     "average_realized_pnl_usd": null,
@@ -47,8 +47,8 @@
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b2491d9b3164c12d4e009d3256aacae0c2be26853474527118c2de607e970d31",
+  "memory_context_sha256": "b0d6157531abc34bb08d6c9951c63ee205f35378062e02ec3811b95e85657d30",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -73,13 +73,13 @@
         "catalyst_logic": "The catalyst is the 11 November close at the 20-session low after the failed upside break. The position is technical only.",
         "current_mark": 1.1127,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 1.11,
+        "entry_mark": 1.1127,
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 91912,
+        "horizon_elapsed_fraction": 0.2128,
         "horizon_status": "within",
         "instrument": "EURUSD",
         "intended_horizon_days": 5,

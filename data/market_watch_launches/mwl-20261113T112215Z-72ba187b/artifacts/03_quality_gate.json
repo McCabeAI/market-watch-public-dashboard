@@ -1,0 +1,186 @@
+{
+  "blocked_expressions": [],
+  "blocked_legs": [],
+  "blocked_sources": [],
+  "countries": {
+    "AU": {
+      "eligible": true,
+      "gaps": [
+        "AU.Activity.business_surveys",
+        "AU.Consumer.confidence",
+        "AU.Consumer.retail"
+      ],
+      "scored_status": "partial"
+    },
+    "CA": {
+      "eligible": true,
+      "gaps": [
+        "CA.Consumer.confidence",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending"
+      ],
+      "scored_status": "partial"
+    },
+    "EA": {
+      "eligible": true,
+      "gaps": [
+        "EA.Consumer.income",
+        "EA.Labor.wages",
+        "EA.Consumer.spending",
+        "EA.Labor.employment"
+      ],
+      "scored_status": "partial"
+    },
+    "JP": {
+      "eligible": true,
+      "gaps": [
+        "JP.Activity.business_surveys",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Labor.wages"
+      ],
+      "scored_status": "partial"
+    },
+    "NZ": {
+      "eligible": true,
+      "gaps": [
+        "NZ.Consumer.confidence",
+        "NZ.Activity.business_surveys",
+        "NZ.Consumer.income"
+      ],
+      "scored_status": "blocked",
+      "sovereign_admission": "research_only"
+    },
+    "US": {
+      "eligible": true,
+      "gaps": [],
+      "scored_status": "ok"
+    }
+  },
+  "countries_unaffected": [],
+  "coverage": "PARTIAL",
+  "eligible": true,
+  "hold_decisions_emitted": 0,
+  "outcome": "PASS",
+  "partial_expressions": [
+    "activity:US",
+    "activity:CA",
+    "activity:AU",
+    "activity:NZ",
+    "activity:EA",
+    "activity:JP",
+    "macro:AU",
+    "macro:NZ"
+  ],
+  "partial_legs": [
+    "NZ_rates"
+  ],
+  "partial_series": [
+    "AU.Consumer.confidence",
+    "NZ.Consumer.confidence",
+    "NZ.Consumer.income"
+  ],
+  "reason": null,
+  "research_coverage_gaps": [
+    "macro:CA",
+    "macro:AU",
+    "macro:NZ",
+    "macro:EA",
+    "macro:JP"
+  ],
+  "research_coverage_series": [
+    "CA.Consumer.income",
+    "CA.Consumer.retail",
+    "CA.Consumer.spending",
+    "AU.Consumer.retail",
+    "NZ.Activity.business_surveys",
+    "EA.Consumer.income",
+    "EA.Labor.wages",
+    "EA.Consumer.spending",
+    "EA.Labor.employment",
+    "JP.Activity.gdp_domestic_demand",
+    "JP.Labor.wages"
+  ],
+  "research_eligible": true,
+  "source_health": [
+    {
+      "blocks_new_risk": false,
+      "carried_forward": true,
+      "classification": "transient_fetch",
+      "country": "US",
+      "fetch_error": "The read operation timed out",
+      "observation_period": "2026-Q2",
+      "research_status": "previous release retained",
+      "retrieved_at": "2026-09-21T14:41:19Z",
+      "series_id": "US.Activity.gdp_domestic_demand"
+    },
+    {
+      "blocks_new_risk": false,
+      "carried_forward": true,
+      "classification": "transient_fetch",
+      "country": "US",
+      "fetch_error": "The read operation timed out",
+      "observation_period": "2026-07",
+      "research_status": "previous release retained",
+      "retrieved_at": "2026-09-21T14:41:19Z",
+      "series_id": "US.Consumer.confidence"
+    },
+    {
+      "blocks_new_risk": false,
+      "carried_forward": true,
+      "classification": "transient_fetch",
+      "country": "US",
+      "fetch_error": "The read operation timed out",
+      "observation_period": "2026-07",
+      "research_status": "previous release retained",
+      "retrieved_at": "2026-09-21T14:41:19Z",
+      "series_id": "US.Inflation.core_pce"
+    },
+    {
+      "blocks_new_risk": false,
+      "carried_forward": true,
+      "classification": "transient_fetch",
+      "country": "US",
+      "fetch_error": "The read operation timed out",
+      "observation_period": "2026-07",
+      "research_status": "previous release retained",
+      "retrieved_at": "2026-09-21T14:41:19Z",
+      "series_id": "US.Consumer.income"
+    },
+    {
+      "blocks_new_risk": false,
+      "carried_forward": true,
+      "classification": "transient_fetch",
+      "country": "US",
+      "fetch_error": "The read operation timed out",
+      "observation_period": "2026-08",
+      "research_status": "previous release retained",
+      "retrieved_at": "2026-09-21T14:41:19Z",
+      "series_id": "US.Consumer.retail"
+    },
+    {
+      "blocks_new_risk": false,
+      "carried_forward": true,
+      "classification": "transient_fetch",
+      "country": "US",
+      "fetch_error": "The read operation timed out",
+      "observation_period": "2026-07",
+      "research_status": "previous release retained",
+      "retrieved_at": "2026-09-21T14:41:19Z",
+      "series_id": "US.Consumer.spending"
+    }
+  ],
+  "stage": "03_quality_gate",
+  "status": "succeeded",
+  "synthetic_holds": false,
+  "trade_eligible_countries": [
+    "US",
+    "CA",
+    "AU",
+    "NZ",
+    "EA",
+    "JP"
+  ],
+  "trader_eligible": true,
+  "trader_execution": "allowed"
+}

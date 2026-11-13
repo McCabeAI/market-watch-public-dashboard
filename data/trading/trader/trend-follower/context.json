@@ -97,7 +97,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-12T04:50:23.662182-05:00",
+  "as_of": "2026-11-13T06:22:15.706647-05:00",
   "calibration": {
     "average_holding_seconds": 1231334,
     "average_realized_pnl_usd": -73229.17,
@@ -149,8 +149,8 @@
     "raw_pnl_rank": 15,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -162,7 +162,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "54e97b84de9edf6a80e23afd9206301d681d2dcf5f5a1222407cc5cb8c193308",
+  "memory_context_sha256": "d71be8e3313f552d2dcb3f8bc90f276d21c32b73f929e75ff2efcc216000c98a",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -175,13 +175,13 @@
         "catalyst_logic": "The dollar breakout remains the expression while the two-year holds above 4.67 and March 2027 SOFR implied holds the move from 4.33 to 4.53.",
         "current_mark": 159.23429495820977,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 159.23,
+        "entry_mark": 159.23429495820977,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 91912,
+        "horizon_elapsed_fraction": 0.0355,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 30,
