@@ -72,14 +72,36 @@ class AcceptanceWorkflowContractTests(unittest.TestCase):
         self.assertLess(workflow.index("scheduled_output.py apply"), workflow.index("Revalidate canonical book blobs"))
         self.assertLess(workflow.index("Revalidate canonical book blobs"), workflow.index("merge_accepted_output.sh"))
         self.assertLess(workflow.index("merge_accepted_output.sh"), workflow.index("append_generated_state.sh"))
-        self.assertLess(workflow.index("append_generated_state.sh"), workflow.index("Persist accepted launch through finalization"))
+        self.assertLess(
+            workflow.index("append_generated_state.sh"),
+            workflow.index("Confirm accepted book is recoverable on main"),
+        )
         self.assertNotIn("github.event.pull_request.head.ref", workflow)
         self.assertIn("HEAD_REF: main", workflow)
-        self.assertIn("recover_accepted_finalization.sh", workflow)
+        self.assertEqual(workflow.count("recover_accepted_finalization.sh"), 1)
+        finalize_start = workflow.index("  finalize-and-dispatch:")
+        accept_section = workflow[:finalize_start]
+        self.assertNotIn("recover_accepted_finalization.sh", accept_section)
+        self.assertNotIn("validate-apply-merge", workflow)
+        self.assertIn("accept-scheduled-output:", workflow)
+        self.assertIn("finalize-and-dispatch:", workflow)
+        self.assertIn("needs: [inspect, accept-scheduled-output]", workflow)
+        self.assertIn("overnight-accept-", workflow)
+        self.assertIn("overnight-finalize-", workflow)
+        self.assertIn("overnight-session-", workflow)
+        self.assertIn("cancel-in-progress: false", workflow)
+        self.assertNotIn("schedule:", workflow)
+        self.assertNotIn("cron:", workflow)
+        accept_job, _, finalize_job = workflow.partition("  finalize-and-dispatch:")
+        self.assertIn("timeout-minutes: 30", accept_job)
+        self.assertNotIn("timeout-minutes: 20", accept_job)
+        self.assertIn("timeout-minutes: 20", finalize_job)
+        self.assertNotIn("timeout-minutes: 30", finalize_job)
         self.assertNotIn(
             "git add data/market_watch_launches data/overnight data/pm data/trading",
             workflow,
         )
+        self.assertIn("mkdir -p /tmp/mw-output", finalize_job)
         self.assertIn("may_publish", workflow)
         self.assertIn('latest["overnight_run_id"]', workflow)
 

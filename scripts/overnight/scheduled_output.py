@@ -648,6 +648,9 @@ def validate_output(store: OvernightStore, payload: dict[str, Any]) -> dict[str,
             )
     if admission_findings:
         payload["_admission_rejections"] = admission_findings
+    from scripts.overnight.expanding_fingerprint import preflight_expanding_fingerprints
+
+    preflight_expanding_fingerprints(store, payload)
     return payload
 
 
@@ -933,6 +936,9 @@ def main(argv: list[str] | None = None) -> int:
 
     payload = json.loads(args.input.read_text(encoding="utf-8"))
     store = OvernightStore(root=args.root, state_root=args.state_root)
+    from scripts.overnight.expanding_fingerprint import preflight_expanding_fingerprints
+
+    preflight_expanding_fingerprints(store, payload)
     if args.command == "validate":
         review = simulate_output(store, payload)
     else:

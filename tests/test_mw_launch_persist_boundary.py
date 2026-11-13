@@ -845,6 +845,43 @@ class AcceptedFinalizationRecoveryTests(unittest.TestCase):
         log = _git(self.work, "log", "--oneline", "origin/main")
         self.assertEqual(log.stdout.count("chore: finalize market watch launch"), 1)
 
+    def test_unpushed_finalization_replays_once_without_a_second_origin_commit(self) -> None:
+        """A cancellation after local Stage 06/07 work, before the remote push,
+        leaves origin on the accepted book. The next recovery resumes once.
+        """
+        before = sha256_file(self.work / "data" / "overnight" / "inbox" / RUN_ID / "scheduled_output.json")
+        origin_before = _git(self.work, "rev-parse", "origin/main").stdout.strip()
+        cancelled = self._recover(PUSH="0")
+        self.assertEqual(cancelled.returncode, 0, cancelled.stdout + cancelled.stderr)
+        self.assertEqual(self.calls.read_text(encoding="utf-8"), "1")
+        self.assertEqual(_git(self.work, "rev-parse", "origin/main").stdout.strip(), origin_before)
+        self.assertEqual(
+            sha256_file(self.work / "data" / "overnight" / "inbox" / RUN_ID / "scheduled_output.json"),
+            before,
+        )
+        remote_launch = json.loads(
+            self._origin_file(f"data/market_watch_launches/{LAUNCH_ID}/launch.json")
+        )
+        self.assertFalse(launch_stages_finalized(remote_launch))
+
+        resumed = self._recover(PUSH="1")
+        self.assertEqual(resumed.returncode, 0, resumed.stdout + resumed.stderr)
+        self.assertEqual(self.calls.read_text(encoding="utf-8"), "2")
+        launched = json.loads(self._origin_file(f"data/market_watch_launches/{LAUNCH_ID}/launch.json"))
+        self.assertTrue(launch_stages_finalized(launched))
+        self.assertEqual(
+            sha256_file(self.work / "data" / "overnight" / "inbox" / RUN_ID / "scheduled_output.json"),
+            before,
+        )
+        log = _git(self.work, "log", "--oneline", "origin/main")
+        self.assertEqual(log.stdout.count("chore: finalize market watch launch"), 1)
+
+        again = self._recover(PUSH="1")
+        self.assertEqual(again.returncode, 0, again.stdout + again.stderr)
+        self.assertIn("skipping continuation", again.stdout)
+        self.assertEqual(self.calls.read_text(encoding="utf-8"), "2")
+        self.assertEqual(log.stdout, _git(self.work, "log", "--oneline", "origin/main").stdout)
+
     def test_already_finalized_launch_does_not_run_continuation(self) -> None:
         launch_path = self.work / "data" / "market_watch_launches" / LAUNCH_ID / "launch.json"
         launch_path.write_text(

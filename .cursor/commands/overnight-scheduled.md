@@ -76,6 +76,10 @@ Nested subagents are **prohibited** for both traders and PMs on overnight runs (
    ```
    including `overnight_run_id`, the frozen `review_id`, `decisions` (14 seats), and **`pm_decisions`** (swinger, pragmatist, grinder). The agent packet must carry the same `review_id`. ChatGPT is excluded from automated overnight output.
 
+## Expanding-action setup fingerprint
+
+Each `OPEN`, `ADD`, or `HEDGE` action must include `setup_fingerprint` as an object when that seat or PM has at least one **active** lesson with populated scope. Keys must be drawn from the real strategy scope only: `instruments`, `instrument_family`, `asset_class`, `countries`, `currencies`, `setup_type`, `market_drivers`, `catalyst_type`, `failure_mode`, `decision_dimension`, `technical_setup`. Values must describe that trade (`setup_type`, drivers, catalyst) — not an empty placeholder and not another seat's fingerprint. `HOLD`, `REDUCE`, `CLOSE`, and `NO_TRADE` omit `setup_fingerprint`. If a decision also contains `HOLD`, `NO_TRADE`, `REDUCE`, or `CLOSE`, those actions still apply when an expansion is missing the field. An empty `setup_fingerprint` object is not strategy metadata and does not satisfy the check. A decision whose **only** actions are expanding and missing a populated `setup_fingerprint` is rejected before book simulation.
+
 ## Evidence-closed children
 
 `.cursor/hooks/enforce-overnight-runtime.py` blocks all tools when `MW_TRADER_FROZEN=1` or `MW_PM_FROZEN=1` is present in the child transcript.
