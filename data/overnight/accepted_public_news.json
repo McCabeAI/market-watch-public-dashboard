@@ -1,71 +1,7 @@
 {
-  "as_of": "2026-11-12T04:50:23.662182-05:00",
-  "central_bank_research": [
-    {
-      "headline": "Fed Vice Chair Jefferson: discount window modernization supports Treasury and repo market functioning",
-      "summary": "22 September remarks on discount window upgrades and quarter-end window use; no funds-rate path signal."
-    },
-    {
-      "headline": "NY Fed SOMA Manager Perli: reserves ample; overnight rates near IORB; RMPs cut to zero",
-      "summary": "22 September speech highlighting ample reserves, overnight rates near IORB, and reduction of RMPs to zero."
-    },
-    {
-      "headline": "BoJ September hike implementation: ~1.25% call-rate target effective 24 September",
-      "summary": "Basic loan rate set at 1.5% with call-rate target near 1.25% effective 24 September."
-    }
-  ],
+  "as_of": "2026-11-13T06:22:15.706647-05:00",
+  "central_bank_research": [],
   "news": [
-    {
-      "headline": "Fed's Goolsbee calls inflation report 'borderline disturbing' as central bank weighs more hikes",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 15
-      },
-      "published_at": "2026-11-11T10:49:02-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
-      }
-    },
     {
       "headline": "Falling US Bond Futures Offer No Relief as Fed Hike Bets Grow",
       "market_salience": {
@@ -90,57 +26,6 @@
       "published_at": "2026-11-10T20:52:00-05:00",
       "source_name": "Bloomberg",
       "summary": "Derivatives trading suggests a retreat in US Treasuries is set to continue as faster-than-expected inflation data cemented the prospects for more aggressive interest-rate hikes from the Federal ...",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
-      }
-    },
-    {
-      "headline": "Consumer prices rose 0.4% in October, more than expected, complicating Fed's inflation fight",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 15
-      },
-      "published_at": "2026-11-10T17:53:58-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
           "USD",
@@ -220,6 +105,56 @@
       }
     },
     {
+      "headline": "AI \u2018Supply Shock\u2019 Pushes Bond Market to Limit, Wells Fargo Says",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "high",
+        "score": 11
+      },
+      "published_at": "2026-11-12T06:45:00-05:00",
+      "source_name": "Bloomberg",
+      "summary": "Technology giants racing to build artificial intelligence infrastructure are hitting the limit of how much they can raise in global bond markets, according to Wells Fargo & Co.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads",
+          "UST"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      }
+    },
+    {
       "headline": "Forget Nvidia. Anthropic Is the AI Trade\u2019s Litmus Test",
       "market_salience": {
         "components": {
@@ -243,106 +178,6 @@
       "published_at": "2026-11-11T20:30:00-05:00",
       "source_name": "Bloomberg",
       "summary": "For an industry that needs to spend at least $30 billion just to build a data center that handles one gigawatt of computing power, access to financing is key.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Analysis: Is Nvidia too big to fail?\u00a0Its AI financing web raises the stakes",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-11-11T16:59:33-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Stick with high-quality AI bonds as debt worries persist, says Morgan Stanley",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-11-11T13:59:09-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
           "credit_spreads",
@@ -420,57 +255,7 @@
       }
     },
     {
-      "headline": "CoreWeave earnings put debt-fueled AI build-out under scrutiny",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-11-10T09:01:21-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Treasury yields edge higher as investors await fresh inflation and housing data",
+      "headline": "Top Pension Fund to Buy More India State Bonds on High Yields",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -487,12 +272,12 @@
           "shock": 2,
           "subject_penalty": 0
         },
-        "distribution": "standard",
+        "distribution": "high",
         "score": 9
       },
-      "published_at": "2026-11-12T01:38:45-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "published_at": "2026-11-12T14:38:00-05:00",
+      "source_name": "Bloomberg",
+      "summary": "India\u2019s largest pension fund plans to step up purchases of state debt, expecting their yield premium over the federal government bonds will widen further.",
       "transmission": {
         "affected_assets": [
           "USD",
@@ -517,412 +302,12 @@
         "disposition": "assess",
         "reason_code": "usd_rates_repricing",
         "score": 9
-      }
-    },
-    {
-      "headline": "RBNZ Reverse Stress Test demonstrates resilience of insurers and improves risk management",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-11T06:00:00-05:00",
-      "source_name": "Reserve Bank of New Zealand",
-      "summary": "The Reserve Bank of New Zealand \u2013 Te P\u016btea Matua (RBNZ) today published findings from its Life and Health Insurance Industry Reverse Stress Test. The exercise found that a combination of severe shocks is required before insurers breach their solvency requirements, highlighting the resilience in the sector.",
-      "transmission": {
-        "affected_assets": [
-          "NZD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "Homeowners tap equity as HELOC balances post biggest jump since 2005: New York Fed report",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-10T15:37:43-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "GE Vernova sellers have it all wrong \u2014 plus, why Fed rate hike odds are soaring",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-10T15:36:13-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "Bond Yields Spike Most Since Tariff Meltdown on Rate-Hike Bets",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-10T07:45:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Treasuries sank and traders solidified their bets that Federal Reserve officials will raise interest rates when they next meet in December after evidence of persistently hot US inflation.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
-      "headline": "Wizz Air\u2019s Profit Tumbles 67% on Rising Jet Fuel Prices",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 7
-      },
-      "published_at": "2026-11-11T19:50:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Wizz Air Holdings Plc\u2019s net income for the first half fell by two-thirds, primarily because of soaring oil prices, and the budget carrier expects fuel to remain its biggest challenge going into the ...",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "India Gulf Oil Imports Surpass Russia for First Time in Iran War",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 7
-      },
-      "published_at": "2026-11-11T11:00:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "India\u2019s oil imports from the Persian Gulf have overtaken those from Russia for the first time since the beginning of the Iran war, as shuttle runs by tankers help restore flows through the Strait of ...",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "Williams Says Fed Should Gather Information to Judge Price Risks",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 15
-      },
-      "published_at": "2026-11-05T20:57:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Federal Reserve Bank of New York President John Williams endorsed the US central bank\u2019s statement saying that this is the time to collect information on the risks to inflation.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
-      }
-    },
-    {
-      "headline": "Joint Statement of the Government of Canada and the Bank of Canada on the Renewal of the Monetary Policy Framework",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 15
-      },
-      "published_at": "2026-11-05T11:00:19-05:00",
-      "source_name": "Bank of Canada",
-      "summary": "The Government and the Bank agree that monetary policy must work to promote the economic and financial well-being of Canadians. We also agree that the best way monetary policy can do this is by keeping inflation low, stable and predictable, thereby protecting Canadians from large increases in the cost of living.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST",
-          "CAD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
       }
     }
   ],
-  "overnight_run_id": "overnight-20261112",
+  "overnight_run_id": "overnight-20261113",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Overnight sentiment stayed defensive as October\u2019s hotter-than-expected CPI and hawkish Fed rhetoric kept December rate-hike pricing firm, pressuring Treasuries and supporting the dollar narrative in the headline flow. Frozen marks still show elevated crude\u2014WTI near $86.53 and Brent near $92.76\u2014with gold around $4,000.50, while U.S. benchmarks sit at roughly 7,521 on the S&P 500, 25,466 on the Nasdaq, and 52,486 on the Dow amid a sub-20 VIX. Chicago Fed President Goolsbee called the inflation report \u201cborderline disturbing,\u201d reinforcing fears of a larger hike, while Williams argued the Fed should gather more information on price risks. Energy headlines highlighted jet-fuel pain and Gulf routing shifts as oil import patterns adjust. Watch for the next U.S. inflation and housing prints, further Fedspeak, and whether high crude prices broaden into corporate margins; official BoC framework language and dated Fed operational remarks offer little near-term policy offset.",
+  "summary": "U.S. rates led the session. Two-year through ten-year yields rose 12 to 14 basis points, the ten-year is back above 5 at 5.1, and those yields sit in the top decile of the past year's levels. SOFR futures still price policy well above cash SOFR of 3.89, after October consumer prices rose 0.4 percent and Fed commentary turned toward another inflation fight. The dollar firmed with that move. Dollar-Canada and dollar-Swiss are near the top of their one-year ranges, while the euro, sterling, the Australian dollar, and the New Zealand dollar weakened. Canada's yields rose with Treasuries. Australia's cash rate and forward path are flat to easier, not the same further-hike path. Euro-area and Japanese long yields barely moved. Brent is 95.82 and WTI is 88.74. Equities are still high and the VIX is 17.5, so this is a rates and dollar story rather than an equity break. Today's U.S. producer prices and the euro-area GDP flash are the next test, with Canada CPI and Japan GDP on Monday.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }

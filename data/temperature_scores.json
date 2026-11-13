@@ -6,8 +6,8 @@
   "calibration_anchor_date": "2026-09-21",
   "scoring_cutoff": "2026-10",
   "score_inputs_latest_reference_period": "2026-10",
-  "score_inputs_last_ingested_at": "2026-11-10T09:50:36Z",
-  "last_refresh_date": "2026-11-10",
+  "score_inputs_last_ingested_at": "2026-11-13T11:22:15Z",
+  "last_refresh_date": "2026-11-13",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -969,8 +969,8 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Activity": {
-        "level": 54.59,
-        "impulse": -4.27,
+        "level": 54.57,
+        "impulse": -4.31,
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
@@ -997,15 +997,15 @@
           "business_surveys": {
             "observed": true,
             "as_of": "2026-09",
-            "transform_value": 52.2333,
-            "level": 52.23,
-            "impulse": 1.5,
+            "transform_value": 52.2,
+            "level": 52.2,
+            "impulse": 1.4,
             "weight": 0.4,
             "coverage_contribution": 0.4,
             "short_window": false,
-            "retrieved_at": "2026-10-05T10:08:21Z",
-            "release_date": "2026-10-05",
-            "release_date_status": "recorded"
+            "retrieved_at": "2026-11-13T11:22:15Z",
+            "release_date": null,
+            "release_date_status": "not_recorded"
           }
         },
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."

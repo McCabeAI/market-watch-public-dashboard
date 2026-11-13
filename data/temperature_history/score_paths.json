@@ -2456,8 +2456,8 @@
         },
         {
           "period": "2026-09",
-          "level": 54.59,
-          "impulse": -4.27,
+          "level": 54.57,
+          "impulse": -4.31,
           "direction": "cooling",
           "coverage": 1.0,
           "source_period": "2026-Q3",
@@ -2465,8 +2465,8 @@
         },
         {
           "period": "2026-10",
-          "level": 54.59,
-          "impulse": -4.27,
+          "level": 54.57,
+          "impulse": -4.31,
           "direction": "cooling",
           "coverage": 1.0,
           "source_period": "2026-Q3",
@@ -3209,6 +3209,125 @@
           },
           "Activity": {
             "level": 54.59,
+            "as_of": "2026-Q3"
+          },
+          "Consumer": {
+            "level": 40.92,
+            "as_of": "2026-10"
+          }
+        },
+        "JP": {
+          "Inflation": {
+            "level": 52.5,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 53.78,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 57.46,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 33.22,
+            "as_of": "2026-09"
+          }
+        }
+      },
+      "note": "Observed published score state. Not a reconstructed monthly path and not a historical real-time vintage of earlier months."
+    },
+    {
+      "kind": "published",
+      "source": "data/temperature_scores.json",
+      "observed_from": "current_published_state",
+      "scoring_cutoff": "2026-10",
+      "score_inputs_latest_reference_period": "2026-10",
+      "last_refresh_date": "2026-11-13",
+      "countries": {
+        "US": {
+          "Inflation": {
+            "level": 63.1,
+            "as_of": "2026-07"
+          },
+          "Labor": {
+            "level": 53.81,
+            "as_of": "2026-10"
+          },
+          "Activity": {
+            "level": 50.77,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 46.47,
+            "as_of": "2026-08"
+          }
+        },
+        "CA": {
+          "Inflation": {
+            "level": 54.34,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 37.41,
+            "as_of": "2026-10"
+          },
+          "Activity": {
+            "level": 49.4,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 57.03,
+            "as_of": "2026-08"
+          }
+        },
+        "AU": {
+          "Inflation": {
+            "level": 67.25,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 45.74,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 45.79,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 49.1,
+            "as_of": "2026-09"
+          }
+        },
+        "NZ": {
+          "Inflation": {
+            "level": 64.25,
+            "as_of": "2026-Q2"
+          },
+          "Labor": {
+            "level": 36.51,
+            "as_of": "2026-Q2"
+          },
+          "Activity": {
+            "level": 51.87,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 48.26,
+            "as_of": "2026-08"
+          }
+        },
+        "EA": {
+          "Inflation": {
+            "level": 64.5,
+            "as_of": "2026-10"
+          },
+          "Labor": {
+            "level": 49.02,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 54.57,
             "as_of": "2026-Q3"
           },
           "Consumer": {
