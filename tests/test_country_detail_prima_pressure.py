@@ -620,10 +620,13 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.attention,
             self.scores,
         )
+        self.assertIn("Inflation input-cost transmission", html)
         self.assertIn("Inflation pressure proxy", html)
         self.assertIn('data-prima-pressure="ca"', html)
+        self.assertIn('data-prima-tx="v2"', html)
         self.assertIn(CONTEXT_PHRASE, html)
         self.assertIn('data-prima-glance', html)
+        self.assertIn("Legacy comparison", html)
         current = self.projection["countries"]["CA"]["prima_pressure"]["current"]
         self.assertIn(f'data-prima-direction="{current["direction"]}"', html)
         self.assertEqual(html.count('details class="prima-ch"'), 5)
@@ -631,13 +634,15 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.assertIn(f'data-prima-channel="{ch}"', html)
             self.assertIn("prima-ch-summary", html)
         prima = _prima_excerpt(html)
-        layer1 = prima.split('class="prima-why"', 1)[0]
+        layer1 = prima.split('data-prima-legacy="v1"', 1)[-1]
+        layer1 = layer1.split('class="prima-why"', 1)[0]
         for banned in ("stored observation", "not recomputed", "Quoted as stored"):
             self.assertNotIn(banned, layer1)
         self.assertNotIn("<canvas", layer1)
         self.assertNotIn("<svg", layer1.split('data-prima-history', 1)[0])
         self.assertIn("data-prima-history", layer1)
         self.assertIn("prima-history-svg", layer1)
+        self.assertIn("prima-tx-spark", prima.split('data-prima-legacy="v1"', 1)[0])
         self.assertNotIn("/100", prima)
         self.assertNotIn("strength", _prima_before_shadow(html).lower())
         self.assertIn('data-prima-gauge', layer1)
@@ -1238,7 +1243,13 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
             self.attention,
             self.scores,
         )
-        self.assertIn("Pressure balance −1 · oil ↓", html)
+        self.assertIn("Fuel CPI 1–3m", html)
+        self.assertIn("−0.18 pp", html)
+        self.assertIn("(partial)", html)
+        self.assertIn("Legacy comparison", html)
+        legacy = _prima_excerpt(html).split("Legacy comparison", 1)[1]
+        self.assertIn("prima-gauge-net", legacy)
+        self.assertIn("−1", legacy)
 
     def test_channel_drilldowns_preserve_raw_blocks(self) -> None:
         tmp_root = _presentation_root_through_run("overnight-20261110")

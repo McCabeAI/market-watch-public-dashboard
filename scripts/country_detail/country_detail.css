@@ -364,6 +364,109 @@
   overflow-wrap: anywhere;
 }
 
+.country-detail .prima-tx {
+  min-width: 0;
+  max-width: 100%;
+  margin: 0 0 0.85rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--mw-line, #233140);
+  border-radius: 0.45rem;
+  background: var(--mw-panel-2, #16202b);
+  overflow-wrap: anywhere;
+}
+
+.country-detail .prima-tx-title {
+  margin: 0 0 0.55rem;
+  font-size: var(--mw-fs-title, 16px);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.country-detail .prima-tx-row,
+.country-detail .prima-tx-fuel,
+.country-detail .prima-tx-core,
+.country-detail .prima-tx-caption,
+.country-detail .prima-tx-status {
+  margin: 0.35rem 0 0;
+  font-size: var(--mw-fs-meta, 12.5px);
+  line-height: 1.5;
+  min-width: 0;
+}
+
+.country-detail .prima-tx-row-label {
+  display: inline-block;
+  font-weight: 700;
+  margin-right: 0.35rem;
+}
+
+.country-detail .prima-tx-prov-badge {
+  font-weight: 600;
+  color: var(--mw-accent, #5ea8e4);
+}
+
+.country-detail .prima-tx-channels {
+  margin-top: 0.55rem;
+  min-width: 0;
+}
+
+.country-detail details.prima-tx-ch {
+  margin: 0.35rem 0 0;
+  border: 1px solid var(--mw-line, #233140);
+  border-radius: 0.4rem;
+  background: var(--mw-panel, #111922);
+  min-width: 0;
+}
+
+.country-detail .prima-tx-ch-summary {
+  cursor: pointer;
+  padding: 0.45rem 0.6rem;
+  list-style: none;
+  min-width: 0;
+}
+
+.country-detail .prima-tx-ch-body {
+  padding: 0 0.6rem 0.55rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+  min-width: 0;
+}
+
+.country-detail .prima-tx-ch-section {
+  margin: 0.35rem 0 0;
+}
+
+.country-detail .prima-tx-context {
+  margin: 0.55rem 0 0;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--mw-line, #233140);
+  font-size: var(--mw-fs-meta, 12.5px);
+  min-width: 0;
+}
+
+.country-detail .prima-tx-spark-svg {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  min-width: 0;
+}
+
+.country-detail .prima-legacy-wrap {
+  margin-top: 0.75rem;
+  padding-top: 0.65rem;
+  border-top: 2px solid var(--mw-line, #233140);
+  min-width: 0;
+}
+
+.country-detail .prima-legacy-kicker,
+.country-detail .prima-legacy-history-label {
+  margin: 0 0 0.5rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+  font-weight: 700;
+  color: var(--mw-warm, #e39d3e);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .country-detail details.prima-gauge-details {
   margin: 0 0 0.75rem;
   border: 1px solid var(--mw-line, #233140);
