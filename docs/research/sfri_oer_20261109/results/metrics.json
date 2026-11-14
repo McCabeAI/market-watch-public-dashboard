@@ -1,0 +1,533 @@
+{
+  "label": "ZORI proxy, not Cotality SFRI",
+  "direct_sfri_test": "blocked",
+  "best_lags": {
+    "zori_all_level_lag": 13,
+    "zori_all_level_corr": 0.8348275341706136,
+    "zori_all_level_n": 115,
+    "zori_all_diff_lag": 12,
+    "zori_all_diff_corr": 0.6603638722392553,
+    "zori_sfr_level_lag": 16,
+    "zori_sfr_level_corr": 0.9300634572419731
+  },
+  "forecast_1m_oer_sa_common": {
+    "n_common": 76,
+    "models": {
+      "persist": {
+        "mae": 0.07373152902519439,
+        "rmse": 0.0917973723642394,
+        "n": 76
+      },
+      "trail3": {
+        "mae": 0.06407402333562089,
+        "rmse": 0.08154056062723226,
+        "n": 76
+      },
+      "ar3": {
+        "mae": 0.06296823032241723,
+        "rmse": 0.08320601235761294,
+        "n": 76
+      },
+      "ar3_zori_m1": {
+        "mae": 0.0613916272978301,
+        "rmse": 0.08156850548613687,
+        "n": 76
+      },
+      "ar3_zori_m12": {
+        "mae": 0.06648778325370154,
+        "rmse": 0.08909500096022495,
+        "n": 76
+      }
+    },
+    "directional_vs_trail3": {
+      "ar3": {
+        "directional_accuracy": 0.5789473684210527,
+        "zero_count": 0,
+        "n_considered": 76
+      },
+      "ar3_zori_m1": {
+        "directional_accuracy": 0.618421052631579,
+        "zero_count": 0,
+        "n_considered": 76
+      },
+      "ar3_zori_m12": {
+        "directional_accuracy": 0.5526315789473685,
+        "zero_count": 0,
+        "n_considered": 76
+      }
+    },
+    "mae_splits_oer_sa": {
+      "through_2019": {
+        "persist": {
+          "mae": null,
+          "n": 0
+        },
+        "trail3": {
+          "mae": null,
+          "n": 0
+        },
+        "ar3": {
+          "mae": null,
+          "n": 0
+        },
+        "ar3_zori_m1": {
+          "mae": null,
+          "n": 0
+        },
+        "ar3_zori_m12": {
+          "mae": null,
+          "n": 0
+        }
+      },
+      "2020_2022": {
+        "persist": {
+          "mae": 0.06492686782032828,
+          "n": 36
+        },
+        "trail3": {
+          "mae": 0.06202418765554443,
+          "n": 36
+        },
+        "ar3": {
+          "mae": 0.061291480827600595,
+          "n": 36
+        },
+        "ar3_zori_m1": {
+          "mae": 0.0647488114591452,
+          "n": 36
+        },
+        "ar3_zori_m12": {
+          "mae": 0.06782756016266374,
+          "n": 36
+        }
+      },
+      "from_2023": {
+        "persist": {
+          "mae": 0.08165572410957389,
+          "n": 40
+        },
+        "trail3": {
+          "mae": 0.0659188754476897,
+          "n": 40
+        },
+        "ar3": {
+          "mae": 0.06447730486775222,
+          "n": 40
+        },
+        "ar3_zori_m1": {
+          "mae": 0.0583701615526465,
+          "n": 40
+        },
+        "ar3_zori_m12": {
+          "mae": 0.06528198403563557,
+          "n": 40
+        }
+      }
+    }
+  },
+  "forecast_1m_oer_sa_common_without_m12": {
+    "n_common": 87,
+    "models": {
+      "persist": {
+        "mae": 0.06970696329626921,
+        "rmse": 0.08763491361441182,
+        "n": 87
+      },
+      "trail3": {
+        "mae": 0.06012561112566337,
+        "rmse": 0.07747841194555762,
+        "n": 87
+      },
+      "ar3": {
+        "mae": 0.05944801008497692,
+        "rmse": 0.07908604848409917,
+        "n": 87
+      },
+      "ar3_zori_m1": {
+        "mae": 0.05783987852014108,
+        "rmse": 0.07755027712733861,
+        "n": 87
+      }
+    },
+    "mae_splits_oer_sa": {
+      "through_2019": {
+        "persist": {
+          "mae": 0.04190087280551349,
+          "n": 11
+        },
+        "trail3": {
+          "mae": 0.03284567222050236,
+          "n": 11
+        },
+        "ar3": {
+          "mae": 0.035126488444480124,
+          "n": 11
+        },
+        "ar3_zori_m1": {
+          "mae": 0.033300523328835124,
+          "n": 11
+        }
+      },
+      "2020_2022": {
+        "persist": {
+          "mae": 0.06492686782032828,
+          "n": 36
+        },
+        "trail3": {
+          "mae": 0.06202418765554443,
+          "n": 36
+        },
+        "ar3": {
+          "mae": 0.061291480827600595,
+          "n": 36
+        },
+        "ar3_zori_m1": {
+          "mae": 0.0647488114591452,
+          "n": 36
+        }
+      },
+      "from_2023": {
+        "persist": {
+          "mae": 0.08165572410957389,
+          "n": 40
+        },
+        "trail3": {
+          "mae": 0.0659188754476897,
+          "n": 40
+        },
+        "ar3": {
+          "mae": 0.06447730486775222,
+          "n": 40
+        },
+        "ar3_zori_m1": {
+          "mae": 0.0583701615526465,
+          "n": 40
+        }
+      }
+    }
+  },
+  "forecast_1m_oer_nsa_common": {
+    "n_common": 76,
+    "models": {
+      "persist": {
+        "mae": 0.07518347200269776,
+        "rmse": 0.0936127275607393,
+        "n": 76
+      },
+      "trail3": {
+        "mae": 0.06614859437946921,
+        "rmse": 0.08719014787567006,
+        "n": 76
+      },
+      "ar3": {
+        "mae": 0.0673305032348996,
+        "rmse": 0.08807012511102032,
+        "n": 76
+      },
+      "ar3_zori_m1": {
+        "mae": 0.06786134103086038,
+        "rmse": 0.08744723204257518,
+        "n": 76
+      },
+      "ar3_zori_m12": {
+        "mae": 0.07119710446845819,
+        "rmse": 0.09562838987459336,
+        "n": 76
+      }
+    },
+    "directional_vs_trail3": {
+      "ar3": {
+        "directional_accuracy": 0.631578947368421,
+        "zero_count": 0,
+        "n_considered": 76
+      },
+      "ar3_zori_m1": {
+        "directional_accuracy": 0.5526315789473685,
+        "zero_count": 0,
+        "n_considered": 76
+      },
+      "ar3_zori_m12": {
+        "directional_accuracy": 0.6052631578947368,
+        "zero_count": 0,
+        "n_considered": 76
+      }
+    },
+    "mae_splits_oer_sa": {
+      "through_2019": {
+        "persist": {
+          "mae": null,
+          "n": 0
+        },
+        "trail3": {
+          "mae": null,
+          "n": 0
+        },
+        "ar3": {
+          "mae": null,
+          "n": 0
+        },
+        "ar3_zori_m1": {
+          "mae": null,
+          "n": 0
+        },
+        "ar3_zori_m12": {
+          "mae": null,
+          "n": 0
+        }
+      },
+      "2020_2022": {
+        "persist": {
+          "mae": 0.06762955832738918,
+          "n": 36
+        },
+        "trail3": {
+          "mae": 0.06430223105901002,
+          "n": 36
+        },
+        "ar3": {
+          "mae": 0.06789526091563353,
+          "n": 36
+        },
+        "ar3_zori_m1": {
+          "mae": 0.07326413388175151,
+          "n": 36
+        },
+        "ar3_zori_m12": {
+          "mae": 0.0736332073786188,
+          "n": 36
+        }
+      },
+      "from_2023": {
+        "persist": {
+          "mae": 0.08198199431047548,
+          "n": 40
+        },
+        "trail3": {
+          "mae": 0.0678103213678825,
+          "n": 40
+        },
+        "ar3": {
+          "mae": 0.06682222132223906,
+          "n": 40
+        },
+        "ar3_zori_m1": {
+          "mae": 0.06299882746505835,
+          "n": 40
+        },
+        "ar3_zori_m12": {
+          "mae": 0.06900461184931364,
+          "n": 40
+        }
+      }
+    }
+  },
+  "forecast_1m_ar3_zori_ksearch_oer_sa": {
+    "n": 87,
+    "mae": 0.06135082144351329,
+    "rmse": 0.08074036939205949
+  },
+  "three_month": {
+    "common_sample_overlapping": {
+      "n": 69,
+      "models": {
+        "trail3_x3": {
+          "mae": 0.18695357280457817,
+          "n": 69
+        },
+        "direct_ar": {
+          "mae": 0.20767870048361375,
+          "n": 69
+        },
+        "direct_ar_zori": {
+          "mae": 0.26630645729362556,
+          "n": 69
+        }
+      }
+    },
+    "common_sample_non_overlapping": {
+      "n": 24,
+      "models": {
+        "trail3_x3": {
+          "mae": 0.17011599269940816,
+          "n": 24
+        },
+        "direct_ar": {
+          "mae": 0.18875460565668542,
+          "n": 24
+        },
+        "direct_ar_zori": {
+          "mae": 0.24675389160552996,
+          "n": 24
+        }
+      }
+    },
+    "unequal_n_overlapping_descriptive_mae": {
+      "trail3_x3": {
+        "mae": 0.17095087188794503,
+        "n": 84
+      },
+      "direct_ar": {
+        "mae": 0.18542877244480988,
+        "n": 84
+      },
+      "direct_ar_zori": {
+        "mae": 0.26630645729362556,
+        "n": 69
+      }
+    },
+    "unequal_n_non_overlapping_descriptive_mae": {
+      "trail3_x3": {
+        "mae": 0.15268444621176894,
+        "n": 29
+      },
+      "direct_ar": {
+        "mae": 0.16695542760148185,
+        "n": 29
+      },
+      "direct_ar_zori": {
+        "mae": 0.24675389160552996,
+        "n": 24
+      }
+    }
+  },
+  "directional_6": {
+    "horizon_months": 6,
+    "proxy": "zori_all",
+    "descriptive_overlapping": {
+      "gap": {
+        "hit_rate": 0.75,
+        "zero_count": 0,
+        "n": 112
+      },
+      "always_decline": {
+        "hit_rate": 0.625,
+        "zero_count": 0,
+        "n": 112
+      },
+      "momentum": {
+        "hit_rate": 0.6964285714285714,
+        "zero_count": 0,
+        "n": 112
+      }
+    },
+    "non_overlapping": {
+      "gap": {
+        "hit_rate": 0.8,
+        "zero_count": 0,
+        "n": 20
+      },
+      "always_decline": {
+        "hit_rate": 0.5,
+        "zero_count": 0,
+        "n": 20
+      },
+      "momentum": {
+        "hit_rate": 0.7,
+        "zero_count": 0,
+        "n": 20
+      }
+    }
+  },
+  "directional_12_zori_all": {
+    "horizon_months": 12,
+    "proxy": "zori_all",
+    "descriptive_overlapping": {
+      "gap": {
+        "hit_rate": 0.7129629629629629,
+        "zero_count": 0,
+        "n": 108
+      },
+      "always_decline": {
+        "hit_rate": 0.6203703703703703,
+        "zero_count": 0,
+        "n": 108
+      },
+      "momentum": {
+        "hit_rate": 0.5833333333333334,
+        "zero_count": 0,
+        "n": 108
+      }
+    },
+    "non_overlapping": {
+      "gap": {
+        "hit_rate": 0.7,
+        "zero_count": 0,
+        "n": 10
+      },
+      "always_decline": {
+        "hit_rate": 0.5,
+        "zero_count": 0,
+        "n": 10
+      },
+      "momentum": {
+        "hit_rate": 0.5,
+        "zero_count": 0,
+        "n": 10
+      }
+    }
+  },
+  "directional_12_zori_sfr": {
+    "horizon_months": 12,
+    "proxy": "zori_sfr",
+    "descriptive_overlapping": {
+      "gap": {
+        "hit_rate": 0.7037037037037037,
+        "zero_count": 0,
+        "n": 108
+      },
+      "always_decline": {
+        "hit_rate": 0.6203703703703703,
+        "zero_count": 0,
+        "n": 108
+      },
+      "momentum": {
+        "hit_rate": 0.5833333333333334,
+        "zero_count": 0,
+        "n": 108
+      }
+    },
+    "non_overlapping": {
+      "gap": {
+        "hit_rate": 0.8,
+        "zero_count": 0,
+        "n": 10
+      },
+      "always_decline": {
+        "hit_rate": 0.5,
+        "zero_count": 0,
+        "n": 10
+      },
+      "momentum": {
+        "hit_rate": 0.5,
+        "zero_count": 0,
+        "n": 10
+      }
+    }
+  },
+  "january_2024": {
+    "oer_sa_mom_2024_01": 0.5112357026245684,
+    "rent_sa_mom_2024_01": 0.3520611669706186,
+    "difference_2024_01": 0.1591745356539498,
+    "hist_2015_2019": {
+      "n": 60,
+      "median": -0.03629880363552607,
+      "maximum": 0.09062810192541626,
+      "percentile_rank_strictly_less_than_2024_01": 1.0
+    },
+    "hist_2012_through_2023": {
+      "n": 143,
+      "median": -0.03104576504351364,
+      "maximum": 0.0943438824475118,
+      "percentile_rank_strictly_less_than_2024_01": 1.0
+    }
+  },
+  "as_of": {
+    "as_of_month": "2026-09",
+    "oer_sa_yoy": 3.2613990081969746,
+    "oer_nsa_yoy": 3.2612476405578406,
+    "rent_sa_yoy": 2.782056284613099,
+    "zori_all_yoy": 2.6986909671258275,
+    "zori_sfr_yoy": 3.1252406605605243,
+    "zori_all_yoy_minus_oer_sa_yoy": -0.5627080410711471
+  }
+}
