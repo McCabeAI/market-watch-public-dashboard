@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-09-21T14:51:02Z",
+  "retrieved_at": "2026-11-16T10:49:50Z",
   "notes": "Trailing-year observations sourced from Stats NZ information releases (CPI, HLFS/LCI, GDP, retail) and Stats NZ experimental household sector accounts for income; ANZ consumer confidence single print. Business survey numeric history unavailable without proprietary feeds.",
   "components": {
     "Inflation.headline": {
@@ -1012,6 +1012,18 @@
           "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
           "notes": "GDP-weighted PCI 51.6 for 2026-08 from contemporaneous BNZ-BusinessNZ PSI release PDF.",
           "retrieved_at": "2026-09-21T17:06:39Z"
+        },
+        {
+          "units": "diffusion_index",
+          "transformation": "diffusion_index",
+          "vintage": "latest_available",
+          "reference_period": "2026-10",
+          "value": 52.2,
+          "publisher": "BNZ / BusinessNZ",
+          "source_url": "https://www.bnz.co.nz/assets/markets/research/BNZ-BusinessNZ-PSI-Release_October_2026_web.pdf",
+          "revision_status": "final",
+          "series_id": "BUSINESSNZ_PCI_GDP_WEIGHTED",
+          "retrieved_at": "2026-11-16T10:49:50Z"
         }
       ],
       "gaps": [

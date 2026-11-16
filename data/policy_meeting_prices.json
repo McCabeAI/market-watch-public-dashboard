@@ -4,7 +4,7 @@
     "AU": {
       "anchor": 4.85,
       "basis_bp": 0.0,
-      "calendar_retrieved_at": "2026-11-16T11:07:13Z",
+      "calendar_retrieved_at": "2026-11-16T14:05:11Z",
       "fixing": 4.85,
       "futures_as_of": "2026-11-13",
       "meetings": [
@@ -420,13 +420,13 @@
     "CA": {
       "anchor": 2.5,
       "basis_bp": 3.0,
-      "calendar_retrieved_at": "2026-11-16T11:07:13Z",
+      "calendar_retrieved_at": "2026-11-16T14:05:11Z",
       "fixing": 2.53,
       "futures_as_of": null,
       "meetings": [
         {
-          "chg_1d_bp": 1.01,
-          "chg_1w_bp": 5.42,
+          "chg_1d_bp": 0.34,
+          "chg_1w_bp": 4.75,
           "contracts": [
             {
               "code": "COAZ26",
@@ -441,30 +441,30 @@
             {
               "code": "COAX26",
               "expiry": "2026-11",
-              "implied_rate": 2.52,
-              "price": 97.48,
+              "implied_rate": 2.525,
+              "price": 97.475,
               "product": "COA",
               "role": "forward_baseline",
               "source": "MX_CORRA_FUTURES",
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 14.87,
+          "cumulative_bp": 14.2,
           "decision_date": "2026-12-09",
           "effective_date": "2026-12-10",
           "estimate_note": "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step.",
-          "incremental_bp": 14.87,
+          "incremental_bp": 14.2,
           "instrument_id": "PM:CA:2026-12-09",
           "method": "estimated",
-          "overnight_post": 2.6664,
-          "overnight_pre": 2.5176,
-          "post_rate": 2.6487,
+          "overnight_post": 2.6646,
+          "overnight_pre": 2.5226,
+          "post_rate": 2.642,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 2.63,
-          "chg_1w_bp": 12.85,
+          "chg_1d_bp": 3.21,
+          "chg_1w_bp": 13.43,
           "contracts": [
             {
               "code": "COAF27",
@@ -487,205 +487,205 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 33.08,
+          "cumulative_bp": 33.66,
           "decision_date": "2027-01-27",
           "effective_date": "2027-01-28",
           "estimate_note": "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step.",
-          "incremental_bp": 18.21,
+          "incremental_bp": 19.46,
           "instrument_id": "PM:CA:2027-01-27",
           "method": "estimated",
-          "overnight_post": 2.8485,
-          "overnight_pre": 2.6664,
-          "post_rate": 2.8308,
+          "overnight_post": 2.8592,
+          "overnight_pre": 2.6646,
+          "post_rate": 2.8366,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": -15.67,
-          "chg_1w_bp": 49.17,
+          "chg_1d_bp": -49.76,
+          "chg_1w_bp": 15.08,
           "contracts": [
             {
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.78,
-              "price": 97.22,
+              "implied_rate": 2.735,
+              "price": 97.265,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 38.74,
+          "cumulative_bp": 4.65,
           "decision_date": "2027-03-03",
           "effective_date": "2027-03-04",
-          "incremental_bp": 5.66,
+          "incremental_bp": -29.01,
           "instrument_id": "PM:CA:2027-03-03",
           "method": "identified",
-          "overnight_post": 2.9051,
-          "overnight_pre": 2.8485,
-          "post_rate": 2.8874,
+          "overnight_post": 2.5691,
+          "overnight_pre": 2.8592,
+          "post_rate": 2.5465,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 7.33,
-          "chg_1w_bp": 3.95,
+          "chg_1d_bp": 14.47,
+          "chg_1w_bp": 11.09,
           "contracts": [
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 3.03,
-              "price": 96.97,
+              "implied_rate": 2.97,
+              "price": 97.03,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 55.7,
+          "cumulative_bp": 62.84,
           "decision_date": "2027-04-28",
           "effective_date": "2027-04-29",
-          "incremental_bp": 16.96,
+          "incremental_bp": 58.19,
           "instrument_id": "PM:CA:2027-04-28",
           "method": "equal_step",
-          "overnight_post": 3.0746,
-          "overnight_pre": 2.9051,
-          "post_rate": 3.057,
+          "overnight_post": 3.151,
+          "overnight_pre": 2.5691,
+          "post_rate": 3.1284,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 30.33,
-          "chg_1w_bp": -41.26,
+          "chg_1d_bp": 78.7,
+          "chg_1w_bp": 7.11,
           "contracts": [
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 3.03,
-              "price": 96.97,
+              "implied_rate": 2.97,
+              "price": 97.03,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 72.66,
+          "cumulative_bp": 121.03,
           "decision_date": "2027-06-02",
           "effective_date": "2027-06-03",
-          "incremental_bp": 16.96,
+          "incremental_bp": 58.19,
           "instrument_id": "PM:CA:2027-06-02",
           "method": "equal_step",
-          "overnight_post": 3.2442,
-          "overnight_pre": 3.0746,
-          "post_rate": 3.2266,
+          "overnight_post": 3.7329,
+          "overnight_pre": 3.151,
+          "post_rate": 3.7103,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": -14.54,
-          "chg_1w_bp": 58.05,
+          "chg_1d_bp": -47.22,
+          "chg_1w_bp": 25.37,
           "contracts": [
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.2,
-              "price": 96.8,
+              "implied_rate": 3.145,
+              "price": 96.855,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 64.19,
+          "cumulative_bp": 31.51,
           "decision_date": "2027-07-21",
           "effective_date": "2027-07-22",
-          "incremental_bp": -8.47,
+          "incremental_bp": -89.52,
           "instrument_id": "PM:CA:2027-07-21",
           "method": "equal_step",
-          "overnight_post": 3.1595,
-          "overnight_pre": 3.2442,
-          "post_rate": 3.1419,
+          "overnight_post": 2.8378,
+          "overnight_pre": 3.7329,
+          "post_rate": 2.8151,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": -59.42,
-          "chg_1w_bp": 157.36,
+          "chg_1d_bp": -173.14,
+          "chg_1w_bp": 43.64,
           "contracts": [
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.2,
-              "price": 96.8,
+              "implied_rate": 3.145,
+              "price": 96.855,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 55.72,
+          "cumulative_bp": -58.0,
           "decision_date": "2027-09-08",
           "effective_date": "2027-09-09",
-          "incremental_bp": -8.47,
+          "incremental_bp": -89.52,
           "instrument_id": "PM:CA:2027-09-08",
           "method": "equal_step",
-          "overnight_post": 3.0748,
-          "overnight_pre": 3.1595,
-          "post_rate": 3.0572,
+          "overnight_post": 1.9426,
+          "overnight_pre": 2.8378,
+          "post_rate": 1.92,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 43.64,
-          "chg_1w_bp": -60.17,
+          "chg_1d_bp": 111.53,
+          "chg_1w_bp": 7.72,
           "contracts": [
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.33,
-              "price": 96.67,
+              "implied_rate": 3.275,
+              "price": 96.725,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 96.43,
+          "cumulative_bp": 164.32,
           "decision_date": "2027-10-27",
           "effective_date": "2027-10-28",
-          "incremental_bp": 40.71,
+          "incremental_bp": 222.32,
           "instrument_id": "PM:CA:2027-10-27",
           "method": "equal_step",
-          "overnight_post": 3.4819,
-          "overnight_pre": 3.0748,
-          "post_rate": 3.4643,
+          "overnight_post": 4.1658,
+          "overnight_pre": 1.9426,
+          "post_rate": 4.1432,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 146.69,
-          "chg_1w_bp": -277.71,
+          "chg_1d_bp": 396.19,
+          "chg_1w_bp": -28.21,
           "contracts": [
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.33,
-              "price": 96.67,
+              "implied_rate": 3.275,
+              "price": 96.725,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 137.14,
+          "cumulative_bp": 386.64,
           "decision_date": "2027-12-08",
           "effective_date": "2027-12-09",
-          "incremental_bp": 40.71,
+          "incremental_bp": 222.32,
           "instrument_id": "PM:CA:2027-12-08",
           "method": "equal_step",
-          "overnight_post": 3.8891,
-          "overnight_pre": 3.4819,
-          "post_rate": 3.8714,
+          "overnight_post": 6.389,
+          "overnight_pre": 4.1658,
+          "post_rate": 6.3664,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         }
@@ -696,10 +696,10 @@
     },
     "EA": {
       "anchor": 2.5,
-      "basis_bp": -6.3,
-      "calendar_retrieved_at": "2026-11-16T11:07:13Z",
-      "fixing": 2.437,
-      "futures_as_of": "2026-11-13",
+      "basis_bp": null,
+      "calendar_retrieved_at": "2026-11-16T14:05:11Z",
+      "fixing": null,
+      "futures_as_of": "2026-11-16",
       "meetings": [
         {
           "chg_1d_bp": null,
@@ -711,8 +711,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2026-12-17",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -724,8 +723,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-02-04",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -737,8 +735,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-03-18",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -750,8 +747,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-04-29",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -763,8 +759,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-06-10",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -776,8 +771,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-07-22",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -789,8 +783,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-09-09",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -802,8 +795,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-10-28",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -815,8 +807,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2027-12-16",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -828,8 +819,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-02-03",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -841,8 +831,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-03-23",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -854,8 +843,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-05-04",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -867,8 +855,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-06-08",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -880,8 +867,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-07-20",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -893,8 +879,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-09-07",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -906,8 +891,7 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-10-12",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         },
         {
           "chg_1d_bp": null,
@@ -919,18 +903,16 @@
           "incremental_bp": null,
           "instrument_id": "PM:EA:2028-12-07",
           "method": "unavailable",
-          "post_rate": null,
-          "reason": "ESR contract window does not uniquely identify meeting"
+          "post_rate": null
         }
       ],
-      "reason": "ESR quarterly windows do not identify ECB meetings",
-      "status": "unavailable",
-      "step_meaning": "CME ESR compound accrual (ACT/360, weekday business days; Friday's rate covers Saturday/Sunday via di); no TARGET holiday calendar on the accrual path"
+      "reason": "No overnight fixing",
+      "status": "unavailable"
     },
     "JP": {
       "anchor": null,
       "basis_bp": null,
-      "calendar_retrieved_at": "2026-11-16T11:07:13Z",
+      "calendar_retrieved_at": "2026-11-16T14:05:11Z",
       "fixing": 1.227,
       "futures_as_of": null,
       "meetings": [
@@ -1059,7 +1041,7 @@
     "US": {
       "anchor": 3.875,
       "basis_bp": 2.5,
-      "calendar_retrieved_at": "2026-11-16T11:07:13Z",
+      "calendar_retrieved_at": "2026-11-16T14:05:11Z",
       "fixing": 3.9,
       "futures_as_of": "2026-11-16",
       "meetings": [
