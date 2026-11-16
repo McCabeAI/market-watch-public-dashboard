@@ -1,0 +1,360 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-16T11:11:48+00:00",
+      "release_sha256": "c99d85f400c1a8fd5e0a1d9f513a48888f8c548d55508e95e98ca5c1dd013d2e",
+      "run_attempt": "1",
+      "run_id": "43852203908",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/43852203908",
+      "site_sha256": "19f7d4e98d35b4a1bf337d5c74cf97bb7b143d6dde36dd30f667961eca6909ef"
+    }
+  ],
+  "launch_id": "mwl-20261116T104950Z-03a3d955",
+  "launch_terminal": false,
+  "packet_sha256": "79415a74cabc537a52dfe553d0aad8ab78b33cd3ee1f16d293ab8abfb0b358c5",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-13T07:19:23.597854-05:00",
+      "as_of": "2026-11-13T06:22:15.706647-05:00",
+      "books_run_id": "overnight-20261113",
+      "overnight_run_id": "overnight-20261113",
+      "packet_sha256": "6c36616a0dacacd23bb150494b925d9a365a5c9f51b64f37c3002b0a11521137"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-16T05:49:50.389382-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-16T05:49:50.389382-05:00",
+      "counts": {
+        "considered": 17,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 3,
+          "unattributed": 6
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields fall as investors await comments from Fed Chairman Warsh",
+          "id": "news:52c4b3c0be717648",
+          "published_at": "2026-11-16T03:17:30-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/16/treasury-yields-bonds-inflation.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "EUR",
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "reuters_credit",
+          "headline": "Euro zone yields rise as traders bet on three ECB hikes by late 2027",
+          "id": "news:683a55de86b484ad",
+          "published_at": "2026-11-15T21:51:00-05:00",
+          "source_name": "Reuters",
+          "url": "https://www.reuters.com/markets/europe/euro-zone-yields-rise-traders-bet-three-ecb-hikes-by-late-2027-2026-11-16/",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "\u2018Standing on one leg\u2019: IMF chief warns about global economy as AI circular financing hits $1 trillion",
+          "id": "news:e9404d437835e1f7",
+          "published_at": "2026-11-16T03:14:46-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/16/imf-georgieva-warning-ai-circular-financing.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Fed\u2019s Barr Says AI Agents Could Fuel Future Bank Runs",
+          "id": "news:8b70999c9568eff0",
+          "published_at": "2026-11-15T21:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-16/fed-s-barr-says-ai-agents-could-fuel-future-bank-runs",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "ECB\u2019s Vujcic Warns AI and High Debt Threaten Financial Stability",
+          "id": "news:d485b5e711221b5b",
+          "published_at": "2026-11-15T19:30:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-16/ecb-s-vujcic-warns-ai-and-high-debt-threaten-financial-stability",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Investors Return to JGBs as Rate Outlook Shifts, SMBC Nikko Says",
+          "id": "news:96ee8750a24384db",
+          "published_at": "2026-11-15T14:27:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-16/investors-return-to-jgbs-as-rate-outlook-shifts-smbc-nikko-says",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Nvidia\u2019s CEO Search Draws Fire With Bessent\u2019s \u2018Shakeup\u2019 Call",
+          "id": "news:9eccd7516509bfba",
+          "published_at": "2026-11-15T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-15/nvidia-s-ceo-search-draws-fire-with-bessent-s-call-for-shakeup",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Social Security and the blue wave: What could happen to payroll taxes and senior tax breaks",
+          "id": "news:f0c483dcb89de97d",
+          "published_at": "2026-11-15T08:30:01-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/15/social-security-tax-changes-midterm-election.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-16T05:49:50.389382-05:00",
+      "news_family_digest": "cb1f54c017bcda08861d3bfc18352265a7556ac9d556d06da5d680f36cc0774e",
+      "packet_sha256": "79415a74cabc537a52dfe553d0aad8ab78b33cd3ee1f16d293ab8abfb0b358c5",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-16T05:49:50.389382-05:00",
+        "start": "2026-11-15T05:49:50.389382-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/freeze_binding.json",
+        "sha256": "d717403a253eadb893289c5ee976f55cfd7526ee353160be63d8707597f01714"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/remote_freeze.json",
+        "sha256": "624cf7be44bf4147470ac430880f40337c641f1fdb0cf5e22b10c979a7a754ac"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/artifacts/00_authenticate.json",
+        "sha256": "a08f940a53c3ac789c285561a46d91ad1715b941ddb829ef7b3aa6641b3fc4ff"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/artifacts/01_ingest.json",
+        "sha256": "12779272a57b519b79cb978c1baeb9aade8d36fae273acf74c0f099844972eeb"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/artifacts/02_acquire.json",
+        "sha256": "c5bf0e5dbcea34db01afe382bc085256d1b27cedc7e42f7b553cca988fbc1306"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/artifacts/03_quality_gate.json",
+        "sha256": "256f8c0fd0a36619f6ccb264307d3e2f0627ed2c4ca9ae0b5ea97571ff6059cb"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/artifacts/04_freeze.json",
+        "sha256": "9a47d3005a0e31eab5e982ca7129fc7869c1404731b561a6ea9f605c3b6efc54"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/temperature_scores.json",
+        "sha256": "73e370568e20ce383f16160812fe4d674d953409b60000a6566f066827e39a8f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/history/ca.json",
+        "sha256": "4550a1c46e623fddb40aa8a658ee80bde32d36fa4471a7191574b44fa9f23405"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/history/ea.json",
+        "sha256": "819c52e9c14eea3a09f694cac726b1cde44c0f16881b6d2e425ecfab79a21770"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261116T104950Z-03a3d955/lineage/history/us.json",
+        "sha256": "adb2e5b68331ab23542a97dec520709ceccdd62b2347e7e6971544029a53d5d7"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261116/reviews/review-001/evidence_snapshot.json",
+        "sha256": "206a031959c35fd9d9bdfed0595076b009bee18914a9ce07f6b1cf91303d1c85"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "e1b69be414b48d2eb7a86588743d51772cc5c64f94eaefdd6d50f15fae6915ea"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261113/assembled_dataset.json",
+        "sha256": "60d65fbcc1f98a253b8d486bcc987905c3628f430317b3b763a336c85f623248"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "05deacde007f80bf04dfaff5892a94712bad3d9a8739cbf3b8eb6bb710f65c61"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "1e43536edf2d8fa3a40c6b5ae71408354c89ceb03de4d18b41eca6808b8d04e7"
+      }
+    ],
+    "launch_id": "mwl-20261116T104950Z-03a3d955",
+    "market_state": {
+      "as_of": "2026-11-16T11:10:34Z",
+      "digest": "269c6a37c0779dcccd61003d03720a4fde7e8630abc6cc667342e30876a48a94",
+      "generated_at": "2026-11-16T11:10:34Z"
+    },
+    "news": {
+      "age_label": "71 h before this freeze",
+      "as_of": "2026-11-13T06:22:15.706647-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261113",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261116",
+    "packet_sha256": "79415a74cabc537a52dfe553d0aad8ab78b33cd3ee1f16d293ab8abfb0b358c5",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "CA.Inflation.headline",
+        "CA.Inflation.underlying",
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.retail",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Labor.wages",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "EA.Activity.business_surveys",
+        "JP.Consumer.income",
+        "JP.Consumer.retail",
+        "JP.Consumer.spending",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.confidence",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "44864e0db513da3c452de0c616aa1c0d2577b119",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 1,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-16T10:49:50Z",
+      "inputs_last_ingested_at": "2026-11-16T10:49:50Z",
+      "score_state_sha256": "73e370568e20ce383f16160812fe4d674d953409b60000a6566f066827e39a8f"
+    },
+    "session_date": "2026-11-16",
+    "site_sha256": "19f7d4e98d35b4a1bf337d5c74cf97bb7b143d6dde36dd30f667961eca6909ef",
+    "source_commit": "ba81fd2a27aa70350585ae4678aba4e487f023e1",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261116",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "c99d85f400c1a8fd5e0a1d9f513a48888f8c548d55508e95e98ca5c1dd013d2e",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-16",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
