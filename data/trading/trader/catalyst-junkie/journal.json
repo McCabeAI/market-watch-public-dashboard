@@ -2080,6 +2080,64 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Hold the small December SOFR pay. It is marked from 4.295 to 4.315, with cash at 3.89 and March at 4.615, and the 0.4 percent CPI print is already the public story. Producer prices, the euro-area GDP flash and Monday's Canada CPI are not adds: the front end has already sold off, and Canada's two-year is already up 12 basis points into Monday. There is no second contract and no euro-dollar overlay."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2026-12",
+          "notional_usd": null,
+          "position_id": "pos-29b4571dd270",
+          "rationale": "Close the December 2026 SOFR short. The contract has not traveled and the two-year already holds the hike.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "9478371b090c715bf5176c287851ca3924ff473df3a25d0ca464a7b6e2d0421b",
+      "event_id": "jde-b5b8988c653a4602",
+      "funding_view": null,
+      "invalidation": "A new pay is justified only if the 25 November income and spending release lifts December SOFR before the 9 December meeting. Friday's 4.31 print did not break the old adverse level, and the short is closed because December did not reprice.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-29b4571dd270"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-catalyst-junkie-pos-29b4571dd270"
+      ],
+      "memory_context_sha256": "189a80e47358831002ddf2645d2586d4aa9f464c8885f2ba42b482f041229d5a",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b3df8eac15cc77c875492240bf2ce46fb59a1599dfbc03096ffa1703565a5e24"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the 2 million short in December 2026 SOFR. The contract is about 4.31 against the prior entry near 4.30, so it has not traveled, while cash SOFR is 3.90 and the two-year is already 4.88. March 2027 near 4.60 shows the hike path is already further along the curve. Oil at 88.56 and 95.84 is not a fresh shock. The next inflation print that could force December higher is US income and spending on 25 November, and it is not in hand. Canada's inflation this morning is after the cutoff.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Close the 2 million short in December 2026 SOFR. The contract is about 4.31 against the prior entry near 4.30, so it has not traveled, while cash SOFR is 3.90 and the two-year is already 4.88. March 2027 near 4.60 shows the hike path is already further along the curve. Oil at 88.56 and 95.84 is not a fresh shock. The next inflation print that could force December higher is US income and spending on 25 November, and it is not in hand. Canada's inflation this morning is after the cutoff."
     }
   ],
   "schema_version": 1,

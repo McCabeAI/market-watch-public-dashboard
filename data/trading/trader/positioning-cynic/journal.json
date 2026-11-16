@@ -2255,6 +2255,60 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "The crowded book is the U.S. hike and the dollar long: the two-year is at the 98th percentile, SOFR March is 4.615 versus cash 3.89, and the headlines are about more Fed hikes. Cover the Australia-kiwi short, which has already run from 1.2453 to 1.2275 and would not be opened flat here. Cover the CORRA March pay, which is lined up with that same hike crowd and is marked the wrong way. Receive the U.S. two-year. That is the rates expression of the crowded hike. Euro-dollar at the bottom of its range is the same dollar-long story and is the weaker fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "FLAT",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No tape instrument is a less-owned expression than the hike-and-dollar consensus.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "86b44f71ea70f390d3c67f845e38197c54cec02e57a54da9feae261d4c571a1e",
+      "event_id": "jde-098759adb58b4612",
+      "funding_view": null,
+      "invalidation": "The flat book ends only when a listed instrument is clearly owned against that hike-and-dollar consensus and the pay or the dollar stops working. A further drop in bond futures, or dollar-yen holding 160 with the hike path still the headline, keeps the book flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "01bddd37625130b4d670f501e6b5b5648e060f49a6e97822866be47e71d909b1",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e00f93dcab760f41934004cd97f1577d2f64a716aefc468bee1cf5d38f18e718"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. The crowded consensus in the headlines is more hikes and a firm dollar: bond futures falling, hot inflation, and euro-area traders pricing three ECB hikes, with euro-dollar at 1.1052, dollar-yen at 160, and dollar-Canada at 1.4258. SOFR December near 4.31 and March near 4.60 versus cash at 3.90 is that pay. Receiving the gap to cash, or shorting dollar-Canada, would not be the less-owned trade.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Stay flat. The crowded consensus in the headlines is more hikes and a firm dollar: bond futures falling, hot inflation, and euro-area traders pricing three ECB hikes, with euro-dollar at 1.1052, dollar-yen at 160, and dollar-Canada at 1.4258. SOFR December near 4.31 and March near 4.60 versus cash at 3.90 is that pay. Receiving the gap to cash, or shorting dollar-Canada, would not be the less-owned trade."
     }
   ],
   "schema_version": 1,

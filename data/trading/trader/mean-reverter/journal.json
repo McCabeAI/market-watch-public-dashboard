@@ -2146,6 +2146,60 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Stay flat. Euro-dollar is at the bottom of its one-year range and the kiwi is at the first percentile, while the U.S. two-year is at the 98th percentile of its level. Brent is firm and the VIX is not an exhaustion spike. A stretch is not a fade while producer prices are still ahead of the cutoff, because a hot print can extend 4.86 and push the dollar through the lows. The closed Australia-kiwi short was a completed normalization and does not license a new fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "FLAT",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No reversal is in the 13 November tape. The stretches are still extending.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "19baf5a16ce0bcbdd087197cbfad20ee543dd8648ca7ea12fa140541479d7a3b",
+      "event_id": "jde-376a53123ace408c",
+      "funding_view": null,
+      "invalidation": "The flat stance ends when one of those stretches stops extending and turns: the euro or kiwi fails the breakdown, dollar-yen turns down from 160, or the five-day rise in the US two-year reverses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "156e88ff30a2ea1ebe8bad178df5d3b1672ce5b0ec58b4faf3ac106d424e6a10",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d448c1bd96a162885554e4a9db112345aec4eb2df762e9c8b0c49ad5025acefc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Euro-dollar at 1.1052 and the kiwi at 0.5532 are at multi-year lows and still breaking down. Dollar-yen at 160 and dollar-Swiss at 0.8384 are still extending. Euro-sterling at 0.8356 has only drifted 0.17 percent over five days. The US two-year at 4.88 is high, and the five-day move was still higher. A fresh break is not a reversal, so there is nothing to fade yet.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Stay flat. Euro-dollar at 1.1052 and the kiwi at 0.5532 are at multi-year lows and still breaking down. Dollar-yen at 160 and dollar-Swiss at 0.8384 are still extending. Euro-sterling at 0.8356 has only drifted 0.17 percent over five days. The US two-year at 4.88 is high, and the five-day move was still higher. A fresh break is not a reversal, so there is nothing to fade yet."
     }
   ],
   "schema_version": 1,

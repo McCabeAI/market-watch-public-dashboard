@@ -2743,6 +2743,79 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "The optimistic book stays with the U.S. and Australian March pays. Growth, equities and oil are still resilient, and SOFR March at 4.615 versus cash 3.89 is the live hike path after a 0.4 percent CPI print. The Canada March pay is the wrong country: it has been marked down from 3.13 to 3.025 while the U.S. premium has been marked up, and the Canadian dollar is already the weak leg."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": "Hold the 50 million short March 2027 SOFR. The hike path is intact and weaker oil is not a reason to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-78563c24fe05",
+          "rationale": "Hold the 35 million short March 2027 AONIA. Cash near 4.85 and the March bill near 5.00 are a shallow hump, not a reason to add.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "d83f7e39d35de5431a3efa896d995f0d7a37a7ffbdbe9947cab25c5246b90575",
+      "event_id": "jde-fbb6eb9cb9a74590",
+      "funding_view": null,
+      "invalidation": "The pays are wrong if March 2027 SOFR implied yield falls back through the 4.52 entry, or March 2027 AONIA through about 4.80, and Friday's 4.88 percent two-year and 5.15 percent ten-year fixings break lower.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-78563c24fe05"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "687d5fa9aff3bd7546a8bc64cd49aeb4c52d9fcbaf8fb23c80ce1dfc4b6b6b79",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f1925f7d06e709f4b37ce0f27bbf6f43e79bae90682318cd4205f1d378fa2450"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the pro-growth pays at current size: short March 2027 SOFR in 50 million and short March 2027 AONIA in 35 million. Friday's verified fixings are a 4.88 percent US two-year and a 5.15 percent ten-year, SOFR futures still price hikes from 3.90 percent cash to about 4.60 in March 2027, and the S&P at 7562 with the VIX at 18.7 says expansion is absorbing that path. Brent at 95.84 and WTI at 88.56 are well below the old oil scare, so the oil kicker is weaker and size stays unchanged.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Hold the pro-growth pays at current size: short March 2027 SOFR in 50 million and short March 2027 AONIA in 35 million. Friday's verified fixings are a 4.88 percent US two-year and a 5.15 percent ten-year, SOFR futures still price hikes from 3.90 percent cash to about 4.60 in March 2027, and the S&P at 7562 with the VIX at 18.7 says expansion is absorbing that path. Brent at 95.84 and WTI at 88.56 are well below the old oil scare, so the oil kicker is weaker and size stays unchanged."
     }
   ],
   "schema_version": 1,

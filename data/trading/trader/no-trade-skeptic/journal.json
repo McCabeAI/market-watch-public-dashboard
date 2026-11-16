@@ -2735,6 +2735,79 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "The apparent edge is already priced. October CPI of 0.4 percent is the public story, the two-year is 4.86 after a 13 basis point rise, and euro-dollar, dollar-yen and dollar-Canada have already moved. The SOFR strip prices funding far above the 3.89 fixing. A new pay or a new dollar long restates a path the front end and the spots have marked, into a producer-price print that is still ahead. Flat matches the evidence."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "FLAT",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No rates or spot expression is selected. The hike and the dollar move are already in the price.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "49f804805e411e897109d6737fb13759e630480bb3ddba2e9bd498142d0f3fe0",
+      "event_id": "jde-278d6f4b77654ea2",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-12",
+          "rate": 3.9,
+          "source": "NY_FED"
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Realized funding is assessed about the same as that December, March, and September strip, not versus the 3.90 cash fixing. Staying flat is the zero official SOFR benchmark. Paying 3.90 percent on new shocked-risk capital would finance a hike path the strip already discounts.",
+        "sr3_forward_view": "The December 2026 SOFR future at 95.695 implies about 4.305, March 2027 at 95.40 implies about 4.60, and September 2027 at 95.18 implies about 4.82, a hike path above the 3.90 official fixing."
+      },
+      "invalidation": "Leave the flat book only if an outcome inside this evidence leaves those implied rates in place after a result the path did not absorb, on one executable instrument whose edge clears paying 3.90 percent SOFR on shocked-risk capital.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5635beb6d13111a756757f59134307f04713ffff7c79343846a468f12c0a4eb2",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-12",
+            "rate": 3.9,
+            "source": "NY_FED"
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Realized funding is assessed about the same as that December, March, and September strip, not versus the 3.90 cash fixing. Staying flat is the zero official SOFR benchmark. Paying 3.90 percent on new shocked-risk capital would finance a hike path the strip already discounts.",
+          "sr3_forward_view": "The December 2026 SOFR future at 95.695 implies about 4.305, March 2027 at 95.40 implies about 4.60, and September 2027 at 95.18 implies about 4.82, a hike path above the 3.90 official fixing."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "715e9bee0933a21340ceb57723a0243d4d4962789db27636d073ca39a4003d31"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Official SOFR is 3.90 percent. December SOFR implies about 4.31, March about 4.60, and September about 4.82, and the two-year at 4.88 already sits through that September rate. The dollar is at extremes and still trending. Oil at 88.56 and 95.84 does not reopen a fresh rates gap. Paying SOFR on new shocked-risk capital would fund a path the strip already discounts. Staying flat is the book's zero benchmark, not a source of alpha.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Stay flat. Official SOFR is 3.90 percent. December SOFR implies about 4.31, March about 4.60, and September about 4.82, and the two-year at 4.88 already sits through that September rate. The dollar is at extremes and still trending. Oil at 88.56 and 95.84 does not reopen a fresh rates gap. Paying SOFR on new shocked-risk capital would fund a path the strip already discounts. Staying flat is the book's zero benchmark, not a source of alpha."
     }
   ],
   "schema_version": 1,

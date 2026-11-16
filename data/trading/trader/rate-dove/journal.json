@@ -2118,6 +2118,62 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Hold the existing Canada 2027 curve receive. Cash CORRA is 2.52, March is 3.025 and December is 3.385, so the strip still embeds a hike extension that easing has not been paid for. The U.S. path is a fresh hike reprice, with SOFR March at 4.615 versus cash 3.89, and there is no new labor or disinflation fact that would justify a new U.S. receive. Australia already prices ease after March. Euro-area yields eased and Japan was flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": "Hold the Canada 2027 strip receive. Softer oil keeps the hike premium an energy assumption.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "249a7826be08e4168b2d8b1fb46e12b4c2ff0b2e25c869a0eba2c1e85a6ead10",
+      "event_id": "jde-11e38a4b75ef4804",
+      "funding_view": null,
+      "invalidation": "Exit the receive if the Bank of Canada delivers or signals the priced 2027 path, or if oil reverses the softer tape and March widens further from about 3.03 against cash near 2.30.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d1f2b6b11195a92cf1a4fb6b4df62bae3ac79aa21d1157324925990bcee54100",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "78987a050cac8161292404bab8793be1a9ddbad8c34e446a72f0918c7f12878e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 2027 Canada strip receive. Cash near 2.30 and March near 3.03 still leave a hike premium, and WTI at 88.56 with Brent at 95.84 weakens the energy pass-through case that put it there. The US front end has not eased: SOFR cash is 3.90, December is about 4.31, and the two-year is 4.88, with no labor or disinflation fact that would open a new US receive. Equities are firm and the VIX is 18.7, so this is not a growth break and the line is not increased. Canada inflation is after this cutoff.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Hold the 2027 Canada strip receive. Cash near 2.30 and March near 3.03 still leave a hike premium, and WTI at 88.56 with Brent at 95.84 weakens the energy pass-through case that put it there. The US front end has not eased: SOFR cash is 3.90, December is about 4.31, and the two-year is 4.88, with no labor or disinflation fact that would open a new US receive. Equities are firm and the VIX is 18.7, so this is not a growth break and the line is not increased. Canada inflation is after this cutoff."
     }
   ],
   "schema_version": 1,

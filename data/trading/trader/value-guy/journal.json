@@ -2143,6 +2143,62 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Hold the euro-sterling long. It is still in the fourth percentile of the past year, from 0.8343 to 0.8360, and nothing here says that cheapness has converged. Euro-dollar at the bottom of its one-year range and the kiwi at the first percentile are more extreme ranks, but a rank is not a new spot long. Rates are not cleaner: there is no cross-market spread to show the currency is cheap because the rate is cheap. The closed Australia-kiwi short is a finished convergence, not a re-entry."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": null,
+          "position_id": "pos-5760dbd4ac3e",
+          "rationale": "Hold the euro-sterling long. The historical discount is intact.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "cb694178bc1d0fa3f3912dfab6f1093d571983158f1927cfc2e3f46219c37043",
+      "event_id": "jde-a518621561924dd3",
+      "funding_view": null,
+      "invalidation": "The euro long is invalidated if euro-sterling stays pinned near 0.834 after euro-dollar and euro-yen have lifted off their lows, or if a renewed rise in crude marks that cheapness as fair.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5760dbd4ac3e"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3b139a30638b9634c32faf7896f8d223dea9d0d885f1e58878ae785a4b1aff12",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c7a4c4543ef46931c7ccc1fa363361669db35681a7622b4c1930b1f5e4f851d8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the five million long euro versus sterling. Euro-sterling at 0.8356 is the 3rd percentile of the past year and the 11th of the past five years. The same euro cheapness is still there against the dollar at 1.1052 and against the yen at 176.83. The US ten-year at 5.15, the German ten-year at 3.37, and the Canadian ten-year at 3.78 are the policy path. They do not name one markable mean-reverting spread. Oil at 88.56 and 95.84 leaves the original crude test unmet.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Hold the five million long euro versus sterling. Euro-sterling at 0.8356 is the 3rd percentile of the past year and the 11th of the past five years. The same euro cheapness is still there against the dollar at 1.1052 and against the yen at 176.83. The US ten-year at 5.15, the German ten-year at 3.37, and the Canadian ten-year at 3.78 are the policy path. They do not name one markable mean-reverting spread. Oil at 88.56 and 95.84 leaves the original crude test unmet."
     }
   ],
   "schema_version": 1,

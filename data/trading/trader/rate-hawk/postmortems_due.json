@@ -23,7 +23,7 @@
       "owner_id": "rate-hawk",
       "owner_type": "trader",
       "postmortem_id": "pmd-4e5db6894f03",
-      "status": "due",
+      "status": "submitted",
       "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
     },
     {
@@ -49,8 +49,34 @@
       "owner_id": "rate-hawk",
       "owner_type": "trader",
       "postmortem_id": "pmd-cfd007ec947d",
-      "status": "due",
+      "status": "submitted",
       "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
+    },
+    {
+      "created_at": "2026-11-16T05:49:50.389382-05:00",
+      "created_run_id": "overnight-20261116",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-16T05:49:50.389382-05:00",
+        "conviction": 64,
+        "entry_mark": 4.71,
+        "exit_mark": 4.8,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 521953,
+        "instrument": "AONIA_2027-09",
+        "invalidation": "The Australia pay is wrong if inflation cools and September AONIA stays below cash, or if the RBA validates cuts inside the next two meetings. The SOFR cut is wrong if September 2027 SOFR reprices sustainably above 4.60.",
+        "opened_at": "2026-11-10T04:50:36.940059-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 1238.22,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-ab735cb97507",
+      "status": "due",
+      "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021"
     }
   ],
   "schema_version": 1,

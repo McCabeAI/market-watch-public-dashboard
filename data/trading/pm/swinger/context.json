@@ -61,7 +61,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-16T05:49:50.389382-05:00",
+  "as_of": "2026-11-16T09:04:34.636951-05:00",
   "calibration": {
     "average_holding_seconds": 1852735,
     "average_realized_pnl_usd": 2224073.29,
@@ -107,16 +107,16 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 365085.28,
-    "best_trader_outearn_streak": 2,
-    "best_trader_seat": "cross-merchant",
+    "best_trader_net_pnl_usd": 426403.41,
+    "best_trader_outearn_streak": null,
+    "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
     "competition_eligible": true,
     "competition_rank": 1,
     "competitive_rank": 1,
     "drawdown_usd": 445851.67,
-    "gap_to_best_trader_usd": 4032541.19,
+    "gap_to_best_trader_usd": 3971223.06,
     "high_water_nav_usd": 1004843478.14,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 4397626.47,
@@ -134,7 +134,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b0b320a1146ccfa9841e114d740178d29d90cf8d6ad98e069ed2c52333148b04",
+  "memory_context_sha256": "1ab081ada5aa178f53b8ca02abf50e032641a1ef211da2fb5832f2eb2d18fa72",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -152,12 +152,12 @@
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 254062,
-        "horizon_elapsed_fraction": 0.1176,
+        "holding_seconds": 265747,
+        "horizon_elapsed_fraction": 0.123,
         "horizon_status": "within",
         "instrument": "SOFR_2027-03",
         "intended_horizon_days": 25,
-        "mae_usd": 0.0,
+        "mae_usd": -150000.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
         "move_versus_entry_intent": "flat",
@@ -204,12 +204,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "defensiveness": {
         "band": "calm",
@@ -219,7 +219,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.22
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
@@ -259,7 +259,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "6adaa3e4a7c4387d2aa7af9e37c15d281e7213447690640d50b03f0085d5a221",
+    "state_sha256": "00b0a90d19f2605d233fa30f2f8fc19b27602cca73d5ee6c80c542470b105729",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

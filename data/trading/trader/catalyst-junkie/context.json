@@ -2,16 +2,16 @@
   "active_lessons": [],
   "as_of": "2026-11-16T05:49:50.389382-05:00",
   "calibration": {
-    "average_holding_seconds": 481755,
-    "average_realized_pnl_usd": -11625.0,
+    "average_holding_seconds": 437558,
+    "average_realized_pnl_usd": -7733.33,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 2,
-        "total_realized_pnl_usd": -23250.0
+        "count": 3,
+        "total_realized_pnl_usd": -23200.0
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": -20500.0,
@@ -31,8 +31,8 @@
     },
     "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -23250.0,
-    "wins": 0
+    "total_realized_pnl_usd": -23200.0,
+    "wins": 1
   },
   "capital_owner": null,
   "consequence": {
@@ -54,7 +54,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 5000.0,
     "risk_capital_utilization": 0.0005,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 51.62,
     "status": "ok"
   },
   "learning": {
@@ -65,58 +65,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "189a80e47358831002ddf2645d2586d4aa9f464c8885f2ba42b482f041229d5a",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": null,
-      "current_notional_usd": 2000000.0,
-      "entry_mark": 4.29,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": "2026-12-09",
-        "catalyst_logic": "October producer prices on 13 November are the first check. If they do not extend the consumer-price rise, the pay is finished.",
-        "current_mark": 4.315,
-        "current_notional_usd": 2000000.0,
-        "entry_mark": 4.295,
-        "expected_mark_direction": null,
-        "framing": "tactical",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 349166,
-        "horizon_elapsed_fraction": 0.1497,
-        "horizon_status": "within",
-        "instrument": "SOFR_2026-12",
-        "intended_horizon_days": 27,
-        "mae_usd": 0.0,
-        "mechanical_order": false,
-        "mfe_usd": 100.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-29b4571dd270",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The book gains if the December SOFR implied yield rises because the 9 December meeting is marked for a larger step than the path already in the contract.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 100.0,
-        "retained_mfe_fraction": 1.0,
-        "review_move_bp": 5.0,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "instrument_dv01_small_move",
-        "side": "short",
-        "total_pnl_usd": 100.0,
-        "trade_id": "trd-trader-catalyst-junkie-pos-29b4571dd270",
-        "unrealized_pnl_usd": 100.0
-      },
-      "instrument": "SOFR_2026-12",
-      "opened_at": "2026-11-12T04:50:23.662182-05:00",
-      "position_id": "pos-29b4571dd270",
-      "risk_capital_usd": 20000.0,
-      "side": "short",
-      "trade_id": "trd-trader-catalyst-junkie-pos-29b4571dd270"
-    }
-  ],
+  "memory_context_sha256": "a57399ab1675be3302490ea2c58f320e3b311781dd836c8f1f706face372b9d0",
+  "open_positions": [],
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -135,7 +85,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.33
+        "value": 0.3
       },
       "complacency": {
         "band": "calm",
@@ -150,12 +100,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.25
+        "value": 0.23
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.14
+        "value": 0.13
       },
       "revenge_pressure": {
         "band": "calm",
@@ -185,17 +135,12 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261110"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261111"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b3df8eac15cc77c875492240bf2ce46fb59a1599dfbc03096ffa1703565a5e24",
+    "state_sha256": "d653c8718deda5c1a61e1d28afca3954f4973193b38499970e89c435c8117aae",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -203,6 +148,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 349166,
+      "instrument": "SOFR_2026-12",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "realized_pnl_usd": 50.0,
+      "side": "short",
+      "trade_id": "trd-trader-catalyst-junkie-pos-29b4571dd270"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-10-28T05:26:41.395329-04:00",

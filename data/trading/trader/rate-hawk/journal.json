@@ -3174,6 +3174,109 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "U.S. pays stay on. The two-year is 4.86 after a 13 basis point rise, cash SOFR is 3.89, and the SOFR strip is 4.315 in December, 4.615 in March and 4.815 in September. The Canada two-year rose 12 basis points while CORRA March is only slightly through the entry, so that pay stays. The Australian strip is flat to lower, so the June and December pays that have been marked down come off. The September Australia pay, which has been marked up, stays. No new Australia on a U.S. CPI print."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": "Hold 12.5 million September 2027 SOFR. The contract near 4.82 is still a hike above 3.90 cash.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": "Hold 12.5 million March 2027 Canada. The contract near 3.03 is still a hike above cash near 2.30.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2026-12",
+          "notional_usd": null,
+          "position_id": "pos-6c7bcf0fe6af",
+          "rationale": "Hold 10 million December 2026 SOFR. The contract near 4.31 is still a hike above 3.90 cash.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-069ec6c19021",
+          "rationale": "Close the 20 million September 2027 Australia pay. The strip prices a flat front and cuts in the back, not a hiking cycle.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "2753cd3a3e0caa984305fdb8d451d7a03494f107c68ee398a0f586b11a7a3421",
+      "event_id": "jde-23f453c9bd81440f",
+      "funding_view": null,
+      "invalidation": "The US holds fail if December SOFR prices less than one hike above cash and the longer contracts give back the September jump. The Canada hold fails if March falls back toward 2.30 cash. The Australia close would be wrong only if September later repriced as a hike through the March contract.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-069ec6c19021",
+        "pos-2709875e8c9c",
+        "pos-6c7bcf0fe6af",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-069ec6c19021"
+      ],
+      "memory_context_sha256": "3087c32705cdd1a9a3a83f3684667cea1b0723ca81a90dd7e7d30194a5b01d29",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "4ba5bee3b21f3eac7f09ea3817c59c971d9f3f1dcae810071df8547d1b23d104"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the US and Canada pays and close the Australia September pay. September 2027 SOFR near 4.82 and December 2026 near 4.31 are still hikes above 3.90 percent cash, and March 2027 Canada near 3.03 is still a hike above cash near 2.30. The two-year at 4.88 already sits above the front US futures. Australia September near 4.87 is not a hiking cycle against cash near 4.85, with March near 5.00 and the back priced for cuts. A hawkish seat is not a reason to keep the easy side of that strip. Euro September near 3.14 already matches the three-hike story, so no new euro pay is opened.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Hold the US and Canada pays and close the Australia September pay. September 2027 SOFR near 4.82 and December 2026 near 4.31 are still hikes above 3.90 percent cash, and March 2027 Canada near 3.03 is still a hike above cash near 2.30. The two-year at 4.88 already sits above the front US futures. Australia September near 4.87 is not a hiking cycle against cash near 4.85, with March near 5.00 and the back priced for cuts. A hawkish seat is not a reason to keep the easy side of that strip. Euro September near 3.14 already matches the three-hike story, so no new euro pay is opened."
     }
   ],
   "schema_version": 1,

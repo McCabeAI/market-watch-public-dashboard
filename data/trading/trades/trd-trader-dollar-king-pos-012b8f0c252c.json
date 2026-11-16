@@ -4,7 +4,7 @@
   "closed_at": null,
   "closed_run_id": null,
   "conviction": 62,
-  "current_notional_usd": 20000000.0,
+  "current_notional_usd": 8000000.0,
   "entry_lifecycle": {
     "anchored_at": "2026-10-30T06:33:05.373685-04:00",
     "catalyst_by": null,
@@ -34,10 +34,25 @@
       "realized_pnl_increment_usd": 0.0,
       "run_id": "overnight-20261030",
       "source_journal_event_id": "jde-b0ba579849f242b0"
+    },
+    {
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "event_id": "tle-6c96eabcc5d8",
+      "exit_reason_category": null,
+      "kind": "REDUCE",
+      "mark": 160.0,
+      "mark_as_of": "2026-11-13",
+      "mark_source": "market_state.fx.USDJPY.spot",
+      "notional_change_usd": 12000000.0,
+      "rationale": "Cut 12 million of the dollar-yen long, leaving 8 million. The rate gap still supports a smaller long at 160.",
+      "rationale_status": "present",
+      "realized_pnl_increment_usd": 147202.31,
+      "run_id": "overnight-20261116",
+      "source_journal_event_id": "jde-7c1283ca1b2c4ff5"
     }
   ],
-  "evidence_cutoff": "2026-10-30T06:33:05.373685-04:00",
-  "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
+  "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+  "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
   "evidence_packet_id": null,
   "exit_mark": null,
   "exit_mark_as_of": null,
@@ -49,14 +64,14 @@
     "order_policy": "review_only",
     "position_id": "pos-012b8f0c252c",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "residual_notional_usd": 20000000.0,
-    "run_id": "overnight-20261113",
+    "residual_notional_usd": 8000000.0,
+    "run_id": "overnight-20261116",
     "status": "due",
     "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c",
     "triggers": [
       "material_winner"
     ],
-    "updated_at": "2026-11-13T06:22:15.706647-05:00"
+    "updated_at": "2026-11-16T05:49:50.389382-05:00"
   },
   "hedge_of_position_id": null,
   "hedge_trade_id": null,
@@ -64,9 +79,9 @@
   "initial_notional_usd": 20000000.0,
   "instrument": "USDJPY",
   "invalidation": "The long is wrong if a later freeze shows the Bank of Japan hiking and TONA catching the March contract from the Japan side, or if official SOFR converges toward TONA so the overnight gap closes from the United States side. A Ministry of Finance intervention print that reverses the post-hold leftover also kills it. Three-digit oil is not this ticket's invalidation; it is why USDCAD stays flat.",
-  "last_mark": 159.69677826910927,
+  "last_mark": 159.99819037278323,
   "last_mark_as_of": "2026-10-29",
-  "last_unrealized_pnl_usd": 207198.07,
+  "last_unrealized_pnl_usd": 98134.87,
   "lifecycle": {
     "anchored_at": "2026-10-30T06:33:05.373685-04:00",
     "catalyst_by": null,
@@ -88,14 +103,14 @@
   "position_id": "pos-012b8f0c252c",
   "priced_or_disagreed": null,
   "provenance": {
-    "evidence_hash": "490d8d8564d2b7c07b0719c9d79b4471a0d471d6be24eb5eee9d8dfc89abc05d",
-    "overnight_run_id": "overnight-20261030",
+    "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+    "overnight_run_id": "overnight-20261116",
     "review_id": "review-001",
     "review_packet_id": null,
     "review_packet_sha256": null,
     "trader_room_run_id": null
   },
-  "realized_pnl_usd": 0.0,
+  "realized_pnl_usd": 147202.31,
   "schema_version": 1,
   "side": "long",
   "source_decision_id": null,

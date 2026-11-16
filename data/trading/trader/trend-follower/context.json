@@ -151,7 +151,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -18896.35,
     "status": "ok"
   },
   "learning": {
@@ -162,7 +162,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b066e202d0add73f848fc7df559ce0149e75b22072d6127500e4c88452f3c278",
+  "memory_context_sha256": "aac740e514e8475b6889893e6bf53856238a12232764cbcb2151772f86963672",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -179,7 +179,7 @@
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 18928.85,
         "holding_seconds": 349166,
         "horizon_elapsed_fraction": 0.1347,
         "horizon_status": "within",
@@ -187,15 +187,15 @@
         "intended_horizon_days": 30,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 29044.2,
+        "mfe_usd": 47973.05,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-111b627e5627",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The long is paid if USDJPY holds the 20-day upside breakout, with EURUSD and AUDUSD staying heavy and USDCAD staying bid.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 29044.2,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 47973.05,
+        "retained_mfe_fraction": 0.6054,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -231,8 +231,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -246,13 +246,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.12
+        "trend": "up",
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
@@ -278,10 +278,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "blocked_expansion",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261116"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "1a01c8a52044eb99a54140b56752493dfa6b351fd2416c1ffbb3ff9751d72fa8",
+    "state_sha256": "ea216194f6f8296076e88d0b7f978b6b62dc9a57321eece48f07fe3b20a82695",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

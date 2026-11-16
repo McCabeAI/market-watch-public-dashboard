@@ -2350,6 +2350,62 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Hold the CORRA March receive. Cash CORRA is 2.52 and March is 3.025, so the contract still carries a premium over cash even after a 3 basis point mark against the 2.995 entry. The U.S. strip prices a steeper hike path, and Australia's March premium over cash is only about 6 basis points. Monday's Canada CPI can overwhelm the carry, so the receive is kept and not added."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": "Hold the March Canada receive. The premium over cash is intact.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "18752729155d018bbb895fc7ea8a45af9be44e16115dc6ee1923e2ebafc2dc56",
+      "event_id": "jde-e2bcfecae38340e3",
+      "funding_view": null,
+      "invalidation": "Exit if Canada cash rises from about 2.30 toward the March implied rate near 3.03, or if oil-driven inflation makes the Bank deliver the priced hikes.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "78753bd9a6fd7bd7ce266fc3df2a6c7a34e44f8ccadedb8fa0e8c2454b5a53d8",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "39088d0d23739ea504e9f49ddf800401488e6a707f2120cb5aa18950333e8a48"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 25 million March 2027 Canada bill receive. Cash near 2.30 against March near 3.03 is still a large premium over unchanged policy, and softer oil at Brent 95.84 and WTI 88.56 eases the energy threat that would force the Bank to deliver those hikes. The position is short that priced path by design. The path has not become more likely than the carry, and the missing Canada inflation print is not a reason to cut a markable receive.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Hold the 25 million March 2027 Canada bill receive. Cash near 2.30 against March near 3.03 is still a large premium over unchanged policy, and softer oil at Brent 95.84 and WTI 88.56 eases the energy threat that would force the Bank to deliver those hikes. The position is short that priced path by design. The path has not become more likely than the carry, and the missing Canada inflation print is not a reason to cut a markable receive."
     }
   ],
   "schema_version": 1,

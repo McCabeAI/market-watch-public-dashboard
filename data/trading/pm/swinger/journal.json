@@ -2197,6 +2197,62 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "October CPI at 0.4 percent and Brent at 95.82 leave cash SOFR at 3.89 low versus a path that is only 4.615 by March 2027. The two-year at 4.86 and the ten-year at 5.1 show the impulse is already in the cash curve, which is a reason to size the pay so a squeeze does not threaten the book, not a reason to receive in front of oil and the CPI print. Canada and Australia are different paths. Dollar-yen at 159.70 is the wrong dollar expression. The concentrated book is one outright March SOFR pay, plus a flat hold so the book is not only that new risk."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-169e52b857c1",
+          "rationale": "Hold the March 2027 SOFR short. The pay is intact and the book is already at the risk-capital cap.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T09:04:33.619264-05:00",
+      "conviction": null,
+      "decision_fingerprint": "a7f30efddd6fe7897e1fc073418842b5c12acb6ab69ade9d311480079177bec7",
+      "event_id": "jde-4c323877955648cd",
+      "funding_view": null,
+      "invalidation": "The view changes if March 2027 SOFR implied yield falls back toward the 3.90 fixing, or the two-year drops through the March implied level near 4.60, while oil breaks down from these levels and equities stop being firm.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-169e52b857c1"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b0b320a1146ccfa9841e114d740178d29d90cf8d6ad98e069ed2c52333148b04",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6adaa3e4a7c4387d2aa7af9e37c15d281e7213447690640d50b03f0085d5a221"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "1e08d8817473b4e4b04ca0f6268bcc00348ba1cdb7000cc8bbc1e9a428585b43",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261116-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The March 2027 SOFR short stays the hike-path pay. Implied yield near 4.60 is still well above the 3.90 fixing, and the two-year at 4.88 is higher than that future. WTI at 88.56 and Brent at 95.84 are softer than the old triple-digit case, but equities are firm and the VIX is 18.7, so the mix still supports the pay. Risk capital on this short is already at the 10 million limit, so the book holds and does not add.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "The March 2027 SOFR short stays the hike-path pay. Implied yield near 4.60 is still well above the 3.90 fixing, and the two-year at 4.88 is higher than that future. WTI at 88.56 and Brent at 95.84 are softer than the old triple-digit case, but equities are firm and the VIX is 18.7, so the mix still supports the pay. Risk capital on this short is already at the 10 million limit, so the book holds and does not add."
     }
   ],
   "schema_version": 1,

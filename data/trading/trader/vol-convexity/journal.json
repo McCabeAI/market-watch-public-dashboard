@@ -2040,6 +2040,60 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Stay flat. The VIX is 17.49, equities are still high, and the freeze has no listed option premium, strike or implied vol. The rates jump and the euro at a one-year extreme would favor bounded options over spot once a premium can be marked. Until then there is nothing to book. Options become the expression only after a listed mark exists and either the ten-year extends through 5.1 while equities slip, the euro breaks or squeezes off 1.1081, or dollar-yen extends through 159.70."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "FLAT",
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "No listed option can be marked. The book stays flat rather than selling the snapback in spot.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "de67a3c5b86b4f0b87c6088868efdd9b04f02228934519c874577fbc25a88f24",
+      "event_id": "jde-1f5ffa44902e4009",
+      "funding_view": null,
+      "invalidation": "The flat book changes when a listed option is quoted with a premium, a strike, and an implied volatility, or when euro-dollar, the kiwi, and dollar-yen leave these extremes so spot dollar is no longer short that snapback.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "e3046af68dae1a5010f121ac5532988f6c1f864cc776aab520e972a0228b0776",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "43c25dd251b01b80bde280adf2b8ae641af35bd01331f0ceea4011ff7ec738c3"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Spot dollar risk here is short a snapback: euro-dollar at 1.1052 and the kiwi at 0.5532 are multi-year lows still breaking down, and dollar-yen at 160 is a five-year extreme still breaking up, next to a two-year at 4.88 and a ten-year at 5.15. That linear long is the wrong shape. No option premium, strike, or implied volatility is quoted, so the book will not pay for convexity it cannot mark and will not open spot just to have a position.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Stay flat. Spot dollar risk here is short a snapback: euro-dollar at 1.1052 and the kiwi at 0.5532 are multi-year lows still breaking down, and dollar-yen at 160 is a five-year extreme still breaking up, next to a two-year at 4.88 and a ten-year at 5.15. That linear long is the wrong shape. No option premium, strike, or implied volatility is quoted, so the book will not pay for convexity it cannot mark and will not open spot just to have a position."
     }
   ],
   "schema_version": 1,

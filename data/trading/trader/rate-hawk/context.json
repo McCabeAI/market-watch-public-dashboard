@@ -1,17 +1,48 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Keep an Australian bill pay only while that contract is on a hike path above cash. A strip that is flat in front and lower in the back is an exit.",
+      "lesson_id": "les-0164a63a01f5",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-4e5db6894f03"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261116",
+      "status": "active",
+      "text": "An Australian bill pay is not an underpriced hiking cycle once the strip is flat at the front and lower in the back.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-9cbf3f27dfff"
+      ]
+    }
+  ],
   "as_of": "2026-11-16T05:49:50.389382-05:00",
   "calibration": {
-    "average_holding_seconds": 1906295,
-    "average_realized_pnl_usd": -6287.85,
+    "average_holding_seconds": 1444847,
+    "average_realized_pnl_usd": -3779.16,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 2,
-        "total_realized_pnl_usd": -12575.69
+        "count": 3,
+        "total_realized_pnl_usd": -11337.47
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": -12500.0,
@@ -24,15 +55,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": 1238.22,
+        "count": 1,
+        "hit_rate": 1.0
       }
     },
     "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -12575.69,
-    "wins": 0
+    "total_realized_pnl_usd": -11337.47,
+    "wins": 1
   },
   "capital_owner": null,
   "consequence": {
@@ -54,7 +85,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 288455.99,
     "risk_capital_utilization": 0.0288,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -1572.61,
     "status": "ok"
   },
   "learning": {
@@ -64,25 +95,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-4e5db6894f03",
-      "owner_id": "rate-hawk",
-      "owner_type": "trader",
-      "reference": "trd-trader-rate-hawk-pos-9cbf3f27dfff",
-      "source_run_id": "overnight-20261113"
-    },
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-cfd007ec947d",
-      "owner_id": "rate-hawk",
-      "owner_type": "trader",
-      "reference": "trd-trader-rate-hawk-pos-1b79b84070a7",
-      "source_run_id": "overnight-20261113"
-    }
-  ],
-  "memory_context_sha256": "3087c32705cdd1a9a3a83f3684667cea1b0723ca81a90dd7e7d30194a5b01d29",
+  "learning_obligations": [],
+  "memory_context_sha256": "143a46646a5aa215e46aea4a252f7983ada8079d0b979a46ecccca9b4bff6566",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -230,107 +244,11 @@
       "risk_capital_usd": 100000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
-    },
-    {
-      "asset_class": "rates",
-      "conviction": 64,
-      "current_notional_usd": 20000000.0,
-      "entry_mark": 4.71,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": "Later Australian inflation prints and RBA meetings while the inflation impulse stays warm. This is not a bet on this morning's unknown US CPI.",
-        "current_mark": 4.75,
-        "current_notional_usd": 20000000.0,
-        "entry_mark": 4.7075,
-        "expected_mark_direction": "higher",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 3.22,
-        "holding_seconds": 521953,
-        "horizon_elapsed_fraction": 0.0671,
-        "horizon_status": "within",
-        "instrument": "AONIA_2027-09",
-        "intended_horizon_days": 90,
-        "mae_usd": -34.05,
-        "mechanical_order": false,
-        "mfe_usd": 575.1,
-        "move_versus_entry_intent": "with_intent",
-        "order_policy": "review_only",
-        "position_id": "pos-069ec6c19021",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "September AONIA implied rises from 4.71 back through cash at 4.85 as the priced cut is removed.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 575.1,
-        "retained_mfe_fraction": 0.9944,
-        "review_move_bp": 10.0,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "instrument_dv01_small_move",
-        "side": "short",
-        "total_pnl_usd": 571.88,
-        "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021",
-        "unrealized_pnl_usd": 571.88
-      },
-      "instrument": "AONIA_2027-09",
-      "opened_at": "2026-11-10T04:50:36.940059-05:00",
-      "position_id": "pos-069ec6c19021",
-      "risk_capital_usd": 200000.0,
-      "side": "short",
-      "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021"
     }
   ],
   "owner_id": "rate-hawk",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-13T06:22:15.706647-05:00",
-      "created_run_id": "overnight-20261113",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-13T06:22:15.706647-05:00",
-        "conviction": 70,
-        "entry_mark": 4.91,
-        "exit_mark": 4.86,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 3720678,
-        "instrument": "AONIA_2027-06",
-        "invalidation": "The view breaks if the US 10-year reverses away from the 2002 high together with a break in oil while Sep-27 SOFR and Jun-27 AONIA stop repricing higher, or if Jun-27 AONIA trades up through the AU 10-year at 5.245 and the cash-to-contract gap is closed.",
-        "opened_at": "2026-10-01T04:50:57.400664-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -12500.0,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-4e5db6894f03",
-      "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
-    },
-    {
-      "created_at": "2026-11-13T06:22:15.706647-05:00",
-      "created_run_id": "overnight-20261113",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-13T06:22:15.706647-05:00",
-        "conviction": null,
-        "entry_mark": 4.65,
-        "exit_mark": 4.63,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 91912,
-        "instrument": "AONIA_2027-12",
-        "invalidation": "The new pay is wrong if December 2027 AONIA falls further below 4.65 while the front of the Australian strip drops back and the US December step is marked back toward an unchanged path.",
-        "opened_at": "2026-11-12T04:50:23.662182-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -75.69,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-cfd007ec947d",
-      "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -376,7 +294,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.49
+        "value": 0.5
       },
       "thesis_attachment": {
         "band": "calm",
@@ -401,7 +319,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "4ba5bee3b21f3eac7f09ea3817c59c971d9f3f1dcae810071df8547d1b23d104",
+    "state_sha256": "55ca8210a26635d75bbf5d003b86bf3b288cdc62deb773775b739eebd86d4fcb",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -409,6 +327,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": 64,
+      "holding_duration_seconds": 521953,
+      "instrument": "AONIA_2027-09",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "realized_pnl_usd": 1238.22,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-11-13T06:22:15.706647-05:00",

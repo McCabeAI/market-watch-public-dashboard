@@ -32,6 +32,36 @@
         "rank_shock"
       ],
       "what_happened_vs_expected": "The CAD implieds pay was expected to track a still-priced BoC hike path, not a leaderboard crash. At trigger, rank fell 4 to 8 with a drawdown of 15107.64 and net result of -5321.52, but frozen Mar27 CORRA only moved 3.13 to 3.125 while spot CORRA 2.30 versus 3.125 still priced tightening. Rank has since recovered to 4 and the shock was mark-to-market and competition variance around an intact rates thesis, not a broken growth/oil-into-BoC story."
+    },
+    {
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "attribution": [
+        "variance_luck"
+      ],
+      "causal": {
+        "assumptions_right": "The live pays were still the growth expression, and the small tick did not change Friday's higher US yields or the SOFR strip.",
+        "assumptions_wrong_or_underweighted": "The rank gap was treated as information about the economy. It was a competition scoreboard move, and that distinction was underweighted in the moment.",
+        "causal_divergence": "Nothing in the rates path diverged. The only divergence was between a tiny mark and a large rank swing.",
+        "decision_quality_attribution": "variance_luck",
+        "future_implication": "Do not add because a rank recovered, and do not cut because a rank fell, unless the yield path itself has changed.",
+        "observed_reality": "The economic move was only about half a basis point. The scoreboard gap came and went without a change in the hike path or the oil marks.",
+        "original_belief": "A rank drop much larger than the economic tick meant the pro-growth thesis had broken, and a later rank recovery would be permission to add.",
+        "same_information_counterfactual": "With the same half-basis-point tick, the book would still be held at the same size and would not be increased after the rank recovered."
+      },
+      "chase_or_revenge": "no",
+      "no_new_lesson": "The original process remains sound. The rank swing was bounded variance inside the risk budget, and a recovered rank is not permission to add.",
+      "overconfidence_risk": "no",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "pressure_effect": "none",
+      "reflection_due_id": "rfd-bb54f08471a1",
+      "reflection_id": "prf-50db8dbbd3f9",
+      "run_id": "overnight-20261116",
+      "skill_vs_luck": "luck",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "A rank swing that dwarfed a half-basis-point economic tick looked like a thesis break, and the later rank recovery looked like permission to add. The economic move was tiny, so the scoreboard gap was competition variance inside the risk budget."
     }
   ],
   "schema_version": 1,

@@ -2141,6 +2141,79 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "The dollar is the clean expression of the rates bid. The book is already long dollar-yen from 158.06 to 159.70. Euro, sterling, the Australian dollar and the kiwi have all fallen, while dollar-Canada and dollar-Swiss are already near one-year highs. Hold the yen long and sell 10 million euro-dollar as the incremental dollar, rather than adding more yen or chasing the extremes."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 12000000,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": "Cut 12 million of the dollar-yen long, leaving 8 million. The rate gap still supports a smaller long at 160.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pos-d419ff966f72",
+          "rationale": "Hold the 10 million euro-dollar short. The 1.1052 close is still a downside break.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "4c10a135092521ee1a0e0ae824b6dec15603ef0af9f0e012181ed7fed0971f08",
+      "event_id": "jde-7c1283ca1b2c4ff5",
+      "funding_view": null,
+      "invalidation": "The smaller dollar-yen long is wrong if the pair falls back through 158 or Japan closes the policy gap. The euro short is wrong if the ten-year gives back Friday's backup from 5.15 and the other dollar pairs stabilize together.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c",
+        "pos-d419ff966f72"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-012b8f0c252c"
+      ],
+      "memory_context_sha256": "cb24d5bedb38bf107af6ef1545bbeefa24684cae84353ab3ce21fe8cb652c140",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8e10e97e18dd2ca996b08a9ac78db5c98e38c7e2c0a8e7ddaf03e2357429f908"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cut the dollar-yen long from 20 million to 8 million and hold the 10 million euro-dollar short. Friday's two-year at 4.88 and ten-year at 5.15, with SOFR cash at 3.90 against December near 4.31 and March near 4.60, still support the dollar. Euro-dollar at 1.1052 is a fresh downside break. Dollar-yen at 160 is a five-year extreme, so the rate gap justifies a smaller long, not the full 20 million. Dollar-Canada and dollar-Swiss are already one-year extremes and are not new trades.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Cut the dollar-yen long from 20 million to 8 million and hold the 10 million euro-dollar short. Friday's two-year at 4.88 and ten-year at 5.15, with SOFR cash at 3.90 against December near 4.31 and March near 4.60, still support the dollar. Euro-dollar at 1.1052 is a fresh downside break. Dollar-yen at 160 is a five-year extreme, so the rate gap justifies a smaller long, not the full 20 million. Dollar-Canada and dollar-Swiss are already one-year extremes and are not new trades."
     }
   ],
   "schema_version": 1,

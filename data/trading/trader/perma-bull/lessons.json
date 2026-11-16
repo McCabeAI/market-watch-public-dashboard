@@ -19,30 +19,70 @@
       ],
       "reinforcement_count": 1,
       "scope": {
-        "instruments": [],
-        "instrument_family": null,
         "asset_class": null,
+        "catalyst_type": null,
         "countries": [],
         "currencies": [],
-        "setup_type": null,
-        "market_drivers": [],
-        "catalyst_type": null,
+        "decision_dimension": null,
         "failure_mode": null,
-        "decision_dimension": null
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "scope_evidence": {
+        "history_modified": false,
+        "method": "ledger_identity_fields",
+        "retrievals_backfilled": false,
+        "status": "insufficient_evidence",
+        "text_modified": false,
+        "trade_ids": []
       },
       "source_run_id": "overnight-20260929",
       "status": "active",
       "text": "A rank drop that dwarfs a 0.5bp adverse tick in the live implied is competition variance, not a thesis break, and a recovered rank is not permission to add.",
       "trade_ids": [],
-      "updated_at": "2026-09-29T04:44:08.485973-04:00",
-      "scope_evidence": {
-        "method": "ledger_identity_fields",
-        "status": "insufficient_evidence",
-        "trade_ids": [],
-        "retrievals_backfilled": false,
-        "text_modified": false,
-        "history_modified": false
-      }
+      "updated_at": "2026-09-29T04:44:08.485973-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-16T05:49:50.389382-05:00",
+      "future_rule": "Do not reopen or add a Canada pay while Brent is around 96 and WTI around 89. Keep the US SOFR pay that Friday's fixings still support, and do not treat a stronger score as permission to add.",
+      "history": [
+        {
+          "at": "2026-11-16T05:49:50.389382-05:00",
+          "op": "add",
+          "run_id": "overnight-20261116"
+        }
+      ],
+      "lesson_id": "les-d6aec03c0af9",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-74fb15932a2b"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261116",
+      "status": "active",
+      "text": "Do not treat a commodity-central-bank pay as the growth expression once oil has left the scare zone and the hike is already in the US strip.",
+      "trade_ids": [
+        "trd-trader-perma-bull-pos-dd6fdaf39119"
+      ],
+      "updated_at": "2026-11-16T05:49:50.389382-05:00"
     }
   ],
   "schema_version": 1,

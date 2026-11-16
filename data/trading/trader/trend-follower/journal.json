@@ -2150,6 +2150,76 @@
       "run_id": "overnight-20261113",
       "schema_version": 1,
       "thesis": "Hold the dollar-yen long. The pair is 159.70, up 0.78 percent over five days, and the long from 159.23 is with the move. Euro-dollar and Australian dollar are in persistent declines, and the U.S. yield backup agrees with long dollars. Spot is the cleaner continuation because the dollar trend is already there across five-day and one-month closes, while the rates backup is a same-session rise."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-111b627e5627",
+          "rationale": "Hold 10 million dollar-yen. The five-day upside break at 160 is still in force.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": "trend-follower learning_gate: missing_setup_fingerprint",
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 20000000,
+          "position_id": null,
+          "rationale": "Pay 20 million March 2027 SOFR. The hike continuation is the contract still above cash.",
+          "rationale_status": "present",
+          "result": "blocked",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": null,
+      "decision_fingerprint": "21bc595238d9dbfbb776f5d63dc60b3b21541225feacffdc24d4571007476ad2",
+      "event_id": "jde-a4eac955aed846b9",
+      "funding_view": null,
+      "invalidation": "The dollar-yen hold ends if the pair falls back inside the pre-breakout range, or if the two-year falls back below 4.67 and March 2027 SOFR implied falls back below 4.53. The new SOFR pay ends on that same hike failure.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-111b627e5627"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "b066e202d0add73f848fc7df559ce0149e75b22072d6127500e4c88452f3c278",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1a01c8a52044eb99a54140b56752493dfa6b351fd2416c1ffbb3ff9751d72fa8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-16T05:49:50.389382-05:00",
+        "evidence_hash": "8af124b0f184bc29055a333b026df9e3b8ac44576c29e3397b4387fcc06fcc34",
+        "overnight_run_id": "overnight-20261116",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 10 million dollar-yen long and pay March 2027 SOFR. Dollar-yen at 160 is a five-day upside break and the 96th percentile of five years, so the long opened on 12 November is still with the trend. The hike path underneath it is cash SOFR at 3.90 against March 2027 near 4.60, with the two-year at 4.88 and the ten-year at 5.15. WTI at 88.56 and Brent at 95.84 are lower, and yields and the dollar are still higher.",
+      "run_id": "overnight-20261116",
+      "schema_version": 1,
+      "thesis": "Hold the 10 million dollar-yen long and pay March 2027 SOFR. Dollar-yen at 160 is a five-day upside break and the 96th percentile of five years, so the long opened on 12 November is still with the trend. The hike path underneath it is cash SOFR at 3.90 against March 2027 near 4.60, with the two-year at 4.88 and the ten-year at 5.15. WTI at 88.56 and Brent at 95.84 are lower, and yields and the dollar are still higher."
     }
   ],
   "schema_version": 1,
