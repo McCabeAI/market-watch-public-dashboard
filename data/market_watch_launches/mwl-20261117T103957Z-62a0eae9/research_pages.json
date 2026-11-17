@@ -1,0 +1,357 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-17T11:02:54+00:00",
+      "release_sha256": "97d9612d5d5ada620503ae79d25d3ed1ed7422f99da9bec272276193cd086db1",
+      "run_attempt": "1",
+      "run_id": "44066800361",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/44066800361",
+      "site_sha256": "7e52dc3ec3a2101c753ae2df31962191057e839c8d3537f396505e5d89abd028"
+    }
+  ],
+  "launch_id": "mwl-20261117T103957Z-62a0eae9",
+  "launch_terminal": false,
+  "packet_sha256": "aa9f24d3690066e3757186bdcc4a9e140cf1a591a04487ce11735ebe8c4b36e9",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-16T09:09:40.666111-05:00",
+      "as_of": "2026-11-16T05:49:50.389382-05:00",
+      "books_run_id": "overnight-20261116",
+      "overnight_run_id": "overnight-20261116",
+      "packet_sha256": "79415a74cabc537a52dfe553d0aad8ab78b33cd3ee1f16d293ab8abfb0b358c5"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-17T05:39:57.066300-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-17T05:39:57.066300-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "already_accepted": 1,
+          "over_cap": 4,
+          "unattributed": 11
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Iran escalates threats as third U.S. carrier arrives in Middle East, tanker struck in Hormuz",
+          "id": "news:dbd80f052d6bcb1e",
+          "published_at": "2026-11-16T23:51:13-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/17/iran-war-trump-hormuz-oil-.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg_credit",
+          "headline": "Pimco Says AI Bond Spreads May Tighten as Data Center Boom Slows",
+          "id": "news:37edb30ddfa2b138",
+          "published_at": "2026-11-16T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-17/pimco-says-ai-bond-spreads-may-tighten-as-data-center-boom-slows",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields are broadly flat as investors await retail sales data",
+          "id": "news:355ea31527a2690d",
+          "published_at": "2026-11-17T02:23:51-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/17/treasury-yields-bonds-inflation.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Euro Zone to Grow Robustly as It Shrugs Off Inflation, EU Says",
+          "id": "news:3beb88180e63e389",
+          "published_at": "2026-11-16T21:03:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-17/euro-zone-to-grow-robustly-as-it-shrugs-off-inflation-eu-says",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "T. Rowe Sticks to Bearish Treasuries Bet That Fueled Banner 2026",
+          "id": "news:b2c041e8b7ae8fee",
+          "published_at": "2026-11-16T20:22:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-17/t-rowe-sticks-to-bearish-treasuries-bet-that-fueled-banner-2026",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Germany to Propose Markus Brunnermeier as ECB Chief Economist",
+          "id": "news:b54c9c6857eeff79",
+          "published_at": "2026-11-16T20:10:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-17/germany-to-propose-markus-brunnermeier-as-ecb-chief-economist",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Analysis: The Fed's chairman sees an AI revolution coming. Now he has to figure out what it means",
+          "id": "news:06e5749a7282ab8a",
+          "published_at": "2026-11-16T18:42:33-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/16/kevin-warsh-fed-ai-jobs-productivity-interest-rateshtml.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury prices catch a small bid as stock market weakens and Warsh says AI might 'disappoint'",
+          "id": "news:52c4b3c0be717648",
+          "published_at": "2026-11-16T15:03:52-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/16/treasury-yields-bonds-inflation.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-17T05:39:57.066300-05:00",
+      "news_family_digest": "5d164573e8034692c155d55736a2463e8b117359ad5fd91ebb5dd31cab2d91b0",
+      "packet_sha256": "aa9f24d3690066e3757186bdcc4a9e140cf1a591a04487ce11735ebe8c4b36e9",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-17T05:39:57.066300-05:00",
+        "start": "2026-11-16T05:49:50.389382-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/freeze_binding.json",
+        "sha256": "0e2d9675f10cedb634787e68476a2709b413384c605bcadb78d9d59202b6a7d3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/remote_freeze.json",
+        "sha256": "db66eb7fcb472c063bde1b5175f12fc410f5430633a77a235e1970babb0dfb55"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/artifacts/00_authenticate.json",
+        "sha256": "e6ef1ac749e18610e0b12084d35cc8f9e50cb53fadd5c164d3bebf9b6f39c6e9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/artifacts/01_ingest.json",
+        "sha256": "51b44f7af5acd0eee9ed41ef8a45a20ef4286d028ab9165220c84a2ef3966d38"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/artifacts/02_acquire.json",
+        "sha256": "5c2603332acf25732c03007903698e8f6a1364cee2bc1e6cbf403b249c83debe"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/artifacts/03_quality_gate.json",
+        "sha256": "0d90845ddc2b024c3099644314826fbed5ccf5e7e174fd09f03617de4afe11ce"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/artifacts/04_freeze.json",
+        "sha256": "4758055af1c4b9a299d13cd06f2714fe20763b5cad17cd51fe8ba6bc2f15cb60"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/temperature_scores.json",
+        "sha256": "a7f2a62d369ffc9c78c93113b0398a2bc062f4c11753738f02c78d2371d6f695"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/history/au.json",
+        "sha256": "b7c42af5ee39bbc96e76d5db5b48e94548bf761a08191653073d1e59896c2d09"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/history/ca.json",
+        "sha256": "221d03e761595d3e788b3dbff5a574d43ee8456a04ac344fa65e849d15a591eb"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/history/ea.json",
+        "sha256": "819c52e9c14eea3a09f694cac726b1cde44c0f16881b6d2e425ecfab79a21770"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261117T103957Z-62a0eae9/lineage/history/us.json",
+        "sha256": "adb2e5b68331ab23542a97dec520709ceccdd62b2347e7e6971544029a53d5d7"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261117/reviews/review-001/evidence_snapshot.json",
+        "sha256": "99032c9074fb1fb370ba967a9bcc01a5fd9c13bdccf7ede4b5224a1203916056"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "356dc012a63cc2b262d858ece8c2ee05f53d795da7a8db15fc5c3e2e0393778e"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261116/assembled_dataset.json",
+        "sha256": "e062462aa914ac01983914ef886bbb1fdd8b2bd858b29ead4923fe78c3f90305"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "e0b20c1d65ccced4c8b56e18f0c92ed23e7091d626a20209db652b00857d6b20"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "40d03426c53de1c102636d850ac4fae0c9452583002d3634e71ffb1334836bf9"
+      }
+    ],
+    "launch_id": "mwl-20261117T103957Z-62a0eae9",
+    "market_state": {
+      "as_of": "2026-11-17T11:01:44Z",
+      "digest": "55d9576dfe70cda52e1a3231ce8be2c57a371ea0c62368c48591751284df234b",
+      "generated_at": "2026-11-17T11:01:44Z"
+    },
+    "news": {
+      "age_label": "23 h before this freeze",
+      "as_of": "2026-11-16T05:49:50.389382-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261116",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261117",
+    "packet_sha256": "aa9f24d3690066e3757186bdcc4a9e140cf1a591a04487ce11735ebe8c4b36e9",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.retail",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Labor.wages",
+        "EA.Consumer.income",
+        "EA.Activity.business_surveys",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "JP.Consumer.income",
+        "JP.Consumer.retail",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.confidence",
+        "JP.Consumer.spending",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "5a0df52d339a36018a6cc8f53f2528baec4125a2",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 3,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-17T10:39:57Z",
+      "inputs_last_ingested_at": "2026-11-17T10:39:57Z",
+      "score_state_sha256": "a7f2a62d369ffc9c78c93113b0398a2bc062f4c11753738f02c78d2371d6f695"
+    },
+    "session_date": "2026-11-17",
+    "site_sha256": "7e52dc3ec3a2101c753ae2df31962191057e839c8d3537f396505e5d89abd028",
+    "source_commit": "fc8f4b01325ff4163d6d262ddf60a167ce853de4",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261117",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "97d9612d5d5ada620503ae79d25d3ed1ed7422f99da9bec272276193cd086db1",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-17",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
