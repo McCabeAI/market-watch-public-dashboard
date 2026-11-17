@@ -1,9 +1,124 @@
 {
-  "as_of": "2026-11-16T05:49:50.389382-05:00",
-  "central_bank_research": [],
+  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "central_bank_research": [
+    {
+      "headline": "Fed Chairman Kevin Warsh stresses importance of AI to the economy, but says it could disappoint",
+      "published_at": "2026-11-16T12:46:07-05:00",
+      "summary": "Fed Chair Kevin Warsh emphasized AI\u2019s economic importance while warning that its payoff could disappoint."
+    },
+    {
+      "headline": "ECB's Vujcic warns AI and high debt threaten financial stability",
+      "published_at": "2026-11-15T19:30:00-05:00",
+      "summary": "ECB Vice President Boris Vujcic cited AI expansion and elevated public debt as the main threats to financial stability."
+    }
+  ],
   "news": [
     {
-      "headline": "Treasury yields fall as investors await comments from Fed Chairman Warsh",
+      "headline": "Iran escalates threats as third U.S. carrier arrives in Middle East, tanker struck in Hormuz",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "published_at": "2026-11-16T23:51:13-05:00",
+      "source_name": "public wire",
+      "summary": "The headline flags escalating Iran-related threats and a tanker incident in Hormuz as a third U.S. carrier reaches the Middle East.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "USD",
+          "WTI",
+          "CAD",
+          "UST"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot",
+          "geopolitics_haven"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "oil_supply_shock",
+        "score": 15
+      }
+    },
+    {
+      "headline": "U.S. crude oil declines to $85 a barrel on recovering Middle East exports",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-11-16T16:19:02-05:00",
+      "source_name": "public wire",
+      "summary": "U.S. crude fell toward $85 a barrel as Middle East export flows showed signs of recovery.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
+    },
+    {
+      "headline": "Treasury prices catch a small bid as stock market weakens and Warsh says AI might disappoint",
       "market_salience": {
         "components": {
           "asset_named": 3,
@@ -23,9 +138,9 @@
         "distribution": "standard",
         "score": 15
       },
-      "published_at": "2026-11-16T03:17:30-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "published_at": "2026-11-16T15:03:52-05:00",
+      "source_name": "public wire",
+      "summary": "Treasuries firmed slightly as equities weakened and Fed Chair Kevin Warsh cautioned that AI could disappoint.",
       "transmission": {
         "affected_assets": [
           "USD",
@@ -51,6 +166,56 @@
         "disposition": "show",
         "reason_code": "g10_policy_path",
         "score": 15
+      }
+    },
+    {
+      "headline": "Euro Zone to Grow Robustly as It Shrugs Off Inflation, EU Says",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-16T21:03:00-05:00",
+      "source_name": "public wire",
+      "summary": "EU assessments point to robust euro-area growth despite stubborn inflation, including after shocks tied to the Iran war.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
       }
     },
     {
@@ -76,13 +241,12 @@
       },
       "published_at": "2026-11-15T21:51:00-05:00",
       "source_name": "Reuters",
-      "summary": "Nov 16 (Reuters) - German government bond yields rose on Monday after last week's jump triggered by strong US data that stoked inflation concerns and revived bets on three European Central Bank rate ...",
+      "summary": "Reuters reported German yields rising as strong U.S. data revived market bets on three ECB hikes by late 2027.",
       "transmission": {
         "affected_assets": [
           "USD",
           "UST",
-          "EUR",
-          "GBP"
+          "EUR"
         ],
         "channel": "g10_policy",
         "channels": [
@@ -104,154 +268,6 @@
         "disposition": "show",
         "reason_code": "g10_policy_path",
         "score": 15
-      }
-    },
-    {
-      "headline": "\u2018Standing on one leg\u2019: IMF chief warns about global economy as AI circular financing hits $1 trillion",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-11-16T03:14:46-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Fed\u2019s Barr Says AI Agents Could Fuel Future Bank Runs",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-15T21:00:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Federal Reserve Governor Michael Barr warned that autonomous artificial intelligence agents could speed destabilizing stampedes out of banks by automatically shifting customer deposits in response to ...",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "ECB\u2019s Vujcic Warns AI and High Debt Threaten Financial Stability",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-15T19:30:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Rapid expansion of artificial intelligence and elevated public debt pose the biggest risks to financial stability in the euro zone at present, according to European Central Bank Vice President Boris ...",
-      "transmission": {
-        "affected_assets": [
-          "EUR"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
       }
     },
     {
@@ -272,62 +288,12 @@
           "shock": 2,
           "subject_penalty": 0
         },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-15T14:27:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Investors both at home and abroad are adding to positions in Japanese government debt as the surge in bond yields shows signs of peaking and concerns over artificial intelligence grow, according to ...",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
-      "headline": "Nvidia\u2019s CEO Search Draws Fire With Bessent\u2019s \u2018Shakeup\u2019 Call",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
+        "distribution": "standard",
         "score": 9
       },
       "published_at": "2026-11-15T11:00:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Pressure is mounting on Nvidia Corp. days after it ousted Jensen Huang as chief executive officer, with Treasury Secretary Scott Bessent urging the company to make a \u201cdramatic\u201d leadership shakeup and ...",
+      "source_name": "SMBC Nikko via public wire",
+      "summary": "SMBC Nikko said domestic and foreign buyers were adding JGBs as the yield surge showed signs of peaking and AI worries grew.",
       "transmission": {
         "affected_assets": [
           "USD",
@@ -355,7 +321,7 @@
       }
     },
     {
-      "headline": "Social Security and the blue wave: What could happen to payroll taxes and senior tax breaks",
+      "headline": "Treasury yields are broadly flat as investors await retail sales data",
       "market_salience": {
         "components": {
           "asset_named": 2,
@@ -375,461 +341,9 @@
         "distribution": "standard",
         "score": 9
       },
-      "published_at": "2026-11-15T08:30:01-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
-      "headline": "From AI to oil, here are Goldman and Morgan Stanley\u2019s outlooks for 2027",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 7
-      },
-      "published_at": "2026-11-16T04:39:38-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "European Stocks Fluctuate as AI Concerns Keep Investors on Edge",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 7
-      },
-      "published_at": "2026-11-15T19:08:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "European stocks steadied as investors weighed lingering concerns over artificial intelligence and stubbornly high oil prices.",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "Falling US Bond Futures Offer No Relief as Fed Hike Bets Grow",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 15
-      },
-      "published_at": "2026-11-10T20:52:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Derivatives trading suggests a retreat in US Treasuries is set to continue as faster-than-expected inflation data cemented the prospects for more aggressive interest-rate hikes from the Federal ...",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
-      }
-    },
-    {
-      "headline": "AI \u2018Supply Shock\u2019 Pushes Bond Market to Limit, Wells Fargo Says",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 11
-      },
-      "published_at": "2026-11-12T06:45:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Technology giants racing to build artificial intelligence infrastructure are hitting the limit of how much they can raise in global bond markets, according to Wells Fargo & Co.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Ukraine Hits Crimean Bridge in Record Drone Strike on Russia",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 7
-      },
-      "published_at": "2026-11-15T11:00:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Ukraine attacked Russia with a massive drone barrage, hitting the Crimean Bridge and likely an oil refinery, in the wake of US-brokered peace talks that ended without a breakthrough.",
-      "transmission": {
-        "affected_assets": [
-          "Brent",
-          "WTI"
-        ],
-        "channel": "oil_energy_tot",
-        "channels": [
-          "oil_energy_tot"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 5,
-          "channel_usd_rates": 0,
-          "shock": 0,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "oil_supply_shock",
-        "score": 7
-      }
-    },
-    {
-      "headline": "Bonds reel as hot inflation fuels jumbo Fed hike fears",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 15
-      },
-      "published_at": "2026-11-10T13:05:00-05:00",
-      "source_name": "Reuters",
-      "summary": "Global bonds tumbled and the dollar stayed firm after a hot US inflation print and hawkish central bank rhetoric raised the risk of an outsized \u200bhalf-point rate hike from the Federal Reserve next ...",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy",
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
-      }
-    },
-    {
-      "headline": "Forget Nvidia. Anthropic Is the AI Trade\u2019s Litmus Test",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 11
-      },
-      "published_at": "2026-11-11T20:30:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "For an industry that needs to spend at least $30 billion just to build a data center that handles one gigawatt of computing power, access to financing is key.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Alphabet Kicks Off Asia Bond Sale as AI Firms Face Scrutiny",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 11
-      },
-      "published_at": "2026-11-11T11:00:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Alphabet Inc. began marketing its inaugural Hong Kong and Singapore dollar bond sale, testing investor interest at a time of increasing volatility for companies focused on artificial intelligence.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Top Pension Fund to Buy More India State Bonds on High Yields",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-12T14:38:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "India\u2019s largest pension fund plans to step up purchases of state debt, expecting their yield premium over the federal government bonds will widen further.",
+      "published_at": "2026-11-17T02:23:51-05:00",
+      "source_name": "public wire",
+      "summary": "Treasury yields were broadly unchanged as markets awaited U.S. retail sales.",
       "transmission": {
         "affected_assets": [
           "USD",
@@ -857,9 +371,9 @@
       }
     }
   ],
-  "overnight_run_id": "overnight-20261116",
+  "overnight_run_id": "overnight-20261117",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "The dollar is firm and stretched, core yields are high, and equities are still holding up while oil sits well below the triple-digit levels in older books. On the latest fixings WTI is 88.56 and Brent is 95.84, gold is 3886, and the S&P is 7562 with the VIX at 18.7. Euro-dollar at 1.1052 and the kiwi at 0.5532 are at multi-year lows, and dollar-yen is at 160. The US two-year is 4.88 and the ten-year is 5.15. Official SOFR is 3.90, while futures price a higher path, near 4.31 by December and about 4.60 by March 2027. Monday commentary talks about softer Treasuries ahead of Chair Warsh, but the last verified yield fixing is still Friday's backup. Ukraine's strike on the Crimean Bridge keeps a geopolitical bid in the energy story without lifting Brent back to those older levels. Canada inflation arrives after this cutoff, then Australian wages and euro-area prices midweek, with the Fed, the Bank of Canada, and the Reserve Bank of New Zealand on 9 December.",
+  "summary": "Overnight markets stayed defensive: the S&P 500 closed at 7416.59, gold held near 3853, and Treasuries found a modest bid while short-end yields remain elevated after a multi-day backup of roughly 26\u201332 basis points. WTI settled at 85.72 and Brent at 92.44, in line with crude slipping toward $85 as Middle East exports recover even as Hormuz tensions intensified with a tanker strike and a third U.S. carrier in the region. The dollar firmed against G10; USD/JPY sat at 159.60 near a five-year extreme and USDCAD pressed a five-year high. Euro-area resilience and firm U.S. activity keep ECB hike pricing in focus, while Chair Warsh\u2019s warnings on AI disappointment added to risk sentiment. Watch Australia wages and labour force, euro-area HICP, Japan CPI, Canada retail trade, U.S. retail sales already in the tape, later PCE, income and GDP, plus Bank of Canada, RBNZ, and the FOMC.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }
