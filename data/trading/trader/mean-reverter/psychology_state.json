@@ -6,73 +6,73 @@
       "baseline": 0.1,
       "delta_last_cycle": -0.0001,
       "half_life_cycles": 4.0,
-      "value": 0.1004
+      "value": 0.1003
     },
     "complacency": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0022,
+      "delta_last_cycle": -0.0019,
       "half_life_cycles": 5.0,
-      "value": 0.1145
+      "value": 0.1126
     },
     "defensiveness": {
       "band": "calm",
       "baseline": 0.2,
       "delta_last_cycle": 0.0002,
       "half_life_cycles": 6.0,
-      "value": 0.1986
+      "value": 0.1988
     },
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0005,
+      "delta_last_cycle": -0.0004,
       "half_life_cycles": 6.0,
-      "value": 0.104
+      "value": 0.1036
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0004,
+      "delta_last_cycle": 0.0003,
       "half_life_cycles": 3.0,
-      "value": 0.0987
+      "value": 0.099
     },
     "revenge_pressure": {
       "band": "calm",
       "baseline": 0.05,
-      "delta_last_cycle": 0.0002,
+      "delta_last_cycle": 0.0001,
       "half_life_cycles": 2.0,
-      "value": 0.0496
+      "value": 0.0497
     },
     "self_trust": {
       "band": "steady",
       "baseline": 0.5,
-      "delta_last_cycle": -0.0007,
+      "delta_last_cycle": -0.0006,
       "half_life_cycles": 12.0,
-      "value": 0.5112
+      "value": 0.5106
     },
     "thesis_attachment": {
       "band": "calm",
       "baseline": 0.25,
       "delta_last_cycle": 0.0001,
       "half_life_cycles": 8.0,
-      "value": 0.2485
+      "value": 0.2486
     }
   },
-  "cycle_count": 33,
+  "cycle_count": 34,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 37,
+  "last_event_seq": 38,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261116",
+  "last_run_id": "overnight-20261117",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 33,
+    "self_report_clean_cycles": 34,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,9 +81,9 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "45ca3920ecc42470446748838a5cfe3e1cc4e555570ad3f8213861f81fd43320",
+  "state_sha256": "c4d627251f380cf29df1b8b5afc9013a4c347b615b53b9413bb3c4a637522883",
   "streaks": {
-    "flat_cycles": 2,
+    "flat_cycles": 0,
     "session_loss": 0,
     "session_win": 1,
     "trade_loss": 0,
@@ -95,7 +95,8 @@
   },
   "trailing_open_risk_capital_usd": [
     50000.0,
-    50000.0
+    50000.0,
+    100000.0
   ],
   "type": "TRADER_PSYCHOLOGY_STATE"
 }

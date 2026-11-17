@@ -2094,6 +2094,60 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Stay flat. Spot dollar risk here is short a snapback: euro-dollar at 1.1052 and the kiwi at 0.5532 are multi-year lows still breaking down, and dollar-yen at 160 is a five-year extreme still breaking up, next to a two-year at 4.88 and a ten-year at 5.15. That linear long is the wrong shape. No option premium, strike, or implied volatility is quoted, so the book will not pay for convexity it cannot mark and will not open spot just to have a position."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "3ceaf0dcea41ed50541109fa38e09392e061b18a94a86d63f18d1f64108b8752",
+      "event_id": "jde-74aaf1df4fec4cd7",
+      "funding_view": null,
+      "invalidation": "The flat stance ends if a listed premium and strike are quoted and that premium is cheap relative to the two-way Hormuz headlines and the backup already in the 10-year at 5.12.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "81bcf0332d23418213e0d3d7384959646d7693371d9617c20c929be46c3d7a6f",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "2d5fabcf64888e0bdd40c1a0fa2f36ad84a74b1ec9a98e8afda7562b3ff6b9ad"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold flat, with no option structure and no size. Euro at 1.1014 has broken the 20-day low, dollar-yen at 159.60 has failed a 20-day upside break, the US 10-year is 5.12 after a 26 basis point backup, and Brent at 92.44 sits between Hormuz headlines and a same-day export-recovery note. That mix is two-way event risk, so the right instrument is a bounded option, and no listed premium, strike, or implied volatility is quoted to price one.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Hold flat, with no option structure and no size. Euro at 1.1014 has broken the 20-day low, dollar-yen at 159.60 has failed a 20-day upside break, the US 10-year is 5.12 after a 26 basis point backup, and Brent at 92.44 sits between Hormuz headlines and a same-day export-recovery note. That mix is two-way event risk, so the right instrument is a bounded option, and no listed premium, strike, or implied volatility is quoted to price one."
     }
   ],
   "schema_version": 1,

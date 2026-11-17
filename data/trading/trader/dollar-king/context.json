@@ -141,7 +141,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 180000.0,
     "risk_capital_utilization": 0.018,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -13961.39,
     "status": "ok"
   },
   "learning": {
@@ -152,12 +152,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "a75737ae15013b1f1d19c1b2995f6a7fc4bd7cf787d80af7bf7de50014be8db0",
+  "memory_context_sha256": "856d466301217c0dec4a1490852dda1bd01b9254557342648715d709a274fadd",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 62,
-      "current_notional_usd": 8000000.0,
+      "current_notional_usd": 4000000.0,
       "entry_mark": 158.06,
       "harvest": {
         "asset_class": "spot_fx",
@@ -177,13 +177,13 @@
         "intended_horizon_days": 45,
         "mae_usd": -102370.52,
         "mechanical_order": false,
-        "mfe_usd": 245337.18,
+        "mfe_usd": 284248.59,
         "move_versus_entry_intent": "with_intent",
         "order_policy": "review_only",
         "pending_review": {
           "mechanical_order": false,
           "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-          "residual_notional_usd": 8000000.0,
+          "residual_notional_usd": 4000000.0,
           "status": "due",
           "triggers": [
             "material_winner"
@@ -192,7 +192,7 @@
         "position_id": "pos-012b8f0c252c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Dollar-yen grinds higher as the 271 basis-point SOFR-TONA cash gap and the March 2027 4.39 versus 1.67 path gap keep paying after a hold, not as a one-day devaluation spike.",
-        "realized_pnl_usd": 147202.31,
+        "realized_pnl_usd": 186113.72,
         "recorded_mfe_usd": 207198.07,
         "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
@@ -203,7 +203,7 @@
         ],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 245337.18,
+        "total_pnl_usd": 284248.59,
         "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c",
         "unrealized_pnl_usd": 98134.87
       },
@@ -229,7 +229,7 @@
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
+        "giveback_usd": 34292.94,
         "holding_seconds": 343061,
         "horizon_elapsed_fraction": 0.7941,
         "horizon_status": "within",
@@ -237,15 +237,15 @@
         "intended_horizon_days": 5,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 26170.92,
+        "mfe_usd": 60463.86,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-d419ff966f72",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "Euro-dollar at 1.1081 is already in a five-day decline, and the short pays if that dollar bid extends through the producer-price reaction.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 26170.92,
-        "retained_mfe_fraction": 1.0,
+        "recorded_mfe_usd": 60463.86,
+        "retained_mfe_fraction": 0.4328,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -262,6 +262,55 @@
       "risk_capital_usd": 100000.0,
       "side": "short",
       "trade_id": "trd-trader-dollar-king-pos-d419ff966f72"
+    },
+    {
+      "asset_class": "spot_fx",
+      "conviction": null,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 0.84,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The franc reclaims the safe-haven bid if Hormuz escalation reverses the 20-day upside break.",
+        "current_mark": 0.8392954421645179,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 0.84,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "USDCHF",
+        "intended_horizon_days": 20,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-e7cd1ee0a3d9",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "USDCHF extends the intact 20-day upside break while the US path stays priced above the 3.90 SOFR fixing.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-dollar-king-pos-e7cd1ee0a3d9",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "USDCHF",
+      "opened_at": "2026-11-17T05:39:57.066300-05:00",
+      "position_id": "pos-e7cd1ee0a3d9",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
     }
   ],
   "owner_id": "dollar-king",
@@ -286,12 +335,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "complacency": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.17
+        "trend": "down",
+        "value": 0.16
       },
       "defensiveness": {
         "band": "calm",
@@ -301,12 +350,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.22
+        "value": 0.21
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -335,11 +384,6 @@
     "recent_events": [
       {
         "kind": "session_gain",
-        "magnitude": 0.26745562,
-        "run_id": "overnight-20261112"
-      },
-      {
-        "kind": "session_gain",
         "magnitude": 0.11699724,
         "run_id": "overnight-20261113"
       },
@@ -351,7 +395,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "3a2574516b90ce1b36686044a41617d73e8d0cc033857ded1a07bdb36e1d1d80",
+    "state_sha256": "95504a44c5ddab35a39e1dac6ded45e5781fe8dee98abbff36b9b822354c6f65",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

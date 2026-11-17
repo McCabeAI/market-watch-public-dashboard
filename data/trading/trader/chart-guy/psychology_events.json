@@ -181,6 +181,61 @@
       "run_id": "overnight-20261116",
       "seq": 8,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          100000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "event_id": "pse-000009",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "chart-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261117",
+      "seq": 9,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0091,
+        "defensiveness": -0.0008,
+        "frustration": -0.0011,
+        "revenge_pressure": -0.0005,
+        "self_trust": 0.0061,
+        "thesis_attachment": -0.001
+      },
+      "event_id": "pse-000010",
+      "kind": "trade_win_close",
+      "magnitude": 0.20310956,
+      "mismatch": false,
+      "owner_id": "chart-guy",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261117",
+      "scale": 1.0,
+      "seq": 10,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "EURUSD",
+        "notional_usd": 10000000.0,
+        "realized_pnl_usd": 101554.78,
+        "side": "short",
+        "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb"
+      }
     }
   ],
   "owner_id": "chart-guy",

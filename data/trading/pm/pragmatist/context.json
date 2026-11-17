@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "as_of": "2026-11-17T11:34:02.828015-05:00",
   "calibration": {
     "average_holding_seconds": 1251640,
     "average_realized_pnl_usd": 236774.97,
@@ -88,8 +88,8 @@
     "stress_regime": "unknown"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 426403.41,
-    "best_trader_outearn_streak": null,
+    "best_trader_net_pnl_usd": 440364.8,
+    "best_trader_outearn_streak": 0,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -97,7 +97,7 @@
     "competition_rank": 3,
     "competitive_rank": 3,
     "drawdown_usd": 208000.85,
-    "gap_to_best_trader_usd": 905236.32,
+    "gap_to_best_trader_usd": 891274.93,
     "high_water_nav_usd": 1001539640.58,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1331639.73,
@@ -118,7 +118,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e8ae3b62347a0f3c332b5ab58096a64703aa591a1707d1345098877cc0049001",
+  "memory_context_sha256": "d19e0b795fc366e21970834587178d634dd18e83e18bc3153c1b8ccb79f0f965",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -136,7 +136,7 @@
         "framing": null,
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": 195000.0,
-        "holding_seconds": 5035632,
+        "holding_seconds": 5056878,
         "horizon_elapsed_fraction": null,
         "horizon_status": "unspecified",
         "instrument": "CORRA_2027-03",
@@ -187,7 +187,7 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.19
       },
       "complacency": {
@@ -203,12 +203,12 @@
       "external_pressure": {
         "band": "elevated",
         "trend": "up",
-        "value": 0.36
+        "value": 0.37
       },
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -238,22 +238,22 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261112"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261113"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261116"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261117"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d4fc03c674d705effa787de40b9ce9cc400a3d64b6c9693e093045456727990b",
+    "state_sha256": "e647aec630b6da19f21e6ba43541e8da1bf1d22b8a83e7ffd892e30a022d4a23",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

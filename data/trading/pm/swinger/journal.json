@@ -2253,6 +2253,62 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "The March 2027 SOFR short stays the hike-path pay. Implied yield near 4.60 is still well above the 3.90 fixing, and the two-year at 4.88 is higher than that future. WTI at 88.56 and Brent at 95.84 are softer than the old triple-digit case, but equities are firm and the VIX is 18.7, so the mix still supports the pay. Risk capital on this short is already at the 10 million limit, so the book holds and does not add."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-169e52b857c1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-17T11:34:01.862385-05:00",
+      "conviction": 72,
+      "decision_fingerprint": "42884aeb78f9f1b0ed123af41855f8e50928b5448d94e32d6351c3edd6126bf9",
+      "event_id": "jde-a47687537fb24e70",
+      "funding_view": null,
+      "invalidation": "The pay fails if March 2027 SOFR settles materially back toward cash at 3.90, or if Brent trades sharply lower while the two-year yield falls back through the backup.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-169e52b857c1"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "bd3d3372d668e2c4e2f97ffa11f40ed124a4627868a42133e6cfd656129fa8a3",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "00b0a90d19f2605d233fa30f2f8fc19b27602cca73d5ee6c80c542470b105729"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "5716486c22a9a11e1af84ba3c6a919eb85dabd28e4db957fd663c10d8695ba90",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261117-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "March 2027 SOFR at 4.58 still prices a large step up from 3.90 effective funding, and the strip keeps rising through September 2027. Firm oil and a two-year yield at 4.83, above the futures implied rate, support staying paid. The fresh settlement is only a few basis points through the 4.615 entry, which is not a reason to cut or to add a second clip. The book stays concentrated in that one pay.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "March 2027 SOFR at 4.58 still prices a large step up from 3.90 effective funding, and the strip keeps rising through September 2027. Firm oil and a two-year yield at 4.83, above the futures implied rate, support staying paid. The fresh settlement is only a few basis points through the 4.615 entry, which is not a reason to cut or to add a second clip. The book stays concentrated in that one pay."
     }
   ],
   "schema_version": 1,

@@ -2174,6 +2174,62 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Hold the 2027 Canada strip receive. Cash near 2.30 and March near 3.03 still leave a hike premium, and WTI at 88.56 with Brent at 95.84 weakens the energy pass-through case that put it there. The US front end has not eased: SOFR cash is 3.90, December is about 4.31, and the two-year is 4.88, with no labor or disinflation fact that would open a new US receive. Equities are firm and the VIX is 18.7, so this is not a growth break and the line is not increased. Canada inflation is after this cutoff."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "dfe7093ba68afc0792f4747c00c92e3cbf8d1f166f2d7d5f5520584417741128",
+      "event_id": "jde-2b46005bd8824006",
+      "funding_view": null,
+      "invalidation": "The receive is invalidated if the Bank of Canada delivers or signals the priced 2027 mid-3s path, or if inflation cools no further while jobs stop contracting.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "8ba1343b07527bea962bda4aae6a3670ae0deef7c03c0b7575294c2ecb60596e",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "df8273da7419a95f4d143d1032aa9f02dfecc87fc1007d2294a04f83816b7d8d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 42.5 million CORRA 2027 March-to-December receive, marked at 3.2425 against the 3.4 entry. The strip still rises from 2.73 in December 2026 to 3.235 by September 2027 while unemployment is 6.7, so the remaining hike premium can reprice lower. The US gap from 3.90 cash to March 2027 SOFR at 4.58 is not a receive, and a Canada two-year at 3.37 that is higher on the week keeps size at the booked 42.5 million.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Hold the 42.5 million CORRA 2027 March-to-December receive, marked at 3.2425 against the 3.4 entry. The strip still rises from 2.73 in December 2026 to 3.235 by September 2027 while unemployment is 6.7, so the remaining hike premium can reprice lower. The US gap from 3.90 cash to March 2027 SOFR at 4.58 is not a receive, and a Canada two-year at 3.37 that is higher on the week keeps size at the booked 42.5 million."
     }
   ],
   "schema_version": 1,

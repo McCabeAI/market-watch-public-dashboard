@@ -1,5 +1,36 @@
 {
-  "active_lessons": [],
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not pay a dated SOFR meeting contract unless that contract, rather than the two-year, is where the step is missing. If the meeting contract has not traveled off its invalidation and the two-year already holds the hike, close it and do not reopen it on the same catalyst.",
+      "lesson_id": "les-a77ffade1906",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-520d1ac4373f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261117",
+      "status": "active",
+      "text": "A front SOFR pay is the wrong expression when the two-year already holds the hike and the meeting contract is sitting on its invalidation.",
+      "trade_ids": [
+        "trd-trader-catalyst-junkie-pos-29b4571dd270"
+      ]
+    }
+  ],
   "as_of": "2026-11-17T05:39:57.066300-05:00",
   "calibration": {
     "average_holding_seconds": 437558,
@@ -64,45 +95,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-520d1ac4373f",
-      "owner_id": "catalyst-junkie",
-      "owner_type": "trader",
-      "reference": "trd-trader-catalyst-junkie-pos-29b4571dd270",
-      "source_run_id": "overnight-20261116"
-    }
-  ],
-  "memory_context_sha256": "74722b3df2c0aade04b46d2310d44d562c96c5321d8f8b6354182c8f4bdf2c28",
+  "learning_obligations": [],
+  "memory_context_sha256": "4839137463f789a558782b8bfe58ef4cd7f353c6f7243e818b5ea7f6e32cff2a",
   "open_positions": [],
   "owner_id": "catalyst-junkie",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-16T05:49:50.389382-05:00",
-      "created_run_id": "overnight-20261116",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-16T05:49:50.389382-05:00",
-        "conviction": null,
-        "entry_mark": 4.29,
-        "exit_mark": 4.3,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 349166,
-        "instrument": "SOFR_2026-12",
-        "invalidation": "The pay is wrong if the 13 November producer-price release does not extend the October consumer-price rise, or if December SOFR fails to hold 4.295.",
-        "opened_at": "2026-11-12T04:50:23.662182-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 50.0,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-520d1ac4373f",
-      "trade_id": "trd-trader-catalyst-junkie-pos-29b4571dd270"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -118,7 +116,7 @@
       "chase_pressure": {
         "band": "elevated",
         "trend": "down",
-        "value": 0.3
+        "value": 0.27
       },
       "complacency": {
         "band": "calm",
@@ -133,12 +131,12 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.23
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -173,9 +171,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d653c8718deda5c1a61e1d28afca3954f4973193b38499970e89c435c8117aae",
+    "state_sha256": "6e4527905e54e57a91c76dcee7c2e9713266d169bf1240910e02b0652e208d20",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 0
     }

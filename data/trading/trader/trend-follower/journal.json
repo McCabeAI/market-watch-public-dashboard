@@ -2220,6 +2220,76 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Hold the 10 million dollar-yen long and pay March 2027 SOFR. Dollar-yen at 160 is a five-day upside break and the 96th percentile of five years, so the long opened on 12 November is still with the trend. The hike path underneath it is cash SOFR at 3.90 against March 2027 near 4.60, with the two-year at 4.88 and the ten-year at 5.15. WTI at 88.56 and Brent at 95.84 are lower, and yields and the dollar are still higher."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-111b627e5627",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": "trend-follower learning_gate: missing_setup_fingerprint",
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_2Y",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "blocked",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "c88b29253c57922b77e247e94197286b3439f8c0827cab683cc6441029e7fb61",
+      "event_id": "jde-c7b163c42a384ff2",
+      "funding_view": null,
+      "invalidation": "The two-year short is done if the five-day yield backup is fully retraced or the hike path falls back toward SOFR cash at 3.90. The yen long is done if spot trades back through the 159.23 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-111b627e5627"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fc1148c60d38efff3bf4b45f022bb3ec305b6bd1c101c2fd32f530fa00678626",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ea216194f6f8296076e88d0b7f978b6b62dc9a57321eece48f07fe3b20a82695"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 10 million USDJPY long and open a 15 million short in the US two-year. Dollar strength and the yield backup are still the trends in force: the two-year is 4.83 and the ten-year is 5.12 after a 26 to 32 basis point rise in five days, and the growth currencies are breaking down. The yen long stays a ride because spot at 159.60 is above the 159.23 entry. The failed 20-day upside break blocks an add and is not a trend reversal.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Hold the 10 million USDJPY long and open a 15 million short in the US two-year. Dollar strength and the yield backup are still the trends in force: the two-year is 4.83 and the ten-year is 5.12 after a 26 to 32 basis point rise in five days, and the growth currencies are breaking down. The yen long stays a ride because spot at 159.60 is above the 159.23 entry. The failed 20-day upside break blocks an add and is not a trend reversal."
     }
   ],
   "schema_version": 1,

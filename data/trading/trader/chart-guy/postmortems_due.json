@@ -1,5 +1,32 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-17T05:39:57.066300-05:00",
+      "created_run_id": "overnight-20261117",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-17T05:39:57.066300-05:00",
+        "conviction": null,
+        "entry_mark": 1.11,
+        "exit_mark": 1.1,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 434973,
+        "instrument": "EURUSD",
+        "invalidation": "A daily close in EURUSD above the 20-day average at 1.1195.",
+        "opened_at": "2026-11-12T04:50:23.662182-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 101554.78,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-c2dfe356ba3e",
+      "status": "due",
+      "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

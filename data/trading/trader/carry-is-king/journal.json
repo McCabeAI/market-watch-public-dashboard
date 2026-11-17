@@ -2406,6 +2406,78 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Hold the 25 million March 2027 Canada bill receive. Cash near 2.30 against March near 3.03 is still a large premium over unchanged policy, and softer oil at Brent 95.84 and WTI 88.56 eases the energy threat that would force the Bank to deliver those hikes. The position is short that priced path by design. The path has not become more likely than the carry, and the missing Canada inflation print is not a reason to cut a markable receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-23b8d2f30846",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates_rv",
+          "blocked_reason": "carry-is-king learning_gate: missing_setup_fingerprint",
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_2Y_vs_CA_2Y",
+          "notional_usd": 20000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "blocked",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "94b807ca32d26d7b0e2f71087ed0684d4b0fd20cca9a3470fb14da321fde9809",
+      "event_id": "jde-f3bfd6216c6f41a1",
+      "funding_view": null,
+      "invalidation": "Exit the US-versus-Canada two-year receive if the US two-year yield falls into the Canada two-year yield, or if CORRA March 2027 reprices up through SOFR March 2027 and the policy gap disappears.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-23b8d2f30846"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-23b8d2f30846"
+      ],
+      "memory_context_sha256": "0c742c538f1065f953008c59e35a0cbbc15c77e27cb020532d4fbe7bff299f91",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d0a51c6f6a010307b346804b6621f93f22afe7469f536de12a20757a9f636a30"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the 25 million long CORRA March 2027 and open 20 million receiving the US two-year against paying the Canada two-year. Live CORRA March 2027 at 2.955 is through the 2.995 entry, so the receive is ahead, but it still sits far under SOFR March 2027 at 4.58 while the Canada strip keeps rising. The replacement is the 146 basis point gap between the US two-year at 4.83 and the Canada two-year at 3.37. Dollar-yen carries a larger yield gap but spot is already elevated at 159.60.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Close the 25 million long CORRA March 2027 and open 20 million receiving the US two-year against paying the Canada two-year. Live CORRA March 2027 at 2.955 is through the 2.995 entry, so the receive is ahead, but it still sits far under SOFR March 2027 at 4.58 while the Canada strip keeps rising. The replacement is the 146 basis point gap between the US two-year at 4.83 and the Canada two-year at 3.37. Dollar-yen carries a larger yield gap but spot is already elevated at 159.60."
     }
   ],
   "schema_version": 1,

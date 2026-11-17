@@ -50,9 +50,9 @@
   "initial_notional_usd": 4000000000.0,
   "instrument": "SOFR_2027-03",
   "invalidation": "Close the pay if March 2027 SOFR trades at or below 4.40, which would unwind the inflation impulse. Do not add a euro short or a yen short to soften it.",
-  "last_mark": 4.6,
+  "last_mark": 4.58,
   "last_mark_as_of": "2026-11-12",
-  "last_unrealized_pnl_usd": -150000.0,
+  "last_unrealized_pnl_usd": -350000.0,
   "lifecycle": {
     "anchored_at": "2026-11-13T07:15:27.559705-05:00",
     "catalyst_by": null,
@@ -63,7 +63,7 @@
     "source": "entry"
   },
   "locked_expression_family": "sofr",
-  "mae_usd": -150000.0,
+  "mae_usd": -350000.0,
   "mfe_usd": 0.0,
   "opened_at": "2026-11-13T07:15:27.559705-05:00",
   "opened_run_id": "overnight-20261113",

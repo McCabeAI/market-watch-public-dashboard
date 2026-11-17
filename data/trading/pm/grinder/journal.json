@@ -2226,6 +2226,62 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Stay flat. Official SOFR at 3.90 percent is the zero-alpha place for an empty book. March 2027 SOFR already prices about 4.60 and December about 4.31, so paying a hike the futures already contain does not clear a high hurdle. Euro-dollar at 1.1052 is an extended trend, not a fresh edge over funding. The Canada bill premium is real, and Canada inflation is after this cutoff, so it is not a reason to deploy today."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-17T11:34:02.280127-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "dab3a0e2443fbfac237437cc812ca9353e4886a7aa55f3b87be61e38efeec1f4",
+      "event_id": "jde-963c70ba9f4d4c50",
+      "funding_view": null,
+      "invalidation": "Reopen only a small ticket if AUDUSD reclaims the broken 20-day range and holds, if USDJPY rejects 160 on a shock large enough to outweigh negative carry, or if SOFR March 2027 moves far enough from 4.58 that expected mark P&L exceeds SOFR on the shocked path.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0586cdda6c6d93e1600bd70979d2971653b7c8400114e5cb63b77c091fa8e4ac",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "76bbd730ed4d6e4f2b80f386e9aa1b4fd0b90cb5dbb031f0e9f2a0ae696e67b0"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "743a553c1480fc8eccce726e2273f48542c087e62ec0675c18093fe46a51f248",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261117-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Idle cash earns official SOFR at 3.90 percent, and any new position has to beat that charge on its shocked-loss path. AUDUSD at 0.676 has just broken its 20-day range to the downside, so a long sits in the path of continuation. USDJPY at 159.60 is a failed-break short that still pays the dollar-over-yen funding gap if price squeezes. SOFR March 2027 at 4.58 already marks a higher path than 3.90 spot, so both a receive and a pay have about zero expected mark change.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Idle cash earns official SOFR at 3.90 percent, and any new position has to beat that charge on its shocked-loss path. AUDUSD at 0.676 has just broken its 20-day range to the downside, so a long sits in the path of continuation. USDJPY at 159.60 is a failed-break short that still pays the dollar-over-yen funding gap if price squeezes. SOFR March 2027 at 4.58 already marks a higher path than 3.90 spot, so both a receive and a pay have about zero expected mark change."
     }
   ],
   "schema_version": 1,

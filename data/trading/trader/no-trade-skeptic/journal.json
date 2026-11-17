@@ -2808,6 +2808,71 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Stay flat. Official SOFR is 3.90 percent. December SOFR implies about 4.31, March about 4.60, and September about 4.82, and the two-year at 4.88 already sits through that September rate. The dollar is at extremes and still trending. Oil at 88.56 and 95.84 does not reopen a fresh rates gap. Paying SOFR on new shocked-risk capital would fund a path the strip already discounts. Staying flat is the book's zero benchmark, not a source of alpha."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "e7454cb1f5629dc095a096c3497ac7c8d527f9675b229a3339e0ca4dceb00f8c",
+      "event_id": "jde-d5648d3a9ed04173",
+      "funding_view": {
+        "current_sofr": "Official NY Fed SOFR is 3.90 percent, effective 2026-11-13, ACT/360.",
+        "forward_funding_assessment": "higher",
+        "implication": "Flat cash earns the 3.90 percent official SOFR fixing and is not alpha, and any new risk position has to clear a December-to-March path the strip already marks at 4.2975 and 4.58.",
+        "sr3_forward_view": "December SOFR implies 4.2975 and March 2027 SOFR implies 4.58, both above the 3.90 percent fixing."
+      },
+      "invalidation": "A trade becomes actionable if USDJPY reclaims the failed breakout with a defined stop, or if December SOFR and March 2027 SOFR move far enough through 4.2975 and 4.58 to clear carry on a modest risk budget.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "62018912f712d79946683c5b424e13ba6e923aedec02329e16a4ff65bdd07c80",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "Official NY Fed SOFR is 3.90 percent, effective 2026-11-13, ACT/360.",
+          "forward_funding_assessment": "higher",
+          "implication": "Flat cash earns the 3.90 percent official SOFR fixing and is not alpha, and any new risk position has to clear a December-to-March path the strip already marks at 4.2975 and 4.58.",
+          "sr3_forward_view": "December SOFR implies 4.2975 and March 2027 SOFR implies 4.58, both above the 3.90 percent fixing."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5530f5fdfb8e9d69f4df5aa057f85e5671dea42276e9418f174439e4d3665a64"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar's five-day rise is already in spot, with USDJPY at 159.60 on a failed breakout, USDCAD at 1.4285, and NZDUSD at 0.5515. The US 10-year at 5.12 already includes a 26 to 32 basis point backup, and Hormuz tension is already in WTI at 85.72. December SOFR at 4.2975 and March 2027 SOFR at 4.58 sit above the 3.90 percent official fixing, so the higher funding path is the price the strip is quoting. The book stays flat until a fresh break clears that quoted path.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "The dollar's five-day rise is already in spot, with USDJPY at 159.60 on a failed breakout, USDCAD at 1.4285, and NZDUSD at 0.5515. The US 10-year at 5.12 already includes a 26 to 32 basis point backup, and Hormuz tension is already in WTI at 85.72. December SOFR at 4.2975 and March 2027 SOFR at 4.58 sit above the 3.90 percent official fixing, so the higher funding path is the price the strip is quoting. The book stays flat until a fresh break clears that quoted path."
     }
   ],
   "schema_version": 1,

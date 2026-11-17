@@ -2816,6 +2816,96 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Hold the pro-growth pays at current size: short March 2027 SOFR in 50 million and short March 2027 AONIA in 35 million. Friday's verified fixings are a 4.88 percent US two-year and a 5.15 percent ten-year, SOFR futures still price hikes from 3.90 percent cash to about 4.60 in March 2027, and the S&P at 7562 with the VIX at 18.7 says expansion is absorbing that path. Brent at 95.84 and WTI at 88.56 are well below the old oil scare, so the oil kicker is weaker and size stays unchanged."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-35db4e56bf42",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AONIA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-78563c24fe05",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDUSD",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "5db60b1ea2a86ae7e84f4e9fc167487104f44e0edf69e0c3430907517bb47d03",
+      "event_id": "jde-2089ced73a7e4ca3",
+      "funding_view": null,
+      "invalidation": "AUDUSD extends its 20-day downside break while SOFR March 2027 settles up through the June-September strip, so the yield backup becomes a parallel tightening shock.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35db4e56bf42",
+        "pos-471766cc8505",
+        "pos-78563c24fe05"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-471766cc8505"
+      ],
+      "memory_context_sha256": "0e27ae5bc4e68cd01d3bbdd4734933935d9234482fe06d5db2978b71713e12e5",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "17add3d5f3d4f9e1441d109d06872cf2a07d0097b8af2c521273f06110d5f30c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the SOFR and AONIA March 2027 pays and buy fifteen million dollars of AUDUSD. Firm US activity, warm inflation, and resilient euro-area growth still leave room in the soft-landing path, while the pays already carry the higher-rate leg. AUDUSD is the new pro-cyclical leg after a 20-day downside break that ran with the other growth currencies even as crude eased on recovering exports. The view fails if that dollar break extends and front-end rates reprice from a grind into a financial-conditions shock.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Hold the SOFR and AONIA March 2027 pays and buy fifteen million dollars of AUDUSD. Firm US activity, warm inflation, and resilient euro-area growth still leave room in the soft-landing path, while the pays already carry the higher-rate leg. AUDUSD is the new pro-cyclical leg after a 20-day downside break that ran with the other growth currencies even as crude eased on recovering exports. The view fails if that dollar break extends and front-end rates reprice from a grind into a financial-conditions shock."
     }
   ],
   "schema_version": 1,

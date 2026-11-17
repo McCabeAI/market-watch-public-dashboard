@@ -2309,6 +2309,64 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Stay flat. The crowded consensus in the headlines is more hikes and a firm dollar: bond futures falling, hot inflation, and euro-area traders pricing three ECB hikes, with euro-dollar at 1.1052, dollar-yen at 160, and dollar-Canada at 1.4258. SOFR December near 4.31 and March near 4.60 versus cash at 3.90 is that pay. Receiving the gap to cash, or shorting dollar-Canada, would not be the less-owned trade."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "061736a5ef93ab25ad377ebd6fea0dba318c090e3323302d11b704388cfe50ef",
+      "event_id": "jde-85f12530a4f94053",
+      "funding_view": null,
+      "invalidation": "The short is invalid if USDJPY holds above 159.60 and reclaims the failed 20-day break, showing the dollar long is being added again.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-42a60282429f"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-42a60282429f"
+      ],
+      "memory_context_sha256": "5741db17443c75beda49ba5024360e2c897bcb29ee28f618cd0a4d18239f8e42",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "1470afcd752852859e9c14a3e661b70de0d714c69f54ec354ccee612690e3629"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Open a 10 million short in USDJPY. The crowded expression is the dollar long at 159.60, a five-year extreme whose 20-day break has already failed, so that chase is stalled while USDCAD at 1.4285 and NZDUSD at 0.5515 still have holding breaks. Receiving the US 10-year at 5.12 would stand in front of a bearish Treasury bet that is still being held after a 26 basis point five-day backup.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Open a 10 million short in USDJPY. The crowded expression is the dollar long at 159.60, a five-year extreme whose 20-day break has already failed, so that chase is stalled while USDCAD at 1.4285 and NZDUSD at 0.5515 still have holding breaks. Receiving the US 10-year at 5.12 would stand in front of a bearish Treasury bet that is still being held after a 26 basis point five-day backup."
     }
   ],
   "schema_version": 1,

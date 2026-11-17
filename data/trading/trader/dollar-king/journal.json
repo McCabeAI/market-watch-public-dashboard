@@ -2214,6 +2214,95 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Cut the dollar-yen long from 20 million to 8 million and hold the 10 million euro-dollar short. Friday's two-year at 4.88 and ten-year at 5.15, with SOFR cash at 3.90 against December near 4.31 and March near 4.60, still support the dollar. Euro-dollar at 1.1052 is a fresh downside break. Dollar-yen at 160 is a five-year extreme, so the rate gap justifies a smaller long, not the full 20 million. Dollar-Canada and dollar-Swiss are already one-year extremes and are not new trades."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 4000000,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pos-d419ff966f72",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCHF",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "3bede49bc2c4eb32926268a72fcbaf96f954a4f2ef5b9c0cc3328612d05ce6a9",
+      "event_id": "jde-315514527ee748f2",
+      "funding_view": null,
+      "invalidation": "EURUSD reclaims its 20-day downside break and USDCHF loses its 20-day upside break while the US two-year premium over Europe and Japan compresses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c",
+        "pos-d419ff966f72",
+        "pos-e7cd1ee0a3d9"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-012b8f0c252c",
+        "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
+      ],
+      "memory_context_sha256": "a75737ae15013b1f1d19c1b2995f6a7fc4bd7cf787d80af7bf7de50014be8db0",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3a2574516b90ce1b36686044a41617d73e8d0cc033857ded1a07bdb36e1d1d80"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Short 10 million EURUSD is the dollar book: spot 1.1014 is down about 1.6 percent in five days on a 20-day downside break, with the US two-year at 4.83 well above Europe at 3.16. The 8 million USDJPY long is cut by 4 million at 159.60, a five-year extreme where the 20-day upside break has failed, leaving 4 million against the US-Japan rate gap. Long 10 million USDCHF at 0.839 adds the dollar where the 20-day upside break is still intact.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Short 10 million EURUSD is the dollar book: spot 1.1014 is down about 1.6 percent in five days on a 20-day downside break, with the US two-year at 4.83 well above Europe at 3.16. The 8 million USDJPY long is cut by 4 million at 159.60, a five-year extreme where the 20-day upside break has failed, leaving 4 million against the US-Japan rate gap. Long 10 million USDCHF at 0.839 adds the dollar where the 20-day upside break is still intact."
     }
   ],
   "schema_version": 1,

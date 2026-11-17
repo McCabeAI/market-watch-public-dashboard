@@ -72,16 +72,16 @@
   ],
   "as_of": "2026-11-17T05:39:57.066300-05:00",
   "calibration": {
-    "average_holding_seconds": 1390817,
-    "average_realized_pnl_usd": -13645.83,
+    "average_holding_seconds": 1623880,
+    "average_realized_pnl_usd": -7734.38,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 3,
-        "total_realized_pnl_usd": -40937.5
+        "count": 4,
+        "total_realized_pnl_usd": -30937.5
       }
     },
-    "closed_trade_count": 3,
+    "closed_trade_count": 4,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -94,15 +94,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -13645.83,
-        "count": 3,
-        "hit_rate": 0.3333
+        "average_pnl_usd": -7734.38,
+        "count": 4,
+        "hit_rate": 0.5
       }
     },
     "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -40937.5,
-    "wins": 1
+    "total_realized_pnl_usd": -30937.5,
+    "wins": 2
   },
   "capital_owner": null,
   "consequence": {
@@ -117,14 +117,14 @@
     "nav_usd": 99947796.7,
     "net_pnl_usd": -52203.3,
     "pressure_flags": [],
-    "prior_competition_rank": 14,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": 1,
     "raw_pnl_rank": 14,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 250000.0,
     "risk_capital_utilization": 0.025,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -18722.92,
     "status": "ok"
   },
   "learning": {
@@ -135,58 +135,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "0c742c538f1065f953008c59e35a0cbbc15c77e27cb020532d4fbe7bff299f91",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 61,
-      "current_notional_usd": 25000000.0,
-      "entry_mark": 3.0,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": "2027-03-16",
-        "catalyst_logic": "Cooling labor and 1.85 underlying inflation keep the Bank of Canada on hold; oil headlines without a cash-rate or reaction-function change do not exhaust the unused-hike carry.",
-        "current_mark": 3.03,
-        "current_notional_usd": 25000000.0,
-        "entry_mark": 2.995,
-        "expected_mark_direction": null,
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 48750.0,
-        "holding_seconds": 2323069,
-        "horizon_elapsed_fraction": 0.2987,
-        "horizon_status": "within",
-        "instrument": "CORRA_2027-03",
-        "intended_horizon_days": 90,
-        "mae_usd": -8750.0,
-        "mechanical_order": false,
-        "mfe_usd": 40000.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-23b8d2f30846",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "Implied-minus-realized: CRAH27 at 2.995 cheapens if cash CORRA stays near 2.26 and the priced 73.5bp of hikes is not delivered.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 40000.0,
-        "retained_mfe_fraction": -0.2188,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 250000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": -8750.0,
-        "trade_id": "trd-trader-carry-is-king-pos-23b8d2f30846",
-        "unrealized_pnl_usd": -8750.0
-      },
-      "instrument": "CORRA_2027-03",
-      "opened_at": "2026-10-21T08:22:07.869994-04:00",
-      "position_id": "pos-23b8d2f30846",
-      "risk_capital_usd": 250000.0,
-      "side": "long",
-      "trade_id": "trd-trader-carry-is-king-pos-23b8d2f30846"
-    }
-  ],
+  "memory_context_sha256": "adf852419c2d774a696448ea41956de27dc8d86d8b15f8ea69ab0906a3d323c4",
+  "open_positions": [],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -204,8 +154,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.12
       },
       "complacency": {
         "band": "calm",
@@ -219,13 +169,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -251,10 +201,16 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "blocked_expansion",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261117"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d0a51c6f6a010307b346804b6621f93f22afe7469f536de12a20757a9f636a30",
+    "state_sha256": "dca750e12e8da611fc03b6250e77246cccbde2197ed8c2c5c60987c77649420a",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -262,6 +218,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": 61,
+      "holding_duration_seconds": 2323069,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-10-21T08:22:07.869994-04:00",
+      "realized_pnl_usd": 10000.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-23b8d2f30846"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-11-10T04:50:36.940059-05:00",

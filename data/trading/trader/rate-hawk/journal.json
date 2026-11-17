@@ -3277,6 +3277,94 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Hold the US and Canada pays and close the Australia September pay. September 2027 SOFR near 4.82 and December 2026 near 4.31 are still hikes above 3.90 percent cash, and March 2027 Canada near 3.03 is still a hike above cash near 2.30. The two-year at 4.88 already sits above the front US futures. Australia September near 4.87 is not a hiking cycle against cash near 4.85, with March near 5.00 and the back priced for cuts. A hawkish seat is not a reason to keep the easy side of that strip. Euro September near 3.14 already matches the three-hike story, so no new euro pay is opened."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-2709875e8c9c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2026-12",
+          "notional_usd": null,
+          "position_id": "pos-6c7bcf0fe6af",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "fdea228185e1eb47080751321ce7f1f77d0ac9da5a89f4426fdde20386ee27e7",
+      "event_id": "jde-5c6d55791b68430f",
+      "funding_view": null,
+      "invalidation": "The December pay is wrong if inflation cools and the Fed validates cuts, pulling December implied back toward cash at 3.90. The September pay is wrong if that easier path pulls September implied back through the 4.755 entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2709875e8c9c",
+        "pos-6c7bcf0fe6af",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-2709875e8c9c"
+      ],
+      "memory_context_sha256": "45e56a261ca348197138f99db756d56a2962c3a1c4160b184e88271c82d34996",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "55ca8210a26635d75bbf5d003b86bf3b288cdc62deb773775b739eebd86d4fcb"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The live book keeps both US pays and takes off the Canadian pay. December 2026 SOFR at 4.2975 still prices a higher path than cash SOFR at 3.90, and September 2027 SOFR at 4.77 sits with the two-year at 4.83 while US inflation is warm and oil is firm. March 2027 CORRA at 2.955 is through the 3.06 entry while Canadian labor is cool, so that pay comes off in full.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "The live book keeps both US pays and takes off the Canadian pay. December 2026 SOFR at 4.2975 still prices a higher path than cash SOFR at 3.90, and September 2027 SOFR at 4.77 sits with the two-year at 4.83 while US inflation is warm and oil is firm. March 2027 CORRA at 2.955 is through the 3.06 entry while Canadian labor is cool, so that pay comes off in full."
     }
   ],
   "schema_version": 1,

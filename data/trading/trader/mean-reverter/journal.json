@@ -2200,6 +2200,64 @@
       "run_id": "overnight-20261116",
       "schema_version": 1,
       "thesis": "Stay flat. Euro-dollar at 1.1052 and the kiwi at 0.5532 are at multi-year lows and still breaking down. Dollar-yen at 160 and dollar-Swiss at 0.8384 are still extending. Euro-sterling at 0.8356 has only drifted 0.17 percent over five days. The US two-year at 4.88 is high, and the five-day move was still higher. A fresh break is not a reversal, so there is nothing to fade yet."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "decision_fingerprint": "84e4fb00f9064b6cd2a472061aca7617c34f19508f5303e3340cd6cf47722257",
+      "event_id": "jde-f32cfc4ec10e402c",
+      "funding_view": null,
+      "invalidation": "The short ends if USDJPY reasserts the failed 20-day upside break.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35399779720e"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-35399779720e"
+      ],
+      "memory_context_sha256": "92945b453b0f1ae3283615ad07ca7189ecaa661e28e1f2aba949a6cec54bf052",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "45ca3920ecc42470446748838a5cfe3e1cc4e555570ad3f8213861f81fd43320"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-17T05:39:57.066300-05:00",
+        "evidence_hash": "567dc2df23e5d1778c06812198141701026cb6740cd176737d6a84db45e20c2b",
+        "overnight_run_id": "overnight-20261117",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Sell 10 million USDJPY. At 159.60 the pair is a five-year 94th percentile and the 20-day upside break has failed, so the stretch has a reversal condition. The position ends if that upside break reasserts. The US 10-year at 5.12 is a five-year extreme, but a 3 basis point dip after a five-day backup is only a pause, so receiving duration is the worse fade.",
+      "run_id": "overnight-20261117",
+      "schema_version": 1,
+      "thesis": "Sell 10 million USDJPY. At 159.60 the pair is a five-year 94th percentile and the 20-day upside break has failed, so the stretch has a reversal condition. The position ends if that upside break reasserts. The US 10-year at 5.12 is a five-year extreme, but a 3 basis point dip after a five-day backup is only a pause, so receiving duration is the worse fade."
     }
   ],
   "schema_version": 1,
