@@ -2303,6 +2303,94 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Short 10 million EURUSD is the dollar book: spot 1.1014 is down about 1.6 percent in five days on a 20-day downside break, with the US two-year at 4.83 well above Europe at 3.16. The 8 million USDJPY long is cut by 4 million at 159.60, a five-year extreme where the 20-day upside break has failed, leaving 4 million against the US-Japan rate gap. Long 10 million USDCHF at 0.839 adds the dollar where the 20-day upside break is still intact."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-012b8f0c252c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pos-d419ff966f72",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCHF",
+          "notional_usd": null,
+          "position_id": "pos-e7cd1ee0a3d9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "45a1833f19de1dd0fb0828766bac15171b21bc46939707aec7a173673e858600",
+      "event_id": "jde-ece4f681cc0b4217",
+      "funding_view": null,
+      "invalidation": "The euro short fails if euro, sterling, the Australian dollar and the kiwi stabilize together. The franc long fails if euro reclaims the downside break and dollar-franc loses its five-day extension. Dollar-yen is closed, so it no longer has a live stop.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-012b8f0c252c",
+        "pos-d419ff966f72",
+        "pos-e7cd1ee0a3d9"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-012b8f0c252c"
+      ],
+      "memory_context_sha256": "61f8f83533ad3ea6e004ed6562d4b70cb9ed254c566421b022f97e637807d1fc",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "95504a44c5ddab35a39e1dac6ded45e5781fe8dee98abbff36b9b822354c6f65"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the 4 million dollar-yen winner and keep the 10 million euro short and the 10 million dollar-franc long. Euro at 1.0989 is a fresh downside break, down 2 percent in five days at the bottom of its one-year range, with the two-year at 4.80 and March SOFR at 4.545. Dollar-yen at 159.30 is a five-year extreme that is up only 0.7 percent in five days, and a fresh 4 million long at that print is not a trade to put on. Dollar-franc at 0.8402 is still the open extension off a 0.8393 entry.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Close the 4 million dollar-yen winner and keep the 10 million euro short and the 10 million dollar-franc long. Euro at 1.0989 is a fresh downside break, down 2 percent in five days at the bottom of its one-year range, with the two-year at 4.80 and March SOFR at 4.545. Dollar-yen at 159.30 is a five-year extreme that is up only 0.7 percent in five days, and a fresh 4 million long at that print is not a trade to put on. Dollar-franc at 0.8402 is still the open extension off a 0.8393 entry."
     }
   ],
   "schema_version": 1,

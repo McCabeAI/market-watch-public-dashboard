@@ -1,5 +1,51 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "causal": {
+        "assumptions_right": "The tactical spot short matched the close-only downside path, and the stated horizon was the exit.",
+        "assumptions_wrong_or_underweighted": "The fresh range break printed on the same close as the exit, so the horizon harvested the trade as the break appeared. That was a feature of the clock, not a failure of the rule.",
+        "causal_divergence": "Price was still below the invalidation when the horizon ended the trade. The stop never triggered.",
+        "decision_quality_attribution": "timing",
+        "future_implication": "The five-session rule stands. A later close is a new signal, not a revision of this exit, and selling the same break on the harvest day is a chase.",
+        "observed_reality": "The short was closed on the fifth session with the fixing at 1.0989 still below 1.1195, after a decline from 1.11 to 1.10.",
+        "original_belief": "A five-session euro short entered on the downside close should exit on the fifth daily mark or on a close above the 20-day average at 1.1195.",
+        "same_information_counterfactual": "Holding past the fifth session would have broken the stated rule even though the close was still valid."
+      },
+      "expression_assessment": "A tactical spot euro short matched the close-only downside path, and the five-session mark was the exit that had been stated.",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-17T05:39:57.066300-05:00",
+        "conviction": null,
+        "entry_mark": 1.11,
+        "exit_mark": 1.1,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 434973,
+        "instrument": "EURUSD",
+        "invalidation": "A daily close in EURUSD above the 20-day average at 1.1195.",
+        "opened_at": "2026-11-12T04:50:23.662182-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 101554.78,
+        "side": "short",
+        "thesis": null
+      },
+      "future_rule": null,
+      "lesson": null,
+      "no_new_lesson": "The euro short ran from 1.11 to 1.10 and was closed on the declared five-session mark, with the close still below the booked invalidation at 1.1195. That was ordinary variance around a rule that did what it was written to do, and the original process remains sound.",
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-c2dfe356ba3e",
+      "run_id": "overnight-20261118",
+      "sizing_assessment": null,
+      "tags": [],
+      "thesis_assessment": null,
+      "timing_assessment": "The cover was on the declared five-session mark while 1.0989 was still below the booked daily-close invalidation at 1.1195. The horizon ended the trade and the stop did not.",
+      "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb",
+      "what_failed": null,
+      "what_worked": "The euro spot short followed the decline from 1.11 to 1.10, and the 17 November close at 1.0989 finished below the 20-day average, so the five-session direction was right."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

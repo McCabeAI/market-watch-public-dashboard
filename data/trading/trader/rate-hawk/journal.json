@@ -3365,6 +3365,81 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "The live book keeps both US pays and takes off the Canadian pay. December 2026 SOFR at 4.2975 still prices a higher path than cash SOFR at 3.90, and September 2027 SOFR at 4.77 sits with the two-year at 4.83 while US inflation is warm and oil is firm. March 2027 CORRA at 2.955 is through the 3.06 entry while Canadian labor is cool, so that pay comes off in full."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2026-12",
+          "notional_usd": null,
+          "position_id": "pos-6c7bcf0fe6af",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-c9184707c12b",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "fa6f0cf355d266a4bee59d85429ec6716aef74e9dd9e010e13db28cccfcca8ad",
+      "event_id": "jde-9ddd8f1d8f594f12",
+      "funding_view": null,
+      "invalidation": "The September short changes if that contract falls to the June price of 4.675, which would mark the peak as passed and the fourth hike as rejected. December stays covered unless the hike comes back out of a contract that already prices it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-6c7bcf0fe6af",
+        "pos-c9184707c12b"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
+      ],
+      "memory_context_sha256": "70d065115f4141112ff309aec85ee4572e433de8affa6768fd15d0284bb70102",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f9518e503aa97e52c36336231de0cc6e1c00d66c058abc13911006284d6603ba"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cover the 10 million December SOFR short and hold the 12.5 million September SOFR short. December at 4.285 already holds the near-dated hike versus cash at 3.93 and is 17bp through the 4.115 entry, so that part of the path has been paid. September at 4.710 is the strip peak and is still short of a four-hike destination near 4.93, which is the residual hawkish gap. Australian bills are 5.00 at the front and 4.88 in the back, so they are not a fresh hiking cycle to pay.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Cover the 10 million December SOFR short and hold the 12.5 million September SOFR short. December at 4.285 already holds the near-dated hike versus cash at 3.93 and is 17bp through the 4.115 entry, so that part of the path has been paid. September at 4.710 is the strip peak and is still short of a four-hike destination near 4.93, which is the residual hawkish gap. Australian bills are 5.00 at the front and 4.88 in the back, so they are not a fresh hiking cycle to pay."
     }
   ],
   "schema_version": 1,

@@ -2230,6 +2230,64 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Hold the 42.5 million CORRA 2027 March-to-December receive, marked at 3.2425 against the 3.4 entry. The strip still rises from 2.73 in December 2026 to 3.235 by September 2027 while unemployment is 6.7, so the remaining hike premium can reprice lower. The US gap from 3.90 cash to March 2027 SOFR at 4.58 is not a receive, and a Canada two-year at 3.37 that is higher on the week keeps size at the booked 42.5 million."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": 21250000,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 52,
+      "decision_fingerprint": "c98c401b9f8baf8ea08a511757b886f41e3eccccaaed169f4661cec38f2667d9",
+      "event_id": "jde-5f38f8a4a60545fa",
+      "funding_view": null,
+      "invalidation": "The residual dies if the 2027 Canada strip is marked through the 3.40 entry into the mid-3s, or if today's euro-area inflation print or tomorrow's Australia jobs report extends the March selloff instead of stalling it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-dove-pos-9849cf751c27"
+      ],
+      "memory_context_sha256": "4be9e2ddc420ffa7c843cbf152f028b3483ca5c172e6c96806bfb108274db1c5",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "605b446509c170ad297ed46ee0717ab6c3e551cbdee025722037cfb80bab7772"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cut the Canada 2027 strip receive in half, leaving 21.25 million. March Canada rose 41.5bp to 2.965 and March US SOFR rose 61.5bp to 4.545 in the same session, which is too fast to own at full size against copper at a seven-month low of 5.976. Brent at 93.14 puts energy pass-through back into the Canada strip, so full size is no longer the receive. The known 2027 contracts are still below a mid-3s path, so the other half stays.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Cut the Canada 2027 strip receive in half, leaving 21.25 million. March Canada rose 41.5bp to 2.965 and March US SOFR rose 61.5bp to 4.545 in the same session, which is too fast to own at full size against copper at a seven-month low of 5.976. Brent at 93.14 puts energy pass-through back into the Canada strip, so full size is no longer the receive. The known 2027 contracts are still below a mid-3s path, so the other half stays."
     }
   ],
   "schema_version": 1,

@@ -51,6 +51,58 @@
       "postmortem_id": "pmd-74fb15932a2b",
       "status": "submitted",
       "trade_id": "trd-trader-perma-bull-pos-dd6fdaf39119"
+    },
+    {
+      "created_at": "2026-11-18T04:53:22.859808-05:00",
+      "created_run_id": "overnight-20261118",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-18T04:53:22.859808-05:00",
+        "conviction": 70,
+        "entry_mark": 4.76,
+        "exit_mark": 4.92,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2592333,
+        "instrument": "AONIA_2027-03",
+        "invalidation": "Cover the new AONIA pay if March implied moves back to cash 4.60 without a higher cash rate, or if an energy and risk break from Brent 109.86, the S&P near 7659, and VIX 16.46 would justify Australian cuts rather than catch-up hikes. The Canada short is separately wrong if CORRA March keeps falling toward cash 2.27.",
+        "opened_at": "2026-10-19T04:47:49.555730-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 41000.0,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-c925afffb7d0",
+      "status": "due",
+      "trade_id": "trd-trader-perma-bull-pos-78563c24fe05"
+    },
+    {
+      "created_at": "2026-11-18T04:53:22.859808-05:00",
+      "created_run_id": "overnight-20261118",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-18T04:53:22.859808-05:00",
+        "conviction": 67,
+        "entry_mark": 4.52,
+        "exit_mark": 4.54,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2488922,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "The pay-STIR book is wrong if SOFR March 2027 moves down from 4.52 because the strip fully validates skip-October and removes December, or if WTI 103.66 and Brent 109.55 reverse while VIX 18.44 reprices as a growth scare. Cover CORRA March 2027 only if cash CORRA 2.26 versus the 3.01 March contract implies the Canadian hike path is abandoned despite oil. Do not use a 105 WTI headline as a trigger; stops and targets are null.",
+        "opened_at": "2026-10-20T09:31:20.120731-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 12500.0,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-130b008cfe0d",
+      "status": "due",
+      "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42"
     }
   ],
   "schema_version": 1,

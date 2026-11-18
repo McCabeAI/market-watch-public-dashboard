@@ -2309,6 +2309,64 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "March 2027 SOFR at 4.58 still prices a large step up from 3.90 effective funding, and the strip keeps rising through September 2027. Firm oil and a two-year yield at 4.83, above the futures implied rate, support staying paid. The fresh settlement is only a few basis points through the 4.615 entry, which is not a reason to cut or to add a second clip. The book stays concentrated in that one pay."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pm-swinger-169e52b857c1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T06:45:35.190838-05:00",
+      "conviction": 71,
+      "decision_fingerprint": "d85145a2d28355f39136731690899aa7c5734b8bb985f9bed8e5b8c3e1f8a0ad",
+      "event_id": "jde-68cf58d87e334531",
+      "funding_view": null,
+      "invalidation": "The close is wrong if March implied trades back through 4.615 while crude is rising again and the two-year is still near 4.80.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-169e52b857c1"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-169e52b857c1"
+      ],
+      "memory_context_sha256": "c8d35585b8db81646a88e4e7ec1ffef5e1cafad11082986b269abe73e731db03",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "bd82d39d9679cab1df2ffeadadc061d37574ec334c7d559e8ed9c07b0e142116"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "fd7d6e4b291654e8142bd798add2d5bef5e43a3c41140723334cfc9ccce6bc6a",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261118-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the March 2027 pay. The freeze is 4.545, through the 4.615 entry, and March now sits a few basis points under the October 2028 terminal at 4.5825. Oil is 86 and 93, not the prior spike, and a stall after that decline is not a reason to keep the full short. A small new March pay elsewhere does not validate the existing size. The March short comes off, and no replacement is opened.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Close the March 2027 pay. The freeze is 4.545, through the 4.615 entry, and March now sits a few basis points under the October 2028 terminal at 4.5825. Oil is 86 and 93, not the prior spike, and a stall after that decline is not a reason to keep the full short. A small new March pay elsewhere does not validate the existing size. The March short comes off, and no replacement is opened."
     }
   ],
   "schema_version": 1,

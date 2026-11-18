@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-18T04:53:22.859808-05:00",
+  "as_of": "2026-11-18T06:45:36.031045-05:00",
   "calibration": {
     "average_holding_seconds": 684212,
     "average_realized_pnl_usd": 152195.05,
@@ -66,8 +66,8 @@
     "wins": 1
   },
   "capital_owner": {
-    "allocator_pressure": 27,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 28,
+    "credible_opportunities": "present",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -82,8 +82,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 440364.8,
-    "best_trader_outearn_streak": 1,
+    "best_trader_net_pnl_usd": 466100.18,
+    "best_trader_outearn_streak": 2,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -91,7 +91,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 10.78,
-    "gap_to_best_trader_usd": -288256.95,
+    "gap_to_best_trader_usd": -313992.33,
     "high_water_nav_usd": 1000152118.63,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 152107.85,
@@ -113,7 +113,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c7403a0972ebfd89e9054e7291ee48c1280f56b02e78be485e3312d2e75b01bb",
+  "memory_context_sha256": "6a40ea0115b1c1cd11bf8d6cbffd044dd7a7b186413a38ff9353aa27dae80a4e",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -196,17 +196,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261113"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261116"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261117"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261118"
       }
     ],
     "required_checks": {
@@ -216,9 +216,9 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "5e40a88b33827910abbdb5dfbf1b56b7d6edc94c53a555d99bcd0d583d2187c3",
+    "state_sha256": "5cfec1966cdb9528a2a034aca7c5ef4f46c6d6cf368bd4f55dfed0e65eb788d8",
     "streaks": {
-      "flat_cycles": 4,
+      "flat_cycles": 5,
       "session_loss": 0,
       "session_win": 0
     }

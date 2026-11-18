@@ -59,20 +59,50 @@
       "trade_ids": [
         "trd-trader-rate-hawk-pos-069ec6c19021"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Invalidate a short-rate position on that contract's own path. If the forward falls and the strip is not pricing hikes, the hiking-cycle thesis is finished even when Brent is still in the low 90s. Do not pay Australian bills when the front is 5.00 and the back is 4.88.",
+      "lesson_id": "les-0d33d7320437",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-182754d61016"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261118",
+      "status": "active",
+      "text": "The position was the Canada forward, and that forward fell from 3.12 to 2.96. Oil near 105 was a stale premise and left the hawkish rethink without a rate path.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-2709875e8c9c"
+      ]
     }
   ],
   "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
-    "average_holding_seconds": 2142872,
-    "average_realized_pnl_usd": -16584.37,
+    "average_holding_seconds": 1920548,
+    "average_realized_pnl_usd": -12417.49,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 4,
-        "total_realized_pnl_usd": -66337.47
+        "count": 5,
+        "total_realized_pnl_usd": -62087.47
       }
     },
-    "closed_trade_count": 4,
+    "closed_trade_count": 5,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": -33750.0,
@@ -85,15 +115,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 1238.22,
-        "count": 1,
+        "average_pnl_usd": 2744.11,
+        "count": 2,
         "hit_rate": 1.0
       }
     },
     "losses": 3,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -66337.47,
-    "wins": 1
+    "total_realized_pnl_usd": -62087.47,
+    "wins": 2
   },
   "capital_owner": null,
   "consequence": {
@@ -115,7 +145,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 7828.88,
     "status": "ok"
   },
   "learning": {
@@ -125,17 +155,8 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-182754d61016",
-      "owner_id": "rate-hawk",
-      "owner_type": "trader",
-      "reference": "trd-trader-rate-hawk-pos-2709875e8c9c",
-      "source_run_id": "overnight-20261117"
-    }
-  ],
-  "memory_context_sha256": "70d065115f4141112ff309aec85ee4572e433de8affa6768fd15d0284bb70102",
+  "learning_obligations": [],
+  "memory_context_sha256": "99e17342636f8265108850b09df563b23a09fc1aae53c52997c6877de7b94aa4",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -185,84 +206,11 @@
       "risk_capital_usd": 125000.0,
       "side": "short",
       "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
-    },
-    {
-      "asset_class": "rates",
-      "conviction": 60,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 4.12,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": "The US jobs report is the catalyst. Oil near Brent 98.29 and a Fed still watching price risks are what should push the front-end yield back up.",
-        "current_mark": 4.2975,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 4.115,
-        "expected_mark_direction": "higher",
-        "framing": "tactical",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 437.5,
-        "holding_seconds": 1031253,
-        "horizon_elapsed_fraction": 0.5968,
-        "horizon_status": "within",
-        "instrument": "SOFR_2026-12",
-        "intended_horizon_days": 20,
-        "mae_usd": 0.0,
-        "mechanical_order": false,
-        "mfe_usd": 5000.0,
-        "move_versus_entry_intent": "with_intent",
-        "order_policy": "review_only",
-        "position_id": "pos-6c7bcf0fe6af",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The short pays if December SOFR implied yield rises as the jobs-report gap closes and the 12bp front-end rally is retraced.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 5000.0,
-        "retained_mfe_fraction": 0.9125,
-        "review_move_bp": 5.0,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "instrument_dv01_small_move",
-        "side": "short",
-        "total_pnl_usd": 4562.5,
-        "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af",
-        "unrealized_pnl_usd": 4562.5
-      },
-      "instrument": "SOFR_2026-12",
-      "opened_at": "2026-11-06T06:25:49.281876-05:00",
-      "position_id": "pos-6c7bcf0fe6af",
-      "risk_capital_usd": 100000.0,
-      "side": "short",
-      "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
     }
   ],
   "owner_id": "rate-hawk",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-17T05:39:57.066300-05:00",
-      "created_run_id": "overnight-20261117",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-17T05:39:57.066300-05:00",
-        "conviction": 67,
-        "entry_mark": 3.12,
-        "exit_mark": 2.96,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 4236948,
-        "instrument": "CORRA_2027-03",
-        "invalidation": "Iran-deal pessimism lifts and Brent/WTI reverse sharply from 105.28/92.60, letting BoC stay near 2.30 and sending U7 back through 4.75; or a yen-warning risk-off duration bid that cheapens pays without a hawkish policy rethink.",
-        "opened_at": "2026-09-29T04:44:08.485973-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -55000.0,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-182754d61016",
-      "trade_id": "trd-trader-rate-hawk-pos-2709875e8c9c"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -306,17 +254,17 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.06
       },
       "self_trust": {
@@ -353,7 +301,7 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "f9518e503aa97e52c36336231de0cc6e1c00d66c058abc13911006284d6603ba",
+    "state_sha256": "71650b09f0583402e022beae551baabadc6f9bd7f9a18dfb1fc882eca397ca61",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -361,6 +309,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 60,
+      "holding_duration_seconds": 1031253,
+      "instrument": "SOFR_2026-12",
+      "opened_at": "2026-11-06T06:25:49.281876-05:00",
+      "realized_pnl_usd": 4250.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-11-17T05:39:57.066300-05:00",

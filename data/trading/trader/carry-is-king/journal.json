@@ -2478,6 +2478,60 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Close the 25 million long CORRA March 2027 and open 20 million receiving the US two-year against paying the Canada two-year. Live CORRA March 2027 at 2.955 is through the 2.995 entry, so the receive is ahead, but it still sits far under SOFR March 2027 at 4.58 while the Canada strip keeps rising. The replacement is the 146 basis point gap between the US two-year at 4.83 and the Canada two-year at 3.37. Dollar-yen carries a larger yield gap but spot is already elevated at 159.60."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "6cc2baf208087dc58c70bf7a851b81fc0acdc6436e48c826d5d5aeeef52f5ba7",
+      "event_id": "jde-467e893154b243c4",
+      "funding_view": null,
+      "invalidation": "Add risk only if a receive again clears live cash after this path, with the SOFR strip giving back the jump so the forward is a premium over funding again. A further rise in cash policy keeps the book flat.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "20c79ce5804156f27f83418a4ff5128453498bac1fe5cb8d9ea4a941383aed89",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "dca750e12e8da611fc03b6250e77246cccbde2197ed8c2c5c60987c77649420a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Cash SOFR is 3.93 against March SOFR at 4.545, up 61.5bp, so receiving the strip pays for hikes instead of earning a premium over funding. Canada March at 2.965 is up 41.5bp and no longer clears a cash rate that was already rising toward the old forward. Currency carry stays off while oil is 86 and 93 and VIX is 22.91.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Stay flat. Cash SOFR is 3.93 against March SOFR at 4.545, up 61.5bp, so receiving the strip pays for hikes instead of earning a premium over funding. Canada March at 2.965 is up 41.5bp and no longer clears a cash rate that was already rising toward the old forward. Currency carry stays off while oil is 86 and 93 and VIX is 22.91."
     }
   ],
   "schema_version": 1,

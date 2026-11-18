@@ -163,7 +163,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -18862.72,
     "status": "ok"
   },
   "learning": {
@@ -174,7 +174,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "77be87452c44c3371258c134a719b892a9959a584954911b44cbd0b9ef6a9824",
+  "memory_context_sha256": "65dceed8cffdab1aa028d33e321a0c3b5b8bd45ae2c292775c8fbb88c24260ca",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -191,7 +191,7 @@
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
+        "giveback_usd": 18873.64,
         "holding_seconds": 83605,
         "horizon_elapsed_fraction": 0.0645,
         "horizon_status": "within",
@@ -199,15 +199,15 @@
         "intended_horizon_days": 15,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 18873.64,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "position_id": "pos-42a60282429f",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if dollar longs trapped by the failed 20-day break reduce and USDJPY trades back off 159.60.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "recorded_mfe_usd": 18873.64,
+        "retained_mfe_fraction": 0.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
@@ -299,7 +299,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0de522aae29939b12ea08dd7af3e7cc2c71bc3b995e67616e836baa21c04c50d",
+    "state_sha256": "f1c78cdab185bc3302234831c768d1cb873ad6340d982ed297c363e38756db1a",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

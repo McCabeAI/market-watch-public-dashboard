@@ -2192,6 +2192,60 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Stay flat. The 26 to 32 basis point backup in US yields is already in the price, and Treasuries were flat into retail sales, so that print still has to create a gap in a contract that does not already hold the hike. Euro at 1.1014 is already breaking down and kiwi at 0.5515 is washed out. December SOFR at 4.2975 against cash at 3.90 stays closed because the two-year already holds the hike."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "d5c81638189ad857e526f81b81633b015a6bf673ec5ce86e95f895b1a3221397",
+      "event_id": "jde-13022a3e9e7e4220",
+      "funding_view": null,
+      "invalidation": "Standing aside ceases to be the trade if a front SOFR contract or the two-year is still cheap to the hike path and a minutes clock is actually printed, or if a foreign yield plus a same-day release time shows a gap the print can close.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4839137463f789a558782b8bfe58ef4cd7f353c6f7243e818b5ea7f6e32cff2a",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "6e4527905e54e57a91c76dcee7c2e9713266d169bf1240910e02b0652e208d20"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. March SOFR at 4.545 and September at 4.710 have already jumped 61bp and 78bp, and the two-year at 4.80 already holds that hike path. Fed minutes have no printed clock. Australia jobs, Japan inflation, and Canada retail sales have dates but no priced gap in this freeze. Oil at 86 and 93 is not a new shock. There is no dated release that still has a level left to reprice.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Stay flat. March SOFR at 4.545 and September at 4.710 have already jumped 61bp and 78bp, and the two-year at 4.80 already holds that hike path. Fed minutes have no printed clock. Australia jobs, Japan inflation, and Canada retail sales have dates but no priced gap in this freeze. Oil at 86 and 93 is not a new shock. There is no dated release that still has a level left to reprice."
     }
   ],
   "schema_version": 1,

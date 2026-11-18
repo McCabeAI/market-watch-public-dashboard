@@ -2258,6 +2258,62 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Sell 10 million USDJPY. At 159.60 the pair is a five-year 94th percentile and the 20-day upside break has failed, so the stretch has a reversal condition. The position ends if that upside break reasserts. The US 10-year at 5.12 is a five-year extreme, but a 3 basis point dip after a five-day backup is only a pause, so receiving duration is the worse fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-35399779720e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "761f281a000de573d97ea99fc527f5f504d65053700c7976760ad88422aa9a84",
+      "event_id": "jde-cb83a13c07914516",
+      "funding_view": null,
+      "invalidation": "The short ends if dollar-yen reasserts the failed 20-day upside break. The original ten-day tactical horizon from the 159.60 entry still governs.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35399779720e"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "89e2e3b1d67325e55e2510f1e4e1223f3e9a36b3ad0f6a5395f9dea01e46cc08",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c4d627251f380cf29df1b8b5afc9013a4c347b615b53b9413bb3c4a637522883"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 10 million dollar-yen short. At 159.30 it is a five-year extreme, the five-day gain is only 0.7 percent, and the failed 20-day upside break at the 159.60 entry is still the reversal that is set up. Euro at 1.0989 and kiwi at 0.5499 are one-day breakdowns while the 61bp March SOFR jump and today's euro-area inflation print are live, so those fades stay blocked.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Hold the 10 million dollar-yen short. At 159.30 it is a five-year extreme, the five-day gain is only 0.7 percent, and the failed 20-day upside break at the 159.60 entry is still the reversal that is set up. Euro at 1.0989 and kiwi at 0.5499 are one-day breakdowns while the 61bp March SOFR jump and today's euro-area inflation print are live, so those fades stay blocked."
     }
   ],
   "schema_version": 1,

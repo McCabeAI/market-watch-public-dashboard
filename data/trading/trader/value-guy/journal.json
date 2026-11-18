@@ -2255,6 +2255,62 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Hold the five million euro-sterling long. At 0.8345 the cross is almost unchanged on the week, still a one-year z-score near minus 2.5 and about the 9th percentile of five years, so the discount versus sterling has not closed. Convergence is a drift back toward the middle of that one-year range. The US ten-year and the still-breaking dollar extremes are poorer fades because those trends have not failed."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": null,
+          "position_id": "pos-5760dbd4ac3e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 54,
+      "decision_fingerprint": "b355795f5c91655fd5e0242b1d4afd107a905e9cec4a35945d389d058c723640",
+      "event_id": "jde-1d4b04ce1e6f47bb",
+      "funding_view": null,
+      "invalidation": "The long is disproved if the one-year floor gives way as a euro-specific break that sterling does not match against the dollar. Twelve pips under the entry is not that event.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5760dbd4ac3e"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f76486d70f12013d520097111fbc7b135121ee12a5599ff4c8c45fd8a97baf68",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "512805722b9922be51fb43227fae8a619aaf163feb79626e6a61bfc7685801a8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 5 million euro-sterling long. The cross is 0.8331, 12 pips under the 0.8343 entry, at the bottom of its one-year range and near the bottom of five years. Both the euro and sterling are already cheap against the dollar, so the cross is the residual dislocation. Euro-dollar at 1.0989 is still breaking, so a new euro buy waits. The front end is rich to cash because hikes are priced, and that is not a value receive.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Hold the 5 million euro-sterling long. The cross is 0.8331, 12 pips under the 0.8343 entry, at the bottom of its one-year range and near the bottom of five years. Both the euro and sterling are already cheap against the dollar, so the cross is the residual dislocation. Euro-dollar at 1.0989 is still breaking, so a new euro buy waits. The front end is rich to cash because hikes are priced, and that is not a value receive."
     }
   ],
   "schema_version": 1,

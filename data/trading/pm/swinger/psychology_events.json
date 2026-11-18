@@ -1349,6 +1349,64 @@
       "run_id": "overnight-20261117",
       "seq": 58,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          5000000.0,
+          28000000.0,
+          3000000.0,
+          10000000.0
+        ],
+        "repeated_counts": {},
+        "standing": "good_standing"
+      },
+      "at": "2026-11-18T06:45:35.190838-05:00",
+      "event_id": "pse-000059",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "swinger",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261118",
+      "seq": 59,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-18T06:45:35.190838-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": -0.002,
+        "defensiveness": 0.0031,
+        "frustration": 0.01,
+        "revenge_pressure": 0.0134,
+        "self_trust": -0.0044,
+        "thesis_attachment": 0.0032
+      },
+      "event_id": "pse-000060",
+      "kind": "trade_loss_close",
+      "magnitude": 0.14,
+      "mismatch": false,
+      "owner_id": "swinger",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261118",
+      "scale": 1.0,
+      "seq": 60,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "sofr",
+        "notional_usd": 4000000000.0,
+        "realized_pnl_usd": -700000.0,
+        "side": "short",
+        "trade_id": "trd-pm-swinger-pm-swinger-169e52b857c1"
+      }
     }
   ],
   "owner_id": "swinger",

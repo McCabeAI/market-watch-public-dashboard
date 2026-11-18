@@ -42,8 +42,8 @@
     "nav_usd": 100000000.0,
     "net_pnl_usd": 0.0,
     "pressure_flags": [],
-    "prior_competition_rank": 10,
-    "rank_change": 0,
+    "prior_competition_rank": 9,
+    "rank_change": 1,
     "raw_pnl_rank": 10,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7846a78a6a93d9d151da21747f6ae73da18a156256654b72efc310eab322752a",
+  "memory_context_sha256": "832aecad5a3dc87325117b5e4a1989f83fcc5465dde2412b3b4382f5d385784a",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -80,7 +80,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.14
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -95,7 +95,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
@@ -128,32 +128,37 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_drop_minor",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261113"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261113"
-      },
-      {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261117"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261118"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "59a398b42eb1d463d9ac309be60f9b45d04cfd7b2bca8e0c9407488954b6e8c9",
+    "state_sha256": "a0cf3cf0d5233ab7494f16d5da4188ef5cdd53b67889dbf98be42fcb7b2c0d01",
     "streaks": {
-      "flat_cycles": 34,
+      "flat_cycles": 35,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-16",
+        "rate": 3.93,
+        "source": "NY Fed"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Staying at the official cash fixing beats paying that fixing on shocked-risk capital. The post-jump strip is the funding path, and taking that price has no timed residual above the funding charge.",
+      "sr3_forward_view": "December at 4.285 rises through March at 4.545, already about 61bp above cash SOFR at 3.93, to September at 4.710. The October 2028 terminal at 4.5825 sits below that September peak."
+    },
     {
       "current_sofr": "Official NY Fed SOFR is 3.90 percent, effective 2026-11-13, ACT/360.",
       "forward_funding_assessment": "higher",
@@ -179,16 +184,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Realized funding is judged about the same as that strip, so staying at the zero official SOFR benchmark does not leave an unpriced funding edge. Paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
       "sr3_forward_view": "From cash SOFR 3.89 the strip prices December 2026 at 4.315, March 2027 at 4.615 and September 2027 at 4.815."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-11-09",
-        "rate": 3.88,
-        "source": "NY_FED"
-      },
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Realized funding is judged about the same as that strip, so staying at the zero official-SOFR benchmark does not leave an unpriced funding edge, and paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
-      "sr3_forward_view": "From cash SOFR 3.88 the strip already prices Dec26 at 4.28, Mar27 at 4.53 and Sep27 at 4.655, a front-loaded hike with little left between March and September."
     }
   ],
   "recent_performance_reflections": [],

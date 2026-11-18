@@ -2282,6 +2282,62 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Idle cash earns official SOFR at 3.90 percent, and any new position has to beat that charge on its shocked-loss path. AUDUSD at 0.676 has just broken its 20-day range to the downside, so a long sits in the path of continuation. USDJPY at 159.60 is a failed-break short that still pays the dollar-over-yen funding gap if price squeezes. SOFR March 2027 at 4.58 already marks a higher path than 3.90 spot, so both a receive and a pay have about zero expected mark change."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T06:45:35.486085-05:00",
+      "conviction": 68,
+      "decision_fingerprint": "b57be641079f4c4e340b7c4565991d3204d28c68fc142c6c1190199ff050af4d",
+      "event_id": "jde-aec53e29973b40d5",
+      "funding_view": null,
+      "invalidation": "A later mark that shows a still-open gap versus a plausible funding path, wide enough to cover the cash fixing on the capital at risk with room, would end this flat stance.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c7403a0972ebfd89e9054e7291ee48c1280f56b02e78be485e3312d2e75b01bb",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5e40a88b33827910abbdb5dfbf1b56b7d6edc94c53a555d99bcd0d583d2187c3"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "dbeded641e709923a65782b3389324077fc2b4e5abfa59cf019ec957ece6492e",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261118-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. March funding futures at 4.545 have already repriced 61 basis points above the 3.93 cash fixing, September at 4.710 is only a little beyond that front contract, and euro-sterling at 0.8331 has no catalyst that would out-earn cash charged on risk capital. Preservation means declining new risk whose expected mark change does not clear that funding cost with room.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "The book stays flat. March funding futures at 4.545 have already repriced 61 basis points above the 3.93 cash fixing, September at 4.710 is only a little beyond that front contract, and euro-sterling at 0.8331 has no catalyst that would out-earn cash charged on risk capital. Preservation means declining new risk whose expected mark change does not clear that funding cost with room."
     }
   ],
   "schema_version": 1,

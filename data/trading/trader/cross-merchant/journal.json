@@ -2242,6 +2242,64 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "The book stays flat. Australian dollar-Canada at 0.9652 remains near a high five-year percentile after a twenty-day downside break, while the two-year gap of 4.81 against 3.37 and cool Canadian labor point the other way and oil near 85 still favors Canada. Euro-sterling at 0.8345 is a one-year low, but sterling's front end is not quoted beside the euro two-year at 3.16. Australia-kiwi at 1.2251 is still a five-year high after only a twenty-day break."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": 8000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 56,
+      "decision_fingerprint": "f8ccd8eef2dc04a8a6016ae5319f87ed3c04aeb30e63eba728eacce073ee53ed",
+      "event_id": "jde-bc86420c2cac403b",
+      "funding_view": null,
+      "invalidation": "Close the long if euro-sterling extends through 0.8331 before any euro-positive impulse, or if a UK yield premium versus the euro-area ten-year at 3.35 explains the cheapness as carry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-6b544dc561cc"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-6b544dc561cc"
+      ],
+      "memory_context_sha256": "85d8d3ccba5a6fd1585e493a1cd039e3429fc24835faaf2f900f4ae135b1043b",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "fa2efbd8d490ab139a72f5b8935ea594307ed368aa5316bf0c2480603f97caf8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Buy 8 million euro-sterling. The cross is 0.8331, the bottom of its one-year range and near the bottom of five years, while oil at 86 and 93 is not a blow-off and copper at 5.976 is not a sterling impulse. Euro-sterling cancels the dollar, the 5.10 US ten-year, and cash funding, which a long euro or a short sterling would keep. Aussie-Canada stays shut on this oil tape, and Aussie-kiwi richness agrees with the kiwi's floor break.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Buy 8 million euro-sterling. The cross is 0.8331, the bottom of its one-year range and near the bottom of five years, while oil at 86 and 93 is not a blow-off and copper at 5.976 is not a sterling impulse. Euro-sterling cancels the dollar, the 5.10 US ten-year, and cash funding, which a long euro or a short sterling would keep. Aussie-Canada stays shut on this oil tape, and Aussie-kiwi richness agrees with the kiwi's floor break."
     }
   ],
   "schema_version": 1,

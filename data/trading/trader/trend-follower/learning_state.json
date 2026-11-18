@@ -40,6 +40,18 @@
       "owner_type": "trader",
       "rationale": "That lesson bars adding to a SOFR pay while the contract drifts lower against a US 10-year backup. This add is a receive with the yield downtrend, and the 10-year is rallying rather than backing up, so the pay-rotation rule does not govern it.",
       "run_id": "overnight-20261106"
+    },
+    {
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "disposition": "APPLIES",
+      "instruments": [
+        "SOFR_2027-03"
+      ],
+      "lesson_id": "les-1d92cbbe59eb",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "rationale": "March is the contract printing higher with the two-year and the ten-year, so the new pay is the confirming tenor rather than an add to a laggard that has stopped confirming.",
+      "run_id": "overnight-20261118"
     }
   ],
   "schema_version": 1,

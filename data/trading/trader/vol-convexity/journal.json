@@ -2148,6 +2148,60 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Hold flat, with no option structure and no size. Euro at 1.1014 has broken the 20-day low, dollar-yen at 159.60 has failed a 20-day upside break, the US 10-year is 5.12 after a 26 basis point backup, and Brent at 92.44 sits between Hormuz headlines and a same-day export-recovery note. That mix is two-way event risk, so the right instrument is a bounded option, and no listed premium, strike, or implied volatility is quoted to price one."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "97f53a1e7a23cb290d6ceea2e3898b8c29a8eaa1e31604ef199b93122cf66a85",
+      "event_id": "jde-5184fb07b2ac44ab",
+      "funding_view": null,
+      "invalidation": "This flat hold ends when a later set of marks quotes an option premium, implied volatility, and a strike that can be marked. A further spot print does not by itself supply that premium.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "114d91fec570afe1b80086de436ca166f620b47750ce43f4813306ae84e9b25a",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8e164d698fb0e3052322e10bd126f0da19e398165ba5c895a62cf5cc65eb780e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold flat. Euro at 1.0989 is breaking down, kiwi at 0.5499 is on a five-year floor, and March SOFR is 4.545 after a 61bp up day, so the shape that fits is bounded optionality. The freeze has no option price, no implied volatility, and no strike. Convexity cannot be bought today, and selling the dollar extreme in spot would be a linear risk that is not being put on without a price.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Hold flat. Euro at 1.0989 is breaking down, kiwi at 0.5499 is on a five-year floor, and March SOFR is 4.545 after a 61bp up day, so the shape that fits is bounded optionality. The freeze has no option price, no implied volatility, and no strike. Convexity cannot be bought today, and selling the dollar extreme in spot would be a linear risk that is not being put on without a price."
     }
   ],
   "schema_version": 1,

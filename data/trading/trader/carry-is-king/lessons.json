@@ -103,6 +103,45 @@
         "trd-trader-carry-is-king-pos-524ab67108ee"
       ],
       "updated_at": "2026-11-11T06:25:27.481006-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-18T04:53:22.859808-05:00",
+      "future_rule": "Close a receive when live cash has converged to the forward even if the mark is still a few basis points through the entry, and do not reopen that contract after a same-week path reprice larger than 20 basis points.",
+      "history": [
+        {
+          "at": "2026-11-18T04:53:22.859808-05:00",
+          "op": "add",
+          "run_id": "overnight-20261118"
+        }
+      ],
+      "lesson_id": "les-0654806c2441",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0711dcbebb42"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261118",
+      "status": "active",
+      "text": "The cushion on a receive is live cash versus the forward. A mark still a few basis points through the entry can hide a cushion that cash has already closed.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-23b8d2f30846"
+      ],
+      "updated_at": "2026-11-18T04:53:22.859808-05:00"
     }
   ],
   "schema_version": 1,

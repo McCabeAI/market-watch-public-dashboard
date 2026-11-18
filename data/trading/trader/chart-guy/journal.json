@@ -389,6 +389,60 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "Close the 10 million euro-dollar short. The 1.1014 fixing is a 20-session downside break that is still intact, and the pair is about 1.60 percent lower over five sessions. Percent-b near -0.12 leaves that close outside the lower band after the declared holding window has finished, so this size would not be started again from 1.1014. Dollar-yen near 159.60 remains extended after a failed upside break, and the other dollar closes are extended or incomplete, so the book goes flat."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 40,
+      "decision_fingerprint": "90710e9885e816635f9ccb436d8fa58177f6047313d68cf71f8254a915a7e8aa",
+      "event_id": "jde-f2d50027bf0547d1",
+      "funding_view": null,
+      "invalidation": "Size goes on only after a later daily close that still holds one listed break and that comes with an explicit adverse close beyond entry.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4842feb508d648706e4a60bdfae9dfac5306af0c85ec5633c914ebe6ad266674",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "307de122f752d0db40a10ff36aeb7167785c92f1bae756881d58259899830666"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat in G10 spot. The euro close at 1.0989 is a fresh downside break on the same fixing that finished the five-session short from 1.11 to 1.10, so selling euro again is a chase of a trade the horizon already harvested. Kiwi, Aussie-Canada, dollar-Norway, and dollar-Sweden are clean breaks, but this freeze gives only the break closes and no adverse daily close, so none is a complete five-session expression.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Stay flat in G10 spot. The euro close at 1.0989 is a fresh downside break on the same fixing that finished the five-session short from 1.11 to 1.10, so selling euro again is a chase of a trade the horizon already harvested. Kiwi, Aussie-Canada, dollar-Norway, and dollar-Sweden are clean breaks, but this freeze gives only the break closes and no adverse daily close, so none is a complete five-session expression."
     }
   ],
   "schema_version": 1,

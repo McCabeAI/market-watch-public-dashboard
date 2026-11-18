@@ -99,16 +99,20 @@
   ],
   "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
-    "average_holding_seconds": 1231334,
-    "average_realized_pnl_usd": -73229.17,
+    "average_holding_seconds": 1053145,
+    "average_realized_pnl_usd": -53958.45,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
         "count": 3,
         "total_realized_pnl_usd": -219687.5
+      },
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": 3853.71
       }
     },
-    "closed_trade_count": 3,
+    "closed_trade_count": 4,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": -112500.0,
@@ -128,8 +132,8 @@
     },
     "losses": 3,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -219687.5,
-    "wins": 0
+    "total_realized_pnl_usd": -215833.79,
+    "wins": 1
   },
   "capital_owner": null,
   "consequence": {
@@ -151,7 +155,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 18927.54,
     "status": "ok"
   },
   "learning": {
@@ -162,56 +166,56 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "6426a56bf8e8661bd115cb76e8c8040c504331cf7527bac922d7c8ecd0139e65",
+  "memory_context_sha256": "abb1fd464d25137a21d96bcf127c30a049c52850b116fb05c3874c175edd4154",
   "open_positions": [
     {
-      "asset_class": "spot_fx",
-      "conviction": null,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 159.23,
+      "asset_class": "rates",
+      "conviction": 71,
+      "current_notional_usd": 25000000.0,
+      "entry_mark": 4.54,
       "harvest": {
-        "asset_class": "spot_fx",
+        "asset_class": "rates",
         "catalyst_by": null,
-        "catalyst_logic": "The dollar breakout remains the expression while the two-year holds above 4.67 and March 2027 SOFR implied holds the move from 4.33 to 4.53.",
-        "current_mark": 159.5968767023788,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 159.23429495820977,
+        "catalyst_logic": "The edge is exhausted if March gives back the day's rise or splits from the two-year and the ten-year.",
+        "current_mark": 4.545,
+        "current_notional_usd": 25000000.0,
+        "entry_mark": 4.54,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 25202.72,
-        "holding_seconds": 518579,
-        "horizon_elapsed_fraction": 0.2001,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
         "horizon_status": "within",
-        "instrument": "USDJPY",
-        "intended_horizon_days": 30,
+        "instrument": "SOFR_2027-03",
+        "intended_horizon_days": 20,
         "mae_usd": 0.0,
         "mechanical_order": false,
-        "mfe_usd": 47973.05,
+        "mfe_usd": 0.0,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
-        "position_id": "pos-111b627e5627",
+        "position_id": "pos-9ff89eedf5b8",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The long is paid if USDJPY holds the 20-day upside breakout, with EURUSD and AUDUSD staying heavy and USDCAD staying bid.",
+        "realization_logic": "The pay is marked in implied-rate space and profits while March implied keeps rising with the two-year and the ten-year.",
         "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 47973.05,
-        "retained_mfe_fraction": 0.4746,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
         "review_move_bp": null,
         "review_required": false,
-        "review_threshold_usd": 100000.0,
+        "review_threshold_usd": 250000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": 22770.33,
-        "trade_id": "trd-trader-trend-follower-pos-111b627e5627",
-        "unrealized_pnl_usd": 22770.33
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-trend-follower-pos-9ff89eedf5b8",
+        "unrealized_pnl_usd": 0.0
       },
-      "instrument": "USDJPY",
-      "opened_at": "2026-11-12T04:50:23.662182-05:00",
-      "position_id": "pos-111b627e5627",
-      "risk_capital_usd": 100000.0,
-      "side": "long",
-      "trade_id": "trd-trader-trend-follower-pos-111b627e5627"
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-11-18T04:53:22.859808-05:00",
+      "position_id": "pos-9ff89eedf5b8",
+      "risk_capital_usd": 250000.0,
+      "side": "short",
+      "trade_id": "trd-trader-trend-follower-pos-9ff89eedf5b8"
     }
   ],
   "owner_id": "trend-follower",
@@ -231,7 +235,7 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.14
       },
       "complacency": {
@@ -246,13 +250,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "down",
         "value": 0.15
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.18
+        "trend": "down",
+        "value": 0.16
       },
       "revenge_pressure": {
         "band": "calm",
@@ -292,7 +296,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "c10b4cf06d66710ca2b7fd0ef6d951604a6d53ca5712b87159369af7a937de6d",
+    "state_sha256": "3035071636d3e8a99c24453aa97702f99e39e761c29f0c653bf64194d8a99d8a",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
@@ -300,6 +304,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 518579,
+      "instrument": "USDJPY",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "realized_pnl_usd": 3853.71,
+      "side": "long",
+      "trade_id": "trd-trader-trend-follower-pos-111b627e5627"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-11-11T06:25:27.481006-05:00",

@@ -4,37 +4,37 @@
     "chase_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0137,
+      "delta_last_cycle": -0.0071,
       "half_life_cycles": 4.0,
-      "value": 0.1447
+      "value": 0.1376
     },
     "complacency": {
       "band": "calm",
       "baseline": 0.1,
       "delta_last_cycle": 0.0001,
       "half_life_cycles": 5.0,
-      "value": 0.0995
+      "value": 0.0996
     },
     "defensiveness": {
       "band": "calm",
       "baseline": 0.2,
-      "delta_last_cycle": -0.0004,
+      "delta_last_cycle": -0.0003,
       "half_life_cycles": 6.0,
-      "value": 0.203
+      "value": 0.2027
     },
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0131,
+      "delta_last_cycle": -0.0056,
       "half_life_cycles": 6.0,
-      "value": 0.1514
+      "value": 0.1458
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0316,
+      "delta_last_cycle": -0.0196,
       "half_life_cycles": 2.4000000000000004,
-      "value": 0.178
+      "value": 0.1584
     },
     "revenge_pressure": {
       "band": "calm",
@@ -48,31 +48,31 @@
       "baseline": 0.5,
       "delta_last_cycle": 0.0005,
       "half_life_cycles": 12.0,
-      "value": 0.4911
+      "value": 0.4916
     },
     "thesis_attachment": {
       "band": "calm",
       "baseline": 0.25,
       "delta_last_cycle": -0.0002,
       "half_life_cycles": 8.0,
-      "value": 0.2528
+      "value": 0.2526
     }
   },
-  "cycle_count": 34,
+  "cycle_count": 35,
   "engine_version": 1,
   "flags": [],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 47,
+  "last_event_seq": 48,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261117",
+  "last_run_id": "overnight-20261118",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 34,
+    "self_report_clean_cycles": 35,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,7 +81,7 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "c10b4cf06d66710ca2b7fd0ef6d951604a6d53ca5712b87159369af7a937de6d",
+  "state_sha256": "3035071636d3e8a99c24453aa97702f99e39e761c29f0c653bf64194d8a99d8a",
   "streaks": {
     "flat_cycles": 0,
     "session_loss": 1,
@@ -94,10 +94,10 @@
     "revenge": []
   },
   "trailing_open_risk_capital_usd": [
-    200000.0,
     62500.0,
     250000.0,
-    100000.0
+    100000.0,
+    62500.0
   ],
   "type": "TRADER_PSYCHOLOGY_STATE"
 }

@@ -2873,6 +2873,79 @@
       "run_id": "overnight-20261117",
       "schema_version": 1,
       "thesis": "The dollar's five-day rise is already in spot, with USDJPY at 159.60 on a failed breakout, USDCAD at 1.4285, and NZDUSD at 0.5515. The US 10-year at 5.12 already includes a 26 to 32 basis point backup, and Hormuz tension is already in WTI at 85.72. December SOFR at 4.2975 and March 2027 SOFR at 4.58 sit above the 3.90 percent official fixing, so the higher funding path is the price the strip is quoting. The book stays flat until a fresh break clears that quoted path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "74f90dd6c0118fbbbdb954e3ea41279fed5f79888afc5d8d71f00581ff6599a9",
+      "event_id": "jde-be34d350ed9747ce",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-16",
+          "rate": 3.93,
+          "source": "NY Fed"
+        },
+        "forward_funding_assessment": "about_the_same",
+        "implication": "Staying at the official cash fixing beats paying that fixing on shocked-risk capital. The post-jump strip is the funding path, and taking that price has no timed residual above the funding charge.",
+        "sr3_forward_view": "December at 4.285 rises through March at 4.545, already about 61bp above cash SOFR at 3.93, to September at 4.710. The October 2028 terminal at 4.5825 sits below that September peak."
+      },
+      "invalidation": "A trade becomes actionable when a still-ahead release has a printed clock and the two-year and ten-year move with the SOFR strip. This hold is invalidated if that confirmed path takes realized funding through the December-to-September strip, or if March gives back the 61bp day and the yield fix confirms the giveback.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7846a78a6a93d9d151da21747f6ae73da18a156256654b72efc310eab322752a",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-16",
+            "rate": 3.93,
+            "source": "NY Fed"
+          },
+          "forward_funding_assessment": "about_the_same",
+          "implication": "Staying at the official cash fixing beats paying that fixing on shocked-risk capital. The post-jump strip is the funding path, and taking that price has no timed residual above the funding charge.",
+          "sr3_forward_view": "December at 4.285 rises through March at 4.545, already about 61bp above cash SOFR at 3.93, to September at 4.710. The October 2028 terminal at 4.5825 sits below that September peak."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "59a398b42eb1d463d9ac309be60f9b45d04cfd7b2bca8e0c9407488954b6e8c9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-18T04:53:22.859808-05:00",
+        "evidence_hash": "f299af9f7cb7498970877e223bf7733f43e2bd2e4e0a48634f7ca5d96c50a086",
+        "overnight_run_id": "overnight-20261118",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold flat. March SOFR at 4.545 is already 61bp above the 3.93 fixing, September is 4.710, and the October 2028 terminal at 4.5825 sits below that peak. Realized funding over this horizon should print about the same as that strip, so staying in cash beats paying funding on shocked-risk capital to own the post-move price. The two-year at 4.80 and the ten-year at 5.10 did not show a comparable one-day story, and the dollar extremes are prints after the move rather than before it.",
+      "run_id": "overnight-20261118",
+      "schema_version": 1,
+      "thesis": "Hold flat. March SOFR at 4.545 is already 61bp above the 3.93 fixing, September is 4.710, and the October 2028 terminal at 4.5825 sits below that peak. Realized funding over this horizon should print about the same as that strip, so staying in cash beats paying funding on shocked-risk capital to own the post-move price. The two-year at 4.80 and the ten-year at 5.10 did not show a comparable one-day story, and the dollar extremes are prints after the move rather than before it."
     }
   ],
   "schema_version": 1,

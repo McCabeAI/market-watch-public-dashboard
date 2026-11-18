@@ -1221,6 +1221,86 @@
         "layer": "L1"
       },
       "subject": {}
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          800000.0,
+          200000.0
+        ],
+        "repeated_counts": {},
+        "standing": "good_standing"
+      },
+      "at": "2026-11-18T06:45:35.338970-05:00",
+      "event_id": "pse-000055",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "pragmatist",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261118",
+      "seq": 55,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-18T06:45:35.338970-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0086,
+        "defensiveness": -0.0008,
+        "frustration": -0.0013,
+        "revenge_pressure": -0.0005,
+        "self_trust": 0.006,
+        "thesis_attachment": -0.001
+      },
+      "event_id": "pse-000056",
+      "kind": "trade_win_close",
+      "magnitude": 0.1965,
+      "mismatch": false,
+      "owner_id": "pragmatist",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261118",
+      "scale": 1.0,
+      "seq": 56,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "corra",
+        "notional_usd": 450000000.0,
+        "realized_pnl_usd": 982500.0,
+        "side": "long",
+        "trade_id": "trd-pm-pragmatist-pm-pragmatist-4e0cbc4e0b05"
+      }
+    },
+    {
+      "at": "2026-11-18T06:45:35.338970-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0192,
+        "external_pressure": 0.0362,
+        "frustration": 0.0087
+      },
+      "event_id": "pse-000057",
+      "kind": "competitive_flag_active",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "pragmatist",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261118",
+      "scale": 1.0,
+      "seq": 57,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {}
     }
   ],
   "owner_id": "pragmatist",
