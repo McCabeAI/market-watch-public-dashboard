@@ -447,7 +447,7 @@
       "Consumer": [
         {
           "period": "2025-09",
-          "level": 41.86,
+          "level": 41.38,
           "impulse": -3.1,
           "direction": "cooling",
           "coverage": 1.0,
@@ -456,8 +456,8 @@
         },
         {
           "period": "2025-10",
-          "level": 39.14,
-          "impulse": -2.71,
+          "level": 38.89,
+          "impulse": -2.5,
           "direction": "cooling",
           "coverage": 1.0,
           "source_period": "2025-10",
@@ -465,8 +465,8 @@
         },
         {
           "period": "2025-11",
-          "level": 41.18,
-          "impulse": 2.04,
+          "level": 41.19,
+          "impulse": 2.3,
           "direction": "warming",
           "coverage": 1.0,
           "source_period": "2025-11",
@@ -474,8 +474,8 @@
         },
         {
           "period": "2025-12",
-          "level": 41.0,
-          "impulse": -0.18,
+          "level": 41.16,
+          "impulse": -0.02,
           "direction": "static",
           "coverage": 1.0,
           "source_period": "2025-12",
@@ -483,8 +483,8 @@
         },
         {
           "period": "2026-01",
-          "level": 42.05,
-          "impulse": 1.04,
+          "level": 42.22,
+          "impulse": 1.06,
           "direction": "warming",
           "coverage": 1.0,
           "source_period": "2026-01",
@@ -493,7 +493,7 @@
         {
           "period": "2026-02",
           "level": 42.11,
-          "impulse": 0.06,
+          "impulse": -0.11,
           "direction": "static",
           "coverage": 1.0,
           "source_period": "2026-02",
@@ -546,8 +546,8 @@
         },
         {
           "period": "2026-08",
-          "level": 45.16,
-          "impulse": -0.79,
+          "level": 45.7,
+          "impulse": -0.25,
           "direction": "static",
           "coverage": 1.0,
           "source_period": "2026-08",
@@ -555,8 +555,8 @@
         },
         {
           "period": "2026-09",
-          "level": 44.7,
-          "impulse": -0.46,
+          "level": 45.43,
+          "impulse": -0.27,
           "direction": "static",
           "coverage": 1.0,
           "source_period": "2026-09",
@@ -564,8 +564,8 @@
         },
         {
           "period": "2026-10",
-          "level": 44.67,
-          "impulse": 0.42,
+          "level": 47.47,
+          "impulse": 0.59,
           "direction": "static",
           "coverage": 1.0,
           "source_period": "2026-10",
@@ -573,8 +573,8 @@
         },
         {
           "period": "2026-11",
-          "level": 45.42,
-          "impulse": 1.19,
+          "level": 48.22,
+          "impulse": 1.36,
           "direction": "warming",
           "coverage": 1.0,
           "source_period": "2026-11",
@@ -3595,6 +3595,125 @@
           },
           "Consumer": {
             "level": 45.42,
+            "as_of": "2026-11"
+          }
+        },
+        "CA": {
+          "Inflation": {
+            "level": 54.68,
+            "as_of": "2026-10"
+          },
+          "Labor": {
+            "level": 37.41,
+            "as_of": "2026-10"
+          },
+          "Activity": {
+            "level": 49.4,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 57.03,
+            "as_of": "2026-08"
+          }
+        },
+        "AU": {
+          "Inflation": {
+            "level": 67.25,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 45.74,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 45.79,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 49.1,
+            "as_of": "2026-09"
+          }
+        },
+        "NZ": {
+          "Inflation": {
+            "level": 64.25,
+            "as_of": "2026-Q2"
+          },
+          "Labor": {
+            "level": 36.51,
+            "as_of": "2026-Q2"
+          },
+          "Activity": {
+            "level": 52.23,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 48.26,
+            "as_of": "2026-08"
+          }
+        },
+        "EA": {
+          "Inflation": {
+            "level": 64.5,
+            "as_of": "2026-10"
+          },
+          "Labor": {
+            "level": 49.02,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 54.57,
+            "as_of": "2026-Q3"
+          },
+          "Consumer": {
+            "level": 40.92,
+            "as_of": "2026-10"
+          }
+        },
+        "JP": {
+          "Inflation": {
+            "level": 52.5,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 53.78,
+            "as_of": "2026-09"
+          },
+          "Activity": {
+            "level": 57.46,
+            "as_of": "2026-08"
+          },
+          "Consumer": {
+            "level": 33.22,
+            "as_of": "2026-09"
+          }
+        }
+      },
+      "note": "Observed published score state. Not a reconstructed monthly path and not a historical real-time vintage of earlier months."
+    },
+    {
+      "kind": "published",
+      "source": "data/temperature_scores.json",
+      "observed_from": "current_published_state",
+      "scoring_cutoff": "2026-11",
+      "score_inputs_latest_reference_period": "2026-11",
+      "last_refresh_date": "2026-11-18",
+      "countries": {
+        "US": {
+          "Inflation": {
+            "level": 61.28,
+            "as_of": "2026-09"
+          },
+          "Labor": {
+            "level": 53.81,
+            "as_of": "2026-10"
+          },
+          "Activity": {
+            "level": 56.77,
+            "as_of": "2026-10"
+          },
+          "Consumer": {
+            "level": 48.22,
             "as_of": "2026-11"
           }
         },

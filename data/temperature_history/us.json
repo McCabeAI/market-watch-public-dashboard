@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-11-13T13:40:29Z",
+  "retrieved_at": "2026-11-18T09:53:22Z",
   "notes": "Trailing-12-month observation backfill for US temperature components. FRED graph CSV downloads saved under data/temperature_history/raw/us/. ISM PMI and mapped-bridge history are partial by design. Cross-check: official FRED retail Aug 2026 m/m ~+1.24% vs ledger +1.2%; core PCE Jul m/m ~+0.25% vs ledger +0.2%; personal income Jul m/m ~+0.53% vs ledger +0.4%; UMCSENT on FRED ends 2026-07 (55.2) while ledger cites Aug decline and Sep preliminary 47.8.",
   "components": {
     "Inflation.core_pce": {
@@ -3130,6 +3130,78 @@
           "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
           "vintage": "latest_available",
           "retrieved_at": "2026-11-13T13:40:29Z",
+          "revision_status": "final",
+          "series_id": "RSAFS"
+        },
+        {
+          "reference_period": "2025-09",
+          "value": 0.02955424488904068,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-18T09:53:22Z",
+          "revision_status": "final",
+          "series_id": "RSAFS"
+        },
+        {
+          "reference_period": "2025-10",
+          "value": -0.02669087400479775,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-18T09:53:22Z",
+          "revision_status": "final",
+          "series_id": "RSAFS"
+        },
+        {
+          "reference_period": "2025-11",
+          "value": 0.7175622870049247,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-18T09:53:22Z",
+          "revision_status": "final",
+          "series_id": "RSAFS"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 1.4504428597850394,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-18T09:53:22Z",
+          "revision_status": "final",
+          "series_id": "RSAFS"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 0.8284920229790105,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-18T09:53:22Z",
+          "revision_status": "final",
+          "series_id": "RSAFS"
+        },
+        {
+          "reference_period": "2026-10",
+          "value": 0.21201735247515785,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "U.S. Census Bureau",
+          "source_url": "https://www.census.gov/retail/marts/www/adv44X72.txt",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-18T09:53:22Z",
           "revision_status": "final",
           "series_id": "RSAFS"
         }
