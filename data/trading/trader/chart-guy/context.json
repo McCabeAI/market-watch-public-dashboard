@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
     "average_holding_seconds": 434973,
     "average_realized_pnl_usd": 101554.78,
@@ -40,21 +40,21 @@
     "competition_eligible": true,
     "competition_rank": 6,
     "competitive_rank": 6,
-    "drawdown_usd": 32.5,
-    "giveback_usd": 32.5,
-    "high_water_nav_usd": 100067392.8,
+    "drawdown_usd": 10.83,
+    "giveback_usd": 10.83,
+    "high_water_nav_usd": 100101511.47,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100067360.3,
-    "net_pnl_usd": 67360.3,
+    "nav_usd": 100101500.64,
+    "net_pnl_usd": 101500.64,
     "pressure_flags": [],
     "prior_competition_rank": 6,
     "rank_change": 0,
     "raw_pnl_rank": 6,
-    "recent_pattern": "flat",
+    "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 100000.0,
-    "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": -34140.34,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -64,12 +64,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "9bdab75a1b0641a4ffacb36481f2d2182fdad0fc58468275f32e2bb2acf7589a",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-c2dfe356ba3e",
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "reference": "trd-trader-chart-guy-pos-a4867f05b3bb",
+      "source_run_id": "overnight-20261117"
+    }
+  ],
+  "memory_context_sha256": "4842feb508d648706e4a60bdfae9dfac5306af0c85ec5633c914ebe6ad266674",
   "open_positions": [],
   "owner_id": "chart-guy",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-17T05:39:57.066300-05:00",
+      "created_run_id": "overnight-20261117",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-17T05:39:57.066300-05:00",
+        "conviction": null,
+        "entry_mark": 1.11,
+        "exit_mark": 1.1,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 434973,
+        "instrument": "EURUSD",
+        "invalidation": "A daily close in EURUSD above the 20-day average at 1.1195.",
+        "opened_at": "2026-11-12T04:50:23.662182-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 101554.78,
+        "side": "short",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-c2dfe356ba3e",
+      "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

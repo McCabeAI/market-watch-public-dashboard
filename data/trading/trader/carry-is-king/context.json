@@ -70,7 +70,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
     "average_holding_seconds": 1623880,
     "average_realized_pnl_usd": -7734.38,
@@ -108,23 +108,23 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 14,
-    "competitive_rank": 14,
-    "drawdown_usd": 126185.59,
-    "giveback_usd": 126185.59,
+    "competition_rank": 13,
+    "competitive_rank": 13,
+    "drawdown_usd": 107462.67,
+    "giveback_usd": 107462.67,
     "high_water_nav_usd": 100073982.29,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99947796.7,
-    "net_pnl_usd": -52203.3,
+    "nav_usd": 99966519.62,
+    "net_pnl_usd": -33480.38,
     "pressure_flags": [],
     "prior_competition_rank": 13,
-    "rank_change": 1,
-    "raw_pnl_rank": 14,
+    "rank_change": 0,
+    "raw_pnl_rank": 13,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 250000.0,
-    "risk_capital_utilization": 0.025,
-    "session_pnl_change_usd": -18722.92,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -134,12 +134,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "adf852419c2d774a696448ea41956de27dc8d86d8b15f8ea69ab0906a3d323c4",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-0711dcbebb42",
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-carry-is-king-pos-23b8d2f30846",
+      "source_run_id": "overnight-20261117"
+    }
+  ],
+  "memory_context_sha256": "20c79ce5804156f27f83418a4ff5128453498bac1fe5cb8d9ea4a941383aed89",
   "open_positions": [],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-17T05:39:57.066300-05:00",
+      "created_run_id": "overnight-20261117",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-17T05:39:57.066300-05:00",
+        "conviction": 61,
+        "entry_mark": 3.0,
+        "exit_mark": 2.96,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 2323069,
+        "instrument": "CORRA_2027-03",
+        "invalidation": "Exit if cash CORRA rises from 2.26 toward 2.995 or if oil-driven Canadian inflation makes the Bank deliver the priced hikes.",
+        "opened_at": "2026-10-21T08:22:07.869994-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 10000.0,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-0711dcbebb42",
+      "trade_id": "trd-trader-carry-is-king-pos-23b8d2f30846"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

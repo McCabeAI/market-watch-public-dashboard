@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
     "average_holding_seconds": 2300806,
     "average_realized_pnl_usd": 59870.94,
@@ -87,8 +87,8 @@
     "raw_pnl_rank": 5,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -100,7 +100,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7943ffb176e0b688fc52c7f0fa7a5483b1db159e60f761cee1484f714886f684",
+  "memory_context_sha256": "89e2e3b1d67325e55e2510f1e4e1223f3e9a36b3ad0f6a5395f9dea01e46cc08",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -113,13 +113,13 @@
         "catalyst_logic": "The failed 20-day upside break is the reversal condition, and the edge is exhausted if that break reasserts.",
         "current_mark": 159.5968767023788,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 159.6,
+        "entry_mark": 159.5968767023788,
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 83605,
+        "horizon_elapsed_fraction": 0.0968,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 10,

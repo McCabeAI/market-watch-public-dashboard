@@ -105,7 +105,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
     "average_holding_seconds": 894021,
     "average_realized_pnl_usd": 64940.44,
@@ -161,8 +161,8 @@
     "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -174,7 +174,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "10d1459cbe1d90fe316dba33afe29c1ad4d5e301111a25bb80189940d7c7a544",
+  "memory_context_sha256": "77be87452c44c3371258c134a719b892a9959a584954911b44cbd0b9ef6a9824",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -187,13 +187,13 @@
         "catalyst_logic": "Another failure at the five-year extreme exhausts the chase. A sustained hold above 159.60 exhausts the fade.",
         "current_mark": 159.5968767023788,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 159.6,
+        "entry_mark": 159.5968767023788,
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 83605,
+        "horizon_elapsed_fraction": 0.0645,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 15,

@@ -97,7 +97,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-17T05:39:57.066300-05:00",
+  "as_of": "2026-11-18T04:53:22.859808-05:00",
   "calibration": {
     "average_holding_seconds": 1231334,
     "average_realized_pnl_usd": -73229.17,
@@ -137,12 +137,12 @@
     "competition_eligible": true,
     "competition_rank": 15,
     "competitive_rank": 15,
-    "drawdown_usd": 236347.58,
-    "giveback_usd": 236347.58,
+    "drawdown_usd": 261561.13,
+    "giveback_usd": 261561.13,
     "high_water_nav_usd": 100062016.81,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99825669.23,
-    "net_pnl_usd": -174330.77,
+    "nav_usd": 99800455.68,
+    "net_pnl_usd": -199544.32,
     "pressure_flags": [],
     "prior_competition_rank": 15,
     "rank_change": 0,
@@ -151,7 +151,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 25213.55,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -162,7 +162,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "2e3b38c1adff4ea535c5a91848596ef79735a03cc79b1e0ab3484df739c6f239",
+  "memory_context_sha256": "6426a56bf8e8661bd115cb76e8c8040c504331cf7527bac922d7c8ecd0139e65",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -173,15 +173,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The dollar breakout remains the expression while the two-year holds above 4.67 and March 2027 SOFR implied holds the move from 4.33 to 4.53.",
-        "current_mark": 159.99819037278323,
+        "current_mark": 159.5968767023788,
         "current_notional_usd": 10000000.0,
         "entry_mark": 159.23429495820977,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 434973,
-        "horizon_elapsed_fraction": 0.1678,
+        "giveback_usd": 25202.72,
+        "holding_seconds": 518579,
+        "horizon_elapsed_fraction": 0.2001,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 30,
@@ -195,16 +195,16 @@
         "realization_logic": "The long is paid if USDJPY holds the 20-day upside breakout, with EURUSD and AUDUSD staying heavy and USDCAD staying bid.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 47973.05,
-        "retained_mfe_fraction": 1.0,
+        "retained_mfe_fraction": 0.4746,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 47973.05,
+        "total_pnl_usd": 22770.33,
         "trade_id": "trd-trader-trend-follower-pos-111b627e5627",
-        "unrealized_pnl_usd": 47973.05
+        "unrealized_pnl_usd": 22770.33
       },
       "instrument": "USDJPY",
       "opened_at": "2026-11-12T04:50:23.662182-05:00",
