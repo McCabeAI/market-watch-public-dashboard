@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-09-21",
+  "retrieved_at": "2026-11-19T10:32:19Z",
   "notes": "G0 observation backfill from ABS time-series workbooks (Jul 2026 LFS/spending; Jun 2026 national accounts/WPI; Jun 2025 final Retail Trade). August 2026 headline and trimmed-mean CPI were appended from the accepted 2026-10-01 launch observations. Proprietary survey history gapped per SCHEMA.md. Unemployment rate stored at full ABS workbook precision (headline 4.5% in Jul 2026 release).",
   "components": {
     "Inflation.headline": {
@@ -609,6 +609,18 @@
           "series_id": "A84423050A",
           "release_date": "2026-08-14",
           "revision_status": "final"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-19T10:32:19Z",
+          "reference_period": "2026-10",
+          "value": 4.8648326,
+          "units": "percent",
+          "transformation": "percent",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/oct-2026/62020001.xlsx",
+          "series_id": "A84423050A",
+          "revision_status": "final"
         }
       ],
       "gaps": [
@@ -835,6 +847,18 @@
           "series_id": "A84423043C",
           "release_date": "2026-08-14",
           "raw_level": 14807.2431495,
+          "revision_status": "final"
+        },
+        {
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-19T10:32:19Z",
+          "reference_period": "2026-10",
+          "value": -43.53074430000015,
+          "units": "thousands",
+          "transformation": "mom_change_thousands_sa",
+          "publisher": "Australian Bureau of Statistics",
+          "source_url": "https://www.abs.gov.au/statistics/labour/employment-and-unemployment/labour-force-australia/oct-2026/62020001.xlsx",
+          "series_id": "A84423043C",
           "revision_status": "final"
         }
       ],

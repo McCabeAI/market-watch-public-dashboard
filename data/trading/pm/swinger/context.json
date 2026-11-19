@@ -91,7 +91,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-19T06:43:47.270418-05:00",
+  "as_of": "2026-11-19T06:48:35.031663-05:00",
   "calibration": {
     "average_holding_seconds": 1378559,
     "average_realized_pnl_usd": 1249382.2,
@@ -164,7 +164,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "2a9eb5f4e6103052522325bd596924aaa15ba4b05d2180d0db4ccb624280cedb",
+  "memory_context_sha256": "129fda7de9826d6f3c9b75154858a670a2aa3e8f82abe463a21e692a02f7dcc1",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -177,20 +177,20 @@
         "catalyst_logic": "The catalyst is the hawkish minutes and the half-point remark. If the break cannot extend after that communication, the catalyst has been spent.",
         "current_mark": 1.0968,
         "current_notional_usd": 1000000000.0,
-        "entry_mark": 1.1,
-        "expected_mark_direction": null,
+        "entry_mark": 1.0968,
+        "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 1,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 288,
+        "horizon_elapsed_fraction": 0.0002,
         "horizon_status": "within",
         "instrument": "EURUSD",
         "intended_horizon_days": 15,
         "mae_usd": -0.0,
         "mechanical_order": false,
         "mfe_usd": -0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pm-swinger-cca5e82a9a1e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",

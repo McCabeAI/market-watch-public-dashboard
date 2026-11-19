@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-18T04:53:22.859808-05:00",
+  "as_of": "2026-11-19T05:32:19.294844-05:00",
   "central_bank_research": [
     {
       "headline": "Fed Chairman Kevin Warsh stresses importance of AI to the economy, but says it could disappoint",
@@ -14,7 +14,56 @@
   ],
   "news": [
     {
-      "headline": "Treasury yields hold steady as investors look ahead to Fed minutes",
+      "headline": "Treasury yields inch higher as investors weigh the state of the U.S. economy",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-19T03:52:58-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Longer-dated Treasury yields fall as traders weigh Waller comments, Fed minutes",
       "market_salience": {
         "components": {
           "asset_named": 3,
@@ -34,8 +83,7 @@
         "distribution": "standard",
         "score": 15
       },
-      "published_at": "2026-11-18T03:32:43-05:00",
-      "source_name": "CNBC",
+      "published_at": "2026-11-18T15:14:54-05:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
@@ -62,8 +110,355 @@
         "disposition": "show",
         "reason_code": "g10_policy_path",
         "score": 15
+      }
+    },
+    {
+      "headline": "Fed officials expect more rate hikes, worry about AI impact on inflation, minutes show",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
       },
-      "url": "https://www.cnbc.com/2026/11/18/treasury-yields-bonds-fed.html"
+      "published_at": "2026-11-18T13:41:59-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy",
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "g10_policy_path",
+        "score": 15
+      }
+    },
+    {
+      "headline": "Fed\u2019s Waller says central bank may need to \u2018shock people\u2019 with half-point rate hike",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-18T09:13:39-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "BOJ\u2019s Ueda Unfazed by Consumption Drop, Stays Open to Rate Hike",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-18T11:01:00-05:00",
+      "summary": "Bank of Japan Governor Kazuo Ueda said he expects consumer spending to return to a rising trend, signaling that a recent economic contraction driven by weak consumption won\u2019t dissuade the central bank from considering a hike.",
+      "transmission": {
+        "affected_assets": [
+          "JPY"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "RBNZ Governor outlines inflation outlook amid uneven recovery",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "published_at": "2026-11-18T06:00:00-05:00",
+      "summary": "Inflation remains above the 2% target mid-point, while New Zealand\u2019s economic recovery continues to be uneven, RBNZ Governor Dr Anna Breman said today at an Auckland Institute of Directors event.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST",
+          "NZD"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy",
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "g10_policy_path",
+        "score": 15
+      }
+    },
+    {
+      "headline": "IEA chief sees no 'credible pathway' back to pre-war normality in the Strait of Hormuz",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "published_at": "2026-11-18T06:00:01-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "USD",
+          "WTI",
+          "CAD",
+          "UST"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot",
+          "geopolitics_haven"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "oil_supply_shock",
+        "score": 15
+      }
+    },
+    {
+      "headline": "Big bets against AI debt, from CoreWeave to Oracle and the Mag 7, could soon hit the ETF market",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 11
+      },
+      "published_at": "2026-11-18T17:38:55-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads",
+          "UST"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      }
+    },
+    {
+      "headline": "Nvidia's shift in financing tone may spell trouble for Coreweave, other neoclouds",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 11
+      },
+      "published_at": "2026-11-18T15:00:32-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads",
+          "UST"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      }
     },
     {
       "headline": "Iran escalates threats as third U.S. carrier arrives in Middle East, tanker struck in Hormuz",
@@ -87,7 +482,6 @@
         "score": 15
       },
       "published_at": "2026-11-17T05:22:54-05:00",
-      "source_name": "CNBC",
       "summary": "The headline flags escalating Iran-related threats and a tanker incident in Hormuz as a third U.S. carrier reaches the Middle East.",
       "transmission": {
         "affected_assets": [
@@ -117,21 +511,20 @@
         "disposition": "show",
         "reason_code": "oil_supply_shock",
         "score": 15
-      },
-      "url": "https://www.cnbc.com/2026/11/17/iran-war-trump-hormuz-oil-.html"
+      }
     },
     {
-      "headline": "Treasury prices catch a small bid as stock market weakens and Warsh says AI might disappoint",
+      "headline": "Copper Slumps to Seven-Month Low as Doubts Over Demand Grow",
       "market_salience": {
         "components": {
           "asset_named": 3,
-          "channel_china_spillover": 0,
+          "channel_china_spillover": 5,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
+          "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
+          "channel_usd_rates": 0,
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
@@ -139,36 +532,34 @@
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 15
+        "score": 10
       },
-      "published_at": "2026-11-16T15:03:52-05:00",
-      "source_name": "public wire",
-      "summary": "Treasuries firmed slightly as equities weakened and Fed Chair Kevin Warsh cautioned that AI could disappoint.",
+      "published_at": "2026-11-17T20:16:00-05:00",
+      "summary": "Copper extended a decline to the lowest in nearly five months as a stronger dollar added to downward pressure from upheaval in the artificial intelligence sector and a gloomy outlook in China.",
       "transmission": {
         "affected_assets": [
-          "USD",
-          "UST"
+          "AUD",
+          "iron_ore"
         ],
-        "channel": "g10_policy",
+        "channel": "china_spillover",
         "channels": [
-          "g10_policy",
-          "usd_rates"
+          "china_spillover"
         ],
         "components": {
           "asset_named": 3,
-          "channel_china_spillover": 0,
+          "channel_china_spillover": 5,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
+          "channel_g10_policy": 0,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
+          "channel_usd_rates": 0,
           "shock": 2,
           "subject_penalty": 0
         },
         "disposition": "show",
-        "reason_code": "g10_policy_path",
-        "score": 15
+        "reason_code": "china_commodity_spillover",
+        "score": 10
       }
     },
     {
@@ -193,7 +584,6 @@
         "score": 15
       },
       "published_at": "2026-11-15T21:51:00-05:00",
-      "source_name": "Reuters",
       "summary": "Reuters reported German yields rising as strong U.S. data revived market bets on three ECB hikes by late 2027.",
       "transmission": {
         "affected_assets": [
@@ -222,874 +612,11 @@
         "reason_code": "g10_policy_path",
         "score": 15
       }
-    },
-    {
-      "headline": "Democrat Mary Peltola wins Alaska Senate election",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
-          "channel_global_risk": 4,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 12
-      },
-      "published_at": "2026-11-17T22:18:13-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "geopolitics_haven",
-        "channels": [
-          "geopolitics_haven",
-          "global_risk"
-        ],
-        "claim": "possible",
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
-          "channel_global_risk": 4,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "political_risk_transmission",
-        "score": 12
-      },
-      "url": "https://www.cnbc.com/2026/11/18/alaska-senate-mary-peltola-wins-election.html"
-    },
-    {
-      "headline": "Crowded Singapore Bank Stocks Face Rotation as AI Risks Mount",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 11
-      },
-      "published_at": "2026-11-17T19:50:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Concerns over Asia\u2019s artificial intelligence trade are starting to spill into Singapore\u2019s lenders, as US chip curbs cast doubts on data-center financing and add pressure on investors to exit crowded ...",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-18/crowded-singapore-bank-stocks-face-rotation-as-ai-risks-mount"
-    },
-    {
-      "headline": "Apollo CEO Marc Rowan warns neocloud financing access could 'disappear'",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 11
-      },
-      "published_at": "2026-11-17T11:51:59-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      },
-      "url": "https://www.cnbc.com/2026/11/17/apollo-ceo-marc-rowan-on-ai-debt.html"
-    },
-    {
-      "headline": "Iran says army targets U.S. drone and missile sites in Kuwait as Gulf attacks mount",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 10
-      },
-      "published_at": "2026-11-17T23:24:54-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "geopolitics_haven",
-        "channels": [
-          "geopolitics_haven"
-        ],
-        "claim": "possible",
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "geopolitics_haven_or_oil",
-        "score": 10
-      },
-      "url": "https://www.cnbc.com/2026/11/18/trump-iran-war-hormuz-oil-.html"
-    },
-    {
-      "headline": "Copper Slumps to Seven-Month Low as Doubts Over Demand Grow",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 5,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 10
-      },
-      "published_at": "2026-11-17T20:16:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Copper extended a decline to the lowest in nearly five months as a stronger dollar added to downward pressure from upheaval in the artificial intelligence sector and a gloomy outlook in China for the ...",
-      "transmission": {
-        "affected_assets": [
-          "AUD",
-          "iron_ore"
-        ],
-        "channel": "china_spillover",
-        "channels": [
-          "china_spillover"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 5,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "china_commodity_spillover",
-        "score": 10
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-18/copper-prices-industrial-metal-dollar-lme"
-    },
-    {
-      "headline": "Record diesel prices drive UK inflation to 1-year high of 3.6%",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-18T01:57:37-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.cnbc.com/2026/11/18/uk-inflation-cpi-fuel-prices.html"
-    },
-    {
-      "headline": "South Africa Fiscal Watchdog to Help Set Lasting Debt Rules",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-17T17:45:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "A South African fiscal watchdog will take a bigger role in holding future governments to sustainable fiscal plans under a new framework aimed at preventing another buildup in debt.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-18/south-africa-fiscal-watchdog-to-help-set-lasting-debt-rules"
-    },
-    {
-      "headline": "Treasury yields moderate as investors parse retail sales data",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-17T16:17:24-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.cnbc.com/2026/11/17/treasury-yields-bonds-inflation.html"
-    },
-    {
-      "headline": "Japan 20-Year Bond Sale Draws Weak Demand Amid Global Volatility",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-17T14:41:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Japan\u2019s 20-year government bond auction Wednesday saw lower demand than the 12-month average, as investors remained wary of further yield increases amid heightened market volatility.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-18/japan-20-year-bond-sale-demand-is-weaker-than-12-month-average"
-    },
-    {
-      "headline": "BOJ\u2019s Ueda Says Food Sales Tax Cut Likely to Help Spur Growth",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-17T13:25:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "Bank of Japan Governor Kazuo Ueda said that a planned cut to the sales tax on food is likely to help spur economic growth by boosting the spending power of consumers.",
-      "transmission": {
-        "affected_assets": [
-          "JPY"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-18/boj-s-ueda-says-food-sales-tax-cut-likely-to-help-spur-growth"
-    },
-    {
-      "headline": "Fidelity Says Even at 6% Treasuries Fail to Be \u2018Massively Cheap\u2019",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "high",
-        "score": 9
-      },
-      "published_at": "2026-11-17T11:32:00-05:00",
-      "source_name": "Bloomberg",
-      "summary": "The recent selloff in Treasuries has sparked debate about buying opportunities, but Fidelity International\u2019s Salman Ahmed reckons that even a 6% yield wouldn\u2019t make the 10-year note \u201cmassively cheap.\u201d ...",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.bloomberg.com/news/articles/2026-11-17/fidelity-says-even-at-6-treasuries-fail-to-be-massively-cheap"
-    },
-    {
-      "headline": "Lisa Cook lawyer signals Fed governor won't attend Trump committee's hearing",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-17T10:03:38-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      },
-      "url": "https://www.cnbc.com/2026/11/17/lisa-cook-trump-fed-committee-hearing.html"
-    },
-    {
-      "headline": "Analysis: The Fed's chairman sees an AI revolution coming. Now he has to figure out what it means",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-17T09:35:13-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      },
-      "url": "https://www.cnbc.com/2026/11/16/kevin-warsh-fed-ai-jobs-productivity-interest-rateshtml.html"
-    },
-    {
-      "headline": "St. Louis Fed's Musalem says four more rate hikes may be needed in coming months",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-17T07:40:54-05:00",
-      "source_name": "CNBC",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "USD"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      },
-      "url": "https://www.cnbc.com/2026/11/17/alberto-musalem-fed-interest-rates.html"
-    },
-    {
-      "headline": "Bonds are causing trouble again \u2014 here's where to invest now",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-17T06:01:00-05:00",
-      "source_name": "CNBC",
-      "summary": "Rising bond yields and Federal Reserve rate hikes are making for a tricky environment for bond investors. Here's how to play it.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      },
-      "url": "https://www.cnbc.com/2026/11/17/bond-yields-where-to-invest.html"
-    },
-    {
-      "headline": "Treasury yields are broadly flat as investors await retail sales data",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-17T02:23:51-05:00",
-      "source_name": "public wire",
-      "summary": "Treasury yields were broadly unchanged as markets awaited U.S. retail sales.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
-    },
-    {
-      "headline": "Euro Zone to Grow Robustly as It Shrugs Off Inflation, EU Says",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-16T21:03:00-05:00",
-      "source_name": "public wire",
-      "summary": "EU assessments point to robust euro-area growth despite stubborn inflation, including after shocks tied to the Iran war.",
-      "transmission": {
-        "affected_assets": [
-          "USD",
-          "UST"
-        ],
-        "channel": "usd_rates",
-        "channels": [
-          "usd_rates"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 5,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
     }
   ],
-  "overnight_run_id": "overnight-20261118",
+  "overnight_run_id": "overnight-20261119",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Overnight markets leaned dollar-strong and mildly risk-off into a quiet Treasury tape, with investors parked ahead of Fed minutes while front-end funding futures marked a sharper path. The October 2028 policy-path terminal is 4.5825 percent, up 65 basis points on the day, and cash funding is still 3.93 percent. Euro finished the 17 November fix at 1.0989, down about 2 percent over five days and at the bottom of its one-year range, with sterling at 1.3191 and broad softness in the Australian and New Zealand dollars. Dollar-yen held 159.30. Commodities split: WTI is 86.01 and Brent is 93.14, gold is 3864, and copper at 5.976 is at a seven-month low. Equities were mixed, with the Nasdaq at 24328 and the Dow at 50759, while the volatility index at 22.91 sat above complacent readings. Geopolitics stayed elevated around Hormuz and Kuwait. Macro coverage is uneven in places; these cross-asset marks are the working set. Watch euro-area inflation today, Australia jobs tomorrow, and Canada retail sales plus Japan inflation on Thursday.",
+  "summary": "The dollar is breaking higher against the euro, sterling, the Australian dollar and the kiwi, while U.S. yields and the secured-funding strip are higher. The S&P 500 is 7323, gold is 3742, and crude is elevated but well off the prior spike, with WTI at 83.26 and Brent at 91.95. Fed minutes showed officials still open to more hikes and worried that AI could add to inflation, and Governor Waller talked about a possible half-point move. Treasury yields were inching higher into the morning after that session. The Bank of Japan governor remained open to tightening despite weak consumption. New Zealand's governor cited above-target inflation and an uneven recovery; sovereign yields there are unavailable, while kiwi spot is still a live price. Canada retail trade and Japan CPI are next, then Australian prices and U.S. growth data, ahead of the December central-bank decisions.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }

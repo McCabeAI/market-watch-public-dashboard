@@ -6,8 +6,8 @@
   "calibration_anchor_date": "2026-09-21",
   "scoring_cutoff": "2026-11",
   "score_inputs_latest_reference_period": "2026-11",
-  "score_inputs_last_ingested_at": "2026-11-18T09:53:22Z",
-  "last_refresh_date": "2026-11-18",
+  "score_inputs_last_ingested_at": "2026-11-19T10:32:19Z",
+  "last_refresh_date": "2026-11-19",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -489,13 +489,13 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Labor": {
-        "level": 45.74,
-        "impulse": -4.39,
+        "level": 43.5,
+        "impulse": -2.24,
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-09",
-        "latest_reference_period": "2026-09",
+        "as_of": "2026-10",
+        "latest_reference_period": "2026-10",
         "components": {
           "unemployment": 0.7,
           "wages": 0.2,
@@ -504,16 +504,16 @@
         "component_state": {
           "unemployment": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": 4.7183,
-            "level": 45.63,
-            "impulse": -5.13,
+            "as_of": "2026-10",
+            "transform_value": 4.8648,
+            "level": 42.7,
+            "impulse": -2.93,
             "weight": 0.7,
             "coverage_contribution": 0.7,
             "short_window": false,
-            "retrieved_at": "2026-10-15T10:25:03Z",
+            "retrieved_at": "2026-11-19T10:32:19Z",
             "release_date": null,
-            "release_date_status": "inherited_or_inconsistent"
+            "release_date_status": "not_recorded"
           },
           "wages": {
             "observed": true,
@@ -530,16 +530,16 @@
           },
           "employment": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": -5.2118,
-            "level": 43.96,
-            "impulse": -7.97,
+            "as_of": "2026-10",
+            "transform_value": -14.4554,
+            "level": 42.11,
+            "impulse": -1.85,
             "weight": 0.1,
             "coverage_contribution": 0.1,
             "short_window": false,
-            "retrieved_at": "2026-10-15T10:25:03Z",
+            "retrieved_at": "2026-11-19T10:32:19Z",
             "release_date": null,
-            "release_date_status": "inherited_or_inconsistent"
+            "release_date_status": "not_recorded"
           }
         },
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
