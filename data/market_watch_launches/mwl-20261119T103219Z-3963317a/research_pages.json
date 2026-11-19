@@ -1,0 +1,366 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-19T10:53:54+00:00",
+      "release_sha256": "3293bd02cb68a8be6b646bdf9101863ebb7ef0febf6ab738be97ca6da7ab22d9",
+      "run_attempt": "1",
+      "run_id": "44506461365",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/44506461365",
+      "site_sha256": "906f2ea76837278e8c495a0aeab9519dce7d9c985c7605500c11e7bfb46a5402"
+    }
+  ],
+  "launch_id": "mwl-20261119T103219Z-3963317a",
+  "launch_terminal": false,
+  "packet_sha256": "3a26fd6ece6b2a4d91594ae5a2f19a47ca041ed9320807b9f4bacc6a2ff666b3",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-18T06:50:51.061862-05:00",
+      "as_of": "2026-11-18T04:53:22.859808-05:00",
+      "books_run_id": "overnight-20261118",
+      "overnight_run_id": "overnight-20261118",
+      "packet_sha256": "5a87ed8e42d4e2ea355942facfe3b5702cf01e4eb438d6a1008ceac958550b73"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-19T05:32:19.294844-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "bloomberg",
+          "bloomberg_equity",
+          "cnbc_credit",
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 12,
+        "partial": false
+      },
+      "as_of": "2026-11-19T05:32:19.294844-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "already_accepted": 1,
+          "over_cap": 4,
+          "unattributed": 2,
+          "unverified_source": 9
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Fed officials expect more rate hikes, worry about AI impact on inflation, minutes show",
+          "id": "news:7fbbd5a076d52b63",
+          "published_at": "2026-11-18T13:41:59-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/18/fed-minutes-october-2026.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "IEA chief sees no 'credible pathway' back to pre-war normality in the Strait of Hormuz",
+          "id": "news:17f74b1400fb0163",
+          "published_at": "2026-11-18T06:00:01-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/18/iea-strait-hormuz-energy-risk.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "NZD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "rbnz_news",
+          "headline": "RBNZ Governor outlines inflation outlook amid uneven recovery",
+          "id": "news:32205e2e68bf8a43",
+          "published_at": "2026-11-18T06:00:00-05:00",
+          "source_name": "Reserve Bank of New Zealand",
+          "url": "https://www.rbnz.govt.nz/news-and-events/news/2026/11/rbnz-governor-outlines-inflation-outlook-amid-uneven-recovery",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Big bets against AI debt, from CoreWeave to Oracle and the Mag 7, could soon hit the ETF market",
+          "id": "news:bf0933232debaef3",
+          "published_at": "2026-11-18T17:38:55-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/18/ai-credit-default-swaps-coreweave-debt.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Nvidia's shift in financing tone may spell trouble for Coreweave, other neoclouds",
+          "id": "news:bd5812f67c86a2fc",
+          "published_at": "2026-11-18T15:00:32-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/18/nvidia-neocloud-financing.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields inch higher as investors weigh the state of the U.S. economy",
+          "id": "news:4f49a8abfe11eb4a",
+          "published_at": "2026-11-19T03:52:58-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/19/us-treasury-yields-investors-us-economy.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Inside India newsletter: Foreign flows helped the market recover. Now it faces the inflation test",
+          "id": "news:8435431e510f529c",
+          "published_at": "2026-11-18T18:01:23-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/19/india-inflation-foreign-investor-nifty50.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg_credit",
+          "headline": "CoreWeave\u2019s McBee Favors Tech Spending Over Debt Buyback",
+          "id": "news:d4bc309ed95da2b3",
+          "published_at": "2026-11-18T11:25:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-18/coreweave-s-mcbee-favors-data-center-spending-over-repaying-debt",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-19T05:32:19.294844-05:00",
+      "news_family_digest": "12f74fcfa1b631467b71b1f74389bfc6d076e516190e70c66f89de710d3eae8d",
+      "packet_sha256": "3a26fd6ece6b2a4d91594ae5a2f19a47ca041ed9320807b9f4bacc6a2ff666b3",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-19T05:32:19.294844-05:00",
+        "start": "2026-11-18T05:32:19.294844-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/freeze_binding.json",
+        "sha256": "99e9c64005cc0c3c8ef24e90adc3677170aad61eac5c151c8a4b95f9c5157ea3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/remote_freeze.json",
+        "sha256": "540a34f8a9ee857d5b1240c6805334b9a0ab965b8e255fcf1adaebc4733c3cb3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/artifacts/00_authenticate.json",
+        "sha256": "a28163a230f1864a3f93774776da6892af0f3212297e7d5510d26a3f9d287fa2"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/artifacts/01_ingest.json",
+        "sha256": "580b42ef8ce7cb0c1585725c21d57452dd03138540eaa9fca08decdf52378a0d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/artifacts/02_acquire.json",
+        "sha256": "73b48f93fa37c026a2e6bbe6adf42af902126e9d0c350beb72ee500e0e0c8580"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/artifacts/03_quality_gate.json",
+        "sha256": "4235c087d9f14694a9b5ef7bb62b9965e05d60df4a48ef2df2823d09c4578d11"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/artifacts/04_freeze.json",
+        "sha256": "443814db8e1f1ae0fa67a473c9a56222271bdbbe8ee24b8932a776b7f88d6b60"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/temperature_scores.json",
+        "sha256": "4b886307bb6f9bd8822067cfe0ce537528fe52b95515bb340ce2a693ed6742ca"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/history/au.json",
+        "sha256": "92170c6604c1e733cad64f384109dde27744ec16dd4fe6121a572f8ecbc486f6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/history/ca.json",
+        "sha256": "221d03e761595d3e788b3dbff5a574d43ee8456a04ac344fa65e849d15a591eb"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/history/ea.json",
+        "sha256": "819c52e9c14eea3a09f694cac726b1cde44c0f16881b6d2e425ecfab79a21770"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261119T103219Z-3963317a/lineage/history/us.json",
+        "sha256": "77ca9ed317686a6513ed22d770ea49c615a570cd93cd15214653de7e6f32c2b2"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261119/reviews/review-001/evidence_snapshot.json",
+        "sha256": "72266d49ad366c996def98bd14be26a8d43d93b4c3b343f902a0a55ea38c54b3"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "57e9cf705308ee201733b5c75219a8f11204f0ab24dd3ab13f056df7509c2c87"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261118/assembled_dataset.json",
+        "sha256": "c261b1f8b08fe0953294f9ea6cc2e228a0420503807923857c151dfe10876cb7"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "828cf4167544b005f25e5794bf70f4cb40200ad63f38140d09f0174662dbcaf9"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "6148e9b9a3b620a46435268051b1798b64c92f5dba8f957222b0aea7fe5a86a6"
+      }
+    ],
+    "launch_id": "mwl-20261119T103219Z-3963317a",
+    "market_state": {
+      "as_of": "2026-11-19T10:52:44Z",
+      "digest": "c78fd17bf689e44b5d64fa48417b1b115ef25c387fbb02e3e5867d3df6c52ee3",
+      "generated_at": "2026-11-19T10:52:44Z"
+    },
+    "news": {
+      "age_label": "24 h before this freeze",
+      "as_of": "2026-11-18T04:53:22.859808-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261118",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261119",
+    "packet_sha256": "3a26fd6ece6b2a4d91594ae5a2f19a47ca041ed9320807b9f4bacc6a2ff666b3",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Activity.business_surveys",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "EA.Labor.wages",
+        "JP.Consumer.income",
+        "JP.Consumer.retail",
+        "JP.Consumer.spending",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.confidence",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "e9fb452ccde14fd9d2da8867e0d13be4fb875e26",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 2,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-19T10:32:19Z",
+      "inputs_last_ingested_at": "2026-11-19T10:32:19Z",
+      "score_state_sha256": "4b886307bb6f9bd8822067cfe0ce537528fe52b95515bb340ce2a693ed6742ca"
+    },
+    "session_date": "2026-11-19",
+    "site_sha256": "906f2ea76837278e8c495a0aeab9519dce7d9c985c7605500c11e7bfb46a5402",
+    "source_commit": "cc2b44b7e2ab6b11ca245807f0e5b30b4553a7c8",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261119",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "3293bd02cb68a8be6b646bdf9101863ebb7ef0febf6ab738be97ca6da7ab22d9",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-19",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
