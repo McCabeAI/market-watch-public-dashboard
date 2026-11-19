@@ -63,7 +63,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-18T04:53:22.859808-05:00",
+  "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
     "average_holding_seconds": 471566,
     "average_realized_pnl_usd": 67989.64,
@@ -107,12 +107,12 @@
     "competition_eligible": true,
     "competition_rank": 4,
     "competitive_rank": 4,
-    "drawdown_usd": 13163.64,
-    "giveback_usd": 13163.64,
+    "drawdown_usd": 21859.02,
+    "giveback_usd": 21859.02,
     "high_water_nav_usd": 100285315.77,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100272152.13,
-    "net_pnl_usd": 272152.13,
+    "nav_usd": 100263456.75,
+    "net_pnl_usd": 263456.75,
     "pressure_flags": [],
     "prior_competition_rank": 4,
     "rank_change": 0,
@@ -121,7 +121,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 8695.38,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -132,7 +132,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "02fd2c2045ef3a50b4df57593c3402abeb57a27f0b6f62f6dba363534488ace3",
+  "memory_context_sha256": "f1d3e9c6d2dec7af296ee053dab7fe709f97eae752f73626ead56699c9b8180b",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -143,15 +143,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "Convergence is the discount mean-reverting on its own history. The US inflation print is not the trigger.",
-        "current_mark": 0.8345,
+        "current_mark": 0.83305,
         "current_notional_usd": 5000000.0,
         "entry_mark": 0.8343,
         "expected_mark_direction": null,
         "framing": "structural",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 10068.32,
-        "holding_seconds": 691365,
-        "horizon_elapsed_fraction": 0.0667,
+        "giveback_usd": 18758.24,
+        "holding_seconds": 780102,
+        "horizon_elapsed_fraction": 0.0752,
         "horizon_status": "within",
         "instrument": "EURGBP",
         "intended_horizon_days": 120,
@@ -165,16 +165,16 @@
         "realization_logic": "The euro's joint cheapness versus sterling, the dollar and the yen is realized as EURGBP drifts back toward the middle of its one-year range.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 11266.93,
-        "retained_mfe_fraction": 0.1064,
+        "retained_mfe_fraction": -0.6649,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 1198.61,
+        "total_pnl_usd": -7491.31,
         "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e",
-        "unrealized_pnl_usd": 1198.61
+        "unrealized_pnl_usd": -7491.31
       },
       "instrument": "EURGBP",
       "opened_at": "2026-11-10T04:50:36.940059-05:00",

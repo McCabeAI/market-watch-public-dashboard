@@ -1,0 +1,193 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-11-19T05:32:19.294844-05:00",
+  "calibration": {
+    "average_holding_seconds": null,
+    "average_realized_pnl_usd": null,
+    "breakeven": 0,
+    "by_asset_class": {},
+    "closed_trade_count": 0,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 0.0,
+    "wins": 0
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 9,
+    "competitive_rank": 9,
+    "drawdown_usd": 0.0,
+    "giveback_usd": 0.0,
+    "high_water_nav_usd": 100000000.0,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100000000.0,
+    "net_pnl_usd": 0.0,
+    "pressure_flags": [],
+    "prior_competition_rank": 9,
+    "rank_change": 0,
+    "raw_pnl_rank": 9,
+    "recent_pattern": "flat",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "e93efd3632f0f05f4bfbf162c7ba13f8b0ba2dabd4c951ae9a0dbb5a0d452574",
+  "open_positions": [],
+  "owner_id": "no-trade-skeptic",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.35
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.15
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.55
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261117"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261118"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "a0cf3cf0d5233ab7494f16d5da4188ef5cdd53b67889dbf98be42fcb7b2c0d01",
+    "streaks": {
+      "flat_cycles": 35,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [],
+  "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-16",
+        "rate": 3.93,
+        "source": "NY Fed"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Staying at the official cash fixing beats paying that fixing on shocked-risk capital. The post-jump strip is the funding path, and taking that price has no timed residual above the funding charge.",
+      "sr3_forward_view": "December at 4.285 rises through March at 4.545, already about 61bp above cash SOFR at 3.93, to September at 4.710. The October 2028 terminal at 4.5825 sits below that September peak."
+    },
+    {
+      "current_sofr": "Official NY Fed SOFR is 3.90 percent, effective 2026-11-13, ACT/360.",
+      "forward_funding_assessment": "higher",
+      "implication": "Flat cash earns the 3.90 percent official SOFR fixing and is not alpha, and any new risk position has to clear a December-to-March path the strip already marks at 4.2975 and 4.58.",
+      "sr3_forward_view": "December SOFR implies 4.2975 and March 2027 SOFR implies 4.58, both above the 3.90 percent fixing."
+    },
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-12",
+        "rate": 3.9,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Realized funding is assessed about the same as that December, March, and September strip, not versus the 3.90 cash fixing. Staying flat is the zero official SOFR benchmark. Paying 3.90 percent on new shocked-risk capital would finance a hike path the strip already discounts.",
+      "sr3_forward_view": "The December 2026 SOFR future at 95.695 implies about 4.305, March 2027 at 95.40 implies about 4.60, and September 2027 at 95.18 implies about 4.82, a hike path above the 3.90 official fixing."
+    },
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-10",
+        "rate": 3.89,
+        "source": "NY_FED"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Realized funding is judged about the same as that strip, so staying at the zero official SOFR benchmark does not leave an unpriced funding edge. Paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
+      "sr3_forward_view": "From cash SOFR 3.89 the strip prices December 2026 at 4.315, March 2027 at 4.615 and September 2027 at 4.815."
+    }
+  ],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

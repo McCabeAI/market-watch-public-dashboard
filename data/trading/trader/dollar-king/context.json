@@ -87,7 +87,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-18T04:53:22.859808-05:00",
+  "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
     "average_holding_seconds": 2389218,
     "average_realized_pnl_usd": 187304.22,
@@ -127,21 +127,21 @@
     "competition_eligible": true,
     "competition_rank": 1,
     "competitive_rank": 1,
-    "drawdown_usd": 512190.42,
-    "giveback_usd": 512190.42,
+    "drawdown_usd": 486455.04,
+    "giveback_usd": 486455.04,
     "high_water_nav_usd": 100952555.22,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100440364.8,
-    "net_pnl_usd": 440364.8,
+    "nav_usd": 100466100.18,
+    "net_pnl_usd": 466100.18,
     "pressure_flags": [],
     "prior_competition_rank": 1,
     "rank_change": 0,
     "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 240000.0,
-    "risk_capital_utilization": 0.024,
-    "session_pnl_change_usd": -25735.38,
+    "risk_capital_usd": 200000.0,
+    "risk_capital_utilization": 0.02,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -151,8 +151,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "c423e66d363c4cbc391aa5c78662d4465e19c59bb059b9094d3b0916b6d0c717",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-3d0a076838a1",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-dollar-king-pos-012b8f0c252c",
+      "source_run_id": "overnight-20261118"
+    }
+  ],
+  "memory_context_sha256": "fdbf9ceadc2338cff49313123ef2db2ea9c6b28c07f4a40969536f77c7db4168",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -163,16 +172,16 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "Today's producer prices are the test of whether the 0.4 percent CPI impulse and the ten-year at 5.1 keep the dollar bid.",
-        "current_mark": 1.1014,
+        "current_mark": 1.0989,
         "current_notional_usd": 10000000.0,
         "entry_mark": 1.1081,
         "expected_mark_direction": null,
         "framing": "tactical",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 22561.14,
-        "holding_seconds": 426667,
-        "horizon_elapsed_fraction": 0.9877,
-        "horizon_status": "within",
+        "full_size_hold_requires_reunderwrite": true,
+        "giveback_usd": 0.0,
+        "holding_seconds": 515403,
+        "horizon_elapsed_fraction": 1.1931,
+        "horizon_status": "expired",
         "instrument": "EURUSD",
         "intended_horizon_days": 5,
         "mae_usd": -0.0,
@@ -185,16 +194,18 @@
         "realization_logic": "Euro-dollar at 1.1081 is already in a five-day decline, and the short pays if that dollar bid extends through the producer-price reaction.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 83025.0,
-        "retained_mfe_fraction": 0.7283,
+        "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
-        "review_required": false,
+        "review_required": true,
         "review_threshold_usd": 100000.0,
-        "review_triggers": [],
+        "review_triggers": [
+          "horizon_expired"
+        ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 60463.86,
+        "total_pnl_usd": 83025.0,
         "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
-        "unrealized_pnl_usd": 60463.86
+        "unrealized_pnl_usd": 83025.0
       },
       "instrument": "EURUSD",
       "opened_at": "2026-11-13T06:22:15.706647-05:00",
@@ -212,15 +223,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "The franc reclaims the safe-haven bid if Hormuz escalation reverses the 20-day upside break.",
-        "current_mark": 0.8392954421645179,
+        "current_mark": 0.8402038402038402,
         "current_notional_usd": 10000000.0,
         "entry_mark": 0.8392954421645179,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 10823.34,
-        "holding_seconds": 83605,
-        "horizon_elapsed_fraction": 0.0484,
+        "giveback_usd": 0.0,
+        "holding_seconds": 172342,
+        "horizon_elapsed_fraction": 0.0997,
         "horizon_status": "within",
         "instrument": "USDCHF",
         "intended_horizon_days": 20,
@@ -234,16 +245,16 @@
         "realization_logic": "USDCHF extends the intact 20-day upside break while the US path stays priced above the 3.90 SOFR fixing.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 10823.34,
-        "retained_mfe_fraction": 0.0,
+        "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 100000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 0.0,
+        "total_pnl_usd": 10823.34,
         "trade_id": "trd-trader-dollar-king-pos-e7cd1ee0a3d9",
-        "unrealized_pnl_usd": 0.0
+        "unrealized_pnl_usd": 10823.34
       },
       "instrument": "USDCHF",
       "opened_at": "2026-11-17T05:39:57.066300-05:00",
@@ -255,14 +266,40 @@
   ],
   "owner_id": "dollar-king",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-18T04:53:22.859808-05:00",
+      "created_run_id": "overnight-20261118",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-18T04:53:22.859808-05:00",
+        "conviction": 62,
+        "entry_mark": 158.06,
+        "exit_mark": 159.3,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 1635617,
+        "instrument": "USDJPY",
+        "invalidation": "The long is wrong if a later freeze shows the Bank of Japan hiking and TONA catching the March contract from the Japan side, or if official SOFR converges toward TONA so the overnight gap closes from the United States side. A Ministry of Finance intervention print that reverses the post-hold leftover also kills it. Three-digit oil is not this ticket's invalidation; it is why USDCAD stays flat.",
+        "opened_at": "2026-10-30T06:33:05.373685-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 217402.23,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-3d0a076838a1",
+      "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
     "obligations_due": [],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "review_required_position_ids": []
+    "review_required_position_ids": [
+      "pos-d419ff966f72"
+    ]
   },
   "psychology": {
     "active_flags": [],

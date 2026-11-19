@@ -101,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-18T04:53:22.859808-05:00",
+  "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
     "average_holding_seconds": 934242,
     "average_realized_pnl_usd": 91476.31,
@@ -153,8 +153,8 @@
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 80000.0,
+    "risk_capital_utilization": 0.008,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -166,7 +166,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "bc1a9266f4fafafcd11d13d059156b6495d8ae7208b55cf26a8e5ea6c53ac1a4",
+  "memory_context_sha256": "c61b19983010e4361e7f151780e5e72010692cec8bacae736ec0e6c9891a4fbd",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -179,20 +179,20 @@
         "catalyst_logic": "No dated central-bank meeting is in the freeze. The edge is a snapback off the one-year extreme, and it is exhausted if the cross extends through 0.8331.",
         "current_mark": 0.83305,
         "current_notional_usd": 8000000.0,
-        "entry_mark": 0.83,
-        "expected_mark_direction": null,
+        "entry_mark": 0.83305,
+        "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 88736,
+        "horizon_elapsed_fraction": 0.0489,
         "horizon_status": "within",
         "instrument": "EURGBP",
         "intended_horizon_days": 21,
         "mae_usd": 0.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-6b544dc561cc",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
