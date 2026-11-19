@@ -51,6 +51,32 @@
       "postmortem_id": "pmd-398011348f57",
       "status": "submitted",
       "trade_id": "trd-trader-mean-reverter-pos-9a020b7cffca"
+    },
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": null,
+        "entry_mark": 159.6,
+        "exit_mark": 159.42,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 172342,
+        "instrument": "USDJPY",
+        "invalidation": "The short ends if USDJPY reasserts the failed 20-day upside break.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 11188.75,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-d130c67876f6",
+      "status": "due",
+      "trade_id": "trd-trader-mean-reverter-pos-35399779720e"
     }
   ],
   "schema_version": 1,

@@ -65,8 +65,8 @@
   ],
   "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
-    "average_holding_seconds": 471566,
-    "average_realized_pnl_usd": 67989.64,
+    "average_holding_seconds": 533273,
+    "average_realized_pnl_usd": 52713.66,
     "breakeven": 1,
     "by_asset_class": {
       "rates_rv": {
@@ -74,11 +74,11 @@
         "total_realized_pnl_usd": -56000.0
       },
       "spot_fx": {
-        "count": 2,
-        "total_realized_pnl_usd": 327958.55
+        "count": 3,
+        "total_realized_pnl_usd": 319568.28
       }
     },
-    "closed_trade_count": 4,
+    "closed_trade_count": 5,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -91,14 +91,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 67989.64,
-        "count": 4,
-        "hit_rate": 0.6667
+        "average_pnl_usd": 52713.66,
+        "count": 5,
+        "hit_rate": 0.5
       }
     },
-    "losses": 1,
+    "losses": 2,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 271958.55,
+    "total_realized_pnl_usd": 263568.28,
     "wins": 2
   },
   "capital_owner": null,
@@ -121,7 +121,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 904.4,
     "status": "ok"
   },
   "learning": {
@@ -132,58 +132,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f1d3e9c6d2dec7af296ee053dab7fe709f97eae752f73626ead56699c9b8180b",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 61,
-      "current_notional_usd": 5000000.0,
-      "entry_mark": 0.83,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "Convergence is the discount mean-reverting on its own history. The US inflation print is not the trigger.",
-        "current_mark": 0.83305,
-        "current_notional_usd": 5000000.0,
-        "entry_mark": 0.8343,
-        "expected_mark_direction": null,
-        "framing": "structural",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 18758.24,
-        "holding_seconds": 780102,
-        "horizon_elapsed_fraction": 0.0752,
-        "horizon_status": "within",
-        "instrument": "EURGBP",
-        "intended_horizon_days": 120,
-        "mae_usd": -7491.31,
-        "mechanical_order": false,
-        "mfe_usd": 11266.93,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-5760dbd4ac3e",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The euro's joint cheapness versus sterling, the dollar and the yen is realized as EURGBP drifts back toward the middle of its one-year range.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 11266.93,
-        "retained_mfe_fraction": -0.6649,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": -7491.31,
-        "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e",
-        "unrealized_pnl_usd": -7491.31
-      },
-      "instrument": "EURGBP",
-      "opened_at": "2026-11-10T04:50:36.940059-05:00",
-      "position_id": "pos-5760dbd4ac3e",
-      "risk_capital_usd": 50000.0,
-      "side": "long",
-      "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
-    }
-  ],
+  "memory_context_sha256": "ff7b24026edab353c6483604ae478ac04043b5d0f7c10ff8f9fdc13d92139d42",
+  "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -202,12 +152,12 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.14
+        "trend": "flat",
+        "value": 0.13
       },
       "defensiveness": {
         "band": "calm",
@@ -217,7 +167,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
@@ -248,16 +198,10 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [
-      {
-        "kind": "trade_win_close",
-        "magnitude": 0.13531906,
-        "run_id": "overnight-20261112"
-      }
-    ],
+    "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "43efe06bf1c5ba7176ff5f950335af513242308bd64e4356709464a7049adf00",
+    "state_sha256": "70e50ab8d57d6c20177a4dbee932ac0f30df531c3a44e88bce9834f5a76ce484",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -265,6 +209,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 61,
+      "holding_duration_seconds": 780102,
+      "instrument": "EURGBP",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "realized_pnl_usd": -8390.27,
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-12T04:50:23.662182-05:00",

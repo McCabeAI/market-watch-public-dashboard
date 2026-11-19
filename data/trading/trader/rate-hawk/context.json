@@ -89,20 +89,50 @@
       "trade_ids": [
         "trd-trader-rate-hawk-pos-2709875e8c9c"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Cover a front secured-funding short when that contract has built the path and fresh hawkish communication is showing up in the two-year rather than in the contract. Do not roll the closed front short into the peak contract to keep the thesis alive.",
+      "lesson_id": "les-57810c8f2420",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0ee32782b38a"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "A short-rate short is finished when the contract that had room to price incremental hikes has built that path. A peak contract does not inherit the result just because the reaction function is still described as hawkish.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
+      ]
     }
   ],
   "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
-    "average_holding_seconds": 1920548,
-    "average_realized_pnl_usd": -12417.49,
+    "average_holding_seconds": 2468612,
+    "average_realized_pnl_usd": -9722.91,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 5,
-        "total_realized_pnl_usd": -62087.47
+        "count": 6,
+        "total_realized_pnl_usd": -58337.47
       }
     },
-    "closed_trade_count": 5,
+    "closed_trade_count": 6,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": -33750.0,
@@ -115,15 +145,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 2744.11,
-        "count": 2,
+        "average_pnl_usd": 3079.41,
+        "count": 3,
         "hit_rate": 1.0
       }
     },
     "losses": 3,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -62087.47,
-    "wins": 2
+    "total_realized_pnl_usd": -58337.47,
+    "wins": 3
   },
   "capital_owner": null,
   "consequence": {
@@ -145,7 +175,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 125000.0,
     "risk_capital_utilization": 0.0125,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -3111.39,
     "status": "ok"
   },
   "learning": {
@@ -155,95 +185,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-0ee32782b38a",
-      "owner_id": "rate-hawk",
-      "owner_type": "trader",
-      "reference": "trd-trader-rate-hawk-pos-6c7bcf0fe6af",
-      "source_run_id": "overnight-20261118"
-    }
-  ],
-  "memory_context_sha256": "02f6ed3e18893bfbf96912c0cb7fead4e723691f9fa20f907113c7a559be2964",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 60,
-      "current_notional_usd": 12500000.0,
-      "entry_mark": 4.75,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": null,
-        "current_mark": 4.71,
-        "current_notional_usd": 12500000.0,
-        "entry_mark": 4.755,
-        "expected_mark_direction": null,
-        "framing": null,
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 69375.0,
-        "holding_seconds": 5208929,
-        "horizon_elapsed_fraction": null,
-        "horizon_status": "unspecified",
-        "instrument": "SOFR_2027-09",
-        "intended_horizon_days": null,
-        "mae_usd": -97500.0,
-        "mechanical_order": false,
-        "mfe_usd": 70000.0,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-c9184707c12b",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": null,
-        "realized_pnl_usd": 6250.0,
-        "recorded_mfe_usd": 70000.0,
-        "retained_mfe_fraction": 0.0089,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 500000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "short",
-        "total_pnl_usd": 625.0,
-        "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b",
-        "unrealized_pnl_usd": -5625.0
-      },
-      "instrument": "SOFR_2027-09",
-      "opened_at": "2026-09-19T22:36:50.082404-04:00",
-      "position_id": "pos-c9184707c12b",
-      "risk_capital_usd": 125000.0,
-      "side": "short",
-      "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
-    }
-  ],
+  "learning_obligations": [],
+  "memory_context_sha256": "9cafaedf0455efbf016079877524ef462ab1f493e05df9c831d6077e7a4d956e",
+  "open_positions": [],
   "owner_id": "rate-hawk",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-18T04:53:22.859808-05:00",
-      "created_run_id": "overnight-20261118",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-18T04:53:22.859808-05:00",
-        "conviction": 60,
-        "entry_mark": 4.12,
-        "exit_mark": 4.29,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 1031253,
-        "instrument": "SOFR_2026-12",
-        "invalidation": "The shorts are invalidated if the jobs report is weak enough to extend the rally and policy treats that weakness as room to ease, or if oil breaks lower and removes the inflation impulse.",
-        "opened_at": "2026-11-06T06:25:49.281876-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 4250.0,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-0ee32782b38a",
-      "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -255,7 +202,7 @@
   "psychology": {
     "active_flags": [
       {
-        "basis": "revenge_pressure 0.06 families corra",
+        "basis": "revenge_pressure 0.05 families corra",
         "check": "required",
         "families": [
           "corra"
@@ -288,7 +235,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.14
+        "value": 0.13
       },
       "frustration": {
         "band": "calm",
@@ -298,7 +245,7 @@
       "revenge_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.06
+        "value": 0.05
       },
       "self_trust": {
         "band": "steady",
@@ -334,7 +281,7 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "71650b09f0583402e022beae551baabadc6f9bd7f9a18dfb1fc882eca397ca61",
+    "state_sha256": "5e1d47c78b12b13ffb2385a25c59e236f0231ec0436c0ee26aa8b703cc999f46",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -342,6 +289,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 60,
+      "holding_duration_seconds": 5208929,
+      "instrument": "SOFR_2027-09",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 3750.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
+    },
     {
       "asset_class": "rates",
       "closed_at": "2026-11-18T04:53:22.859808-05:00",

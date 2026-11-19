@@ -2202,6 +2202,60 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Hold flat. Euro at 1.0989 is breaking down, kiwi at 0.5499 is on a five-year floor, and March SOFR is 4.545 after a 61bp up day, so the shape that fits is bounded optionality. The freeze has no option price, no implied volatility, and no strike. Convexity cannot be bought today, and selling the dollar extreme in spot would be a linear risk that is not being put on without a price."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 74,
+      "decision_fingerprint": "9f11a68609edb67a5b4b7ea84d5f887b051a153ea08eae13c7429adedad66472",
+      "event_id": "jde-7617fe8a5fd34294",
+      "funding_view": null,
+      "invalidation": "This flat stance ends only when a later set of marks quotes an actual premium, strike, and tenor. A further extension of the same spot breaks does not create the option.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6122be72397a87cf19b5759741b079dddc51deb4b2611ad6e82ff9c80479c06d",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "aef3e4f6f49e220fea826640242925d38a52370fe362fff4ae3e31cf3942f89f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. Equity vol is 25.46 and several dollar pairs are through their 20-day ranges, but the marks contain no option premium, no strike, and no tenor. Those spot breaks are linear risk with an uncapped gap. They are not a substitute for an option that cannot be priced.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The book stays flat. Equity vol is 25.46 and several dollar pairs are through their 20-day ranges, but the marks contain no option premium, no strike, and no tenor. Those spot breaks are linear risk with an uncapped gap. They are not a substitute for an option that cannot be priced."
     }
   ],
   "schema_version": 1,

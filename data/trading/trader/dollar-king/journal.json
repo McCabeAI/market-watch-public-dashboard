@@ -2391,6 +2391,77 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Close the 4 million dollar-yen winner and keep the 10 million euro short and the 10 million dollar-franc long. Euro at 1.0989 is a fresh downside break, down 2 percent in five days at the bottom of its one-year range, with the two-year at 4.80 and March SOFR at 4.545. Dollar-yen at 159.30 is a five-year extreme that is up only 0.7 percent in five days, and a fresh 4 million long at that print is not a trade to put on. Dollar-franc at 0.8402 is still the open extension off a 0.8393 entry."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pos-d419ff966f72",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCHF",
+          "notional_usd": null,
+          "position_id": "pos-e7cd1ee0a3d9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "dda9b0adb3a5395bb1a90876f5a2327c05a4f003e475e942e0f5b04be5262fec",
+      "event_id": "jde-c8fd65d902514058",
+      "funding_view": null,
+      "invalidation": "The euro short comes off if euro reclaims the broken 20-day range or trades back through 1.1081. The franc long comes off if dollar-franc loses the upside break or trades back through 0.8393.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-d419ff966f72",
+        "pos-e7cd1ee0a3d9"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fdbf9ceadc2338cff49313123ef2db2ea9c6b28c07f4a40969536f77c7db4168",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b08fe53ac221cbc4db4a2d670fed8fd398e3b183db7e9c4af35577e21eb93b49"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The euro short and the dollar-franc long stay on. Euro at 1.0968 is still through the 20-day low, and dollar-franc at 0.8427 is still through the 20-day high, with the two-year at 4.80 after a hawkish set of minutes. Dollar-yen at 159.42 is not a breakout, and dollar-Canada is an oil-linked extra rather than a third dollar ticket. Nothing is added.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The euro short and the dollar-franc long stay on. Euro at 1.0968 is still through the 20-day low, and dollar-franc at 0.8427 is still through the 20-day high, with the two-year at 4.80 after a hawkish set of minutes. Dollar-yen at 159.42 is not a breakout, and dollar-Canada is an oil-linked extra rather than a third dollar ticket. Nothing is added."
     }
   ],
   "schema_version": 1,

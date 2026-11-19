@@ -2367,6 +2367,66 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Close the March 2027 pay. The freeze is 4.545, through the 4.615 entry, and March now sits a few basis points under the October 2028 terminal at 4.5825. Oil is 86 and 93, not the prior spike, and a stall after that decline is not a reason to keep the full short. A small new March pay elsewhere does not validate the existing size. The March short comes off, and no replacement is opened."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 1000000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-19T06:43:46.211967-05:00",
+      "conviction": 74,
+      "decision_fingerprint": "22b01c8958bf6d7241370ec219c277b7ac5c23e8ab45367bd3f020c406077d4f",
+      "event_id": "jde-691ec97a763c4546",
+      "funding_view": null,
+      "invalidation": "Close the euro short if euro trades back through 1.1120, or if the policy communication before December 4 clearly reverses the hawkish lean.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-cca5e82a9a1e"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-cca5e82a9a1e"
+      ],
+      "memory_context_sha256": "be6e1219dd91fc2e20084f6b4653e3337b3ddc700fe85be1070b99dceb0b2f90",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "83c1077a4d990248284817b137786a4166dcd2cd9011bb4c4e6a7b6a4e0118c7"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "b75154694be9425b5a0fa955c6c78b78c5c57053a8583c8dac343245549496d2",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261119-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The swing is a concentrated euro short. Euro at 1.0968 is through the 20-day low after hawkish minutes, dollar-franc and the Australian dollar confirm the dollar bid, and dollar-yen at 159.42 is not the break. The March funding short that was covered at 4.54 is not reopened, and the euro is a different expression of the same hawkish dollar path.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The swing is a concentrated euro short. Euro at 1.0968 is through the 20-day low after hawkish minutes, dollar-franc and the Australian dollar confirm the dollar bid, and dollar-yen at 159.42 is not the break. The March funding short that was covered at 4.54 is not reopened, and the euro is a different expression of the same hawkish dollar path."
     }
   ],
   "schema_version": 1,

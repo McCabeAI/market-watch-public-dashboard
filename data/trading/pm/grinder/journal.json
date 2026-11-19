@@ -2338,6 +2338,62 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "The book stays flat. March funding futures at 4.545 have already repriced 61 basis points above the 3.93 cash fixing, September at 4.710 is only a little beyond that front contract, and euro-sterling at 0.8331 has no catalyst that would out-earn cash charged on risk capital. Preservation means declining new risk whose expected mark change does not clear that funding cost with room."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-19T06:43:46.817969-05:00",
+      "conviction": 36,
+      "decision_fingerprint": "c98a421ec20e053c1402321f7d2c658b51502d3312b62cd2e0aefe443f5c9a8b",
+      "event_id": "jde-4856dc215b60489b",
+      "funding_view": null,
+      "invalidation": "A markable dislocation whose expected edge on shocked risk exceeds the 3.92 fixing, that does not reopen a cross already through its extreme, and that does not depend on the hike path failing to arrive.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "182487b7b3b9870adfe20bbda4dbc66cf222170b2ac252ba8d1fdb7aa97ed951",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5cfec1966cdb9528a2a034aca7c5ef4f46c6d6cf368bd4f55dfed0e65eb788d8"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "edd32125ff2722b696d0c1bf40bc8e6135f47217dffb8636a5850f525dd21188",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261119-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Euro at 1.0968 and the Australian dollar at 0.6731 have already broken, so those expressions are complete. The secured-funding strip from 4.30 to 4.735 already is the hike path, so March neither pays an unpriced edge above the 3.92 fixing nor deserves new risk.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "Stay flat. Euro at 1.0968 and the Australian dollar at 0.6731 have already broken, so those expressions are complete. The secured-funding strip from 4.30 to 4.735 already is the hike path, so March neither pays an unpriced edge above the 3.92 fixing nor deserves new risk."
     }
   ],
   "schema_version": 1,

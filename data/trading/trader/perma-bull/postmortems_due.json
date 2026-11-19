@@ -75,7 +75,7 @@
       "owner_id": "perma-bull",
       "owner_type": "trader",
       "postmortem_id": "pmd-c925afffb7d0",
-      "status": "due",
+      "status": "submitted",
       "trade_id": "trd-trader-perma-bull-pos-78563c24fe05"
     },
     {
@@ -101,8 +101,60 @@
       "owner_id": "perma-bull",
       "owner_type": "trader",
       "postmortem_id": "pmd-130b008cfe0d",
-      "status": "due",
+      "status": "submitted",
       "trade_id": "trd-trader-perma-bull-pos-35db4e56bf42"
+    },
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": null,
+        "entry_mark": 0.68,
+        "exit_mark": 0.67,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 172342,
+        "instrument": "AUDUSD",
+        "invalidation": "AUDUSD extends its 20-day downside break while SOFR March 2027 settles up through the June-September strip, so the yield backup becomes a parallel tightening shock.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -56230.36,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-26850435e8fb",
+      "status": "due",
+      "trade_id": "trd-trader-perma-bull-pos-471766cc8505"
+    },
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": 58,
+        "entry_mark": 4.71,
+        "exit_mark": 4.74,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 88736,
+        "instrument": "SOFR_2027-09",
+        "invalidation": "The September receive is invalidated if that contract holds 4.710 and the strip pushes further, or if oil moves back toward the prior scare zone. The Australian-dollar hold is invalidated if spot fails to stabilize while March SOFR at 4.545 and September at 4.710 hold the repricing.",
+        "opened_at": "2026-11-18T04:53:22.859808-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -1250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-e1ea63fea041",
+      "status": "due",
+      "trade_id": "trd-trader-perma-bull-pos-6e1d9b2083b8"
     }
   ],
   "schema_version": 1,

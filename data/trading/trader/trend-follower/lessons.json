@@ -135,6 +135,45 @@
         "trd-trader-trend-follower-pos-96a63a1df145"
       ],
       "updated_at": "2026-11-12T04:50:23.662182-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "future_rule": "If a dollar-yen long is open, hold it until price falls back inside the prior range or until the two-year is below 4.67 and March secured funding is below 4.53. Do not close an open trend for lack of a new breakout.",
+      "history": [
+        {
+          "at": "2026-11-19T05:32:19.294844-05:00",
+          "op": "add",
+          "run_id": "overnight-20261119"
+        }
+      ],
+      "lesson_id": "les-76474359febf",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-ee7810d122cf"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "A trend position stays open until the written invalidation prints. Lack of a fresh breakout is a reason not to add, not an exit signal while the stated stops are unmet.",
+      "trade_ids": [
+        "trd-trader-trend-follower-pos-111b627e5627"
+      ],
+      "updated_at": "2026-11-19T05:32:19.294844-05:00"
     }
   ],
   "schema_version": 1,

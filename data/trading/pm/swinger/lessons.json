@@ -77,6 +77,45 @@
         "trd-pm-swinger-pm-swinger-f8f9feb515d2"
       ],
       "updated_at": "2026-11-13T07:15:27.559705-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-19T06:43:46.211967-05:00",
+      "future_rule": "Do not cover a secured-funding short before the written invalidation unless the catalyst itself has flipped, and do not immediately re-open that same short as a new ticket.",
+      "history": [
+        {
+          "at": "2026-11-19T06:43:46.211967-05:00",
+          "op": "add",
+          "run_id": "overnight-20261119"
+        }
+      ],
+      "lesson_id": "les-c66a0b194897",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-b462b7946086"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "Covering a short solely because price has fallen, while the written invalidation still holds, converts an open drawdown into a realized loss at the stall. A finished decline is also not a signal to reload the same short.",
+      "trade_ids": [
+        "trd-pm-swinger-pm-swinger-169e52b857c1"
+      ],
+      "updated_at": "2026-11-19T06:43:46.211967-05:00"
     }
   ],
   "schema_version": 1,

@@ -2288,6 +2288,62 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Cut the Canada 2027 strip receive in half, leaving 21.25 million. March Canada rose 41.5bp to 2.965 and March US SOFR rose 61.5bp to 4.545 in the same session, which is too fast to own at full size against copper at a seven-month low of 5.976. Brent at 93.14 puts energy pass-through back into the Canada strip, so full size is no longer the receive. The known 2027 contracts are still below a mid-3s path, so the other half stays."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "CORRA_2027H-Z",
+          "notional_usd": null,
+          "position_id": "pos-9849cf751c27",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "c0529fc13b7646387cca14f21d16cf46b506ba461db57620260197e74ec0b1bb",
+      "event_id": "jde-eefa7dc31e5a43b6",
+      "funding_view": null,
+      "invalidation": "The hold dies if the Canada 2027 curve revisits the 3.4 entry, if December Canadian funding lifts through March at 3.00 and away from the 2.83 terminal, or if the Bank of Canada validates a hike path rather than scenarios.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9849cf751c27"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "024f9d4ce8e1a149375116be2c9155c572b768e3efca3e687795a05df7f04708",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a2e1c69924b8e1f2c0a9c5df8de2beb4d93cb6d7bfc8f8e5882802b28bdafd4a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The Canada 2027 curve long stays, and nothing is added. December Canadian funding at 2.795 already sits on a February terminal near 2.83, so further cuts are not the underpriced easing. The underpriced path is the re-hike premium from that terminal out to December 2027 at 3.325. The five-day selloff in Canada's two-year, up 17 basis points to 3.30, looks like U.S. spillover. A U.S. receive is not the replacement.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The Canada 2027 curve long stays, and nothing is added. December Canadian funding at 2.795 already sits on a February terminal near 2.83, so further cuts are not the underpriced easing. The underpriced path is the re-hike premium from that terminal out to December 2027 at 3.325. The five-day selloff in Canada's two-year, up 17 basis points to 3.30, looks like U.S. spillover. A U.S. receive is not the replacement."
     }
   ],
   "schema_version": 1,

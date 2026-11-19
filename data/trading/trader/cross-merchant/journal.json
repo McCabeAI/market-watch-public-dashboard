@@ -2300,6 +2300,64 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Buy 8 million euro-sterling. The cross is 0.8331, the bottom of its one-year range and near the bottom of five years, while oil at 86 and 93 is not a blow-off and copper at 5.976 is not a sterling impulse. Euro-sterling cancels the dollar, the 5.10 US ten-year, and cash funding, which a long euro or a short sterling would keep. Aussie-Canada stays shut on this oil tape, and Aussie-kiwi richness agrees with the kiwi's floor break."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": null,
+          "position_id": "pos-6b544dc561cc",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "f3d7e890bca8307d7fcd28ddd811f378011f0730f20fecec676ed34cb7f5dac7",
+      "event_id": "jde-727a61b73561488a",
+      "funding_view": null,
+      "invalidation": "The exit is wrong if euro-sterling reclaims the pre-break 20-day range and euro stops underperforming sterling. A later confirmed break in Aussie-Canada could be the next cross, and it is not this one.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-6b544dc561cc"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-6b544dc561cc"
+      ],
+      "memory_context_sha256": "c61b19983010e4361e7f151780e5e72010692cec8bacae736ec0e6c9891a4fbd",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a50936f47c0392dddd80ae490edfd0ed02247ee27cd493cd312f0ce91ae9e0a2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Euro-sterling is closed. The cross is the residual of a joint euro and sterling breakdown, and that residual has itself broken, with spot 0.8329, a 20-day downside break, and a one-year percentile of 0.2. Sterling is the firmer European leg. Aussie-Canada is not a cleaner replacement: the break is unconfirmed and the short would pay the Australia-versus-Canada carry.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "Euro-sterling is closed. The cross is the residual of a joint euro and sterling breakdown, and that residual has itself broken, with spot 0.8329, a 20-day downside break, and a one-year percentile of 0.2. Sterling is the firmer European leg. Aussie-Canada is not a cleaner replacement: the break is unconfirmed and the short would pay the Australia-versus-Canada carry."
     }
   ],
   "schema_version": 1,

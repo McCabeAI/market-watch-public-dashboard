@@ -867,6 +867,61 @@
       "run_id": "overnight-20261118",
       "seq": 39,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "event_id": "pse-000040",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bear",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261119",
+      "seq": 40,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0046,
+        "defensiveness": -0.0004,
+        "frustration": -0.0007,
+        "revenge_pressure": -0.0003,
+        "self_trust": 0.003,
+        "thesis_attachment": -0.0011
+      },
+      "event_id": "pse-000041",
+      "kind": "trade_win_close",
+      "magnitude": 0.101875,
+      "mismatch": false,
+      "owner_id": "perma-bear",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261119",
+      "scale": 1.0,
+      "seq": 41,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "bond",
+        "notional_usd": 25000000.0,
+        "realized_pnl_usd": 50937.5,
+        "side": "long",
+        "trade_id": "trd-trader-perma-bear-pos-5ac8fc69cb81"
+      }
     }
   ],
   "owner_id": "perma-bear",

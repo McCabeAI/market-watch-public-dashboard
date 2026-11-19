@@ -116,6 +116,45 @@
         "trd-trader-rate-hawk-pos-2709875e8c9c"
       ],
       "updated_at": "2026-11-18T04:53:22.859808-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "future_rule": "Cover a front secured-funding short when that contract has built the path and fresh hawkish communication is showing up in the two-year rather than in the contract. Do not roll the closed front short into the peak contract to keep the thesis alive.",
+      "history": [
+        {
+          "at": "2026-11-19T05:32:19.294844-05:00",
+          "op": "add",
+          "run_id": "overnight-20261119"
+        }
+      ],
+      "lesson_id": "les-57810c8f2420",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0ee32782b38a"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "A short-rate short is finished when the contract that had room to price incremental hikes has built that path. A peak contract does not inherit the result just because the reaction function is still described as hawkish.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
+      ],
+      "updated_at": "2026-11-19T05:32:19.294844-05:00"
     }
   ],
   "schema_version": 1,

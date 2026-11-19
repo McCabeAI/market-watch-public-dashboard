@@ -2423,6 +2423,64 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Hold the 10 million dollar-yen short and do not add. The larger crowd is still the dollar long, with euro at 1.0989 and kiwi at 0.5499 on the floor, but this short is itself the crowded anti-dollar bet because more than one seat is already short dollar-yen from nearby levels. March SOFR at 4.545, up 61bp, is the public hike story and is left alone. No fresh futures net is available, so a receive is not opened on the reprice alone."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-42a60282429f",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "b680e1d6433ae62e4ec52b7790877ec4f209e5504bff4a1ed92c44b9b18c0c38",
+      "event_id": "jde-5827def3bb424dcf",
+      "funding_view": null,
+      "invalidation": "The close is wrong if dollar-yen itself prints a 20-day upside break, which would be a real extension to fade, or if the fresh dollar-up breaks reverse while this short was still the open dollar-down leg.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-42a60282429f"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-42a60282429f"
+      ],
+      "memory_context_sha256": "e1e77c6d331198801a0265de747a150ba964f4372f6ed75475edd819a2911620",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f1c78cdab185bc3302234831c768d1cb873ad6340d982ed297c363e38756db1a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar-yen short is closed and nothing replaces it. Speculative positioning is not in the marks, so crowding can only be read from the price extreme, and that extreme is the fresh dollar-up complex in euro, sterling, the Australian dollar, the kiwi, dollar-Canada, and dollar-franc. Dollar-yen at 159.42 has a one-year z-score of 0.52 and no 20-day breakout, so the short has no stretched long to harvest. The 10-year up nine basis points is an impulse that usually carries dollar-yen higher.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The dollar-yen short is closed and nothing replaces it. Speculative positioning is not in the marks, so crowding can only be read from the price extreme, and that extreme is the fresh dollar-up complex in euro, sterling, the Australian dollar, the kiwi, dollar-Canada, and dollar-franc. Dollar-yen at 159.42 has a one-year z-score of 0.52 and no 20-day breakout, so the short has no stretched long to harvest. The 10-year up nine basis points is an impulse that usually carries dollar-yen higher."
     }
   ],
   "schema_version": 1,

@@ -2311,6 +2311,64 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Hold the 5 million euro-sterling long. The cross is 0.8331, 12 pips under the 0.8343 entry, at the bottom of its one-year range and near the bottom of five years. Both the euro and sterling are already cheap against the dollar, so the cross is the residual dislocation. Euro-dollar at 1.0989 is still breaking, so a new euro buy waits. The front end is rich to cash because hikes are priced, and that is not a value receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURGBP",
+          "notional_usd": null,
+          "position_id": "pos-5760dbd4ac3e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "d1a3ce9eaa3c1247d43d793a2c9279d01d3d0d3405a7df596dfd6a64c381d8b6",
+      "event_id": "jde-aaaa86b28d0b4bce",
+      "funding_view": null,
+      "invalidation": "The close is wrong if euro-sterling reclaims the pre-break 20-day range and trades back through the 0.8343 entry while euro stops extending its own downside break.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-5760dbd4ac3e"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-5760dbd4ac3e"
+      ],
+      "memory_context_sha256": "f1d3e9c6d2dec7af296ee053dab7fe709f97eae752f73626ead56699c9b8180b",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "43efe06bf1c5ba7176ff5f950335af513242308bd64e4356709464a7049adf00"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The euro-sterling long is closed. A one-year percentile of 0.2 is a real dislocation, and the fresh 20-day break says that floor is still being left behind. Euro itself at 1.0968 is the stricter cheap leg and it is still breaking, so convergence has no start. Canada's two-year jump against Europe's 3.13 two-year is a dollar-bloc yield impulse, not a reason for this cross to mean-revert.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The euro-sterling long is closed. A one-year percentile of 0.2 is a real dislocation, and the fresh 20-day break says that floor is still being left behind. Euro itself at 1.0968 is the stricter cheap leg and it is still breaking, so convergence has no start. Canada's two-year jump against Europe's 3.13 two-year is a dollar-bloc yield impulse, not a reason for this cross to mean-revert."
     }
   ],
   "schema_version": 1,

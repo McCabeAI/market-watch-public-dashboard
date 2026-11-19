@@ -121,6 +121,32 @@
       "postmortem_id": "pmd-77f7d2d700a4",
       "status": "submitted",
       "trade_id": "trd-trader-positioning-cynic-pos-df316f59e974"
+    },
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": null,
+        "entry_mark": 159.6,
+        "exit_mark": 159.42,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 172342,
+        "instrument": "USDJPY",
+        "invalidation": "The short is invalid if USDJPY holds above 159.60 and reclaims the failed 20-day break, showing the dollar long is being added again.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 11188.75,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-f93cef64feda",
+      "status": "due",
+      "trade_id": "trd-trader-positioning-cynic-pos-42a60282429f"
     }
   ],
   "schema_version": 1,

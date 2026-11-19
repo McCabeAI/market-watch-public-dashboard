@@ -3013,6 +3013,80 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Close the Australian bill pay and the March SOFR pay, hold the 15 million Australian-dollar long, and receive 20 million of September 2027 SOFR. Cash SOFR is 3.93 while September is 4.710 after a 78bp jump, and oil is 86 and 93 rather than the old scare zone, so the pro-growth expression is that the one-session hike cycle was too much. The Australian dollar at 0.6735 is only a small drawdown from 0.6757 and stays as the cyclical long. The receive fails if September holds 4.710 and extends, or if oil returns to the scare zone."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDUSD",
+          "notional_usd": null,
+          "position_id": "pos-471766cc8505",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-09",
+          "notional_usd": null,
+          "position_id": "pos-6e1d9b2083b8",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 72,
+      "decision_fingerprint": "a8e841c3d4d5a246b81e561ad839abd8ca22ddf36da694ec549a2f4fba339af0",
+      "event_id": "jde-d34e4222ef6f4a1a",
+      "funding_view": null,
+      "invalidation": "The flat stance is wrong if the Australian dollar reclaims the broken range and copper firms, and if September implied falls back through 4.71 because the hike lean fades.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-471766cc8505",
+        "pos-6e1d9b2083b8"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-471766cc8505",
+        "trd-trader-perma-bull-pos-6e1d9b2083b8"
+      ],
+      "memory_context_sha256": "90835ef49ea1e721929da8742444db57ea9cc161f81862bc6439cd0b41313581",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f414dc37ddc27ae31c5852325ce68e231fa53dd15c29f7cc05e65a0a6c27e406"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Both cyclical legs come off. The Australian dollar at 0.6731 is through a 20-day low, with RSI at 23.4 and copper soft, so the long is the wrong pro-growth expression even with equities still high. September 2027 secured funding at 4.735 is above the 4.71 entry, and the minutes lean toward more hikes, so the receive is on the wrong side of the path. Nothing replaces them today.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "Both cyclical legs come off. The Australian dollar at 0.6731 is through a 20-day low, with RSI at 23.4 and copper soft, so the long is the wrong pro-growth expression even with equities still high. September 2027 secured funding at 4.735 is above the 4.71 entry, and the minutes lean toward more hikes, so the receive is on the wrong side of the path. Nothing replaces them today."
     }
   ],
   "schema_version": 1,

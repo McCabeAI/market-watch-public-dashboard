@@ -2314,6 +2314,64 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Hold the 10 million dollar-yen short. At 159.30 it is a five-year extreme, the five-day gain is only 0.7 percent, and the failed 20-day upside break at the 159.60 entry is still the reversal that is set up. Euro at 1.0989 and kiwi at 0.5499 are one-day breakdowns while the 61bp March SOFR jump and today's euro-area inflation print are live, so those fades stay blocked."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": null,
+          "position_id": "pos-35399779720e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "6858ab1d0c973b5ade89206d68216b67808412562e70fe622b0603d8d6ba8bf1",
+      "event_id": "jde-e6d410141c9849ca",
+      "funding_view": null,
+      "invalidation": "A later fade needs a named reversal, such as a failed break or a rejection close, on one of the stretched markets. The yen short is not kept as a substitute for that missing condition.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-35399779720e"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-mean-reverter-pos-35399779720e"
+      ],
+      "memory_context_sha256": "4c09cb4b5bf4e3a4292c7957d1b2af62c6fc11a7080da46962365b9a570889fd",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b6bdded21de9f6146c5752a07912d74ede6672fcc95b2d9aa52efd106f505b3f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The dollar-yen short is closed. It is a small gain from 159.60 to 159.42, and it is not the stretch: the one-year z-score is 0.52 and RSI is 59. The stretches are euro, dollar-franc, dollar-Canada, and euro-sterling, and each of those is a fresh break. A break that started this week is not a reversal condition, so none of them is faded.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The dollar-yen short is closed. It is a small gain from 159.60 to 159.42, and it is not the stretch: the one-year z-score is 0.52 and RSI is 59. The stretches are euro, dollar-franc, dollar-Canada, and euro-sterling, and each of those is a fresh break. A break that started this week is not a reversal condition, so none of them is faded."
     }
   ],
   "schema_version": 1,

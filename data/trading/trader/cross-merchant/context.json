@@ -103,16 +103,16 @@
   ],
   "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
-    "average_holding_seconds": 934242,
-    "average_realized_pnl_usd": 91476.31,
+    "average_holding_seconds": 765141,
+    "average_realized_pnl_usd": 72892.95,
     "breakeven": 0,
     "by_asset_class": {
       "spot_fx": {
-        "count": 4,
-        "total_realized_pnl_usd": 365905.23
+        "count": 5,
+        "total_realized_pnl_usd": 364464.74
       }
     },
-    "closed_trade_count": 4,
+    "closed_trade_count": 5,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -125,14 +125,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 91476.31,
-        "count": 4,
-        "hit_rate": 0.5
+        "average_pnl_usd": 72892.95,
+        "count": 5,
+        "hit_rate": 0.4
       }
     },
-    "losses": 2,
+    "losses": 3,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 365905.23,
+    "total_realized_pnl_usd": 364464.74,
     "wins": 2
   },
   "capital_owner": null,
@@ -155,7 +155,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 80000.0,
     "risk_capital_utilization": 0.008,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 1449.2,
     "status": "ok"
   },
   "learning": {
@@ -166,58 +166,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c61b19983010e4361e7f151780e5e72010692cec8bacae736ec0e6c9891a4fbd",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 56,
-      "current_notional_usd": 8000000.0,
-      "entry_mark": 0.83,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "No dated central-bank meeting is in the freeze. The edge is a snapback off the one-year extreme, and it is exhausted if the cross extends through 0.8331.",
-        "current_mark": 0.83305,
-        "current_notional_usd": 8000000.0,
-        "entry_mark": 0.83305,
-        "expected_mark_direction": "higher",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
-        "holding_seconds": 88736,
-        "horizon_elapsed_fraction": 0.0489,
-        "horizon_status": "within",
-        "instrument": "EURGBP",
-        "intended_horizon_days": 21,
-        "mae_usd": 0.0,
-        "mechanical_order": false,
-        "mfe_usd": 0.0,
-        "move_versus_entry_intent": "flat",
-        "order_policy": "review_only",
-        "position_id": "pos-6b544dc561cc",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "Euro-sterling lifts off the 0.8331 one-year extreme as the sterling premium versus the euro mean-reverts, with the dollar cancelled.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": 0.0,
-        "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc",
-        "unrealized_pnl_usd": 0.0
-      },
-      "instrument": "EURGBP",
-      "opened_at": "2026-11-18T04:53:22.859808-05:00",
-      "position_id": "pos-6b544dc561cc",
-      "risk_capital_usd": 80000.0,
-      "side": "long",
-      "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc"
-    }
-  ],
+  "memory_context_sha256": "a87963b4e3a87dd427a234341b51a2aa94c36a9a41a3ce573a1d09341cddab2b",
+  "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -241,7 +191,7 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
@@ -291,7 +241,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "a50936f47c0392dddd80ae490edfd0ed02247ee27cd493cd312f0ce91ae9e0a2",
+    "state_sha256": "046b921d5fce0378ec1e6ef5c60f30bad7828dac15e675cf8cf97b2f7adfca72",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -299,6 +249,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 56,
+      "holding_duration_seconds": 88736,
+      "instrument": "EURGBP",
+      "opened_at": "2026-11-18T04:53:22.859808-05:00",
+      "realized_pnl_usd": -1440.49,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-13T06:22:15.706647-05:00",

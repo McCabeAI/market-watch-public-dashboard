@@ -2364,6 +2364,62 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Close the 10 million dollar-yen long and pay 25 million of March 2027 SOFR. Dollar-yen at 159.30 is only slightly ahead of the 159.23 entry and the five-day rise is 0.7 percent, so that momentum has stalled. The live trend is the higher US policy path: March implied is 4.545, up 61.5bp, with the two-year at 4.80 and the ten-year at 5.10."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-9ff89eedf5b8",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 74,
+      "decision_fingerprint": "1159be22382f9790b7e27f33c8c56ce52b3cc561a836557160d7bd51ec67724b",
+      "event_id": "jde-71f46b3d71264d74",
+      "funding_view": null,
+      "invalidation": "Close the March short if implied is back below 4.53 and the U.S. two-year is back below 4.67. Until that prints, the hawkish repricing is the trend.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9ff89eedf5b8"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "6216955bceade5902cba9b9a63d3da8ea42a40540f95819527fb8dec024c1f5e",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3035071636d3e8a99c24453aa97702f99e39e761c29f0c653bf64194d8a99d8a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The March 2027 secured-funding short stays. Implied has moved from 4.545 to 4.575, with the trend, and the two-year at 4.80 and the 10-year at 5.07 are revising the same way. Euro at 1.0968 is a real downside break of the same impulse. The booked short is the cleaner continuation because the catalyst is the policy path. Dollar-yen is not the spot break and is not reopened.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "The March 2027 secured-funding short stays. Implied has moved from 4.545 to 4.575, with the trend, and the two-year at 4.80 and the 10-year at 5.07 are revising the same way. Euro at 1.0968 is a real downside break of the same impulse. The booked short is the cleaner continuation because the catalyst is the policy path. Dollar-yen is not the spot break and is not reopened."
     }
   ],
   "schema_version": 1,

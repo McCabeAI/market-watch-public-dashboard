@@ -99,6 +99,32 @@
       "postmortem_id": "pmd-44230bb5a215",
       "status": "submitted",
       "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
+    },
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": 56,
+        "entry_mark": 0.83,
+        "exit_mark": 0.83,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 88736,
+        "instrument": "EURGBP",
+        "invalidation": "Close the long if euro-sterling extends through 0.8331 before any euro-positive impulse, or if a UK yield premium versus the euro-area ten-year at 3.35 explains the cheapness as carry.",
+        "opened_at": "2026-11-18T04:53:22.859808-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -1440.49,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-7164b5ae7dd6",
+      "status": "due",
+      "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc"
     }
   ],
   "schema_version": 1,

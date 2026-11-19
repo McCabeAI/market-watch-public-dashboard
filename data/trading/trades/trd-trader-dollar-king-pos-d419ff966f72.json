@@ -44,27 +44,64 @@
   "exit_mark_source": null,
   "exit_rationale": null,
   "exit_reason_category": null,
+  "harvest_reviews": [
+    {
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "mechanical_order": false,
+      "order_policy": "review_only",
+      "position_id": "pos-d419ff966f72",
+      "remaining_edge": true,
+      "remaining_edge_reason": "Euro at 1.0968 is still the live 20-day downside break, and a fresh short at this level would still be the clean dollar expression of the hawkish minutes. The hot RSI bars an add, not the existing 10 million.",
+      "reunderwrite": {
+        "anchored_at": "2026-11-19T05:32:19.294844-05:00",
+        "catalyst_by": "2026-12-04",
+        "catalyst_logic": "The hawkish minutes are the catalyst. A reclaim of the broken range would exhaust it.",
+        "framing": "swing",
+        "horizon_days": 10,
+        "realization_logic": "The short pays if the 20-day downside break extends while the two-year stays near 4.80.",
+        "source": "reunderwrite"
+      },
+      "run_id": "overnight-20261119",
+      "thesis_still_valid": true,
+      "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
+      "triggers": [
+        "horizon_expired"
+      ],
+      "would_initiate_flat": "yes"
+    }
+  ],
   "hedge_of_position_id": null,
   "hedge_trade_id": null,
   "holding_duration_seconds": null,
   "initial_notional_usd": 10000000.0,
   "instrument": "EURUSD",
   "invalidation": "The long-dollar book fails if producer prices disappoint and the ten-year gives back the 12 basis point rise, or if euro, sterling, Australia and New Zealand stabilize together. The existing dollar-yen long is invalidated by a move back through 158.06.",
-  "last_mark": 1.0989,
+  "last_mark": 1.0968,
   "last_mark_as_of": "2026-11-12",
-  "last_unrealized_pnl_usd": 83025.0,
+  "last_unrealized_pnl_usd": 101976.36,
   "lifecycle": {
-    "anchored_at": "2026-11-13T06:22:15.706647-05:00",
-    "catalyst_by": null,
-    "catalyst_logic": "Today's producer prices are the test of whether the 0.4 percent CPI impulse and the ten-year at 5.1 keep the dollar bid.",
-    "framing": "tactical",
-    "horizon_days": 5,
-    "realization_logic": "Euro-dollar at 1.1081 is already in a five-day decline, and the short pays if that dollar bid extends through the producer-price reaction.",
-    "source": "entry"
+    "anchored_at": "2026-11-19T05:32:19.294844-05:00",
+    "catalyst_by": "2026-12-04",
+    "catalyst_logic": "The hawkish minutes are the catalyst. A reclaim of the broken range would exhaust it.",
+    "framing": "swing",
+    "horizon_days": 10,
+    "realization_logic": "The short pays if the 20-day downside break extends while the two-year stays near 4.80.",
+    "source": "reunderwrite"
   },
+  "lifecycle_reunderwrites": [
+    {
+      "anchored_at": "2026-11-19T05:32:19.294844-05:00",
+      "catalyst_by": "2026-12-04",
+      "catalyst_logic": "The hawkish minutes are the catalyst. A reclaim of the broken range would exhaust it.",
+      "framing": "swing",
+      "horizon_days": 10,
+      "realization_logic": "The short pays if the 20-day downside break extends while the two-year stays near 4.80.",
+      "source": "reunderwrite"
+    }
+  ],
   "locked_expression_family": null,
   "mae_usd": -0.0,
-  "mfe_usd": 83025.0,
+  "mfe_usd": 101976.36,
   "opened_at": "2026-11-13T06:22:15.706647-05:00",
   "opened_run_id": "overnight-20261113",
   "owner_id": "dollar-king",

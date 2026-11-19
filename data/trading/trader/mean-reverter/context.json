@@ -33,8 +33,8 @@
   ],
   "as_of": "2026-11-19T05:32:19.294844-05:00",
   "calibration": {
-    "average_holding_seconds": 2300806,
-    "average_realized_pnl_usd": 59870.94,
+    "average_holding_seconds": 1591318,
+    "average_realized_pnl_usd": 43643.54,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
@@ -42,11 +42,11 @@
         "total_realized_pnl_usd": 250.0
       },
       "spot_fx": {
-        "count": 1,
-        "total_realized_pnl_usd": 119491.88
+        "count": 2,
+        "total_realized_pnl_usd": 130680.63
       }
     },
-    "closed_trade_count": 2,
+    "closed_trade_count": 3,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -66,8 +66,8 @@
     },
     "losses": 0,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 119741.88,
-    "wins": 2
+    "total_realized_pnl_usd": 130930.63,
+    "wins": 3
   },
   "capital_owner": null,
   "consequence": {
@@ -89,7 +89,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 7695.78,
     "status": "ok"
   },
   "learning": {
@@ -100,58 +100,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "4c09cb4b5bf4e3a4292c7957d1b2af62c6fc11a7080da46962365b9a570889fd",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": null,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 159.6,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "The failed 20-day upside break is the reversal condition, and the edge is exhausted if that break reasserts.",
-        "current_mark": 159.2956592956593,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 159.5968767023788,
-        "expected_mark_direction": null,
-        "framing": "tactical",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 172342,
-        "horizon_elapsed_fraction": 0.1995,
-        "horizon_status": "within",
-        "instrument": "USDJPY",
-        "intended_horizon_days": 10,
-        "mae_usd": -0.0,
-        "mechanical_order": false,
-        "mfe_usd": 18873.64,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-35399779720e",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "Failed-break longs exit and USDJPY mean-reverts from 159.60 while the upside break stays failed.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 18873.64,
-        "retained_mfe_fraction": 1.0,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "short",
-        "total_pnl_usd": 18873.64,
-        "trade_id": "trd-trader-mean-reverter-pos-35399779720e",
-        "unrealized_pnl_usd": 18873.64
-      },
-      "instrument": "USDJPY",
-      "opened_at": "2026-11-17T05:39:57.066300-05:00",
-      "position_id": "pos-35399779720e",
-      "risk_capital_usd": 100000.0,
-      "side": "short",
-      "trade_id": "trd-trader-mean-reverter-pos-35399779720e"
-    }
-  ],
+  "memory_context_sha256": "02f681a7bc3100bf014823343ea580986c45b1f99284783a342190526436c49b",
+  "open_positions": [],
   "owner_id": "mean-reverter",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -216,16 +166,10 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [
-      {
-        "kind": "trade_win_close",
-        "magnitude": 0.23898376000000002,
-        "run_id": "overnight-20261112"
-      }
-    ],
+    "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b6bdded21de9f6146c5752a07912d74ede6672fcc95b2d9aa52efd106f505b3f",
+    "state_sha256": "85a65699cddb7da45c9d13c78125331051c844685527fe8c25f69b1f257a4aca",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -233,6 +177,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 172342,
+      "instrument": "USDJPY",
+      "opened_at": "2026-11-17T05:39:57.066300-05:00",
+      "realized_pnl_usd": 11188.75,
+      "side": "short",
+      "trade_id": "trd-trader-mean-reverter-pos-35399779720e"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-12T04:50:23.662182-05:00",

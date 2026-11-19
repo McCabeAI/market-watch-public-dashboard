@@ -83,6 +83,84 @@
         "trd-trader-perma-bull-pos-dd6fdaf39119"
       ],
       "updated_at": "2026-11-16T05:49:50.389382-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "future_rule": "Cover a short March Australian overnight rate only if implied falls back through the entry because the hike lean fades, or if Australian growth breaks while front-end implied is already elevated.",
+      "history": [
+        {
+          "at": "2026-11-19T05:32:19.294844-05:00",
+          "op": "add",
+          "run_id": "overnight-20261119"
+        }
+      ],
+      "lesson_id": "les-c14c094027e5",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-c925afffb7d0"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "A front-end pay is invalidated by the policy path and by growth, not by a commodity extreme that is not the binding constraint.",
+      "trade_ids": [
+        "trd-trader-perma-bull-pos-78563c24fe05"
+      ],
+      "updated_at": "2026-11-19T05:32:19.294844-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "future_rule": "Do not cover a short March 2027 secured-funding contract after a roughly two-basis-point rise while communication still leans toward more hikes. Keep it until implied reverses through the entry or the hike lean is walked back.",
+      "history": [
+        {
+          "at": "2026-11-19T05:32:19.294844-05:00",
+          "op": "add",
+          "run_id": "overnight-20261119"
+        }
+      ],
+      "lesson_id": "les-09fe8fe7e55a",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-130b008cfe0d"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "A small rise in implied secured funding is not a reason to cover a pay while the central bank is still leaning toward more hikes and equities have not broken.",
+      "trade_ids": [
+        "trd-trader-perma-bull-pos-35db4e56bf42"
+      ],
+      "updated_at": "2026-11-19T05:32:19.294844-05:00"
     }
   ],
   "schema_version": 1,

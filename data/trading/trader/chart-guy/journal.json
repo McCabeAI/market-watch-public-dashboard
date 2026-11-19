@@ -443,6 +443,60 @@
       "run_id": "overnight-20261118",
       "schema_version": 1,
       "thesis": "Stay flat in G10 spot. The euro close at 1.0989 is a fresh downside break on the same fixing that finished the five-session short from 1.11 to 1.10, so selling euro again is a chase of a trade the horizon already harvested. Kiwi, Aussie-Canada, dollar-Norway, and dollar-Sweden are clean breaks, but this freeze gives only the break closes and no adverse daily close, so none is a complete five-session expression."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 35,
+      "decision_fingerprint": "f3a8befb7963786863f0f0a518d05e164818315bfe3d9ee9436c54004779b72d",
+      "event_id": "jde-b75fd3e275524c6c",
+      "funding_view": null,
+      "invalidation": "A later pass needs one 20-day break with RSI outside the 30 and 70 extension band and a visible adverse daily close. A further extension of the same stretched breaks does not by itself create the trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "4c30f57a8ffe28e5dcecf95931b68d97660f43f643b463ab87618375ad11b5e3",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c53393fbc36254161dbfeb4f3a4e5af38c7da65fea6c67609e4afa5a875f569a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-19T05:32:19.294844-05:00",
+        "evidence_hash": "a9ac1463ef524d996cd2a30a7fc95872c351962e68ca73b2bb583962e161215e",
+        "overnight_run_id": "overnight-20261119",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "No new spot is taken. The confirmed breaks are real, but the upside names are already extended, with dollar-Canada and dollar-franc RSIs at 72 and 71, and the cleanest downside names are late, with euro RSI at 28.8 and the Australian dollar at 23.4. Dollar-yen is not a break, and Aussie-Canada has not confirmed one. Without a visible adverse close to define the stop, none of these is a 5-day or 20-day trade today.",
+      "run_id": "overnight-20261119",
+      "schema_version": 1,
+      "thesis": "No new spot is taken. The confirmed breaks are real, but the upside names are already extended, with dollar-Canada and dollar-franc RSIs at 72 and 71, and the cleanest downside names are late, with euro RSI at 28.8 and the Australian dollar at 23.4. Dollar-yen is not a break, and Aussie-Canada has not confirmed one. Without a visible adverse close to define the stop, none of these is a 5-day or 20-day trade today."
     }
   ],
   "schema_version": 1,

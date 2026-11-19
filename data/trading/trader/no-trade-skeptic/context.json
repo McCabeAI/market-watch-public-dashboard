@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e93efd3632f0f05f4bfbf162c7ba13f8b0ba2dabd4c951ae9a0dbb5a0d452574",
+  "memory_context_sha256": "03aa9dad26ea8b302d7a0ccf79b942653d639cdd4bd3fafa9905f90f56bb9f5f",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -136,19 +136,34 @@
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261118"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261119"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "a0cf3cf0d5233ab7494f16d5da4188ef5cdd53b67889dbf98be42fcb7b2c0d01",
+    "state_sha256": "47ab6a0ec687f7833a1726dd4d5c48a32be5cb4154db675fd6d3882ce83ef422",
     "streaks": {
-      "flat_cycles": 35,
+      "flat_cycles": 36,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-17",
+        "rate": 3.92,
+        "source": "NY Fed"
+      },
+      "forward_funding_assessment": "about_the_same",
+      "implication": "Staying at the 3.92 official fixing beats paying that funding on new shocked-risk capital. The curve is already the price of the public hawkish news, so flat cash is a refusal to finance the chase, not a claim of alpha.",
+      "sr3_forward_view": "Implied secured funding is 4.30 in December 2026, 4.575 in March 2027, 4.71 in June, 4.735 in September, and 4.695 in December 2027, versus the 3.92 cash fixing."
+    },
     {
       "current_sofr": {
         "observation_date": "2026-11-16",
@@ -174,16 +189,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Realized funding is assessed about the same as that December, March, and September strip, not versus the 3.90 cash fixing. Staying flat is the zero official SOFR benchmark. Paying 3.90 percent on new shocked-risk capital would finance a hike path the strip already discounts.",
       "sr3_forward_view": "The December 2026 SOFR future at 95.695 implies about 4.305, March 2027 at 95.40 implies about 4.60, and September 2027 at 95.18 implies about 4.82, a hike path above the 3.90 official fixing."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-11-10",
-        "rate": 3.89,
-        "source": "NY_FED"
-      },
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Realized funding is judged about the same as that strip, so staying at the zero official SOFR benchmark does not leave an unpriced funding edge. Paying SOFR on shocked-risk capital would fund a hike and a dollar move the forwards and the spots already discount.",
-      "sr3_forward_view": "From cash SOFR 3.89 the strip prices December 2026 at 4.315, March 2027 at 4.615 and September 2027 at 4.815."
     }
   ],
   "recent_performance_reflections": [],

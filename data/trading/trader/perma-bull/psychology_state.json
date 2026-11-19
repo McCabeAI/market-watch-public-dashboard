@@ -4,75 +4,89 @@
     "chase_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0946,
+      "delta_last_cycle": -0.0155,
       "half_life_cycles": 4.0,
-      "value": 0.1975
+      "value": 0.182
     },
     "complacency": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": -0.0145,
+      "delta_last_cycle": -0.0072,
       "half_life_cycles": 5.0,
-      "value": 0.145
+      "value": 0.1378
     },
     "defensiveness": {
       "band": "calm",
       "baseline": 0.2,
-      "delta_last_cycle": 0.0041,
+      "delta_last_cycle": 0.0023,
       "half_life_cycles": 6.0,
-      "value": 0.2168
+      "value": 0.2191
     },
     "external_pressure": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.1769,
+      "delta_last_cycle": -0.0214,
       "half_life_cycles": 6.0,
-      "value": 0.2961
+      "value": 0.2747
     },
     "frustration": {
       "band": "calm",
       "baseline": 0.1,
-      "delta_last_cycle": 0.0786,
+      "delta_last_cycle": -0.0107,
       "half_life_cycles": 3.0,
-      "value": 0.1879
+      "value": 0.1772
     },
     "revenge_pressure": {
       "band": "calm",
       "baseline": 0.05,
-      "delta_last_cycle": 0.0024,
+      "delta_last_cycle": 0.0071,
       "half_life_cycles": 2.0,
-      "value": 0.0573
+      "value": 0.0644
     },
     "self_trust": {
       "band": "steady",
       "baseline": 0.5,
-      "delta_last_cycle": -0.016,
+      "delta_last_cycle": -0.0029,
       "half_life_cycles": 12.0,
-      "value": 0.492
+      "value": 0.4891
     },
     "thesis_attachment": {
       "band": "calm",
       "baseline": 0.4,
-      "delta_last_cycle": 0.0008,
+      "delta_last_cycle": 0.0021,
       "half_life_cycles": 8.0,
-      "value": 0.4061
+      "value": 0.4082
     }
   },
-  "cycle_count": 35,
+  "cycle_count": 36,
   "engine_version": 1,
-  "flags": [],
+  "flags": [
+    {
+      "basis": "revenge_pressure 0.06 families AUDUSD",
+      "check": "required",
+      "families": [
+        "AUDUSD"
+      ],
+      "id": "revenge_risk",
+      "relevant_actions": [
+        "OPEN",
+        "ADD"
+      ],
+      "scope": "family"
+    }
+  ],
   "flat_cycles_pending": 0,
   "last_capital_owner_standing": null,
-  "last_event_seq": 54,
+  "last_event_seq": 56,
   "last_learning_status": "compliant",
   "last_repeated_error_counts": {},
   "last_review_id": "review-001",
-  "last_run_id": "overnight-20261118",
+  "last_run_id": "overnight-20261119",
   "metrics": {
     "conviction_volatility": 0.0,
     "distortion_verdicts": 0,
     "inconclusive_verdicts": 0,
-    "self_report_clean_cycles": 35,
+    "self_report_clean_cycles": 36,
     "self_report_mismatches": 0,
     "sharpened_verdicts": 0
   },
@@ -81,17 +95,26 @@
   "profile_version": 1,
   "provenance": "seeded_baseline_v1",
   "schema_version": 1,
-  "state_sha256": "f414dc37ddc27ae31c5852325ce68e231fa53dd15c29f7cc05e65a0a6c27e406",
+  "state_sha256": "e4c02041405c95b14f6a6d6088b5c5c21c7eaa6f9dd33f5063d9dc04a93a1fd9",
   "streaks": {
     "flat_cycles": 0,
     "session_loss": 1,
     "session_win": 0,
-    "trade_loss": 0,
-    "trade_win": 1
+    "trade_loss": 1,
+    "trade_win": 0
   },
   "tags": {
     "hold_through_pain": {},
-    "revenge": []
+    "revenge": [
+      {
+        "family": "AUDUSD",
+        "loss_notional_usd": 15000000.0,
+        "run_id": null,
+        "side": "long",
+        "trade_id": "trd-trader-perma-bull-pos-471766cc8505",
+        "ttl": 3
+      }
+    ]
   },
   "trailing_open_risk_capital_usd": [
     100000.0,

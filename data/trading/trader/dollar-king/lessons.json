@@ -28,7 +28,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "scope_evidence": {
         "history_modified": false,
@@ -72,7 +73,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20261026",
       "status": "active",
@@ -108,7 +110,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20261027",
       "status": "active",
@@ -117,6 +120,45 @@
         "trd-trader-dollar-king-pos-5317bc96d4eb"
       ],
       "updated_at": "2026-10-27T05:32:12.602790-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "future_rule": "Keep a dollar-yen long until one of those three events prints. Do not reopen dollar-yen while the dollar length is already in the euro short and the franc long and the pair is not breaking out.",
+      "history": [
+        {
+          "at": "2026-11-19T05:32:19.294844-05:00",
+          "op": "add",
+          "run_id": "overnight-20261119"
+        }
+      ],
+      "lesson_id": "les-bc84da0e8747",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-3d0a076838a1"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "Do not close a dollar-yen long on hike rhetoric. The invalidation is a delivered hike with Japanese funding catching up, dollar funding converging, or intervention.",
+      "trade_ids": [
+        "trd-trader-dollar-king-pos-012b8f0c252c"
+      ],
+      "updated_at": "2026-11-19T05:32:19.294844-05:00"
     }
   ],
   "schema_version": 1,
