@@ -998,6 +998,18 @@ def build_refinery_margin(as_of: date, wti_curve: dict[str, Any], opener: Opener
     )
 
     if rbob:
+        rb_hist, _ = contract_history(
+            REFINERY_CONTRACTS["rbob"]["yahoo_root"], year, month, as_of, opener
+        )
+        if rb_hist:
+            obs_d = date.fromisoformat(rbob["observation_date"])
+            ch1m = _change_block(rb_hist, obs_d, rbob["price"], mode="1m")
+            if ch1m:
+                rbob = {
+                    **rbob,
+                    "change_1m_pct": ch1m.get("pct"),
+                    "change_1m_base_date": ch1m.get("prior_date"),
+                }
         out["rbob"] = {**rbob, "unit": REFINERY_CONTRACTS["rbob"]["unit"]}
         out["gasoline_crack_usd_per_bbl"] = rbob["price"] * GALLONS_PER_BARREL - wti_front["price"]
         out["gasoline_crack_status"] = "ok"
@@ -1006,6 +1018,18 @@ def build_refinery_margin(as_of: date, wti_curve: dict[str, Any], opener: Opener
         out["gasoline_crack_reason"] = rbob_reason or "missing_active_contract"
 
     if ho:
+        ho_hist, _ = contract_history(
+            REFINERY_CONTRACTS["heating_oil"]["yahoo_root"], year, month, as_of, opener
+        )
+        if ho_hist:
+            obs_d = date.fromisoformat(ho["observation_date"])
+            ch1m = _change_block(ho_hist, obs_d, ho["price"], mode="1m")
+            if ch1m:
+                ho = {
+                    **ho,
+                    "change_1m_pct": ch1m.get("pct"),
+                    "change_1m_base_date": ch1m.get("prior_date"),
+                }
         out["heating_oil"] = {**ho, "unit": REFINERY_CONTRACTS["heating_oil"]["unit"]}
         out["heating_oil_crack_usd_per_bbl"] = ho["price"] * GALLONS_PER_BARREL - wti_front["price"]
         out["heating_oil_crack_status"] = "ok"

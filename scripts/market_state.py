@@ -1863,9 +1863,16 @@ def build_snapshot(
         nz_source["observation_date"] = None
     from scripts.prima_pressure.handoff import prima_block_for_snapshot, unavailable_block as prima_unavailable_block
 
+    usdcad_history: list[tuple[date, float]] | None = None
+    usdcad_series = (fx_numeric or {}).get("USDCAD")
+    if usdcad_series:
+        usdcad_history = sorted((d, float(v)) for d, v in usdcad_series.items())
+
     try:
         canada_prima_pressure = prima_block_for_snapshot(
-            today, include_cross_assets=include_cross_assets
+            today,
+            include_cross_assets=include_cross_assets,
+            usdcad_history=usdcad_history,
         )
     except Exception as exc:
         canada_prima_pressure = prima_unavailable_block(str(exc))

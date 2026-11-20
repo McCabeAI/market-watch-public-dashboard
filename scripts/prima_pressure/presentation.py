@@ -5,12 +5,18 @@ from __future__ import annotations
 import json
 import re
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping, Sequence
 
 from datetime import date
 
 from scripts.prima_pressure.contract import CHANNELS, DIRECTIONS, DISCLAIMER
 from scripts.prima_pressure.expiry import assess_stored_shock_inputs
+from scripts.prima_pressure.transmission import (
+    collect_fx_history_points,
+    transmission_for_snapshot,
+    unavailable_transmission,
+)
+from scripts.prima_pressure.transmission_contract import TRANSMISSION_CHANNEL_ENERGY
 
 PRESENTATION_SCHEMA = "canada_prima_pressure_presentation_v1"
 _SOURCE_KIND = "overnight_evidence_snapshot"
@@ -323,6 +329,164 @@ def apply_futures_history_guard(
     return projected
 
 
+def _load_snapshot_for_observation(
+    root: Path, observation: dict[str, Any]
+) -> dict[str, Any] | None:
+    run_id = observation.get("run_id")
+    review_id = observation.get("review_id")
+    if not run_id or not review_id:
+        return None
+    snapshot_path = (
+        root
+        / "data"
+        / "overnight"
+        / "runs"
+        / str(run_id)
+        / "reviews"
+        / str(review_id)
+        / "evidence_snapshot.json"
+    )
+    if not snapshot_path.is_file():
+        return None
+    try:
+        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return snapshot if isinstance(snapshot, dict) else None
+
+
+def _usdcad_spot_from_snapshot(snapshot: Mapping[str, Any]) -> float | None:
+    families = snapshot.get("families") if isinstance(snapshot.get("families"), dict) else {}
+    ms = families.get("market_state") if isinstance(families.get("market_state"), dict) else {}
+    data = ms.get("data") if isinstance(ms.get("data"), dict) else {}
+    fx = data.get("fx") if isinstance(data.get("fx"), dict) else {}
+    pair = (fx.get("pairs") or {}).get("USDCAD")
+    if not isinstance(pair, dict):
+        return None
+    spot = pair.get("spot")
+    if isinstance(spot, (int, float)):
+        return float(spot)
+    return None
+
+
+def _strip_energy_numerics(tx: dict[str, Any], *, reason: str) -> dict[str, Any]:
+    """Presentation-only: remove fuel arithmetic when Brent inputs are rejected."""
+    out = json.loads(json.dumps(tx))
+    channels = out.get("channels")
+    if not isinstance(channels, dict):
+        return out
+    energy = channels.get(TRANSMISSION_CHANNEL_ENERGY)
+    if not isinstance(energy, dict):
+        return out
+    for horizon in ("h1_3m", "h3_6m"):
+        rem = energy.get("remaining")
+        if not isinstance(rem, dict):
+            continue
+        h = rem.get(horizon)
+        if not isinstance(h, dict):
+            continue
+        h = dict(h)
+        h["pp_low"] = None
+        h["pp_mid"] = None
+        h["pp_high"] = None
+        h["basis"] = "unavailable"
+        h["direction"] = "unavailable"
+        h.pop("roll_narrative", None)
+        h.pop("flags", None)
+        rem[horizon] = h
+    energy.pop("prior_window_evidence", None)
+    energy["status"] = "unavailable"
+    energy.setdefault("notes", [])
+    if reason not in energy["notes"]:
+        energy["notes"] = list(energy["notes"]) + [reason]
+    summary = out.get("summary")
+    if isinstance(summary, dict) and isinstance(summary.get("direct_fuel"), dict):
+        df = dict(summary["direct_fuel"])
+        for horizon in ("h1_3m", "h3_6m"):
+            h = df.get(horizon)
+            if isinstance(h, dict):
+                h = dict(h)
+                h["pp_low"] = h["pp_mid"] = h["pp_high"] = None
+                h["basis"] = "unavailable"
+                h["direction"] = "unavailable"
+                df[horizon] = h
+        summary["direct_fuel"] = df
+    if isinstance(out.get("headline"), dict):
+        headline = dict(out["headline"])
+        headline["what_remains"] = (
+            "Direct fuel estimate unavailable (listed Brent inputs rejected on this run)."
+        )[:200]
+        out["headline"] = headline
+    if out.get("status") == "ok":
+        out["status"] = "partial"
+    missing = out.get("missing_inputs")
+    if not isinstance(missing, list):
+        missing = []
+    entry = {"input": "energy_direct_fuel", "reason": reason}
+    if entry not in missing:
+        missing.append(entry)
+    out["missing_inputs"] = missing
+    return out
+
+
+def apply_transmission_futures_guard(
+    block: dict[str, Any],
+    transmission: dict[str, Any],
+    observation: dict[str, Any],
+) -> dict[str, Any]:
+    """Drop energy numerics from transmission when stored Brent fails the expiry guard."""
+    as_of = _as_of_from_observation(observation)
+    if as_of is None:
+        return _strip_energy_numerics(transmission, reason="missing_as_of")
+    review = assess_stored_shock_inputs(block, as_of)
+    if review["status"] == "no_futures_inputs":
+        return transmission
+    if review["valid"]:
+        return transmission
+    return _strip_energy_numerics(transmission, reason="invalid_futures_inputs")
+
+
+def _transmission_history_point(
+    observation: dict[str, Any],
+    transmission: dict[str, Any],
+    snapshot: dict[str, Any] | None,
+) -> dict[str, Any]:
+    energy = (transmission.get("channels") or {}).get(TRANSMISSION_CHANNEL_ENERGY) or {}
+    obs_chg = energy.get("observed_change") if isinstance(energy.get("observed_change"), dict) else {}
+    decomp = obs_chg.get("decomposition") if isinstance(obs_chg.get("decomposition"), dict) else {}
+    h1 = (energy.get("remaining") or {}).get("h1_3m") if isinstance(energy.get("remaining"), dict) else {}
+    usd = decomp.get("usd_leg")
+    fx = decomp.get("fx_leg")
+    combined = decomp.get("combined")
+    spot = _usdcad_spot_from_snapshot(snapshot) if snapshot else None
+    pp_mid = h1.get("pp_mid") if isinstance(h1, dict) else None
+    return {
+        "observed_at": str(observation.get("observed_at") or ""),
+        "source_id": str(observation.get("source_id") or ""),
+        "provenance": str(transmission.get("provenance") or ""),
+        "brent_usd_1m_pct": (float(usd) * 100.0) if isinstance(usd, (int, float)) else None,
+        "usdcad_1m_pct": (float(fx) * 100.0) if isinstance(fx, (int, float)) else None,
+        "brent_cad_1m_pct": (float(combined) * 100.0) if isinstance(combined, (int, float)) else None,
+        "fuel_h1_3m_pp_mid": float(pp_mid) if isinstance(pp_mid, (int, float)) else None,
+        "usdcad_spot": spot,
+    }
+
+
+def _build_transmission_for_observation(
+    root: Path,
+    observation: dict[str, Any],
+    fx_history_points: Sequence[tuple[Any, float, str]],
+) -> dict[str, Any]:
+    block = observation.get("block")
+    if not isinstance(block, dict):
+        return unavailable_transmission("observation_block_missing")
+    snapshot = _load_snapshot_for_observation(root, observation)
+    if snapshot is None:
+        snapshot = {"canada_prima_pressure": block, "as_of": observation.get("observed_at")}
+    tx = transmission_for_snapshot(snapshot, fx_history_points=fx_history_points, root=root)
+    return apply_transmission_futures_guard(block, tx, observation)
+
+
 def _load_review_index(
     run_dir: Path, run_id: str, limitations: list[str]
 ) -> list[dict[str, Any]] | None:
@@ -535,7 +699,7 @@ def build_presentation(root: Path) -> dict[str, Any]:
     if limitations:
         history_note = history_note + " Limitations: " + "; ".join(limitations) + "."
 
-    return _presentation_shell(
+    shell = _presentation_shell(
         history_state=history_state,
         history_note=history_note,
         current=current,
@@ -543,3 +707,19 @@ def build_presentation(root: Path) -> dict[str, Any]:
         transitions=transitions,
         limitations=limitations,
     )
+    fx_history = collect_fx_history_points(root)
+    transmission_history: list[dict[str, Any]] = []
+    latest_transmission: dict[str, Any] | None = None
+    for observation in observations:
+        block = observation.get("block")
+        if not isinstance(block, dict):
+            continue
+        tx = _build_transmission_for_observation(root, observation, fx_history)
+        snapshot = _load_snapshot_for_observation(root, observation)
+        transmission_history.append(_transmission_history_point(observation, tx, snapshot))
+        latest_transmission = tx
+    if latest_transmission is not None:
+        shell["transmission"] = latest_transmission
+    if transmission_history:
+        shell["transmission_history"] = transmission_history
+    return shell

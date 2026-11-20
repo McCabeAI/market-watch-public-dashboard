@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import time
-from datetime import date
+from datetime import date, datetime, timezone
 from typing import Any, Callable
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse, urlunparse
@@ -20,7 +20,10 @@ from scripts.prima_pressure.contract import (
     iso_date,
     sector_ppi_unavailable,
 )
-from scripts.prima_pressure.curve import build_curve, build_refinery_margin
+from scripts.canadian_cpi_release.sources.nrcan import collect_nrcan, collect_nrcan_weekly
+from scripts.prima_pressure.bcpi import collect_bcpi_weekly
+from scripts.prima_pressure.import_prices import collect_import_prices
+from scripts.prima_pressure.curve import build_curve, build_refinery_margin, contract_history
 from scripts.prima_pressure.mpr import build_mpr_comparison
 from scripts.prima_pressure.producer import build_cpi_breadth_inputs, build_producer_prices
 
@@ -156,7 +159,7 @@ def _fetch_yahoo_chart(url: str) -> bytes:
     raise last_exc or RuntimeError("yahoo chart fetch failed")
 
 
-def _urllib_opener(url: str, data: bytes | None = None) -> bytes:
+def _urllib_opener(url: str, data: bytes | None = None, **_: Any) -> bytes:
     if data is None and _is_yahoo_chart_url(url):
         return _fetch_yahoo_chart(url)
 
@@ -184,6 +187,75 @@ def _unavailable_curve(curve_id: str, as_of: date, *, reason: str) -> dict[str, 
         "missing_maturities": [0, 3, 6, 12, 24],
         "reason": reason,
     }
+
+
+def _nrcan_through_period(as_of: date) -> str:
+    y, m = as_of.year, as_of.month
+    m -= 1
+    if m < 1:
+        m = 12
+        y -= 1
+    return f"{y:04d}-{m:02d}"
+
+
+def attach_transmission_daily_bars(bundle: dict[str, Any], as_of: date, opener: Opener) -> None:
+    """Attach front-contract daily bars for transmission staging (additive bundle field)."""
+    bars: dict[str, list[dict[str, Any]]] = {}
+    brent = (bundle.get("oil_curves") or {}).get("brent_last_day") or {}
+    front = next((p for p in brent.get("points") or [] if p.get("maturity_months") == 0), None)
+    if front and front.get("contract_month"):
+        y, m = int(front["contract_month"][:4]), int(front["contract_month"][5:7])
+        hist, _ = contract_history("BZ", y, m, as_of, opener)
+        bars["brent_front"] = [{"date": iso_date(d), "close": c, "source_id": front.get("symbol")} for d, c in hist]
+    rm = bundle.get("refinery_margin") or {}
+    for key, root in (("rbob", "RB"), ("heating_oil", "HO")):
+        leg = rm.get(key)
+        if not leg or not leg.get("symbol"):
+            continue
+        try:
+            from scripts.prima_pressure.expiry import parse_listed_symbol
+
+            _root, y, m = parse_listed_symbol(str(leg["symbol"]))
+        except Exception:
+            continue
+        hist, _ = contract_history(root, y, m, as_of, opener)
+        bars[key] = [{"date": iso_date(d), "close": c, "source_id": leg.get("symbol")} for d, c in hist]
+    if bars:
+        bundle["transmission_daily_bars"] = bars
+
+
+def _build_nrcan_fuel(as_of: date, opener: Opener) -> dict[str, Any]:
+    through = _nrcan_through_period(as_of)
+    out: dict[str, Any] = {
+        "status": "unavailable",
+        "through_period": through,
+        "gasoline_cpl": None,
+        "furnace_oil_cpl": None,
+    }
+    try:
+        observations, _pages, notes = collect_nrcan(
+            opener=opener,
+            sleeper=None,
+            retrieved_at=iso_date(as_of),
+            through_period=through,
+            require_full_history=False,
+        )
+        by_id: dict[str, dict[str, float]] = {}
+        for obs in observations:
+            by_id.setdefault(obs.canonical_id, {})[obs.period] = obs.value
+        gas = by_id.get("nrcan_gasoline") or {}
+        fo = by_id.get("nrcan_furnace_oil") or {}
+        if through in gas:
+            out["gasoline_cpl"] = gas[through]
+        if through in fo:
+            out["furnace_oil_cpl"] = fo[through]
+        out["gasoline_by_month"] = gas
+        out["furnace_oil_by_month"] = fo
+        out["notes"] = notes
+        out["status"] = "ok" if through in gas else "partial"
+    except Exception as exc:
+        out["reason"] = f"{type(exc).__name__}: {exc}"
+    return out
 
 
 def build_demand_inputs(as_of: date, opener: Opener) -> dict[str, Any]:
@@ -264,6 +336,12 @@ def build_observation_bundle(
             },
         }
         bundle["mpr_comparison"] = build_mpr_comparison(oil_curves, as_of=as_of)
+        bundle["nrcan_fuel"] = {
+            "status": "unavailable",
+            "reason": "network_disabled",
+        }
+        for key in ("nrcan_weekly", "bcpi_weekly", "import_prices"):
+            bundle[key] = {"status": "unavailable", "reason": "network_disabled"}
         return bundle
 
     oil_curves = {
@@ -276,4 +354,20 @@ def build_observation_bundle(
     bundle["cpi_breadth_inputs"] = build_cpi_breadth_inputs(as_of, effective_opener)
     bundle["demand_inputs"] = build_demand_inputs(as_of, effective_opener)
     bundle["mpr_comparison"] = build_mpr_comparison(oil_curves, as_of=as_of)
+    bundle["nrcan_fuel"] = _build_nrcan_fuel(as_of, effective_opener)
+    attach_transmission_daily_bars(bundle, as_of, effective_opener)
+    retrieved_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    for key, collector in (
+        ("nrcan_weekly", lambda: collect_nrcan_weekly(as_of=as_of, opener=effective_opener, retrieved_at=retrieved_at)),
+        ("bcpi_weekly", lambda: collect_bcpi_weekly(as_of=as_of, opener=effective_opener, retrieved_at=retrieved_at)),
+        ("import_prices", lambda: collect_import_prices(as_of=as_of, opener=effective_opener, retrieved_at=retrieved_at)),
+    ):
+        try:
+            bundle[key] = collector()
+        except Exception as exc:
+            bundle[key] = {
+                "status": "unavailable",
+                "reason": f"{type(exc).__name__}: {exc}",
+                "retrieved_at": retrieved_at,
+            }
     return bundle
