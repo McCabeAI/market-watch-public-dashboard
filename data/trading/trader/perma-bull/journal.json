@@ -3087,6 +3087,66 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "Both cyclical legs come off. The Australian dollar at 0.6731 is through a 20-day low, with RSI at 23.4 and copper soft, so the long is the wrong pro-growth expression even with equities still high. September 2027 secured funding at 4.735 is above the 4.71 entry, and the minutes lean toward more hikes, so the receive is on the wrong side of the path. Nothing replaces them today."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "ae17d883febfd883a7c7a58aebcece4f08622b1cf6df4d52394506a33f9c1c11",
+      "event_id": "jde-3cde93e96b904266",
+      "funding_view": null,
+      "invalidation": "A closing break of EURUSD below 1.0992, with gold still elevated and VIX still above the mid-20s, would show the defensive dollar bid is a trend rather than a discount of growth.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-d62db363ab83"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bull-pos-d62db363ab83"
+      ],
+      "memory_context_sha256": "367f98dd9a887bf0507c3210a4c332d318faea6517e6c193b7ceff8a6abfa53f",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e4c02041405c95b14f6a6d6088b5c5c21c7eaa6f9dd33f5063d9dc04a93a1fd9"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Buy 15 million dollars of EURUSD. The euro at 1.0992 is the first percentile of its one-year range after a five-day decline, while the Nasdaq near 23,879, the Dow near 49,097 and Brent near 92 still show an intact expansion, and euro-area inflation pressure is still building. The risk is that the haven bid, with gold near 3,686 and VIX near 24.6, extends and takes the euro through this spot.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Buy 15 million dollars of EURUSD. The euro at 1.0992 is the first percentile of its one-year range after a five-day decline, while the Nasdaq near 23,879, the Dow near 49,097 and Brent near 92 still show an intact expansion, and euro-area inflation pressure is still building. The risk is that the haven bid, with gold near 3,686 and VIX near 24.6, extends and takes the euro through this spot."
     }
   ],
   "schema_version": 1,

@@ -68,6 +68,21 @@
         "horizon_expired"
       ],
       "would_initiate_flat": "yes"
+    },
+    {
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "mechanical_order": false,
+      "order_policy": "review_only",
+      "position_id": "pos-d419ff966f72",
+      "remaining_edge": true,
+      "remaining_edge_reason": "From 1.0968 a fresh 10 million EURUSD short still earns the US two-year premium over Europe at 3.14, with Fed minutes that still discuss hikes and a broad complex bid that includes sterling's breakdown.",
+      "run_id": "overnight-20261120",
+      "thesis_still_valid": true,
+      "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
+      "triggers": [
+        "material_winner"
+      ],
+      "would_initiate_flat": "yes"
     }
   ],
   "hedge_of_position_id": null,
@@ -76,9 +91,9 @@
   "initial_notional_usd": 10000000.0,
   "instrument": "EURUSD",
   "invalidation": "The long-dollar book fails if producer prices disappoint and the ten-year gives back the 12 basis point rise, or if euro, sterling, Australia and New Zealand stabilize together. The existing dollar-yen long is invalidated by a move back through 158.06.",
-  "last_mark": 1.0968,
+  "last_mark": 1.0992,
   "last_mark_as_of": "2026-11-12",
-  "last_unrealized_pnl_usd": 101976.36,
+  "last_unrealized_pnl_usd": 80317.66,
   "lifecycle": {
     "anchored_at": "2026-11-19T05:32:19.294844-05:00",
     "catalyst_by": "2026-12-04",

@@ -61,6 +61,36 @@
       "trade_ids": [
         "trd-trader-value-guy-pos-63923b5f6571"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not reopen a covered EURGBP value long unless the cross responds when the euro legs move. A CAD valuation view stays in spot when the two-year spread versus cash is not a quoted instrument.",
+      "lesson_id": "les-da5cddbcadc7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0c5385c0010b"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "A covered euro-sterling value long that stays pinned after the euro legs lift no longer has its sponsor, even if the valuation gap is still extreme and the round trip is flat.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-5760dbd4ac3e"
+      ]
     }
   ],
   "as_of": "2026-11-20T05:40:17.809566-05:00",
@@ -131,45 +161,62 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
+  "learning_obligations": [],
+  "memory_context_sha256": "60967f1f30cbed24a147254277764e44ab1416a8d0b2f14b1e4a3c91125db2c4",
+  "open_positions": [
     {
-      "kind": "postmortem",
-      "obligation_id": "pmd-0c5385c0010b",
-      "owner_id": "value-guy",
-      "owner_type": "trader",
-      "reference": "trd-trader-value-guy-pos-5760dbd4ac3e",
-      "source_run_id": "overnight-20261119"
+      "asset_class": "spot_fx",
+      "conviction": 58,
+      "current_notional_usd": 15000000.0,
+      "entry_mark": 1.43,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The terms-of-trade anchor is already in the cutoff print. The trade fails if crude becomes a scare that ratifies 1.43, or if the pair stays pinned for the horizon.",
+        "current_mark": 1.4300400291120816,
+        "current_notional_usd": 15000000.0,
+        "entry_mark": 1.43,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "USDCAD",
+        "intended_horizon_days": 20,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-2a96e5f2579c",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Convergence is a lower USDCAD from 1.43004 while WTI and Brent stay out of a scare and the oil bid that already reached NOK reaches CAD.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 150000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-value-guy-pos-2a96e5f2579c",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "USDCAD",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "position_id": "pos-2a96e5f2579c",
+      "risk_capital_usd": 150000.0,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-2a96e5f2579c"
     }
   ],
-  "memory_context_sha256": "3bbd18e6c57f400e7957ac649272ea5184e0eba13418bacabb717feae0fb6db0",
-  "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-19T05:32:19.294844-05:00",
-      "created_run_id": "overnight-20261119",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-19T05:32:19.294844-05:00",
-        "conviction": 61,
-        "entry_mark": 0.83,
-        "exit_mark": 0.83,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 780102,
-        "instrument": "EURGBP",
-        "invalidation": "The euro long is invalidated if EURGBP stays pinned at 0.834 after EURUSD and EURJPY have lifted off their lows, or if a further rise in crude marks that cheapness as fair. The AUDNZD short is invalidated by a sustained rebound through the 1.25 entry.",
-        "opened_at": "2026-11-10T04:50:36.940059-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -8390.27,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-0c5385c0010b",
-      "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -199,13 +246,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.14
       },
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.11
+        "value": 0.1
       },
       "revenge_pressure": {
         "band": "calm",
@@ -215,7 +262,7 @@
       "self_trust": {
         "band": "steady",
         "trend": "flat",
-        "value": 0.53
+        "value": 0.52
       },
       "thesis_attachment": {
         "band": "calm",
@@ -234,7 +281,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "70e50ab8d57d6c20177a4dbee932ac0f30df531c3a44e88bce9834f5a76ce484",
+    "state_sha256": "cda16d168e547dcbae84594a52a81f05396a8f20499e8639adc4a4ffe3979cb2",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

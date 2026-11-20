@@ -165,8 +165,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "563c083a29c25604118c4a3e33621aa208c28f2795f40e38ed03aec44822084e",
-  "open_positions": [],
+  "memory_context_sha256": "b0a46b82db7a0122f26fef32c1ad2ee8615ed54807f875c5ee5f4c9b55dd39b0",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 61,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 159.97,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "Hawkish Fed communication supports the long-dollar leg and is aligned with the carry. The haven bid that dropped cash yields is the risk to the short-yen leg.",
+        "current_mark": 159.97088791848617,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 159.97,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "USDJPY",
+        "intended_horizon_days": 60,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-f9d4174687a1",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The US two-year versus Japan is about 290 basis points annualized. Hold toward the 60-day horizon and let the forward points accrue, and do not add if spot extends further from 159.97.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-carry-is-king-pos-f9d4174687a1",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "USDJPY",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "position_id": "pos-f9d4174687a1",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-f9d4174687a1"
+    }
+  ],
   "owner_id": "carry-is-king",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -185,7 +235,7 @@
       "chase_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.12
+        "value": 0.11
       },
       "complacency": {
         "band": "calm",
@@ -205,7 +255,7 @@
       "frustration": {
         "band": "calm",
         "trend": "down",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -240,9 +290,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "3eb01b06ba4215d765606e9ca3dd966c7de3e9d68147e4af293d0251f620f973",
+    "state_sha256": "b0543e4721ea7f9df39bb73b2c5dca7ed26dec156b69f8b27afe1fed6232a00c",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

@@ -3500,6 +3500,62 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "The September 2027 secured-funding short is covered. The strip already peaks there at 4.735, only a couple of basis points above June, and the contract fell from the 4.755 entry while the two-year rose seven basis points to 4.80. The hawkish minutes have been marked into the front end. September is the priced peak, not an underpriced hike, and no new short is opened further along the strip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 71,
+      "decision_fingerprint": "d05db1ece7be4cef44c222fe81a60a07cb16b6fea7e6b6e1e8e1308ad3aff646",
+      "event_id": "jde-83e2daf9a7894274",
+      "funding_view": null,
+      "invalidation": "Stay flat until a known contract's own implied rate cheapens so that a further Fed hike is no longer in that contract. A fresh hawkish adjective, or a haven-led dip in cash yields, does not by itself open a short.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "663924169a836c29c1898c781e1eb66041e4e99381771bfda02b0ec4b550a391",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5e1d47c78b12b13ffb2385a25c59e236f0231ec0436c0ee26aa8b703cc999f46"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. The Fed minutes and Waller still discuss further hikes, including a possible half point, but that path is already in the price: SOFR is 3.90, the December contract implies 4.29, and March 2027 is marked 4.575. The two-year at 4.76 sits near the level where the September 2027 short was just closed, so a fresh short would extend a story the strip already contains.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Stay flat. The Fed minutes and Waller still discuss further hikes, including a possible half point, but that path is already in the price: SOFR is 3.90, the December contract implies 4.29, and March 2027 is marked 4.575. The two-year at 4.76 sits near the level where the September 2027 short was just closed, so a fresh short would extend a story the strip already contains."
     }
   ],
   "schema_version": 1,

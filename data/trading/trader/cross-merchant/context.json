@@ -165,45 +165,62 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
+  "learning_obligations": [],
+  "memory_context_sha256": "ad39e425fb6f8630b2b942a58d867b340d9ade19a0ec6ef890740ebe5b549ec0",
+  "open_positions": [
     {
-      "kind": "postmortem",
-      "obligation_id": "pmd-7164b5ae7dd6",
-      "owner_id": "cross-merchant",
-      "owner_type": "trader",
-      "reference": "trd-trader-cross-merchant-pos-6b544dc561cc",
-      "source_run_id": "overnight-20261119"
+      "asset_class": "spot_fx",
+      "conviction": 58,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 1.64,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "Hawkish ECB remarks are the euro impulse, and the already-printed short-base breakouts in AUDCAD and AUDNZD are the Australian impulse. Oil is not the catalyst.",
+        "current_mark": 1.6378,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 1.64,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "EURAUD",
+        "intended_horizon_days": 10,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-cbb6d1944e8e",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The long is realized if EURAUD holds the long-base breakout and extends while AUD remains the offered leg on AUDCAD and AUDNZD.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "EURAUD",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "position_id": "pos-cbb6d1944e8e",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e"
     }
   ],
-  "memory_context_sha256": "214414a5f13505e75e6b94432e10075649495aa1e3fba30b4624b7cf9483937e",
-  "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-19T05:32:19.294844-05:00",
-      "created_run_id": "overnight-20261119",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-19T05:32:19.294844-05:00",
-        "conviction": 56,
-        "entry_mark": 0.83,
-        "exit_mark": 0.83,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 88736,
-        "instrument": "EURGBP",
-        "invalidation": "Close the long if euro-sterling extends through 0.8331 before any euro-positive impulse, or if a UK yield premium versus the euro-area ten-year at 3.35 explains the cheapness as carry.",
-        "opened_at": "2026-11-18T04:53:22.859808-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -1440.49,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-7164b5ae7dd6",
-      "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -224,7 +241,7 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.17
+        "value": 0.16
       },
       "defensiveness": {
         "band": "calm",
@@ -265,16 +282,10 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [
-      {
-        "kind": "trade_win_close",
-        "magnitude": 0.5944026600000001,
-        "run_id": "overnight-20261113"
-      }
-    ],
+    "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "046b921d5fce0378ec1e6ef5c60f30bad7828dac15e675cf8cf97b2f7adfca72",
+    "state_sha256": "95eeada3296c20930f249881786ce3e335881c02855c1acda6e907e418080df6",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

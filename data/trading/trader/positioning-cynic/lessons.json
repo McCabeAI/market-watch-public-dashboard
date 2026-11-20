@@ -160,6 +160,45 @@
         "trd-trader-positioning-cynic-pos-df316f59e974"
       ],
       "updated_at": "2026-11-16T05:49:50.389382-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-20T05:40:17.809566-05:00",
+      "future_rule": "Do not re-short dollar-yen on stretch after 159.60 has been reclaimed, and do not treat a spot percentile as positioning while the public hike path remains the consensus.",
+      "history": [
+        {
+          "at": "2026-11-20T05:40:17.809566-05:00",
+          "op": "add",
+          "run_id": "overnight-20261120"
+        }
+      ],
+      "lesson_id": "les-e9b42b48da39",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-f93cef64feda"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "A cover of the dollar-yen short from 159.60 to 159.42 does not show ownership asymmetry. The reclaim through 159.60 to 159.97 shows that short was the crowded fade.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-42a60282429f"
+      ],
+      "updated_at": "2026-11-20T05:40:17.809566-05:00"
     }
   ],
   "schema_version": 1,

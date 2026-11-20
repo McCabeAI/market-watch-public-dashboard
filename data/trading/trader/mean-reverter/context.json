@@ -99,45 +99,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-d130c67876f6",
-      "owner_id": "mean-reverter",
-      "owner_type": "trader",
-      "reference": "trd-trader-mean-reverter-pos-35399779720e",
-      "source_run_id": "overnight-20261119"
-    }
-  ],
-  "memory_context_sha256": "31b3ce6928acabe90cc6117132a3302e7631b7e26890b1a2ed55ede7ddcf82bc",
+  "learning_obligations": [],
+  "memory_context_sha256": "3ac12069c1e73ef17dbfd5a20badb1ac48c0069a840c78531e8314c187744c9b",
   "open_positions": [],
   "owner_id": "mean-reverter",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-19T05:32:19.294844-05:00",
-      "created_run_id": "overnight-20261119",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-19T05:32:19.294844-05:00",
-        "conviction": null,
-        "entry_mark": 159.6,
-        "exit_mark": 159.42,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 172342,
-        "instrument": "USDJPY",
-        "invalidation": "The short ends if USDJPY reasserts the failed 20-day upside break.",
-        "opened_at": "2026-11-17T05:39:57.066300-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 11188.75,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-d130c67876f6",
-      "trade_id": "trd-trader-mean-reverter-pos-35399779720e"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -202,9 +169,9 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "85a65699cddb7da45c9d13c78125331051c844685527fe8c25f69b1f257a4aca",
+    "state_sha256": "24009d75ba9b74de365729e3842c12ef46c19c5812b28c982a36aa10aa6ab329",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 1
     }

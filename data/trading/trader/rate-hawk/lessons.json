@@ -155,6 +155,45 @@
         "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
       ],
       "updated_at": "2026-11-19T05:32:19.294844-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-20T05:40:17.809566-05:00",
+      "future_rule": "Invalidate a short-rate on that contract's own path, and do not open a new short in the peak contract merely to keep a hawkish story in the book.",
+      "history": [
+        {
+          "at": "2026-11-20T05:40:17.809566-05:00",
+          "op": "add",
+          "run_id": "overnight-20261120"
+        }
+      ],
+      "lesson_id": "les-52db575636aa",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-40857a1c3c7f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "Do not roll a finished front SOFR short into the peak contract just to keep a hawkish story.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-c9184707c12b"
+      ],
+      "updated_at": "2026-11-20T05:40:17.809566-05:00"
     }
   ],
   "schema_version": 1,

@@ -2462,6 +2462,60 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "The euro short and the dollar-franc long stay on. Euro at 1.0968 is still through the 20-day low, and dollar-franc at 0.8427 is still through the 20-day high, with the two-year at 4.80 after a hawkish set of minutes. Dollar-yen at 159.42 is not a breakout, and dollar-Canada is an oil-linked extra rather than a third dollar ticket. Nothing is added."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "ced8ba885837976de80abdc25732b324b04db32d5a25b22d26be61faa1a59d1f",
+      "event_id": "jde-89c216a31081460c",
+      "funding_view": null,
+      "invalidation": "The euro short fails if producer prices disappoint and the ten-year gives back its rise, or if euro, sterling, Australia and New Zealand stabilize together. The franc long fails if EURUSD reclaims its 20-day downside break and USDCHF loses its 20-day upside break while the US two-year premium compresses.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "29da0df8ff16a6accd8f0ac87cf4413a9f949377d9e97f065ca0b4ab9f6d767a",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cd2dac12ad0a38139fc090bbc0efc6a835bad4d85a66991500b725c8c341a225"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the 10 million EURUSD short and the 10 million USDCHF long. The dollar leg still works because the US two-year at 4.76 holds a large premium over Europe at 3.14, Fed minutes still discuss hikes, and sterling is breaking down with the complex. Yields have already fallen on a safe-haven bid, so both booked stops stay armed and nothing is added in dollar-yen or dollar-Canada.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Keep the 10 million EURUSD short and the 10 million USDCHF long. The dollar leg still works because the US two-year at 4.76 holds a large premium over Europe at 3.14, Fed minutes still discuss hikes, and sterling is breaking down with the complex. Yields have already fallen on a safe-haven bid, so both booked stops stay armed and nothing is added in dollar-yen or dollar-Canada."
     }
   ],
   "schema_version": 1,
