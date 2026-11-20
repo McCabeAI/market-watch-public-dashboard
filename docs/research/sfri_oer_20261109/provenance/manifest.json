@@ -1,0 +1,74 @@
+{
+  "research_cutoff": "2026-11-09",
+  "retrieved_at": "2026-11-10T03:24:45+00:00",
+  "sha256": {
+    "bls_cpi_shelter_through_2026-09.csv": "99279e4d4a97ed0bc7bebbcb7f244689bc93afa031bd59aeb924dbb024c3df51",
+    "zori_us_snapshot.csv": "3f8d97580a2003e0c87721be5d2d0dd159ed2f1dd6a60c90a03f0469f44f4bcd",
+    "press_release_citations.csv": "c152d603006922e04fd916e1a6157a94b38680203b8632d8579d18f7354b0c6f"
+  },
+  "bls_series": {
+    "oer_sa": {
+      "id": "CUSR0000SEHC01",
+      "definition": "Owners' equivalent rent of primary residence, US city average, seasonally adjusted, Dec 1982=100",
+      "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/CUSR0000SEHC01",
+      "retrieval": "v2 POST to https://api.bls.gov/publicAPI/v2/timeseries/data/ with startyear/endyear windows (v1 GET is latest-vintage only)",
+      "first_month": "2012-01",
+      "last_month": "2026-09",
+      "n_observed": 176,
+      "missing_months": [
+        "2025-10"
+      ]
+    },
+    "oer_nsa": {
+      "id": "CUUR0000SEHC01",
+      "definition": "Owners' equivalent rent of primary residence, not seasonally adjusted",
+      "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/CUUR0000SEHC01",
+      "retrieval": "v2 POST to https://api.bls.gov/publicAPI/v2/timeseries/data/ with startyear/endyear windows (v1 GET is latest-vintage only)",
+      "first_month": "2012-01",
+      "last_month": "2026-09",
+      "n_observed": 176,
+      "missing_months": [
+        "2025-10"
+      ]
+    },
+    "rent_sa": {
+      "id": "CUSR0000SEHA",
+      "definition": "Rent of primary residence, US city average, seasonally adjusted",
+      "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/CUSR0000SEHA",
+      "retrieval": "v2 POST to https://api.bls.gov/publicAPI/v2/timeseries/data/ with startyear/endyear windows (v1 GET is latest-vintage only)",
+      "first_month": "2012-01",
+      "last_month": "2026-09",
+      "n_observed": 176,
+      "missing_months": [
+        "2025-10"
+      ]
+    },
+    "rent_nsa": {
+      "id": "CUUR0000SEHA",
+      "definition": "Rent of primary residence, not seasonally adjusted",
+      "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/CUUR0000SEHA",
+      "retrieval": "v2 POST to https://api.bls.gov/publicAPI/v2/timeseries/data/ with startyear/endyear windows (v1 GET is latest-vintage only)",
+      "first_month": "2012-01",
+      "last_month": "2026-09",
+      "n_observed": 176,
+      "missing_months": [
+        "2025-10"
+      ]
+    }
+  },
+  "zori": {
+    "source_urls": [
+      "https://files.zillowstatic.com/research/public_csvs/zori/Metro_zori_uc_sfrcondomfr_sm_month.csv",
+      "https://files.zillowstatic.com/research/public_csvs/zori/Metro_zori_uc_sfr_sm_month.csv"
+    ],
+    "attribution": "Zillow Research",
+    "note": "Zillow restates full history on each release; this file is one snapshot and is NOT a real-time vintage.",
+    "zori_sfr_download": "ok"
+  },
+  "direct_sfri_test": "blocked",
+  "case_shiller_status": "blocked_download",
+  "cpi_rows_after_2026_09_dropped": 0,
+  "latest_bls_month_before_filter": "2026-09",
+  "oer_sa_2026_09_matches_parent_probe": true,
+  "oer_sa_2026_09_actual": 445.195
+}
