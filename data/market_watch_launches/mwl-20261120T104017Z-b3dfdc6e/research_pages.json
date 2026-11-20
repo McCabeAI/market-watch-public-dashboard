@@ -1,0 +1,356 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-20T11:02:33+00:00",
+      "release_sha256": "e8f596ad9abc498afb093823c85fd51e2e1a86e14d1480bf0f9ebdaa96dd42a3",
+      "run_attempt": "1",
+      "run_id": "44721049719",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/44721049719",
+      "site_sha256": "67200b2b5bf7d406ac59d04aff491747352a9c650b4749d38d9ca0e8c2f80f8a"
+    }
+  ],
+  "launch_id": "mwl-20261120T104017Z-b3dfdc6e",
+  "launch_terminal": false,
+  "packet_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-19T06:48:34.551363-05:00",
+      "as_of": "2026-11-19T05:32:19.294844-05:00",
+      "books_run_id": "overnight-20261119",
+      "overnight_run_id": "overnight-20261119",
+      "packet_sha256": "3a26fd6ece6b2a4d91594ae5a2f19a47ca041ed9320807b9f4bacc6a2ff666b3"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-20T05:40:17.809566-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-20T05:40:17.809566-05:00",
+      "counts": {
+        "considered": 20,
+        "eligible": 8,
+        "rejected": {
+          "already_accepted": 2,
+          "unattributed": 10
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "ECB\u2019s Pereira Says Inflation Pressure Is Significant and Rising",
+          "id": "news:8413509f703a8195",
+          "published_at": "2026-11-19T21:17:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-20/ecb-s-pereira-says-inflation-pressure-is-significant-and-rising",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Bond Sales Hit \u20ac2 Trillion Europe Record as AI Surge Takes Hold",
+          "id": "news:55dfab2e7936aba7",
+          "published_at": "2026-11-19T19:54:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-20/bond-sales-hit-2-trillion-europe-record-as-ai-surge-takes-hold",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "geopolitics_haven",
+          "claim": "possible",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Israel Pivots to Cheaper Air Defense With Iran Tensions Rising",
+          "id": "news:9823fe8519349c65",
+          "published_at": "2026-11-19T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-20/israel-cheaper-air-defense-david-sling-iran-stunner-interceptor-patriot-rafael-rtx",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Treasury yields are sharply lower as investors flee to safe havens",
+          "id": "news:5ace5078161e2ac3",
+          "published_at": "2026-11-20T04:21:03-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/20/treasury-yields-bonds-inflation.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Japan core inflation soars to highest this year as energy subsidy expiry pushes up consumer prices",
+          "id": "news:73967de8d0be3f36",
+          "published_at": "2026-11-19T19:49:03-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/20/japan-inflation-cpi-october.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Gold Set for Worst Week Since March on Hawkish Fed, AI Selloff",
+          "id": "news:f3fcabe0a139b838",
+          "published_at": "2026-11-19T13:23:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-19/gold-set-for-worst-week-since-march-on-hawkish-fed-ai-selloff",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "India Refiners Race to Secure Oil Tankers as Freight Costs Surge",
+          "id": "news:d01bfcfc96bb447f",
+          "published_at": "2026-11-19T21:35:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-20/india-refiners-race-to-secure-oil-tankers-as-freight-costs-surge",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "cnbc",
+          "headline": "Trump, Xi, Putin said they plan to boost oil production, revamp UN after trilateral talks",
+          "id": "news:aebe965de3c411b9",
+          "published_at": "2026-11-19T11:01:41-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/19/trump-xi-putin-trilateral-meeting-china.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-20T05:40:17.809566-05:00",
+      "news_family_digest": "40d8fd9238973622e0a6fb31f508b1c71546331ac15c1ae7cfe55982ea8b924c",
+      "packet_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-20T05:40:17.809566-05:00",
+        "start": "2026-11-19T05:40:17.809566-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/freeze_binding.json",
+        "sha256": "d68eb1337bdd5132a049f21cb38268c8c90083e569533992ebca3d7081a13bba"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/remote_freeze.json",
+        "sha256": "2ec9953b12ee892347852e23137c7ec4dbafccb3450d41e628fd205a6715c622"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/artifacts/00_authenticate.json",
+        "sha256": "d6e54c9aa7bd705ffa494d43039518101b51af6926f9cd4a3dab33748ed128b0"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/artifacts/01_ingest.json",
+        "sha256": "995ed82a01f4e16f04fdd0ce99c1f118df9b4c9c6a0dae95f252dafc2ba1a6a7"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/artifacts/02_acquire.json",
+        "sha256": "f9ee768d5a6f7c0030329c8ece149ddb465cf4e18d25511cf5bc1becd57d74a0"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/artifacts/03_quality_gate.json",
+        "sha256": "a252d68aa4a2bd5b15716592dae8e2ebd4f591e26c71209ec1b5f1ad25db548a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/artifacts/04_freeze.json",
+        "sha256": "50ee2dc4f3d63616faebd8429e43e7f2ba2c1d642029385cf7576ca52b9ac35b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/temperature_scores.json",
+        "sha256": "450ce7d961c6f352d2e512f7ac016ee1885a2c04adf337789d016cef25042024"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/history/au.json",
+        "sha256": "92170c6604c1e733cad64f384109dde27744ec16dd4fe6121a572f8ecbc486f6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/history/ca.json",
+        "sha256": "221d03e761595d3e788b3dbff5a574d43ee8456a04ac344fa65e849d15a591eb"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/history/ea.json",
+        "sha256": "c90cb109e30fc0cf2f52090f7d767544931b90356f2e65ccb5b35bab43e5f44b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261120T104017Z-b3dfdc6e/lineage/history/us.json",
+        "sha256": "77ca9ed317686a6513ed22d770ea49c615a570cd93cd15214653de7e6f32c2b2"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261120/reviews/review-001/evidence_snapshot.json",
+        "sha256": "32b17936ea35d430e117049c277a58d8aa66fb00192c6d72fe4e3ea82a175951"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "6c6765fa5530100dac76651b7ce7d0be16a8719f25fdda56f52059e70b235145"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261119/assembled_dataset.json",
+        "sha256": "818881c2f5e6b06038faf3034c8c48f888c019715b25050765f99ce02334002e"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "cf861dd3b88871cfa62c37f445bafe3302e823140a59c845e98f7764915eb8a9"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "33adfd5ddc115e6d8ed5e0175466c0abc13fb673f74a96de834f3ee259d56bda"
+      }
+    ],
+    "launch_id": "mwl-20261120T104017Z-b3dfdc6e",
+    "market_state": {
+      "as_of": "2026-11-20T11:01:22Z",
+      "digest": "f91f000b650d64c4c12bc0725b31fcd81f2a1166bdeef4e00f9521a79f5e9c7f",
+      "generated_at": "2026-11-20T11:01:22Z"
+    },
+    "news": {
+      "age_label": "24 h before this freeze",
+      "as_of": "2026-11-19T05:32:19.294844-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261119",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261120",
+    "packet_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "CA.Consumer.retail",
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Activity.business_surveys",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "JP.Consumer.income",
+        "JP.Consumer.retail",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.confidence",
+        "JP.Consumer.spending",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "0aad3d6acf4583f5008828eac29c9a7f2bbc843c",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 1,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-20T10:40:17Z",
+      "inputs_last_ingested_at": "2026-11-20T10:40:17Z",
+      "score_state_sha256": "450ce7d961c6f352d2e512f7ac016ee1885a2c04adf337789d016cef25042024"
+    },
+    "session_date": "2026-11-20",
+    "site_sha256": "67200b2b5bf7d406ac59d04aff491747352a9c650b4749d38d9ca0e8c2f80f8a",
+    "source_commit": "1e3658a2fa5ca09a9c50450f39f953939a775d9b",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261120",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "e8f596ad9abc498afb093823c85fd51e2e1a86e14d1480bf0f9ebdaa96dd42a3",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-20",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
