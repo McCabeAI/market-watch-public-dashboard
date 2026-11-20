@@ -63,7 +63,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-19T05:32:19.294844-05:00",
+  "as_of": "2026-11-20T05:40:17.809566-05:00",
   "calibration": {
     "average_holding_seconds": 533273,
     "average_realized_pnl_usd": 52713.66,
@@ -107,21 +107,21 @@
     "competition_eligible": true,
     "competition_rank": 4,
     "competitive_rank": 4,
-    "drawdown_usd": 21859.02,
-    "giveback_usd": 21859.02,
+    "drawdown_usd": 22763.42,
+    "giveback_usd": 22763.42,
     "high_water_nav_usd": 100285315.77,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100263456.75,
-    "net_pnl_usd": 263456.75,
+    "nav_usd": 100262552.35,
+    "net_pnl_usd": 262552.35,
     "pressure_flags": [],
     "prior_competition_rank": 4,
     "rank_change": 0,
     "raw_pnl_rank": 4,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 50000.0,
-    "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": 904.4,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -131,12 +131,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "ff7b24026edab353c6483604ae478ac04043b5d0f7c10ff8f9fdc13d92139d42",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-0c5385c0010b",
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "reference": "trd-trader-value-guy-pos-5760dbd4ac3e",
+      "source_run_id": "overnight-20261119"
+    }
+  ],
+  "memory_context_sha256": "3bbd18e6c57f400e7957ac649272ea5184e0eba13418bacabb717feae0fb6db0",
   "open_positions": [],
   "owner_id": "value-guy",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": 61,
+        "entry_mark": 0.83,
+        "exit_mark": 0.83,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 780102,
+        "instrument": "EURGBP",
+        "invalidation": "The euro long is invalidated if EURGBP stays pinned at 0.834 after EURUSD and EURJPY have lifted off their lows, or if a further rise in crude marks that cheapness as fair. The AUDNZD short is invalidated by a sustained rebound through the 1.25 entry.",
+        "opened_at": "2026-11-10T04:50:36.940059-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -8390.27,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-0c5385c0010b",
+      "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

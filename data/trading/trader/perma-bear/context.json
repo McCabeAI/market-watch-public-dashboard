@@ -40,7 +40,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-19T05:32:19.294844-05:00",
+  "as_of": "2026-11-20T05:40:17.809566-05:00",
   "calibration": {
     "average_holding_seconds": 2516526,
     "average_realized_pnl_usd": 19109.38,
@@ -80,21 +80,21 @@
     "competition_eligible": true,
     "competition_rank": 8,
     "competitive_rank": 8,
-    "drawdown_usd": 12564.46,
-    "giveback_usd": 12564.46,
+    "drawdown_usd": 11630.36,
+    "giveback_usd": 11630.36,
     "high_water_nav_usd": 100048491.68,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100035927.22,
-    "net_pnl_usd": 35927.22,
+    "nav_usd": 100036861.32,
+    "net_pnl_usd": 36861.32,
     "pressure_flags": [],
     "prior_competition_rank": 8,
     "rank_change": 0,
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 31250.0,
-    "risk_capital_utilization": 0.0031,
-    "session_pnl_change_usd": -934.1,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -104,12 +104,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "e5327305274ccb2f8a84a7069f31af5319bdd8d5e2747c96690536971dfffabc",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-67c414ae30d8",
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "reference": "trd-trader-perma-bear-pos-5ac8fc69cb81",
+      "source_run_id": "overnight-20261119"
+    }
+  ],
+  "memory_context_sha256": "153ce2f45e1f0626a00f14d3606b7403a42766bfc59af64843f6a66e072d8d37",
   "open_positions": [],
   "owner_id": "perma-bear",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": 64,
+        "entry_mark": 5.24,
+        "exit_mark": 5.07,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 4146682,
+        "instrument": "US_10Y",
+        "invalidation": "A further selloff in the US 10-year driven by tighter policy and higher term premium with no growth break would hurt long duration.",
+        "opened_at": "2026-10-02T05:40:56.963171-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 50937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-67c414ae30d8",
+      "trade_id": "trd-trader-perma-bear-pos-5ac8fc69cb81"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

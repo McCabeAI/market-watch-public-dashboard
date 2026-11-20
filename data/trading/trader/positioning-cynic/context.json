@@ -105,7 +105,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-19T05:32:19.294844-05:00",
+  "as_of": "2026-11-20T05:40:17.809566-05:00",
   "calibration": {
     "average_holding_seconds": 773741,
     "average_realized_pnl_usd": 55981.83,
@@ -149,21 +149,21 @@
     "competition_eligible": true,
     "competition_rank": 3,
     "competitive_rank": 3,
-    "drawdown_usd": 10.92,
-    "giveback_usd": 10.92,
+    "drawdown_usd": 7706.7,
+    "giveback_usd": 7706.7,
     "high_water_nav_usd": 100342034.64,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100342023.72,
-    "net_pnl_usd": 342023.72,
+    "nav_usd": 100334327.94,
+    "net_pnl_usd": 334327.94,
     "pressure_flags": [],
     "prior_competition_rank": 3,
     "rank_change": 0,
     "raw_pnl_rank": 3,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 100000.0,
-    "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 7695.78,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -173,12 +173,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "141e7f398b49572cabd3508589fdb9a48b5c613e35f6bc3bd6e993c4594aa716",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-f93cef64feda",
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "reference": "trd-trader-positioning-cynic-pos-42a60282429f",
+      "source_run_id": "overnight-20261119"
+    }
+  ],
+  "memory_context_sha256": "80fad97bb402c03b7b69e630c8570114b15434fd3a4b720d03cb119794d8dd88",
   "open_positions": [],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": null,
+        "entry_mark": 159.6,
+        "exit_mark": 159.42,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 172342,
+        "instrument": "USDJPY",
+        "invalidation": "The short is invalid if USDJPY holds above 159.60 and reclaims the failed 20-day break, showing the dollar long is being added again.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 11188.75,
+        "side": "short",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-f93cef64feda",
+      "trade_id": "trd-trader-positioning-cynic-pos-42a60282429f"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

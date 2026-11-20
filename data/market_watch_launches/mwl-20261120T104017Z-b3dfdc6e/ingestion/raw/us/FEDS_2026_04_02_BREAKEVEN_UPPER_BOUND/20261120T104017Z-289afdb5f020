@@ -1,0 +1,43 @@
+{
+  "series_id": "US.Labor.breakeven_employment",
+  "update_cadence": "on_publication",
+  "interpolation": "none",
+  "notes": "Structural labor-supply regime snapshots. Ranges that are not a single published point stay in citations and are not expanded into a monthly path.",
+  "snapshots": [
+    {
+      "period": "2026-04",
+      "publication_date": "2026-04-02",
+      "expires_after": "2027-04-02",
+      "value_thousands_per_month": 10.0,
+      "value_kind": "upper_bound",
+      "statement": "The Board note says 2026 breakeven employment could require less than 10,000 new jobs per month. 10.0 is that stated upper bound, already used as the frozen score anchor and repeated here only as context.",
+      "publisher": "Board of Governors of the Federal Reserve System",
+      "title": "Labor force growth, breakeven employment, and potential GDP growth",
+      "authors": "Seth Murray and Ivan Vidangos",
+      "source_url": "https://www.federalreserve.gov/econres/notes/feds-notes/labor-force-growth-breakeven-employment-and-potential-gdp-growth-20260402.html",
+      "citations": [
+        {
+          "publisher": "Federal Reserve Bank of St. Louis",
+          "date": "2026-03-24",
+          "source_url": "https://www.stlouisfed.org/on-the-economy/2026/mar/breakeven-employment-growth-estimate-range-widens-2026",
+          "statement": "15,000 to 87,000 jobs per month in 2026",
+          "numeric_point": null
+        },
+        {
+          "publisher": "Federal Reserve Bank of Dallas",
+          "date": "2026-03-31",
+          "source_url": "https://www.dallasfed.org/research/economics/2026/0331",
+          "statement": "Near zero or slightly negative recently",
+          "numeric_point": null
+        },
+        {
+          "publisher": "Federal Reserve Bank of Chicago",
+          "date": "2026",
+          "source_url": "https://www.chicagofed.org/-/media/publications/working-papers/2026/wp2026-10.pdf",
+          "statement": "Roughly 25,000 to 100,000 using CBO projections",
+          "numeric_point": null
+        }
+      ]
+    }
+  ]
+}

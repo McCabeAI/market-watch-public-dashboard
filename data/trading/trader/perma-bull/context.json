@@ -119,7 +119,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-19T05:32:19.294844-05:00",
+  "as_of": "2026-11-20T05:40:17.809566-05:00",
   "calibration": {
     "average_holding_seconds": 1687991,
     "average_realized_pnl_usd": -7179.49,
@@ -163,21 +163,21 @@
     "competition_eligible": true,
     "competition_rank": 13,
     "competitive_rank": 13,
-    "drawdown_usd": 81679.8,
-    "giveback_usd": 81679.8,
+    "drawdown_usd": 91375.52,
+    "giveback_usd": 91375.52,
     "high_water_nav_usd": 100042789.91,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99961110.11,
-    "net_pnl_usd": -38889.89,
+    "nav_usd": 99951414.39,
+    "net_pnl_usd": -48585.61,
     "pressure_flags": [],
     "prior_competition_rank": 13,
     "rank_change": 0,
     "raw_pnl_rank": 13,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 200000.0,
-    "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 9695.72,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -187,12 +187,76 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "ecca86210c57de73f0e728bdf1e7038eb90f1be738d82491e22372c41e5afc3a",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-26850435e8fb",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "reference": "trd-trader-perma-bull-pos-471766cc8505",
+      "source_run_id": "overnight-20261119"
+    },
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-e1ea63fea041",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "reference": "trd-trader-perma-bull-pos-6e1d9b2083b8",
+      "source_run_id": "overnight-20261119"
+    }
+  ],
+  "memory_context_sha256": "367f98dd9a887bf0507c3210a4c332d318faea6517e6c193b7ceff8a6abfa53f",
   "open_positions": [],
   "owner_id": "perma-bull",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": null,
+        "entry_mark": 0.68,
+        "exit_mark": 0.67,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 172342,
+        "instrument": "AUDUSD",
+        "invalidation": "AUDUSD extends its 20-day downside break while SOFR March 2027 settles up through the June-September strip, so the yield backup becomes a parallel tightening shock.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -56230.36,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-26850435e8fb",
+      "trade_id": "trd-trader-perma-bull-pos-471766cc8505"
+    },
+    {
+      "created_at": "2026-11-19T05:32:19.294844-05:00",
+      "created_run_id": "overnight-20261119",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-19T05:32:19.294844-05:00",
+        "conviction": 58,
+        "entry_mark": 4.71,
+        "exit_mark": 4.74,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 88736,
+        "instrument": "SOFR_2027-09",
+        "invalidation": "The September receive is invalidated if that contract holds 4.710 and the strip pushes further, or if oil moves back toward the prior scare zone. The Australian-dollar hold is invalidated if spot fails to stabilize while March SOFR at 4.545 and September at 4.710 hold the repricing.",
+        "opened_at": "2026-11-18T04:53:22.859808-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -1250.0,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-e1ea63fea041",
+      "trade_id": "trd-trader-perma-bull-pos-6e1d9b2083b8"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
