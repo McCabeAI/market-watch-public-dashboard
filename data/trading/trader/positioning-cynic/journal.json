@@ -2481,6 +2481,60 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "The dollar-yen short is closed and nothing replaces it. Speculative positioning is not in the marks, so crowding can only be read from the price extreme, and that extreme is the fresh dollar-up complex in euro, sterling, the Australian dollar, the kiwi, dollar-Canada, and dollar-franc. Dollar-yen at 159.42 has a one-year z-score of 0.52 and no 20-day breakout, so the short has no stretched long to harvest. The 10-year up nine basis points is an impulse that usually carries dollar-yen higher."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "b8ef7766a87a4c3420aa3dee664133b92556ca105884ecbbe86190ab4c043a56",
+      "event_id": "jde-5986820b91594003",
+      "funding_view": null,
+      "invalidation": "The stand-aside ends if the hike pay or the Canada receive ceases to be the owned side, or if dollar-yen loses 159.60 because longs are forced out.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "80fad97bb402c03b7b69e630c8570114b15434fd3a4b720d03cb119794d8dd88",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "d71cadaa3c3a6bc92b34783c12bb6cabb333ff99fa8185694c8146d7afa3ec25"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. The public further-hike pay, the Canada receive, and the short euro plus long Swiss franc are already the owned book, with euro-dollar at the first percentile and dollar-Canada and dollar-Swiss near the 99th. Dollar-yen at 159.97 has reclaimed 159.60, so another short there is the crowded fade rather than the unowned side.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Stay flat. The public further-hike pay, the Canada receive, and the short euro plus long Swiss franc are already the owned book, with euro-dollar at the first percentile and dollar-Canada and dollar-Swiss near the 99th. Dollar-yen at 159.97 has reclaimed 159.60, so another short there is the crowded fade rather than the unowned side."
     }
   ],
   "schema_version": 1,

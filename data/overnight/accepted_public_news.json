@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-19T05:32:19.294844-05:00",
+  "as_of": "2026-11-20T05:40:17.809566-05:00",
   "central_bank_research": [
     {
       "headline": "Fed Chairman Kevin Warsh stresses importance of AI to the economy, but says it could disappoint",
@@ -14,13 +14,13 @@
   ],
   "news": [
     {
-      "headline": "Treasury yields inch higher as investors weigh the state of the U.S. economy",
+      "headline": "ECB\u2019s Pereira Says Inflation Pressure Is Significant and Rising",
       "market_salience": {
         "components": {
-          "asset_named": 2,
+          "asset_named": 3,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
@@ -32,24 +32,26 @@
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 9
+        "score": 15
       },
-      "published_at": "2026-11-19T03:52:58-05:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "published_at": "2026-11-19T21:17:00-05:00",
+      "summary": "European Central Bank Governing Council member Alvaro Santos Pereira said upward pressure on consumer prices is strong and is still building, comments that suggest he backs a further tightening of ...",
       "transmission": {
         "affected_assets": [
           "USD",
-          "UST"
+          "UST",
+          "EUR"
         ],
-        "channel": "usd_rates",
+        "channel": "g10_policy",
         "channels": [
+          "g10_policy",
           "usd_rates"
         ],
         "components": {
-          "asset_named": 2,
+          "asset_named": 3,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
@@ -57,10 +59,11 @@
           "shock": 2,
           "subject_penalty": 0
         },
-        "disposition": "assess",
-        "reason_code": "usd_rates_repricing",
-        "score": 9
-      }
+        "disposition": "show",
+        "reason_code": "g10_policy_path",
+        "score": 15
+      },
+      "url": "https://www.bloomberg.com/news/articles/2026-11-20/ecb-s-pereira-says-inflation-pressure-is-significant-and-rising"
     },
     {
       "headline": "Longer-dated Treasury yields fall as traders weigh Waller comments, Fed minutes",
@@ -163,99 +166,56 @@
       }
     },
     {
-      "headline": "Fed\u2019s Waller says central bank may need to \u2018shock people\u2019 with half-point rate hike",
+      "headline": "IEA chief sees no 'credible pathway' back to pre-war normality in the Strait of Hormuz",
       "market_salience": {
         "components": {
-          "asset_named": 2,
+          "asset_named": 3,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
           "channel_global_risk": 0,
-          "channel_oil_energy": 0,
+          "channel_oil_energy": 5,
           "channel_usd_rates": 0,
           "distribution_weight": 0,
           "novelty": 0,
           "recency": 0,
-          "shock": 2,
+          "shock": 3,
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 9
+        "score": 15
       },
-      "published_at": "2026-11-18T09:13:39-05:00",
+      "published_at": "2026-11-18T06:00:01-05:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
-          "USD"
+          "Brent",
+          "USD",
+          "WTI",
+          "CAD",
+          "UST"
         ],
-        "channel": "g10_policy",
+        "channel": "oil_energy_tot",
         "channels": [
-          "g10_policy"
+          "oil_energy_tot",
+          "geopolitics_haven"
         ],
         "components": {
-          "asset_named": 2,
+          "asset_named": 3,
           "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
           "channel_global_risk": 0,
-          "channel_oil_energy": 0,
+          "channel_oil_energy": 5,
           "channel_usd_rates": 0,
-          "shock": 2,
+          "shock": 3,
           "subject_penalty": 0
         },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
-      }
-    },
-    {
-      "headline": "BOJ\u2019s Ueda Unfazed by Consumption Drop, Stays Open to Rate Hike",
-      "market_salience": {
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
-        "score": 9
-      },
-      "published_at": "2026-11-18T11:01:00-05:00",
-      "summary": "Bank of Japan Governor Kazuo Ueda said he expects consumer spending to return to a rising trend, signaling that a recent economic contraction driven by weak consumption won\u2019t dissuade the central bank from considering a hike.",
-      "transmission": {
-        "affected_assets": [
-          "JPY"
-        ],
-        "channel": "g10_policy",
-        "channels": [
-          "g10_policy"
-        ],
-        "components": {
-          "asset_named": 2,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
-          "channel_g10_policy": 5,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 2,
-          "subject_penalty": 0
-        },
-        "disposition": "assess",
-        "reason_code": "g10_policy_path",
-        "score": 9
+        "disposition": "show",
+        "reason_code": "oil_supply_shock",
+        "score": 15
       }
     },
     {
@@ -310,16 +270,16 @@
       }
     },
     {
-      "headline": "IEA chief sees no 'credible pathway' back to pre-war normality in the Strait of Hormuz",
+      "headline": "Bond Sales Hit \u20ac2 Trillion Europe Record as AI Surge Takes Hold",
       "market_salience": {
         "components": {
           "asset_named": 3,
           "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
+          "channel_credit_funding": 5,
           "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
+          "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 5,
+          "channel_oil_energy": 0,
           "channel_usd_rates": 0,
           "distribution_weight": 0,
           "novelty": 0,
@@ -328,39 +288,36 @@
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 15
+        "score": 11
       },
-      "published_at": "2026-11-18T06:00:01-05:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "published_at": "2026-11-19T19:54:00-05:00",
+      "summary": "Bond sales in Europe have topped \u20ac2 trillion ($2.2 trillion) for the first time, as unrelenting government borrowing collides with the vast funding needs of the artificial intelligence boom.",
       "transmission": {
         "affected_assets": [
-          "Brent",
-          "USD",
-          "WTI",
-          "CAD",
+          "credit_spreads",
           "UST"
         ],
-        "channel": "oil_energy_tot",
+        "channel": "credit_funding",
         "channels": [
-          "oil_energy_tot",
-          "geopolitics_haven"
+          "credit_funding"
         ],
         "components": {
           "asset_named": 3,
           "channel_china_spillover": 0,
-          "channel_credit_funding": 0,
+          "channel_credit_funding": 5,
           "channel_g10_policy": 0,
-          "channel_geopolitics": 4,
+          "channel_geopolitics": 0,
           "channel_global_risk": 0,
-          "channel_oil_energy": 5,
+          "channel_oil_energy": 0,
           "channel_usd_rates": 0,
           "shock": 3,
           "subject_penalty": 0
         },
         "disposition": "show",
-        "reason_code": "oil_supply_shock",
-        "score": 15
-      }
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      },
+      "url": "https://www.bloomberg.com/news/articles/2026-11-20/bond-sales-hit-2-trillion-europe-record-as-ai-surge-takes-hold"
     },
     {
       "headline": "Big bets against AI debt, from CoreWeave to Oracle and the Mag 7, could soon hit the ETF market",
@@ -383,7 +340,7 @@
         "distribution": "standard",
         "score": 11
       },
-      "published_at": "2026-11-18T17:38:55-05:00",
+      "published_at": "2026-11-19T13:31:10-05:00",
       "summary": "Headline-only public metadata; article body was not retrieved.",
       "transmission": {
         "affected_assets": [
@@ -408,57 +365,9 @@
         },
         "disposition": "show",
         "reason_code": "ai_capex_credit",
-        "score": 11
-      }
-    },
-    {
-      "headline": "Nvidia's shift in financing tone may spell trouble for Coreweave, other neoclouds",
-      "market_salience": {
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "distribution_weight": 0,
-          "novelty": 0,
-          "recency": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "distribution": "standard",
         "score": 11
       },
-      "published_at": "2026-11-18T15:00:32-05:00",
-      "summary": "Headline-only public metadata; article body was not retrieved.",
-      "transmission": {
-        "affected_assets": [
-          "credit_spreads",
-          "UST"
-        ],
-        "channel": "credit_funding",
-        "channels": [
-          "credit_funding"
-        ],
-        "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 0,
-          "channel_credit_funding": 5,
-          "channel_g10_policy": 0,
-          "channel_geopolitics": 0,
-          "channel_global_risk": 0,
-          "channel_oil_energy": 0,
-          "channel_usd_rates": 0,
-          "shock": 3,
-          "subject_penalty": 0
-        },
-        "disposition": "show",
-        "reason_code": "ai_capex_credit",
-        "score": 11
-      }
+      "url": "https://www.cnbc.com/2026/11/18/ai-credit-default-swaps-coreweave-debt.html"
     },
     {
       "headline": "Iran escalates threats as third U.S. carrier arrives in Middle East, tanker struck in Hormuz",
@@ -514,13 +423,262 @@
       }
     },
     {
-      "headline": "Copper Slumps to Seven-Month Low as Doubts Over Demand Grow",
+      "headline": "Nvidia's shift in financing tone may spell trouble for Coreweave, other neoclouds",
       "market_salience": {
         "components": {
           "asset_named": 3,
-          "channel_china_spillover": 5,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 11
+      },
+      "published_at": "2026-11-18T15:00:32-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "credit_spreads",
+          "UST"
+        ],
+        "channel": "credit_funding",
+        "channels": [
+          "credit_funding"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 5,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "ai_capex_credit",
+        "score": 11
+      }
+    },
+    {
+      "headline": "Israel Pivots to Cheaper Air Defense With Iran Tensions Rising",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
           "channel_credit_funding": 0,
           "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 10
+      },
+      "published_at": "2026-11-19T11:00:00-05:00",
+      "summary": "Israel has upgraded a cheaper tier of its missile defense after the war with Iran exposed the country\u2019s reliance on expensive interceptors that are hard to mass produce.",
+      "transmission": {
+        "affected_assets": [
+          "USD"
+        ],
+        "channel": "geopolitics_haven",
+        "channels": [
+          "geopolitics_haven"
+        ],
+        "claim": "possible",
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 4,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 3,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "geopolitics_haven_or_oil",
+        "score": 10
+      },
+      "url": "https://www.bloomberg.com/news/articles/2026-11-20/israel-cheaper-air-defense-david-sling-iran-stunner-interceptor-patriot-rafael-rtx"
+    },
+    {
+      "headline": "Treasury yields are sharply lower as investors flee to safe havens",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-20T04:21:03-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      },
+      "url": "https://www.cnbc.com/2026/11/20/treasury-yields-bonds-inflation.html"
+    },
+    {
+      "headline": "Japan core inflation soars to highest this year as energy subsidy expiry pushes up consumer prices",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-19T19:49:03-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      },
+      "url": "https://www.cnbc.com/2026/11/20/japan-inflation-cpi-october.html"
+    },
+    {
+      "headline": "Treasury yields tick lower as investors weigh the state of the U.S. economy",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-19T15:04:31-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "usd_rates",
+        "channels": [
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "usd_rates_repricing",
+        "score": 9
+      },
+      "url": "https://www.cnbc.com/2026/11/19/us-treasury-yields-investors-us-economy.html"
+    },
+    {
+      "headline": "Gold Set for Worst Week Since March on Hawkish Fed, AI Selloff",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
@@ -532,24 +690,23 @@
           "subject_penalty": 0
         },
         "distribution": "standard",
-        "score": 10
+        "score": 9
       },
-      "published_at": "2026-11-17T20:16:00-05:00",
-      "summary": "Copper extended a decline to the lowest in nearly five months as a stronger dollar added to downward pressure from upheaval in the artificial intelligence sector and a gloomy outlook in China.",
+      "published_at": "2026-11-19T13:23:00-05:00",
+      "summary": "Gold fell and was heading for the biggest weekly decline since March, as a hawkish Federal Reserve signaled more interest-rate cuts and a selloff in AI stocks pushed investors to sell the metal to ...",
       "transmission": {
         "affected_assets": [
-          "AUD",
-          "iron_ore"
+          "USD"
         ],
-        "channel": "china_spillover",
+        "channel": "g10_policy",
         "channels": [
-          "china_spillover"
+          "g10_policy"
         ],
         "components": {
-          "asset_named": 3,
-          "channel_china_spillover": 5,
+          "asset_named": 2,
+          "channel_china_spillover": 0,
           "channel_credit_funding": 0,
-          "channel_g10_policy": 0,
+          "channel_g10_policy": 5,
           "channel_geopolitics": 0,
           "channel_global_risk": 0,
           "channel_oil_energy": 0,
@@ -557,10 +714,11 @@
           "shock": 2,
           "subject_penalty": 0
         },
-        "disposition": "show",
-        "reason_code": "china_commodity_spillover",
-        "score": 10
-      }
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      },
+      "url": "https://www.bloomberg.com/news/articles/2026-11-19/gold-set-for-worst-week-since-march-on-hawkish-fed-ai-selloff"
     },
     {
       "headline": "Euro zone yields rise as traders bet on three ECB hikes by late 2027",
@@ -612,11 +770,256 @@
         "reason_code": "g10_policy_path",
         "score": 15
       }
+    },
+    {
+      "headline": "Copper Slumps to Seven-Month Low as Doubts Over Demand Grow",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 5,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 10
+      },
+      "published_at": "2026-11-17T20:16:00-05:00",
+      "summary": "Copper extended a decline to the lowest in nearly five months as a stronger dollar added to downward pressure from upheaval in the artificial intelligence sector and a gloomy outlook in China.",
+      "transmission": {
+        "affected_assets": [
+          "AUD",
+          "iron_ore"
+        ],
+        "channel": "china_spillover",
+        "channels": [
+          "china_spillover"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 5,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "china_commodity_spillover",
+        "score": 10
+      }
+    },
+    {
+      "headline": "BOJ\u2019s Ueda Unfazed by Consumption Drop, Stays Open to Rate Hike",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-18T11:01:00-05:00",
+      "summary": "Bank of Japan Governor Kazuo Ueda said he expects consumer spending to return to a rising trend, signaling that a recent economic contraction driven by weak consumption won\u2019t dissuade the central bank from considering a hike.",
+      "transmission": {
+        "affected_assets": [
+          "JPY"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "Fed\u2019s Waller says central bank may need to \u2018shock people\u2019 with half-point rate hike",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-18T09:13:39-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "USD"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
+      "headline": "India Refiners Race to Secure Oil Tankers as Freight Costs Surge",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-11-19T21:35:00-05:00",
+      "summary": "Indian refiners are rushing to lock in tankers on long-term contracts to secure crude supplies as persistent disruptions in the Persian Gulf drive up freight costs and tighten vessel availability.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      },
+      "url": "https://www.bloomberg.com/news/articles/2026-11-20/india-refiners-race-to-secure-oil-tankers-as-freight-costs-surge"
+    },
+    {
+      "headline": "Trump, Xi, Putin said they plan to boost oil production, revamp UN after trilateral talks",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-11-19T11:01:41-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      },
+      "url": "https://www.cnbc.com/2026/11/19/trump-xi-putin-trilateral-meeting-china.html"
     }
   ],
-  "overnight_run_id": "overnight-20261119",
+  "overnight_run_id": "overnight-20261120",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "The dollar is breaking higher against the euro, sterling, the Australian dollar and the kiwi, while U.S. yields and the secured-funding strip are higher. The S&P 500 is 7323, gold is 3742, and crude is elevated but well off the prior spike, with WTI at 83.26 and Brent at 91.95. Fed minutes showed officials still open to more hikes and worried that AI could add to inflation, and Governor Waller talked about a possible half-point move. Treasury yields were inching higher into the morning after that session. The Bank of Japan governor remained open to tightening despite weak consumption. New Zealand's governor cited above-target inflation and an uneven recovery; sovereign yields there are unavailable, while kiwi spot is still a live price. Canada retail trade and Japan CPI are next, then Australian prices and U.S. growth data, ahead of the December central-bank decisions.",
+  "summary": "Overnight tone turned more defensive as U.S. Treasury yields fell sharply on safe-haven demand, even with Fed minutes and officials still stressing further hikes and AI-related inflation risk. Crude stayed bid on Middle East and Strait of Hormuz supply anxiety, with WTI near 83.2 and Brent near 92.0. Gold held near 3,685.5 while U.S. equities stayed firm\u2014Nasdaq near 23,879 and the Dow near 49,097\u2014with VIX at 24.6. ECB hawkish rhetoric intensified after Pereira cited significant rising inflation pressure; Japan reported core CPI at year highs and Governor Ueda remains open to tightening. Next up: Canadian retail sales today, then Australia CPI and U.S. GDP/PCE on 25 Nov; watch whether the yield drop extends and oil marks hold above recent ranges.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }

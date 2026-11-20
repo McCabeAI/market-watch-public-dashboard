@@ -2394,6 +2394,62 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "Stay flat. Euro at 1.0968 and the Australian dollar at 0.6731 have already broken, so those expressions are complete. The secured-funding strip from 4.30 to 4.735 already is the hike path, so March neither pays an unpriced edge above the 3.92 fixing nor deserves new risk."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T07:05:55.127090-05:00",
+      "conviction": 18,
+      "decision_fingerprint": "84aa3d3cba155dd1b45ab58801a11abb22df931f0b530a605b4deb25506afc8f",
+      "event_id": "jde-6b9e9a3d8210401b",
+      "funding_view": null,
+      "invalidation": "The flat hold ends if one markable spot shows expected excess return over SOFR on its own shock, rather than a story that is already in the price.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "845d68dab65ae4e75cc90751f1901cb4b7262a0021394c83fa8067ff7c671519",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3b1e8e541d597a1ee5daf2d34bcdbc8b9da214837d8efee0c9ebabe46933693f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "388657ff290f4b9fd2fa1818ce05fe6097241625a97ab151ed2e5827134a1112",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261120-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book is flat and stays flat. Official SOFR at 3.90 percent is the charge on shocked risk capital, and the December contract at 4.29 already implies richer forward funding. None of the handoff spots shows expected excess return over that charge.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "The book is flat and stays flat. Official SOFR at 3.90 percent is the charge on shocked risk capital, and the December contract at 4.29 already implies richer forward funding. None of the handoff spots shows expected excess return over that charge."
     }
   ],
   "schema_version": 1,

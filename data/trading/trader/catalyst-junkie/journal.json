@@ -2300,6 +2300,60 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "Nothing is booked. The minutes and the half-point remark are already in the price: euro has broken at 1.0968, the two-year is 4.80, and March secured funding at 4.575 sits well above cash at 3.92. Canada retail trade, Japan CPI, and the December central-bank meetings are on the calendar, and none of them has an unspent gap that these marks can size. Dollar-yen at 159.42 is two-way into a Bank of Japan that is open to a hike."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "a25a53af79cb734fb70d7da4d6cc372db92f4143a2e4ce6cbd14b0e016b132a3",
+      "event_id": "jde-09d1b8367ba44c97",
+      "funding_view": null,
+      "invalidation": "The flat hold ends if December SOFR implied moves off 4.29 while the two-year is still near 4.76 into the 25 November PCE, or if a scheduled Bank of Japan decision takes USDJPY off 159.97.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "5d846b7b997931edc8dd267a17812ba95c16541df3636f24e22e126c8669dce9",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "51e48d59b667fbcbf595e2498c203519a756a9b6eb2103f80417e3e8bfedbc7c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat through Canada retail today and the 25 November US GDP and PCE prints. The two-year at 4.76 already holds the hike, and the December SOFR contract at 4.29 versus a 3.90 fixing is not a meeting contract that still has room to pay. Dollar-yen at 159.97 beside a year-high Japan inflation print has no dated Bank of Japan decision that would reprice a gap the two-year does not already own.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Stay flat through Canada retail today and the 25 November US GDP and PCE prints. The two-year at 4.76 already holds the hike, and the December SOFR contract at 4.29 versus a 3.90 fixing is not a meeting contract that still has room to pay. Dollar-yen at 159.97 beside a year-high Japan inflation print has no dated Bank of Japan decision that would reprice a gap the two-year does not already own."
     }
   ],
   "schema_version": 1,

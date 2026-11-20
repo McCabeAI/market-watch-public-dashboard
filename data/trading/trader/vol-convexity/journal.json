@@ -2256,6 +2256,60 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "The book stays flat. Equity vol is 25.46 and several dollar pairs are through their 20-day ranges, but the marks contain no option premium, no strike, and no tenor. Those spot breaks are linear risk with an uncapped gap. They are not a substitute for an option that cannot be priced."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "82ff156e9ea8ea2f54302a85adaa3d63e854c983d09b53bfc9dbb3476fa53aa4",
+      "event_id": "jde-e8b9965887f74fd4",
+      "funding_view": null,
+      "invalidation": "The flat hold ends if a later packet names an option, with a strike and a premium, on EURUSD, USDCHF, USDCAD, gold, or Brent. It also ends if those spot percentiles retrace and the gap between hike talk and the yield decline closes.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "651d66f08f350e837a9dec655879e0e04c6204081ce251414596f70597df5863",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3879c678cf438e78ded59e703ae93b10c41948dedb23de4822bc91a9216cf89e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. The freeze lists no FX option, strike, or premium, so there is no contract to book, and the only volatility print is the equity VIX near 24.6. Euro at the first percentile of the year, dollar-franc and dollar-Canada near the 99th, gold near 3,686 and Brent near 92 are exactly where spot is a poor substitute for convexity, which is an argument for an option the packet does not contain.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Stay flat. The freeze lists no FX option, strike, or premium, so there is no contract to book, and the only volatility print is the equity VIX near 24.6. Euro at the first percentile of the year, dollar-franc and dollar-Canada near the 99th, gold near 3,686 and Brent near 92 are exactly where spot is a poor substitute for convexity, which is an argument for an option the packet does not contain."
     }
   ],
   "schema_version": 1,

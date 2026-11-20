@@ -30,7 +30,8 @@
           "SOFR-CORRA_2Y_2027H1"
         ],
         "market_drivers": [],
-        "setup_type": "linear_combo"
+        "setup_type": "linear_combo",
+        "technical_setup": null
       },
       "scope_evidence": {
         "fields": [
@@ -81,7 +82,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20261106",
       "status": "active",
@@ -90,6 +92,45 @@
         "trd-trader-value-guy-pos-63923b5f6571"
       ],
       "updated_at": "2026-11-06T06:25:49.281876-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-20T05:40:17.809566-05:00",
+      "future_rule": "Do not reopen a covered EURGBP value long unless the cross responds when the euro legs move. A CAD valuation view stays in spot when the two-year spread versus cash is not a quoted instrument.",
+      "history": [
+        {
+          "at": "2026-11-20T05:40:17.809566-05:00",
+          "op": "add",
+          "run_id": "overnight-20261120"
+        }
+      ],
+      "lesson_id": "les-da5cddbcadc7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0c5385c0010b"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "A covered euro-sterling value long that stays pinned after the euro legs lift no longer has its sponsor, even if the valuation gap is still extreme and the round trip is flat.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-5760dbd4ac3e"
+      ],
+      "updated_at": "2026-11-20T05:40:17.809566-05:00"
     }
   ],
   "schema_version": 1,

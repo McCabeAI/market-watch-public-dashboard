@@ -119,6 +119,36 @@
       "trade_ids": [
         "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Invalidate a short-rate on that contract's own path, and do not open a new short in the peak contract merely to keep a hawkish story in the book.",
+      "lesson_id": "les-52db575636aa",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-40857a1c3c7f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "Do not roll a finished front SOFR short into the peak contract just to keep a hawkish story.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-c9184707c12b"
+      ]
     }
   ],
   "as_of": "2026-11-20T05:40:17.809566-05:00",
@@ -185,45 +215,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-40857a1c3c7f",
-      "owner_id": "rate-hawk",
-      "owner_type": "trader",
-      "reference": "trd-trader-rate-hawk-pos-c9184707c12b",
-      "source_run_id": "overnight-20261119"
-    }
-  ],
-  "memory_context_sha256": "663924169a836c29c1898c781e1eb66041e4e99381771bfda02b0ec4b550a391",
+  "learning_obligations": [],
+  "memory_context_sha256": "f3cf58fb39f3ae9cb16854d8aaddfb2b16e760fe5c46717c4d488eaa30b64c15",
   "open_positions": [],
   "owner_id": "rate-hawk",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-19T05:32:19.294844-05:00",
-      "created_run_id": "overnight-20261119",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-19T05:32:19.294844-05:00",
-        "conviction": 60,
-        "entry_mark": 4.75,
-        "exit_mark": 4.74,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 5208929,
-        "instrument": "SOFR_2027-09",
-        "invalidation": "SR3U7 retraces the 17-Sep SOFR jump and Dec-26 SR3 prices less than one hike versus 3.85% overnight.",
-        "opened_at": "2026-09-19T22:36:50.082404-04:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 3750.0,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-40857a1c3c7f",
-      "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -233,21 +230,7 @@
     "review_required_position_ids": []
   },
   "psychology": {
-    "active_flags": [
-      {
-        "basis": "revenge_pressure 0.05 families corra",
-        "check": "required",
-        "families": [
-          "corra"
-        ],
-        "id": "revenge_risk",
-        "relevant_actions": [
-          "OPEN",
-          "ADD"
-        ],
-        "scope": "family"
-      }
-    ],
+    "active_flags": [],
     "applicable": true,
     "axes": {
       "chase_pressure": {
@@ -306,17 +289,11 @@
         "run_id": "overnight-20261117"
       }
     ],
-    "required_checks": {
-      "revenge_risk": [
-        "would_take_if_flat_and_unscarred",
-        "size_vs_prior_loss",
-        "what_changed_in_evidence"
-      ]
-    },
+    "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "5e1d47c78b12b13ffb2385a25c59e236f0231ec0436c0ee26aa8b703cc999f46",
+    "state_sha256": "16d28728e87dbaf6e1ec56ef55751842aab5c5251d44a5ae73506dc1a00dc7bd",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 1
     }

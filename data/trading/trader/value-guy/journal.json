@@ -2369,6 +2369,64 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "The euro-sterling long is closed. A one-year percentile of 0.2 is a real dislocation, and the fresh 20-day break says that floor is still being left behind. Euro itself at 1.0968 is the stricter cheap leg and it is still breaking, so convergence has no start. Canada's two-year jump against Europe's 3.13 two-year is a dollar-bloc yield impulse, not a reason for this cross to mean-revert."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-20T05:40:17.809566-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "0e3fe19f325537e8eb8e77be327bad0163190d03e38a5910bf45142dca92c9c2",
+      "event_id": "jde-4ba9a60a74554966",
+      "funding_view": null,
+      "invalidation": "The short is wrong if crude reprices to a scare that makes 1.43004 fair, or if USDCAD stays pinned at or above 1.43004 for about 20 sessions while oil holds near these levels.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2a96e5f2579c"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-2a96e5f2579c"
+      ],
+      "memory_context_sha256": "3bbd18e6c57f400e7957ac649272ea5184e0eba13418bacabb717feae0fb6db0",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "70e50ab8d57d6c20177a4dbee932ac0f30df531c3a44e88bce9834f5a76ce484"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "edbc89d1af8c73d7fc1ac7403b5959f7db4c615cc560d8aa0d2c7e586530cb6f",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Sell 15 million USDCAD. The Canadian dollar is the currency still dislocated against its own anchor: the pair is at the 99th percentile of the past year while WTI near 83 and Brent near 92 are not a scare, and that oil bid has already shown up in the Norwegian krone. The other dollar extremes do not have a second anchor in this packet, and EURGBP was just closed.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Sell 15 million USDCAD. The Canadian dollar is the currency still dislocated against its own anchor: the pair is at the 99th percentile of the past year while WTI near 83 and Brent near 92 are not a scare, and that oil bid has already shown up in the Norwegian krone. The other dollar extremes do not have a second anchor in this packet, and EURGBP was just closed."
     }
   ],
   "schema_version": 1,

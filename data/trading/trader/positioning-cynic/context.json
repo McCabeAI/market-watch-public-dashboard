@@ -103,6 +103,36 @@
       "trade_ids": [
         "trd-trader-positioning-cynic-pos-df316f59e974"
       ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not re-short dollar-yen on stretch after 159.60 has been reclaimed, and do not treat a spot percentile as positioning while the public hike path remains the consensus.",
+      "lesson_id": "les-e9b42b48da39",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-f93cef64feda"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "A cover of the dollar-yen short from 159.60 to 159.42 does not show ownership asymmetry. The reclaim through 159.60 to 159.97 shows that short was the crowded fade.",
+      "trade_ids": [
+        "trd-trader-positioning-cynic-pos-42a60282429f"
+      ]
     }
   ],
   "as_of": "2026-11-20T05:40:17.809566-05:00",
@@ -173,45 +203,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-f93cef64feda",
-      "owner_id": "positioning-cynic",
-      "owner_type": "trader",
-      "reference": "trd-trader-positioning-cynic-pos-42a60282429f",
-      "source_run_id": "overnight-20261119"
-    }
-  ],
-  "memory_context_sha256": "80fad97bb402c03b7b69e630c8570114b15434fd3a4b720d03cb119794d8dd88",
+  "learning_obligations": [],
+  "memory_context_sha256": "4dc6886a366c045ce239771b91ed432c9f1d046e886353bef327c31c186b3496",
   "open_positions": [],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-19T05:32:19.294844-05:00",
-      "created_run_id": "overnight-20261119",
-      "facts": {
-        "asset_class": "spot_fx",
-        "closed_at": "2026-11-19T05:32:19.294844-05:00",
-        "conviction": null,
-        "entry_mark": 159.6,
-        "exit_mark": 159.42,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 172342,
-        "instrument": "USDJPY",
-        "invalidation": "The short is invalid if USDJPY holds above 159.60 and reclaims the failed 20-day break, showing the dollar long is being added again.",
-        "opened_at": "2026-11-17T05:39:57.066300-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": 11188.75,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-f93cef64feda",
-      "trade_id": "trd-trader-positioning-cynic-pos-42a60282429f"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -273,18 +270,12 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [
-      {
-        "kind": "trade_win_close",
-        "magnitude": 0.29313432,
-        "run_id": "overnight-20261113"
-      }
-    ],
+    "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "d71cadaa3c3a6bc92b34783c12bb6cabb333ff99fa8185694c8146d7afa3ec25",
+    "state_sha256": "be6ab311beab0c2f0beee0a5165ae3975f3e402abeae103693b3f40888c0537c",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 0,
       "session_win": 3
     }

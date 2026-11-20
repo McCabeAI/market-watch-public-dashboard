@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-09-21T20:51:07Z",
+  "retrieved_at": "2026-11-20T10:40:17Z",
   "notes": "Euro-area (EA) official macro via Eurostat statistics/SDMX APIs and ECB Data Portal; no vendor substitution on missing required series. HICP uses geo=EA (Eurostat euro-area aggregate); EA21 HICP y/y not populated in API at collect time. GDP and several national-accounts flows use Eurostat SCA (seasonally and calendar adjusted) q/q %. Employment growth derived as q/q change in thousands from LFSI_EMP_Q EMP_LFS (no monthly EA print).",
   "context": {
     "economic_sentiment_indicator": {
@@ -710,6 +710,18 @@
           "source_url": "https://data-api.ecb.europa.eu/service/data/INW/Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
           "vintage": "latest_available",
           "retrieved_at": "2026-10-02T09:40:56Z",
+          "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX",
+          "revision_status": "final"
+        },
+        {
+          "reference_period": "2026-Q3",
+          "value": 2.57,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "publisher": "European Central Bank",
+          "source_url": "https://data-api.ecb.europa.eu/service/data/INW/Q.I10.N.INWR.000000.4F0.GY.IX?format=csvdata&startPeriod=2024-Q1",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-20T10:40:17Z",
           "series_id": "INW.Q.I10.N.INWR.000000.4F0.GY.IX",
           "revision_status": "final"
         }

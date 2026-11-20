@@ -2427,6 +2427,64 @@
       "run_id": "overnight-20261119",
       "schema_version": 1,
       "thesis": "The swing is a concentrated euro short. Euro at 1.0968 is through the 20-day low after hawkish minutes, dollar-franc and the Australian dollar confirm the dollar bid, and dollar-yen at 159.42 is not the break. The March funding short that was covered at 4.54 is not reopened, and the euro is a different expression of the same hawkish dollar path."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": "pm-swinger-cca5e82a9a1e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-20T07:05:54.605450-05:00",
+      "conviction": 8,
+      "decision_fingerprint": "72c83c100286c9cf3ee65bc7fa239cfddc43f08cdd949920642566a94978c7d8",
+      "event_id": "jde-cd89d9e9e1ab48ef",
+      "funding_view": null,
+      "invalidation": "Close the short if EURUSD trades back through 1.1120, or if policy communication before December 4 reverses the hawkish lean.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-cca5e82a9a1e"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "7048f99627b8b241e3d5846ce2521b9b0558af9972cfdbde5ef04fe69698454d",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "516ecea4d9a75c09620ca207efdfebf97fa3cbf52f4975ad4fa36e60ef99bb85"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-20T05:40:17.809566-05:00",
+        "evidence_hash": "ecee272cb9f47a80867604a800914007aa23475277bb27e638d9a34a1daaefc7",
+        "overnight_run_id": "overnight-20261120",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261120-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Keep the concentrated euro short. Spot near 1.0992 is only a small bounce from the 1.0968 mark and is still well below 1.1120. Fed minutes still discuss hikes, and that lean has not been reversed before December 4, so the notional stays unchanged.",
+      "run_id": "overnight-20261120",
+      "schema_version": 1,
+      "thesis": "Keep the concentrated euro short. Spot near 1.0992 is only a small bounce from the 1.0968 mark and is still well below 1.1120. Fed minutes still discuss hikes, and that lean has not been reversed before December 4, so the notional stays unchanged."
     }
   ],
   "schema_version": 1,

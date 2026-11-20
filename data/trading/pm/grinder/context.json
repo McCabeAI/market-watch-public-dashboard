@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-20T05:40:17.809566-05:00",
+  "as_of": "2026-11-20T07:11:39.028914-05:00",
   "calibration": {
     "average_holding_seconds": 684212,
     "average_realized_pnl_usd": 152195.05,
@@ -66,8 +66,8 @@
     "wins": 1
   },
   "capital_owner": {
-    "allocator_pressure": 29,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 30,
+    "credible_opportunities": "present",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -82,8 +82,8 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 515060.29,
-    "best_trader_outearn_streak": 3,
+    "best_trader_net_pnl_usd": 492051.67,
+    "best_trader_outearn_streak": 0,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
     "competition_cohort_size": 4,
@@ -91,7 +91,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 10.78,
-    "gap_to_best_trader_usd": -362952.44,
+    "gap_to_best_trader_usd": -339943.82,
     "high_water_nav_usd": 1000152118.63,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 152107.85,
@@ -101,7 +101,7 @@
       "competitive_pressure"
     ],
     "raw_pnl_rank": 4,
-    "spread_to_leader_pm_usd": -3540093.62,
+    "spread_to_leader_pm_usd": -1350826.48,
     "status": "ok",
     "total_pnl_usd": 152195.05
   },
@@ -113,7 +113,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "845d68dab65ae4e75cc90751f1901cb4b7262a0021394c83fa8067ff7c671519",
+  "memory_context_sha256": "0500e69f591df05da5ceb10566e154ddd9987cf5b7127f3d198da20c106abe6d",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -196,17 +196,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261117"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261118"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261119"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261120"
       }
     ],
     "required_checks": {
@@ -216,9 +216,9 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "3b1e8e541d597a1ee5daf2d34bcdbc8b9da214837d8efee0c9ebabe46933693f",
+    "state_sha256": "a75eb90bfd5db25e274d5f9ebf2ee29a135e416bf188cc9903c9481b0a0d7d72",
     "streaks": {
-      "flat_cycles": 6,
+      "flat_cycles": 7,
       "session_loss": 0,
       "session_win": 0
     }

@@ -4468,7 +4468,9 @@
         "handoff_status": "request_ready",
         "handoff_url": null,
         "live_model_calls": 0,
-        "live_provider_dispatched": false,
+        "live_provider_dispatched": true,
+        "provider_output_accepted": true,
+        "provider_run_url": null,
         "receipt_matches": false,
         "receipt_present": false,
         "remote_freeze_verified": true,
@@ -4485,44 +4487,94 @@
       },
       "finished_at": null,
       "input_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
-      "output_sha256": "eba143fe1aed9e27333455dfcad25ee5a4019b4606b01e60ce178e113516d01b",
-      "reason": "awaiting_acp_one_shot_authority",
+      "output_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+      "reason": "provider_output_accepted",
       "source_run_url": null,
       "stage": "05_acp_handoff",
       "started_at": null,
-      "status": "blocked"
+      "status": "succeeded"
     },
     "06_acceptance": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "already_applied": true,
+        "applied": true,
+        "launch_id": "mwl-20261120T104017Z-b3dfdc6e",
+        "live_model_calls": 0,
+        "packet_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+        "pm_count": 3,
+        "review_id": "review-001",
+        "trader_seats": 14
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
+      "input_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+      "output_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
       "reason": null,
       "source_run_url": null,
       "stage": "06_acceptance",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     },
     "07_finalize": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "coverage": "PARTIAL",
+        "launch_id": "mwl-20261120T104017Z-b3dfdc6e",
+        "packet_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+        "partial": true,
+        "publication": {
+          "core_status": "ok",
+          "may_publish": true,
+          "reason": "core inputs are structurally valid"
+        },
+        "review_id": "review-001",
+        "score_promotion": {
+          "ok": true,
+          "promoted": true,
+          "score_state_sha256": "450ce7d961c6f352d2e512f7ac016ee1885a2c04adf337789d016cef25042024",
+          "scores_path": "/home/runner/work/market-watch-public-dashboard/market-watch-public-dashboard/data/temperature_scores.json"
+        },
+        "session_date": "2026-11-20"
+      },
       "finished_at": null,
-      "input_sha256": null,
-      "output_sha256": null,
+      "input_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
+      "output_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
       "reason": null,
       "source_run_url": null,
       "stage": "07_finalize",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     },
     "08_pages": {
       "artifact": null,
-      "details": {},
+      "details": {
+        "dispatch_confirmed": true,
+        "dispatch_receipt": {
+          "event": "workflow_dispatch",
+          "head_sha": "c5c0ca2d6be3a819ec8acfec5e74f043c12cf831",
+          "launch_id": "mwl-20261120T104017Z-b3dfdc6e",
+          "ref": "main",
+          "run_id": "44733788571",
+          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/44733788571",
+          "workflow": "deploy-pages.yml"
+        },
+        "dispatched": true,
+        "dry_run": false,
+        "executed": false,
+        "plan": {
+          "event": "workflow_dispatch",
+          "launch_id": "mwl-20261120T104017Z-b3dfdc6e",
+          "ref": "main",
+          "review_id": "review-001",
+          "workflow": "deploy-pages.yml"
+        },
+        "production_published": false,
+        "publication_state": "dispatch_confirmed"
+      },
       "finished_at": null,
-      "input_sha256": null,
+      "input_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc",
       "output_sha256": null,
-      "reason": null,
+      "reason": "pages_dispatch_requested",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
@@ -4531,7 +4583,7 @@
   },
   "starting_pm_books_sha256": "1c1cdca603c96af01d2002c904e6ca15253a73149f5dd6d18591d2eea64716f0",
   "starting_trader_books_sha256": "33adfd5ddc115e6d8ed5e0175466c0abc13fb673f74a96de834f3ee259d56bda",
-  "status": "blocked",
+  "status": "running",
   "timezone": "America/New_York",
   "type": "MARKET_WATCH_LAUNCH"
 }
