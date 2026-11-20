@@ -1117,11 +1117,17 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
 
     def test_repo_imported_falling_shows_stored_mom(self) -> None:
         presentation = build_presentation(ROOT)
+        self.assertEqual(presentation["current_read_model"], "accepted_overnight_review")
+        self.assertEqual(presentation["current"]["acceptance_state"], "accepted")
+        self.assertNotEqual(presentation["current"].get("preview"), True)
         self.assertEqual(presentation["current"]["direction"], "FALLING")
         self.assertEqual(presentation["current"].get("run_id"), "overnight-20261120")
-        self.assertFalse(
-            any(p["run_id"] == "overnight-20261120" for p in presentation["trend"])
-        )
+        trend_ids = [p["run_id"] for p in presentation["trend"]]
+        self.assertEqual(trend_ids.count("overnight-20261120"), 1)
+        self.assertEqual(trend_ids.count("overnight-20261119"), 1)
+        nov20 = next(p for p in presentation["trend"] if p["run_id"] == "overnight-20261120")
+        self.assertEqual(nov20["review_id"], "review-001")
+        self.assertEqual(nov20["direction"], "FALLING")
         html = render_country_detail(
             "CA",
             {**self.projection["countries"]["CA"], "prima_pressure": presentation},
@@ -1136,7 +1142,11 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertIn("value: 176.3", imported)
         self.assertIn("prior_value: 182.3", imported)
         self.assertIn("period: 2026-10", imported)
+        self.assertIn("+0.13947%", html)
         self.assertIn("-3.291278%", html)
+        self.assertIn('data-prima-net="-2"', html)
+        self.assertIn('data-prima-acceptance="accepted"', html)
+        self.assertNotIn("Verified Stage 04 / pending trader acceptance", html)
         self.assertIn("21 Oct Rising → 22 Oct Unavailable", imported)
         self.assertIn("23 Oct Falling → 26 Oct Falling", imported)
         self.assertIn('data-prima-channel-direction="FALLING"', html)
