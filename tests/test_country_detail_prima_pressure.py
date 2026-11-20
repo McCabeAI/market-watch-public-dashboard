@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from typing import Any
 from unittest import mock
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,7 @@ from scripts.overnight.evidence import freeze_snapshot
 from scripts.overnight.pipeline import run_stage
 from scripts.overnight.store import OvernightStore
 from scripts.prima_pressure import contract
+from scripts.overnight.store import sha256_json
 from scripts.prima_pressure.presentation import build_presentation
 from scripts.temperature_level import load_state
 from tests.test_overnight_scheduled_output import AS_OF
@@ -223,6 +225,161 @@ def _fixture_run(
             )
             _write_snapshot(root, run_id, review_id, snap)
     _write_review_index(root, run_id, index_rows)
+
+
+_BOOK_SHA_TRADER = "33adfd5ddc115e6d8ed5e0175466c0abc13fb673f74a96de834f3ee259d56bda"
+_BOOK_SHA_PM = "1c1cdca603c96af01d2002c904e6ca15253a73149f5dd6d18591d2eea64716f0"
+
+
+def _write_verified_review(
+    root: Path,
+    run_id: str,
+    review_id: str,
+    *,
+    index_status: str,
+    block: dict,
+    as_of: str,
+    extra_index_rows: list[dict] | None = None,
+    mutate_snapshot: Any = None,
+    omit_snapshot: bool = False,
+) -> str:
+    snapshot: dict[str, Any] = {
+        "type": "OVERNIGHT_EVIDENCE_SNAPSHOT",
+        "overnight_run_id": run_id,
+        "review_id": review_id,
+        "as_of": as_of,
+        "starting_state_binding": "canonical_file",
+        "starting_trader_books_sha256": _BOOK_SHA_TRADER,
+        "starting_pm_books_sha256": _BOOK_SHA_PM,
+        "canada_prima_pressure": block,
+    }
+    if mutate_snapshot:
+        mutate_snapshot(snapshot)
+    body_hash = sha256_json({k: v for k, v in snapshot.items() if k != "packet_sha256"})
+    snapshot["packet_sha256"] = body_hash
+    review_dir = root / "data/overnight/runs" / run_id / "reviews" / review_id
+    review_dir.mkdir(parents=True, exist_ok=True)
+    if not omit_snapshot:
+        (review_dir / "evidence_snapshot.json").write_text(
+            json.dumps(snapshot), encoding="utf-8"
+        )
+    review_json: dict[str, Any] = {
+        "type": "OVERNIGHT_REVIEW",
+        "overnight_run_id": run_id,
+        "review_id": review_id,
+        "status": index_status,
+        "immutable": index_status == "frozen",
+        "frozen_at": as_of,
+        "packet_sha256": body_hash,
+        "starting_state_binding": "canonical_file",
+        "starting_trader_books_sha256": _BOOK_SHA_TRADER,
+        "starting_pm_books_sha256": _BOOK_SHA_PM,
+    }
+    if index_status == "accepted":
+        review_json["accepted_at"] = as_of
+        review_json["immutable"] = True
+    (review_dir / "review.json").write_text(json.dumps(review_json), encoding="utf-8")
+    index_row: dict[str, Any] = {
+        "review_id": review_id,
+        "status": index_status,
+        "frozen_at": as_of,
+        "packet_sha256": body_hash,
+        "starting_state_binding": "canonical_file",
+        "starting_trader_books_sha256": _BOOK_SHA_TRADER,
+        "starting_pm_books_sha256": _BOOK_SHA_PM,
+    }
+    if index_status == "accepted":
+        index_row["accepted_at"] = as_of
+    rows = list(extra_index_rows or [])
+    replaced = False
+    for i, row in enumerate(rows):
+        if row.get("review_id") == review_id:
+            rows[i] = index_row
+            replaced = True
+            break
+    if not replaced:
+        rows.append(index_row)
+    index = {
+        "type": "OVERNIGHT_REVIEW_INDEX",
+        "overnight_run_id": run_id,
+        "schema_version": 1,
+        "reviews": rows,
+    }
+    reviews_dir = root / "data/overnight/runs" / run_id / "reviews"
+    reviews_dir.mkdir(parents=True, exist_ok=True)
+    (reviews_dir / "index.json").write_text(json.dumps(index, indent=2), encoding="utf-8")
+    return body_hash
+
+
+def _repo_nov20_prima_block() -> dict:
+    snap_path = (
+        ROOT
+        / "data/overnight/runs/overnight-20261120/reviews/review-001/evidence_snapshot.json"
+    )
+    snap = json.loads(snap_path.read_text(encoding="utf-8"))
+    return copy.deepcopy(snap["canada_prima_pressure"])
+
+
+def _accepted_september_style_block(*, direction: str = "STABLE") -> dict:
+    return _rising_block(
+        direction=direction,
+        subcomponent_directions={
+            "shock_persistence": "STABLE",
+            "production_network_pressure": "STABLE",
+            "imported_pressure": "STABLE",
+            "consumer_price_breadth": "STABLE",
+            "demand_pass_through_constraint": "STABLE",
+        },
+        channel_evidence={
+            "production_network_pressure": {
+                "direction": "STABLE",
+                "inputs": [
+                    {
+                        "mom": 0.02,
+                        "period": "2026-09",
+                        "prior_period": "2026-08",
+                        "prior_value": 140.0,
+                        "value": 142.8,
+                        "release_time": "2026-10-19T08:30",
+                        "series_id": "ippi_ex_energy",
+                    }
+                ],
+            },
+            "imported_pressure": {
+                "direction": "STABLE",
+                "inputs": [
+                    {
+                        "mom": 0.01,
+                        "period": "2026-09",
+                        "prior_value": 180.0,
+                        "value": 181.8,
+                        "release_time": "2026-10-19T08:30",
+                        "series_id": "rmpi_ex_crude_energy",
+                    }
+                ],
+            },
+            "shock_persistence": {
+                "direction": "STABLE",
+                "inputs": [
+                    {
+                        "maturity_months": 0,
+                        "selection": "active_front",
+                        "change_1m_pct": 0.01,
+                        "contract_month": "2027-01",
+                        "observation_date": "2026-11-18",
+                        "symbol": "BZF27.NYM",
+                    },
+                    {"maturity_months": 12, "change_1m_pct": 0.01, "contract_month": "2027-12"},
+                    {"maturity_months": 24, "change_1m_pct": 0.01, "contract_month": "2028-12"},
+                ],
+            },
+            "consumer_price_breadth": {"direction": "STABLE", "inputs": [{"period": "2026-09"}]},
+            "demand_pass_through_constraint": {
+                "direction": "STABLE",
+                "inputs": [{"as_of": "2026-11-18", "gap": -0.2}],
+            },
+        },
+    )
 
 
 class CountryDetailPrimaPressureTest(unittest.TestCase):
@@ -702,8 +859,8 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertIn('data-prima-glance', sum_full)
         self.assertNotIn('data-prima-glance', sum_empty)
         infl_score = self.scores["countries"]["CA"]["Inflation"]
-        self.assertEqual(infl_score["level"], 54.34)
-        self.assertEqual(infl_score["impulse"], -0.44)
+        self.assertEqual(infl_score["level"], 54.68)
+        self.assertEqual(infl_score["impulse"], 0.34)
 
         self.assertEqual(infl_score, infl_before)
         prima = ca.get("prima_pressure") or {}
@@ -960,6 +1117,11 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
 
     def test_repo_imported_falling_shows_stored_mom(self) -> None:
         presentation = build_presentation(ROOT)
+        self.assertEqual(presentation["current"]["direction"], "FALLING")
+        self.assertEqual(presentation["current"].get("run_id"), "overnight-20261120")
+        self.assertFalse(
+            any(p["run_id"] == "overnight-20261120" for p in presentation["trend"])
+        )
         html = render_country_detail(
             "CA",
             {**self.projection["countries"]["CA"], "prima_pressure": presentation},
@@ -971,9 +1133,10 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         )[0]
         self.assertIn('data-prima-evidence="direct"', imported)
         self.assertIn("not an import-price index", imported)
-        self.assertIn("value: 183.2", imported)
-        self.assertIn("prior_value: 184.0", imported)
-        self.assertIn("period: 2026-09", imported)
+        self.assertIn("value: 176.3", imported)
+        self.assertIn("prior_value: 182.3", imported)
+        self.assertIn("period: 2026-10", imported)
+        self.assertIn("-3.291278%", html)
         self.assertIn("21 Oct Rising → 22 Oct Unavailable", imported)
         self.assertIn("23 Oct Falling → 26 Oct Falling", imported)
         self.assertIn('data-prima-channel-direction="FALLING"', html)
@@ -1301,6 +1464,308 @@ class CountryDetailPrimaPressureTest(unittest.TestCase):
         self.assertEqual(_prima_headline_change("RISING", streak), "unchanged since 21 Oct")
         flipped = [point("22", "STABLE"), point("23", "RISING")]
         self.assertEqual(_prima_headline_change("RISING", flipped), "changed from Stable (22 Oct)")
+
+    def test_verified_frozen_preview_regression_nov20(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _write_verified_review(
+                root,
+                "overnight-20261119",
+                "review-001",
+                index_status="accepted",
+                block=_accepted_september_style_block(direction="STABLE"),
+                as_of="2026-11-19T05:32:19.294844-05:00",
+            )
+            _write_verified_review(
+                root,
+                "overnight-20261120",
+                "review-001",
+                index_status="frozen",
+                block=_repo_nov20_prima_block(),
+                as_of="2026-11-20T05:40:17.809566-05:00",
+            )
+            presentation = build_presentation(root)
+            self.assertFalse(presentation["feeds_inflation_score"])
+            self.assertEqual(presentation["current_read_model"], "verified_frozen_stage_04_preview")
+            self.assertEqual(presentation["current"]["direction"], "FALLING")
+            self.assertEqual(presentation["current"]["acceptance_state"], "pending_trader_acceptance")
+            self.assertTrue(presentation["current"].get("preview"))
+            trend_ids = [p["run_id"] for p in presentation["trend"]]
+            self.assertNotIn("overnight-20261120", trend_ids)
+            self.assertEqual(trend_ids.count("overnight-20261119"), 1)
+            html = render_country_detail(
+                "CA",
+                {**self.projection["countries"]["CA"], "prima_pressure": presentation},
+                self.attention,
+                self.scores,
+            )
+            prima = _prima_excerpt(html)
+            self.assertIn('data-prima-acceptance="pending_trader_acceptance"', prima)
+            self.assertIn("Verified Stage 04 / pending trader acceptance", prima)
+            self.assertIn('data-prima-net="-2"', prima)
+            self.assertIn("October 2026", prima)
+            self.assertIn("+0.13947%", prima)
+            self.assertIn("-3.291278%", prima)
+            self.assertIn("IPPI ex-energy", prima)
+            self.assertIn("RMPI ex-crude", prima)
+            self.assertIn('data-prima-source-id="overnight-20261120/review-001"', prima)
+            self.assertIn("2026-11-20T05:40:17.809566-05:00", prima)
+            history = prima.split("data-prima-history-table", 1)[1]
+            self.assertNotIn('data-prima-history-point="2026-11-20"', history)
+
+    def _frozen_regression_root(self) -> Path:
+        tmp = tempfile.mkdtemp()
+        root = Path(tmp)
+        _write_verified_review(
+            root,
+            "overnight-20261119",
+            "review-001",
+            index_status="accepted",
+            block=_accepted_september_style_block(direction="STABLE"),
+            as_of="2026-11-19T05:32:19.294844-05:00",
+        )
+        _write_verified_review(
+            root,
+            "overnight-20261120",
+            "review-001",
+            index_status="frozen",
+            block=_repo_nov20_prima_block(),
+            as_of="2026-11-20T05:40:17.809566-05:00",
+        )
+        return root
+
+    def test_frozen_preview_negative_cases_keep_accepted(self) -> None:
+        cases: list[tuple[str, Any, str]] = [
+            (
+                "snapshot_hash_mismatch",
+                lambda snap: snap.__setitem__("packet_sha256", "deadbeef"),
+                "snapshot_hash_mismatch",
+            ),
+            (
+                "unverified",
+                None,
+                "unverified_frozen_review",
+            ),
+            (
+                "missing_snapshot",
+                "omit",
+                "missing_snapshot",
+            ),
+            (
+                "misdated",
+                lambda snap: snap.__setitem__("as_of", "2026-11-21T00:00:00-05:00"),
+                "observed_at_mismatch",
+            ),
+        ]
+        for label, mut, code in cases:
+            with self.subTest(label=label):
+                root = self._frozen_regression_root()
+                try:
+                    if mut == "omit":
+                        (
+                            root
+                            / "data/overnight/runs/overnight-20261120/reviews/review-001/evidence_snapshot.json"
+                        ).unlink(missing_ok=True)
+                    elif label == "unverified":
+                        rj = root / "data/overnight/runs/overnight-20261120/reviews/review-001/review.json"
+                        meta = json.loads(rj.read_text(encoding="utf-8"))
+                        meta["immutable"] = False
+                        rj.write_text(json.dumps(meta), encoding="utf-8")
+                    elif label == "snapshot_hash_mismatch":
+                        snap_path = (
+                            root
+                            / "data/overnight/runs/overnight-20261120/reviews/review-001/evidence_snapshot.json"
+                        )
+                        snap = json.loads(snap_path.read_text(encoding="utf-8"))
+                        mut(snap)
+                        snap_path.write_text(json.dumps(snap), encoding="utf-8")
+                    elif label == "misdated":
+                        snap_path = (
+                            root
+                            / "data/overnight/runs/overnight-20261120/reviews/review-001/evidence_snapshot.json"
+                        )
+                        snap = json.loads(snap_path.read_text(encoding="utf-8"))
+                        snap["as_of"] = "2026-11-21T00:00:00-05:00"
+                        new_hash = sha256_json(
+                            {k: v for k, v in snap.items() if k != "packet_sha256"}
+                        )
+                        snap["packet_sha256"] = new_hash
+                        snap_path.write_text(json.dumps(snap), encoding="utf-8")
+                        rj = root / "data/overnight/runs/overnight-20261120/reviews/review-001/review.json"
+                        meta = json.loads(rj.read_text(encoding="utf-8"))
+                        meta["packet_sha256"] = new_hash
+                        rj.write_text(json.dumps(meta), encoding="utf-8")
+                        idx = json.loads(
+                            (
+                                root
+                                / "data/overnight/runs/overnight-20261120/reviews/index.json"
+                            ).read_text(encoding="utf-8")
+                        )
+                        idx["reviews"][0]["packet_sha256"] = new_hash
+                        (
+                            root / "data/overnight/runs/overnight-20261120/reviews/index.json"
+                        ).write_text(json.dumps(idx, indent=2), encoding="utf-8")
+                    pres = build_presentation(root)
+                    self.assertEqual(pres["current"]["run_id"], "overnight-20261119")
+                    self.assertEqual(pres["current"]["acceptance_state"], "accepted")
+                    self.assertNotIn("overnight-20261120", [p["run_id"] for p in pres["trend"]])
+                    html = render_country_detail(
+                        "CA",
+                        {**self.projection["countries"]["CA"], "prima_pressure": pres},
+                        self.attention,
+                        self.scores,
+                    )
+                    prima = _prima_excerpt(html)
+                    self.assertIn('data-prima-acceptance="accepted"', prima)
+                    self.assertIn(f'data-prima-preview-excluded="{code}"', prima)
+                    self.assertNotIn(
+                        "Verified Stage 04 / pending trader acceptance", prima
+                    )
+                    if code == "observed_at_mismatch":
+                        self.assertIn("misdated", prima.lower())
+                finally:
+                    shutil.rmtree(root)
+
+        root = self._frozen_regression_root()
+        try:
+            launch = root / "data/market_watch_launches/mwl-test"
+            launch.mkdir(parents=True)
+            binding = {
+                "overnight_run_id": "overnight-20261120",
+                "review_id": "review-001",
+                "packet_sha256": "not-the-snapshot-hash",
+            }
+            (launch / "freeze_binding.json").write_text(json.dumps(binding), encoding="utf-8")
+            (launch / "remote_freeze.json").write_text(
+                json.dumps(
+                    {
+                        "commit_sha": "abc",
+                        "packet_sha256": "not-the-snapshot-hash",
+                        "trader_books_sha256": _BOOK_SHA_TRADER,
+                        "pm_books_sha256": _BOOK_SHA_PM,
+                        "score_state_sha256": "scores",
+                    }
+                ),
+                encoding="utf-8",
+            )
+            pres = build_presentation(root)
+            html = render_country_detail(
+                "CA",
+                {**self.projection["countries"]["CA"], "prima_pressure": pres},
+                self.attention,
+                self.scores,
+            )
+            self.assertIn(
+                'data-prima-preview-excluded="freeze_binding_mismatch"', _prima_excerpt(html)
+            )
+        finally:
+            shutil.rmtree(root)
+
+        root = self._frozen_regression_root()
+        try:
+            index = json.loads(
+                (
+                    root / "data/overnight/runs/overnight-20261120/reviews/index.json"
+                ).read_text(encoding="utf-8")
+            )
+            index["reviews"].append(
+                {
+                    "review_id": "review-002",
+                    "status": "failed",
+                    "frozen_at": "2026-11-20T08:00:00-05:00",
+                }
+            )
+            (
+                root / "data/overnight/runs/overnight-20261120/reviews/index.json"
+            ).write_text(json.dumps(index, indent=2), encoding="utf-8")
+            pres = build_presentation(root)
+            self.assertEqual(pres["current"]["run_id"], "overnight-20261120")
+            self.assertEqual(pres["current"]["direction"], "FALLING")
+        finally:
+            shutil.rmtree(root)
+
+        root = self._frozen_regression_root()
+        try:
+            block = copy.deepcopy(_repo_nov20_prima_block())
+            block["staleness"] = "producer inputs stale"
+            _write_verified_review(
+                root,
+                "overnight-20261120",
+                "review-001",
+                index_status="frozen",
+                block=block,
+                as_of="2026-11-20T05:40:17.809566-05:00",
+            )
+            html = render_country_detail(
+                "CA",
+                {
+                    **self.projection["countries"]["CA"],
+                    "prima_pressure": build_presentation(root),
+                },
+                self.attention,
+                self.scores,
+            )
+            prima = _prima_excerpt(html)
+            self.assertIn("Stale inputs", prima)
+            self.assertIn("Verified Stage 04 / pending trader acceptance", prima)
+        finally:
+            shutil.rmtree(root)
+
+    def test_frozen_post_acceptance_moves_into_trend_once(self) -> None:
+        root = self._frozen_regression_root()
+        try:
+            before_scores = _file_sha256(TEMP_SCORES)
+            idx_path = root / "data/overnight/runs/overnight-20261120/reviews/index.json"
+            idx = json.loads(idx_path.read_text(encoding="utf-8"))
+            idx["reviews"][0]["status"] = "accepted"
+            idx["reviews"][0]["accepted_at"] = idx["reviews"][0]["frozen_at"]
+            idx_path.write_text(json.dumps(idx, indent=2), encoding="utf-8")
+            rj_path = root / "data/overnight/runs/overnight-20261120/reviews/review-001/review.json"
+            meta = json.loads(rj_path.read_text(encoding="utf-8"))
+            meta["status"] = "accepted"
+            meta["accepted_at"] = meta["frozen_at"]
+            rj_path.write_text(json.dumps(meta), encoding="utf-8")
+            pres = build_presentation(root)
+            self.assertEqual(pres["current_read_model"], "accepted_overnight_review")
+            self.assertEqual(pres["current"]["acceptance_state"], "accepted")
+            self.assertIn("Accepted overnight review", render_country_detail(
+                "CA",
+                {**self.projection["countries"]["CA"], "prima_pressure": pres},
+                self.attention,
+                self.scores,
+            ))
+            trend_ids = [p["run_id"] for p in pres["trend"]]
+            self.assertEqual(trend_ids.count("overnight-20261120"), 1)
+            self.assertEqual(trend_ids.count("overnight-20261119"), 1)
+            self.assertEqual(len(trend_ids), 2)
+            self.assertEqual(pres["current"]["direction"], "FALLING")
+            html = render_country_detail(
+                "CA",
+                {**self.projection["countries"]["CA"], "prima_pressure": pres},
+                self.attention,
+                self.scores,
+            )
+            self.assertIn("+0.13947%", html)
+            self.assertIn("-3.291278%", html)
+            self.assertFalse(pres["feeds_inflation_score"])
+            p2 = build_presentation(root)
+            self.assertEqual(pres, p2)
+            self.assertFalse(list(root.glob("data/temperature_scores.json")))
+            self.assertEqual(_file_sha256(TEMP_SCORES), before_scores)
+        finally:
+            shutil.rmtree(root)
+
+    def test_build_presentation_never_calls_proxy(self) -> None:
+        root = self._frozen_regression_root()
+        try:
+            with mock.patch(
+                "scripts.prima_pressure.proxy.compute_prima_proxy",
+                side_effect=AssertionError("must not call proxy"),
+            ):
+                build_presentation(root)
+                build_presentation(ROOT)
+        finally:
+            shutil.rmtree(root)
 
     def test_renderer_deterministic(self) -> None:
         p1 = build_presentation(ROOT)

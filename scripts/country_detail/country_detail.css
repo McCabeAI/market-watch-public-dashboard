@@ -719,6 +719,29 @@
   color: var(--mw-muted, #93a5b6);
 }
 
+.country-detail .prima-acceptance {
+  margin: 0 0 0.45rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+  font-weight: 650;
+  color: var(--mw-warm, #e39d3e);
+}
+
+.country-detail .prima-preview-note {
+  margin: 0 0 0.45rem;
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-muted, #93a5b6);
+}
+
+.country-detail .prima-gauge-head .prima-stale-badge {
+  margin-left: 0.35rem;
+}
+
+.country-detail .prima-ch-stored {
+  font-variant-numeric: tabular-nums;
+  font-size: var(--mw-fs-meta, 12.5px);
+  color: var(--mw-ink-2, #c5d0db);
+}
+
 .country-detail .prima-oil-headline {
   margin: 0;
   font-size: 1.35rem;
@@ -1009,6 +1032,24 @@
   list-style: none;
   font-size: var(--mw-fs-body, 14px);
   color: var(--mw-ink, #e7edf3);
+}
+
+@media (max-width: 390px) {
+  .country-detail .prima-ch-summary {
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  .country-detail .prima-acceptance,
+  .country-detail .prima-preview-note {
+    display: block;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .country-detail .prima-oil-headline {
+    font-size: clamp(1.05rem, 4.8vw, 1.35rem);
+  }
 }
 
 .country-detail .prima-ch-dir {

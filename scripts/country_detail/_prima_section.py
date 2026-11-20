@@ -123,6 +123,21 @@ def _display_pct_fraction(frac: float) -> str:
     return "0.0%"
 
 
+def _format_stored_mom(mom: float) -> str:
+    signed = format(mom * 100, '+.6f')
+    if signed[0] not in "+-":
+        sign, body = "", signed
+    else:
+        sign, body = signed[0], signed[1:]
+    if "." not in body:
+        return f"{sign}{body}.00%"
+    whole, frac = body.split(".", 1)
+    frac = frac.rstrip("0")
+    if len(frac) < 2:
+        frac = frac.ljust(2, "0")
+    return f"{sign}{whole}.{frac}%"
+
+
 def _display_net(net: int) -> str:
     if net < 0:
         return f"−{abs(net)}"
@@ -731,9 +746,22 @@ def _prima_dir_phrase(direction: str) -> str:
     return f"{arrow} {word}"
 
 
-def _prima_headline_change(direction: str, trend: list[Any]) -> str:
+def _prima_headline_change(direction: str, trend: list[Any], *, preview: bool = False) -> str:
     if direction not in _PRIMA_CATEGORIES:
         return ""
+    if preview:
+        if not trend:
+            return "first stored run on file"
+        prev = trend[-1]
+        if not isinstance(prev, Mapping):
+            return ""
+        prev_dir = str(prev.get("direction") or "UNAVAILABLE")
+        prev_day = _prima_short_date(str(prev.get("observed_at") or ""))
+        if prev_dir == direction:
+            return f"unchanged from the last accepted run ({prev_day})"
+        if prev_dir in _PRIMA_CATEGORIES:
+            return f"changed from {_PRIMA_DIR_WORD[prev_dir]} ({prev_day})"
+        return f"prior accepted run {prev_day}"
     if len(trend) < 2:
         return "first stored run on file"
     prev = trend[-2]
@@ -977,19 +1005,37 @@ def _prima_channel_snippet(
     return ""
 
 
-def _prima_channel_changed_marker(channel: str, trend: list[Any]) -> str:
-    if len(trend) < 2:
-        return ""
-    prev = trend[-2]
-    curr = trend[-1]
-    if not isinstance(prev, Mapping) or not isinstance(curr, Mapping):
-        return ""
-    prev_subs = prev.get("subcomponent_directions")
-    curr_subs = curr.get("subcomponent_directions")
-    if not isinstance(prev_subs, Mapping) or not isinstance(curr_subs, Mapping):
-        return ""
-    prev_d = str(prev_subs.get(channel) or "UNAVAILABLE")
-    curr_d = str(curr_subs.get(channel) or "UNAVAILABLE")
+def _prima_channel_changed_marker(
+    channel: str,
+    trend: list[Any],
+    *,
+    current_subs: Mapping[str, Any] | None = None,
+    preview: bool = False,
+) -> str:
+    if preview:
+        if not trend or not isinstance(current_subs, Mapping):
+            return ""
+        prev = trend[-1]
+        if not isinstance(prev, Mapping):
+            return ""
+        prev_subs = prev.get("subcomponent_directions")
+        if not isinstance(prev_subs, Mapping):
+            return ""
+        prev_d = str(prev_subs.get(channel) or "UNAVAILABLE")
+        curr_d = str(current_subs.get(channel) or "UNAVAILABLE")
+    else:
+        if len(trend) < 2:
+            return ""
+        prev = trend[-2]
+        curr = trend[-1]
+        if not isinstance(prev, Mapping) or not isinstance(curr, Mapping):
+            return ""
+        prev_subs = prev.get("subcomponent_directions")
+        curr_subs = curr.get("subcomponent_directions")
+        if not isinstance(prev_subs, Mapping) or not isinstance(curr_subs, Mapping):
+            return ""
+        prev_d = str(prev_subs.get(channel) or "UNAVAILABLE")
+        curr_d = str(curr_subs.get(channel) or "UNAVAILABLE")
     if prev_d == curr_d:
         return ""
     day = _prima_short_date(str(prev.get("observed_at") or ""))
@@ -998,6 +1044,41 @@ def _prima_channel_changed_marker(channel: str, trend: list[Any]) -> str:
 
 def _prima_band_pct(band: float) -> str:
     return f"{band * 100:.2f}%"
+
+
+def _prima_stored_mom_series_id(channel: str) -> str | None:
+    if channel == "production_network_pressure":
+        return "ippi_ex_energy"
+    if channel == "imported_pressure":
+        return "rmpi_ex_crude_energy"
+    return None
+
+
+def _prima_stored_mom_text(channel: str, channel_evidence: Mapping[str, Any] | None) -> str | None:
+    series_id = _prima_stored_mom_series_id(channel)
+    if not series_id or not isinstance(channel_evidence, Mapping):
+        return None
+    entry = channel_evidence.get(channel)
+    if not isinstance(entry, Mapping):
+        return None
+    inputs = entry.get("inputs")
+    if not isinstance(inputs, list) or not inputs or not isinstance(inputs[0], dict):
+        return None
+    mom = inputs[0].get("mom")
+    if isinstance(mom, bool) or not isinstance(mom, (int, float)):
+        return None
+    return _format_stored_mom(float(mom))
+
+
+def _prima_stored_mom_span(channel: str, channel_evidence: Mapping[str, Any] | None, esc: Any) -> str:
+    text = _prima_stored_mom_text(channel, channel_evidence)
+    series_id = _prima_stored_mom_series_id(channel)
+    if not text or not series_id:
+        return ""
+    return (
+        f'<span class="prima-ch-stored" data-prima-stored-mom="{esc(series_id)}">'
+        f"{esc(text)}</span>"
+    )
 
 
 def _prima_channel_rule_text(channel: str) -> str:
@@ -1248,7 +1329,9 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
     meta_line = f"{available} of 5 channels available · confidence {conf_text} · {fresh}"
 
     net, vote_coverage = _channel_vote_summary(subs)
-    headline_change = _prima_headline_change(direction, trend)
+    is_preview = bool(current.get("preview"))
+    acceptance_state = str(current.get("acceptance_state") or "").strip()
+    headline_change = _prima_headline_change(direction, trend, preview=is_preview)
     history_gap = current.get("futures_history_gap")
     mpr_line = _prima_mpr_oil_line(str(current.get("change_since_last_mpr") or ""))
     change_mpr_text = str(current.get("change_since_last_mpr") or "").strip()
@@ -1303,9 +1386,30 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f"Broader inflation-pressure vote: <b>{esc(direction)}</b></p>"
     )
     vote_text = _vote_text(direction, net, vote_coverage, subs, channel_evidence, shock_dir)
+    acceptance_html = ""
+    if acceptance_state == "pending_trader_acceptance":
+        acceptance_html = (
+            '<p class="prima-acceptance" data-prima-acceptance="pending_trader_acceptance">'
+            "Verified Stage 04 / pending trader acceptance</p>"
+        )
+    elif acceptance_state == "accepted":
+        acceptance_html = (
+            '<p class="prima-acceptance" data-prima-acceptance="accepted">'
+            "Accepted overnight review</p>"
+        )
+    preview_note_html = ""
+    excluded_code = current.get("preview_excluded")
+    excluded_reason = current.get("preview_excluded_reason")
+    if excluded_code and excluded_reason:
+        preview_note_html = (
+            f'<p class="prima-preview-note" data-prima-preview-excluded="{esc(str(excluded_code))}">'
+            f"{esc(str(excluded_reason))}</p>"
+        )
     panel_parts = [
         '<section class="prima-panel" data-prima-panel>',
         '<p class="prima-panel-kicker">Canada · Inflation pressure</p>',
+        acceptance_html,
+        preview_note_html,
         f'<p class="prima-oil-headline" data-prima-oil-headline data-prima-oil-direction="{esc(shock_dir)}">{esc(oil_headline)}</p>',
     ]
     if oil_line:
@@ -1330,12 +1434,14 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         )
     panel_html = "".join(panel_parts) + "</section>"
 
-    current_run_day = _prima_short_date(
-        str(trend[-1].get("observed_at") or "") if trend else ""
-    )
-    current_source = ""
-    if trend and isinstance(trend[-1], Mapping):
-        current_source = str(trend[-1].get("source_id") or "")
+    observed_at_current = str(current.get("observed_at") or "").strip()
+    source_id_current = str(current.get("source_id") or "").strip()
+    if not observed_at_current and trend and isinstance(trend[-1], Mapping):
+        observed_at_current = str(trend[-1].get("observed_at") or "")
+    if not source_id_current and trend and isinstance(trend[-1], Mapping):
+        source_id_current = str(trend[-1].get("source_id") or "")
+    current_run_day = _prima_short_date(observed_at_current)
+    current_source = source_id_current
 
     channel_html_parts: list[str] = []
     for channel in _CHANNEL_ROW_ORDER:
@@ -1343,11 +1449,19 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         contract_label = _PRIMA_CHANNEL_LABELS[channel]
         ch_dir = str(subs.get(channel) or "UNAVAILABLE")
         snippet = _prima_channel_snippet(channel, subs, drivers, channel_evidence)
-        changed = _prima_channel_changed_marker(channel, trend)
+        changed = _prima_channel_changed_marker(
+            channel,
+            trend,
+            current_subs=subs,
+            preview=is_preview,
+        )
         vintage = _channel_vintage(channel, channel_evidence)
         summary_left = [f'<span class="prima-ch-label">{esc(label)}</span>']
         if snippet:
             summary_left.append(f'<span class="prima-ch-snippet">{esc(snippet)}</span>')
+        stored_mom_span = _prima_stored_mom_span(channel, channel_evidence, esc)
+        if stored_mom_span:
+            summary_left.append(stored_mom_span)
         if vintage:
             summary_left.append(f'<span class="prima-ch-vintage">{esc(vintage)}</span>')
         if channel in ("production_network_pressure", "imported_pressure"):
@@ -1414,6 +1528,14 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                         pieces.append(f"{key}: {esc(str(inp[key]))}")
                 if pieces:
                     direct_rows.append("<p>" + "; ".join(pieces) + "</p>")
+                stored_line = _prima_stored_mom_text(channel, channel_evidence)
+                if stored_line and channel in (
+                    "production_network_pressure",
+                    "imported_pressure",
+                ):
+                    direct_rows.append(
+                        f"<p>Stored month-over-month: {esc(stored_line)}</p>"
+                    )
         gap_for_channel = history_gap if channel == "shock_persistence" and isinstance(history_gap, Mapping) else None
         if isinstance(gap_for_channel, Mapping):
             findings = gap_for_channel.get("findings") if isinstance(gap_for_channel.get("findings"), list) else []
@@ -1549,8 +1671,8 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
                     raw_bits.append(f"Brent contract (this run): {esc(drv)}")
         if current_source:
             raw_bits.append(f"Source id: {esc(current_source)}")
-        if trend and isinstance(trend[-1], Mapping):
-            raw_bits.append(f"Observed at: {esc(str(trend[-1].get('observed_at') or ''))}")
+        if observed_at_current:
+            raw_bits.append(f"Observed at: {esc(observed_at_current)}")
 
         channel_html_parts.append(
             f'<details class="prima-ch" data-prima-channel="{esc(channel)}" '
@@ -1592,8 +1714,13 @@ def render_prima_pressure_block(block: Mapping[str, Any] | None, esc: Any) -> st
         f'<summary class="prima-raw-summary">MPR comparison and quarterly shadow</summary>'
         f'<div class="prima-raw-body">{mpr_body}{shadow_html}</div></details>'
     )
+    root_attrs = 'data-prima-pressure="ca" data-prima-context="only"'
+    if observed_at_current:
+        root_attrs += f' data-prima-observed-at="{esc(observed_at_current)}"'
+    if source_id_current:
+        root_attrs += f' data-prima-source-id="{esc(source_id_current)}"'
     return (
-        f'<div class="evidence-block prima-pressure" data-prima-pressure="ca" data-prima-context="only">'
+        f'<div class="evidence-block prima-pressure" {root_attrs}>'
         f"{gauge_details}"
         f"{panel_html}"
         f'<div class="prima-channels">{"".join(channel_html_parts)}</div>'
