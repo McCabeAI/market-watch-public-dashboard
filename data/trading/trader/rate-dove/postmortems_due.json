@@ -1,5 +1,41 @@
 {
-  "items": [],
+  "items": [
+    {
+      "created_at": "2026-11-23T07:00:05.353220-05:00",
+      "created_run_id": "overnight-20261123",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-23T07:00:05.353220-05:00",
+        "conviction": 59,
+        "entry_mark": 3.4,
+        "exit_mark": 3.1,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 5559795,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or trim/median leave ~2% while jobs stop contracting.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 107312.5,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-496354e739f9",
+      "status": "due",
+      "trade_id": "trd-trader-rate-dove-pos-9849cf751c27"
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS_DUE"
 }

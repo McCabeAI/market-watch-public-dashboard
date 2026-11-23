@@ -125,6 +125,32 @@
       "postmortem_id": "pmd-7164b5ae7dd6",
       "status": "submitted",
       "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc"
+    },
+    {
+      "created_at": "2026-11-23T07:00:05.353220-05:00",
+      "created_run_id": "overnight-20261123",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-23T07:00:05.353220-05:00",
+        "conviction": 58,
+        "entry_mark": 1.64,
+        "exit_mark": 1.65,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 263987,
+        "instrument": "EURAUD",
+        "invalidation": "Flip the long if ECB communication walks back the hawkish inflation remarks, if AUDCAD and AUDNZD stop showing the Australian dollar as the offered leg, or if EURAUD fails the long-base breakout.",
+        "opened_at": "2026-11-20T05:40:17.809566-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 66552.69,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-139d6b64651c",
+      "status": "due",
+      "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e"
     }
   ],
   "schema_version": 1,

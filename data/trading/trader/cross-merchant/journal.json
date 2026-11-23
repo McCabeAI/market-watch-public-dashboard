@@ -2416,6 +2416,78 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Buy 10 million EURAUD. The clean non-dollar wedge is hawkish ECB commentary against an Australian dollar that is already breaking down versus Canada and New Zealand, and firm oil is a reason to leave AUDCAD alone rather than a reason to own this cross. EURGBP is through the old 0.8331 invalidation, so that ticket stays closed."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURAUD",
+          "notional_usd": null,
+          "position_id": "pos-cbb6d1944e8e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": "cross-merchant learning_gate: lesson_not_addressed les-a8f64a5fd921",
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDCAD",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "blocked",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "3c42649ede5a5ddca299dc7a3dd72054903c3f82af0991511e8039c958d9d781",
+      "event_id": "jde-0320cfe5af544174",
+      "funding_view": null,
+      "invalidation": "Close the AUDCAD short if Australia does not deliver the growth markdown, if Canada weakens on its own, or if AUDCAD trades back through the 20-day range it just closed below.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-cbb6d1944e8e"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-cbb6d1944e8e"
+      ],
+      "memory_context_sha256": "b31c7f7b218b5cace98f9291d8756e28aedea1a635539960a78d31d7eeeb7b78",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "95eeada3296c20930f249881786ce3e335881c02855c1acda6e907e418080df6"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the euro-aussie long and short AUDCAD in 10 million. Australia will mark down nominal growth and sees unemployment peaking above 5 percent, while oil at 83.98 WTI and 92.57 Brent normally supports the Australian and Canadian dollars together. AUDCAD has closed its 20-day range low at 0.954, so the growth gap is cleaner against Canada than against the euro.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Close the euro-aussie long and short AUDCAD in 10 million. Australia will mark down nominal growth and sees unemployment peaking above 5 percent, while oil at 83.98 WTI and 92.57 Brent normally supports the Australian and Canadian dollars together. AUDCAD has closed its 20-day range low at 0.954, so the growth gap is cleaner against Canada than against the euro."
     }
   ],
   "schema_version": 1,

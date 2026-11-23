@@ -3147,6 +3147,64 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Buy 15 million dollars of EURUSD. The euro at 1.0992 is the first percentile of its one-year range after a five-day decline, while the Nasdaq near 23,879, the Dow near 49,097 and Brent near 92 still show an intact expansion, and euro-area inflation pressure is still building. The risk is that the haven bid, with gold near 3,686 and VIX near 24.6, extends and takes the euro through this spot."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pos-d62db363ab83",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 68,
+      "decision_fingerprint": "ffb559e7149d81f4e0b5bcea7b776ffc8c56183171336a9050374f8b0d2bdc68",
+      "event_id": "jde-22c6709818ef4942",
+      "funding_view": null,
+      "invalidation": "The hold ends if the Nov 25 personal-income report puts a half-point hike back at the center of the dollar, or if the Dec 1 HICP flash reverses the claim that euro inflation pressure is still building.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-d62db363ab83"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "c1222bcb7aca487902c94760e530a7fe6c716ba1a76d1572f6125e030b37fab5",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "revenge_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "edcd61921c50592c5a64d1385a0479df8c95a9f11869dab9a0ce9148e9f1a356"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 15 million long EURUSD. That is the pro-growth leg: a one-year z-score of -2.70 prices a dollar-haven outcome a soft landing does not require, and Pereira's view that euro-area inflation pressure is still building keeps a rate floor under the euro. Soft-landing pricing still has room because Treasury yields fell 23 to 27bp in five days and the VIX is 28.44 even with the S&P 500 at 7176 and with Fed minutes and Waller still holding hikes in view.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Hold the 15 million long EURUSD. That is the pro-growth leg: a one-year z-score of -2.70 prices a dollar-haven outcome a soft landing does not require, and Pereira's view that euro-area inflation pressure is still building keeps a rate floor under the euro. Soft-landing pricing still has room because Treasury yields fell 23 to 27bp in five days and the VIX is 28.44 even with the S&P 500 at 7176 and with Fed minutes and Waller still holding hikes in view."
     }
   ],
   "schema_version": 1,

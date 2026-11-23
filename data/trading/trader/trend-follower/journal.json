@@ -2476,6 +2476,62 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Hold the 25 million short in March 2027 SOFR. Implied has extended from 4.545 to 4.575, so the pay is still riding the higher-yield trend, and minutes are still discussing hikes. The two-year at 4.76 and the ten-year at 5.04 eased on a safe-haven bid, but that cash dip is not a reversal in March."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-9ff89eedf5b8",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "5aa0d4b8b5b21df2fab4be2bc1f541a7f2083b070fc93ee87524d653121e6985",
+      "event_id": "jde-3685ea48fd4a4651",
+      "funding_view": null,
+      "invalidation": "Close the short if the March 2027 implied rate rises back through the 4.545 entry, or if US cash yields reverse the five-day decline and hold higher.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9ff89eedf5b8"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "36107edb13f57fc6f75cf3430bcd0e74baf77178768f4565e586be94b3c2c1f6",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f2161e0e42ad6950716e41e7758f971d0af2ddb20b39934fa093894a861a9681"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the 25 million short in March 2027 SOFR. US cash yields fell about 23 to 27bp over five days even while the Fed still sounds hawkish, and the March 2027 implied rate at 4.42 still sits above SOFR at 3.91. The short stays with that decline. The book mark at 4.555 is not the frozen implied rate used to judge the hold.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Hold the 25 million short in March 2027 SOFR. US cash yields fell about 23 to 27bp over five days even while the Fed still sounds hawkish, and the March 2027 implied rate at 4.42 still sits above SOFR at 3.91. The short stays with that decline. The book mark at 4.555 is not the frozen implied rate used to judge the hold."
     }
   ],
   "schema_version": 1,

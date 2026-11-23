@@ -147,14 +147,14 @@
     "nav_usd": 99966519.62,
     "net_pnl_usd": -33480.38,
     "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 0,
+    "prior_competition_rank": 14,
+    "rank_change": -2,
     "raw_pnl_rank": 12,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 82964.28,
     "status": "ok"
   },
   "learning": {
@@ -165,12 +165,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "dcad5e7aa540abb1060d46ac53f84355c2aba6265e90e0db571652927fe0bbe5",
+  "memory_context_sha256": "a43b25c462d38e8fca611683a4fc967fe2b257aa082bdae97c395a84a2df8af7",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 61,
-      "current_notional_usd": 10000000.0,
+      "current_notional_usd": 5000000.0,
       "entry_mark": 159.97,
       "harvest": {
         "asset_class": "spot_fx",
@@ -188,7 +188,7 @@
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 60,
-        "mae_usd": 0.0,
+        "mae_usd": -41465.85,
         "mechanical_order": false,
         "mfe_usd": 0.0,
         "move_versus_entry_intent": "flat",
@@ -196,7 +196,7 @@
         "position_id": "pos-f9d4174687a1",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The US two-year versus Japan is about 290 basis points annualized. Hold toward the 60-day horizon and let the forward points accrue, and do not add if spot extends further from 159.97.",
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": -41465.85,
         "recorded_mfe_usd": 0.0,
         "retained_mfe_fraction": null,
         "review_move_bp": null,
@@ -205,7 +205,7 @@
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": 0.0,
+        "total_pnl_usd": -41465.85,
         "trade_id": "trd-trader-carry-is-king-pos-f9d4174687a1",
         "unrealized_pnl_usd": 0.0
       },
@@ -234,8 +234,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -244,23 +244,23 @@
       },
       "defensiveness": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.2
+        "trend": "up",
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.13
+        "trend": "up",
+        "value": 0.2
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.12
+        "trend": "up",
+        "value": 0.15
       },
       "revenge_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.05
+        "value": 0.06
       },
       "self_trust": {
         "band": "steady",
@@ -283,17 +283,22 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "blocked_expansion",
+        "kind": "session_loss",
+        "magnitude": 0.16592856,
+        "run_id": "overnight-20261123"
+      },
+      {
+        "kind": "rank_drop_minor",
         "magnitude": 1.0,
-        "run_id": "overnight-20261117"
+        "run_id": "overnight-20261123"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b0543e4721ea7f9df39bb73b2c5dca7ed26dec156b69f8b27afe1fed6232a00c",
+    "state_sha256": "a545a2215d4bd6c3e64e17ba802cc0d3e354ca4658deee9bb6705981829f41a0",
     "streaks": {
       "flat_cycles": 0,
-      "session_loss": 0,
+      "session_loss": 1,
       "session_win": 0
     }
   },

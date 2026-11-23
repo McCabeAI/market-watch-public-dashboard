@@ -2516,6 +2516,79 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Keep the 10 million EURUSD short and the 10 million USDCHF long. The dollar leg still works because the US two-year at 4.76 holds a large premium over Europe at 3.14, Fed minutes still discuss hikes, and sterling is breaking down with the complex. Yields have already fallen on a safe-haven bid, so both booked stops stay armed and nothing is added in dollar-yen or dollar-Canada."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 5000000,
+          "position_id": "pos-d419ff966f72",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCHF",
+          "notional_usd": null,
+          "position_id": "pos-e7cd1ee0a3d9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 61,
+      "decision_fingerprint": "5140c5b6463fc3c2ae1ac4fb142762f755e58af2796f37e8d64b83ca985fea59",
+      "event_id": "jde-ff0286ee938742e2",
+      "funding_view": null,
+      "invalidation": "The reduced euro short is invalidated if spot reclaims 1.108 or the US-Europe two-year premium compresses because the Fed drops the hike discussion. The franc long is invalidated by a sustained break back through 0.839.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-d419ff966f72",
+        "pos-e7cd1ee0a3d9"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-d419ff966f72"
+      ],
+      "memory_context_sha256": "63546a078dad8a1955e0799e733786fefef54219c705970682fbbb9917e3e3a3",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b88944e6642981bce5a7df21b588e16fd3514b6a57d01d3398c5c71431730937"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The euro short is cut to 5 million. The dollar leg still works because the US two-year at 4.63 holds a wide premium over Europe at 3.07, Fed minutes still discuss further hikes, and Brent at 92.57 leaves the euro area the worse energy importer. A fresh 10 million short at 1.099 is the wrong size with a one-year z-score of -2.70. The 10 million franc long stays, and it breaks if the franc trades back through the 0.839 entry.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "The euro short is cut to 5 million. The dollar leg still works because the US two-year at 4.63 holds a wide premium over Europe at 3.07, Fed minutes still discuss further hikes, and Brent at 92.57 leaves the euro area the worse energy importer. A fresh 10 million short at 1.099 is the wrong size with a one-year z-score of -2.70. The 10 million franc long stays, and it breaks if the franc trades back through the 0.839 entry."
     }
   ],
   "schema_version": 1,

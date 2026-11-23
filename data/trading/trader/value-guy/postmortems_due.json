@@ -125,6 +125,32 @@
       "postmortem_id": "pmd-0c5385c0010b",
       "status": "submitted",
       "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
+    },
+    {
+      "created_at": "2026-11-23T07:00:05.353220-05:00",
+      "created_run_id": "overnight-20261123",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-23T07:00:05.353220-05:00",
+        "conviction": 58,
+        "entry_mark": 1.43,
+        "exit_mark": 1.43,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 263987,
+        "instrument": "USDCAD",
+        "invalidation": "The short is wrong if crude reprices to a scare that makes 1.43004 fair, or if USDCAD stays pinned at or above 1.43004 for about 20 sessions while oil holds near these levels.",
+        "opened_at": "2026-11-20T05:40:17.809566-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -6547.49,
+        "side": "short",
+        "thesis": null
+      },
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-82462a918422",
+      "status": "due",
+      "trade_id": "trd-trader-value-guy-pos-2a96e5f2579c"
     }
   ],
   "schema_version": 1,

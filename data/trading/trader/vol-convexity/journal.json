@@ -2310,6 +2310,60 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Stay flat. The freeze lists no FX option, strike, or premium, so there is no contract to book, and the only volatility print is the equity VIX near 24.6. Euro at the first percentile of the year, dollar-franc and dollar-Canada near the 99th, gold near 3,686 and Brent near 92 are exactly where spot is a poor substitute for convexity, which is an argument for an option the packet does not contain."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "a3b0acb2aac456a061bc45bf14db51f99bbd607f00848596dddb85c420da082d",
+      "event_id": "jde-6c32df09153b4383",
+      "funding_view": null,
+      "invalidation": "The stand-aside ends when a later packet quotes premium, implied vol, and strikes on one defined option, or shows that convexity is too expensive versus staying flat. A later move in spot does not replace those missing marks.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "684d8d73dc82c6b423756a3843699fcaf0cded0fe594fadc57e9925df574cd8f",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "717efb508cff24df9d0c2d9dca4ceed73b77b27858071e6d5dcb5cb545c4fc05"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. Hormuz headlines, a 23 to 27bp move in US yields, and EURUSD at a one-year z-score of -2.70 are gap risks, so a spot line would be the wrong shape. The VIX is 28.44 and EURUSD realized vol is about 5.7 over 20 days, but the packet has no option premium, implied vol, or strike. Nothing is opened.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "The book stays flat. Hormuz headlines, a 23 to 27bp move in US yields, and EURUSD at a one-year z-score of -2.70 are gap risks, so a spot line would be the wrong shape. The VIX is 28.44 and EURUSD realized vol is about 5.7 over 20 days, but the packet has no option premium, implied vol, or strike. Nothing is opened."
     }
   ],
   "schema_version": 1,

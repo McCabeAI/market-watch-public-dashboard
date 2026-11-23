@@ -171,7 +171,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 200000.0,
     "risk_capital_utilization": 0.02,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 38714.9,
     "status": "ok"
   },
   "learning": {
@@ -182,12 +182,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "63546a078dad8a1955e0799e733786fefef54219c705970682fbbb9917e3e3a3",
+  "memory_context_sha256": "7337cb6abc67de1e42f96b3d23b741b59228911ebe1e475166284773336b6a77",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": null,
-      "current_notional_usd": 10000000.0,
+      "current_notional_usd": 5000000.0,
       "entry_mark": 1.11,
       "harvest": {
         "asset_class": "spot_fx",
@@ -199,7 +199,7 @@
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 21658.7,
+        "giveback_usd": 0.0,
         "holding_seconds": 866269,
         "horizon_elapsed_fraction": 0.4061,
         "horizon_status": "within",
@@ -207,15 +207,24 @@
         "intended_horizon_days": 10,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 101976.36,
+        "mfe_usd": 121378.94,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
+        "pending_review": {
+          "mechanical_order": false,
+          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+          "residual_notional_usd": 5000000.0,
+          "status": "due",
+          "triggers": [
+            "material_winner"
+          ]
+        },
         "position_id": "pos-d419ff966f72",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if the 20-day downside break extends while the two-year stays near 4.80.",
-        "realized_pnl_usd": 0.0,
+        "realized_pnl_usd": 41061.28,
         "recorded_mfe_usd": 101976.36,
-        "retained_mfe_fraction": 0.7876,
+        "retained_mfe_fraction": 1.0,
         "review_move_bp": null,
         "review_required": true,
         "review_threshold_usd": 100000.0,
@@ -224,7 +233,7 @@
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 80317.66,
+        "total_pnl_usd": 121378.94,
         "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
         "unrealized_pnl_usd": 80317.66
       },
@@ -256,7 +265,7 @@
         "horizon_status": "within",
         "instrument": "USDCHF",
         "intended_horizon_days": 20,
-        "mae_usd": 0.0,
+        "mae_usd": -929.01,
         "mechanical_order": false,
         "mfe_usd": 40853.87,
         "move_versus_entry_intent": "unknown",
@@ -291,7 +300,9 @@
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
-    "obligations_due": [],
+    "obligations_due": [
+      "pos-d419ff966f72"
+    ],
     "order_policy": "review_only",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
     "review_required_position_ids": [
@@ -310,7 +321,7 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
@@ -320,7 +331,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.18
+        "value": 0.17
       },
       "frustration": {
         "band": "calm",
@@ -365,7 +376,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "b88944e6642981bce5a7df21b588e16fd3514b6a57d01d3398c5c71431730937",
+    "state_sha256": "5aa0de41f4efe055b2dba8ee7419f03d12faaa9811ce48200ebdc54c93364315",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

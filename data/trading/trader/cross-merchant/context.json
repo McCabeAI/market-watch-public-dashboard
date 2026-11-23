@@ -103,16 +103,16 @@
   ],
   "as_of": "2026-11-23T07:00:05.353220-05:00",
   "calibration": {
-    "average_holding_seconds": 765141,
-    "average_realized_pnl_usd": 72892.95,
+    "average_holding_seconds": 681615,
+    "average_realized_pnl_usd": 71836.24,
     "breakeven": 0,
     "by_asset_class": {
       "spot_fx": {
-        "count": 5,
-        "total_realized_pnl_usd": 364464.74
+        "count": 6,
+        "total_realized_pnl_usd": 431017.43
       }
     },
-    "closed_trade_count": 5,
+    "closed_trade_count": 6,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -125,15 +125,15 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": 72892.95,
-        "count": 5,
-        "hit_rate": 0.4
+        "average_pnl_usd": 71836.24,
+        "count": 6,
+        "hit_rate": 0.5
       }
     },
     "losses": 3,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 364464.74,
-    "wins": 2
+    "total_realized_pnl_usd": 431017.43,
+    "wins": 3
   },
   "capital_owner": null,
   "consequence": {
@@ -155,7 +155,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -66520.11,
     "status": "ok"
   },
   "learning": {
@@ -166,58 +166,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b31c7f7b218b5cace98f9291d8756e28aedea1a635539960a78d31d7eeeb7b78",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 58,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 1.64,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "Hawkish ECB remarks are the euro impulse, and the already-printed short-base breakouts in AUDCAD and AUDNZD are the Australian impulse. Oil is not the catalyst.",
-        "current_mark": 1.6378,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 1.6378,
-        "expected_mark_direction": "higher",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
-        "holding_seconds": 263987,
-        "horizon_elapsed_fraction": 0.3055,
-        "horizon_status": "within",
-        "instrument": "EURAUD",
-        "intended_horizon_days": 10,
-        "mae_usd": 0.0,
-        "mechanical_order": false,
-        "mfe_usd": 0.0,
-        "move_versus_entry_intent": "flat",
-        "order_policy": "review_only",
-        "position_id": "pos-cbb6d1944e8e",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The long is realized if EURAUD holds the long-base breakout and extends while AUD remains the offered leg on AUDCAD and AUDNZD.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 0.0,
-        "retained_mfe_fraction": null,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": 0.0,
-        "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e",
-        "unrealized_pnl_usd": 0.0
-      },
-      "instrument": "EURAUD",
-      "opened_at": "2026-11-20T05:40:17.809566-05:00",
-      "position_id": "pos-cbb6d1944e8e",
-      "risk_capital_usd": 100000.0,
-      "side": "long",
-      "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e"
-    }
-  ],
+  "memory_context_sha256": "79a2ac721e87210af860a970ad6c96bf94f9b7143a9bd0973e0b500198b39132",
+  "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -235,13 +185,13 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.16
+        "trend": "up",
+        "value": 0.17
       },
       "defensiveness": {
         "band": "calm",
@@ -250,13 +200,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.13
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.14
       },
       "revenge_pressure": {
         "band": "calm",
@@ -282,17 +232,44 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "session_gain",
+        "magnitude": 0.13304022000000001,
+        "run_id": "overnight-20261123"
+      },
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.13310538,
+        "run_id": "overnight-20261123"
+      },
+      {
+        "kind": "blocked_expansion",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261123"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "95eeada3296c20930f249881786ce3e335881c02855c1acda6e907e418080df6",
+    "state_sha256": "709c9581c96b37abdb48673cb7c7453cf7974ea085f7653e3bf3aacb32bd30bc",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
-      "session_win": 2
+      "session_win": 3
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 58,
+      "holding_duration_seconds": 263987,
+      "instrument": "EURAUD",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "realized_pnl_usd": 66552.69,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-19T05:32:19.294844-05:00",

@@ -47,8 +47,8 @@
     "nav_usd": 100101500.64,
     "net_pnl_usd": 101500.64,
     "pressure_flags": [],
-    "prior_competition_rank": 6,
-    "rank_change": 0,
+    "prior_competition_rank": 7,
+    "rank_change": -1,
     "raw_pnl_rank": 6,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
@@ -65,8 +65,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "e1f328c2394037830dc5d4af154219187b24e066242291341a967f30f94f05e9",
-  "open_positions": [],
+  "memory_context_sha256": "16a24bffeae76d3be7ea4654964719694ceee2bba9b58fcb89d659d09f9a3934",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 60,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 9.75,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The catalyst is the close-only 20-session range break in USDNOK together with the other krone and krona breaks. A daily close back inside those ranges ends it.",
+        "current_mark": 9.752502274795269,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 9.75,
+        "expected_mark_direction": null,
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "USDNOK",
+        "intended_horizon_days": 5,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-da4b98a18cf3",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Hold the long to the five-session mark from the Nov 20 breakout, and leave earlier if a daily close puts USDNOK back inside the broken range.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-chart-guy-pos-da4b98a18cf3",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "USDNOK",
+      "opened_at": "2026-11-23T07:00:05.353220-05:00",
+      "position_id": "pos-da4b98a18cf3",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-chart-guy-pos-da4b98a18cf3"
+    }
+  ],
   "owner_id": "chart-guy",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -84,8 +134,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.16
+        "trend": "down",
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
@@ -99,12 +149,12 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.13
+        "trend": "flat",
+        "value": 0.12
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -133,11 +183,6 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "trade_win_close",
-        "magnitude": 0.20310956,
-        "run_id": "overnight-20261117"
-      },
-      {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261120"
@@ -145,9 +190,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "a31feac6e9a4330ed223bda1b34535dbad742f390216f1cadb268b4f7fcea366",
+    "state_sha256": "ba987952d3f2c08daf980c10d4466c3ab7a643647c7676a40a8925c00b5d3e51",
     "streaks": {
-      "flat_cycles": 3,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 1
     }

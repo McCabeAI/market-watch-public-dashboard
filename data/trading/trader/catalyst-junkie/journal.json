@@ -2354,6 +2354,60 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Stay flat through Canada retail today and the 25 November US GDP and PCE prints. The two-year at 4.76 already holds the hike, and the December SOFR contract at 4.29 versus a 3.90 fixing is not a meeting contract that still has room to pay. Dollar-yen at 159.97 beside a year-high Japan inflation print has no dated Bank of Japan decision that would reprice a gap the two-year does not already own."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "99d6d30dc2ccf01968702eb5cc02c399dfad313aa7bf1a0643bbd50d3c025b1c",
+      "event_id": "jde-ae21b181ecad4651",
+      "funding_view": null,
+      "invalidation": "The flat hold ends if a later packet ties Waller's half-point remark to a named tenor and a remaining gap into the Nov 25 personal-income and GDP reports.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "d3ca9cd51b09d7f4364687f78ad6aa06c21a8eb5dd4a9f8ee3d3be3eec0c0eae",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "8bead01b13d5c403d499c249c11b7bf9907b9b0e5590e3b0cfabc0fe053c2646"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold flat. The 23 to 27bp Treasury rally is already the price of the Fed minutes and Waller's half-point remark. Australia CPI, US GDP, and the October personal-income report all print on Nov 25, with Canada GDP on Nov 30, euro-area HICP on Dec 1, and employment on Dec 4. None of those prints has a signed gap left to trade today. Hormuz has no release date.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Hold flat. The 23 to 27bp Treasury rally is already the price of the Fed minutes and Waller's half-point remark. Australia CPI, US GDP, and the October personal-income report all print on Nov 25, with Canada GDP on Nov 30, euro-area HICP on Dec 1, and employment on Dec 4. None of those prints has a signed gap left to trade today. Hormuz has no release date."
     }
   ],
   "schema_version": 1,

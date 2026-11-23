@@ -3084,6 +3084,79 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Stay flat. The safe-haven yield decline is already the price of the risk bid, and minutes that still discuss hikes leave both a duration long and a duration fade without a catalyst that clears funding before the 25 November prints. Euro at a one-year extreme is the same dollar factor as the other stretched currencies, and the Hormuz oil bid is short of a scare."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "6229e778fb0aa2b284b5a2b0544935db25fca2db785005591f9fb15bf352fd8a",
+      "event_id": "jde-e5a3f0e10b234ea6",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-19",
+          "percent_rate": 3.91,
+          "rate": 3.91
+        },
+        "forward_funding_assessment": "higher",
+        "implication": "New shocked risk has to clear a funding path that is already above the 3.91 fixing, and none of the visible expressions earn that before the Nov 25 data.",
+        "sr3_forward_view": "December 2026 SR3 implies 4.235 and March 2027 implies 4.42, both above the 3.91 official fixing, so forward funding is already higher."
+      },
+      "invalidation": "A trade becomes actionable only after a Nov 25 inflation or growth print moves Treasury yields or March 2027 SOFR off 4.42 by more than the carry of holding the risk, with a same-day markable stop.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "9b031dd79dcf924b1b4a2b008c148282b0d3a32fa83addcf8988a33ebf0bfc73",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-19",
+            "percent_rate": 3.91,
+            "rate": 3.91
+          },
+          "forward_funding_assessment": "higher",
+          "implication": "New shocked risk has to clear a funding path that is already above the 3.91 fixing, and none of the visible expressions earn that before the Nov 25 data.",
+          "sr3_forward_view": "December 2026 SR3 implies 4.235 and March 2027 implies 4.42, both above the 3.91 official fixing, so forward funding is already higher."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f289c9f1b3c6df1977d3f6a705d7d5b519a343a4058c8644cac23c1df3e2979b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "No trade. The book is flat. A five-day Treasury rally of 23 to 27bp printed while the Fed minutes were hawkish, so the story and the price disagree. March 2027 SOFR at 4.42 versus SOFR at 3.91 already states the hike path. EURUSD at 1.099 is a one-year extreme that can be value or an unfinished trend. The VIX at 28.44 and oil at 83.98 WTI and 92.57 Brent already carry the stress and the Hormuz headlines. The next marks that can change this are the Nov 25 releases.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "No trade. The book is flat. A five-day Treasury rally of 23 to 27bp printed while the Fed minutes were hawkish, so the story and the price disagree. March 2027 SOFR at 4.42 versus SOFR at 3.91 already states the hike path. EURUSD at 1.099 is a one-year extreme that can be value or an unfinished trend. The VIX at 28.44 and oil at 83.98 WTI and 92.57 Brent already carry the stress and the Hormuz headlines. The next marks that can change this are the Nov 25 releases."
     }
   ],
   "schema_version": 1,

@@ -2644,6 +2644,64 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Buy 10 million USDJPY and hold it for about two months. The verified carry is the US two-year at 4.76 against Japan at 1.85, and Fed communication that is still hawkish supports the long-dollar leg instead of taxing it. A Canada receive is the wrong twin while Brent near 92 is a Canadian-dollar beta, and AUDJPY has already given back carry over five days."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDJPY",
+          "notional_usd": 5000000,
+          "position_id": "pos-f9d4174687a1",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 63,
+      "decision_fingerprint": "22166d76adf0b112bcd86cc715bfee7b5e0fb299ee3499de94dc471dda9ff152",
+      "event_id": "jde-90d30e0b5f3f4b99",
+      "funding_view": null,
+      "invalidation": "Close the residual if the Bank of Japan hikes and narrows the two-year gap while USDJPY is still below 159.97, or if the US two-year falls to the 4.42 March 2027 implied rate.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-f9d4174687a1"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-carry-is-king-pos-f9d4174687a1"
+      ],
+      "memory_context_sha256": "dcad5e7aa540abb1060d46ac53f84355c2aba6265e90e0db571652927fe0bbe5",
+      "outcome_links": [],
+      "owner_id": "carry-is-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b0543e4721ea7f9df39bb73b2c5dca7ed26dec156b69f8b27afe1fed6232a00c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Reduce the long USDJPY by 5 million and keep a 5 million residual. The residual still earns the US two-year at 4.63 against Japan at 1.853, and that US yield still clears March 2027 implied funding at 4.42. Full size is the wrong distribution with spot at 158.64 versus the 159.97 entry, a haven bid that cut US yields 23 to 27bp, VIX at 28.44, and Ueda open to a hike.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Reduce the long USDJPY by 5 million and keep a 5 million residual. The residual still earns the US two-year at 4.63 against Japan at 1.853, and that US yield still clears March 2027 implied funding at 4.42. Full size is the wrong distribution with spot at 158.64 versus the 159.97 entry, a haven bid that cut US yields 23 to 27bp, VIX at 28.44, and Ueda open to a hike."
     }
   ],
   "schema_version": 1,

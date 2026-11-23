@@ -3556,6 +3556,60 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Stay flat. The Fed minutes and Waller still discuss further hikes, including a possible half point, but that path is already in the price: SOFR is 3.90, the December contract implies 4.29, and March 2027 is marked 4.575. The two-year at 4.76 sits near the level where the September 2027 short was just closed, so a fresh short would extend a story the strip already contains."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US 2Y",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "4cd0d3695795de7f91c220bbbaa7346744763760139c58eb40bd3b62f38b520b",
+      "event_id": "jde-b773087f1c5348f3",
+      "funding_view": null,
+      "invalidation": "Cover the two-year short if the Committee stops guiding toward further hikes or withdraws the half-point option, or if inflation and demand cool enough that the five-day rally is the start of an easier path.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f3cf58fb39f3ae9cb16854d8aaddfb2b16e760fe5c46717c4d488eaa30b64c15",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "16d28728e87dbaf6e1ec56ef55751842aab5c5251d44a5ae73506dc1a00dc7bd"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Short the US two-year in 15 million. SOFR is 3.91 and the December futures already imply 4.235, with the path still rising toward 4.51 by September 2027, while the minutes and Waller are still describing more hikes. The dislocation is the cash rally: the two-year fell about 25bp in five days to 4.63 on a haven bid, with the reaction function unchanged.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Short the US two-year in 15 million. SOFR is 3.91 and the December futures already imply 4.235, with the path still rising toward 4.51 by September 2027, while the minutes and Waller are still describing more hikes. The dislocation is the cash rally: the two-year fell about 25bp in five days to 4.63 on a haven bid, with the reaction function unchanged."
     }
   ],
   "schema_version": 1,

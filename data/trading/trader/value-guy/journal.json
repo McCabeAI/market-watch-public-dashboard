@@ -2427,6 +2427,78 @@
       "run_id": "overnight-20261120",
       "schema_version": 1,
       "thesis": "Sell 15 million USDCAD. The Canadian dollar is the currency still dislocated against its own anchor: the pair is at the 99th percentile of the past year while WTI near 83 and Brent near 92 are not a scare, and that oil bid has already shown up in the Norwegian krone. The other dollar extremes do not have a second anchor in this packet, and EURGBP was just closed."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCAD",
+          "notional_usd": null,
+          "position_id": "pos-2a96e5f2579c",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        },
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US 10Y",
+          "notional_usd": 15000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "8054cf2c8b8ec5604dfe21a699ac745f19b30e0ceb2a3a4c800f30f4479863c1",
+      "event_id": "jde-3b3ab9bca08c407f",
+      "funding_view": null,
+      "invalidation": "The receive is wrong if that 23bp rally is fully reversed and the ten-year makes a fresh five-year extreme from 4.92, or if the premium over Europe at 3.30 widens while the euro stays pinned at 1.099.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-2a96e5f2579c"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-value-guy-pos-2a96e5f2579c"
+      ],
+      "memory_context_sha256": "78abaa8521a21bcf75f859e5445835be9798e9c84f0dafce3e45c62fd46d3a1a",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "cda16d168e547dcbae84594a52a81f05396a8f20499e8639adc4a4ffe3979cb2"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
+        "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+        "overnight_run_id": "overnight-20261123",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the unchanged USDCAD short and receive the US ten-year in 15 million. The ten-year at 4.92 is still near the 96th percentile of five years after a 23bp decline, so the crowded US yield premium is historically rich while convergence has already started. Europe's ten-year at 3.30 is the cross-market anchor. EURUSD at a one-year z-score of -2.70 is the widest spot stretch and is the comparison, not the position.",
+      "run_id": "overnight-20261123",
+      "schema_version": 1,
+      "thesis": "Close the unchanged USDCAD short and receive the US ten-year in 15 million. The ten-year at 4.92 is still near the 96th percentile of five years after a 23bp decline, so the crowded US yield premium is historically rich while convergence has already started. Europe's ten-year at 3.30 is the cross-market anchor. EURUSD at a one-year z-score of -2.70 is the widest spot stretch and is the comparison, not the position."
     }
   ],
   "schema_version": 1,
