@@ -7,10 +7,39 @@ import re
 from pathlib import Path
 from typing import Any
 
-from datetime import date
+from datetime import date, datetime
 
+from scripts.market_watch_launch.durability import load_remote_freeze, remote_freeze_verified
+from scripts.overnight.store import sha256_json
 from scripts.prima_pressure.contract import CHANNELS, DIRECTIONS, DISCLAIMER
 from scripts.prima_pressure.expiry import assess_stored_shock_inputs
+
+_PREVIEW_EXCLUSION_HUMAN: dict[str, str] = {
+    "snapshot_hash_mismatch": (
+        "A newer frozen overnight review did not pass verification (snapshot hash mismatch); "
+        "this card shows the last accepted reading."
+    ),
+    "observed_at_mismatch": (
+        "A newer frozen overnight review was misdated and was not shown; "
+        "this card shows the last accepted reading."
+    ),
+    "unverified_frozen_review": (
+        "A newer frozen overnight review did not pass verification; "
+        "this card shows the last accepted reading."
+    ),
+    "missing_snapshot": (
+        "A newer frozen overnight review is missing its evidence snapshot; "
+        "this card shows the last accepted reading."
+    ),
+    "freeze_binding_mismatch": (
+        "A newer frozen overnight review did not match trusted launch freeze attestation; "
+        "this card shows the last accepted reading."
+    ),
+    "preview_not_newer": (
+        "A newer frozen overnight review is not after the last accepted run and was not shown; "
+        "this card shows the last accepted reading."
+    ),
+}
 
 PRESENTATION_SCHEMA = "canada_prima_pressure_presentation_v1"
 _SOURCE_KIND = "overnight_evidence_snapshot"
@@ -148,6 +177,8 @@ def _presentation_shell(
     trend: list[dict[str, Any]],
     transitions: list[dict[str, Any]],
     limitations: list[str],
+    current_read_model: str,
+    current_acceptance: str,
 ) -> dict[str, Any]:
     return {
         "schema_version": PRESENTATION_SCHEMA,
@@ -156,6 +187,8 @@ def _presentation_shell(
         "context_only": True,
         "country": "CA",
         "source": "accepted_overnight_evidence_snapshots",
+        "current_read_model": current_read_model,
+        "current_acceptance": current_acceptance,
         "history_state": history_state,
         "history_note": history_note,
         "limitations": limitations,
@@ -170,13 +203,18 @@ def _empty_presentation(limitations: list[str] | None = None) -> dict[str, Any]:
     note = _HISTORY_NOTE_NONE
     if lim:
         note = note + " Limitations: " + "; ".join(lim) + "."
+    current = _synthetic_unavailable_current()
+    current["acceptance_state"] = "unavailable"
+    current["preview"] = False
     return _presentation_shell(
         history_state="none",
         history_note=note,
-        current=_synthetic_unavailable_current(),
+        current=current,
         trend=[],
         transitions=[],
         limitations=lim,
+        current_read_model="none",
+        current_acceptance="unavailable",
     )
 
 
@@ -487,6 +525,243 @@ def _collect_observations(root: Path) -> tuple[list[dict[str, Any]], list[str]]:
     return observations, unique_limitations
 
 
+def _parse_instant(raw: Any) -> datetime | None:
+    if raw is None:
+        return None
+    text = str(raw).strip()
+    if not text:
+        return None
+    if text.endswith("Z"):
+        text = f"{text[:-1]}+00:00"
+    try:
+        return datetime.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def _preview_exclusion_reason(code: str, *, has_accepted: bool) -> str:
+    base = _PREVIEW_EXCLUSION_HUMAN.get(
+        code,
+        "A newer frozen overnight review was not shown; this card shows the last accepted reading.",
+    )
+    if has_accepted:
+        return base
+    return base.replace("the last accepted reading", "no accepted reading is on file")
+
+
+def _attach_observation_identity(
+    projected: dict[str, Any],
+    observation: dict[str, Any],
+    *,
+    acceptance_state: str,
+    preview: bool,
+) -> dict[str, Any]:
+    current = dict(projected)
+    current.update(
+        {
+            "acceptance_state": acceptance_state,
+            "observed_at": str(observation.get("observed_at") or ""),
+            "source_id": str(observation.get("source_id") or ""),
+            "run_id": str(observation.get("run_id") or ""),
+            "review_id": str(observation.get("review_id") or ""),
+            "preview": preview,
+        }
+    )
+    return current
+
+
+def _find_latest_frozen_candidate(
+    root: Path,
+    limitations: list[str],
+) -> tuple[str, str, dict[str, Any], Path] | None:
+    runs_root = root / "data" / "overnight" / "runs"
+    if not runs_root.is_dir():
+        return None
+    best: tuple[datetime, str, str, dict[str, Any], Path] | None = None
+    for run_dir in sorted(runs_root.iterdir(), key=lambda p: p.name):
+        if not run_dir.is_dir():
+            continue
+        run_id = run_dir.name
+        reviews = _load_review_index(run_dir, run_id, limitations)
+        if not reviews:
+            continue
+        for row in reviews:
+            if not isinstance(row, dict) or row.get("status") != "frozen":
+                continue
+            review_id = row.get("review_id")
+            if not isinstance(review_id, str) or not _REVIEW_ID_RE.match(review_id):
+                continue
+            frozen_at = _parse_instant(row.get("frozen_at"))
+            if frozen_at is None:
+                continue
+            candidate = (frozen_at, run_id, review_id, row, run_dir)
+            if best is None or (frozen_at, run_id, review_id) > (best[0], best[1], best[2]):
+                best = candidate
+    if best is None:
+        return None
+    _, run_id, review_id, row, run_dir = best
+    return run_id, review_id, row, run_dir
+
+
+def _verify_launch_freeze_bindings(
+    root: Path,
+    run_id: str,
+    review_id: str,
+    packet_sha256: str,
+) -> str | None:
+    launches_root = root / "data" / "market_watch_launches"
+    if not launches_root.is_dir():
+        return None
+    bound_dirs: list[Path] = []
+    for launch_dir in launches_root.iterdir():
+        if not launch_dir.is_dir():
+            continue
+        binding_path = launch_dir / "freeze_binding.json"
+        if not binding_path.is_file():
+            continue
+        try:
+            binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if not isinstance(binding, dict):
+            continue
+        if binding.get("overnight_run_id") != run_id or binding.get("review_id") != review_id:
+            continue
+        bound_dirs.append(launch_dir)
+    if not bound_dirs:
+        return None
+    for launch_dir in bound_dirs:
+        binding_path = launch_dir / "freeze_binding.json"
+        try:
+            binding = json.loads(binding_path.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        if binding.get("packet_sha256") != packet_sha256:
+            continue
+        if not remote_freeze_verified(launch_dir):
+            continue
+        remote = load_remote_freeze(launch_dir)
+        if not isinstance(remote, dict):
+            continue
+        if remote.get("packet_sha256") != packet_sha256:
+            continue
+        return None
+    return "freeze_binding_mismatch"
+
+
+def _verify_frozen_preview_candidate(
+    root: Path,
+    run_dir: Path,
+    run_id: str,
+    review_id: str,
+    index_row: dict[str, Any],
+    limitations: list[str],
+) -> tuple[dict[str, Any] | None, str | None]:
+    review_json_path = run_dir / "reviews" / review_id / "review.json"
+    if not review_json_path.is_file():
+        limitations.append(f"missing_review_json:{run_id}/{review_id}")
+        return None, "unverified_frozen_review"
+    try:
+        review_meta = json.loads(review_json_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        limitations.append(f"unreadable_review_json:{run_id}/{review_id}")
+        return None, "unverified_frozen_review"
+    if not isinstance(review_meta, dict):
+        return None, "unverified_frozen_review"
+    if review_meta.get("status") != "frozen":
+        return None, "unverified_frozen_review"
+    if review_meta.get("immutable") is not True:
+        return None, "unverified_frozen_review"
+    meta_review_id = review_meta.get("review_id")
+    if meta_review_id is not None and meta_review_id != review_id:
+        return None, "unverified_frozen_review"
+    meta_run = review_meta.get("overnight_run_id")
+    if meta_run is not None and meta_run != run_id:
+        return None, "unverified_frozen_review"
+
+    index_hash = index_row.get("packet_sha256")
+    review_hash = review_meta.get("packet_sha256")
+    if not isinstance(index_hash, str) or not index_hash.strip():
+        return None, "unverified_frozen_review"
+    if not isinstance(review_hash, str) or review_hash != index_hash:
+        return None, "snapshot_hash_mismatch"
+
+    snapshot_path = run_dir / "reviews" / review_id / "evidence_snapshot.json"
+    if not snapshot_path.is_file():
+        limitations.append(f"missing_snapshot:{run_id}/{review_id}")
+        return None, "missing_snapshot"
+    try:
+        snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError, UnicodeDecodeError):
+        limitations.append(f"unreadable_snapshot:{run_id}/{review_id}")
+        return None, "unverified_frozen_review"
+    if not isinstance(snapshot, dict):
+        return None, "unverified_frozen_review"
+    if snapshot.get("type") != "OVERNIGHT_EVIDENCE_SNAPSHOT":
+        return None, "unverified_frozen_review"
+    if snapshot.get("overnight_run_id") != run_id:
+        return None, "unverified_frozen_review"
+    if snapshot.get("review_id") != review_id:
+        return None, "unverified_frozen_review"
+    block = snapshot.get("canada_prima_pressure")
+    if not isinstance(block, dict):
+        return None, "unverified_frozen_review"
+
+    snap_hash = snapshot.get("packet_sha256")
+    body_hash = sha256_json({k: v for k, v in snapshot.items() if k != "packet_sha256"})
+    if not isinstance(snap_hash, str) or snap_hash != body_hash or snap_hash != index_hash:
+        return None, "snapshot_hash_mismatch"
+
+    as_of = snapshot.get("as_of")
+    frozen_at = index_row.get("frozen_at")
+    index_frozen = review_meta.get("frozen_at")
+    as_of_str = str(as_of).strip() if as_of is not None and str(as_of).strip() else None
+    frozen_str = (
+        str(frozen_at).strip() if frozen_at is not None and str(frozen_at).strip() else None
+    )
+    review_frozen_str = (
+        str(index_frozen).strip()
+        if index_frozen is not None and str(index_frozen).strip()
+        else None
+    )
+    if not as_of_str or not frozen_str or as_of_str != frozen_str:
+        limitations.append(f"frozen_preview_misdated:{run_id}/{review_id}")
+        return None, "observed_at_mismatch"
+    if review_frozen_str and review_frozen_str != as_of_str:
+        limitations.append(f"frozen_preview_misdated:{run_id}/{review_id}")
+        return None, "observed_at_mismatch"
+
+    if review_meta.get("starting_state_binding") != "canonical_file":
+        return None, "unverified_frozen_review"
+    if snapshot.get("starting_state_binding") != "canonical_file":
+        return None, "unverified_frozen_review"
+
+    for field in ("starting_trader_books_sha256", "starting_pm_books_sha256"):
+        review_val = review_meta.get(field)
+        snap_val = snapshot.get(field)
+        if not isinstance(review_val, str) or not review_val.strip():
+            return None, "unverified_frozen_review"
+        if not isinstance(snap_val, str) or snap_val != review_val:
+            return None, "unverified_frozen_review"
+
+    binding_code = _verify_launch_freeze_bindings(root, run_id, review_id, index_hash)
+    if binding_code:
+        limitations.append(f"freeze_binding_mismatch:{run_id}/{review_id}")
+        return None, binding_code
+
+    return (
+        {
+            "observed_at": as_of_str,
+            "source_id": f"{run_id}/{review_id}",
+            "source_kind": _SOURCE_KIND,
+            "run_id": run_id,
+            "review_id": review_id,
+            "block": block,
+        },
+        None,
+    )
+
+
 def build_presentation(root: Path) -> dict[str, Any]:
     """Build presentation from accepted overnight evidence snapshots (no proxy computation)."""
     runs_root = root / "data" / "overnight" / "runs"
@@ -494,9 +769,6 @@ def build_presentation(root: Path) -> dict[str, Any]:
         return _empty_presentation()
 
     observations, limitations = _collect_observations(root)
-
-    if not observations:
-        return _empty_presentation(limitations)
 
     trend: list[dict[str, Any]] = []
     projected_rows: list[dict[str, Any]] = []
@@ -510,7 +782,77 @@ def build_presentation(root: Path) -> dict[str, Any]:
         projected_rows.append(projected)
         trend.append(_trend_point(observation, projected))
 
-    current = projected_rows[-1]
+    latest_accepted_at = (
+        _parse_instant(observations[-1].get("observed_at")) if observations else None
+    )
+    frozen_candidate = _find_latest_frozen_candidate(root, limitations)
+    preview_observation: dict[str, Any] | None = None
+    preview_reject_code: str | None = None
+    if frozen_candidate is not None:
+        f_run_id, f_review_id, f_index_row, f_run_dir = frozen_candidate
+        frozen_at = _parse_instant(f_index_row.get("frozen_at"))
+        candidate_is_newer = latest_accepted_at is None or (
+            frozen_at is not None and frozen_at > latest_accepted_at
+        )
+        if candidate_is_newer:
+            verified_obs, reject_code = _verify_frozen_preview_candidate(
+                root,
+                f_run_dir,
+                f_run_id,
+                f_review_id,
+                f_index_row,
+                limitations,
+            )
+            if verified_obs is not None:
+                preview_observation = verified_obs
+            else:
+                preview_reject_code = reject_code or "unverified_frozen_review"
+
+    if preview_observation is not None:
+        block = preview_observation.get("block")
+        if isinstance(block, dict):
+            projected = apply_futures_history_guard(
+                block, project_block(block), preview_observation
+            )
+        else:
+            projected = _synthetic_unavailable_current()
+            projected["reason"] = "observation_block_missing"
+        current = _attach_observation_identity(
+            projected,
+            preview_observation,
+            acceptance_state="pending_trader_acceptance",
+            preview=True,
+        )
+        current_read_model = "verified_frozen_stage_04_preview"
+        current_acceptance = "pending_trader_acceptance"
+    elif observations:
+        current = _attach_observation_identity(
+            projected_rows[-1],
+            observations[-1],
+            acceptance_state="accepted",
+            preview=False,
+        )
+        current_read_model = "accepted_overnight_review"
+        current_acceptance = "accepted"
+        if preview_reject_code:
+            current["preview_excluded"] = preview_reject_code
+            current["preview_excluded_reason"] = _preview_exclusion_reason(
+                preview_reject_code, has_accepted=True
+            )
+            limitations.append(f"preview_excluded:{preview_reject_code}")
+    else:
+        current = _synthetic_unavailable_current()
+        current["acceptance_state"] = "unavailable"
+        current["preview"] = False
+        current_read_model = "none"
+        current_acceptance = "unavailable"
+        if preview_reject_code:
+            current["preview_excluded"] = preview_reject_code
+            current["preview_excluded_reason"] = _preview_exclusion_reason(
+                preview_reject_code, has_accepted=False
+            )
+            limitations.append(f"preview_excluded:{preview_reject_code}")
+
     transitions: list[dict[str, Any]] = []
     for index in range(1, len(trend)):
         prev = trend[index - 1]
@@ -525,13 +867,17 @@ def build_presentation(root: Path) -> dict[str, Any]:
             }
         )
 
-    if len(observations) == 1:
+    if not observations:
+        history_state = "none"
+        history_note = _HISTORY_NOTE_NONE
+    elif len(observations) == 1:
         history_state = "begins_here"
         history_note = _HISTORY_NOTE_ONE
     else:
         history_state = "trend"
         history_note = _HISTORY_NOTE_TREND
 
+    limitations = sorted(set(limitations))
     if limitations:
         history_note = history_note + " Limitations: " + "; ".join(limitations) + "."
 
@@ -542,4 +888,6 @@ def build_presentation(root: Path) -> dict[str, Any]:
         trend=trend,
         transitions=transitions,
         limitations=limitations,
+        current_read_model=current_read_model,
+        current_acceptance=current_acceptance,
     )
