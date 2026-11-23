@@ -45,7 +45,7 @@ from scripts.market_watch_launch.publication_checks import (
     PublicationIntegrityError,
     check_news_dates_not_overstated,
     check_no_stale_static_news,
-    check_no_stale_tape,
+    check_repaired_tape,
     check_source_health_truthful,
     soft_news_consistency,
     soft_page_structure,
@@ -1425,7 +1425,7 @@ def validate_research_site(site_dir: Path, contract: dict[str, Any], *, root: Pa
     if 'data-edition-note="traderbook"' not in page:
         raise _fail("trader_book_pending_note_missing")
     try:
-        check_no_stale_tape(page)
+        check_repaired_tape(page)
         check_no_stale_static_news(page)
         check_news_dates_not_overstated(
             page,

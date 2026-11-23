@@ -20,6 +20,7 @@ from scripts.market_watch_launch import publication_issues as pi
 from scripts.market_watch_launch import publication_release as pr
 from scripts.market_watch_launch import research_pages as rp
 from scripts.market_watch_launch.publication_checks import strip_issues_panel
+from tests.test_publication_tape_checks import _present_sourced_us10y
 
 REPO = Path(__file__).resolve().parents[1]
 FIXTURE_COMMIT = "e9f757d7d6ae83e6c017fd9f95a1da40addda9ad"
@@ -245,17 +246,28 @@ class BuiltResearchResilience(FixtureCase):
             rp.validate_research_site(site, self.contract_)
         self.assertEqual(ctx.exception.reason, "news_label_overstated")
 
-    def test_stale_tape_value_is_refused(self):
+    def test_sourced_us10y_value_does_not_veto_by_numeric_equality(self):
         site = self.copy_site()
         path = site / "index.html"
         text = path.read_text(encoding="utf-8")
-        marker = 'data-global-tape="repair"'
+        updated = _present_sourced_us10y(text, "4.79%")
+        self.assertIn(">4.79%</div>", updated)
+        path.write_text(updated, encoding="utf-8")
+        _restamp(site)
+        rp.validate_research_site(site, self.contract_)
+
+    def test_unlabeled_tape_card_is_refused(self):
+        site = self.copy_site()
+        path = site / "index.html"
+        text = path.read_text(encoding="utf-8")
+        marker = 'data-tape="US10Y" data-tape-status="'
         self.assertIn(marker, text)
-        path.write_text(text.replace(marker, marker + " 4.79%", 1), encoding="utf-8")
+        path.write_text(text.replace('<div class="tape-card" data-tape="US10Y"', '<div class="tape-card"', 1), encoding="utf-8")
         _restamp(site)
         with self.assertRaises(rp.ResearchRefusal) as ctx:
             rp.validate_research_site(site, self.contract_)
-        self.assertEqual(ctx.exception.reason, "stale_tape_value")
+        self.assertEqual(ctx.exception.reason, "tape_card_missing_provenance")
+        self.assertNotEqual(ctx.exception.reason, "stale_tape_value")
 
 
 class OptionalDegradation(FixtureCase):

@@ -22,8 +22,15 @@ from typing import Any
 
 from scripts.market_watch_launch.publication_issues import make_issue, record_diagnostic
 
-STALE_TAPE_VALUES = ("4.79%", "1.3790", "0.7210", "0.58755", "98.83", "$92.33", "$97.23")
 STALE_STATIC_NEWS = ("Last refreshed 18 Sep 2026",)
+_TAPE_CARD_OPEN = '<div class="tape-card"'
+_TAPE_STATUS_RE = re.compile(r'\bdata-tape-status="([^"]*)"')
+_TAPE_KEY_RE = re.compile(r'\bdata-tape="([^"]*)"')
+_TAPE_VALUE_RE = re.compile(r'<div class="val[^"]*">([^<]*)</div>')
+_TAPE_ASOF_RE = re.compile(r'<div class="mw-asof">([^<]*)</div>')
+_TAPE_CHIP_RE = re.compile(r'<span class="mw-chip[^"]*">([^<]*)</span>')
+_TAPE_STATUSES = frozenset({"ok", "stale", "unavailable"})
+_MISSING_ASOF = frozenset({"", "date missing", "date unavailable"})
 TAPE_START = 'data-global-tape="repair"'
 TAPE_END = 'data-score-overview="calibrated"'
 ISSUES_PANEL_OPEN = '<div class="mw-issues"'
@@ -62,16 +69,75 @@ def strip_issues_panel(html: str) -> str:
 # ------------------------------------------------------------------ hard
 
 
-def check_no_stale_tape(html: str) -> None:
-    """The base page's September tape must not survive as current prices."""
+def _tape_region(html: str) -> str:
     start = html.find(TAPE_START)
-    end = html.find(TAPE_END, start)
+    end = html.find(TAPE_END, start if start >= 0 else 0)
     if start < 0 or end < 0:
         raise PublicationIntegrityError("repaired_tape_missing")
-    region = html[start:end]
-    for stale in STALE_TAPE_VALUES:
-        if stale in region:
-            raise PublicationIntegrityError("stale_tape_value", stale)
+    return html[start:end]
+
+
+def _tape_cards(region: str) -> list[str]:
+    from scripts.dashboard_repair.htmlutil import balanced_element_end
+
+    cards: list[str] = []
+    cursor = 0
+    while True:
+        start = region.find(_TAPE_CARD_OPEN, cursor)
+        if start < 0:
+            return cards
+        try:
+            end = balanced_element_end(region, start)
+        except ValueError as exc:
+            raise PublicationIntegrityError("repaired_tape_missing", "unbalanced tape card") from exc
+        cards.append(region[start:end])
+        cursor = end
+
+
+def check_repaired_tape(html: str) -> None:
+    """The repaired tape must exist, and every price must carry provenance.
+
+    A card needs a status, an observation date, and a source disclosure.
+    A stale card must say Stale. The printed number is never compared with a
+    historical value, so a sourced official yield cannot veto publication
+    by matching the September base tape.
+    """
+    region = _tape_region(html)
+    cards = _tape_cards(region)
+    if not cards:
+        raise PublicationIntegrityError("repaired_tape_missing")
+    for card in cards:
+        status_match = _TAPE_STATUS_RE.search(card)
+        key_match = _TAPE_KEY_RE.search(card)
+        if status_match is None or key_match is None:
+            raise PublicationIntegrityError("tape_card_missing_provenance")
+        status = status_match.group(1)
+        key = key_match.group(1)
+        if status not in _TAPE_STATUSES:
+            raise PublicationIntegrityError("tape_card_missing_provenance", f"{key} status {status}")
+        value_match = _TAPE_VALUE_RE.search(card)
+        value = value_match.group(1).strip() if value_match else ""
+        if status == "unavailable":
+            if value != "Unavailable":
+                raise PublicationIntegrityError("tape_card_missing_provenance", key)
+            continue
+        asof_match = _TAPE_ASOF_RE.search(card)
+        asof = asof_match.group(1).strip() if asof_match else ""
+        if asof.lower() in _MISSING_ASOF:
+            raise PublicationIntegrityError("tape_as_of_missing", key)
+        if "<summary>Source</summary>" not in card:
+            raise PublicationIntegrityError("tape_source_missing", key)
+        chip_match = _TAPE_CHIP_RE.search(card)
+        chip = chip_match.group(1).strip() if chip_match else ""
+        if status == "stale" and chip != "Stale":
+            raise PublicationIntegrityError("stale_tape_unlabeled", key)
+        if status == "ok" and chip != "Official close":
+            raise PublicationIntegrityError("tape_status_unlabeled", key)
+
+
+def check_no_stale_tape(html: str) -> None:
+    """Backward-compatible name for :func:`check_repaired_tape`."""
+    check_repaired_tape(html)
 
 
 def check_no_stale_static_news(html: str) -> None:
@@ -257,7 +323,7 @@ def run_final_checks(site_dir: Path, *, root: Path, diagnostics: Path | str | No
     """Hard checks for the final edition's built site; soft findings are recorded."""
     site = Path(site_dir)
     html = (site / "index.html").read_text(encoding="utf-8")
-    check_no_stale_tape(html)
+    check_repaired_tape(html)
     check_no_stale_static_news(html)
     health_path = site / "source-health.json"
     health = json.loads(health_path.read_text(encoding="utf-8")) if health_path.is_file() else None
