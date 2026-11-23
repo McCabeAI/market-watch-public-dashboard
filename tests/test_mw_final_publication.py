@@ -22,6 +22,7 @@ from scripts.market_watch_launch.publication_release import (
     ordering_decision,
 )
 from tests.test_mw_research_parity import DEPLOY, step_blocks
+from tests.test_publication_tape_checks import _present_sourced_us10y
 from tests.test_nov9_pages_offline_build import (
     NOV9_LAUNCH,
     NOV9_PACKET,
@@ -127,16 +128,29 @@ class FinalPublicationAcceptanceTests(unittest.TestCase):
         self.assertTrue(decision["allowed"])
         self.assertEqual(decision["reason"], "monotonic")
 
-    def test_stale_tape_value_refuses_publication(self) -> None:
-        site = self._copy_site("stale-tape")
+    def test_sourced_us10y_value_does_not_veto_publication(self) -> None:
+        site = self._copy_site("sourced-us10y")
+        html_path = site / "index.html"
+        html = _present_sourced_us10y(html_path.read_text(encoding="utf-8"), "4.79%")
+        self.assertIn(">4.79%</div>", html)
+        html_path.write_text(html, encoding="utf-8")
+        proc = _run_checks(site, self.root)
+        self.assertEqual(proc.returncode, 0, proc.stderr[-2000:] or proc.stdout[-2000:])
+        self.assertNotIn("stale_tape_value", proc.stderr)
+
+    def test_unlabeled_tape_card_refuses_publication(self) -> None:
+        site = self._copy_site("unlabeled-tape")
         html_path = site / "index.html"
         html = html_path.read_text(encoding="utf-8")
-        marker = 'data-global-tape="repair"'
-        self.assertIn(marker, html)
-        html_path.write_text(html.replace(marker, marker + " 4.79%", 1), encoding="utf-8")
+        self.assertIn('data-tape="US10Y"', html)
+        html_path.write_text(
+            html.replace('<div class="tape-card" data-tape="US10Y"', '<div class="tape-card"', 1),
+            encoding="utf-8",
+        )
         proc = _run_checks(site, self.root)
         self.assertEqual(proc.returncode, 1)
-        self.assertIn("stale_tape_value", proc.stderr)
+        self.assertIn("tape_card_missing_provenance", proc.stderr)
+        self.assertNotIn("stale_tape_value", proc.stderr)
 
     def test_news_label_newer_than_accepted_refuses_publication(self) -> None:
         site = self._copy_site("news-label")
