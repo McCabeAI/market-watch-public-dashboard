@@ -1,0 +1,344 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-23T12:20:43+00:00",
+      "release_sha256": "932e3b9d16f6aecb1a35a4e047c800cfe0fc830feb8a2b4c4cca570015748032",
+      "run_attempt": "1",
+      "run_id": "45170032635",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/45170032635",
+      "site_sha256": "f597a40b96e607bb07e1bb16c354e082657635c236c04a8fed25e504f0482756"
+    }
+  ],
+  "launch_id": "mwl-20261123T120005Z-8e6aee9e",
+  "launch_terminal": false,
+  "packet_sha256": "51a7120b99bd5ec017371302567116d5ffd3ad1bb1659739de2e8a9f97667df5",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-20T07:11:37.850856-05:00",
+      "as_of": "2026-11-20T05:40:17.809566-05:00",
+      "books_run_id": "overnight-20261120",
+      "overnight_run_id": "overnight-20261120",
+      "packet_sha256": "9c78613b70e43ba475a5b20270c10a093e1c3f99a5b97c06ba1241fb376266fc"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-23T07:00:05.353220-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "bloomberg_credit",
+          "reuters",
+          "reuters_credit"
+        ],
+        "mode": "live",
+        "ok_sources": 13,
+        "partial": true
+      },
+      "as_of": "2026-11-23T07:00:05.353220-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 7,
+        "rejected": {
+          "unattributed": 17
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "bloomberg_politics",
+          "headline": "Fake Iran Tanker Highlights Uncertainty Around Hormuz Traffic",
+          "id": "news:11849e4ad4ee98a5",
+          "published_at": "2026-11-22T19:09:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-23/fake-iran-tanker-highlights-uncertainty-around-hormuz-traffic",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Bond Market\u2019s Go-To Trade for Fed Hikes Roiled by Stocks Retreat",
+          "id": "news:b4d77b0194445068",
+          "published_at": "2026-11-22T07:01:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-22/bond-market-s-go-to-trade-for-fed-hikes-roiled-by-stocks-retreat",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "ecb_press",
+          "headline": "ECB expands acceptance of DLT-based assets as eligible Eurosystem collateral",
+          "id": "news:fcdf24928d9144fa",
+          "published_at": "2026-11-23T05:00:00-05:00",
+          "source_name": "European Central Bank",
+          "url": "https://www.ecb.europa.eu//press/pr/date/2026/html/ecb.pr261123~76b6f57b74.en.html",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Brazil Analysts Lift 2027 Key Rate and Inflation Forecasts Again",
+          "id": "news:34b99ba93d735a67",
+          "published_at": "2026-11-22T22:53:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-23/brazil-analysts-lift-2027-key-rate-and-inflation-forecasts-again",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Economists More Accurate on India Inflation After Index Overhaul",
+          "id": "news:129dd6eda3db539d",
+          "published_at": "2026-11-22T22:10:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-23/economists-more-accurate-on-india-inflation-after-index-overhaul",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "bloomberg_politics",
+          "headline": "Australia to Lower Nominal Economy Estimate in Budget Update",
+          "id": "news:067fe62ebac53c89",
+          "published_at": "2026-11-22T11:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-23/australia-lower-economy-estimate-budget-update-inflation-unemployment-treasurer-jim-chalmers",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Texas Pacific Land Agrees to Buy EagleRock in $3 Billion Deal",
+          "id": "news:27a999b74ab213f1",
+          "published_at": "2026-11-22T22:14:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-23/texas-pacific-land-agrees-to-buy-eaglerock-in-3-billion-deal",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-23T07:00:05.353220-05:00",
+      "news_family_digest": "3016e82dad6da3bfb05b3c8adcab40cb3071f02da49e2df6f8243d125ebb2a43",
+      "packet_sha256": "51a7120b99bd5ec017371302567116d5ffd3ad1bb1659739de2e8a9f97667df5",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-23T07:00:05.353220-05:00",
+        "start": "2026-11-22T07:00:05.353220-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/freeze_binding.json",
+        "sha256": "40527ce6a61f849b989554c84299ec7d03ade3b68d7094ef300c12f818a4d501"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/remote_freeze.json",
+        "sha256": "c2da4fe3f50ee9a775eb3aae303f60d4c06f7f7780c1a43da9a6e851dabecca4"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/artifacts/00_authenticate.json",
+        "sha256": "3c3d3598db78d1997e89aca972141fb8c94bcc65620bcff5071c60677d454b76"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/artifacts/01_ingest.json",
+        "sha256": "d7baa4d61fbe89fbeca7e70824e4394acc9530c8123614c7555e64ece597d08a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/artifacts/02_acquire.json",
+        "sha256": "507cd019133591b0be8ab2de3f97125e43ae42242a8e9f3d1da4262ff2ec744b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/artifacts/03_quality_gate.json",
+        "sha256": "bee4d697e4d88c289b01570b43482bd54bfe834c93d656eaf1315671972c6c75"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/artifacts/04_freeze.json",
+        "sha256": "c094382095f0f43b4f0f1c856ac71456f04f46e32120dab7d68a185c64211bda"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/temperature_scores.json",
+        "sha256": "747e58c08926a2ccbd06d38be2e538328daf6ff3b6e5282f71f337ea5f09f8bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/history/au.json",
+        "sha256": "92170c6604c1e733cad64f384109dde27744ec16dd4fe6121a572f8ecbc486f6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/history/ca.json",
+        "sha256": "55703e20655ec35997a9655d59d8d039304ae834e229145b9551627937cb40e1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/history/ea.json",
+        "sha256": "c90cb109e30fc0cf2f52090f7d767544931b90356f2e65ccb5b35bab43e5f44b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261123T120005Z-8e6aee9e/lineage/history/us.json",
+        "sha256": "8537d82b6dfeaaa7231e008085118185df7af2d17de362dc685b5a5f480143aa"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261123/reviews/review-001/evidence_snapshot.json",
+        "sha256": "f0a1776bdb007c74e44230074c0f6ddcc52cf509e49bcc47a678832ce152d545"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "5c772bcd6be5e5e81e3a741007f25d9d20cee331cb2fd4d3f6bf589af0969ade"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261120/assembled_dataset.json",
+        "sha256": "31be74c9614dfd4d82910eb5cf337d9948df3626f878832cfa40bb04dbe1ad4c"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "e90d9a8e8b452cea283676f66a90807d23d495c11b859d309cdef24f80d75fb4"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "9ba330c26cb37f5c10307064a95c81305772ba721aa83310a538a1112a3e8051"
+      }
+    ],
+    "launch_id": "mwl-20261123T120005Z-8e6aee9e",
+    "market_state": {
+      "as_of": "2026-11-23T12:19:31Z",
+      "digest": "4aeed949b6222788dfebe10f3285b13a483333b4324441de1bcbec5973b53baa",
+      "generated_at": "2026-11-23T12:19:31Z"
+    },
+    "news": {
+      "age_label": "73 h before this freeze",
+      "as_of": "2026-11-20T05:40:17.809566-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261120",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261123",
+    "packet_sha256": "51a7120b99bd5ec017371302567116d5ffd3ad1bb1659739de2e8a9f97667df5",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "CA.Consumer.spending",
+        "CA.Labor.unemployment",
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Activity.business_surveys",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "JP.Consumer.retail",
+        "JP.Consumer.income",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Consumer.confidence",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "46c6f98d64c2b6e33bf01b50ebc49f23324a7a55",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 3,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-23T12:00:05Z",
+      "inputs_last_ingested_at": "2026-11-23T12:00:05Z",
+      "score_state_sha256": "747e58c08926a2ccbd06d38be2e538328daf6ff3b6e5282f71f337ea5f09f8bf"
+    },
+    "session_date": "2026-11-23",
+    "site_sha256": "f597a40b96e607bb07e1bb16c354e082657635c236c04a8fed25e504f0482756",
+    "source_commit": "364c3690e7c449b07134885ded6c204cfb3d9f02",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261123",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "932e3b9d16f6aecb1a35a4e047c800cfe0fc830feb8a2b4c4cca570015748032",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-23",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
