@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-11-17T10:39:57Z",
+  "retrieved_at": "2026-11-23T12:00:05Z",
   "notes": "Canada G0 temperature source backfill via StatCan WDS vectors; headline CPI y/y and wage y/y derived from official levels; retail via table 20-10-0056.",
   "live_ledger_cross_check": {
     "source": "data/temperature_scores.json",
@@ -2112,6 +2112,20 @@
           "series_id": "retail_total_sa_v1446859483",
           "revision_status": "final",
           "release_date": "2026-10-23",
+          "source_series_id": "v1446859483"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 0.7989496011315156,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "Statistics Canada",
+          "source_url": "https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=2010005601",
+          "vintage": "latest_available:ce920e86cf08",
+          "retrieved_at": "2026-11-23T12:00:05Z",
+          "series_id": "retail_total_sa_v1446859483",
+          "revision_status": "final",
+          "release_date": "2026-11-20",
           "source_series_id": "v1446859483"
         }
       ],

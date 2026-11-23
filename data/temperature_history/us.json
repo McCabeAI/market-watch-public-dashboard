@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-11-18T09:53:22Z",
+  "retrieved_at": "2026-11-23T12:00:05Z",
   "notes": "Trailing-12-month observation backfill for US temperature components. FRED graph CSV downloads saved under data/temperature_history/raw/us/. ISM PMI and mapped-bridge history are partial by design. Cross-check: official FRED retail Aug 2026 m/m ~+1.24% vs ledger +1.2%; core PCE Jul m/m ~+0.25% vs ledger +0.2%; personal income Jul m/m ~+0.53% vs ledger +0.4%; UMCSENT on FRED ends 2026-07 (55.2) while ledger cites Aug decline and Sep preliminary 47.8.",
   "components": {
     "Inflation.core_pce": {
@@ -4332,6 +4332,18 @@
           "vintage": "latest_available",
           "retrieved_at": "2026-11-13T13:40:29Z",
           "revision_status": "preliminary",
+          "series_id": "UMCSENT"
+        },
+        {
+          "reference_period": "2026-11",
+          "value": 51.5,
+          "units": "index",
+          "transformation": "index_level",
+          "publisher": "University of Michigan Surveys of Consumers",
+          "source_url": "https://www.sca.isr.umich.edu/files/tbcics.csv",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-23T12:00:05Z",
+          "revision_status": "final",
           "series_id": "UMCSENT"
         }
       ],

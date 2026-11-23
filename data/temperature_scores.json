@@ -6,8 +6,8 @@
   "calibration_anchor_date": "2026-09-21",
   "scoring_cutoff": "2026-11",
   "score_inputs_latest_reference_period": "2026-11",
-  "score_inputs_last_ingested_at": "2026-11-20T10:40:17Z",
-  "last_refresh_date": "2026-11-20",
+  "score_inputs_last_ingested_at": "2026-11-23T12:00:05Z",
+  "last_refresh_date": "2026-11-23",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -163,8 +163,8 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Consumer": {
-        "level": 48.22,
-        "impulse": 1.36,
+        "level": 48.34,
+        "impulse": 1.49,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
@@ -219,13 +219,13 @@
           "confidence": {
             "observed": true,
             "as_of": "2026-11",
-            "transform_value": 51.0,
-            "level": 21.0,
-            "impulse": 3.0,
+            "transform_value": 51.5,
+            "level": 21.5,
+            "impulse": 3.5,
             "weight": 0.25,
             "coverage_contribution": 0.25,
             "short_window": false,
-            "retrieved_at": "2026-11-13T13:40:29Z",
+            "retrieved_at": "2026-11-23T12:00:05Z",
             "release_date": null,
             "release_date_status": "not_recorded"
           }
@@ -375,13 +375,13 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Consumer": {
-        "level": 57.03,
-        "impulse": 6.61,
+        "level": 57.91,
+        "impulse": 6.88,
         "direction": "warming",
         "coverage": 0.75,
         "temperature_class": "neutral",
-        "as_of": "2026-08",
-        "latest_reference_period": "2026-08",
+        "as_of": "2026-09",
+        "latest_reference_period": "2026-09",
         "components": {
           "retail": 0.25,
           "income": 0.25,
@@ -391,15 +391,15 @@
         "component_state": {
           "retail": {
             "observed": true,
-            "as_of": "2026-08",
-            "transform_value": 0.3277,
-            "level": 49.78,
-            "impulse": 1.84,
+            "as_of": "2026-09",
+            "transform_value": 0.394,
+            "level": 52.43,
+            "impulse": 2.65,
             "weight": 0.25,
             "coverage_contribution": 0.25,
             "short_window": false,
-            "retrieved_at": "2026-10-29T08:24:31Z",
-            "release_date": "2026-10-23",
+            "retrieved_at": "2026-11-23T12:00:05Z",
+            "release_date": "2026-11-20",
             "release_date_status": "recorded"
           },
           "income": {
