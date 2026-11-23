@@ -1,0 +1,351 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not flatten a CAD or STIR receive on a sub-5bp implied backup from oil/Iran while cash policy is unchanged and the cash-implied hike gap remains wide; require a cash-rate shift, an explicit reaction-function change, or express the view in a lower oil-beta curve/RV.",
+      "lesson_id": "les-8ebd7519a541",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-7f29b83dabfc"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "rates",
+        "catalyst_type": null,
+        "countries": [
+          "CA"
+        ],
+        "currencies": [
+          "CAD"
+        ],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": "corra",
+        "instruments": [
+          "CORRA_2027-03",
+          "CORRA_2027-06",
+          "CORRA_2027-09",
+          "CORRA_2027-12"
+        ],
+        "market_drivers": [],
+        "setup_type": "futures_strip_average",
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A carry receive is invalidated by a change in cash policy or by a large, persistent re-pricing of the path, not by a small backup in implieds that is the mechanical beta of a headline already known at entry.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Receive a short-term rate only when the implied rate is materially above unchanged cash so the carry pays for the hold, and do not flatten an existing positive-carry Canada or short-term receive on a sub-5 basis point implied backup from an oil headline while cash policy is unchanged.",
+      "lesson_id": "les-8e4e249245a2",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-5d577c502ce7"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261111",
+      "status": "active",
+      "text": "A short-term rate receive entered at or below unchanged cash has no carry cushion, and a far-away cash-regime stop does not contain a few-basis-point path reprice.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-524ab67108ee"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Close a receive when live cash has converged to the forward even if the mark is still a few basis points through the entry, and do not reopen that contract after a same-week path reprice larger than 20 basis points.",
+      "lesson_id": "les-0654806c2441",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0711dcbebb42"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261118",
+      "status": "active",
+      "text": "The cushion on a receive is live cash versus the forward. A mark still a few basis points through the entry can hide a cushion that cash has already closed.",
+      "trade_ids": [
+        "trd-trader-carry-is-king-pos-23b8d2f30846"
+      ]
+    }
+  ],
+  "as_of": "2026-11-23T07:00:05.353220-05:00",
+  "calibration": {
+    "average_holding_seconds": 1623880,
+    "average_realized_pnl_usd": -7734.38,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 4,
+        "total_realized_pnl_usd": -30937.5
+      }
+    },
+    "closed_trade_count": 4,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": -7734.38,
+        "count": 4,
+        "hit_rate": 0.5
+      }
+    },
+    "losses": 2,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -30937.5,
+    "wins": 2
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 12,
+    "competitive_rank": 12,
+    "drawdown_usd": 107462.67,
+    "giveback_usd": 107462.67,
+    "high_water_nav_usd": 100073982.29,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99966519.62,
+    "net_pnl_usd": -33480.38,
+    "pressure_flags": [],
+    "prior_competition_rank": 12,
+    "rank_change": 0,
+    "raw_pnl_rank": 12,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "dcad5e7aa540abb1060d46ac53f84355c2aba6265e90e0db571652927fe0bbe5",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 61,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 159.97,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "Hawkish Fed communication supports the long-dollar leg and is aligned with the carry. The haven bid that dropped cash yields is the risk to the short-yen leg.",
+        "current_mark": 159.97088791848617,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 159.97088791848617,
+        "expected_mark_direction": "higher",
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 263987,
+        "horizon_elapsed_fraction": 0.0509,
+        "horizon_status": "within",
+        "instrument": "USDJPY",
+        "intended_horizon_days": 60,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "flat",
+        "order_policy": "review_only",
+        "position_id": "pos-f9d4174687a1",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The US two-year versus Japan is about 290 basis points annualized. Hold toward the 60-day horizon and let the forward points accrue, and do not add if spot extends further from 159.97.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-carry-is-king-pos-f9d4174687a1",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "USDJPY",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "position_id": "pos-f9d4174687a1",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-f9d4174687a1"
+    }
+  ],
+  "owner_id": "carry-is-king",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.13
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.5
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "blocked_expansion",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261117"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "b0543e4721ea7f9df39bb73b2c5dca7ed26dec156b69f8b27afe1fed6232a00c",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 0
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": 61,
+      "holding_duration_seconds": 2323069,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-10-21T08:22:07.869994-04:00",
+      "realized_pnl_usd": 10000.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-23b8d2f30846"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-10T04:50:36.940059-05:00",
+      "conviction": 62,
+      "holding_duration_seconds": 3366579,
+      "instrument": "AONIA_2027-03",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "realized_pnl_usd": -13750.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-524ab67108ee"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-10-01T04:50:57.400664-04:00",
+      "conviction": 55,
+      "holding_duration_seconds": 86476,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-30T04:49:40.475210-04:00",
+      "realized_pnl_usd": 3750.0,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-c76f7b616be7"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-09-28T06:26:47.664507-04:00",
+      "conviction": 62,
+      "holding_duration_seconds": 719397,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -30937.5,
+      "side": "long",
+      "trade_id": "trd-trader-carry-is-king-pos-b97bddbdbd2d"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

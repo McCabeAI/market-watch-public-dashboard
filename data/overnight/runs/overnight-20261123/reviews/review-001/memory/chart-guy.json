@@ -1,0 +1,173 @@
+{
+  "active_lessons": [],
+  "as_of": "2026-11-23T07:00:05.353220-05:00",
+  "calibration": {
+    "average_holding_seconds": 434973,
+    "average_realized_pnl_usd": 101554.78,
+    "breakeven": 0,
+    "by_asset_class": {
+      "spot_fx": {
+        "count": 1,
+        "total_realized_pnl_usd": 101554.78
+      }
+    },
+    "closed_trade_count": 1,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      }
+    },
+    "losses": 0,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 101554.78,
+    "wins": 1
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 6,
+    "competitive_rank": 6,
+    "drawdown_usd": 10.83,
+    "giveback_usd": 10.83,
+    "high_water_nav_usd": 100101511.47,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100101500.64,
+    "net_pnl_usd": 101500.64,
+    "pressure_flags": [],
+    "prior_competition_rank": 6,
+    "rank_change": 0,
+    "raw_pnl_rank": 6,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "e1f328c2394037830dc5d4af154219187b24e066242291341a967f30f94f05e9",
+  "open_positions": [],
+  "owner_id": "chart-guy",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.16
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.13
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.12
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.51
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "trade_win_close",
+        "magnitude": 0.20310956,
+        "run_id": "overnight-20261117"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261120"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "a31feac6e9a4330ed223bda1b34535dbad742f390216f1cadb268b4f7fcea366",
+    "streaks": {
+      "flat_cycles": 3,
+      "session_loss": 0,
+      "session_win": 1
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 434973,
+      "instrument": "EURUSD",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "realized_pnl_usd": 101554.78,
+      "side": "short",
+      "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

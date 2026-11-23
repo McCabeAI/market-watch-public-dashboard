@@ -93,7 +93,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-20T05:40:17.809566-05:00",
+  "as_of": "2026-11-23T07:00:05.353220-05:00",
   "calibration": {
     "average_holding_seconds": 533273,
     "average_realized_pnl_usd": 52713.66,
@@ -149,8 +149,8 @@
     "raw_pnl_rank": 4,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 150000.0,
+    "risk_capital_utilization": 0.015,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -162,7 +162,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "60967f1f30cbed24a147254277764e44ab1416a8d0b2f14b1e4a3c91125db2c4",
+  "memory_context_sha256": "78abaa8521a21bcf75f859e5445835be9798e9c84f0dafce3e45c62fd46d3a1a",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -175,20 +175,20 @@
         "catalyst_logic": "The terms-of-trade anchor is already in the cutoff print. The trade fails if crude becomes a scare that ratifies 1.43, or if the pair stays pinned for the horizon.",
         "current_mark": 1.4300400291120816,
         "current_notional_usd": 15000000.0,
-        "entry_mark": 1.43,
-        "expected_mark_direction": null,
+        "entry_mark": 1.4300400291120816,
+        "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 263987,
+        "horizon_elapsed_fraction": 0.1528,
         "horizon_status": "within",
         "instrument": "USDCAD",
         "intended_horizon_days": 20,
         "mae_usd": -0.0,
         "mechanical_order": false,
         "mfe_usd": -0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-2a96e5f2579c",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",

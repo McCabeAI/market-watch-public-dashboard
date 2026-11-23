@@ -1,0 +1,391 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If an AUDCAD fade needs housing or BoC path time longer than the overnight holding clock, stay flat rather than fade and then flip the same cross.",
+      "lesson_id": "les-a8f64a5fd921",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-8ddf6ee19a94"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "spot_fx",
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [
+          "AUD",
+          "CAD"
+        ],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [
+          "AUDCAD"
+        ],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20260930",
+      "status": "active",
+      "text": "A multi-year AUDCAD richness fade is a multi-week relative-value book, not a two-to-three-day overnight fade, and closing it unchanged does not authorize a reverse.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-00661cabb94a"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "After closing AUDCAD, stay flat until a new Australia-versus-Canada policy, growth, inflation, or carry gap appears that is not merely the opposite of the trade just exited.",
+      "lesson_id": "les-bd910b94260a",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-6734b7229e26"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "spot_fx",
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [
+          "AUD",
+          "CAD"
+        ],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [
+          "AUDCAD"
+        ],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20260930",
+      "status": "active",
+      "text": "Do not reverse a closed AUDCAD fade on a same-session diplomacy or oil tape. An oil hold that re-supports CAD is an invalidation of the long, not a reason to own it.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-27d002b448b1"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Into a BoC decision week, CADJPY and AUDCAD may be opened only as from-flat initiations with a live oil/ToT or policy differential; never as re-entry or reverse of a just-closed CADJPY long, and never on leftover pips after the pillar has already failed.",
+      "lesson_id": "les-d399941f614f",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-ecc05f983487"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261027",
+      "status": "active",
+      "text": "After a CADJPY ToT-carry long is closed because oil impaired the CAD pillar, do not reopen CADJPY and do not reverse AUDCAD unless that exact cross would be initiated from a flat book on new, independent AU-CA or CA-JP evidence.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-44de67c4b24f"
+      ]
+    }
+  ],
+  "as_of": "2026-11-23T07:00:05.353220-05:00",
+  "calibration": {
+    "average_holding_seconds": 765141,
+    "average_realized_pnl_usd": 72892.95,
+    "breakeven": 0,
+    "by_asset_class": {
+      "spot_fx": {
+        "count": 5,
+        "total_realized_pnl_usd": 364464.74
+      }
+    },
+    "closed_trade_count": 5,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 72892.95,
+        "count": 5,
+        "hit_rate": 0.4
+      }
+    },
+    "losses": 3,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 364464.74,
+    "wins": 2
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 2,
+    "competitive_rank": 2,
+    "drawdown_usd": 8681.13,
+    "giveback_usd": 8681.13,
+    "high_water_nav_usd": 100372317.21,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100363636.08,
+    "net_pnl_usd": 363636.08,
+    "pressure_flags": [],
+    "prior_competition_rank": 2,
+    "rank_change": 0,
+    "raw_pnl_rank": 2,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 1,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "b31c7f7b218b5cace98f9291d8756e28aedea1a635539960a78d31d7eeeb7b78",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 58,
+      "current_notional_usd": 10000000.0,
+      "entry_mark": 1.64,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "Hawkish ECB remarks are the euro impulse, and the already-printed short-base breakouts in AUDCAD and AUDNZD are the Australian impulse. Oil is not the catalyst.",
+        "current_mark": 1.6378,
+        "current_notional_usd": 10000000.0,
+        "entry_mark": 1.6378,
+        "expected_mark_direction": "higher",
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 263987,
+        "horizon_elapsed_fraction": 0.3055,
+        "horizon_status": "within",
+        "instrument": "EURAUD",
+        "intended_horizon_days": 10,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "flat",
+        "order_policy": "review_only",
+        "position_id": "pos-cbb6d1944e8e",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The long is realized if EURAUD holds the long-base breakout and extends while AUD remains the offered leg on AUDCAD and AUDNZD.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "EURAUD",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "position_id": "pos-cbb6d1944e8e",
+      "risk_capital_usd": 100000.0,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e"
+    }
+  ],
+  "owner_id": "cross-merchant",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.16
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.53
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "95eeada3296c20930f249881786ce3e335881c02855c1acda6e907e418080df6",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 2
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 56,
+      "holding_duration_seconds": 88736,
+      "instrument": "EURGBP",
+      "opened_at": "2026-11-18T04:53:22.859808-05:00",
+      "realized_pnl_usd": -1440.49,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-6b544dc561cc"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": 56,
+      "holding_duration_seconds": 856758,
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-03T08:22:57.179127-05:00",
+      "realized_pnl_usd": 297201.33,
+      "side": "short",
+      "trade_id": "trd-trader-cross-merchant-pos-525ff12dcad9"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 58,
+      "holding_duration_seconds": 2080573,
+      "instrument": "CADJPY",
+      "opened_at": "2026-10-02T05:40:56.963171-04:00",
+      "realized_pnl_usd": 154437.38,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-44de67c4b24f"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-09-29T04:44:08.485973-04:00",
+      "conviction": 63,
+      "holding_duration_seconds": 565391,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-09-22T15:40:57.474758-04:00",
+      "realized_pnl_usd": -35787.92,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-27d002b448b1"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 60,
+      "holding_duration_seconds": 234247,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -49945.56,
+      "side": "short",
+      "trade_id": "trd-trader-cross-merchant-pos-00661cabb94a"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "expression",
+        "variance_luck"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The standing slip was path around an intact Australia-versus-New Zealand short that later extended, so the original process remains sound: the cross was the right expression, the closed Australia-Canada fade stays shut, and a multi-week richness book is not abandoned because standing dipped for a session.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-89b1038f8f1c",
+      "run_id": "overnight-20261111",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The Australian dollar-kiwi short was expected to keep paying as a multi-week fade of five-year richness without a one-session air pocket in standing. Standing slipped while the short was still onside, and the same cross later extended and made a fresh open-profit high with spot at 1.2266."
+    },
+    {
+      "attribution": [
+        "expression",
+        "positioning_crowding",
+        "variance_luck"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "The 8-to-12 rank move and 67780 drawdown are the leaderboard echo of already-closed Australia-Canada fades plus peer-relative scoring; they sit inside ordinary competition variance around an intact oil-supported CADJPY differential, so the original process remains sound: hold the working Canada-Japan cross and leave the closed fade shut on a known cash gap.",
+      "pressure_effect": "distorting",
+      "reflection_id": "prf-a765d8be723d",
+      "run_id": "overnight-20261016",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "The oil-supported CADJPY long was expected to keep overnight relative-value standing stable; instead competition rank moved from 8 to 12 with about 67780 of net and drawdown while the live long is still above the 110.90 entry and the Australia-Canada cash wedge is unchanged."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

@@ -100,7 +100,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-20T05:40:17.809566-05:00",
+  "as_of": "2026-11-23T07:00:05.353220-05:00",
   "calibration": {
     "average_holding_seconds": 1623880,
     "average_realized_pnl_usd": -7734.38,
@@ -152,8 +152,8 @@
     "raw_pnl_rank": 12,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -165,7 +165,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "b0a46b82db7a0122f26fef32c1ad2ee8615ed54807f875c5ee5f4c9b55dd39b0",
+  "memory_context_sha256": "dcad5e7aa540abb1060d46ac53f84355c2aba6265e90e0db571652927fe0bbe5",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -178,20 +178,20 @@
         "catalyst_logic": "Hawkish Fed communication supports the long-dollar leg and is aligned with the carry. The haven bid that dropped cash yields is the risk to the short-yen leg.",
         "current_mark": 159.97088791848617,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 159.97,
-        "expected_mark_direction": null,
+        "entry_mark": 159.97088791848617,
+        "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 263987,
+        "horizon_elapsed_fraction": 0.0509,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 60,
         "mae_usd": 0.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-f9d4174687a1",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",

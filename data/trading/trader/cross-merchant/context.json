@@ -101,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-20T05:40:17.809566-05:00",
+  "as_of": "2026-11-23T07:00:05.353220-05:00",
   "calibration": {
     "average_holding_seconds": 765141,
     "average_realized_pnl_usd": 72892.95,
@@ -153,8 +153,8 @@
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -166,7 +166,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "ad39e425fb6f8630b2b942a58d867b340d9ade19a0ec6ef890740ebe5b549ec0",
+  "memory_context_sha256": "b31c7f7b218b5cace98f9291d8756e28aedea1a635539960a78d31d7eeeb7b78",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -179,20 +179,20 @@
         "catalyst_logic": "Hawkish ECB remarks are the euro impulse, and the already-printed short-base breakouts in AUDCAD and AUDNZD are the Australian impulse. Oil is not the catalyst.",
         "current_mark": 1.6378,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 1.64,
-        "expected_mark_direction": null,
+        "entry_mark": 1.6378,
+        "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 263987,
+        "horizon_elapsed_fraction": 0.3055,
         "horizon_status": "within",
         "instrument": "EURAUD",
         "intended_horizon_days": 10,
         "mae_usd": 0.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
-        "move_versus_entry_intent": "unknown",
+        "move_versus_entry_intent": "flat",
         "order_policy": "review_only",
         "position_id": "pos-cbb6d1944e8e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
