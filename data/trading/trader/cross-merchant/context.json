@@ -101,7 +101,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-23T07:00:05.353220-05:00",
+  "as_of": "2026-11-24T05:00:50.148207-05:00",
   "calibration": {
     "average_holding_seconds": 681615,
     "average_realized_pnl_usd": 71836.24,
@@ -141,21 +141,21 @@
     "competition_eligible": true,
     "competition_rank": 2,
     "competitive_rank": 2,
-    "drawdown_usd": 8681.13,
-    "giveback_usd": 8681.13,
-    "high_water_nav_usd": 100372317.21,
+    "drawdown_usd": 32.58,
+    "giveback_usd": 32.58,
+    "high_water_nav_usd": 100430188.77,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100363636.08,
-    "net_pnl_usd": 363636.08,
+    "nav_usd": 100430156.19,
+    "net_pnl_usd": 430156.19,
     "pressure_flags": [],
     "prior_competition_rank": 2,
     "rank_change": 0,
     "raw_pnl_rank": 2,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 100000.0,
-    "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": -66520.11,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -165,12 +165,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "79a2ac721e87210af860a970ad6c96bf94f9b7143a9bd0973e0b500198b39132",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-139d6b64651c",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "reference": "trd-trader-cross-merchant-pos-cbb6d1944e8e",
+      "source_run_id": "overnight-20261123"
+    }
+  ],
+  "memory_context_sha256": "9daad469c5e91a9000837a4111b8e583c7050cacecf4ceb37513670101b39737",
   "open_positions": [],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-23T07:00:05.353220-05:00",
+      "created_run_id": "overnight-20261123",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-23T07:00:05.353220-05:00",
+        "conviction": 58,
+        "entry_mark": 1.64,
+        "exit_mark": 1.65,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 263987,
+        "instrument": "EURAUD",
+        "invalidation": "Flip the long if ECB communication walks back the hawkish inflation remarks, if AUDCAD and AUDNZD stop showing the Australian dollar as the offered leg, or if EURAUD fails the long-base breakout.",
+        "opened_at": "2026-11-20T05:40:17.809566-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 66552.69,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-139d6b64651c",
+      "trade_id": "trd-trader-cross-merchant-pos-cbb6d1944e8e"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

@@ -1,6 +1,6 @@
 {
   "active_lessons": [],
-  "as_of": "2026-11-23T07:00:05.353220-05:00",
+  "as_of": "2026-11-24T05:00:50.148207-05:00",
   "calibration": {
     "average_holding_seconds": 434973,
     "average_realized_pnl_usd": 101554.78,
@@ -38,8 +38,8 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 6,
-    "competitive_rank": 6,
+    "competition_rank": 7,
+    "competitive_rank": 7,
     "drawdown_usd": 10.83,
     "giveback_usd": 10.83,
     "high_water_nav_usd": 100101511.47,
@@ -48,12 +48,12 @@
     "net_pnl_usd": 101500.64,
     "pressure_flags": [],
     "prior_competition_rank": 7,
-    "rank_change": -1,
-    "raw_pnl_rank": 6,
+    "rank_change": 0,
+    "raw_pnl_rank": 7,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 100000.0,
+    "risk_capital_utilization": 0.01,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -65,7 +65,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "16a24bffeae76d3be7ea4654964719694ceee2bba9b58fcb89d659d09f9a3934",
+  "memory_context_sha256": "d5c0b7a5b59034e1b42c2b1a67c59f25281a6badc60429770f7dd5d417cd3045",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -78,13 +78,13 @@
         "catalyst_logic": "The catalyst is the close-only 20-session range break in USDNOK together with the other krone and krona breaks. A daily close back inside those ranges ends it.",
         "current_mark": 9.752502274795269,
         "current_notional_usd": 10000000.0,
-        "entry_mark": 9.75,
+        "entry_mark": 9.752502274795269,
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 79244,
+        "horizon_elapsed_fraction": 0.1834,
         "horizon_status": "within",
         "instrument": "USDNOK",
         "intended_horizon_days": 5,

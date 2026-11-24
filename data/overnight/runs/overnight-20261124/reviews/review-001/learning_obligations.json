@@ -1,0 +1,55 @@
+{
+  "identities": "standing_traders_and_automated_pms",
+  "manifest_sha256": "fe9f846872821436f1464c9d77df20b0c471edef9a4a1f2f3493793feb66565e",
+  "obligations": [
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "c78300252666dba8c299b90573f4d5632d172da3a8552fbeaf1837684b6071c3",
+      "obligation_id": "pmd-792fc0fb7c9b",
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "reference": "trd-pm-chatgpt-pm-chatgpt-595561a1b90f",
+      "source_run_id": "overnight-20261109"
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "c78300252666dba8c299b90573f4d5632d172da3a8552fbeaf1837684b6071c3",
+      "obligation_id": "pmd-b6d58713e98c",
+      "owner_id": "chatgpt",
+      "owner_type": "pm",
+      "reference": "trd-pm-chatgpt-pm-chatgpt-aef5bacd43d3",
+      "source_run_id": "overnight-20261109"
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "9daad469c5e91a9000837a4111b8e583c7050cacecf4ceb37513670101b39737",
+      "obligation_id": "pmd-139d6b64651c",
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "reference": "trd-trader-cross-merchant-pos-cbb6d1944e8e",
+      "source_run_id": "overnight-20261123"
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "2b8a759cd23598009a5bb940069dc545e39f93815712288ecae7938e9ee6be2a",
+      "obligation_id": "pmd-496354e739f9",
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "reference": "trd-trader-rate-dove-pos-9849cf751c27",
+      "source_run_id": "overnight-20261123"
+    },
+    {
+      "kind": "postmortem",
+      "memory_context_sha256": "fc86e4fc59eebc2bfc219bf3d94ab1f9418ebec7c5be120841ce1ad3a25b4542",
+      "obligation_id": "pmd-82462a918422",
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "reference": "trd-trader-value-guy-pos-2a96e5f2579c",
+      "source_run_id": "overnight-20261123"
+    }
+  ],
+  "overnight_run_id": "overnight-20261124",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "type": "LEARNING_OBLIGATION_MANIFEST"
+}
