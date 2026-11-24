@@ -32,6 +32,7 @@ EXEMPT_ENTRYPOINTS = {
     "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",
     "scripts.market_watch_launch.publication_release": "final-edition stamp and guard; research stamps through research_pages",
     "scripts.market_watch_launch.pages_recovery": "final-edition Stage 08 in-run reconciliation",
+    "scripts.market_watch_launch.pages_artifact_visibility": "shared exact-name visibility wait before deploy-pages; both workflows call it directly and it is not a page renderer",
     "scripts.market_watch_launch.research_static_base": "shared static-base CLI; research calls the same functions in-process",
     "scripts.market_watch_launch.render_steps": "shared hard/optional render runner; research applies the same step policy in-process",
     "scripts.market_watch_launch.publication_checks": "shared final-edition integrity checks after the stamp",
@@ -224,6 +225,7 @@ class LaunchResearchWorkflowWiringTests(unittest.TestCase):
             "Upload Pages artifact",
             "Configure Pages",
             "Recheck eligibility and publication order on fresh main",
+            "Wait for exact Pages artifact visibility",
             "Deploy to GitHub Pages",
             "Verify public page serves this research edition",
             "Commit research publication receipt",
@@ -231,9 +233,12 @@ class LaunchResearchWorkflowWiringTests(unittest.TestCase):
         ]
         self.assertEqual(order, expected)
         guard_i = order.index("Recheck eligibility and publication order on fresh main")
+        wait_i = order.index("Wait for exact Pages artifact visibility")
         deploy_i = order.index("Deploy to GitHub Pages")
-        self.assertEqual(guard_i + 1, deploy_i)
+        self.assertEqual(guard_i + 1, wait_i)
+        self.assertEqual(wait_i + 1, deploy_i)
         self.assertIn("steps.guard.outputs.deploy == 'true'", research)
+        self.assertIn("steps.visibility.outcome == 'success'", research)
         verify = research[research.index("- name: Verify public page serves this research edition") :]
         self.assertIn("continue-on-error: true", verify.split("- name: Commit", 1)[0])
         self.assertNotIn("--allow-superseded", verify)
@@ -340,7 +345,10 @@ class FinalWorkflowWiringTests(unittest.TestCase):
         for left, right in zip(indices, indices[1:]):
             self.assertLess(left, right)
         recheck_i = order.index("Recheck publication order before deploy")
-        self.assertEqual(recheck_i + 1, order.index("Deploy to GitHub Pages"))
+        wait_i = order.index("Wait for exact Pages artifact visibility")
+        self.assertEqual(recheck_i + 1, wait_i)
+        self.assertEqual(wait_i + 1, order.index("Deploy to GitHub Pages"))
+        self.assertIn("steps.visibility.outcome == 'success'", deploy)
         for name in names:
             block = deploy[deploy.index(f"- name: {name}") :]
             self.assertIn("if: github.event_name == 'workflow_dispatch'", block.split("- name:", 2)[1])
@@ -398,6 +406,7 @@ class FinalWorkflowWiringTests(unittest.TestCase):
             "tests.test_mw_research_headlines",
             "tests.test_mw_pages_in_run_reconcile",
             "tests.test_mw_research_parity",
+            "tests.test_pages_artifact_visibility",
         ):
             self.assertIn(module, LAUNCH_WF)
         unit = job_block(LAUNCH_WF, "unit-tests")
