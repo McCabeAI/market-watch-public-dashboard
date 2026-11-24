@@ -431,17 +431,16 @@ jobs:
             --site-dir "${RUNNER_TEMP}/research" \
             --public-base-url "$PUBLIC_BASE_URL"
 
-      # deploy-pages lists the results service once and fails closed when the
-      # exact uploaded name is missing. Wait for that name and id first.
-      # A miss, timeout, or id mismatch does not deploy and is not retried.
+      # deploy-pages lists the results service once from a JavaScript action.
+      # Shell steps do not receive that runtime token. A miss, timeout, or id
+      # mismatch does not deploy and is not retried.
       - name: Wait for exact Pages artifact visibility
         id: visibility
         if: steps.guard.outputs.deploy == 'true'
-        env:
-          PYTHONPATH: .
-          PAGES_ARTIFACT_NAME: github-pages-research-${{ github.run_id }}-${{ github.run_attempt }}
-          PAGES_ARTIFACT_ID: ${{ steps.pages-artifact.outputs.artifact_id }}
-        run: python3 -m scripts.market_watch_launch.pages_artifact_visibility wait
+        uses: ./.github/actions/wait-for-pages-artifact
+        with:
+          name: github-pages-research-${{ github.run_id }}-${{ github.run_attempt }}
+          artifact-id: ${{ steps.pages-artifact.outputs.artifact_id }}
 
       - name: Deploy to GitHub Pages
         id: deployment
@@ -601,3 +600,6 @@ jobs:
             tests.test_mw_research_parity \
             tests.test_pages_artifact_visibility \
             -v
+
+      - name: Run Pages artifact visibility action tests
+        run: node --test .github/actions/wait-for-pages-artifact/src/wait.test.js

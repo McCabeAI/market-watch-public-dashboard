@@ -628,15 +628,15 @@ jobs:
           PUBLIC_BASE_URL: ${{ needs.build.outputs.pages_base_url }}
         run: python3 -m scripts.market_watch_launch.publication_release guard --site-dir "${RUNNER_TEMP}/publication" --root _publication_main --public-base-url "$PUBLIC_BASE_URL"
 
-      # Same results-list race as research publication. One exact name and id,
-      # then one deploy. Do not retry deploy-pages after an ambiguous failure.
+      # Same results-list race as research publication. The waiter is a
+      # JavaScript action because that is where the runner supplies the
+      # artifact credentials. One exact name and id, then one deploy.
       - name: Wait for exact Pages artifact visibility
         id: visibility
-        env:
-          PYTHONPATH: .
-          PAGES_ARTIFACT_NAME: github-pages-${{ github.run_attempt }}
-          PAGES_ARTIFACT_ID: ${{ needs.build.outputs.pages_artifact_id }}
-        run: python3 -m scripts.market_watch_launch.pages_artifact_visibility wait
+        uses: ./.github/actions/wait-for-pages-artifact
+        with:
+          name: github-pages-${{ github.run_attempt }}
+          artifact-id: ${{ needs.build.outputs.pages_artifact_id }}
 
       - name: Deploy to GitHub Pages
         id: deployment

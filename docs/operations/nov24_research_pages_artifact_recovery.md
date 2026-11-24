@@ -17,7 +17,7 @@ This note records the safe recovery for launch `mwl-20261124T100050Z-f1607c19` a
 | Attempt 1 artifact | `github-pages-research-45370439017-1`, id `14910118264` |
 | Attempt 2 artifact | `github-pages-research-45370439017-2`, id `14916005309` |
 
-Both uploads finalized. `deploy-pages` lists artifacts once through the Actions results service (`ACTIONS_RUNTIME_TOKEN`, unfiltered `ListArtifacts`) and then requires an exact name. Attempt 1's list returned 0 artifacts. Attempt 2's list returned 1 artifact and still did not contain `github-pages-research-45370439017-2`. The action stopped before creating a Pages deployment. The research job does not grant `actions: read`; that permission is not what this list uses, and the list call itself succeeded.
+Both uploads finalized. `deploy-pages` lists artifacts once through the Actions results service and then requires an exact name. The runner injects `ACTIONS_RUNTIME_TOKEN` and `ACTIONS_RESULTS_URL` into JavaScript actions (`NodeScriptActionHandler`), not into ordinary `run:` shell steps. Attempt 1's list returned 0 artifacts. Attempt 2's list returned 1 artifact and still did not contain `github-pages-research-45370439017-2`. The action stopped before creating a Pages deployment. The research job does not grant `actions: read`; that permission is not what this list uses, and the list call itself succeeded.
 
 The public REST artifact list is a different index. After the fact it shows both ids under their exact names. It is not the lookup `deploy-pages` uses, so a REST hit is not proof the results list can see the new artifact.
 
@@ -41,13 +41,13 @@ There is no `research_pages.json` receipt. The research edition was not publishe
 
 ## Recovery after the visibility fix is on `main` (human operator)
 
-`issues` workflows run the default-branch file. Open the issue only after `main` contains `pages_artifact_visibility` in `.github/workflows/launch-market-watch.yml`. The sender must be a human `User` with write access. A bot opening the issue is refused.
+`issues` workflows run the default-branch file. Open the issue only after `main` contains `wait-for-pages-artifact` in `.github/workflows/launch-market-watch.yml`. The sender must be a human `User` with write access. A bot opening the issue is refused.
 
 Read-only preflight, from a checkout that is not deploying:
 
 ```bash
 gh api "repos/McCabeAI/market-watch-public-dashboard/contents/.github/workflows/launch-market-watch.yml?ref=main" \
-  --jq .content | base64 -d | grep -F pages_artifact_visibility
+  --jq .content | base64 -d | grep -F wait-for-pages-artifact
 ```
 
 The command must print the wait step. Then, on 2026-11-24 America/New_York, the human opens:
@@ -63,7 +63,7 @@ What that run is designed to do:
 
 - Guard accepts the new issue because the title matches, the author is a human, and `rerun` is false.
 - Orchestrate calls the launch CLI with `--through 04_freeze` and without `--rerun`. The session already has `mwl-20261124T100050Z-f1607c19` in status `running` with stages `00`–`04` succeeded. Resume hash-checks those stage artifacts and does not call their handlers, so it does not recollect or refreeze. The packet SHA stays `6a780ad835844268a3333fe2729dddab24fec781bcdfd93772ec0c227df7f625`.
-- The research job on the repaired workflow builds the research edition, uploads a new Pages artifact, rechecks publication order, waits until that exact artifact name and id are in the unfiltered results list, and only then calls `deploy-pages` once. A timed-out or ambiguous listing does not deploy.
+- The research job on the repaired workflow builds the research edition, uploads a new Pages artifact, rechecks publication order, and runs the `wait-for-pages-artifact` JavaScript action until that exact artifact name and id are in the unfiltered results list. Only then does it call `deploy-pages` once. A timed-out or ambiguous listing does not deploy.
 - If the public read-back matches, the job commits `research_pages.json` only.
 - The handoff job may then write the stage 05 delegation request. That request records `live_provider_dispatched: false` and does not call ACP or start traders. `launch-continuation.yml` does not run on that push.
 

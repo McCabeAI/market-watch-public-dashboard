@@ -32,7 +32,6 @@ EXEMPT_ENTRYPOINTS = {
     "scripts.market_watch_launch.pages_dispatch": "final-edition dispatch binding and dataset verification",
     "scripts.market_watch_launch.publication_release": "final-edition stamp and guard; research stamps through research_pages",
     "scripts.market_watch_launch.pages_recovery": "final-edition Stage 08 in-run reconciliation",
-    "scripts.market_watch_launch.pages_artifact_visibility": "shared exact-name visibility wait before deploy-pages; both workflows call it directly and it is not a page renderer",
     "scripts.market_watch_launch.research_static_base": "shared static-base CLI; research calls the same functions in-process",
     "scripts.market_watch_launch.render_steps": "shared hard/optional render runner; research applies the same step policy in-process",
     "scripts.market_watch_launch.publication_checks": "shared final-edition integrity checks after the stamp",
