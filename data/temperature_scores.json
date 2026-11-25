@@ -6,8 +6,8 @@
   "calibration_anchor_date": "2026-09-21",
   "scoring_cutoff": "2026-11",
   "score_inputs_latest_reference_period": "2026-11",
-  "score_inputs_last_ingested_at": "2026-11-23T12:00:05Z",
-  "last_refresh_date": "2026-11-23",
+  "score_inputs_last_ingested_at": "2026-11-25T11:28:51Z",
+  "last_refresh_date": "2026-11-25",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -1125,8 +1125,8 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Labor": {
-        "level": 53.78,
-        "impulse": 2.93,
+        "level": 54.78,
+        "impulse": 4.73,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
@@ -1153,14 +1153,14 @@
           },
           "wages": {
             "observed": true,
-            "as_of": "2026-08",
-            "transform_value": 3.9,
-            "level": 59.0,
-            "impulse": -4.0,
+            "as_of": "2026-09",
+            "transform_value": 4.4,
+            "level": 64.0,
+            "impulse": 5.0,
             "weight": 0.2,
             "coverage_contribution": 0.2,
             "short_window": false,
-            "retrieved_at": "2026-10-23T19:46:45Z",
+            "retrieved_at": "2026-11-25T11:28:51Z",
             "release_date": null,
             "release_date_status": "not_recorded"
           },

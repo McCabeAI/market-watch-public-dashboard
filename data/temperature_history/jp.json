@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-09-21",
+  "retrieved_at": "2026-11-25T11:28:51Z",
   "notes": "Japan G0 macro backfill via e-Stat file downloads, ESRI GDP CSV, METI commerce survey, and Statistics Bureau FIES longtime tables. PMI merged separately via harvest_jp_pmi.py.",
   "components": {
     "Inflation.headline": {
@@ -881,6 +881,18 @@
           "source_url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032189720&fileKind=4",
           "series_id": "MLS_TOTAL_CASH_EARNINGS_YOY_5PLUS",
           "release_date": "",
+          "revision_status": "final"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 4.4,
+          "units": "percent",
+          "transformation": "yoy_pct",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-25T11:28:51Z",
+          "publisher": "Ministry of Health, Labour and Welfare",
+          "source_url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000032189720&fileKind=4",
+          "series_id": "MLS_TOTAL_CASH_EARNINGS_YOY_5PLUS",
           "revision_status": "final"
         }
       ],
