@@ -33,7 +33,8 @@
           "AUDCAD"
         ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "scope_evidence": {
         "fields": [
@@ -89,7 +90,8 @@
           "AUDCAD"
         ],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "scope_evidence": {
         "fields": [
@@ -140,7 +142,8 @@
         "instrument_family": null,
         "instruments": [],
         "market_drivers": [],
-        "setup_type": null
+        "setup_type": null,
+        "technical_setup": null
       },
       "source_run_id": "overnight-20261027",
       "status": "active",
@@ -149,6 +152,45 @@
         "trd-trader-cross-merchant-pos-44de67c4b24f"
       ],
       "updated_at": "2026-10-27T05:32:12.602790-04:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-25T06:28:51.354917-05:00",
+      "future_rule": "Keep an Aussie-Canada richness fade on a multi-week horizon. Do not manage it on the three-day euro-Aussie clock, and do not reverse it long the same session.",
+      "history": [
+        {
+          "at": "2026-11-25T06:28:51.354917-05:00",
+          "op": "add",
+          "run_id": "overnight-20261125"
+        }
+      ],
+      "lesson_id": "les-0ac2897ccb59",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-139d6b64651c"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261125",
+      "status": "active",
+      "text": "A multi-week Aussie-Canada richness fade is not a two-day trade, and it is not reversed the same session.",
+      "trade_ids": [
+        "trd-trader-cross-merchant-pos-cbb6d1944e8e"
+      ],
+      "updated_at": "2026-11-25T06:28:51.354917-05:00"
     }
   ],
   "schema_version": 1,

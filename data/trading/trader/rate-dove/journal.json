@@ -2474,6 +2474,64 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Close the long CORRA March-December calendar and receive March 2027 SOFR in 15 million. The Canadian strip still rises from 2.77 in December 2026 to 3.16 in September 2027, so that calendar is not where an easing reprice pays. US cash yields fell 23 to 27bp while March 2027 SOFR still implies 4.42 against a 3.91 fixing."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-009872bd62b6",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 76,
+      "decision_fingerprint": "9bf9e3a8cdc61ffab706f387790807772bd0c789bd2287323fc6a532e690dc43",
+      "event_id": "jde-ad7812b7fb1d4d46",
+      "funding_view": null,
+      "invalidation": "Staying flat is reconsidered only if March implied funding is back at or below 4.42 while cash SOFR is still near 3.92 and the December meeting premium over the 3.83 baseline is unwinding.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-009872bd62b6"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-rate-dove-pos-009872bd62b6"
+      ],
+      "memory_context_sha256": "ee00d5a6e6fd428258b9515b5d4dddbf5ecaf1ff4a712e8c497484cb26ffee0c",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "06bc97988e511717242f04a03921f98faed48ec50d48c16de2935c53b1f3247d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the 15 million long in March 2027 SOFR. The entry implied rate was 4.42 and the frozen contract now implies 4.525, so the written level stop is met. Coupon yields have already repriced lower, with the two-year down 17bp to 4.63, while March funding still sits well above cash SOFR at 3.92. A later easing case is a new decision at a new level, not an add to a stopped receive.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Close the 15 million long in March 2027 SOFR. The entry implied rate was 4.42 and the frozen contract now implies 4.525, so the written level stop is met. Coupon yields have already repriced lower, with the two-year down 17bp to 4.63, while March funding still sits well above cash SOFR at 3.92. A later easing case is a new decision at a new level, not an add to a stopped receive."
     }
   ],
   "schema_version": 1,

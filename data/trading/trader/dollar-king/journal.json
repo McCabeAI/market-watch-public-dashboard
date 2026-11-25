@@ -2589,6 +2589,80 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "The euro short is cut to 5 million. The dollar leg still works because the US two-year at 4.63 holds a wide premium over Europe at 3.07, Fed minutes still discuss further hikes, and Brent at 92.57 leaves the euro area the worse energy importer. A fresh 10 million short at 1.099 is the wrong size with a one-year z-score of -2.70. The 10 million franc long stays, and it breaks if the franc trades back through the 0.839 entry."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 2500000,
+          "position_id": "pos-d419ff966f72",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        },
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDCHF",
+          "notional_usd": null,
+          "position_id": "pos-e7cd1ee0a3d9",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 57,
+      "decision_fingerprint": "ea119fdd565eafd9b623d5e802dc5b66cee54fb82be361cebc6c2e35733292f4",
+      "event_id": "jde-7faec663454d4625",
+      "funding_view": null,
+      "invalidation": "The remaining euro short is wrong if the US-Europe two-year gap narrows further after the already recorded five-session decline in US yields, or if the ECB follows the latest hawkish remarks and the unknown 08:30 prints remove the US side of the gap.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-d419ff966f72",
+        "pos-e7cd1ee0a3d9"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-dollar-king-pos-d419ff966f72",
+        "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
+      ],
+      "memory_context_sha256": "eb81ed7b8713078f135388f1a84eb093a2ed0437eafb02b0b45d3d38d62a3fef",
+      "outcome_links": [],
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5aa0de41f4efe055b2dba8ee7419f03d12faaa9811ce48200ebdc54c93364315"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Cut the euro short from 5 million to 2.5 million, with spot at 1.0963 against an entry at 1.1081. The dollar leg still works because the US two-year at 4.63 remains about 162bp over the euro-area two-year at 3.01, but a one-year z-score of -2.72 is the wrong size for a fresh full short ahead of the 08:30 data. Close the 10 million dollar-franc long at 0.8376 after the failed break reversed back inside the 20-day range.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Cut the euro short from 5 million to 2.5 million, with spot at 1.0963 against an entry at 1.1081. The dollar leg still works because the US two-year at 4.63 remains about 162bp over the euro-area two-year at 3.01, but a one-year z-score of -2.72 is the wrong size for a fresh full short ahead of the 08:30 data. Close the 10 million dollar-franc long at 0.8376 after the failed break reversed back inside the 20-day range."
     }
   ],
   "schema_version": 1,

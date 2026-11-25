@@ -204,7 +204,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7a2b3eecf072c867783bae7e1ff08d3831d1ecbdcaa2e10012819d11c9dc92d2",
+  "memory_context_sha256": "1ad174984356c7d826bf5a568c1ad03b13fcaa480058a404b2f1ec421ec58e3c",
   "open_positions": [],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
@@ -223,8 +223,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.13
       },
       "complacency": {
         "band": "calm",
@@ -238,13 +238,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.11
+        "trend": "up",
+        "value": 0.13
       },
       "frustration": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.1
+        "trend": "up",
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -270,12 +270,18 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [],
+    "recent_events": [
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261125"
+      }
+    ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "26c6d3c9d76b14c16ba739194ff26375974620c53cca754726a86ead4a2005a4",
+    "state_sha256": "a22782b3a94f09239dffa06d8c889e5afa6941961c1fc147449adeda668ece75",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 3,
       "session_loss": 0,
       "session_win": 3
     }

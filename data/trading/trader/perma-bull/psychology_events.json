@@ -1440,6 +1440,83 @@
       "run_id": "overnight-20261123",
       "seq": 58,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          150000.0,
+          50000.0,
+          150000.0,
+          50000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "event_id": "pse-000059",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261125",
+      "seq": 59,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "frustration": 0.0172,
+        "revenge_pressure": 0.1516,
+        "thesis_attachment": 0.0232
+      },
+      "event_id": "pse-000060",
+      "kind": "reentry_same_family_after_loss",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261125",
+      "scale": 1.0,
+      "seq": 60,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "AUDUSD"
+      }
+    },
+    {
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "cap_applied": false,
+      "deltas_applied": {},
+      "event_id": "pse-000061",
+      "kind": "verdict_inconclusive",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "perma-bull",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261125",
+      "scale": 1.0,
+      "seq": 61,
+      "soften": false,
+      "source": {
+        "layer": "verdict"
+      },
+      "subject": {
+        "pressure_effect": [],
+        "pressure_read": [],
+        "realized_pnl_usd": -39574.24,
+        "trade_id": "trd-trader-perma-bull-pos-d62db363ab83",
+        "verdict": "inconclusive"
+      }
     }
   ],
   "owner_id": "perma-bull",

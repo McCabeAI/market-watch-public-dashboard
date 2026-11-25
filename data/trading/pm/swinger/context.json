@@ -91,7 +91,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-25T09:10:21.301152-05:00",
   "calibration": {
     "average_holding_seconds": 1378559,
     "average_realized_pnl_usd": 1249382.2,
@@ -137,7 +137,7 @@
     "standing": "good_standing"
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 453336.77,
+    "best_trader_net_pnl_usd": 446640.51,
     "best_trader_outearn_streak": 0,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
@@ -146,7 +146,7 @@
     "competition_rank": 1,
     "competitive_rank": 1,
     "drawdown_usd": 3161453.49,
-    "gap_to_best_trader_usd": 1228687.88,
+    "gap_to_best_trader_usd": 1235384.14,
     "high_water_nav_usd": 1004843478.14,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 1682024.65,
@@ -164,12 +164,12 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "7c543126f49bc919343ba90e47e05cd562bf282b4ed3aadccca558fd30197c17",
+  "memory_context_sha256": "75c47793809eb989e539fd60533b443c6cebbda2d0a692730ffb4c4c5b8e6615",
   "open_positions": [
     {
       "asset_class": "spot_fx",
       "conviction": 74,
-      "current_notional_usd": 300000000.0,
+      "current_notional_usd": 150000000.0,
       "entry_mark": 1.1,
       "harvest": {
         "asset_class": "spot_fx",
@@ -181,30 +181,30 @@
         "expected_mark_direction": "lower",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": null,
-        "holding_seconds": 517505,
-        "horizon_elapsed_fraction": 0.3993,
+        "giveback_usd": 2005835.16,
+        "holding_seconds": 527195,
+        "horizon_elapsed_fraction": 0.4068,
         "horizon_status": "within",
         "instrument": "EURUSD",
         "intended_horizon_days": 15,
         "mae_usd": -2188183.81,
         "mechanical_order": false,
-        "mfe_usd": -0.0,
+        "mfe_usd": 68380.74,
         "move_versus_entry_intent": "against_intent",
         "order_policy": "review_only",
         "position_id": "pm-swinger-cca5e82a9a1e",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
         "realization_logic": "The short pays if the 20-day downside break extends while dollar-franc and the Australian dollar keep the dollar bid.",
-        "realized_pnl_usd": -1404084.61,
-        "recorded_mfe_usd": -0.0,
-        "retained_mfe_fraction": null,
+        "realized_pnl_usd": -1335703.87,
+        "recorded_mfe_usd": 68380.74,
+        "retained_mfe_fraction": -28.3333,
         "review_move_bp": null,
         "review_required": false,
         "review_threshold_usd": 10000000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": -2005835.16,
+        "total_pnl_usd": -1937454.42,
         "trade_id": "trd-pm-swinger-pm-swinger-cca5e82a9a1e",
         "unrealized_pnl_usd": -601750.55
       },
@@ -249,7 +249,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "frustration": {
         "band": "calm",
@@ -289,7 +289,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "548c5f1c37426cbe155614f5e738e5e2825e3aa9c4e642661e7709132292c639",
+    "state_sha256": "ede68d9c931b46ef205018b4f196ad71c7c43982a6ce2df31173eb3ae751ac6f",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,

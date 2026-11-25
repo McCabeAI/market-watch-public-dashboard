@@ -34,7 +34,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 9,
-    "competitive_rank": 9,
+    "competitive_rank": 8,
     "drawdown_usd": 0.0,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "33d79a676e0e7a2de4cdc00d04644bbc927477d5ef17a5b4f006db194daf56a2",
+  "memory_context_sha256": "f806a41481c7d2ad475ef8927be6bf97c13bbb68b553d09df77f5af2f0d7b327",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -130,30 +130,36 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261119"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261120"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261123"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261125"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0a95d606f3eae6e890aebc8ac95a17e1ad21e48ebf53cc559b449dd494dd2f91",
+    "state_sha256": "0d7f0dbd7995ec0570b4189be492c336524ab5a968889ffee94202eacfdab9dc",
     "streaks": {
-      "flat_cycles": 38,
+      "flat_cycles": 39,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": "3.92 percent official NY Fed fixing dated 2026-11-23",
+      "forward_funding_assessment": "higher",
+      "implication": "The forward path is already above official SOFR, so remaining at the cash benchmark avoids paying SOFR on shocked-risk capital before the growth print. Flat cash is not alpha. It is the refusal to fund a pre-data bet the strip has already marked higher.",
+      "sr3_forward_view": "December SOFR futures imply 4.28 and March 2027 implies 4.525, a strip above the 3.92 cash fixing."
+    },
     {
       "current_sofr": {
         "observation_date": "2026-11-19",
@@ -179,16 +185,6 @@
       "forward_funding_assessment": "about_the_same",
       "implication": "Staying at the 3.92 official fixing beats paying that funding on new shocked-risk capital. The curve is already the price of the public hawkish news, so flat cash is a refusal to finance the chase, not a claim of alpha.",
       "sr3_forward_view": "Implied secured funding is 4.30 in December 2026, 4.575 in March 2027, 4.71 in June, 4.735 in September, and 4.695 in December 2027, versus the 3.92 cash fixing."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-11-16",
-        "rate": 3.93,
-        "source": "NY Fed"
-      },
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Staying at the official cash fixing beats paying that fixing on shocked-risk capital. The post-jump strip is the funding path, and taking that price has no timed residual above the funding charge.",
-      "sr3_forward_view": "December at 4.285 rises through March at 4.545, already about 61bp above cash SOFR at 3.93, to September at 4.710. The October 2028 terminal at 4.5825 sits below that September peak."
     }
   ],
   "recent_performance_reflections": [],

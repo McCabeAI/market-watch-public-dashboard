@@ -32,8 +32,34 @@
       "owner_id": "rate-dove",
       "owner_type": "trader",
       "postmortem_id": "pmd-496354e739f9",
-      "status": "due",
+      "status": "submitted",
       "trade_id": "trd-trader-rate-dove-pos-9849cf751c27"
+    },
+    {
+      "created_at": "2026-11-25T06:28:51.354917-05:00",
+      "created_run_id": "overnight-20261125",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-25T06:28:51.354917-05:00",
+        "conviction": 61,
+        "entry_mark": 4.42,
+        "exit_mark": 4.53,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 170926,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Sell the March 2027 SOFR receive if its implied rate holds above 4.42, if SOFR rises toward 4.42, or if US cash yields retrace the 23 to 27bp decline.",
+        "opened_at": "2026-11-23T07:00:05.353220-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -3937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-eb30d72782fe",
+      "status": "due",
+      "trade_id": "trd-trader-rate-dove-pos-009872bd62b6"
     }
   ],
   "schema_version": 1,

@@ -2499,6 +2499,60 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Close the unchanged USDCAD short and receive the US ten-year in 15 million. The ten-year at 4.92 is still near the 96th percentile of five years after a 23bp decline, so the crowded US yield premium is historically rich while convergence has already started. Europe's ten-year at 3.30 is the cross-market anchor. EURUSD at a one-year z-score of -2.70 is the widest spot stretch and is the comparison, not the position."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 40,
+      "decision_fingerprint": "681ffab9bb893e688b199750707d984ddbc3b30c3146e3699af75ebe0a460747",
+      "event_id": "jde-444e13faa7cc4c7e",
+      "funding_view": null,
+      "invalidation": "The flat book is wrong if oil breaks lower and dollar-Canada is still at or above 1.43, because 1.43 would no longer be explained by the terms of trade.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fc86e4fc59eebc2bfc219bf3d94ab1f9418ebec7c5be120841ce1ad3a25b4542",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "086c0f7effe3a2b7724d1cf0282048fee429c6b2dd992d183bf8d08ca001cf11"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Dollar-Canada at 1.4327 is a one-year extreme, but Brent at 91.40 and a 142bp premium of the US two-year over Canada still explain the level, so the percentile is not yet mispricing. Euro-dollar at 1.0963 is cheap on a one-year z-score of -2.72, and there is no purchasing-power anchor in the evidence that says convergence starts before the growth print.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Stay flat. Dollar-Canada at 1.4327 is a one-year extreme, but Brent at 91.40 and a 142bp premium of the US two-year over Canada still explain the level, so the percentile is not yet mispricing. Euro-dollar at 1.0963 is cheap on a one-year z-score of -2.72, and there is no purchasing-power anchor in the evidence that says convergence starts before the growth print."
     }
   ],
   "schema_version": 1,

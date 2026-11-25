@@ -2532,6 +2532,64 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Hold the 25 million short in March 2027 SOFR. US cash yields fell about 23 to 27bp over five days even while the Fed still sounds hawkish, and the March 2027 implied rate at 4.42 still sits above SOFR at 3.91. The short stays with that decline. The book mark at 4.555 is not the frozen implied rate used to judge the hold."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": null,
+          "position_id": "pos-9ff89eedf5b8",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "cab87b1b23c1794385070291a079d2f6e961b964efb83722613b315e696b6831",
+      "event_id": "jde-bad64221ac124973",
+      "funding_view": null,
+      "invalidation": "A new pay requires a new ten-year yield high and March 2027 implied back above 4.545. A receive stays off while December at 4.28 and March at 4.525 remain above cash SOFR at 3.92.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-9ff89eedf5b8"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-trend-follower-pos-9ff89eedf5b8"
+      ],
+      "memory_context_sha256": "c83ae8ee58c45f774779dc2fdb2c074cf41e33e789692036ca8cb7caa6f37052",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "309393ff08e1e2f15c70edf74756b7f6e98a32b89d55b0dc677d638f160a5bba"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the 25 million short in March 2027 SOFR. The higher-yield trend has failed: the ten-year is 4.91 after a 19bp decline over five sessions and has not printed a new yield high, and the two-year is 4.63 after a 17bp decline. March implied at 4.525 is only 2bp through the 4.545 entry, so the pay has not extended and the book goes flat while the morning growth print is unknown.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Close the 25 million short in March 2027 SOFR. The higher-yield trend has failed: the ten-year is 4.91 after a 19bp decline over five sessions and has not printed a new yield high, and the two-year is 4.63 after a 17bp decline. March implied at 4.525 is only 2bp through the 4.545 entry, so the pay has not extended and the book goes flat while the morning growth print is unknown."
     }
   ],
   "schema_version": 1,

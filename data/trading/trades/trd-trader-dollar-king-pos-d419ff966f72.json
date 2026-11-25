@@ -4,7 +4,7 @@
   "closed_at": null,
   "closed_run_id": null,
   "conviction": null,
-  "current_notional_usd": 5000000.0,
+  "current_notional_usd": 2500000.0,
   "entry_lifecycle": {
     "anchored_at": "2026-11-13T06:22:15.706647-05:00",
     "catalyst_by": null,
@@ -49,10 +49,25 @@
       "realized_pnl_increment_usd": 41061.28,
       "run_id": "overnight-20261123",
       "source_journal_event_id": "jde-ff0286ee938742e2"
+    },
+    {
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "event_id": "tle-5dfb54df4549",
+      "exit_reason_category": null,
+      "kind": "REDUCE",
+      "mark": 1.1,
+      "mark_as_of": "2026-11-24",
+      "mark_source": "market_state.fx.EURUSD.spot",
+      "notional_change_usd": 2500000.0,
+      "rationale": "The euro short is cut in half because 1.0963 is a one-year extreme, and the franc long is closed because dollar-franc reversed back inside its 20-day range.",
+      "rationale_status": "present",
+      "realized_pnl_increment_usd": 26622.15,
+      "run_id": "overnight-20261125",
+      "source_journal_event_id": "jde-7faec663454d4625"
     }
   ],
-  "evidence_cutoff": "2026-11-23T07:00:05.353220-05:00",
-  "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
+  "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+  "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
   "evidence_packet_id": null,
   "exit_mark": null,
   "exit_mark_as_of": null,
@@ -64,14 +79,14 @@
     "order_policy": "review_only",
     "position_id": "pos-d419ff966f72",
     "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-    "residual_notional_usd": 5000000.0,
-    "run_id": "overnight-20261123",
+    "residual_notional_usd": 2500000.0,
+    "run_id": "overnight-20261125",
     "status": "due",
     "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
     "triggers": [
       "material_winner"
     ],
-    "updated_at": "2026-11-23T07:00:05.353220-05:00"
+    "updated_at": "2026-11-25T06:28:51.354917-05:00"
   },
   "harvest_reviews": [
     {
@@ -120,9 +135,9 @@
   "initial_notional_usd": 10000000.0,
   "instrument": "EURUSD",
   "invalidation": "The long-dollar book fails if producer prices disappoint and the ten-year gives back the 12 basis point rise, or if euro, sterling, Australia and New Zealand stabilize together. The existing dollar-yen long is invalidated by a move back through 158.06.",
-  "last_mark": 1.099,
+  "last_mark": 1.0963,
   "last_mark_as_of": "2026-11-12",
-  "last_unrealized_pnl_usd": 41061.28,
+  "last_unrealized_pnl_usd": 26622.15,
   "lifecycle": {
     "anchored_at": "2026-11-19T05:32:19.294844-05:00",
     "catalyst_by": "2026-12-04",
@@ -155,14 +170,14 @@
   "position_id": "pos-d419ff966f72",
   "priced_or_disagreed": null,
   "provenance": {
-    "evidence_hash": "d4306e8f99e5ef96482bc66cb8f90baa502d805ad3ebfc624e55d9968c14de95",
-    "overnight_run_id": "overnight-20261123",
+    "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+    "overnight_run_id": "overnight-20261125",
     "review_id": "review-001",
     "review_packet_id": null,
     "review_packet_sha256": null,
     "trader_room_run_id": null
   },
-  "realized_pnl_usd": 41061.28,
+  "realized_pnl_usd": 67683.43,
   "schema_version": 1,
   "side": "short",
   "source_decision_id": null,

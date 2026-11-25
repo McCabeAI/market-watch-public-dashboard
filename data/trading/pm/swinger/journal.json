@@ -2545,6 +2545,64 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "EURUSD at 1.099 is a one-year z-score of -2.70 after a 1.9 percent decline in a month, and a billion-dollar short would not be initiated at this print. The two-year gap is still about 156 basis points in the dollar's favor, Fed minutes still discuss hikes, Brent at 92.57 is a cost for Europe, and the VIX at 28.44 keeps a haven bid under the dollar, so a smaller short still has room. The line is cut by 700 million, leaving 300 million."
+    },
+    {
+      "actions": [
+        {
+          "action": "REDUCE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 150000000,
+          "position_id": "pm-swinger-cca5e82a9a1e",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-25T09:10:20.249310-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "e374c72c45065cb876cfb168921720df891a5d35a235cdc30f6a55caf16feb07",
+      "event_id": "jde-3e655e607dbc4322",
+      "funding_view": null,
+      "invalidation": "Cover the remaining euro short on a trade back through 1.1120, or on a clear reversal of the hawkish lean before December 4.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-cca5e82a9a1e"
+      ],
+      "linked_trade_ids": [
+        "trd-pm-swinger-pm-swinger-cca5e82a9a1e"
+      ],
+      "memory_context_sha256": "7c543126f49bc919343ba90e47e05cd562bf282b4ed3aadccca558fd30197c17",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "548c5f1c37426cbe155614f5e738e5e2825e3aa9c4e642661e7709132292c639"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "a4e321b91c5d67ee7e6e26c18fa887d6c2e83ac439c08f2a1be570048ea0b6f0",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261125-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Euro-dollar at 1.0963 is only a few pips through the 1.0968 short, with a one-year z-score of -2.72 and RSI at 32, so this decline is stretched and further downside is the tail. March 2027 SOFR at 4.525 versus cash SOFR at 3.92 still embeds a higher rate path, and the latest European remarks leave the hawkish lean intact. The full 300 million is more adverse-path exposure than the remaining upside can carry, so the short is cut in half.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Euro-dollar at 1.0963 is only a few pips through the 1.0968 short, with a one-year z-score of -2.72 and RSI at 32, so this decline is stretched and further downside is the tail. March 2027 SOFR at 4.525 versus cash SOFR at 3.92 still embeds a higher rate path, and the latest European remarks leave the hawkish lean intact. The full 300 million is more adverse-path exposure than the remaining upside can carry, so the short is cut in half."
     }
   ],
   "schema_version": 1,

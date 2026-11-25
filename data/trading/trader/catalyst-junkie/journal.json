@@ -2408,6 +2408,60 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Hold flat. The 23 to 27bp Treasury rally is already the price of the Fed minutes and Waller's half-point remark. Australia CPI, US GDP, and the October personal-income report all print on Nov 25, with Canada GDP on Nov 30, euro-area HICP on Dec 1, and employment on Dec 4. None of those prints has a signed gap left to trade today. Hormuz has no release date."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 42,
+      "decision_fingerprint": "c81606671598cc1008c59bef297c69b5ab7b9410e2492d32a50574ca11ea6553",
+      "event_id": "jde-0b6eb13a99c54770",
+      "funding_view": null,
+      "invalidation": "The flat book is reconsidered once the 08:30 outcomes are known and a gap remains versus cash SOFR at 3.92, the December meeting front at 4.095, or March 2027 at 4.525.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cf507fdf630fe8a6b4aa1d93829bf397a2b101cc3d216f59870eb2ce0c935634",
+      "outcome_links": [],
+      "owner_id": "catalyst-junkie",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "f773b8de284fb7dfb11ff6bc6ac0e023a88b7ffe03d7400f23681c3f36cd1e30"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. The two-year at 4.63 and the ten-year at 4.91 already embed five-day declines of 17bp and 19bp, and the 08:30 growth and income outcomes are still unknown, so those prints are not a usable path from mispricing to repricing. The December meetings are on the calendar, and the evidence does not show a residual gap that can be traded before the data.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "The book stays flat. The two-year at 4.63 and the ten-year at 4.91 already embed five-day declines of 17bp and 19bp, and the 08:30 growth and income outcomes are still unknown, so those prints are not a usable path from mispricing to repricing. The December meetings are on the calendar, and the evidence does not show a residual gap that can be traded before the data."
     }
   ],
   "schema_version": 1,

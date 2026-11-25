@@ -3610,6 +3610,60 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Short the US two-year in 15 million. SOFR is 3.91 and the December futures already imply 4.235, with the path still rising toward 4.51 by September 2027, while the minutes and Waller are still describing more hikes. The dislocation is the cash rally: the two-year fell about 25bp in five days to 4.63 on a haven bid, with the reaction function unchanged."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_2Y",
+          "notional_usd": 10000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 55,
+      "decision_fingerprint": "4fa623d48048386cddba64045ce5de697c3f333aff44a0a0b8d220cb4ed73788",
+      "event_id": "jde-af11c53b89a84ae5",
+      "funding_view": null,
+      "invalidation": "The pay is wrong if the 08:30 growth and income prints show a demand break that makes the 17bp decline information, or if the December contract no longer implies about 37bp above the 3.83 baseline.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3f46fa1f4ea7c5349e9a25a33d79d664bcbe8958133070c6eb664927ca53b48c",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "e6d1ff4577315727241ce515eead2a8fb9999874c77f61178c53d0a37fcd68bc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Pay the US two-year at 4.63. The five-session 17bp decline looks like a volatility bid while Brent is 91.40 and the December meeting contract still prices a hike, with the front contract at 4.095 against a 3.83 baseline. March 2027 SOFR at 4.525 versus cash SOFR at 3.92 already marks the hike path, so the cheapened leg is the cash two-year rather than another pay of the strip.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Pay the US two-year at 4.63. The five-session 17bp decline looks like a volatility bid while Brent is 91.40 and the December meeting contract still prices a hike, with the front contract at 4.095 against a 3.83 baseline. March 2027 SOFR at 4.525 versus cash SOFR at 3.92 already marks the hike path, so the cheapened leg is the cash two-year rather than another pay of the strip."
     }
   ],
   "schema_version": 1,

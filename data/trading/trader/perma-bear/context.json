@@ -79,7 +79,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 8,
-    "competitive_rank": 8,
+    "competitive_rank": 7,
     "drawdown_usd": 11630.36,
     "giveback_usd": 11630.36,
     "high_water_nav_usd": 100048491.68,
@@ -105,8 +105,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "d689face9e898bece52307547929bf28089cfa3850f617cf4553841fe9e10d25",
-  "open_positions": [],
+  "memory_context_sha256": "eaf3f3ea826d7d4f009dc808b2274b526930a97c93e56002216ee21f87e5f94b",
+  "open_positions": [
+    {
+      "asset_class": "rates",
+      "conviction": 62,
+      "current_notional_usd": 600000000.0,
+      "entry_mark": 4.53,
+      "harvest": {
+        "asset_class": "rates",
+        "catalyst_by": null,
+        "catalyst_logic": "US GDP and personal income at 08:30 are the gate. A soft pair lets the March hike premium come out. A hot pair with Brent still near 91 is the cover.",
+        "current_mark": 4.525,
+        "current_notional_usd": 600000000.0,
+        "entry_mark": 4.53,
+        "expected_mark_direction": null,
+        "framing": "tactical",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "SOFR_2027-03",
+        "intended_horizon_days": 10,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": -0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-e767e0c310f7",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Take the receive off if March 2027 implied SOFR reprices down from 4.525 toward the December implied 4.28 after the activity data rejects the hike path.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": -0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 6000000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-perma-bear-pos-e767e0c310f7",
+        "unrealized_pnl_usd": -0.0
+      },
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-11-25T06:28:51.354917-05:00",
+      "position_id": "pos-e767e0c310f7",
+      "risk_capital_usd": 6000000.0,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bear-pos-e767e0c310f7"
+    }
+  ],
   "owner_id": "perma-bear",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -140,11 +190,11 @@
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.15
+        "value": 0.14
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
+        "trend": "flat",
         "value": 0.12
       },
       "revenge_pressure": {
@@ -180,9 +230,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "70457a1a89e804a74a1a1120566e7e9611dfa56d5fa8402c02670bbf91f6c2c5",
+    "state_sha256": "aea5a2fa880a56bab43c423d77faf6a4443cc68de6aa060a4ecf1056418df264",
     "streaks": {
-      "flat_cycles": 2,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 0
     }

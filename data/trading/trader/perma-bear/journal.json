@@ -2474,6 +2474,64 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Stay flat. Yields have already fallen 23 to 27bp in five days, the VIX is 28.44, and Brent at 92.57 sits on top of Fed minutes that still discuss more hikes. March 2027 SOFR at 4.42 versus SOFR at 3.91 already matches that hawkish path, while EURUSD, AUDUSD, and USDCAD are stretched into the Nov 25 data."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "SOFR_2027-03",
+          "notional_usd": 600000000,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "ed405c7ca810da8b9c45a0aa215770dfa89b2f9e1893fab2a52f39f70afd7aa9",
+      "event_id": "jde-74cc5bd215d541d1",
+      "funding_view": null,
+      "invalidation": "Cover the March 2027 receive if the 08:30 growth and income prints take the implied yield higher from 4.525 while Brent remains near 91.40.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-e767e0c310f7"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-perma-bear-pos-e767e0c310f7"
+      ],
+      "memory_context_sha256": "d689face9e898bece52307547929bf28089cfa3850f617cf4553841fe9e10d25",
+      "outcome_links": [],
+      "owner_id": "perma-bear",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "70457a1a89e804a74a1a1120566e7e9611dfa56d5fa8402c02670bbf91f6c2c5"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Receive March 2027 SOFR at the 4.525 implied yield. Cash yields have already fallen, with the US two-year at 4.63 and the ten-year at 4.91, while December SOFR at 4.28 and March at 4.525 still sit well above cash SOFR at 3.92. Euro, Australian dollar and New Zealand dollar are already extended stress legs, so the open is the lagging hike strip rather than another chase in spot.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Receive March 2027 SOFR at the 4.525 implied yield. Cash yields have already fallen, with the US two-year at 4.63 and the ten-year at 4.91, while December SOFR at 4.28 and March at 4.525 still sit well above cash SOFR at 3.92. Euro, Australian dollar and New Zealand dollar are already extended stress legs, so the open is the lagging hike strip rather than another chase in spot."
     }
   ],
   "schema_version": 1,

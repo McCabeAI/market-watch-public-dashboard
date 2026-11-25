@@ -129,24 +129,24 @@
   ],
   "as_of": "2026-11-25T06:28:51.354917-05:00",
   "calibration": {
-    "average_holding_seconds": 1053145,
-    "average_realized_pnl_usd": -53958.45,
+    "average_holding_seconds": 964622,
+    "average_realized_pnl_usd": -43416.76,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
-        "count": 3,
-        "total_realized_pnl_usd": -219687.5
+        "count": 4,
+        "total_realized_pnl_usd": -220937.5
       },
       "spot_fx": {
         "count": 1,
         "total_realized_pnl_usd": 3853.71
       }
     },
-    "closed_trade_count": 4,
+    "closed_trade_count": 5,
     "conviction_buckets": {
       "high": {
-        "average_pnl_usd": -112500.0,
-        "count": 1,
+        "average_pnl_usd": -56875.0,
+        "count": 2,
         "hit_rate": 0.0
       },
       "low": {
@@ -160,9 +160,9 @@
         "hit_rate": 0.0
       }
     },
-    "losses": 3,
+    "losses": 4,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -215833.79,
+    "total_realized_pnl_usd": -217083.79,
     "wins": 1
   },
   "capital_owner": null,
@@ -170,7 +170,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 15,
-    "competitive_rank": 15,
+    "competitive_rank": 14,
     "drawdown_usd": 288335.11,
     "giveback_usd": 288335.11,
     "high_water_nav_usd": 100062016.81,
@@ -185,7 +185,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 62500.0,
     "risk_capital_utilization": 0.0063,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": -6548.89,
     "status": "ok"
   },
   "learning": {
@@ -196,58 +196,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "c83ae8ee58c45f774779dc2fdb2c074cf41e33e789692036ca8cb7caa6f37052",
-  "open_positions": [
-    {
-      "asset_class": "rates",
-      "conviction": 71,
-      "current_notional_usd": 25000000.0,
-      "entry_mark": 4.54,
-      "harvest": {
-        "asset_class": "rates",
-        "catalyst_by": null,
-        "catalyst_logic": "The edge is exhausted if March gives back the day's rise or splits from the two-year and the ten-year.",
-        "current_mark": 4.42,
-        "current_notional_usd": 25000000.0,
-        "entry_mark": 4.545,
-        "expected_mark_direction": "higher",
-        "framing": "swing",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 9687.5,
-        "holding_seconds": 610528,
-        "horizon_elapsed_fraction": 0.3533,
-        "horizon_status": "within",
-        "instrument": "SOFR_2027-03",
-        "intended_horizon_days": 20,
-        "mae_usd": -7812.5,
-        "mechanical_order": false,
-        "mfe_usd": 1875.0,
-        "move_versus_entry_intent": "against_intent",
-        "order_policy": "review_only",
-        "position_id": "pos-9ff89eedf5b8",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The pay is marked in implied-rate space and profits while March implied keeps rising with the two-year and the ten-year.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 1875.0,
-        "retained_mfe_fraction": -4.1667,
-        "review_move_bp": 10.0,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "instrument_dv01_small_move",
-        "side": "short",
-        "total_pnl_usd": -7812.5,
-        "trade_id": "trd-trader-trend-follower-pos-9ff89eedf5b8",
-        "unrealized_pnl_usd": -7812.5
-      },
-      "instrument": "SOFR_2027-03",
-      "opened_at": "2026-11-18T04:53:22.859808-05:00",
-      "position_id": "pos-9ff89eedf5b8",
-      "risk_capital_usd": 250000.0,
-      "side": "short",
-      "trade_id": "trd-trader-trend-follower-pos-9ff89eedf5b8"
-    }
-  ],
+  "memory_context_sha256": "16cff11ecfc82d25e4a381d53930209988021c44844b25028a765129af1ce412",
+  "open_positions": [],
   "owner_id": "trend-follower",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -312,16 +262,10 @@
       "sharpened_verdicts": 0
     },
     "profile_version": 1,
-    "recent_events": [
-      {
-        "kind": "blocked_expansion",
-        "magnitude": 1.0,
-        "run_id": "overnight-20261117"
-      }
-    ],
+    "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "309393ff08e1e2f15c70edf74756b7f6e98a32b89d55b0dc677d638f160a5bba",
+    "state_sha256": "63f8cae2977823d70845738a24db9e42855412a5bc7ac0df95756f3a79fbd07d",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
@@ -329,6 +273,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 71,
+      "holding_duration_seconds": 610528,
+      "instrument": "SOFR_2027-03",
+      "opened_at": "2026-11-18T04:53:22.859808-05:00",
+      "realized_pnl_usd": -1250.0,
+      "side": "short",
+      "trade_id": "trd-trader-trend-follower-pos-9ff89eedf5b8"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-18T04:53:22.859808-05:00",

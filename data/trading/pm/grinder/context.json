@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-25T09:10:21.665987-05:00",
   "calibration": {
     "average_holding_seconds": 684212,
     "average_realized_pnl_usd": 152195.05,
@@ -66,8 +66,8 @@
     "wins": 1
   },
   "capital_owner": {
-    "allocator_pressure": 31,
-    "credible_opportunities": "unknown",
+    "allocator_pressure": 32,
+    "credible_opportunities": "present",
     "force_deployment": false,
     "hurdle": "SOFR",
     "mandate": "grinder",
@@ -82,7 +82,7 @@
     "zero_alpha": true
   },
   "consequence": {
-    "best_trader_net_pnl_usd": 453336.77,
+    "best_trader_net_pnl_usd": 446640.51,
     "best_trader_outearn_streak": 0,
     "best_trader_seat": "dollar-king",
     "capital_normalized": false,
@@ -91,7 +91,7 @@
     "competition_rank": 4,
     "competitive_rank": 4,
     "drawdown_usd": 10.78,
-    "gap_to_best_trader_usd": -301228.92,
+    "gap_to_best_trader_usd": -294532.66,
     "high_water_nav_usd": 1000152118.63,
     "max_drawdown_usd": 50000000.0,
     "net_after_funding_pnl_usd": 152107.85,
@@ -113,7 +113,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "3e071a44353304fb8fc46e7e9ec33ad6e412939538a803ed6ebfbd53fce1d854",
+  "memory_context_sha256": "f11087b664ffa991b215f41aaa6951716b53d699a5b8304cb4b21b020bca1268",
   "open_positions": [],
   "owner_id": "grinder",
   "owner_type": "pm",
@@ -196,17 +196,17 @@
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
-        "run_id": "overnight-20261119"
-      },
-      {
-        "kind": "competitive_flag_active",
-        "magnitude": 1.0,
         "run_id": "overnight-20261120"
       },
       {
         "kind": "competitive_flag_active",
         "magnitude": 1.0,
         "run_id": "overnight-20261123"
+      },
+      {
+        "kind": "competitive_flag_active",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261125"
       }
     ],
     "required_checks": {
@@ -216,9 +216,9 @@
       ]
     },
     "schema_version": 1,
-    "state_sha256": "addc051a55bf9b2c611079c7bd5a41ecb853cd505cab3ed9f83c9405bcc32500",
+    "state_sha256": "966ce1b93a8b475e0cba8d0908c85916dcf2fbd3f8f1bbb46c68bebcc88f901a",
     "streaks": {
-      "flat_cycles": 8,
+      "flat_cycles": 9,
       "session_loss": 0,
       "session_win": 0
     }

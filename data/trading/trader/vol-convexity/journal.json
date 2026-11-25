@@ -2364,6 +2364,60 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "The book stays flat. Hormuz headlines, a 23 to 27bp move in US yields, and EURUSD at a one-year z-score of -2.70 are gap risks, so a spot line would be the wrong shape. The VIX is 28.44 and EURUSD realized vol is about 5.7 over 20 days, but the packet has no option premium, implied vol, or strike. Nothing is opened."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 66,
+      "decision_fingerprint": "f7d28faacba40cfb0cf1d5b740360b0e69e6b0fc4cc101a35357ed678959bfab",
+      "event_id": "jde-2248d129ba104b86",
+      "funding_view": null,
+      "invalidation": "The flat hold ends if a later freeze quotes a listed currency or rates option with a premium, strike, and tenor that can be marked, or if the growth release passes and the unpriced event gap is gone.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "709ed128e1f33409b112e6a421f3395382bb2483f42292a651b487f55f6284c3",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5d07bf2f4c88bd2babac52669688144515a48d31b920712855fc3ce780b7ed3e"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold a flat book. Euro-dollar at 1.0963, the Australian dollar with RSI 22, Brent at 91.40, and a 17 to 19bp five-session drop in US yields are real, and the morning growth print is still unknown, so spot is the wrong default into an open event. The freeze contains no listed currency or rates option premium, and the equity volatility index at 26.62 is not a currency option price.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Hold a flat book. Euro-dollar at 1.0963, the Australian dollar with RSI 22, Brent at 91.40, and a 17 to 19bp five-session drop in US yields are real, and the morning growth print is still unknown, so spot is the wrong default into an open event. The freeze contains no listed currency or rates option premium, and the equity volatility index at 26.62 is not a currency option price."
     }
   ],
   "schema_version": 1,

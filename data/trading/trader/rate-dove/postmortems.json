@@ -1,5 +1,60 @@
 {
-  "items": [],
+  "items": [
+    {
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "causal": {
+        "assumptions_right": "The receive was held while the path eased, which is what the kill condition required.",
+        "assumptions_wrong_or_underweighted": "A path invalidation and a level invalidation were not kept as different rules, which later mattered for the March SOFR receive stopped at 4.42.",
+        "causal_divergence": "The strip paid because the kill stayed quiet and the path repriced lower, not because the entry level itself was a stop.",
+        "decision_quality_attribution": "thesis",
+        "future_implication": "Exit a level stop when the frozen implied rate is through the level, and do not use that rule to close a path trade whose kill has not printed.",
+        "observed_reality": "The strip was exited near 3.1 on Nov 23, and December CORRA now implies 2.68. The written path kill did not print.",
+        "original_belief": "A CORRA 2027 strip receive near a 3.4 implied rate would pay if the Bank of Canada did not deliver a mid-3s path and jobs did not stop contracting while trim stayed near 2 percent.",
+        "same_information_counterfactual": "With the same information, keep the path receive through the repricing and do not close it on a level rule that was not the kill."
+      },
+      "expression_assessment": "The strip, rather than a single meeting contract, expressed the 2027 path that later priced down toward 2.68.",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-23T07:00:05.353220-05:00",
+        "conviction": 59,
+        "entry_mark": 3.4,
+        "exit_mark": 3.1,
+        "exit_reason_category": null,
+        "expression": {
+          "curve_id": "CORRA",
+          "expiries": [
+            "2027-03",
+            "2027-06",
+            "2027-09",
+            "2027-12"
+          ],
+          "type": "futures_strip_average"
+        },
+        "holding_duration_seconds": 5559795,
+        "instrument": "CORRA_2027H-Z",
+        "invalidation": "BoC delivers or signals the priced 2027 mid-3s path, or trim/median leave ~2% while jobs stop contracting.",
+        "opened_at": "2026-09-19T22:36:50.082404-04:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 107312.5,
+        "side": "long",
+        "thesis": null
+      },
+      "future_rule": "When the kill is a policy path or a labor-and-inflation reversal, absence of that evidence leaves the receive intact. When the kill is an implied-rate level, exit once the frozen implied rate is through that level.",
+      "lesson": "A path invalidation and a level invalidation are different rules. Absence of the path kill leaves the receive intact through the repricing.",
+      "no_new_lesson": null,
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-496354e739f9",
+      "run_id": "overnight-20261125",
+      "sizing_assessment": "Size was not the error. The process question is which invalidation belongs to which ticket.",
+      "tags": [],
+      "thesis_assessment": "The receive worked because the priced path eased and the written kill, a mid-3s Bank of Canada path or jobs stopping their contraction while trim stayed near 2 percent, did not arrive.",
+      "timing_assessment": "The gain was taken on Nov 23 after about two months while the path invalidation had not printed.",
+      "trade_id": "trd-trader-rate-dove-pos-9849cf751c27",
+      "what_failed": "The kill condition on that strip was a policy path, and it stayed quiet. The later mistake, on a different ticket, was using a level stop and a path stop as if they were the same rule.",
+      "what_worked": "The CORRA 2027 strip was received near a 3.4 implied rate and exited near 3.1 on Nov 23 after about two months. December CORRA now implies 2.68, so the Bank of Canada path did not return to the mid-3s."
+    }
+  ],
   "schema_version": 1,
   "type": "TRADING_POSTMORTEMS"
 }

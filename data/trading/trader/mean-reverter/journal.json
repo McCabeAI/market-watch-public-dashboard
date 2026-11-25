@@ -2480,6 +2480,60 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Hold flat. The US ten-year at 4.92 is still a high five-year level, but the five-day move is already a 23bp rally, so there is no live rates overshoot to fade. EURUSD at 1.099 is statistically cheap and has no failed-break confirmation. USDNOK and USDSEK are still breaking higher, which is the wrong pattern to fade."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "251a44f679eb9b23e35c397a7f92f8293f84e26003071307fbf6dc40c00da5af",
+      "event_id": "jde-e10e47d41e8f49c4",
+      "funding_view": null,
+      "invalidation": "Reopen after the growth print if March 2027 remains 4.525 while the two-year at 4.63 reverses its decline, or if dollar-Canada at 1.4327 turns lower against Brent at 91.40.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "cec4713b6ae93b09d0a463d36c8caecf306aa1951f837d08d6364e9dd9cd25c1",
+      "outcome_links": [],
+      "owner_id": "mean-reverter",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "c966b371ca1bd6a81e123aaedf8329196fb4d5738d54a4195b05bb78b6ee5f81"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Euro-dollar at 1.0963, the Australian dollar at 0.6641 with RSI 22, and dollar-Canada at 1.4327 near a one-year extreme are stretched, as are US yields after five-day declines of 17bp and 19bp. March 2027 SOFR still implies 4.525 against cash at 3.92, and with VIX at 26.62 these stretches can keep running until a turn actually prints.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Stay flat. Euro-dollar at 1.0963, the Australian dollar at 0.6641 with RSI 22, and dollar-Canada at 1.4327 near a one-year extreme are stretched, as are US yields after five-day declines of 17bp and 19bp. March 2027 SOFR still implies 4.525 against cash at 3.92, and with VIX at 26.62 these stretches can keep running until a turn actually prints."
     }
   ],
   "schema_version": 1,

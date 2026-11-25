@@ -609,6 +609,62 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "Buy USDNOK in 10 million on a five-session horizon. The Nov 20 close at 9.753 is a breakout up, and the same fixing broke up in EURNOK, GBPNOK, CHFNOK, and USDSEK, so the offer is in the krone and the krona together. AUDUSD and AUDJPY disagree, NZDUSD has failed back inside its range, and AUDCAD is only sitting on its 20-day low."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDNOK",
+          "notional_usd": null,
+          "position_id": "pos-da4b98a18cf3",
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "265ad8e5b5ab387c104b4f6dc476ca08bdbab4b2bade0b5571aa7b62e50fdfba",
+      "event_id": "jde-debdc30aeed24843",
+      "funding_view": null,
+      "invalidation": "A daily close back through 9.753 closes the long.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-da4b98a18cf3"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "401f3894355e4b4160ac52a0208eb979fa03c734bffcef319a204a9fdb01c9d9",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ba987952d3f2c08daf980c10d4466c3ab7a643647c7676a40a8925c00b5d3e51"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold long dollar-krone, 10 million, for the five-session daily mark. The Nov 24 close at 9.792 is still above the booked invalidation at 9.753, the five-session return is up 1.75 percent and the twenty-session return is up 5.10 percent, and RSI at 77 is upside momentum with that advance rather than an automatic sell. The close is just inside the 20-day high at 9.808, so this is an extended hold, not a fresh breakout.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "Hold long dollar-krone, 10 million, for the five-session daily mark. The Nov 24 close at 9.792 is still above the booked invalidation at 9.753, the five-session return is up 1.75 percent and the twenty-session return is up 5.10 percent, and RSI at 77 is upside momentum with that advance rather than an automatic sell. The close is just inside the 20-day high at 9.808, so this is an extended hold, not a fresh breakout."
     }
   ],
   "schema_version": 1,

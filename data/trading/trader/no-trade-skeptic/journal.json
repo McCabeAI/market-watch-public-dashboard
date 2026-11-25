@@ -3157,6 +3157,71 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "No trade. The book is flat. A five-day Treasury rally of 23 to 27bp printed while the Fed minutes were hawkish, so the story and the price disagree. March 2027 SOFR at 4.42 versus SOFR at 3.91 already states the hike path. EURUSD at 1.099 is a one-year extreme that can be value or an unfinished trend. The VIX at 28.44 and oil at 83.98 WTI and 92.57 Brent already carry the stress and the Hormuz headlines. The next marks that can change this are the Nov 25 releases."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 48,
+      "decision_fingerprint": "7033a424cd937476e5edae0da47fd834a0b794f2448889e97bfac0253d59f25a",
+      "event_id": "jde-a9dab66f493a4be9",
+      "funding_view": {
+        "current_sofr": "3.92 percent official NY Fed fixing dated 2026-11-23",
+        "forward_funding_assessment": "higher",
+        "implication": "The forward path is already above official SOFR, so remaining at the cash benchmark avoids paying SOFR on shocked-risk capital before the growth print. Flat cash is not alpha. It is the refusal to fund a pre-data bet the strip has already marked higher.",
+        "sr3_forward_view": "December SOFR futures imply 4.28 and March 2027 implies 4.525, a strip above the 3.92 cash fixing."
+      },
+      "invalidation": "The stand-aside ends if the 08:30 releases leave a residual versus December implied 4.28 and March 4.525 that still clears funding after the print.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "33d79a676e0e7a2de4cdc00d04644bbc927477d5ef17a5b4f006db194daf56a2",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": "3.92 percent official NY Fed fixing dated 2026-11-23",
+          "forward_funding_assessment": "higher",
+          "implication": "The forward path is already above official SOFR, so remaining at the cash benchmark avoids paying SOFR on shocked-risk capital before the growth print. Flat cash is not alpha. It is the refusal to fund a pre-data bet the strip has already marked higher.",
+          "sr3_forward_view": "December SOFR futures imply 4.28 and March 2027 implies 4.525, a strip above the 3.92 cash fixing."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "0a95d606f3eae6e890aebc8ac95a17e1ad21e48ebf53cc559b449dd494dd2f91"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "d6f63272f96a30bcc394ecbf3f0dae743cf7a00c4105c69872f5a7558c47f693",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The cutoff sits before the 08:30 growth and income releases, so the prints that could reprice this tape are still unknown. Five-session yield declines of 17 to 19bp and March SOFR at 4.525 against cash SOFR of 3.92 already embed the easier-yield and higher-funding path visible in the freeze. Brent at 91.40, VIX at 26.62, and euro-dollar at 1.0963 describe a noisy, extended market, and a flat book stays at the official SOFR benchmark until a post-print residual is large enough to fund.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "The cutoff sits before the 08:30 growth and income releases, so the prints that could reprice this tape are still unknown. Five-session yield declines of 17 to 19bp and March SOFR at 4.525 against cash SOFR of 3.92 already embed the easier-yield and higher-funding path visible in the freeze. Brent at 91.40, VIX at 26.62, and euro-dollar at 1.0963 describe a noisy, extended market, and a flat book stays at the official SOFR benchmark until a post-print residual is large enough to fund."
     }
   ],
   "schema_version": 1,

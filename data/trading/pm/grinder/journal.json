@@ -2506,6 +2506,62 @@
       "run_id": "overnight-20261123",
       "schema_version": 1,
       "thesis": "The book stays flat through Nov 25. Short AUDCAD, paying the US two-year at 4.63, receiving the US ten-year at 4.92, receiving March 2027 SOFR at 4.42, and buying USDNOK do not show an expected edge above official SOFR at 3.91 percent on shocked risk capital. December 2026 SOFR at 4.235 and March 2027 at 4.42 already set the funding path a new line has to beat. With the VIX at 28.44, the plausible adverse move dominates two-day carry."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": null,
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-25T09:10:20.784995-05:00",
+      "conviction": 38,
+      "decision_fingerprint": "ede33c3e727d20073a1307b491f36821855b9901074151effa30d6e2cf91cba9",
+      "event_id": "jde-83e6a7fefa3e4ceb",
+      "funding_view": null,
+      "invalidation": "The stand-aside is reconsidered only if, after the growth mark, one of those expressions offers expected edge that still exceeds 3.92 percent SOFR on the shocked risk capital it would consume.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3e071a44353304fb8fc46e7e9ec33ad6e412939538a803ed6ebfbd53fce1d854",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "addc051a55bf9b2c611079c7bd5a41ecb853cd505cab3ed9f83c9405bcc32500"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-25T06:28:51.354917-05:00",
+        "evidence_hash": "142e40dec120e5d3a349493763e37f6051a39e1e9b01c4b01c011d290d9b8162",
+        "overnight_run_id": "overnight-20261125",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261125-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat ahead of the unknown 08:30 growth print. Official SOFR at 3.92 percent is the funding hurdle on shocked risk capital, and VIX at 26.62 raises the cost of being wrong. The Australian dollar long and the US two-year pay are bets into that print, and receiving March 2027 SOFR at 4.525, already far above cash, does not clear funding on a hope for easier policy.",
+      "run_id": "overnight-20261125",
+      "schema_version": 1,
+      "thesis": "The book stays flat ahead of the unknown 08:30 growth print. Official SOFR at 3.92 percent is the funding hurdle on shocked risk capital, and VIX at 26.62 raises the cost of being wrong. The Australian dollar long and the US two-year pay are bets into that print, and receiving March 2027 SOFR at 4.525, already far above cash, does not clear funding on a hope for easier policy."
     }
   ],
   "schema_version": 1,

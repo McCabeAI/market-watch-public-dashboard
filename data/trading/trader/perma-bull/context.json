@@ -121,8 +121,8 @@
   ],
   "as_of": "2026-11-25T06:28:51.354917-05:00",
   "calibration": {
-    "average_holding_seconds": 1687991,
-    "average_realized_pnl_usd": -7179.49,
+    "average_holding_seconds": 1508980,
+    "average_realized_pnl_usd": -11807.31,
     "breakeven": 0,
     "by_asset_class": {
       "rates": {
@@ -130,11 +130,11 @@
         "total_realized_pnl_usd": -250.0
       },
       "spot_fx": {
-        "count": 2,
-        "total_realized_pnl_usd": -42826.91
+        "count": 3,
+        "total_realized_pnl_usd": -82401.15
       }
     },
-    "closed_trade_count": 6,
+    "closed_trade_count": 7,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": 26750.0,
@@ -147,14 +147,14 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": -13448.85,
-        "count": 3,
-        "hit_rate": 0.3333
+        "average_pnl_usd": -19980.2,
+        "count": 4,
+        "hit_rate": 0.25
       }
     },
-    "losses": 3,
+    "losses": 4,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": -43076.91,
+    "total_realized_pnl_usd": -82651.15,
     "wins": 3
   },
   "capital_owner": null,
@@ -162,7 +162,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 12,
-    "competitive_rank": 12,
+    "competitive_rank": 11,
     "drawdown_usd": 94153.66,
     "giveback_usd": 94153.66,
     "high_water_nav_usd": 100042789.91,
@@ -170,14 +170,14 @@
     "nav_usd": 99948636.25,
     "net_pnl_usd": -51363.75,
     "pressure_flags": [],
-    "prior_competition_rank": 12,
-    "rank_change": 0,
+    "prior_competition_rank": 13,
+    "rank_change": -1,
     "raw_pnl_rank": 12,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 150000.0,
     "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 36877.65,
     "status": "ok"
   },
   "learning": {
@@ -188,56 +188,56 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "8cccd22e0162993a278e8425bdffcf552017c83e1f66ee96c4ff3173bfd0d9f8",
+  "memory_context_sha256": "8241c984f6fd39cad279f3a7a55679f20ffa90c66e3e8615d76933153871cb32",
   "open_positions": [
     {
       "asset_class": "spot_fx",
-      "conviction": 64,
-      "current_notional_usd": 15000000.0,
-      "entry_mark": 1.1,
+      "conviction": 63,
+      "current_notional_usd": 5000000.0,
+      "entry_mark": 0.66,
       "harvest": {
         "asset_class": "spot_fx",
         "catalyst_by": null,
-        "catalyst_logic": "Pereira's still-building euro-area inflation pressure is the standing euro support, and US GDP and PCE on 25 Nov can confirm the expansion the euro is failing to price.",
-        "current_mark": 1.099,
-        "current_notional_usd": 15000000.0,
-        "entry_mark": 1.0992,
-        "expected_mark_direction": "higher",
+        "catalyst_logic": "The 08:30 GDP and personal-income prints are the first test. A soft-landing outcome lets the oversold Australian dollar catch up as lower US yields ease the dollar.",
+        "current_mark": 0.664142485006361,
+        "current_notional_usd": 5000000.0,
+        "entry_mark": 0.66,
+        "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 434913,
-        "horizon_elapsed_fraction": 0.6292,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
         "horizon_status": "within",
-        "instrument": "EURUSD",
-        "intended_horizon_days": 8,
-        "mae_usd": -2729.26,
+        "instrument": "AUDUSD",
+        "intended_horizon_days": 45,
+        "mae_usd": 0.0,
         "mechanical_order": false,
         "mfe_usd": 0.0,
-        "move_versus_entry_intent": "against_intent",
+        "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
-        "position_id": "pos-d62db363ab83",
+        "position_id": "pos-be3bd26f6984",
         "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "The long is realized if EURUSD lifts off the 1.0992 first-percentile area as the defensive dollar premium fades while equities and crude keep signaling expansion.",
+        "realization_logic": "Hold the 5 million Australian dollar long for catch-up toward copper at 5.36 and equities at the highs, and flatten it if the daily tape extends the one-month decline.",
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": 0.0,
         "retained_mfe_fraction": null,
         "review_move_bp": null,
         "review_required": false,
-        "review_threshold_usd": 150000.0,
+        "review_threshold_usd": 100000.0,
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": -2729.26,
-        "trade_id": "trd-trader-perma-bull-pos-d62db363ab83",
-        "unrealized_pnl_usd": -2729.26
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-perma-bull-pos-be3bd26f6984",
+        "unrealized_pnl_usd": 0.0
       },
-      "instrument": "EURUSD",
-      "opened_at": "2026-11-20T05:40:17.809566-05:00",
-      "position_id": "pos-d62db363ab83",
-      "risk_capital_usd": 150000.0,
+      "instrument": "AUDUSD",
+      "opened_at": "2026-11-25T06:28:51.354917-05:00",
+      "position_id": "pos-be3bd26f6984",
+      "risk_capital_usd": 50000.0,
       "side": "long",
-      "trade_id": "trd-trader-perma-bull-pos-d62db363ab83"
+      "trade_id": "trd-trader-perma-bull-pos-be3bd26f6984"
     }
   ],
   "owner_id": "perma-bull",
@@ -252,52 +252,38 @@
     "review_required_position_ids": []
   },
   "psychology": {
-    "active_flags": [
-      {
-        "basis": "revenge_pressure 0.06 families AUDUSD",
-        "check": "required",
-        "families": [
-          "AUDUSD"
-        ],
-        "id": "revenge_risk",
-        "relevant_actions": [
-          "OPEN",
-          "ADD"
-        ],
-        "scope": "family"
-      }
-    ],
+    "active_flags": [],
     "applicable": true,
     "axes": {
       "chase_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "complacency": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.12
       },
       "defensiveness": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.22
+        "value": 0.21
       },
       "external_pressure": {
         "band": "calm",
         "trend": "down",
-        "value": 0.24
+        "value": 0.22
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.15
+        "trend": "up",
+        "value": 0.16
       },
       "revenge_pressure": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.06
+        "trend": "up",
+        "value": 0.21
       },
       "self_trust": {
         "band": "steady",
@@ -306,8 +292,8 @@
       },
       "thesis_attachment": {
         "band": "calm",
-        "trend": "flat",
-        "value": 0.41
+        "trend": "up",
+        "value": 0.43
       }
     },
     "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
@@ -320,25 +306,19 @@
     "profile_version": 1,
     "recent_events": [
       {
-        "kind": "rank_shock",
+        "kind": "reentry_same_family_after_loss",
         "magnitude": 1.0,
-        "run_id": "overnight-20261118"
+        "run_id": "overnight-20261125"
       },
       {
-        "kind": "trade_loss_close",
-        "magnitude": 0.11246072,
-        "run_id": "overnight-20261119"
+        "kind": "verdict_inconclusive",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261125"
       }
     ],
-    "required_checks": {
-      "revenge_risk": [
-        "would_take_if_flat_and_unscarred",
-        "size_vs_prior_loss",
-        "what_changed_in_evidence"
-      ]
-    },
+    "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "378c69d9ea07c6fc28f3a336d1e66c5c4215975a090f479228dc0dfb3cfa7862",
+    "state_sha256": "de7ba5dfe2c0af0cb9272cc69dcecf93db38e216339ff3910ea23e4f06566289",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,
@@ -346,6 +326,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": 64,
+      "holding_duration_seconds": 434913,
+      "instrument": "EURUSD",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "realized_pnl_usd": -39574.24,
+      "side": "long",
+      "trade_id": "trd-trader-perma-bull-pos-d62db363ab83"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-19T05:32:19.294844-05:00",
