@@ -4563,19 +4563,8 @@
     "08_pages": {
       "artifact": null,
       "details": {
-        "dispatch_confirmed": true,
-        "dispatch_receipt": {
-          "event": "workflow_dispatch",
-          "head_sha": "e15888138fad9261c10da3c26d14df6bc0214939",
-          "launch_id": "mwl-20261125T112851Z-01299ac6",
-          "ref": "main",
-          "run_id": "45631884921",
-          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/45631884921",
-          "workflow": "deploy-pages.yml"
-        },
-        "dispatched": true,
         "dry_run": false,
-        "executed": false,
+        "executed": true,
         "plan": {
           "event": "workflow_dispatch",
           "launch_id": "mwl-20261125T112851Z-01299ac6",
@@ -4583,22 +4572,33 @@
           "review_id": "review-001",
           "workflow": "deploy-pages.yml"
         },
-        "production_published": false,
-        "publication_state": "dispatch_confirmed"
+        "production_published": true,
+        "publication_evidence": {
+          "conclusion": "success",
+          "event": "workflow_dispatch",
+          "evidence_source": "in_run_deploy_job",
+          "head_sha": "e15888138fad9261c10da3c26d14df6bc0214939",
+          "launch_id": "mwl-20261125T112851Z-01299ac6",
+          "ref": "main",
+          "run_id": "45631884921",
+          "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/45631884921",
+          "workflow": "deploy-pages.yml"
+        },
+        "reconciled": true
       },
       "finished_at": null,
       "input_sha256": "68a4ff76d8a4afe3b77c0a209487dbe5a560d7c2238e796ba25cbbdf473b6ee3",
-      "output_sha256": null,
-      "reason": "pages_dispatch_requested",
+      "output_sha256": "9b3a8b8fc28023e1a14a165bd2348b60c44f08ada834b0088331addb913c7e6b",
+      "reason": "pages_publication_reconciled",
       "source_run_url": null,
       "stage": "08_pages",
       "started_at": null,
-      "status": "pending"
+      "status": "succeeded"
     }
   },
   "starting_pm_books_sha256": "c337989fc936c6194e2f5fb263ae874e46ad764597e205c010a98f7a28bf18df",
   "starting_trader_books_sha256": "92b19cb5b0175759ebb95a63a46ece7475cae38f14c8edd69f98839e0107a03b",
-  "status": "running",
+  "status": "succeeded",
   "supersedes": [
     "mwl-20261124T100050Z-f1607c19"
   ],
