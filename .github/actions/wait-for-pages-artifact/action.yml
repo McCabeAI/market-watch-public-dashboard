@@ -1,0 +1,14 @@
+name: Wait for exact Pages artifact
+description: >-
+  Poll the same unfiltered artifact list actions/deploy-pages reads until the
+  uploaded name and id are visible. Does not create a Pages deployment.
+inputs:
+  name:
+    description: Exact Pages artifact name passed to deploy-pages
+    required: true
+  artifact-id:
+    description: Artifact id output by actions/upload-pages-artifact
+    required: true
+runs:
+  using: node20
+  main: dist/index.js
