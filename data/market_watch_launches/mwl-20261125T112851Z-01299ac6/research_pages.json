@@ -1,0 +1,354 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-25T11:48:49+00:00",
+      "release_sha256": "34ad97d54d4acb1d980954dd02b785ad2ab880a57b666ba0db5cc7cb1d109ffe",
+      "run_attempt": "1",
+      "run_id": "45604687464",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/45604687464",
+      "site_sha256": "58ba0c10772b9754dfa39363582f70d02054998c369bd5615ca0ec64ff79517b"
+    }
+  ],
+  "launch_id": "mwl-20261125T112851Z-01299ac6",
+  "launch_terminal": false,
+  "packet_sha256": "68a4ff76d8a4afe3b77c0a209487dbe5a560d7c2238e796ba25cbbdf473b6ee3",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-23T09:32:21.337803-05:00",
+      "as_of": "2026-11-23T07:00:05.353220-05:00",
+      "books_run_id": "overnight-20261123",
+      "overnight_run_id": "overnight-20261123",
+      "packet_sha256": "51a7120b99bd5ec017371302567116d5ffd3ad1bb1659739de2e8a9f97667df5"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-25T06:28:51.354917-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-25T06:28:51.354917-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 8,
+        "rejected": {
+          "over_cap": 5,
+          "unattributed": 11
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "ECB Can\u2019t Fall Behind Curve on Interest Rates, Kocher Says",
+          "id": "news:78c7c6660c40c87f",
+          "published_at": "2026-11-24T21:57:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-25/ecb-can-t-fall-behind-curve-on-interest-rates-kocher-says",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "USD",
+            "WTI",
+            "CAD",
+            "UST"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "UAE Plans More Power, Water Projects Away From Persian Gulf",
+          "id": "news:e2fd1e22e9f95b2c",
+          "published_at": "2026-11-24T21:51:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-25/uae-plans-more-power-water-projects-away-from-persian-gulf",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Metals Rout Deepens as AI, Fed Worries Fuel Bearish Sentiment",
+          "id": "news:f052d2dd499e8d0a",
+          "published_at": "2026-11-24T19:07:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-25/metals-mixed-after-major-selloff-as-traders-await-us-inflation",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "credit_spreads",
+            "UST"
+          ],
+          "channel": "credit_funding",
+          "currency": "current",
+          "discovery_source": "cnbc_credit",
+          "headline": "AI debt markets shudder as Nvidia's top 'banker' returns",
+          "id": "news:bb9ebbd219f3dbf6",
+          "published_at": "2026-11-24T08:38:00-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/24/nvidia-jensen-huang-ai-credit-markets.html",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "usd_rates",
+          "currency": "current",
+          "discovery_source": "boj_whatsnew",
+          "headline": "Indicators for Core CPI",
+          "id": "news:de75f7dc279048ff",
+          "published_at": "2026-11-25T00:00:00-05:00",
+          "source_name": "Bank of Japan",
+          "url": "https://www.boj.or.jp/en/research/research_data/cpi/index.htm",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Nvidia\u2019s Power Is Distorting America\u2019s AI Strategy",
+          "id": "news:859cd928bce0428f",
+          "published_at": "2026-11-24T21:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/opinion/articles/2026-11-25/nvidia-s-power-is-distorting-america-s-ai-strategy",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "GBP"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "boe_news",
+          "headline": "Daniel E. Pinto appointed to the Bank of England\u2019s Financial Policy Committee",
+          "id": "news:d7135da4c7421cd8",
+          "published_at": "2026-11-24T11:00:00-05:00",
+          "source_name": "Bank of England",
+          "url": "https://www.bankofengland.co.uk/news/2026/november/daniel-pinto-appointment-fpc",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "CAD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "boc_press",
+          "headline": "Bank of Canada Media Interview \u2013 The Logic",
+          "id": "news:b4b2d916ff2bf51a",
+          "published_at": "2026-11-24T10:00:24-05:00",
+          "source_name": "Bank of Canada",
+          "url": "https://www.bankofcanada.ca/2026/11/bank-of-canada-media-interview-the-logic/",
+          "verification_status": "official"
+        }
+      ],
+      "news_family_as_of": "2026-11-25T06:28:51.354917-05:00",
+      "news_family_digest": "df223a0e14912c97db4e7177dca2d6f603cb0ab6129231b963faa631843d3003",
+      "packet_sha256": "68a4ff76d8a4afe3b77c0a209487dbe5a560d7c2238e796ba25cbbdf473b6ee3",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-25T06:28:51.354917-05:00",
+        "start": "2026-11-24T06:28:51.354917-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/freeze_binding.json",
+        "sha256": "6e381858844afbc802ef4c3dda5c52596b55d1b6a48e6d9e2bb967c316c6150f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/remote_freeze.json",
+        "sha256": "fb1b7bd2fcaeb4e2124a3874ad660df01cd50a253d8bffb0ff8b7c82b45b6de2"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/artifacts/00_authenticate.json",
+        "sha256": "f0247989a277c711ad9f82eb333744047561b678ea4c02e75f13bb2901a9137d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/artifacts/01_ingest.json",
+        "sha256": "c94098735140f7852a224bab896d8f7ac8c3725343118fac5cbbe8fcbdcb11f9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/artifacts/02_acquire.json",
+        "sha256": "90e32194039685dfbfa91a292ec1f3853177f0181e5bce55a814f534677d7dd0"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/artifacts/03_quality_gate.json",
+        "sha256": "f6d0dd276f4c7ea8b9e7a713a91cc8f66171f413eb91fe06c1230b767063a25f"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/artifacts/04_freeze.json",
+        "sha256": "a4f9ce986f0efcf39ed1f8262df7b0063e8c93665e38e29044797e5c4735f950"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/temperature_scores.json",
+        "sha256": "813dcf97a98c683d7abee6e1372eff08a58c32c8657ca2e93e14ad6e7a318684"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/history/au.json",
+        "sha256": "92170c6604c1e733cad64f384109dde27744ec16dd4fe6121a572f8ecbc486f6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/history/ca.json",
+        "sha256": "55703e20655ec35997a9655d59d8d039304ae834e229145b9551627937cb40e1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/history/ea.json",
+        "sha256": "c90cb109e30fc0cf2f52090f7d767544931b90356f2e65ccb5b35bab43e5f44b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/history/jp.json",
+        "sha256": "324610ca05a05f5d55bbd0b5e709194527aedd24e996d16b019ccbd39ff03689"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261125T112851Z-01299ac6/lineage/history/us.json",
+        "sha256": "8537d82b6dfeaaa7231e008085118185df7af2d17de362dc685b5a5f480143aa"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261125/reviews/review-001/evidence_snapshot.json",
+        "sha256": "c3c582e6850930ad107a5597e0f5d3d4ff1f4b22ae19630d9ee7adfb2ee98b09"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "a2f40946ef1c0c80d36cbe9270d0641b05be745d2d7bbae0a0e9316652935a72"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261123/assembled_dataset.json",
+        "sha256": "b78a13b2bb0ed6aae87d867abf78173988907175a7a196a2a244936c6b08cd80"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "d85a18bb58abf8f1669c72fec0d540c6b0f5a32666f1ed5d3354c705d69939d3"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "92b19cb5b0175759ebb95a63a46ece7475cae38f14c8edd69f98839e0107a03b"
+      }
+    ],
+    "launch_id": "mwl-20261125T112851Z-01299ac6",
+    "market_state": {
+      "as_of": "2026-11-25T11:47:34Z",
+      "digest": "fab5313476622c9d1c4af94f18d4b081ebb04d7bbbb8bdc01d7e8d70b0ec6102",
+      "generated_at": "2026-11-25T11:47:34Z"
+    },
+    "news": {
+      "age_label": "47 h before this freeze",
+      "as_of": "2026-11-23T07:00:05.353220-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261123",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261125",
+    "packet_sha256": "68a4ff76d8a4afe3b77c0a209487dbe5a560d7c2238e796ba25cbbdf473b6ee3",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Activity.business_surveys",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "JP.Consumer.income",
+        "JP.Consumer.retail",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Consumer.confidence",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "f3c3e8246421ea613c00b4f3f44472aee1128dd1",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 1,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-25T11:28:51Z",
+      "inputs_last_ingested_at": "2026-11-25T11:28:51Z",
+      "score_state_sha256": "813dcf97a98c683d7abee6e1372eff08a58c32c8657ca2e93e14ad6e7a318684"
+    },
+    "session_date": "2026-11-25",
+    "site_sha256": "58ba0c10772b9754dfa39363582f70d02054998c369bd5615ca0ec64ff79517b",
+    "source_commit": "d21e715d5a6b28e557582757835858c37abe59cd",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261125",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "34ad97d54d4acb1d980954dd02b785ad2ab880a57b666ba0db5cc7cb1d109ffe",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-25",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
