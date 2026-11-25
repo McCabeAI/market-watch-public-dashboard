@@ -1,0 +1,280 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-25T01:34:10+00:00",
+      "release_sha256": "a8b5250aae2a0e04efae6b0809e8021a851dd04a19786a86b738e2b9875845b4",
+      "run_attempt": "1",
+      "run_id": "45526470553",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/45526470553",
+      "site_sha256": "ded61123d0c18fc74e6a13cbc6aa00e4e5015419d77741d2e070f8d124490082"
+    }
+  ],
+  "launch_id": "mwl-20261124T100050Z-f1607c19",
+  "launch_terminal": false,
+  "packet_sha256": "6a780ad835844268a3333fe2729dddab24fec781bcdfd93772ec0c227df7f625",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-23T09:32:21.337803-05:00",
+      "as_of": "2026-11-23T07:00:05.353220-05:00",
+      "books_run_id": "overnight-20261123",
+      "overnight_run_id": "overnight-20261123",
+      "packet_sha256": "51a7120b99bd5ec017371302567116d5ffd3ad1bb1659739de2e8a9f97667df5"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-24T05:00:50.148207-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 15,
+        "partial": true
+      },
+      "as_of": "2026-11-24T05:00:50.148207-05:00",
+      "counts": {
+        "considered": 24,
+        "eligible": 3,
+        "rejected": {
+          "out_of_window": 1,
+          "unattributed": 20
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST",
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "ECB\u2019s Simkus Says It\u2019s \u2018Prudent\u2019 to Hike as Inflation Broadens",
+          "id": "news:95327b31f85609d5",
+          "published_at": "2026-11-23T19:37:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-24/ecb-s-simkus-says-it-s-prudent-to-hike-as-inflation-broadens",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "Ex-RBI Chief Rajan Sees Nvidia Governance Risk in Huang\u2019s Return",
+          "id": "news:e6fa82e6b8c38eaa",
+          "published_at": "2026-11-23T20:13:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-24/ex-rbi-chief-rajan-sees-nvidia-governance-risk-in-huang-s-return",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "AUD"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg_equity",
+          "headline": "Australia Bonds Set for Longest Rally Since June on RBA Cut Bets",
+          "id": "news:04c97072758856a1",
+          "published_at": "2026-11-23T15:06:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-24/australia-bonds-set-for-longest-rally-since-june-on-rba-cut-bets",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-24T05:00:50.148207-05:00",
+      "news_family_digest": "2b6520cfa6fdae52cf0e0bdd7fda069e2f20a4b115c6398913a61dceefb95b4d",
+      "packet_sha256": "6a780ad835844268a3333fe2729dddab24fec781bcdfd93772ec0c227df7f625",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-24T05:00:50.148207-05:00",
+        "start": "2026-11-23T07:00:05.353220-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/freeze_binding.json",
+        "sha256": "3acb4bfce11837f890d11323cbc5aef05c3f958c0c978c582df710151abaeb1b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/remote_freeze.json",
+        "sha256": "a90f99005550bb7addd0880598d3cee3aef2bf3eec7f04f507b6aeffd9527272"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/artifacts/00_authenticate.json",
+        "sha256": "f12b32b1803551e756f7494ec75c2bbbda0312d16856d271321b33477ae6a517"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/artifacts/01_ingest.json",
+        "sha256": "d4e04b4461232706f37d0b1e709f8966fa844c1d8ad0d06fed150710962b0944"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/artifacts/02_acquire.json",
+        "sha256": "9d9054b98f865dfa512fe6f25fbd86b0b1ef3fa7a883f804068bad13ad97cea7"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/artifacts/03_quality_gate.json",
+        "sha256": "2feae9f606f7243dd2c28d8b74ebba0ba888dedc25b9edf7c069e65245690eab"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/artifacts/04_freeze.json",
+        "sha256": "c271e265a22b2809d7c4393813286aee7793227103357c1d5fb08c9589b2bb54"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/temperature_scores.json",
+        "sha256": "747e58c08926a2ccbd06d38be2e538328daf6ff3b6e5282f71f337ea5f09f8bf"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/history/au.json",
+        "sha256": "92170c6604c1e733cad64f384109dde27744ec16dd4fe6121a572f8ecbc486f6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/history/ca.json",
+        "sha256": "55703e20655ec35997a9655d59d8d039304ae834e229145b9551627937cb40e1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/history/ea.json",
+        "sha256": "c90cb109e30fc0cf2f52090f7d767544931b90356f2e65ccb5b35bab43e5f44b"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/history/jp.json",
+        "sha256": "5cfcb19b8836c84d0d64ed0f49e6c1bc9932eab34911790d3a4787c81bb1df9d"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261124T100050Z-f1607c19/lineage/history/us.json",
+        "sha256": "8537d82b6dfeaaa7231e008085118185df7af2d17de362dc685b5a5f480143aa"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261124/reviews/review-001/evidence_snapshot.json",
+        "sha256": "d8865e9bd1475259ee434d20244f578a03804144aa45546abbcbc8b755c30bf0"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "a2f40946ef1c0c80d36cbe9270d0641b05be745d2d7bbae0a0e9316652935a72"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261123/assembled_dataset.json",
+        "sha256": "b78a13b2bb0ed6aae87d867abf78173988907175a7a196a2a244936c6b08cd80"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "d85a18bb58abf8f1669c72fec0d540c6b0f5a32666f1ed5d3354c705d69939d3"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "92b19cb5b0175759ebb95a63a46ece7475cae38f14c8edd69f98839e0107a03b"
+      }
+    ],
+    "launch_id": "mwl-20261124T100050Z-f1607c19",
+    "market_state": {
+      "as_of": "2026-11-24T10:19:53Z",
+      "digest": "323edda09561dcb13f882f176d2c0aedbb04f8a4d87585365bf349b9679314aa",
+      "generated_at": "2026-11-24T10:19:53Z"
+    },
+    "news": {
+      "age_label": "22 h before this freeze",
+      "as_of": "2026-11-23T07:00:05.353220-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261123",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261124",
+    "packet_sha256": "6a780ad835844268a3333fe2729dddab24fec781bcdfd93772ec0c227df7f625",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "US.Activity.manufacturing_surveys",
+        "US.Activity.services_surveys",
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:US",
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "US.Consumer.income",
+        "US.Consumer.spending",
+        "US.Inflation.core_pce",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Activity.business_surveys",
+        "EA.Consumer.retail",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "JP.Consumer.income",
+        "JP.Consumer.retail",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.spending",
+        "JP.Consumer.confidence",
+        "JP.Inflation.headline",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Labor.unemployment",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "0bcdb7cc9172d309983f14035e979833aeb0cc6a",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 0,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-24T10:00:50Z",
+      "inputs_last_ingested_at": "2026-11-23T12:00:05Z",
+      "score_state_sha256": "747e58c08926a2ccbd06d38be2e538328daf6ff3b6e5282f71f337ea5f09f8bf"
+    },
+    "session_date": "2026-11-24",
+    "site_sha256": "ded61123d0c18fc74e6a13cbc6aa00e4e5015419d77741d2e070f8d124490082",
+    "source_commit": "3f54898491b1e2e1da7ed023296dfaa5806acabc",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261124",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "a8b5250aae2a0e04efae6b0809e8021a851dd04a19786a86b738e2b9875845b4",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-24",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
