@@ -1,0 +1,305 @@
+{
+  "deploys": [
+    {
+      "page_url": "https://mccabeai.github.io/market-watch-public-dashboard/",
+      "public_state": "matched",
+      "recorded_at": "2026-11-27T12:25:19+00:00",
+      "release_sha256": "86a64d6b74dced170e90d0c156a0a9f3085eaef87f619c446c129c7736cb4af2",
+      "run_attempt": "1",
+      "run_id": "45995464713",
+      "run_url": "https://github.com/McCabeAI/market-watch-public-dashboard/actions/runs/45995464713",
+      "site_sha256": "add00d1da877649889dff3e936b308fd2e9e5a354e5685d8d96e97a864311440"
+    }
+  ],
+  "launch_id": "mwl-20261127T120439Z-12e2c8df",
+  "launch_terminal": false,
+  "packet_sha256": "1fa8fa4ea4a8744e802c82b749cdd880f9faa219e769c54d8a6e7de09ce6467c",
+  "phase": "research",
+  "release": {
+    "books": {
+      "accepted_at": "2026-11-25T09:14:16.146581-05:00",
+      "as_of": "2026-11-25T06:28:51.354917-05:00",
+      "books_run_id": "overnight-20261125",
+      "overnight_run_id": "overnight-20261125",
+      "packet_sha256": "68a4ff76d8a4afe3b77c0a209487dbe5a560d7c2238e796ba25cbbdf473b6ee3"
+    },
+    "channel": "production",
+    "frozen_at": "2026-11-27T07:04:39.364763-05:00",
+    "headlines": {
+      "acquisition": {
+        "failed_sources": [
+          "bloomberg_politics",
+          "reuters"
+        ],
+        "mode": "live",
+        "ok_sources": 14,
+        "partial": true
+      },
+      "as_of": "2026-11-27T07:04:39.364763-05:00",
+      "counts": {
+        "considered": 9,
+        "eligible": 5,
+        "rejected": {
+          "unattributed": 4
+        }
+      },
+      "items": [
+        {
+          "affected_assets": [
+            "USD",
+            "UST"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "High Inflation Puts Fed\u2019s Credibility On the Line",
+          "id": "news:d9976b9be1e544f7",
+          "published_at": "2026-11-26T22:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/opinion/articles/2026-11-27/high-inflation-puts-fed-s-credibility-on-the-line",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "ecb_press",
+          "headline": "ECB Consumer Expectations Survey results \u2013 October 2026",
+          "id": "news:6a89018ebd552bf5",
+          "published_at": "2026-11-27T04:00:00-05:00",
+          "source_name": "European Central Bank",
+          "url": "https://www.ecb.europa.eu//press/pr/date/2026/html/ecb.pr261127~2e53af695e.en.html",
+          "verification_status": "official"
+        },
+        {
+          "affected_assets": [
+            "EUR"
+          ],
+          "channel": "g10_policy",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "European Workers\u2019 AI Use on Par With That of US Peers, ECB Says",
+          "id": "news:1dcaa8936010b591",
+          "published_at": "2026-11-26T21:00:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-27/european-workers-ai-use-on-par-with-that-of-us-peers-ecb-says",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "bloomberg",
+          "headline": "JSE Courts Dangote Refinery Secondary Listing in Expansion Push",
+          "id": "news:d4a5dca3e54b6ebc",
+          "published_at": "2026-11-26T21:20:00-05:00",
+          "source_name": "Bloomberg",
+          "url": "https://www.bloomberg.com/news/articles/2026-11-27/jse-courts-dangote-refinery-secondary-listing-in-expansion-push",
+          "verification_status": "single_source"
+        },
+        {
+          "affected_assets": [
+            "Brent",
+            "WTI"
+          ],
+          "channel": "oil_energy_tot",
+          "currency": "current",
+          "discovery_source": "cnbc_investing",
+          "headline": "Semiconductor chips are the new oil. Here's why",
+          "id": "news:1a1c384e05daba65",
+          "published_at": "2026-11-26T12:52:15-05:00",
+          "source_name": "CNBC",
+          "url": "https://www.cnbc.com/2026/11/26/semiconductor-chips-are-the-new-oil-heres-why.html",
+          "verification_status": "single_source"
+        }
+      ],
+      "news_family_as_of": "2026-11-27T07:04:39.364763-05:00",
+      "news_family_digest": "e025178e51c8ec44bc60532591b71bf5ef6011ffd5400405a89f610b8d168aad",
+      "packet_sha256": "1fa8fa4ea4a8744e802c82b749cdd880f9faa219e769c54d8a6e7de09ce6467c",
+      "policy": "frozen-stage04-headlines-v1",
+      "reason": null,
+      "schema_version": 1,
+      "status": "available",
+      "type": "MARKET_WATCH_CURRENT_HEADLINES",
+      "window": {
+        "basis": "previous_acceptance",
+        "end": "2026-11-27T07:04:39.364763-05:00",
+        "start": "2026-11-26T07:04:39.364763-05:00"
+      }
+    },
+    "inputs": [
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/freeze_binding.json",
+        "sha256": "63e3a022914620121db111ef4427982829bb5a3bd3d1822f91a40c76f6c234d0"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/remote_freeze.json",
+        "sha256": "984118eb630e4c1d875591ee66b6c46a7cde7d779cce6736d799af6574496205"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/artifacts/00_authenticate.json",
+        "sha256": "496e47b258ad5cdc8adc471efe046a563d6bf9bbb84bc411bf1ae8ff1d85d437"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/artifacts/01_ingest.json",
+        "sha256": "359dde0670b5c2181eef53377bd6b22c20380a3f5ec45a5bd3f384a7754f9ef3"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/artifacts/02_acquire.json",
+        "sha256": "5dbab7c0e0814e3f37704e232061e663ec59fbb8dac90b0853751d8781f9cfca"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/artifacts/03_quality_gate.json",
+        "sha256": "ec8f4e426f1e0b217e9f9383d7726c2f4e63f9fe867a320c51da4ba2af255a42"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/artifacts/04_freeze.json",
+        "sha256": "a003d4206c1e97657542bc7057ebb733b83d0165a675878258933eb7110ea855"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/temperature_scores.json",
+        "sha256": "d9daf01990060a5a2d68ff020162198a950e477ef0eb795aa1d58e120a71600a"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/history/au.json",
+        "sha256": "92170c6604c1e733cad64f384109dde27744ec16dd4fe6121a572f8ecbc486f6"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/history/ca.json",
+        "sha256": "55703e20655ec35997a9655d59d8d039304ae834e229145b9551627937cb40e1"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/history/ea.json",
+        "sha256": "d746b93b67a2ee8aa905a55ee49bc52d24b7305627c02c5b065444fa8332a87e"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/history/jp.json",
+        "sha256": "324610ca05a05f5d55bbd0b5e709194527aedd24e996d16b019ccbd39ff03689"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/history/nz.json",
+        "sha256": "ab76c176b30928ed6d75df0fd03ae1fe5c28296001e8957674652429fe6589b9"
+      },
+      {
+        "path": "data/market_watch_launches/mwl-20261127T120439Z-12e2c8df/lineage/history/us.json",
+        "sha256": "8d3532cbb3e0cd4ce4262610df1ab8b87aad7d30cd294441ea55924677b64846"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261127/reviews/review-001/evidence_snapshot.json",
+        "sha256": "057957921e1623dda732e99bb94e60e803f5ac7eda9550875733100db4af3d37"
+      },
+      {
+        "path": "data/overnight/latest.json",
+        "sha256": "8ac0c14ab9529901587d25cea01e5fa18486608f01bb421e818b740b61341b3b"
+      },
+      {
+        "path": "data/overnight/runs/overnight-20261125/assembled_dataset.json",
+        "sha256": "14eee8ea412266a62e123bdfa71aa560afedf20616a51ff2de60baba99406bb1"
+      },
+      {
+        "path": "data/overnight/accepted_public_news.json",
+        "sha256": "9fdb9a6af4d465986deedde87abf3216ab35262c8d3bdd5583252fdc070bbcf0"
+      },
+      {
+        "path": "data/overnight/books/latest.json",
+        "sha256": "7d2ad7a3602818ed945b9ebdc404f4a2156b3a5a135187bd66d7d5bd890c1c53"
+      }
+    ],
+    "launch_id": "mwl-20261127T120439Z-12e2c8df",
+    "market_state": {
+      "as_of": "2026-11-27T12:24:07Z",
+      "digest": "a7df29a9d11f5f68eb3cd65e7e0fb48ea2908069cc21325e930b6d8ae898ac4e",
+      "generated_at": "2026-11-27T12:24:07Z"
+    },
+    "news": {
+      "age_label": "48 h before this freeze",
+      "as_of": "2026-11-25T06:28:51.354917-05:00",
+      "current_session": false,
+      "overnight_run_id": "overnight-20261125",
+      "source": "assembled-dataset"
+    },
+    "overnight_run_id": "overnight-20261127",
+    "packet_sha256": "1fa8fa4ea4a8744e802c82b749cdd880f9faa219e769c54d8a6e7de09ce6467c",
+    "phase": "research",
+    "quality": {
+      "blocked_expressions": [],
+      "blocked_sources": [],
+      "coverage": "PARTIAL",
+      "eligible": true,
+      "outcome": "PASS",
+      "partial_series": [
+        "AU.Consumer.confidence",
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "research_coverage_gaps": [
+        "macro:CA",
+        "macro:AU",
+        "macro:EA",
+        "macro:JP"
+      ],
+      "research_coverage_series": [
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending",
+        "AU.Consumer.retail",
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Activity.business_surveys",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment",
+        "JP.Consumer.retail",
+        "JP.Consumer.income",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.confidence",
+        "JP.Consumer.spending",
+        "JP.Labor.unemployment",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Inflation.headline",
+        "JP.Labor.wages"
+      ],
+      "research_eligible": true,
+      "trade_eligible_countries": [
+        "US",
+        "CA",
+        "AU",
+        "NZ",
+        "EA",
+        "JP"
+      ],
+      "trader_execution": "allowed"
+    },
+    "remote_freeze_commit": "ae0f71e6b567f0f732cc057ab31e45034e6e4b86",
+    "review_id": "review-001",
+    "schema_version": 1,
+    "scores": {
+      "appended_count": 28,
+      "calibration_anchor_date": "2026-09-21",
+      "checked_at": "2026-11-27T12:04:39Z",
+      "inputs_last_ingested_at": "2026-11-27T12:04:39Z",
+      "score_state_sha256": "d9daf01990060a5a2d68ff020162198a950e477ef0eb795aa1d58e120a71600a"
+    },
+    "session_date": "2026-11-27",
+    "site_sha256": "add00d1da877649889dff3e936b308fd2e9e5a354e5685d8d96e97a864311440",
+    "source_commit": "5975af65ee0461fddbc75f78ae432209a38bb21c",
+    "trader_cycle": {
+      "overnight_run_id": "overnight-20261127",
+      "status": "pending"
+    },
+    "trigger": "stage04_verified",
+    "type": "MARKET_WATCH_PUBLICATION_RELEASE"
+  },
+  "release_sha256": "86a64d6b74dced170e90d0c156a0a9f3085eaef87f619c446c129c7736cb4af2",
+  "review_id": "review-001",
+  "schema_version": 1,
+  "session_date": "2026-11-27",
+  "stage_08_untouched": true,
+  "type": "MARKET_WATCH_RESEARCH_PUBLICATION"
+}
