@@ -2532,6 +2532,60 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Close the 15 million long in March 2027 SOFR. The entry implied rate was 4.42 and the frozen contract now implies 4.525, so the written level stop is met. Coupon yields have already repriced lower, with the two-year down 17bp to 4.63, while March funding still sits well above cash SOFR at 3.92. A later easing case is a new decision at a new level, not an add to a stopped receive."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat. March 2027 SOFR still implies 4.525, above the 4.42 path stop that closed the receive, and December prices about 44bp of hikes to 4.31, firmer by 6.6bp overnight. Cash SOFR is 3.94 and the US two-year and ten-year have already rallied. A new receive needs March implied back through 4.42 with December hike pricing fading.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "13057617736aaefb999b19233d75135d4c794db032dd780bde525a29bf546595",
+      "event_id": "jde-8584504fa3184821",
+      "funding_view": null,
+      "invalidation": "A new long March SOFR receive becomes the trade if the implied rate is back below 4.42 and December hike pricing is fading. The dovish bias dies if SOFR rises toward 4.42 or if US cash yields retrace the recent decline.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "649a471bf2fef9637038dae4de8d20efba7ac9c4985b92c2730049f2b8e82ca1",
+      "outcome_links": [],
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "436839447839b5eb819ebf9a03057fb1ac441c753cbde281e4752cbf17d91ffb"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. March 2027 SOFR still implies 4.525, above the 4.42 path stop that closed the receive, and December prices about 44bp of hikes to 4.31, firmer by 6.6bp overnight. Cash SOFR is 3.94 and the US two-year and ten-year have already rallied. A new receive needs March implied back through 4.42 with December hike pricing fading.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Stay flat. March 2027 SOFR still implies 4.525, above the 4.42 path stop that closed the receive, and December prices about 44bp of hikes to 4.31, firmer by 6.6bp overnight. Cash SOFR is 3.94 and the US two-year and ten-year have already rallied. A new receive needs March implied back through 4.42 with December hike pricing fading."
     }
   ],
   "schema_version": 1,

@@ -966,6 +966,56 @@
       "subject": {
         "flat_cycles": 3
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 4,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          50000.0,
+          50000.0,
+          100000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "event_id": "pse-000045",
+      "flat_cycles": 4,
+      "kind": "decay_tick",
+      "owner_id": "mean-reverter",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "seq": 45,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": 0.0455,
+        "external_pressure": 0.0176,
+        "frustration": 0.0212
+      },
+      "event_id": "pse-000046",
+      "kind": "flat_with_market",
+      "magnitude": 1.0,
+      "mismatch": false,
+      "owner_id": "mean-reverter",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "scale": 1.0,
+      "seq": 46,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "flat_cycles": 4
+      }
     }
   ],
   "owner_id": "mean-reverter",

@@ -196,8 +196,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "dde7c7982a77c33f2e93e9aaf29f0c0f2bac7e6bf7ce7fb294ac7df4064d7c1f",
-  "open_positions": [],
+  "memory_context_sha256": "8c53ab2bb02f248456fcf64597c1aa5f83044266a13709f8481381c66e071333",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 64,
+      "current_notional_usd": 6000000.0,
+      "entry_mark": 174.79,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "The edge is exhausted if the ECB walks back that stance or if Japan's ten-year retraces the 21bp five-day decline before the cross revalues.",
+        "current_mark": 174.79,
+        "current_notional_usd": 6000000.0,
+        "entry_mark": 174.79,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "EURJPY",
+        "intended_horizon_days": 20,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-070a1e04a209",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The long pays if EURJPY lifts off the one-year z-score of -2.38 while the ECB holds its line and Japan's ten-year stays down after the 21bp decline.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-cross-merchant-pos-070a1e04a209",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "EURJPY",
+      "opened_at": "2026-11-27T07:04:39.364763-05:00",
+      "position_id": "pos-070a1e04a209",
+      "risk_capital_usd": 60000.0,
+      "side": "long",
+      "trade_id": "trd-trader-cross-merchant-pos-070a1e04a209"
+    }
+  ],
   "owner_id": "cross-merchant",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -221,7 +271,7 @@
       "complacency": {
         "band": "calm",
         "trend": "down",
-        "value": 0.16
+        "value": 0.15
       },
       "defensiveness": {
         "band": "calm",
@@ -281,9 +331,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "ea82c30d1803a569696314f94f6de5bde79f9c31c9faed2628819fb032c6aab1",
+    "state_sha256": "b6c387b9aeb26e3b35d85c8b9eb743ee9b7153a0db890f1cb117bd38fe82fe5a",
     "streaks": {
-      "flat_cycles": 1,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 3
     }

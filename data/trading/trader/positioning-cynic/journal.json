@@ -2643,6 +2643,64 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Stay flat. The crowded position is the one-year extreme dollar together with the still-owned hike path: euro-dollar at 1.0963 with a z-score of -2.72, the Australian dollar with RSI 22, dollar-Canada at 1.4327, and March SOFR implying 4.525 against cash SOFR at 3.92 after yields fell 17 to 19bp in five sessions. That ownership is already the consensus extreme, and the growth print that would move it is still unknown."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": 5000000,
+          "position_id": null,
+          "rationale": "Buy 5 million euro. This fades the crowded long-dollar-versus-euro at 1.0975, a one-year z-score of -2.56, after December hike pricing of about 44bp rose another 6.6bp overnight. There is no fresh positioning print, so the ownership read is the price location and the already-priced path, not a net-spec figure. Paying or receiving March SOFR would join a strip the price already owns.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "dff458fa543a5bf2ec70b182061f50a102a4e916b0f1b9f8d7c6e3300ddb130c",
+      "event_id": "jde-dac827725dc24e72",
+      "funding_view": null,
+      "invalidation": "The long ends on a new euro low below 1.0975 together with December hike pricing rising by more than the 6.6bp added overnight. Fresh hawkish information would still be entering the price.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-0f631a7750c2"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-positioning-cynic-pos-0f631a7750c2"
+      ],
+      "memory_context_sha256": "1ad174984356c7d826bf5a568c1ad03b13fcaa480058a404b2f1ec421ec58e3c",
+      "outcome_links": [],
+      "owner_id": "positioning-cynic",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "a22782b3a94f09239dffa06d8c889e5afa6941961c1fc147449adeda668ece75"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Buy 5 million euro. This fades the crowded long-dollar-versus-euro at 1.0975, a one-year z-score of -2.56, after December hike pricing of about 44bp rose another 6.6bp overnight. There is no fresh positioning print, so the ownership read is the price location and the already-priced path, not a net-spec figure. Paying or receiving March SOFR would join a strip the price already owns.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Buy 5 million euro. This fades the crowded long-dollar-versus-euro at 1.0975, a one-year z-score of -2.56, after December hike pricing of about 44bp rose another 6.6bp overnight. There is no fresh positioning print, so the ownership read is the price location and the already-priced path, not a net-spec figure. Paying or receiving March SOFR would join a strip the price already owns."
     }
   ],
   "schema_version": 1,

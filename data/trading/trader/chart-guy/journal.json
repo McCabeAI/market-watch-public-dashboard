@@ -665,6 +665,64 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Hold long dollar-krone, 10 million, for the five-session daily mark. The Nov 24 close at 9.792 is still above the booked invalidation at 9.753, the five-session return is up 1.75 percent and the twenty-session return is up 5.10 percent, and RSI at 77 is upside momentum with that advance rather than an automatic sell. The close is just inside the 20-day high at 9.808, so this is an extended hold, not a fresh breakout."
+    },
+    {
+      "actions": [
+        {
+          "action": "CLOSE",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "USDNOK",
+          "notional_usd": null,
+          "position_id": "pos-da4b98a18cf3",
+          "rationale": "Close the 10 million long dollar-krone. The five-session upside break that printed on 20 November at 9.753 has failed: the 26 November technical close at 9.7658 reversed back inside the range within five observations. Euro-krone, sterling-krone and dollar-Sweden carry the same failed-breakout read, so the joint break that backed the long has unwound.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "3566f035dfdcf4b45df72330fa12e96ada2d5f85d4b88b3addddc3dea03aba73",
+      "event_id": "jde-097727767c68485e",
+      "funding_view": null,
+      "invalidation": "The long was invalid once dollar-krone recorded a daily close back inside the range broken at 9.753, or once the krone and krona crosses closed back inside their ranges. Those failed-breakout reads are in, and the position is closed.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-da4b98a18cf3"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-chart-guy-pos-da4b98a18cf3"
+      ],
+      "memory_context_sha256": "38e4150ec9242a7b3ca078a120d9ce16923c52fbbf3fa1a43e4a107d548bf8bd",
+      "outcome_links": [],
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "2c51f800e7bc88a6aff905793038b38d306bddd02f95293b0a404d3e3cb64f11"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Close the 10 million long dollar-krone. The five-session upside break that printed on 20 November at 9.753 has failed: the 26 November technical close at 9.7658 reversed back inside the range within five observations. Euro-krone, sterling-krone and dollar-Sweden carry the same failed-breakout read, so the joint break that backed the long has unwound.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Close the 10 million long dollar-krone. The five-session upside break that printed on 20 November at 9.753 has failed: the 26 November technical close at 9.7658 reversed back inside the range within five observations. Euro-krone, sterling-krone and dollar-Sweden carry the same failed-breakout read, so the joint break that backed the long has unwound."
     }
   ],
   "schema_version": 1,

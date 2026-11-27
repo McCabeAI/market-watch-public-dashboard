@@ -2553,6 +2553,60 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Stay flat. Dollar-Canada at 1.4327 is a one-year extreme, but Brent at 91.40 and a 142bp premium of the US two-year over Canada still explain the level, so the percentile is not yet mispricing. Euro-dollar at 1.0963 is cheap on a one-year z-score of -2.72, and there is no purchasing-power anchor in the evidence that says convergence starts before the growth print."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat. Refuse a long euro at 1.0975, one-year z-score -2.56, because the US ten-year at 4.85 versus the euro-area ten-year at 3.29 is still about 156bp and March 2027 SOFR at 4.525 is above cash SOFR at 3.94. Convergence would be that gap compressing and the euro z-score moving back toward zero.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "67ed0f365737054a62d99429607be656bc718b54e5c86f95a0c082dcd83d4a69",
+      "event_id": "jde-95a7749676c14161",
+      "funding_view": null,
+      "invalidation": "The flat is wrong if March 2027 SOFR implied falls from 4.525 to the 3.94 fixing while euro holds near 1.0975, or if the US ten-year gives back its one-year rise and the euro-area ten-year does not fall with it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "0ec3fd4d06af02f846dd5b20c91eee0dae3e53edb7a93723d725544ee0173385",
+      "outcome_links": [],
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "5b231aae363a81392b2e87267b54e3505a5bad0ebd9ef5540b539f18dd1e8c2c"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Refuse a long euro at 1.0975, one-year z-score -2.56, because the US ten-year at 4.85 versus the euro-area ten-year at 3.29 is still about 156bp and March 2027 SOFR at 4.525 is above cash SOFR at 3.94. Convergence would be that gap compressing and the euro z-score moving back toward zero.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Stay flat. Refuse a long euro at 1.0975, one-year z-score -2.56, because the US ten-year at 4.85 versus the euro-area ten-year at 3.29 is still about 156bp and March 2027 SOFR at 4.525 is above cash SOFR at 3.94. Convergence would be that gap compressing and the euro z-score moving back toward zero."
     }
   ],
   "schema_version": 1,

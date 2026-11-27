@@ -52,6 +52,18 @@
       "owner_type": "trader",
       "rationale": "March is the contract printing higher with the two-year and the ten-year, so the new pay is the confirming tenor rather than an add to a laggard that has stopped confirming.",
       "run_id": "overnight-20261118"
+    },
+    {
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "disposition": "DOES_NOT_APPLY",
+      "instruments": [
+        "US_10Y"
+      ],
+      "lesson_id": "les-1d92cbbe59eb",
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "rationale": "This receive is the US ten-year while yields are falling, and the stored rule is about a SOFR pay that has stopped confirming a live ten-year backup. There is no live backup in the freeze, and a new pay would fight the five-day decline.",
+      "run_id": "overnight-20261127"
     }
   ],
   "schema_version": 1,

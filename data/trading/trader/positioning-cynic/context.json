@@ -204,8 +204,58 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "1ad174984356c7d826bf5a568c1ad03b13fcaa480058a404b2f1ec421ec58e3c",
-  "open_positions": [],
+  "memory_context_sha256": "bc7db8424272c3c41e2794492faf532645900a29666d62adc70328f13db4f48b",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": 58,
+      "current_notional_usd": 5000000.0,
+      "entry_mark": 1.1,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": null,
+        "catalyst_logic": "A stall in December hike pricing after the overnight 6.6bp rise, or a bounce in euro off 1.0975 that shows the extreme is being sold rather than extended.",
+        "current_mark": 1.0975,
+        "current_notional_usd": 5000000.0,
+        "entry_mark": 1.1,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": null,
+        "holding_seconds": 0,
+        "horizon_elapsed_fraction": 0.0,
+        "horizon_status": "within",
+        "instrument": "EURUSD",
+        "intended_horizon_days": 20,
+        "mae_usd": 0.0,
+        "mechanical_order": false,
+        "mfe_usd": 0.0,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "position_id": "pos-0f631a7750c2",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "Euro lifts off the one-year extreme once December hike pricing stops being marked higher and dollar longs have no fresh information to buy.",
+        "realized_pnl_usd": 0.0,
+        "recorded_mfe_usd": 0.0,
+        "retained_mfe_fraction": null,
+        "review_move_bp": null,
+        "review_required": false,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [],
+        "risk_context": "legacy_or_spot",
+        "side": "long",
+        "total_pnl_usd": 0.0,
+        "trade_id": "trd-trader-positioning-cynic-pos-0f631a7750c2",
+        "unrealized_pnl_usd": 0.0
+      },
+      "instrument": "EURUSD",
+      "opened_at": "2026-11-27T07:04:39.364763-05:00",
+      "position_id": "pos-0f631a7750c2",
+      "risk_capital_usd": 50000.0,
+      "side": "long",
+      "trade_id": "trd-trader-positioning-cynic-pos-0f631a7750c2"
+    }
+  ],
   "owner_id": "positioning-cynic",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -223,8 +273,8 @@
     "axes": {
       "chase_pressure": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.13
+        "trend": "flat",
+        "value": 0.12
       },
       "complacency": {
         "band": "calm",
@@ -238,13 +288,13 @@
       },
       "external_pressure": {
         "band": "calm",
-        "trend": "up",
+        "trend": "flat",
         "value": 0.13
       },
       "frustration": {
         "band": "calm",
-        "trend": "up",
-        "value": 0.12
+        "trend": "flat",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -279,9 +329,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "a22782b3a94f09239dffa06d8c889e5afa6941961c1fc147449adeda668ece75",
+    "state_sha256": "0a48fd7258ae67fa7a1d6424e22ee820e2f6c442be3d5b755eb69749c9393dc5",
     "streaks": {
-      "flat_cycles": 3,
+      "flat_cycles": 0,
       "session_loss": 0,
       "session_win": 3
     }

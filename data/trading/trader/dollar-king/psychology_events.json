@@ -1768,6 +1768,63 @@
       "subject": {
         "drawdown_usd": 505914.71
       }
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          200000.0,
+          100000.0,
+          100000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "event_id": "pse-000073",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "seq": 73,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.0158,
+        "defensiveness": -0.0008,
+        "frustration": -0.0015,
+        "revenge_pressure": -0.0006,
+        "self_trust": 0.0046,
+        "thesis_attachment": -0.0013
+      },
+      "event_id": "pse-000074",
+      "kind": "trade_win_close",
+      "magnitude": 0.18319648000000002,
+      "mismatch": false,
+      "owner_id": "dollar-king",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "scale": 1.0,
+      "seq": 74,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "EURUSD",
+        "notional_usd": 10000000.0,
+        "realized_pnl_usd": 91598.24,
+        "side": "short",
+        "trade_id": "trd-trader-dollar-king-pos-d419ff966f72"
+      }
     }
   ],
   "owner_id": "dollar-king",

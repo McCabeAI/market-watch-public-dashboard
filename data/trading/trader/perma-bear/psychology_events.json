@@ -989,6 +989,92 @@
       "run_id": "overnight-20261125",
       "seq": 44,
       "skipped_reason": null
+    },
+    {
+      "annotations": {
+        "flat_cycles": 0,
+        "hold_through_pain": {},
+        "learning_status": "compliant",
+        "open_risk": [
+          250000.0,
+          1500000.0
+        ],
+        "repeated_counts": {},
+        "standing": null
+      },
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "event_id": "pse-000045",
+      "flat_cycles": 0,
+      "kind": "decay_tick",
+      "owner_id": "perma-bear",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "seq": 45,
+      "skipped_reason": null
+    },
+    {
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "chase_pressure": -0.0002,
+        "complacency": 0.0048,
+        "defensiveness": -0.0006,
+        "external_pressure": -0.0002,
+        "frustration": -0.0006,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.0018
+      },
+      "event_id": "pse-000046",
+      "kind": "session_gain",
+      "magnitude": 0.08934334,
+      "mismatch": false,
+      "owner_id": "perma-bear",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "scale": 1.0,
+      "seq": 46,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "session_pnl_change_usd": 44671.67
+      }
+    },
+    {
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "cap_applied": false,
+      "deltas_applied": {
+        "complacency": 0.005,
+        "defensiveness": -0.0004,
+        "frustration": -0.0005,
+        "revenge_pressure": -0.0002,
+        "self_trust": 0.0027,
+        "thesis_attachment": -0.0009
+      },
+      "event_id": "pse-000047",
+      "kind": "trade_win_close",
+      "magnitude": 0.09,
+      "mismatch": false,
+      "owner_id": "perma-bear",
+      "provenance": "live",
+      "review_id": "review-001",
+      "run_id": "overnight-20261127",
+      "scale": 1.0,
+      "seq": 47,
+      "soften": false,
+      "source": {
+        "layer": "L1"
+      },
+      "subject": {
+        "family": "sofr",
+        "notional_usd": 600000000.0,
+        "realized_pnl_usd": 45000.0,
+        "side": "long",
+        "trade_id": "trd-trader-perma-bear-pos-e767e0c310f7"
+      }
     }
   ],
   "owner_id": "perma-bear",

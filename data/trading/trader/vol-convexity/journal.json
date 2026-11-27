@@ -2418,6 +2418,60 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Hold a flat book. Euro-dollar at 1.0963, the Australian dollar with RSI 22, Brent at 91.40, and a 17 to 19bp five-session drop in US yields are real, and the morning growth print is still unknown, so spot is the wrong default into an open event. The freeze contains no listed currency or rates option premium, and the equity volatility index at 26.62 is not a currency option price."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat with no structure. The freeze has no listed currency-option premium, strike, or implied vol, so the asymmetry into US employment, ISM, the 9 December Canada decision, the RBNZ, and euro-area inflation stays untradeable. Euro at 1.0975 has bounced, the ten-year has already moved 22bp in five days, and December Fed pricing has firmed, so a linear spot or rates proxy would chase premium the market has already spent.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 50,
+      "decision_fingerprint": "1b9901db5433958e8dd60ba03f4d1a3949201f8d3a6db751c45bb58fd957c75a",
+      "event_id": "jde-61c94f5e1e6b46be",
+      "funding_view": null,
+      "invalidation": "Standing aside ends if a listed currency or rates option is quoted with premium, strike, and tenor before that data and policy cluster, or once the cluster has passed and the unpriced gap is gone.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "271a71aeefb24a48bbe78859c4995759f016bd408600756ae0ab414aa197a91c",
+      "outcome_links": [],
+      "owner_id": "vol-convexity",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "87ec6b56c3035b9df6c3d2ae9986ea56af3a642971a2ea4acb5e8243a5674107"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat with no structure. The freeze has no listed currency-option premium, strike, or implied vol, so the asymmetry into US employment, ISM, the 9 December Canada decision, the RBNZ, and euro-area inflation stays untradeable. Euro at 1.0975 has bounced, the ten-year has already moved 22bp in five days, and December Fed pricing has firmed, so a linear spot or rates proxy would chase premium the market has already spent.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Stay flat with no structure. The freeze has no listed currency-option premium, strike, or implied vol, so the asymmetry into US employment, ISM, the 9 December Canada decision, the RBNZ, and euro-area inflation stays untradeable. Euro at 1.0975 has bounced, the ten-year has already moved 22bp in five days, and December Fed pricing has firmed, so a linear spot or rates proxy would chase premium the market has already spent."
     }
   ],
   "schema_version": 1,

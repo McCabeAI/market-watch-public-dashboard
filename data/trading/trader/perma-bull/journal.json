@@ -3295,6 +3295,62 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Close the 15 million euro long. The Nov 24 close at 1.0963 is through the 1.0992 invalidation, and the pro-growth replacement is a 5 million Australian dollar long at 0.6641, where RSI 22 and a 5.5 percent one-month decline have priced a break that copper at 5.36 and the S&P at 7237 have not confirmed. Softer US yields, with the two-year down 17bp to 4.63, ease dollar financial conditions while the risk is an 08:30 growth print weak enough to extend the Australian dollar decline."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "AUDUSD",
+          "notional_usd": null,
+          "position_id": "pos-be3bd26f6984",
+          "rationale": "Hold the five million Australian dollar long, the pro-growth leg, at the same size. Soft-landing pricing still has room because the S&P is at 7201 and the Nasdaq is at 23586 while copper holds 5.33, and the US two-year at 4.61 has fallen 19 basis points over five days even as the Australian dollar, down 5.65 percent on the month, bounced 1 percent to 0.6635. The booked stop and the growth and income test stay in force.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 62,
+      "decision_fingerprint": "e9242d29aa9c5886774bfba6e06f23420bdaac840f06b7ba0b43405a2cda4e39",
+      "event_id": "jde-75fb1768dde14414",
+      "funding_view": null,
+      "invalidation": "The booked invalidation is unchanged. It triggers if the growth and income prints extend the Australian dollar selloff and pull copper through 5.36, or if the US two-year trades back through 4.80. Those levels are not met, with copper at 5.33, the two-year at 4.61, and the Australian dollar at 0.6635.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-be3bd26f6984"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "3fb149d5232ac97ab46541f0c5f1418b9c21234806501ea89e5c98c080f32d0f",
+      "outcome_links": [],
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "de7ba5dfe2c0af0cb9272cc69dcecf93db38e216339ff3910ea23e4f06566289"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Hold the five million Australian dollar long, the pro-growth leg, at the same size. Soft-landing pricing still has room because the S&P is at 7201 and the Nasdaq is at 23586 while copper holds 5.33, and the US two-year at 4.61 has fallen 19 basis points over five days even as the Australian dollar, down 5.65 percent on the month, bounced 1 percent to 0.6635. The booked stop and the growth and income test stay in force.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Hold the five million Australian dollar long, the pro-growth leg, at the same size. Soft-landing pricing still has room because the S&P is at 7201 and the Nasdaq is at 23586 while copper holds 5.33, and the US two-year at 4.61 has fallen 19 basis points over five days even as the Australian dollar, down 5.65 percent on the month, bounced 1 percent to 0.6635. The booked stop and the growth and income test stay in force."
     }
   ],
   "schema_version": 1,

@@ -131,6 +131,50 @@
         "trd-trader-value-guy-pos-5760dbd4ac3e"
       ],
       "updated_at": "2026-11-20T05:40:17.809566-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-27T07:04:39.364763-05:00",
+      "future_rule": "Keep a dollar-Canada valuation short through the stated session count unless crude reprices to the scare written at entry. Do not treat a same-mark exit, or a later residual z-score, as proof the original convergence already occurred.",
+      "history": [
+        {
+          "at": "2026-11-27T07:04:39.364763-05:00",
+          "op": "add",
+          "run_id": "overnight-20261127"
+        }
+      ],
+      "lesson_id": "les-6e2681e3bbf4",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-82462a918422"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "spot_fx",
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [
+          "USD",
+          "CAD"
+        ],
+        "decision_dimension": "timing",
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [
+          "USDCAD"
+        ],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261127",
+      "status": "active",
+      "text": "An unchanged 1.43 round trip closed before the written pin horizon is an unfinished valuation test, not a captured convergence. The later move to 1.423 belongs to a new question and does not reopen the closed short by itself.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-2a96e5f2579c"
+      ],
+      "updated_at": "2026-11-27T07:04:39.364763-05:00"
     }
   ],
   "schema_version": 1,

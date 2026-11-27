@@ -2542,6 +2542,64 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Stay flat. Euro-Aussie at 1.6507 with RSI 72 is the same hawkish-Europe versus offered-Australia differential that was just sold near 1.65, and it is too extended to re-enter. Aussie-Canada at 0.9515 with RSI 26 is a multi-week richness fade, not a same-session short or a reversal to long, and the krone crosses are already on 20-day highs."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURJPY",
+          "notional_usd": 6000000,
+          "position_id": null,
+          "rationale": "Buy 6 million EURJPY. The ECB says it cannot fall behind the curve, Japan's 10-year yield is 2.704 after a 21bp five-day decline, and EURJPY at 174.79 has a one-year z-score of -2.38 after a small monthly decline and a bounce today. A euro-dollar long would fold that ECB line into a December Fed path priced for about 44bp of hikes and a US 10-year at 4.85.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 64,
+      "decision_fingerprint": "a258e3080341b2126d4d619eda3be4c53cf71b3fa4bd1605dfd0744a5944530b",
+      "event_id": "jde-9040bf8f9d044c58",
+      "funding_view": null,
+      "invalidation": "The long ends if the ECB walks back the line that it cannot fall behind the curve, or if Japan's 10-year yield retraces the 21bp five-day decline from 2.704 and restores yen yield support. A further haven bid with the VIX still near 26.36 that extends yen strength through this valuation extreme also ends it.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [
+        "pos-070a1e04a209"
+      ],
+      "linked_trade_ids": [
+        "trd-trader-cross-merchant-pos-070a1e04a209"
+      ],
+      "memory_context_sha256": "dde7c7982a77c33f2e93e9aaf29f0c0f2bac7e6bf7ce7fb294ac7df4064d7c1f",
+      "outcome_links": [],
+      "owner_id": "cross-merchant",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ea82c30d1803a569696314f94f6de5bde79f9c31c9faed2628819fb032c6aab1"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Buy 6 million EURJPY. The ECB says it cannot fall behind the curve, Japan's 10-year yield is 2.704 after a 21bp five-day decline, and EURJPY at 174.79 has a one-year z-score of -2.38 after a small monthly decline and a bounce today. A euro-dollar long would fold that ECB line into a December Fed path priced for about 44bp of hikes and a US 10-year at 4.85.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Buy 6 million EURJPY. The ECB says it cannot fall behind the curve, Japan's 10-year yield is 2.704 after a 21bp five-day decline, and EURJPY at 174.79 has a one-year z-score of -2.38 after a small monthly decline and a bounce today. A euro-dollar long would fold that ECB line into a December Fed path priced for about 44bp of hikes and a US 10-year at 4.85."
     }
   ],
   "schema_version": 1,

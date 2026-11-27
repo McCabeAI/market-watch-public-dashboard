@@ -2590,6 +2590,60 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Close the 25 million short in March 2027 SOFR. The higher-yield trend has failed: the ten-year is 4.91 after a 19bp decline over five sessions and has not printed a new yield high, and the two-year is 4.63 after a 17bp decline. March implied at 4.525 is only 2bp through the 4.545 entry, so the pay has not extended and the book goes flat while the morning growth print is unknown."
+    },
+    {
+      "actions": [
+        {
+          "action": "OPEN",
+          "asset_class": "rates",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "US_10Y",
+          "notional_usd": 20000000,
+          "position_id": null,
+          "rationale": "Receive 20 million of the US ten-year. The yield at 4.85 is down 22bp over five sessions and another 6bp yesterday, with Australia and Japan ten-years down about 26bp and 21bp, so the duration rally is still extending. Close the receive if the ten-year reverses higher with the 9 December hike price, which rose 6.6bp overnight to about 44bp of hikes.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "long"
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 60,
+      "decision_fingerprint": "58bd4bd57bac51719277769e5d11776313d013b72bff31100263ae92e8582386",
+      "event_id": "jde-59a712d6f0d045e4",
+      "funding_view": null,
+      "invalidation": "Close the US ten-year receive if the ten-year yield rises together with a further increase in the 9 December hike price, or if the five-day change stops being a decline. A one-day bounce that leaves the five-day yield change lower is not the close.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "67c76b2f4fde6ae39e2f5afe9e7e3284dbfea764992afa3cc943224a4189601e",
+      "outcome_links": [],
+      "owner_id": "trend-follower",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "63f8cae2977823d70845738a24db9e42855412a5bc7ac0df95756f3a79fbd07d"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Receive 20 million of the US ten-year. The yield at 4.85 is down 22bp over five sessions and another 6bp yesterday, with Australia and Japan ten-years down about 26bp and 21bp, so the duration rally is still extending. Close the receive if the ten-year reverses higher with the 9 December hike price, which rose 6.6bp overnight to about 44bp of hikes.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Receive 20 million of the US ten-year. The yield at 4.85 is down 22bp over five sessions and another 6bp yesterday, with Australia and Japan ten-years down about 26bp and 21bp, so the duration rally is still extending. Close the receive if the ten-year reverses higher with the 9 December hike price, which rose 6.6bp overnight to about 44bp of hikes."
     }
   ],
   "schema_version": 1,

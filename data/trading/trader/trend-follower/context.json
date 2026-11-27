@@ -170,7 +170,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 15,
-    "competitive_rank": 14,
+    "competitive_rank": 15,
     "drawdown_usd": 281786.22,
     "giveback_usd": 281786.22,
     "high_water_nav_usd": 100062016.81,
@@ -195,45 +195,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-5118bc82602c",
-      "owner_id": "trend-follower",
-      "owner_type": "trader",
-      "reference": "trd-trader-trend-follower-pos-9ff89eedf5b8",
-      "source_run_id": "overnight-20261125"
-    }
-  ],
-  "memory_context_sha256": "67c76b2f4fde6ae39e2f5afe9e7e3284dbfea764992afa3cc943224a4189601e",
+  "learning_obligations": [],
+  "memory_context_sha256": "65c506a9f5485bb2a7fba441f66768399dba3a30ff9d4898198ab62efa2b937f",
   "open_positions": [],
   "owner_id": "trend-follower",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-25T06:28:51.354917-05:00",
-      "created_run_id": "overnight-20261125",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-25T06:28:51.354917-05:00",
-        "conviction": 71,
-        "entry_mark": 4.54,
-        "exit_mark": 4.53,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 610528,
-        "instrument": "SOFR_2027-03",
-        "invalidation": "Cover the March pay if March implied stops rising together with the two-year and the ten-year, or if March gives back the day's 61.5bp reprice. A September print that keeps extending while March stalls would move the pay to September.",
-        "opened_at": "2026-11-18T04:53:22.859808-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -1250.0,
-        "side": "short",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-5118bc82602c",
-      "trade_id": "trd-trader-trend-follower-pos-9ff89eedf5b8"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -268,8 +235,8 @@
       },
       "frustration": {
         "band": "calm",
-        "trend": "down",
-        "value": 0.12
+        "trend": "flat",
+        "value": 0.11
       },
       "revenge_pressure": {
         "band": "calm",
@@ -298,7 +265,7 @@
     "recent_events": [],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "63f8cae2977823d70845738a24db9e42855412a5bc7ac0df95756f3a79fbd07d",
+    "state_sha256": "25f685782729f8d7eb26a5333a7e92b82ab036ccccf766128e6cd5e6dc6015a7",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 1,

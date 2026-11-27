@@ -2,16 +2,16 @@
   "active_lessons": [],
   "as_of": "2026-11-27T07:04:39.364763-05:00",
   "calibration": {
-    "average_holding_seconds": 434973,
-    "average_realized_pnl_usd": 101554.78,
+    "average_holding_seconds": 390423,
+    "average_realized_pnl_usd": 57611.1,
     "breakeven": 0,
     "by_asset_class": {
       "spot_fx": {
-        "count": 1,
-        "total_realized_pnl_usd": 101554.78
+        "count": 2,
+        "total_realized_pnl_usd": 115222.21
       }
     },
-    "closed_trade_count": 1,
+    "closed_trade_count": 2,
     "conviction_buckets": {
       "high": {
         "average_pnl_usd": null,
@@ -24,22 +24,22 @@
         "hit_rate": null
       },
       "medium": {
-        "average_pnl_usd": null,
-        "count": 0,
-        "hit_rate": null
+        "average_pnl_usd": 13667.43,
+        "count": 1,
+        "hit_rate": 1.0
       }
     },
     "losses": 0,
     "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
-    "total_realized_pnl_usd": 101554.78,
-    "wins": 1
+    "total_realized_pnl_usd": 115222.21,
+    "wins": 2
   },
   "capital_owner": null,
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 5,
-    "competitive_rank": 4,
+    "competitive_rank": 5,
     "drawdown_usd": 21.78,
     "giveback_usd": 21.78,
     "high_water_nav_usd": 100142029.17,
@@ -47,14 +47,14 @@
     "nav_usd": 100142007.39,
     "net_pnl_usd": 142007.39,
     "pressure_flags": [],
-    "prior_competition_rank": 5,
-    "rank_change": 0,
+    "prior_competition_rank": 6,
+    "rank_change": -1,
     "raw_pnl_rank": 5,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 100000.0,
     "risk_capital_utilization": 0.01,
-    "session_pnl_change_usd": 0.0,
+    "session_pnl_change_usd": 26882.99,
     "status": "ok"
   },
   "learning": {
@@ -65,58 +65,8 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "38e4150ec9242a7b3ca078a120d9ce16923c52fbbf3fa1a43e4a107d548bf8bd",
-  "open_positions": [
-    {
-      "asset_class": "spot_fx",
-      "conviction": 60,
-      "current_notional_usd": 10000000.0,
-      "entry_mark": 9.75,
-      "harvest": {
-        "asset_class": "spot_fx",
-        "catalyst_by": null,
-        "catalyst_logic": "The catalyst is the close-only 20-session range break in USDNOK together with the other krone and krona breaks. A daily close back inside those ranges ends it.",
-        "current_mark": 9.792027729636047,
-        "current_notional_usd": 10000000.0,
-        "entry_mark": 9.752502274795269,
-        "expected_mark_direction": null,
-        "framing": "tactical",
-        "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 345874,
-        "horizon_elapsed_fraction": 0.8006,
-        "horizon_status": "within",
-        "instrument": "USDNOK",
-        "intended_horizon_days": 5,
-        "mae_usd": 0.0,
-        "mechanical_order": false,
-        "mfe_usd": 40528.53,
-        "move_versus_entry_intent": "unknown",
-        "order_policy": "review_only",
-        "position_id": "pos-da4b98a18cf3",
-        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
-        "realization_logic": "Hold the long to the five-session mark from the Nov 20 breakout, and leave earlier if a daily close puts USDNOK back inside the broken range.",
-        "realized_pnl_usd": 0.0,
-        "recorded_mfe_usd": 40528.53,
-        "retained_mfe_fraction": 1.0,
-        "review_move_bp": null,
-        "review_required": false,
-        "review_threshold_usd": 100000.0,
-        "review_triggers": [],
-        "risk_context": "legacy_or_spot",
-        "side": "long",
-        "total_pnl_usd": 40528.53,
-        "trade_id": "trd-trader-chart-guy-pos-da4b98a18cf3",
-        "unrealized_pnl_usd": 40528.53
-      },
-      "instrument": "USDNOK",
-      "opened_at": "2026-11-23T07:00:05.353220-05:00",
-      "position_id": "pos-da4b98a18cf3",
-      "risk_capital_usd": 100000.0,
-      "side": "long",
-      "trade_id": "trd-trader-chart-guy-pos-da4b98a18cf3"
-    }
-  ],
+  "memory_context_sha256": "ea4e4c608baf0b5b4e5ec0b18daa7fa1d969704eff5a66dac6ec02bd814079b3",
+  "open_positions": [],
   "owner_id": "chart-guy",
   "owner_type": "trader",
   "postmortems_due": [],
@@ -195,7 +145,7 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "2c51f800e7bc88a6aff905793038b38d306bddd02f95293b0a404d3e3cb64f11",
+    "state_sha256": "37920ca77c61d143a5d425fe1da7e11721c3093072d48f8258dfc55157d98ae7",
     "streaks": {
       "flat_cycles": 0,
       "session_loss": 0,
@@ -203,6 +153,17 @@
     }
   },
   "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 60,
+      "holding_duration_seconds": 345874,
+      "instrument": "USDNOK",
+      "opened_at": "2026-11-23T07:00:05.353220-05:00",
+      "realized_pnl_usd": 13667.43,
+      "side": "long",
+      "trade_id": "trd-trader-chart-guy-pos-da4b98a18cf3"
+    },
     {
       "asset_class": "spot_fx",
       "closed_at": "2026-11-17T05:39:57.066300-05:00",

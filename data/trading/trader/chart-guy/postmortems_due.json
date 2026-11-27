@@ -25,6 +25,32 @@
       "postmortem_id": "pmd-c2dfe356ba3e",
       "status": "submitted",
       "trade_id": "trd-trader-chart-guy-pos-a4867f05b3bb"
+    },
+    {
+      "created_at": "2026-11-27T07:04:39.364763-05:00",
+      "created_run_id": "overnight-20261127",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-27T07:04:39.364763-05:00",
+        "conviction": 60,
+        "entry_mark": 9.75,
+        "exit_mark": 9.77,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 345874,
+        "instrument": "USDNOK",
+        "invalidation": "The long dies if USDNOK records a daily close back inside the 20-session range broken at 9.753, or if EURNOK, GBPNOK, CHFNOK, or USDSEK close back inside their ranges and remove the cross-sectional break.",
+        "opened_at": "2026-11-23T07:00:05.353220-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": 13667.43,
+        "side": "long",
+        "thesis": null
+      },
+      "owner_id": "chart-guy",
+      "owner_type": "trader",
+      "postmortem_id": "pmd-8bac2c18fa85",
+      "status": "due",
+      "trade_id": "trd-trader-chart-guy-pos-da4b98a18cf3"
     }
   ],
   "schema_version": 1,

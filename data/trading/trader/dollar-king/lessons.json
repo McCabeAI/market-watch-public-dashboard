@@ -159,6 +159,55 @@
         "trd-trader-dollar-king-pos-012b8f0c252c"
       ],
       "updated_at": "2026-11-19T05:32:19.294844-05:00"
+    },
+    {
+      "contradiction_count": 0,
+      "created_at": "2026-11-27T07:04:39.364763-05:00",
+      "future_rule": "Do not stack a fresh dollar-franc long on an existing euro short once dollar-franc is already near a one-year high. If the 20-day upside break stops extending while the US path remains above SOFR, close the franc leg even though the three-part invalidation has not printed.",
+      "history": [
+        {
+          "at": "2026-11-27T07:04:39.364763-05:00",
+          "op": "add",
+          "run_id": "overnight-20261127"
+        }
+      ],
+      "lesson_id": "les-c4150eb0bca5",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-029114f2d448"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "spot_fx",
+        "catalyst_type": "break_extension",
+        "countries": [
+          "US",
+          "CH"
+        ],
+        "currencies": [
+          "USD",
+          "CHF"
+        ],
+        "decision_dimension": "expression",
+        "failure_mode": "second_dollar_expression_at_extreme",
+        "instrument_family": "spot_fx",
+        "instruments": [
+          "USDCHF"
+        ],
+        "market_drivers": [
+          "us_rate_path"
+        ],
+        "setup_type": "failed_break_extension",
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261127",
+      "status": "active",
+      "text": "Do not add dollar-franc when that pair is already near a one-year high and the dollar rates bid is already carried in a live euro short. A 20-day upside break that stops extending while the US path remains above SOFR is a failed extension and should be cut without waiting for the three-part invalidation.",
+      "trade_ids": [
+        "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
+      ],
+      "updated_at": "2026-11-27T07:04:39.364763-05:00"
     }
   ],
   "schema_version": 1,

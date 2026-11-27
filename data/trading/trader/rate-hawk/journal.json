@@ -3664,6 +3664,60 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Pay the US two-year at 4.63. The five-session 17bp decline looks like a volatility bid while Brent is 91.40 and the December meeting contract still prices a hike, with the front contract at 4.095 against a 3.83 baseline. March 2027 SOFR at 4.525 versus cash SOFR at 3.92 already marks the hike path, so the cheapened leg is the cash two-year rather than another pay of the strip."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat. A short in March 2027 SOFR is refused because the contract implies 4.525, about 58bp above the 3.94 fixing, and the 9 December meeting already prices about 44bp of tightening to a 4.31 post rate after rising 6.6bp on the day. The US two-year at 4.61 and the ten-year at 4.85 remain above that March implied after their five-day declines, and Canada already prices about 20bp into 9 December.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "1921a927b9c284d9375b7a723751c62c35380f065a4722574474d32f910794e1",
+      "event_id": "jde-e459d8b7186b422b",
+      "funding_view": null,
+      "invalidation": "Reopen a short in March 2027 SOFR only if that implied rate falls back toward the 3.94 cash fixing, or the 9 December cumulative path falls back toward flat, and inflation composition still points to a higher terminal.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "71b5a775f5edb58a91e98d446e75f8ec1eb82ded1fb85144261eb0b680e88cdf",
+      "outcome_links": [],
+      "owner_id": "rate-hawk",
+      "owner_type": "trader",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "b3ba303676732197821be2398d5a1582cbf5935be25cf55db01bf42e8b0548af"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. A short in March 2027 SOFR is refused because the contract implies 4.525, about 58bp above the 3.94 fixing, and the 9 December meeting already prices about 44bp of tightening to a 4.31 post rate after rising 6.6bp on the day. The US two-year at 4.61 and the ten-year at 4.85 remain above that March implied after their five-day declines, and Canada already prices about 20bp into 9 December.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Stay flat. A short in March 2027 SOFR is refused because the contract implies 4.525, about 58bp above the 3.94 fixing, and the 9 December meeting already prices about 44bp of tightening to a 4.31 post rate after rising 6.6bp on the day. The US two-year at 4.61 and the ten-year at 4.85 remain above that March implied after their five-day declines, and Canada already prices about 20bp into 9 December."
     }
   ],
   "schema_version": 1,

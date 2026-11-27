@@ -70,7 +70,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 7,
-    "competitive_rank": 6,
+    "competitive_rank": 7,
     "drawdown_usd": 65707.67,
     "giveback_usd": 65707.67,
     "high_water_nav_usd": 100165743.04,
@@ -95,45 +95,12 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [
-    {
-      "kind": "postmortem",
-      "obligation_id": "pmd-eb30d72782fe",
-      "owner_id": "rate-dove",
-      "owner_type": "trader",
-      "reference": "trd-trader-rate-dove-pos-009872bd62b6",
-      "source_run_id": "overnight-20261125"
-    }
-  ],
-  "memory_context_sha256": "649a471bf2fef9637038dae4de8d20efba7ac9c4985b92c2730049f2b8e82ca1",
+  "learning_obligations": [],
+  "memory_context_sha256": "94ac204f115f8514db11cf3b6177252bf1928a510037e1858d6fce5e96e411d2",
   "open_positions": [],
   "owner_id": "rate-dove",
   "owner_type": "trader",
-  "postmortems_due": [
-    {
-      "created_at": "2026-11-25T06:28:51.354917-05:00",
-      "created_run_id": "overnight-20261125",
-      "facts": {
-        "asset_class": "rates",
-        "closed_at": "2026-11-25T06:28:51.354917-05:00",
-        "conviction": 61,
-        "entry_mark": 4.42,
-        "exit_mark": 4.53,
-        "exit_reason_category": null,
-        "expression": null,
-        "holding_duration_seconds": 170926,
-        "instrument": "SOFR_2027-03",
-        "invalidation": "Sell the March 2027 SOFR receive if its implied rate holds above 4.42, if SOFR rises toward 4.42, or if US cash yields retrace the 23 to 27bp decline.",
-        "opened_at": "2026-11-23T07:00:05.353220-05:00",
-        "rationale_status": "present",
-        "realized_pnl_usd": -3937.5,
-        "side": "long",
-        "thesis": null
-      },
-      "postmortem_id": "pmd-eb30d72782fe",
-      "trade_id": "trd-trader-rate-dove-pos-009872bd62b6"
-    }
-  ],
+  "postmortems_due": [],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
@@ -164,7 +131,7 @@
       "external_pressure": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.12
       },
       "frustration": {
         "band": "calm",
@@ -204,9 +171,9 @@
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "436839447839b5eb819ebf9a03057fb1ac441c753cbde281e4752cbf17d91ffb",
+    "state_sha256": "5587e446827ef06f2b767f7813e6ea34b748e2d1d6225c12b3fdb89061de2d32",
     "streaks": {
-      "flat_cycles": 0,
+      "flat_cycles": 1,
       "session_loss": 2,
       "session_win": 0
     }

@@ -2562,6 +2562,62 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "The book stays flat ahead of the unknown 08:30 growth print. Official SOFR at 3.92 percent is the funding hurdle on shocked risk capital, and VIX at 26.62 raises the cost of being wrong. The Australian dollar long and the US two-year pay are bets into that print, and receiving March 2027 SOFR at 4.525, already far above cash, does not clear funding on a hope for easier policy."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "The book stays flat. Euro at 1.0975 is a one-year extreme that already bounced, and the US ten-year at 4.85 has already rallied 22bp in five days while December pricing embeds about 44bp of hikes. Long euro-yen, a ten-year receive, and long euro do not show expected edge above 3.94 percent SOFR when March 2027 implied funding is already 4.525.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T11:21:51.442819-05:00",
+      "conviction": 40,
+      "decision_fingerprint": "7d9503122fc19ced0761a8c44b01ed51f55551a8b7bbd22d960aa68db4d8e375",
+      "event_id": "jde-7676f5b48afa4765",
+      "funding_view": null,
+      "invalidation": "A markable expression would have to clear 3.94 percent SOFR after the 4.525 March funding path, and it would have to be entered away from the completed one-year euro extreme and the completed 22bp five-day yield rally.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "fa5baf9a56e5c771ad6329c9fb71bba59ab76a1492dcfd6a787d645126544f15",
+      "outcome_links": [],
+      "owner_id": "grinder",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [
+            "rank_distortion_risk"
+          ],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "966ce1b93a8b475e0cba8d0908c85916dcf2fbd3f8f1bbb46c68bebcc88f901a"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "f884d4aeb29dfa4ff6a1ed8e436d8143c2e09990ff108167cc7e2a5cf32b5b14",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": "prp-grinder-overnight-20261127-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The book stays flat. Euro at 1.0975 is a one-year extreme that already bounced, and the US ten-year at 4.85 has already rallied 22bp in five days while December pricing embeds about 44bp of hikes. Long euro-yen, a ten-year receive, and long euro do not show expected edge above 3.94 percent SOFR when March 2027 implied funding is already 4.525.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "The book stays flat. Euro at 1.0975 is a one-year extreme that already bounced, and the US ten-year at 4.85 has already rallied 22bp in five days while December pricing embeds about 44bp of hikes. Long euro-yen, a ten-year receive, and long euro do not show expected edge above 3.94 percent SOFR when March 2027 implied funding is already 4.525."
     }
   ],
   "schema_version": 1,

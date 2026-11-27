@@ -2603,6 +2603,62 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "Euro-dollar at 1.0963 is only a few pips through the 1.0968 short, with a one-year z-score of -2.72 and RSI at 32, so this decline is stretched and further downside is the tail. March 2027 SOFR at 4.525 versus cash SOFR at 3.92 still embeds a higher rate path, and the latest European remarks leave the hawkish lean intact. The full 300 million is more adverse-path exposure than the remaining upside can carry, so the short is cut in half."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": "spot_fx",
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": "EURUSD",
+          "notional_usd": null,
+          "position_id": "pm-swinger-cca5e82a9a1e",
+          "rationale": "The concentrated euro short remains the book. Euro trades at 1.0975, still beyond the 20-day low that followed the hawkish minutes, and 1.1120 has not been touched. December Fed pricing firmed another 6.6bp overnight to about 44bp of hikes, so the hawkish lean is intact. Dollar-yen was not the break, and the March funding short stays closed.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": "short"
+        }
+      ],
+      "at": "2026-11-27T11:21:51.069428-05:00",
+      "conviction": 70,
+      "decision_fingerprint": "31954a61f18d97a690cfc6d727f1e0a794f6e8dd479df518705b6151e0b91d17",
+      "event_id": "jde-87d2bcfac3e64518",
+      "funding_view": null,
+      "invalidation": "Close the euro short if euro trades back through 1.1120, or if policy communication reverses the hawkish lean. A one-year z-score of -2.56 and yesterday's 0.37 percent bounce are volatility to hold, not an exit, while price and the Fed path remain on the right side of those lines.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [
+        "pm-swinger-cca5e82a9a1e"
+      ],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "2962b269a417ed7f97e33528094b08153febd1eb46fd9c8e39b34e4407361f8f",
+      "outcome_links": [],
+      "owner_id": "swinger",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "ede68d9c931b46ef205018b4f196ad71c7c43982a6ce2df31173eb3ae751ac6f"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "e7148a876b013db2a47136613b254dd9aadbce95092a9fe8fe86f039e63443eb",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": "prp-swinger-overnight-20261127-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "The concentrated euro short remains the book. Euro trades at 1.0975, still beyond the 20-day low that followed the hawkish minutes, and 1.1120 has not been touched. December Fed pricing firmed another 6.6bp overnight to about 44bp of hikes, so the hawkish lean is intact. Dollar-yen was not the break, and the March funding short stays closed.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "The concentrated euro short remains the book. Euro trades at 1.0975, still beyond the 20-day low that followed the hawkish minutes, and 1.1120 has not been touched. December Fed pricing firmed another 6.6bp overnight to about 44bp of hikes, so the hawkish lean is intact. Dollar-yen was not the break, and the March funding short stays closed."
     }
   ],
   "schema_version": 1,

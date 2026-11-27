@@ -34,7 +34,7 @@
     "competition_cohort_size": 15,
     "competition_eligible": true,
     "competition_rank": 9,
-    "competitive_rank": 8,
+    "competitive_rank": 9,
     "drawdown_usd": 0.0,
     "giveback_usd": 0.0,
     "high_water_nav_usd": 100000000.0,
@@ -60,7 +60,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "f806a41481c7d2ad475ef8927be6bf97c13bbb68b553d09df77f5af2f0d7b327",
+  "memory_context_sha256": "7d36ed98de422d8341753e7604dec732c0f8aa8e104227808ee06edc286a42e2",
   "open_positions": [],
   "owner_id": "no-trade-skeptic",
   "owner_type": "trader",
@@ -100,7 +100,7 @@
       "frustration": {
         "band": "calm",
         "trend": "flat",
-        "value": 0.13
+        "value": 0.12
       },
       "revenge_pressure": {
         "band": "calm",
@@ -130,30 +130,40 @@
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
-        "run_id": "overnight-20261120"
-      },
-      {
-        "kind": "flat_with_market",
-        "magnitude": 1.0,
         "run_id": "overnight-20261123"
       },
       {
         "kind": "flat_with_market",
         "magnitude": 1.0,
         "run_id": "overnight-20261125"
+      },
+      {
+        "kind": "flat_with_market",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261127"
       }
     ],
     "required_checks": {},
     "schema_version": 1,
-    "state_sha256": "0d7f0dbd7995ec0570b4189be492c336524ab5a968889ffee94202eacfdab9dc",
+    "state_sha256": "56c562c3aa18e41ec052646bd13248b20778ba42f593cbd17a3e1bfb14c3105c",
     "streaks": {
-      "flat_cycles": 39,
+      "flat_cycles": 40,
       "session_loss": 0,
       "session_win": 0
     }
   },
   "recent_closed_trades": [],
   "recent_funding_views": [
+    {
+      "current_sofr": {
+        "observation_date": "2026-11-24",
+        "percent_rate": 3.94,
+        "rate": 3.94
+      },
+      "forward_funding_assessment": "higher",
+      "implication": "Paying up for forward dollars of funding is the consensus, not a residual edge, until the December path actually cheapens.",
+      "sr3_forward_view": "March 2027 SOFR implied at 4.525 percent is well above the 3.94 percent fixing, so forward funding is already priced richer than cash."
+    },
     {
       "current_sofr": "3.92 percent official NY Fed fixing dated 2026-11-23",
       "forward_funding_assessment": "higher",
@@ -175,16 +185,6 @@
       "forward_funding_assessment": "higher",
       "implication": "Forward funding sits above realized SOFR, and no duration, dollar, oil, or Canada-retail expression earns more than SOFR charged on shocked risk capital, so the book remains at the official SOFR benchmark.",
       "sr3_forward_view": "SR3Z6, December 2026, implies 4.29 percent."
-    },
-    {
-      "current_sofr": {
-        "observation_date": "2026-11-17",
-        "rate": 3.92,
-        "source": "NY Fed"
-      },
-      "forward_funding_assessment": "about_the_same",
-      "implication": "Staying at the 3.92 official fixing beats paying that funding on new shocked-risk capital. The curve is already the price of the public hawkish news, so flat cash is a refusal to finance the chase, not a claim of alpha.",
-      "sr3_forward_view": "Implied secured funding is 4.30 in December 2026, 4.575 in March 2027, 4.71 in June, 4.735 in September, and 4.695 in December 2027, versus the 3.92 cash fixing."
     }
   ],
   "recent_performance_reflections": [],

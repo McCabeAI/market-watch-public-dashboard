@@ -3222,6 +3222,79 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "The cutoff sits before the 08:30 growth and income releases, so the prints that could reprice this tape are still unknown. Five-session yield declines of 17 to 19bp and March SOFR at 4.525 against cash SOFR of 3.92 already embed the easier-yield and higher-funding path visible in the freeze. Brent at 91.40, VIX at 26.62, and euro-dollar at 1.0963 describe a noisy, extended market, and a flat book stays at the official SOFR benchmark until a post-print residual is large enough to fund."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Stay flat. Euro at 1.0975 is a one-year extreme that already bounced, with a data cluster hours to days away, so the dollar stretch is priced and poorly timed. December pricing embeds about 44bp of hikes to 4.31 and firmed overnight, the ten-year rallied 22bp in five days to 4.85, and March 2027 SOFR at 4.525 is above cash SOFR at 3.94.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T07:04:39.364763-05:00",
+      "conviction": 48,
+      "decision_fingerprint": "59c327454394f1fbda8aa4f1c343af8adb65e6e7801473ba63186c875240d156",
+      "event_id": "jde-706860d5826b40ea",
+      "funding_view": {
+        "current_sofr": {
+          "observation_date": "2026-11-24",
+          "percent_rate": 3.94,
+          "rate": 3.94
+        },
+        "forward_funding_assessment": "higher",
+        "implication": "Paying up for forward dollars of funding is the consensus, not a residual edge, until the December path actually cheapens.",
+        "sr3_forward_view": "March 2027 SOFR implied at 4.525 percent is well above the 3.94 percent fixing, so forward funding is already priced richer than cash."
+      },
+      "invalidation": "Standing aside is wrong if December hike pricing cheapens clearly from 4.31 through the data cluster, or if euro loses the bounce and extends the one-year extreme while a fresh positioning print shows the move is still lightly owned.",
+      "kind": "OVERNIGHT_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "f806a41481c7d2ad475ef8927be6bf97c13bbb68b553d09df77f5af2f0d7b327",
+      "outcome_links": [],
+      "owner_id": "no-trade-skeptic",
+      "owner_type": "trader",
+      "payload": {
+        "funding_view": {
+          "current_sofr": {
+            "observation_date": "2026-11-24",
+            "percent_rate": 3.94,
+            "rate": 3.94
+          },
+          "forward_funding_assessment": "higher",
+          "implication": "Paying up for forward dollars of funding is the consensus, not a residual edge, until the December path actually cheapens.",
+          "sr3_forward_view": "March 2027 SOFR implied at 4.525 percent is well above the 3.94 percent fixing, so forward funding is already priced richer than cash."
+        },
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "0d7f0dbd7995ec0570b4189be492c336524ab5a968889ffee94202eacfdab9dc"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "11059bbe69b38b909ce91b16aceec217449d11e97d8cd833e8406b3a96e8078e",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": null,
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Stay flat. Euro at 1.0975 is a one-year extreme that already bounced, with a data cluster hours to days away, so the dollar stretch is priced and poorly timed. December pricing embeds about 44bp of hikes to 4.31 and firmed overnight, the ten-year rallied 22bp in five days to 4.85, and March 2027 SOFR at 4.525 is above cash SOFR at 3.94.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Stay flat. Euro at 1.0975 is a one-year extreme that already bounced, with a data cluster hours to days away, so the dollar stretch is priced and poorly timed. December pricing embeds about 44bp of hikes to 4.31 and firmed overnight, the ten-year rallied 22bp in five days to 4.85, and March 2027 SOFR at 4.525 is above cash SOFR at 3.94."
     }
   ],
   "schema_version": 1,

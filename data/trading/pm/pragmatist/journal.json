@@ -2861,6 +2861,60 @@
       "run_id": "overnight-20261125",
       "schema_version": 1,
       "thesis": "The book stays flat into the 08:30 growth print, with VIX at 26.62, so preservation outranks forcing a return versus cash SOFR. The Australian dollar at 0.6641 is oversold, euro-dollar at 1.0963 is a one-year extreme, and the US two-year at 4.63 has already fallen 17bp, while March SOFR implies 4.525 against cash at 3.92. Those levels are markable, and each is a directional bet on the same unknown print."
+    },
+    {
+      "actions": [
+        {
+          "action": "HOLD",
+          "asset_class": null,
+          "blocked_reason": null,
+          "exit_reason_category": null,
+          "hedge_of": null,
+          "instrument": null,
+          "notional_usd": null,
+          "position_id": null,
+          "rationale": "Reject the euro-yen long, the US ten-year receive, and the euro long, and do not replace them with the Australian dollar or dollar-yen. The hike path firmed overnight, the dollar extreme is already being treated as priced, and the long-end rally is late, so none of the handoffs is a clean single or a useful complement to a flat book.",
+          "rationale_status": "present",
+          "result": "applied",
+          "side": null
+        }
+      ],
+      "at": "2026-11-27T11:21:51.246446-05:00",
+      "conviction": 58,
+      "decision_fingerprint": "ca162e11381f974340e599acdb85c64b391b91ee74d63fc3ae7f98ab220cafde",
+      "event_id": "jde-71c7c63deb9f4c70",
+      "funding_view": null,
+      "invalidation": "Reopen a small euro long only if December hike pricing gives back the overnight firming and the bounce holds. Reopen a ten-year receive only if yields give back a meaningful part of the five-day rally while the front end stays firm. Reopen euro-yen only after a yen reversal that clears the gap at 159.26.",
+      "kind": "PM_DECISION",
+      "linked_position_ids": [],
+      "linked_trade_ids": [],
+      "memory_context_sha256": "dd6cf04ad426d1a2a5f3c5ee40287d7168ffb03ca10bbeff2d41d154c55659a5",
+      "outcome_links": [],
+      "owner_id": "pragmatist",
+      "owner_type": "pm",
+      "payload": {
+        "psychology": {
+          "active_flags": [],
+          "check": null,
+          "check_status": "not_required",
+          "pressure_assessment": null,
+          "state_sha256": "3e5bcab73b68260f9ac0e065fc7f5d9d934feee1fb7cc16fad0888a89e619c6b"
+        }
+      },
+      "postmortem_links": [],
+      "provenance": {
+        "evidence_cutoff": "2026-11-27T07:04:39.364763-05:00",
+        "evidence_hash": "2bf28da48d520ef600aa79f82ba19a0eed35700882735c96e5a6e00b7f404bcf",
+        "overnight_run_id": "overnight-20261127",
+        "review_id": "review-001",
+        "review_packet_id": "prp-pragmatist-overnight-20261127-review-001",
+        "source_ref": null,
+        "trader_room_run_id": null
+      },
+      "rationale": "Reject the euro-yen long, the US ten-year receive, and the euro long, and do not replace them with the Australian dollar or dollar-yen. The hike path firmed overnight, the dollar extreme is already being treated as priced, and the long-end rally is late, so none of the handoffs is a clean single or a useful complement to a flat book.",
+      "run_id": "overnight-20261127",
+      "schema_version": 1,
+      "thesis": "Reject the euro-yen long, the US ten-year receive, and the euro long, and do not replace them with the Australian dollar or dollar-yen. The hike path firmed overnight, the dollar extreme is already being treated as priced, and the long-end rally is late, so none of the handoffs is a clean single or a useful complement to a flat book."
     }
   ],
   "schema_version": 1,
