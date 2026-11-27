@@ -1,0 +1,370 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "If the 2Y SOFR-CORRA minus cash SOFR-CORRA gap is negligible, do not express CAD valuation in SOFR-CORRA packs; the residual, if any, is spot.",
+      "lesson_id": "les-b02e04336ac7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-d9e2764dea0f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": "rates_rv",
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [
+          "SOFR-CORRA_2Y_2027H1"
+        ],
+        "market_drivers": [],
+        "setup_type": "linear_combo",
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20260929",
+      "status": "active",
+      "text": "A 2Y cross-market spread is not cheap because the currency is cheap. Screen the spread against cash before invoking REER.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-cdde326460b4"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not reopen a covered value short unless the fundamental sponsor named at entry is still present, or a separate historical extreme with its own anchor has replaced it.",
+      "lesson_id": "les-2d4618441ed0",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-855908a87c6b"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261106",
+      "status": "active",
+      "text": "When a valuation short converges while its commodity sponsor fades, the profit belongs to the original thesis, but the residual percentile is a new question and does not inherit the old ticket.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-63923b5f6571"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not reopen a covered EURGBP value long unless the cross responds when the euro legs move. A CAD valuation view stays in spot when the two-year spread versus cash is not a quoted instrument.",
+      "lesson_id": "les-da5cddbcadc7",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0c5385c0010b"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "A covered euro-sterling value long that stays pinned after the euro legs lift no longer has its sponsor, even if the valuation gap is still extreme and the round trip is flat.",
+      "trade_ids": [
+        "trd-trader-value-guy-pos-5760dbd4ac3e"
+      ]
+    }
+  ],
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
+  "calibration": {
+    "average_holding_seconds": 488392,
+    "average_realized_pnl_usd": 42836.8,
+    "breakeven": 1,
+    "by_asset_class": {
+      "rates_rv": {
+        "count": 2,
+        "total_realized_pnl_usd": -56000.0
+      },
+      "spot_fx": {
+        "count": 4,
+        "total_realized_pnl_usd": 313020.79
+      }
+    },
+    "closed_trade_count": 6,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 42836.8,
+        "count": 6,
+        "hit_rate": 0.4
+      }
+    },
+    "losses": 3,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 257020.79,
+    "wins": 2
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": false,
+    "competition_rank": 4,
+    "competitive_rank": null,
+    "drawdown_usd": 29359.79,
+    "giveback_usd": 29359.79,
+    "high_water_nav_usd": 100285315.77,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100255955.98,
+    "net_pnl_usd": 255955.98,
+    "pressure_flags": [],
+    "prior_competition_rank": 4,
+    "rank_change": 0,
+    "raw_pnl_rank": 4,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": false,
+    "learning_default_age_runs": 1,
+    "learning_default_count": 2,
+    "learning_status": "learning_default",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-82462a918422",
+      "owner_id": "value-guy",
+      "owner_type": "trader",
+      "reference": "trd-trader-value-guy-pos-2a96e5f2579c",
+      "source_run_id": "overnight-20261123"
+    }
+  ],
+  "memory_context_sha256": "0ec3fd4d06af02f846dd5b20c91eee0dae3e53edb7a93723d725544ee0173385",
+  "open_positions": [],
+  "owner_id": "value-guy",
+  "owner_type": "trader",
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-23T07:00:05.353220-05:00",
+      "created_run_id": "overnight-20261123",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-23T07:00:05.353220-05:00",
+        "conviction": 58,
+        "entry_mark": 1.43,
+        "exit_mark": 1.43,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 263987,
+        "instrument": "USDCAD",
+        "invalidation": "The short is wrong if crude reprices to a scare that makes 1.43004 fair, or if USDCAD stays pinned at or above 1.43004 for about 20 sessions while oil holds near these levels.",
+        "opened_at": "2026-11-20T05:40:17.809566-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -6547.49,
+        "side": "short",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-82462a918422",
+      "trade_id": "trd-trader-value-guy-pos-2a96e5f2579c"
+    }
+  ],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.11
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.3
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.18
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "down",
+        "value": 0.5
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.25
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "learning_default_entered",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261125"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "5b231aae363a81392b2e87267b54e3505a5bad0ebd9ef5540b539f18dd1e8c2c",
+    "streaks": {
+      "flat_cycles": 1,
+      "session_loss": 0,
+      "session_win": 5
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-23T07:00:05.353220-05:00",
+      "conviction": 58,
+      "holding_duration_seconds": 263987,
+      "instrument": "USDCAD",
+      "opened_at": "2026-11-20T05:40:17.809566-05:00",
+      "realized_pnl_usd": -6547.49,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-2a96e5f2579c"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 61,
+      "holding_duration_seconds": 780102,
+      "instrument": "EURGBP",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "realized_pnl_usd": -8390.27,
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-5760dbd4ac3e"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-12T04:50:23.662182-05:00",
+      "conviction": 61,
+      "holding_duration_seconds": 512674,
+      "instrument": "AUDNZD",
+      "opened_at": "2026-11-06T06:25:49.281876-05:00",
+      "realized_pnl_usd": 67659.53,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-65b06053d4c6"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-05T04:53:53.458055-05:00",
+      "conviction": 58,
+      "holding_duration_seconds": 606562,
+      "instrument": "AUDCAD",
+      "opened_at": "2026-10-29T04:24:31.160680-04:00",
+      "realized_pnl_usd": 260299.02,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-63923b5f6571"
+    },
+    {
+      "asset_class": "rates_rv",
+      "closed_at": "2026-10-20T09:31:20.120731-04:00",
+      "conviction": 56,
+      "holding_duration_seconds": 532781,
+      "instrument": "NZ-US_10Y",
+      "opened_at": "2026-10-14T05:31:38.673189-04:00",
+      "realized_pnl_usd": 0.0,
+      "side": "short",
+      "trade_id": "trd-trader-value-guy-pos-f895a4694dd7"
+    },
+    {
+      "asset_class": "rates_rv",
+      "closed_at": "2026-09-22T15:40:57.474758-04:00",
+      "conviction": 58,
+      "holding_duration_seconds": 234247,
+      "instrument": "SOFR-CORRA_2Y_2027H1",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": -56000.0,
+      "side": "long",
+      "trade_id": "trd-trader-value-guy-pos-cdde326460b4"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "variance_luck",
+        "variance"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "A seven-place standing swing on about 57 thousand dollars versus a 100 million book is ordinary bounded variance around an already-booked pack loss and a still-working Australian dollar-Canada short; the prior process remains sound, so no new rule is required.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-3f232c334537",
+      "run_id": "overnight-20261102",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "rank_shock"
+      ],
+      "what_happened_vs_expected": "The fifth-to-twelfth slide with about 56743 against the book looked like a broken valuation book. Instead standing is back at fifth with about 59612 of net result and only 27 of giveback, while the live Australian dollar-Canada short kept working with Brent at 117.64. The dollar hit was the old United States-Canada pack, not a collapse of the five-year richness gap."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

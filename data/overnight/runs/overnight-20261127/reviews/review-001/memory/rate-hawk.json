@@ -1,0 +1,368 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "Keep an Australian bill pay only while that contract is on a hike path above cash. A strip that is flat in front and lower in the back is an exit.",
+      "lesson_id": "les-0164a63a01f5",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-4e5db6894f03"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261116",
+      "status": "active",
+      "text": "An Australian bill pay is not an underpriced hiking cycle once the strip is flat at the front and lower in the back.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-9cbf3f27dfff"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Exit a back-contract policy pay when the preceding contract is already above cash and the back contract remains below cash, because that curve is residual easing and not an unfinished hike.",
+      "lesson_id": "les-95ded38a530c",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-ab735cb97507"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261117",
+      "status": "active",
+      "text": "Removing one priced cut and starting a hiking cycle are different policy paths, and the March-versus-September AONIA spread is the market's statement of which path is priced.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-069ec6c19021"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Invalidate a short-rate position on that contract's own path. If the forward falls and the strip is not pricing hikes, the hiking-cycle thesis is finished even when Brent is still in the low 90s. Do not pay Australian bills when the front is 5.00 and the back is 4.88.",
+      "lesson_id": "les-0d33d7320437",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-182754d61016"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261118",
+      "status": "active",
+      "text": "The position was the Canada forward, and that forward fell from 3.12 to 2.96. Oil near 105 was a stale premise and left the hawkish rethink without a rate path.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-2709875e8c9c"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Cover a front secured-funding short when that contract has built the path and fresh hawkish communication is showing up in the two-year rather than in the contract. Do not roll the closed front short into the peak contract to keep the thesis alive.",
+      "lesson_id": "les-57810c8f2420",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-0ee32782b38a"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "A short-rate short is finished when the contract that had room to price incremental hikes has built that path. A peak contract does not inherit the result just because the reaction function is still described as hawkish.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Invalidate a short-rate on that contract's own path, and do not open a new short in the peak contract merely to keep a hawkish story in the book.",
+      "lesson_id": "les-52db575636aa",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-40857a1c3c7f"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261120",
+      "status": "active",
+      "text": "Do not roll a finished front SOFR short into the peak contract just to keep a hawkish story.",
+      "trade_ids": [
+        "trd-trader-rate-hawk-pos-c9184707c12b"
+      ]
+    }
+  ],
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
+  "calibration": {
+    "average_holding_seconds": 2468612,
+    "average_realized_pnl_usd": -9722.91,
+    "breakeven": 0,
+    "by_asset_class": {
+      "rates": {
+        "count": 6,
+        "total_realized_pnl_usd": -58337.47
+      }
+    },
+    "closed_trade_count": 6,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": -33750.0,
+        "count": 2,
+        "hit_rate": 0.0
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 3079.41,
+        "count": 3,
+        "hit_rate": 1.0
+      }
+    },
+    "losses": 3,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": -58337.47,
+    "wins": 3
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 12,
+    "competitive_rank": 11,
+    "drawdown_usd": 154162.16,
+    "giveback_usd": 154162.16,
+    "high_water_nav_usd": 100092016.81,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 99937854.65,
+    "net_pnl_usd": -62145.35,
+    "pressure_flags": [],
+    "prior_competition_rank": 12,
+    "rank_change": 0,
+    "raw_pnl_rank": 12,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [],
+  "memory_context_sha256": "71b5a775f5edb58a91e98d446e75f8ec1eb82ded1fb85144261eb0b680e88cdf",
+  "open_positions": [],
+  "owner_id": "rate-hawk",
+  "owner_type": "trader",
+  "postmortems_due": [],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": []
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.2
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.1
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.05
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "flat",
+        "value": 0.49
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.35
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "b3ba303676732197821be2398d5a1582cbf5935be25cf55db01bf42e8b0548af",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 1
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-19T05:32:19.294844-05:00",
+      "conviction": 60,
+      "holding_duration_seconds": 5208929,
+      "instrument": "SOFR_2027-09",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 3750.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-c9184707c12b"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 60,
+      "holding_duration_seconds": 1031253,
+      "instrument": "SOFR_2026-12",
+      "opened_at": "2026-11-06T06:25:49.281876-05:00",
+      "realized_pnl_usd": 4250.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-6c7bcf0fe6af"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-17T05:39:57.066300-05:00",
+      "conviction": 67,
+      "holding_duration_seconds": 4236948,
+      "instrument": "CORRA_2027-03",
+      "opened_at": "2026-09-29T04:44:08.485973-04:00",
+      "realized_pnl_usd": -55000.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-2709875e8c9c"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-16T05:49:50.389382-05:00",
+      "conviction": 64,
+      "holding_duration_seconds": 521953,
+      "instrument": "AONIA_2027-09",
+      "opened_at": "2026-11-10T04:50:36.940059-05:00",
+      "realized_pnl_usd": 1238.22,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-069ec6c19021"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": 70,
+      "holding_duration_seconds": 3720678,
+      "instrument": "AONIA_2027-06",
+      "opened_at": "2026-10-01T04:50:57.400664-04:00",
+      "realized_pnl_usd": -12500.0,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-9cbf3f27dfff"
+    },
+    {
+      "asset_class": "rates",
+      "closed_at": "2026-11-13T06:22:15.706647-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 91912,
+      "instrument": "AONIA_2027-12",
+      "opened_at": "2026-11-12T04:50:23.662182-05:00",
+      "realized_pnl_usd": -75.69,
+      "side": "short",
+      "trade_id": "trd-trader-rate-hawk-pos-1b79b84070a7"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}

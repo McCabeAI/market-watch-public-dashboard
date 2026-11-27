@@ -40,7 +40,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
   "calibration": {
     "average_holding_seconds": 2516526,
     "average_realized_pnl_usd": 19109.38,
@@ -92,8 +92,8 @@
     "raw_pnl_rank": 8,
     "recent_pattern": "flat",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 0.0,
-    "risk_capital_utilization": 0.0,
+    "risk_capital_usd": 1500000.0,
+    "risk_capital_utilization": 0.15,
     "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
@@ -105,7 +105,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "eaf3f3ea826d7d4f009dc808b2274b526930a97c93e56002216ee21f87e5f94b",
+  "memory_context_sha256": "dfb54698e5733ba08a49d436834fed37f58313a6c5b05b39992b0981a798eca6",
   "open_positions": [
     {
       "asset_class": "rates",
@@ -118,13 +118,13 @@
         "catalyst_logic": "US GDP and personal income at 08:30 are the gate. A soft pair lets the March hike premium come out. A hot pair with Brent still near 91 is the cover.",
         "current_mark": 4.525,
         "current_notional_usd": 600000000.0,
-        "entry_mark": 4.53,
+        "entry_mark": 4.525,
         "expected_mark_direction": null,
         "framing": "tactical",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 174948,
+        "horizon_elapsed_fraction": 0.2025,
         "horizon_status": "within",
         "instrument": "SOFR_2027-03",
         "intended_horizon_days": 10,
@@ -139,11 +139,11 @@
         "realized_pnl_usd": 0.0,
         "recorded_mfe_usd": -0.0,
         "retained_mfe_fraction": null,
-        "review_move_bp": null,
+        "review_move_bp": 5.0,
         "review_required": false,
-        "review_threshold_usd": 6000000.0,
+        "review_threshold_usd": 100000.0,
         "review_triggers": [],
-        "risk_context": "legacy_or_spot",
+        "risk_context": "instrument_dv01_small_move",
         "side": "long",
         "total_pnl_usd": 0.0,
         "trade_id": "trd-trader-perma-bear-pos-e767e0c310f7",

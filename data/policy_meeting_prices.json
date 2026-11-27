@@ -1,438 +1,32 @@
 {
-  "as_of": "2026-11-25",
+  "as_of": "2026-11-27",
   "banks": {
     "AU": {
       "anchor": 4.85,
       "basis_bp": 0.0,
-      "calendar_retrieved_at": "2026-11-25T14:11:02Z",
+      "calendar_retrieved_at": null,
       "fixing": 4.85,
-      "futures_as_of": "2026-11-24",
-      "meetings": [
-        {
-          "chg_1d_bp": 0.36,
-          "chg_1w_bp": -0.58,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2026-12",
-              "implied_rate": 4.84,
-              "observation_date": "2026-11-24",
-              "price": 95.16,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2026-11",
-              "implied_rate": 4.82,
-              "observation_date": "2026-11-24",
-              "price": 95.18,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": 1.54,
-          "decision_date": "2026-12-08",
-          "effective_date": "2026-12-09",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 31,
-          "ib_post_level": 4.844,
-          "ib_prior_forward": 4.8286,
-          "incremental_bp": 1.54,
-          "instrument_id": "PM:AU:2026-12-08",
-          "method": "identified",
-          "n_post": 23,
-          "n_pre": 8,
-          "post_rate": 4.8654,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": 0.96,
-          "chg_1w_bp": -6.99,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-02",
-              "implied_rate": 4.83,
-              "observation_date": "2026-11-24",
-              "price": 95.17,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-01",
-              "implied_rate": 4.84,
-              "observation_date": "2026-11-24",
-              "price": 95.16,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -0.52,
-          "decision_date": "2027-02-09",
-          "effective_date": "2027-02-10",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 28,
-          "ib_post_level": 4.8234,
-          "ib_prior_forward": 4.844,
-          "incremental_bp": -2.06,
-          "instrument_id": "PM:AU:2027-02-09",
-          "method": "estimated",
-          "n_post": 19,
-          "n_pre": 9,
-          "post_rate": 4.8448,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -3.66,
-          "chg_1w_bp": -18.38,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-03",
-              "implied_rate": 4.805,
-              "observation_date": "2026-11-24",
-              "price": 95.195,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-01",
-              "implied_rate": 4.84,
-              "observation_date": "2026-11-24",
-              "price": 95.16,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -7.64,
-          "decision_date": "2027-03-23",
-          "effective_date": "2027-03-24",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 31,
-          "ib_post_level": 4.7522,
-          "ib_prior_forward": 4.8234,
-          "incremental_bp": -7.12,
-          "instrument_id": "PM:AU:2027-03-23",
-          "method": "estimated",
-          "n_post": 8,
-          "n_pre": 23,
-          "post_rate": 4.7736,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -1.44,
-          "chg_1w_bp": -17.86,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-05",
-              "implied_rate": 4.71,
-              "observation_date": "2026-11-24",
-              "price": 95.29,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-04",
-              "implied_rate": 4.76,
-              "observation_date": "2026-11-24",
-              "price": 95.24,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -12.48,
-          "decision_date": "2027-05-04",
-          "effective_date": "2027-05-05",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 31,
-          "ib_post_level": 4.7038,
-          "ib_prior_forward": 4.7522,
-          "incremental_bp": -4.84,
-          "instrument_id": "PM:AU:2027-05-04",
-          "method": "estimated",
-          "n_post": 27,
-          "n_pre": 4,
-          "post_rate": 4.7252,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -6.27,
-          "chg_1w_bp": -29.36,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-06",
-              "implied_rate": 4.67,
-              "observation_date": "2026-11-24",
-              "price": 95.33,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-04",
-              "implied_rate": 4.76,
-              "observation_date": "2026-11-24",
-              "price": 95.24,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -25.14,
-          "decision_date": "2027-06-22",
-          "effective_date": "2027-06-23",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 30,
-          "ib_post_level": 4.5772,
-          "ib_prior_forward": 4.7038,
-          "incremental_bp": -12.66,
-          "instrument_id": "PM:AU:2027-06-22",
-          "method": "estimated",
-          "n_post": 8,
-          "n_pre": 22,
-          "post_rate": 4.5986,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -6.22,
-          "chg_1w_bp": -24.3,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-08",
-              "implied_rate": 4.56,
-              "observation_date": "2026-11-24",
-              "price": 95.44,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-07",
-              "implied_rate": 4.615,
-              "observation_date": "2026-11-24",
-              "price": 95.385,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -27.68,
-          "decision_date": "2027-08-10",
-          "effective_date": "2027-08-11",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 31,
-          "ib_post_level": 4.5518,
-          "ib_prior_forward": 4.5772,
-          "incremental_bp": -2.54,
-          "instrument_id": "PM:AU:2027-08-10",
-          "method": "estimated",
-          "n_post": 21,
-          "n_pre": 10,
-          "post_rate": 4.5732,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -6.47,
-          "chg_1w_bp": -63.82,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-09",
-              "implied_rate": 4.53,
-              "observation_date": "2026-11-24",
-              "price": 95.47,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-07",
-              "implied_rate": 4.615,
-              "observation_date": "2026-11-24",
-              "price": 95.385,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -60.41,
-          "decision_date": "2027-09-28",
-          "effective_date": "2027-09-29",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 30,
-          "ib_post_level": 4.2245,
-          "ib_prior_forward": 4.5518,
-          "incremental_bp": -32.73,
-          "instrument_id": "PM:AU:2027-09-28",
-          "method": "estimated",
-          "n_post": 2,
-          "n_pre": 28,
-          "post_rate": 4.2459,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -8.89,
-          "chg_1w_bp": -31.26,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-11",
-              "implied_rate": 4.395,
-              "observation_date": "2026-11-24",
-              "price": 95.605,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-10",
-              "implied_rate": 4.475,
-              "observation_date": "2026-11-24",
-              "price": 95.525,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -42.14,
-          "decision_date": "2027-11-02",
-          "effective_date": "2027-11-03",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 30,
-          "ib_post_level": 4.4072,
-          "ib_prior_forward": 4.2245,
-          "incremental_bp": 18.27,
-          "instrument_id": "PM:AU:2027-11-02",
-          "method": "estimated",
-          "n_post": 28,
-          "n_pre": 2,
-          "post_rate": 4.4286,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        },
-        {
-          "chg_1d_bp": -7.69,
-          "chg_1w_bp": -35.22,
-          "contracts": [
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-12",
-              "implied_rate": 4.375,
-              "observation_date": "2026-11-24",
-              "price": 95.625,
-              "product": "IB",
-              "role": "meeting_month",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 1.0
-            },
-            {
-              "as_of": "2026-11-24",
-              "expiry": "2027-10",
-              "implied_rate": 4.475,
-              "observation_date": "2026-11-24",
-              "price": 95.525,
-              "product": "IB",
-              "role": "forward_baseline",
-              "source": "ASX_30D_AONIA",
-              "source_url": "https://www.asx.com.au/data/futures/reports/EODWebMarketSummary261124SFD.htm",
-              "weight": 0.0
-            }
-          ],
-          "cumulative_bp": -48.01,
-          "decision_date": "2027-12-14",
-          "effective_date": "2027-12-15",
-          "estimate_note": "Realized daily cash-rate fixings were not stripped; this is not a fixing-adjusted step.",
-          "ib_identity_residual_bp": 0.0,
-          "ib_month_days": 31,
-          "ib_post_level": 4.3485,
-          "ib_prior_forward": 4.4072,
-          "incremental_bp": -5.87,
-          "instrument_id": "PM:AU:2027-12-14",
-          "method": "estimated",
-          "n_post": 17,
-          "n_pre": 14,
-          "post_rate": 4.3699,
-          "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
-        }
-      ],
+      "futures_as_of": "2026-11-26",
+      "meetings": [],
       "reason": null,
-      "status": "ok",
-      "step_meaning": "IB step is the change in the interbank overnight cash rate versus the prior-month forward average. It is not the RBA cash-rate target or the spot AONIA fixing."
+      "status": "ok"
     },
     "CA": {
       "anchor": 2.5,
-      "basis_bp": 6.0,
-      "calendar_retrieved_at": "2026-11-25T14:11:02Z",
-      "fixing": 2.56,
+      "basis_bp": 5.0,
+      "calendar_retrieved_at": "2026-11-27T12:20:54Z",
+      "fixing": 2.55,
       "futures_as_of": null,
       "meetings": [
         {
-          "chg_1d_bp": 4.07,
-          "chg_1w_bp": 6.78,
+          "chg_1d_bp": 0.34,
+          "chg_1w_bp": 3.73,
           "contracts": [
             {
               "code": "COAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.68,
-              "price": 97.32,
+              "implied_rate": 2.685,
+              "price": 97.315,
               "product": "COA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
@@ -441,36 +35,36 @@
             {
               "code": "COAX26",
               "expiry": "2026-11",
-              "implied_rate": 2.535,
-              "price": 97.465,
+              "implied_rate": 2.5375,
+              "price": 97.4625,
               "product": "COA",
               "role": "forward_baseline",
               "source": "MX_CORRA_FUTURES",
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 19.62,
+          "cumulative_bp": 19.96,
           "decision_date": "2026-12-09",
           "effective_date": "2026-12-10",
           "estimate_note": "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step.",
-          "incremental_bp": 19.62,
+          "incremental_bp": 19.96,
           "instrument_id": "PM:CA:2026-12-09",
           "method": "estimated",
-          "overnight_post": 2.7289,
-          "overnight_pre": 2.5326,
-          "post_rate": 2.6962,
+          "overnight_post": 2.7347,
+          "overnight_pre": 2.5351,
+          "post_rate": 2.6996,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 0.03,
-          "chg_1w_bp": 4.71,
+          "chg_1d_bp": -0.29,
+          "chg_1w_bp": 0.32,
           "contracts": [
             {
               "code": "COAF27",
               "expiry": "2027-01",
-              "implied_rate": 2.75,
-              "price": 97.25,
+              "implied_rate": 2.755,
+              "price": 97.245,
               "product": "COA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
@@ -479,213 +73,213 @@
             {
               "code": "COAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.68,
-              "price": 97.32,
+              "implied_rate": 2.685,
+              "price": 97.315,
               "product": "COA",
               "role": "forward_baseline",
               "source": "MX_CORRA_FUTURES",
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 32.54,
+          "cumulative_bp": 32.25,
           "decision_date": "2027-01-27",
           "effective_date": "2027-01-28",
           "estimate_note": "Realized daily CORRA fixings were not stripped; this is not a fixing-adjusted step.",
-          "incremental_bp": 12.91,
+          "incremental_bp": 12.29,
           "instrument_id": "PM:CA:2027-01-27",
           "method": "estimated",
-          "overnight_post": 2.858,
-          "overnight_pre": 2.7289,
-          "post_rate": 2.8254,
+          "overnight_post": 2.8576,
+          "overnight_pre": 2.7347,
+          "post_rate": 2.8225,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 10.79,
-          "chg_1w_bp": 3.11,
+          "chg_1d_bp": 1.39,
+          "chg_1w_bp": 23.28,
           "contracts": [
             {
               "code": "CRAZ26",
               "expiry": "2026-12",
-              "implied_rate": 2.82,
-              "price": 97.18,
+              "implied_rate": 2.825,
+              "price": 97.175,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 41.83,
+          "cumulative_bp": 43.22,
           "decision_date": "2027-03-03",
           "effective_date": "2027-03-04",
-          "incremental_bp": 9.3,
+          "incremental_bp": 10.97,
           "instrument_id": "PM:CA:2027-03-03",
           "method": "identified",
-          "overnight_post": 2.9509,
-          "overnight_pre": 2.858,
-          "post_rate": 2.9183,
+          "overnight_post": 2.9673,
+          "overnight_pre": 2.8576,
+          "post_rate": 2.9322,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 2.1,
-          "chg_1w_bp": -1.54,
+          "chg_1d_bp": 2.65,
+          "chg_1w_bp": -3.68,
           "contracts": [
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 2.975,
-              "price": 97.025,
+              "implied_rate": 3.0,
+              "price": 97.0,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 43.8,
+          "cumulative_bp": 46.45,
           "decision_date": "2027-04-28",
           "effective_date": "2027-04-29",
-          "incremental_bp": 1.97,
+          "incremental_bp": 3.23,
           "instrument_id": "PM:CA:2027-04-28",
           "method": "equal_step",
-          "overnight_post": 2.9706,
-          "overnight_pre": 2.9509,
-          "post_rate": 2.938,
+          "overnight_post": 2.9996,
+          "overnight_pre": 2.9673,
+          "post_rate": 2.9645,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": -6.6,
-          "chg_1w_bp": -6.18,
+          "chg_1d_bp": 3.92,
+          "chg_1w_bp": -30.62,
           "contracts": [
             {
               "code": "CRAH27",
               "expiry": "2027-03",
-              "implied_rate": 2.975,
-              "price": 97.025,
+              "implied_rate": 3.0,
+              "price": 97.0,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 45.77,
+          "cumulative_bp": 49.69,
           "decision_date": "2027-06-02",
           "effective_date": "2027-06-03",
-          "incremental_bp": 1.97,
+          "incremental_bp": 3.23,
           "instrument_id": "PM:CA:2027-06-02",
           "method": "equal_step",
-          "overnight_post": 2.9903,
-          "overnight_pre": 2.9706,
-          "post_rate": 2.9577,
+          "overnight_post": 3.032,
+          "overnight_pre": 2.9996,
+          "post_rate": 2.9969,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 9.9,
-          "chg_1w_bp": -4.37,
+          "chg_1d_bp": 4.37,
+          "chg_1w_bp": 22.09,
           "contracts": [
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.085,
-              "price": 96.915,
+              "implied_rate": 3.13,
+              "price": 96.87,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 58.15,
+          "cumulative_bp": 62.52,
           "decision_date": "2027-07-21",
           "effective_date": "2027-07-22",
-          "incremental_bp": 12.38,
+          "incremental_bp": 12.83,
           "instrument_id": "PM:CA:2027-07-21",
           "method": "equal_step",
-          "overnight_post": 3.1142,
-          "overnight_pre": 2.9903,
-          "post_rate": 3.0815,
+          "overnight_post": 3.1603,
+          "overnight_pre": 3.032,
+          "post_rate": 3.1252,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": 26.42,
-          "chg_1w_bp": -2.55,
+          "chg_1d_bp": 4.81,
+          "chg_1w_bp": 74.81,
           "contracts": [
             {
               "code": "CRAM27",
               "expiry": "2027-06",
-              "implied_rate": 3.085,
-              "price": 96.915,
+              "implied_rate": 3.13,
+              "price": 96.87,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 70.54,
+          "cumulative_bp": 75.35,
           "decision_date": "2027-09-08",
           "effective_date": "2027-09-09",
-          "incremental_bp": 12.38,
+          "incremental_bp": 12.83,
           "instrument_id": "PM:CA:2027-09-08",
           "method": "equal_step",
-          "overnight_post": 3.238,
-          "overnight_pre": 3.1142,
-          "post_rate": 3.2054,
+          "overnight_post": 3.2886,
+          "overnight_pre": 3.1603,
+          "post_rate": 3.2535,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": -14.76,
-          "chg_1w_bp": -15.81,
+          "chg_1d_bp": 6.32,
+          "chg_1w_bp": -46.66,
           "contracts": [
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.145,
-              "price": 96.855,
+              "implied_rate": 3.205,
+              "price": 96.795,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 52.82,
+          "cumulative_bp": 59.14,
           "decision_date": "2027-10-27",
           "effective_date": "2027-10-28",
-          "incremental_bp": -17.71,
+          "incremental_bp": -16.21,
           "instrument_id": "PM:CA:2027-10-27",
           "method": "equal_step",
-          "overnight_post": 3.0608,
-          "overnight_pre": 3.238,
-          "post_rate": 3.0282,
+          "overnight_post": 3.1265,
+          "overnight_pre": 3.2886,
+          "post_rate": 3.0914,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         },
         {
-          "chg_1d_bp": -55.92,
-          "chg_1w_bp": -29.06,
+          "chg_1d_bp": 7.82,
+          "chg_1w_bp": -168.13,
           "contracts": [
             {
               "code": "CRAU27",
               "expiry": "2027-09",
-              "implied_rate": 3.145,
-              "price": 96.855,
+              "implied_rate": 3.205,
+              "price": 96.795,
               "product": "CRA",
               "role": "meeting_month",
               "source": "MX_CORRA_FUTURES",
               "weight": 1.0
             }
           ],
-          "cumulative_bp": 35.11,
+          "cumulative_bp": 42.93,
           "decision_date": "2027-12-08",
           "effective_date": "2027-12-09",
-          "incremental_bp": -17.71,
+          "incremental_bp": -16.21,
           "instrument_id": "PM:CA:2027-12-08",
           "method": "equal_step",
-          "overnight_post": 2.8837,
-          "overnight_pre": 3.0608,
-          "post_rate": 2.8511,
+          "overnight_post": 2.9644,
+          "overnight_pre": 3.1265,
+          "post_rate": 2.9293,
           "step_meaning": "COA/CRA step is the change in overnight CORRA from the compounded futures curve. It is not an arithmetic monthly average, the spot CORRA fixing, or the BoC target.",
           "vintage_note": "Contract row missing observation_date, open_interest, volume"
         }
@@ -696,9 +290,9 @@
     },
     "EA": {
       "anchor": 2.5,
-      "basis_bp": -5.6,
-      "calendar_retrieved_at": "2026-11-25T14:11:02Z",
-      "fixing": 2.444,
+      "basis_bp": -5.5,
+      "calendar_retrieved_at": "2026-11-27T12:20:54Z",
+      "fixing": 2.445,
       "futures_as_of": "2026-11-25",
       "meetings": [
         {
@@ -712,7 +306,7 @@
           "instrument_id": "PM:EA:2026-12-17",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -725,7 +319,7 @@
           "instrument_id": "PM:EA:2027-02-04",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -738,7 +332,7 @@
           "instrument_id": "PM:EA:2027-03-18",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -751,7 +345,7 @@
           "instrument_id": "PM:EA:2027-04-29",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -764,7 +358,7 @@
           "instrument_id": "PM:EA:2027-06-10",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -777,7 +371,7 @@
           "instrument_id": "PM:EA:2027-07-22",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -790,7 +384,7 @@
           "instrument_id": "PM:EA:2027-09-09",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -803,7 +397,7 @@
           "instrument_id": "PM:EA:2027-10-28",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -816,7 +410,7 @@
           "instrument_id": "PM:EA:2027-12-16",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -829,7 +423,7 @@
           "instrument_id": "PM:EA:2028-02-03",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -842,7 +436,7 @@
           "instrument_id": "PM:EA:2028-03-23",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -855,7 +449,7 @@
           "instrument_id": "PM:EA:2028-05-04",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -868,7 +462,7 @@
           "instrument_id": "PM:EA:2028-06-08",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -881,7 +475,7 @@
           "instrument_id": "PM:EA:2028-07-20",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -894,7 +488,7 @@
           "instrument_id": "PM:EA:2028-09-07",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -907,7 +501,7 @@
           "instrument_id": "PM:EA:2028-10-12",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         },
         {
           "chg_1d_bp": null,
@@ -920,18 +514,18 @@
           "instrument_id": "PM:EA:2028-12-07",
           "method": "unavailable",
           "post_rate": null,
-          "reason": "ESR strip uses delayed quotes; not official settlement"
+          "reason": "ESR strip observation is not the latest publishable session (2026-11-27)"
         }
       ],
-      "reason": "ESR strip uses delayed quotes; not official settlement",
+      "reason": "ESR strip observation is not the latest publishable session (2026-11-27)",
       "status": "unavailable",
       "step_meaning": "CME ESR compound accrual (ACT/360, weekday business days; Friday's rate covers Saturday/Sunday via di); no TARGET holiday calendar on the accrual path"
     },
     "JP": {
       "anchor": null,
       "basis_bp": null,
-      "calendar_retrieved_at": "2026-11-25T14:11:02Z",
-      "fixing": 1.228,
+      "calendar_retrieved_at": "2026-11-27T12:20:54Z",
+      "fixing": 1.227,
       "futures_as_of": null,
       "meetings": [
         {
@@ -1059,31 +653,31 @@
     "US": {
       "anchor": 3.875,
       "basis_bp": 6.5,
-      "calendar_retrieved_at": "2026-11-25T14:11:02Z",
+      "calendar_retrieved_at": "2026-11-27T12:20:54Z",
       "fixing": 3.94,
-      "futures_as_of": "2026-11-25",
+      "futures_as_of": "2026-11-27",
       "meetings": [
         {
           "baseline": {
-            "fixed_days": 24,
-            "forward_days": 6,
+            "fixed_days": 26,
+            "forward_days": 4,
             "kind": "sr1_forward",
-            "meeting_month_average": 4.095,
+            "meeting_month_average": 4.0875,
             "monthly_average": 3.8975,
-            "rate": 3.8308,
+            "rate": 3.7763,
             "source_expiry": "2026-11",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 1.84,
-          "chg_1w_bp": 6.55,
+          "chg_1d_bp": 6.64,
+          "chg_1w_bp": 11.68,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1Z26",
               "expiry": "2026-12",
-              "implied_rate": 4.095,
-              "observation_date": "2026-11-25",
-              "price": 95.905,
+              "implied_rate": 4.0875,
+              "observation_date": "2026-11-27",
+              "price": 95.9125,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1091,11 +685,11 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1X26",
               "expiry": "2026-11",
               "implied_rate": 3.8975,
-              "observation_date": "2026-11-25",
+              "observation_date": "2026-11-27",
               "price": 96.1025,
               "product": "SR1",
               "role": "forward_baseline",
@@ -1104,14 +698,14 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 37.22,
+          "cumulative_bp": 43.86,
           "decision_date": "2026-12-09",
           "effective_date": "2026-12-10",
-          "incremental_bp": 37.22,
+          "incremental_bp": 43.86,
           "instrument_id": "PM:US:2026-12-09",
           "method": "identified",
-          "post_rate": 4.2472,
-          "sofr_post_rate": 4.2031,
+          "post_rate": 4.3136,
+          "sofr_post_rate": 4.2148,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
           "target_lower": 3.75,
           "target_upper": 4.0,
@@ -1122,22 +716,22 @@
             "fixed_days": 0,
             "forward_days": null,
             "kind": "sr1_cross_month",
-            "meeting_month_average": 4.2,
-            "monthly_average": 4.33,
-            "rate": 4.33,
+            "meeting_month_average": 4.1875,
+            "monthly_average": 4.3125,
+            "rate": 4.3125,
             "source_expiry": "2027-02",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 1.31,
-          "chg_1w_bp": 3.65,
+          "chg_1d_bp": 3.7,
+          "chg_1w_bp": 6.53,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1F27",
               "expiry": "2027-01",
-              "implied_rate": 4.2,
-              "observation_date": "2026-11-25",
-              "price": 95.8,
+              "implied_rate": 4.1875,
+              "observation_date": "2026-11-27",
+              "price": 95.8125,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1145,12 +739,12 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1G27",
               "expiry": "2027-02",
-              "implied_rate": 4.33,
-              "observation_date": "2026-11-25",
-              "price": 95.67,
+              "implied_rate": 4.3125,
+              "observation_date": "2026-11-27",
+              "price": 95.6875,
               "product": "SR1",
               "role": "cross_month_anchor",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1158,19 +752,19 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 49.92,
+          "cumulative_bp": 53.62,
           "decision_date": "2027-01-27",
           "effective_date": "2027-01-28",
           "estimate_note": "Post-meeting SOFR is anchored from the meeting-free following month SR1 average under a flat inter-meeting SOFR assumption; the meeting month has fewer than seven post-meeting accrual days.",
-          "incremental_bp": 12.69,
+          "incremental_bp": 9.77,
           "instrument_id": "PM:US:2027-01-27",
           "method": "estimated",
           "n_post": 4,
           "n_pre": 27,
-          "post_rate": 4.3742,
-          "sofr_post_rate": 4.33,
+          "post_rate": 4.4112,
+          "sofr_post_rate": 4.3125,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
-          "strip_identity_residual_bp": 1.94,
+          "strip_identity_residual_bp": 3.99,
           "target_lower": 3.75,
           "target_upper": 4.0,
           "zq_cross_check": null
@@ -1180,22 +774,22 @@
             "fixed_days": 0,
             "forward_days": 28,
             "kind": "sr1_forward",
-            "meeting_month_average": 4.405,
-            "monthly_average": 4.33,
-            "rate": 4.33,
+            "meeting_month_average": 4.3825,
+            "monthly_average": 4.3125,
+            "rate": 4.3125,
             "source_expiry": "2027-02",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 3.52,
-          "chg_1w_bp": 3.64,
+          "chg_1d_bp": 2.61,
+          "chg_1w_bp": 4.88,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1H27",
               "expiry": "2027-03",
-              "implied_rate": 4.405,
-              "observation_date": "2026-11-25",
-              "price": 95.595,
+              "implied_rate": 4.3825,
+              "observation_date": "2026-11-27",
+              "price": 95.6175,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1203,12 +797,12 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1G27",
               "expiry": "2027-02",
-              "implied_rate": 4.33,
-              "observation_date": "2026-11-25",
-              "price": 95.67,
+              "implied_rate": 4.3125,
+              "observation_date": "2026-11-27",
+              "price": 95.6875,
               "product": "SR1",
               "role": "forward_baseline",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1216,14 +810,14 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 66.52,
+          "cumulative_bp": 69.13,
           "decision_date": "2027-03-17",
           "effective_date": "2027-03-18",
-          "incremental_bp": 16.61,
+          "incremental_bp": 15.5,
           "instrument_id": "PM:US:2027-03-17",
           "method": "identified",
-          "post_rate": 4.5402,
-          "sofr_post_rate": 4.4961,
+          "post_rate": 4.5663,
+          "sofr_post_rate": 4.4675,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
           "target_lower": 3.75,
           "target_upper": 4.0,
@@ -1234,22 +828,22 @@
             "fixed_days": 0,
             "forward_days": null,
             "kind": "sr1_cross_month",
-            "meeting_month_average": 4.4825,
-            "monthly_average": 4.5275,
-            "rate": 4.5275,
+            "meeting_month_average": 4.455,
+            "monthly_average": 4.495,
+            "rate": 4.495,
             "source_expiry": "2027-05",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 4.31,
-          "chg_1w_bp": 2.15,
+          "chg_1d_bp": 2.2,
+          "chg_1w_bp": 3.03,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1J27",
               "expiry": "2027-04",
-              "implied_rate": 4.4825,
-              "observation_date": "2026-11-25",
-              "price": 95.5175,
+              "implied_rate": 4.455,
+              "observation_date": "2026-11-27",
+              "price": 95.545,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1257,12 +851,12 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1K27",
               "expiry": "2027-05",
-              "implied_rate": 4.5275,
-              "observation_date": "2026-11-25",
-              "price": 95.4725,
+              "implied_rate": 4.495,
+              "observation_date": "2026-11-27",
+              "price": 95.505,
               "product": "SR1",
               "role": "cross_month_anchor",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1270,19 +864,19 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 69.67,
+          "cumulative_bp": 71.87,
           "decision_date": "2027-04-28",
           "effective_date": "2027-04-29",
           "estimate_note": "Post-meeting SOFR is anchored from the meeting-free following month SR1 average under a flat inter-meeting SOFR assumption; the meeting month has fewer than seven post-meeting accrual days.",
-          "incremental_bp": 3.14,
+          "incremental_bp": 2.75,
           "instrument_id": "PM:US:2027-04-28",
           "method": "estimated",
           "n_post": 2,
           "n_pre": 28,
-          "post_rate": 4.5717,
-          "sofr_post_rate": 4.5275,
+          "post_rate": 4.5937,
+          "sofr_post_rate": 4.495,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
-          "strip_identity_residual_bp": 1.57,
+          "strip_identity_residual_bp": 1.43,
           "target_lower": 3.75,
           "target_upper": 4.0,
           "zq_cross_check": null
@@ -1292,22 +886,22 @@
             "fixed_days": 0,
             "forward_days": 31,
             "kind": "sr1_forward",
-            "meeting_month_average": 4.575,
-            "monthly_average": 4.5275,
-            "rate": 4.5275,
+            "meeting_month_average": 4.545,
+            "monthly_average": 4.495,
+            "rate": 4.495,
             "source_expiry": "2027-05",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 5.38,
-          "chg_1w_bp": 0.36,
+          "chg_1d_bp": 2.57,
+          "chg_1w_bp": 1.96,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1M27",
               "expiry": "2027-06",
-              "implied_rate": 4.575,
-              "observation_date": "2026-11-25",
-              "price": 95.425,
+              "implied_rate": 4.545,
+              "observation_date": "2026-11-27",
+              "price": 95.455,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1315,12 +909,12 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1K27",
               "expiry": "2027-05",
-              "implied_rate": 4.5275,
-              "observation_date": "2026-11-25",
-              "price": 95.4725,
+              "implied_rate": 4.495,
+              "observation_date": "2026-11-27",
+              "price": 95.505,
               "product": "SR1",
               "role": "forward_baseline",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1328,14 +922,14 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 76.45,
+          "cumulative_bp": 79.02,
           "decision_date": "2027-06-09",
           "effective_date": "2027-06-10",
-          "incremental_bp": 6.79,
+          "incremental_bp": 7.14,
           "instrument_id": "PM:US:2027-06-09",
           "method": "identified",
-          "post_rate": 4.6395,
-          "sofr_post_rate": 4.5954,
+          "post_rate": 4.6652,
+          "sofr_post_rate": 4.5664,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
           "target_lower": 3.75,
           "target_upper": 4.0,
@@ -1346,22 +940,22 @@
             "fixed_days": 0,
             "forward_days": null,
             "kind": "sr1_cross_month",
-            "meeting_month_average": 4.6,
-            "monthly_average": 4.605,
-            "rate": 4.605,
+            "meeting_month_average": 4.57,
+            "monthly_average": 4.565,
+            "rate": 4.565,
             "source_expiry": "2027-08",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 6.06,
-          "chg_1w_bp": -1.1,
+          "chg_1d_bp": 1.45,
+          "chg_1w_bp": -0.72,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1N27",
               "expiry": "2027-07",
-              "implied_rate": 4.6,
-              "observation_date": "2026-11-25",
-              "price": 95.4,
+              "implied_rate": 4.57,
+              "observation_date": "2026-11-27",
+              "price": 95.43,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1369,12 +963,12 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1Q27",
               "expiry": "2027-08",
-              "implied_rate": 4.605,
-              "observation_date": "2026-11-25",
-              "price": 95.395,
+              "implied_rate": 4.565,
+              "observation_date": "2026-11-27",
+              "price": 95.435,
               "product": "SR1",
               "role": "cross_month_anchor",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1382,17 +976,17 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 77.42,
+          "cumulative_bp": 78.87,
           "decision_date": "2027-07-28",
           "effective_date": "2027-07-29",
           "estimate_note": "Post-meeting SOFR is anchored from the meeting-free following month SR1 average under a flat inter-meeting SOFR assumption; the meeting month has fewer than seven post-meeting accrual days.",
-          "incremental_bp": 0.96,
+          "incremental_bp": -0.14,
           "instrument_id": "PM:US:2027-07-28",
           "method": "estimated",
           "n_post": 3,
           "n_pre": 28,
-          "post_rate": 4.6492,
-          "sofr_post_rate": 4.605,
+          "post_rate": 4.6637,
+          "sofr_post_rate": 4.565,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
           "strip_identity_residual_bp": -0.37,
           "target_lower": 3.75,
@@ -1404,22 +998,22 @@
             "fixed_days": 0,
             "forward_days": 31,
             "kind": "sr1_forward",
-            "meeting_month_average": 4.6025,
-            "monthly_average": 4.605,
-            "rate": 4.605,
+            "meeting_month_average": 4.565,
+            "monthly_average": 4.565,
+            "rate": 4.565,
             "source_expiry": "2027-08",
             "turn_adjustment_bp": null
           },
-          "chg_1d_bp": 3.56,
-          "chg_1w_bp": -4.6,
+          "chg_1d_bp": 1.96,
+          "chg_1w_bp": -3.71,
           "contracts": [
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1U27",
               "expiry": "2027-09",
-              "implied_rate": 4.6025,
-              "observation_date": "2026-11-25",
-              "price": 95.3975,
+              "implied_rate": 4.565,
+              "observation_date": "2026-11-27",
+              "price": 95.435,
               "product": "SR1",
               "role": "meeting_month",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1427,12 +1021,12 @@
               "weight": 1.0
             },
             {
-              "as_of": "2026-11-25",
+              "as_of": "2026-11-27",
               "code": "SR1Q27",
               "expiry": "2027-08",
-              "implied_rate": 4.605,
-              "observation_date": "2026-11-25",
-              "price": 95.395,
+              "implied_rate": 4.565,
+              "observation_date": "2026-11-27",
+              "price": 95.435,
               "product": "SR1",
               "role": "forward_baseline",
               "source": "ESIGNAL_ICE_1M_SOFR_DELAYED",
@@ -1440,14 +1034,14 @@
               "weight": 0.0
             }
           ],
-          "cumulative_bp": 76.92,
+          "cumulative_bp": 78.88,
           "decision_date": "2027-09-15",
           "effective_date": "2027-09-16",
-          "incremental_bp": -0.5,
+          "incremental_bp": 0.0,
           "instrument_id": "PM:US:2027-09-15",
           "method": "identified",
-          "post_rate": 4.6442,
-          "sofr_post_rate": 4.6,
+          "post_rate": 4.6638,
+          "sofr_post_rate": 4.565,
           "step_meaning": "SR1 step is the implied SOFR change versus the pre-meeting forward baseline. It is not the monthly-average gap, the spot SOFR fixing, or the Fed target lower bound.",
           "target_lower": 3.75,
           "target_upper": 4.0,
@@ -1488,12 +1082,6 @@
   },
   "construction_version": "policy_meeting_v1",
   "outcomes": {
-    "AU": {
-      "2026-11-03": {
-        "effective_date": "2026-11-04",
-        "rate": 4.85
-      }
-    },
     "CA": {
       "2026-10-28": {
         "effective_date": "2026-10-29",

@@ -1,0 +1,136 @@
+{
+  "blocked_expressions": [],
+  "blocked_legs": [],
+  "blocked_sources": [],
+  "countries": {
+    "AU": {
+      "eligible": true,
+      "gaps": [
+        "AU.Activity.business_surveys",
+        "AU.Consumer.confidence",
+        "AU.Consumer.retail"
+      ],
+      "scored_status": "partial"
+    },
+    "CA": {
+      "eligible": true,
+      "gaps": [
+        "CA.Consumer.confidence",
+        "CA.Consumer.income",
+        "CA.Consumer.retail",
+        "CA.Consumer.spending"
+      ],
+      "scored_status": "partial"
+    },
+    "EA": {
+      "eligible": true,
+      "gaps": [
+        "EA.Consumer.income",
+        "EA.Consumer.retail",
+        "EA.Activity.business_surveys",
+        "EA.Consumer.spending",
+        "EA.Labor.employment",
+        "EA.Labor.unemployment"
+      ],
+      "scored_status": "partial"
+    },
+    "JP": {
+      "eligible": true,
+      "gaps": [
+        "JP.Consumer.retail",
+        "JP.Consumer.income",
+        "JP.Activity.business_surveys",
+        "JP.Activity.gdp_domestic_demand",
+        "JP.Consumer.confidence",
+        "JP.Consumer.spending",
+        "JP.Labor.unemployment",
+        "JP.Inflation.underlying",
+        "JP.Labor.employment",
+        "JP.Inflation.headline",
+        "JP.Labor.wages"
+      ],
+      "scored_status": "blocked"
+    },
+    "NZ": {
+      "eligible": true,
+      "gaps": [
+        "NZ.Consumer.confidence",
+        "NZ.Consumer.income"
+      ],
+      "scored_status": "blocked",
+      "sovereign_admission": "research_only"
+    },
+    "US": {
+      "eligible": true,
+      "gaps": [],
+      "scored_status": "ok"
+    }
+  },
+  "countries_unaffected": [],
+  "coverage": "PARTIAL",
+  "eligible": true,
+  "hold_decisions_emitted": 0,
+  "outcome": "PASS",
+  "partial_expressions": [
+    "activity:US",
+    "activity:CA",
+    "activity:AU",
+    "activity:NZ",
+    "activity:EA",
+    "activity:JP",
+    "macro:AU",
+    "macro:NZ"
+  ],
+  "partial_legs": [
+    "NZ_rates"
+  ],
+  "partial_series": [
+    "AU.Consumer.confidence",
+    "NZ.Consumer.confidence",
+    "NZ.Consumer.income"
+  ],
+  "reason": null,
+  "research_coverage_gaps": [
+    "macro:CA",
+    "macro:AU",
+    "macro:EA",
+    "macro:JP"
+  ],
+  "research_coverage_series": [
+    "CA.Consumer.income",
+    "CA.Consumer.retail",
+    "CA.Consumer.spending",
+    "AU.Consumer.retail",
+    "EA.Consumer.income",
+    "EA.Consumer.retail",
+    "EA.Activity.business_surveys",
+    "EA.Consumer.spending",
+    "EA.Labor.employment",
+    "EA.Labor.unemployment",
+    "JP.Consumer.retail",
+    "JP.Consumer.income",
+    "JP.Activity.gdp_domestic_demand",
+    "JP.Consumer.confidence",
+    "JP.Consumer.spending",
+    "JP.Labor.unemployment",
+    "JP.Inflation.underlying",
+    "JP.Labor.employment",
+    "JP.Inflation.headline",
+    "JP.Labor.wages"
+  ],
+  "research_eligible": true,
+  "source_health": [],
+  "stage": "03_quality_gate",
+  "status": "succeeded",
+  "synthetic_holds": false,
+  "trade_eligible_countries": [
+    "US",
+    "CA",
+    "AU",
+    "NZ",
+    "EA",
+    "JP"
+  ],
+  "trader_eligible": true,
+  "trader_execution": "allowed"
+}

@@ -117,7 +117,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
   "calibration": {
     "average_holding_seconds": 1824190,
     "average_realized_pnl_usd": 118277.6,
@@ -157,21 +157,21 @@
     "competition_eligible": true,
     "competition_rank": 1,
     "competitive_rank": 1,
-    "drawdown_usd": 499218.45,
-    "giveback_usd": 499218.45,
+    "drawdown_usd": 505914.71,
+    "giveback_usd": 505914.71,
     "high_water_nav_usd": 100952555.22,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100453336.77,
-    "net_pnl_usd": 453336.77,
+    "nav_usd": 100446640.51,
+    "net_pnl_usd": 446640.51,
     "pressure_flags": [],
     "prior_competition_rank": 1,
     "rank_change": 0,
     "raw_pnl_rank": 1,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 150000.0,
-    "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 6696.26,
+    "risk_capital_usd": 25000.0,
+    "risk_capital_utilization": 0.0025,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -181,8 +181,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "556f67536ad4192530ad29a5f5bd46687337474383f5d8aefdfcab68562fa480",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-029114f2d448",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-dollar-king-pos-e7cd1ee0a3d9",
+      "source_run_id": "overnight-20261125"
+    }
+  ],
+  "memory_context_sha256": "c0868620ecf81dd5d89eba494eb7fc682a47e60e7443b54249708d4984e2ad50",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -193,21 +202,21 @@
         "asset_class": "spot_fx",
         "catalyst_by": "2026-12-04",
         "catalyst_logic": "The hawkish minutes are the catalyst. A reclaim of the broken range would exhaust it.",
-        "current_mark": 1.099,
-        "current_notional_usd": 5000000.0,
+        "current_mark": 1.0963,
+        "current_notional_usd": 2500000.0,
         "entry_mark": 1.1081,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
-        "giveback_usd": 0.0,
-        "holding_seconds": 1037195,
-        "horizon_elapsed_fraction": 0.6039,
+        "giveback_usd": 7670.78,
+        "holding_seconds": 1212143,
+        "horizon_elapsed_fraction": 0.8064,
         "horizon_status": "within",
         "instrument": "EURUSD",
         "intended_horizon_days": 10,
         "mae_usd": -0.0,
         "mechanical_order": false,
-        "mfe_usd": 108744.71,
+        "mfe_usd": 101976.36,
         "move_versus_entry_intent": "unknown",
         "order_policy": "review_only",
         "pending_review": {
@@ -224,7 +233,7 @@
         "realization_logic": "The short pays if the 20-day downside break extends while the two-year stays near 4.80.",
         "realized_pnl_usd": 67683.43,
         "recorded_mfe_usd": 101976.36,
-        "retained_mfe_fraction": 1.0,
+        "retained_mfe_fraction": 0.9248,
         "review_move_bp": null,
         "review_required": true,
         "review_threshold_usd": 100000.0,
@@ -233,21 +242,45 @@
         ],
         "risk_context": "legacy_or_spot",
         "side": "short",
-        "total_pnl_usd": 108744.71,
+        "total_pnl_usd": 94305.58,
         "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
-        "unrealized_pnl_usd": 41061.28
+        "unrealized_pnl_usd": 26622.15
       },
       "instrument": "EURUSD",
       "opened_at": "2026-11-13T06:22:15.706647-05:00",
       "position_id": "pos-d419ff966f72",
-      "risk_capital_usd": 50000.0,
+      "risk_capital_usd": 25000.0,
       "side": "short",
       "trade_id": "trd-trader-dollar-king-pos-d419ff966f72"
     }
   ],
   "owner_id": "dollar-king",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-25T06:28:51.354917-05:00",
+      "created_run_id": "overnight-20261125",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-25T06:28:51.354917-05:00",
+        "conviction": null,
+        "entry_mark": 0.84,
+        "exit_mark": 0.84,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 694134,
+        "instrument": "USDCHF",
+        "invalidation": "EURUSD reclaims its 20-day downside break and USDCHF loses its 20-day upside break while the US two-year premium over Europe and Japan compresses.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -19775.62,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-029114f2d448",
+      "trade_id": "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

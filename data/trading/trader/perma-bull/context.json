@@ -119,7 +119,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
   "calibration": {
     "average_holding_seconds": 1508980,
     "average_realized_pnl_usd": -11807.31,
@@ -161,23 +161,23 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 12,
-    "competitive_rank": 11,
-    "drawdown_usd": 94153.66,
-    "giveback_usd": 94153.66,
+    "competition_rank": 13,
+    "competitive_rank": 12,
+    "drawdown_usd": 131031.31,
+    "giveback_usd": 131031.31,
     "high_water_nav_usd": 100042789.91,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99948636.25,
-    "net_pnl_usd": -51363.75,
+    "nav_usd": 99911758.6,
+    "net_pnl_usd": -88241.4,
     "pressure_flags": [],
     "prior_competition_rank": 13,
-    "rank_change": -1,
-    "raw_pnl_rank": 12,
-    "recent_pattern": "flat",
+    "rank_change": 0,
+    "raw_pnl_rank": 13,
+    "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 150000.0,
-    "risk_capital_utilization": 0.015,
-    "session_pnl_change_usd": 36877.65,
+    "risk_capital_usd": 50000.0,
+    "risk_capital_utilization": 0.005,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -187,8 +187,17 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "8241c984f6fd39cad279f3a7a55679f20ffa90c66e3e8615d76933153871cb32",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-fa1172e9cd65",
+      "owner_id": "perma-bull",
+      "owner_type": "trader",
+      "reference": "trd-trader-perma-bull-pos-d62db363ab83",
+      "source_run_id": "overnight-20261125"
+    }
+  ],
+  "memory_context_sha256": "3fb149d5232ac97ab46541f0c5f1418b9c21234806501ea89e5c98c080f32d0f",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -201,13 +210,13 @@
         "catalyst_logic": "The 08:30 GDP and personal-income prints are the first test. A soft-landing outcome lets the oversold Australian dollar catch up as lower US yields ease the dollar.",
         "current_mark": 0.664142485006361,
         "current_notional_usd": 5000000.0,
-        "entry_mark": 0.66,
+        "entry_mark": 0.664142485006361,
         "expected_mark_direction": null,
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 0,
-        "horizon_elapsed_fraction": 0.0,
+        "holding_seconds": 174948,
+        "horizon_elapsed_fraction": 0.045,
         "horizon_status": "within",
         "instrument": "AUDUSD",
         "intended_horizon_days": 45,
@@ -242,7 +251,31 @@
   ],
   "owner_id": "perma-bull",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-25T06:28:51.354917-05:00",
+      "created_run_id": "overnight-20261125",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-25T06:28:51.354917-05:00",
+        "conviction": 64,
+        "entry_mark": 1.1,
+        "exit_mark": 1.1,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 434913,
+        "instrument": "EURUSD",
+        "invalidation": "A closing break of EURUSD below 1.0992, with gold still elevated and VIX still above the mid-20s, would show the defensive dollar bid is a trend rather than a discount of growth.",
+        "opened_at": "2026-11-20T05:40:17.809566-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -39574.24,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-fa1172e9cd65",
+      "trade_id": "trd-trader-perma-bull-pos-d62db363ab83"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

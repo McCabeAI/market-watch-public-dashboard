@@ -31,7 +31,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
   "calibration": {
     "average_holding_seconds": 2865360,
     "average_realized_pnl_usd": 51687.5,
@@ -69,23 +69,23 @@
   "consequence": {
     "competition_cohort_size": 15,
     "competition_eligible": true,
-    "competition_rank": 6,
-    "competitive_rank": 5,
-    "drawdown_usd": 61762.0,
-    "giveback_usd": 61762.0,
+    "competition_rank": 7,
+    "competitive_rank": 6,
+    "drawdown_usd": 65707.67,
+    "giveback_usd": 65707.67,
     "high_water_nav_usd": 100165743.04,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 100103981.04,
-    "net_pnl_usd": 103981.04,
+    "nav_usd": 100100035.37,
+    "net_pnl_usd": 100035.37,
     "pressure_flags": [],
     "prior_competition_rank": 7,
-    "rank_change": -1,
-    "raw_pnl_rank": 6,
+    "rank_change": 0,
+    "raw_pnl_rank": 7,
     "recent_pattern": "mixed",
     "risk_capital_limit_usd": 10000000.0,
-    "risk_capital_usd": 37500.0,
-    "risk_capital_utilization": 0.0037,
-    "session_pnl_change_usd": 3945.67,
+    "risk_capital_usd": 0.0,
+    "risk_capital_utilization": 0.0,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -95,12 +95,45 @@
     "learning_status": "compliant",
     "repeated_error_escalations": []
   },
-  "learning_obligations": [],
-  "memory_context_sha256": "e758df727d37c617a997fb869b13fc5e8d7628c6b33a04652283d5f9e9431beb",
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-eb30d72782fe",
+      "owner_id": "rate-dove",
+      "owner_type": "trader",
+      "reference": "trd-trader-rate-dove-pos-009872bd62b6",
+      "source_run_id": "overnight-20261125"
+    }
+  ],
+  "memory_context_sha256": "649a471bf2fef9637038dae4de8d20efba7ac9c4985b92c2730049f2b8e82ca1",
   "open_positions": [],
   "owner_id": "rate-dove",
   "owner_type": "trader",
-  "postmortems_due": [],
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-25T06:28:51.354917-05:00",
+      "created_run_id": "overnight-20261125",
+      "facts": {
+        "asset_class": "rates",
+        "closed_at": "2026-11-25T06:28:51.354917-05:00",
+        "conviction": 61,
+        "entry_mark": 4.42,
+        "exit_mark": 4.53,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 170926,
+        "instrument": "SOFR_2027-03",
+        "invalidation": "Sell the March 2027 SOFR receive if its implied rate holds above 4.42, if SOFR rises toward 4.42, or if US cash yields retrace the 23 to 27bp decline.",
+        "opened_at": "2026-11-23T07:00:05.353220-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -3937.5,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-eb30d72782fe",
+      "trade_id": "trd-trader-rate-dove-pos-009872bd62b6"
+    }
+  ],
   "profit_harvest": {
     "mechanical_orders": false,
     "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",

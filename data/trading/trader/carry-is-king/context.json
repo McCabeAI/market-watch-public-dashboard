@@ -100,7 +100,7 @@
       ]
     }
   ],
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
   "calibration": {
     "average_holding_seconds": 1623880,
     "average_realized_pnl_usd": -7734.38,
@@ -140,12 +140,12 @@
     "competition_eligible": true,
     "competition_rank": 14,
     "competitive_rank": 13,
-    "drawdown_usd": 190426.95,
-    "giveback_usd": 190426.95,
+    "drawdown_usd": 177085.41,
+    "giveback_usd": 177085.41,
     "high_water_nav_usd": 100073982.29,
     "material_threshold_usd": 2000000.0,
-    "nav_usd": 99883555.34,
-    "net_pnl_usd": -116444.66,
+    "nav_usd": 99896896.88,
+    "net_pnl_usd": -103103.12,
     "pressure_flags": [],
     "prior_competition_rank": 14,
     "rank_change": 0,
@@ -154,7 +154,7 @@
     "risk_capital_limit_usd": 10000000.0,
     "risk_capital_usd": 50000.0,
     "risk_capital_utilization": 0.005,
-    "session_pnl_change_usd": -13341.54,
+    "session_pnl_change_usd": 0.0,
     "status": "ok"
   },
   "learning": {
@@ -165,7 +165,7 @@
     "repeated_error_escalations": []
   },
   "learning_obligations": [],
-  "memory_context_sha256": "56ffc5fad8a30a7d5a424b591f959a037e2d6300ab6dd0c03ce7b70c61c964a3",
+  "memory_context_sha256": "9645a90fd0651c036150c4dc21d76d3c7f17100383d37226d7fa7a4a5e83ab47",
   "open_positions": [
     {
       "asset_class": "spot_fx",
@@ -176,15 +176,15 @@
         "asset_class": "spot_fx",
         "catalyst_by": null,
         "catalyst_logic": "Hawkish Fed communication supports the long-dollar leg and is aligned with the carry. The haven bid that dropped cash yields is the risk to the short-yen leg.",
-        "current_mark": 158.6442220200182,
+        "current_mark": 159.07142205600655,
         "current_notional_usd": 5000000.0,
         "entry_mark": 159.97088791848617,
         "expected_mark_direction": "higher",
         "framing": "swing",
         "full_size_hold_requires_reunderwrite": false,
         "giveback_usd": null,
-        "holding_seconds": 434913,
-        "horizon_elapsed_fraction": 0.0839,
+        "holding_seconds": 609861,
+        "horizon_elapsed_fraction": 0.1176,
         "horizon_status": "within",
         "instrument": "USDJPY",
         "intended_horizon_days": 60,
@@ -205,9 +205,9 @@
         "review_triggers": [],
         "risk_context": "legacy_or_spot",
         "side": "long",
-        "total_pnl_usd": -82931.7,
+        "total_pnl_usd": -69579.27,
         "trade_id": "trd-trader-carry-is-king-pos-f9d4174687a1",
-        "unrealized_pnl_usd": -41465.85
+        "unrealized_pnl_usd": -28113.42
       },
       "instrument": "USDJPY",
       "opened_at": "2026-11-20T05:40:17.809566-05:00",

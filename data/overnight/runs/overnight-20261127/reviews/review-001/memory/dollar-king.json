@@ -1,0 +1,482 @@
+{
+  "active_lessons": [
+    {
+      "contradiction_count": 0,
+      "future_rule": "After a material dollar-Canada win, three-digit oil plus a rising Canadian impulse is a harvest trigger. Remaining United States rate edge belongs in reduced size, not in a full-size hold that waits to recapture the peak.",
+      "lesson_id": "les-663435a31282",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-31455bf8143b"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261021",
+      "status": "active",
+      "text": "After a material dollar-Canada win, three-digit oil plus a rising Canadian impulse is a harvest trigger. Remaining United States rate edge belongs in reduced size, not in a full-size hold that waits to recapture the peak.",
+      "trade_ids": []
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "The first cut from 8 million to 3 million was not a completed harvest. When three-digit oil and a rising Canadian hike impulse arrive after a paid dollar-Canada win, flatten if you would not initiate from zero; leftover reduced size still waits on peak recapture.",
+      "lesson_id": "les-6cdc8a548aec",
+      "maturity": "candidate",
+      "postmortem_ids": [],
+      "reflection_ids": [
+        "prf-0ec2750b8142"
+      ],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261026",
+      "status": "active",
+      "text": "The first cut from 8 million to 3 million was not a completed harvest. When three-digit oil and a rising Canadian hike impulse arrive after a paid dollar-Canada win, flatten if you would not initiate from zero; leftover reduced size still waits on peak recapture.",
+      "trade_ids": []
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Do not leave a reduced USDCAD leftover waiting on peak recapture when oil is three-digit. Re-enter only if the desk would initiate from flat at the live print, and not into dual Fed/BoC week.",
+      "lesson_id": "les-430144751141",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-9088ab3d7c83"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261027",
+      "status": "active",
+      "text": "After a material USDCAD harvest, three-digit oil plus rising Canadian impulse means flatten fully.",
+      "trade_ids": [
+        "trd-trader-dollar-king-pos-5317bc96d4eb"
+      ]
+    },
+    {
+      "contradiction_count": 0,
+      "future_rule": "Keep a dollar-yen long until one of those three events prints. Do not reopen dollar-yen while the dollar length is already in the euro short and the franc long and the pair is not breaking out.",
+      "lesson_id": "les-bc84da0e8747",
+      "maturity": "candidate",
+      "postmortem_ids": [
+        "pmd-3d0a076838a1"
+      ],
+      "reflection_ids": [],
+      "reinforcement_count": 1,
+      "scope": {
+        "asset_class": null,
+        "catalyst_type": null,
+        "countries": [],
+        "currencies": [],
+        "decision_dimension": null,
+        "failure_mode": null,
+        "instrument_family": null,
+        "instruments": [],
+        "market_drivers": [],
+        "setup_type": null,
+        "technical_setup": null
+      },
+      "source_run_id": "overnight-20261119",
+      "status": "active",
+      "text": "Do not close a dollar-yen long on hike rhetoric. The invalidation is a delivered hike with Japanese funding catching up, dollar funding converging, or intervention.",
+      "trade_ids": [
+        "trd-trader-dollar-king-pos-012b8f0c252c"
+      ]
+    }
+  ],
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
+  "calibration": {
+    "average_holding_seconds": 1824190,
+    "average_realized_pnl_usd": 118277.6,
+    "breakeven": 0,
+    "by_asset_class": {
+      "spot_fx": {
+        "count": 3,
+        "total_realized_pnl_usd": 354832.81
+      }
+    },
+    "closed_trade_count": 3,
+    "conviction_buckets": {
+      "high": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "low": {
+        "average_pnl_usd": null,
+        "count": 0,
+        "hit_rate": null
+      },
+      "medium": {
+        "average_pnl_usd": 187304.22,
+        "count": 2,
+        "hit_rate": 1.0
+      }
+    },
+    "losses": 1,
+    "sample_note": "Calibration is descriptive only. No competence label is inferred from small samples.",
+    "total_realized_pnl_usd": 354832.81,
+    "wins": 2
+  },
+  "capital_owner": null,
+  "consequence": {
+    "competition_cohort_size": 15,
+    "competition_eligible": true,
+    "competition_rank": 1,
+    "competitive_rank": 1,
+    "drawdown_usd": 505914.71,
+    "giveback_usd": 505914.71,
+    "high_water_nav_usd": 100952555.22,
+    "material_threshold_usd": 2000000.0,
+    "nav_usd": 100446640.51,
+    "net_pnl_usd": 446640.51,
+    "pressure_flags": [],
+    "prior_competition_rank": 1,
+    "rank_change": 0,
+    "raw_pnl_rank": 1,
+    "recent_pattern": "mixed",
+    "risk_capital_limit_usd": 10000000.0,
+    "risk_capital_usd": 25000.0,
+    "risk_capital_utilization": 0.0025,
+    "session_pnl_change_usd": 0.0,
+    "status": "ok"
+  },
+  "learning": {
+    "competition_eligible": true,
+    "learning_default_age_runs": 0,
+    "learning_default_count": 0,
+    "learning_status": "compliant",
+    "repeated_error_escalations": []
+  },
+  "learning_obligations": [
+    {
+      "kind": "postmortem",
+      "obligation_id": "pmd-029114f2d448",
+      "owner_id": "dollar-king",
+      "owner_type": "trader",
+      "reference": "trd-trader-dollar-king-pos-e7cd1ee0a3d9",
+      "source_run_id": "overnight-20261125"
+    }
+  ],
+  "memory_context_sha256": "c0868620ecf81dd5d89eba494eb7fc682a47e60e7443b54249708d4984e2ad50",
+  "open_positions": [
+    {
+      "asset_class": "spot_fx",
+      "conviction": null,
+      "current_notional_usd": 2500000.0,
+      "entry_mark": 1.11,
+      "harvest": {
+        "asset_class": "spot_fx",
+        "catalyst_by": "2026-12-04",
+        "catalyst_logic": "The hawkish minutes are the catalyst. A reclaim of the broken range would exhaust it.",
+        "current_mark": 1.0963,
+        "current_notional_usd": 2500000.0,
+        "entry_mark": 1.1081,
+        "expected_mark_direction": null,
+        "framing": "swing",
+        "full_size_hold_requires_reunderwrite": false,
+        "giveback_usd": 7670.78,
+        "holding_seconds": 1212143,
+        "horizon_elapsed_fraction": 0.8064,
+        "horizon_status": "within",
+        "instrument": "EURUSD",
+        "intended_horizon_days": 10,
+        "mae_usd": -0.0,
+        "mechanical_order": false,
+        "mfe_usd": 101976.36,
+        "move_versus_entry_intent": "unknown",
+        "order_policy": "review_only",
+        "pending_review": {
+          "mechanical_order": false,
+          "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+          "residual_notional_usd": 2500000.0,
+          "status": "due",
+          "triggers": [
+            "material_winner"
+          ]
+        },
+        "position_id": "pos-d419ff966f72",
+        "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+        "realization_logic": "The short pays if the 20-day downside break extends while the two-year stays near 4.80.",
+        "realized_pnl_usd": 67683.43,
+        "recorded_mfe_usd": 101976.36,
+        "retained_mfe_fraction": 0.9248,
+        "review_move_bp": null,
+        "review_required": true,
+        "review_threshold_usd": 100000.0,
+        "review_triggers": [
+          "material_winner"
+        ],
+        "risk_context": "legacy_or_spot",
+        "side": "short",
+        "total_pnl_usd": 94305.58,
+        "trade_id": "trd-trader-dollar-king-pos-d419ff966f72",
+        "unrealized_pnl_usd": 26622.15
+      },
+      "instrument": "EURUSD",
+      "opened_at": "2026-11-13T06:22:15.706647-05:00",
+      "position_id": "pos-d419ff966f72",
+      "risk_capital_usd": 25000.0,
+      "side": "short",
+      "trade_id": "trd-trader-dollar-king-pos-d419ff966f72"
+    }
+  ],
+  "owner_id": "dollar-king",
+  "owner_type": "trader",
+  "postmortems_due": [
+    {
+      "created_at": "2026-11-25T06:28:51.354917-05:00",
+      "created_run_id": "overnight-20261125",
+      "facts": {
+        "asset_class": "spot_fx",
+        "closed_at": "2026-11-25T06:28:51.354917-05:00",
+        "conviction": null,
+        "entry_mark": 0.84,
+        "exit_mark": 0.84,
+        "exit_reason_category": null,
+        "expression": null,
+        "holding_duration_seconds": 694134,
+        "instrument": "USDCHF",
+        "invalidation": "EURUSD reclaims its 20-day downside break and USDCHF loses its 20-day upside break while the US two-year premium over Europe and Japan compresses.",
+        "opened_at": "2026-11-17T05:39:57.066300-05:00",
+        "rationale_status": "present",
+        "realized_pnl_usd": -19775.62,
+        "side": "long",
+        "thesis": null
+      },
+      "postmortem_id": "pmd-029114f2d448",
+      "trade_id": "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
+    }
+  ],
+  "profit_harvest": {
+    "mechanical_orders": false,
+    "note": "Thresholds trigger a harvest review. They are not take-profit or stop orders. An intact thesis does not by itself justify holding full size.",
+    "obligations_due": [
+      "pos-d419ff966f72"
+    ],
+    "order_policy": "review_only",
+    "question": "If flat today, would you initiate this exact trade at this exact size and level?",
+    "review_required_position_ids": [
+      "pos-d419ff966f72"
+    ]
+  },
+  "psychology": {
+    "active_flags": [],
+    "applicable": true,
+    "axes": {
+      "chase_pressure": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.12
+      },
+      "complacency": {
+        "band": "calm",
+        "trend": "down",
+        "value": 0.12
+      },
+      "defensiveness": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.28
+      },
+      "external_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.18
+      },
+      "frustration": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.18
+      },
+      "revenge_pressure": {
+        "band": "calm",
+        "trend": "up",
+        "value": 0.07
+      },
+      "self_trust": {
+        "band": "steady",
+        "trend": "down",
+        "value": 0.58
+      },
+      "thesis_attachment": {
+        "band": "calm",
+        "trend": "flat",
+        "value": 0.35
+      }
+    },
+    "boundary": "Private decision machinery. Never quote or paraphrase in public prose. This state never sizes, forces, or blocks a trade.",
+    "metrics": {
+      "conviction_volatility": 0.0,
+      "distortion_verdicts": 0,
+      "self_report_mismatches": 0,
+      "sharpened_verdicts": 0
+    },
+    "profile_version": 1,
+    "recent_events": [
+      {
+        "kind": "session_gain",
+        "magnitude": 0.09792022,
+        "run_id": "overnight-20261119"
+      },
+      {
+        "kind": "giveback",
+        "magnitude": 1.0,
+        "run_id": "overnight-20261125"
+      }
+    ],
+    "required_checks": {},
+    "schema_version": 1,
+    "state_sha256": "6a5d270458a79045656a783adfab394c7ff84f95a4eb618add497744280eabb7",
+    "streaks": {
+      "flat_cycles": 0,
+      "session_loss": 0,
+      "session_win": 4
+    }
+  },
+  "recent_closed_trades": [
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-25T06:28:51.354917-05:00",
+      "conviction": null,
+      "holding_duration_seconds": 694134,
+      "instrument": "USDCHF",
+      "opened_at": "2026-11-17T05:39:57.066300-05:00",
+      "realized_pnl_usd": -19775.62,
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-e7cd1ee0a3d9"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-11-18T04:53:22.859808-05:00",
+      "conviction": 62,
+      "holding_duration_seconds": 1635617,
+      "instrument": "USDJPY",
+      "opened_at": "2026-10-30T06:33:05.373685-04:00",
+      "realized_pnl_usd": 217402.23,
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-012b8f0c252c"
+    },
+    {
+      "asset_class": "spot_fx",
+      "closed_at": "2026-10-26T07:37:10.682323-04:00",
+      "conviction": 64,
+      "holding_duration_seconds": 3142820,
+      "instrument": "USDCAD",
+      "opened_at": "2026-09-19T22:36:50.082404-04:00",
+      "realized_pnl_usd": 157206.2,
+      "side": "long",
+      "trade_id": "trd-trader-dollar-king-pos-5317bc96d4eb"
+    }
+  ],
+  "recent_funding_views": [],
+  "recent_performance_reflections": [
+    {
+      "attribution": [
+        "sizing",
+        "catalyst",
+        "thesis"
+      ],
+      "lesson_id": "les-6cdc8a548aec",
+      "no_new_lesson": null,
+      "pressure_effect": "distorting",
+      "reflection_id": "prf-0ec2750b8142",
+      "run_id": "overnight-20261026",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "Expected the leftover rate premium to stabilize or lift dollar-Canada; instead profits were given back as oil stayed three-digit and Canada priced a hike."
+    },
+    {
+      "attribution": [
+        "thesis",
+        "reaction_function",
+        "catalyst",
+        "timing",
+        "sizing",
+        "variance"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "This is ordinary variance around the prior harvest rule: after a material USDCAD win, three-digit oil plus rising Canadian impulse is the known harvest trigger. The original process remains sound if winner size is now cut and only a residual rate stub is kept.",
+      "pressure_effect": "none",
+      "reflection_id": "prf-05c871c98eec",
+      "run_id": "overnight-20261023",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The book treated the SOFR/CORRA and US2/CA2 gap as sufficient to hold winner-size long USDCAD after a material run. Observed path was a large giveback with spot now 1.3995 through the 1.401 entry, while three-digit oil, rising Canadian impulse, and a Bank of Canada hike poll supported CAD. That is harvest-trigger tape, not a dip that validates winner size."
+    },
+    {
+      "attribution": [
+        "reaction_function",
+        "sizing",
+        "expression"
+      ],
+      "lesson_id": null,
+      "no_new_lesson": "No new lesson: further giveback after the first harvest cut is ordinary variance around a still-green residual. The prior process remains sound \u2014 oil plus a rising Canadian impulse is a harvest trigger, and leftover United States rate edge belongs in reduced size rather than winner size.",
+      "pressure_effect": "distorting",
+      "reflection_id": "prf-60a75f43830e",
+      "run_id": "overnight-20261022",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "Expected the US-CA rate gap to keep a USD/CAD long valid and expected three-digit oil plus rising Canadian impulse to force harvest rather than peak-size hold. That harvest ran (20m to 15m). Giveback of about 80 percent of MFE on the residual was larger than a clean hold-the-reduced-book path; WTI at 97.15 is friendlier to remaining USD/CAD edge than the prior three-digit oil regime, but it did not arrive as a full offset to rising prima and CAD hike pricing. Peak open profit was not a level the 15m book was entitled to keep."
+    },
+    {
+      "attribution": [
+        "reaction_function",
+        "expression",
+        "sizing"
+      ],
+      "lesson_id": "les-663435a31282",
+      "no_new_lesson": null,
+      "pressure_effect": "distorting",
+      "reflection_id": "prf-31455bf8143b",
+      "run_id": "overnight-20261021",
+      "skill_vs_luck": "mixed",
+      "trigger_ids": [
+        "profit_giveback"
+      ],
+      "what_happened_vs_expected": "The expected path was a grind higher in dollar-Canada while United States yields stayed restrictive versus Canada. The realized path was an overshoot to a large peak, then a giveback as oil held above 100 and Canada's relative impulse improved. Residual profit is still positive versus entry but far below the maximum favorable excursion, which is a harvest failure rather than a thesis reversal on the dollar leg."
+    }
+  ],
+  "reflections_due": [],
+  "schema_version": 5,
+  "type": "IDENTITY_MEMORY_CONTEXT"
+}
