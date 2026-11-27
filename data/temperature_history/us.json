@@ -4,7 +4,7 @@
     "start": "2025-09-21",
     "end": "2026-09-21"
   },
-  "retrieved_at": "2026-11-23T12:00:05Z",
+  "retrieved_at": "2026-11-27T12:04:39Z",
   "notes": "Trailing-12-month observation backfill for US temperature components. FRED graph CSV downloads saved under data/temperature_history/raw/us/. ISM PMI and mapped-bridge history are partial by design. Cross-check: official FRED retail Aug 2026 m/m ~+1.24% vs ledger +1.2%; core PCE Jul m/m ~+0.25% vs ledger +0.2%; personal income Jul m/m ~+0.53% vs ledger +0.4%; UMCSENT on FRED ends 2026-07 (55.2) while ledger cites Aug decline and Sep preliminary 47.8.",
   "components": {
     "Inflation.core_pce": {
@@ -648,6 +648,45 @@
           "revision_status": "final",
           "series_id": "PCEPILFE",
           "release_date": "2026-10-29"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.2743031010849162,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEPILFE",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 0.3248917665989781,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEPILFE",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-10",
+          "value": 0.29252495627400954,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEPILFE",
+          "release_date": "2026-11-25"
         }
       ],
       "gaps": [
@@ -2322,6 +2361,19 @@
           "revision_status": "final",
           "series_id": "A191RL1Q225SBEA",
           "release_date": "2026-10-29"
+        },
+        {
+          "reference_period": "2026-Q3",
+          "value": 4.3,
+          "units": "percent",
+          "transformation": "saar_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section1All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "A191RL1Q225SBEA",
+          "release_date": "2026-11-25"
         }
       ],
       "gaps": [
@@ -3566,6 +3618,97 @@
           "revision_status": "final",
           "series_id": "DSPI",
           "release_date": "2026-10-29"
+        },
+        {
+          "reference_period": "2026-04",
+          "value": -0.004855116967794615,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-05",
+          "value": 0.7299745576998307,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-06",
+          "value": 0.2289537490410165,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.380422541762071,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.37535446045133813,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 0.31406517765957265,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-10",
+          "value": 0.8251013765478099,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "DSPI",
+          "release_date": "2026-11-25"
         }
       ],
       "gaps": [
@@ -3937,6 +4080,58 @@
           "revision_status": "final",
           "series_id": "PCEC96",
           "release_date": "2026-10-29"
+        },
+        {
+          "reference_period": "2026-07",
+          "value": 0.17549538970087486,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEC96",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-08",
+          "value": 0.6279354700915896,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEC96",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-09",
+          "value": 0.11288670716202986,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEC96",
+          "release_date": "2026-11-25"
+        },
+        {
+          "reference_period": "2026-10",
+          "value": -0.0342117444174006,
+          "units": "percent",
+          "transformation": "mom_sa_pct",
+          "publisher": "BEA",
+          "source_url": "https://apps.bea.gov/national/Release/XLS/Survey/Section2All_xls.xlsx",
+          "vintage": "latest_available",
+          "retrieved_at": "2026-11-27T12:04:39Z",
+          "revision_status": "final",
+          "series_id": "PCEC96",
+          "release_date": "2026-11-25"
         }
       ],
       "gaps": [

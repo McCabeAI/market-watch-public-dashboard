@@ -6,8 +6,8 @@
   "calibration_anchor_date": "2026-09-21",
   "scoring_cutoff": "2026-11",
   "score_inputs_latest_reference_period": "2026-11",
-  "score_inputs_last_ingested_at": "2026-11-25T11:28:51Z",
-  "last_refresh_date": "2026-11-25",
+  "score_inputs_last_ingested_at": "2026-11-27T12:04:39Z",
+  "last_refresh_date": "2026-11-27",
   "date_semantics": {
     "as_of": "Immutable calibration anchor for the 1\u2013100 LEVEL engine (not the latest scored input).",
     "calibration_anchor_date": "Same as as_of; when the structural anchors were fixed.",
@@ -23,28 +23,28 @@
   "countries": {
     "US": {
       "Inflation": {
-        "level": 61.28,
-        "impulse": 9.37,
+        "level": 70.32,
+        "impulse": 7.98,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "warm",
-        "as_of": "2026-09",
-        "latest_reference_period": "2026-09",
+        "as_of": "2026-10",
+        "latest_reference_period": "2026-10",
         "components": {
           "core_pce": 1.0
         },
         "component_state": {
           "core_pce": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": 2.9025,
-            "level": 61.28,
-            "impulse": 9.37,
+            "as_of": "2026-10",
+            "transform_value": 3.6257,
+            "level": 70.32,
+            "impulse": 7.98,
             "weight": 1.0,
             "coverage_contribution": 1.0,
             "short_window": false,
-            "retrieved_at": "2026-11-13T13:40:29Z",
-            "release_date": "2026-10-29",
+            "retrieved_at": "2026-11-27T12:04:39Z",
+            "release_date": "2026-11-25",
             "release_date_status": "recorded"
           }
         },
@@ -107,8 +107,8 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Activity": {
-        "level": 56.77,
-        "impulse": 7.21,
+        "level": 59.47,
+        "impulse": 12.61,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
@@ -123,14 +123,14 @@
           "gdp_domestic_demand": {
             "observed": true,
             "as_of": "2026-Q3",
-            "transform_value": 2.8,
-            "level": 58.0,
-            "impulse": 12.0,
+            "transform_value": 3.25,
+            "level": 62.5,
+            "impulse": 21.0,
             "weight": 0.6,
             "coverage_contribution": 0.6,
             "short_window": false,
-            "retrieved_at": "2026-11-13T13:40:29Z",
-            "release_date": "2026-10-29",
+            "retrieved_at": "2026-11-27T12:04:39Z",
+            "release_date": "2026-11-25",
             "release_date_status": "recorded"
           },
           "services_surveys": {
@@ -163,8 +163,8 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Consumer": {
-        "level": 48.34,
-        "impulse": 1.49,
+        "level": 50.25,
+        "impulse": 3.72,
         "direction": "warming",
         "coverage": 1.0,
         "temperature_class": "neutral",
@@ -192,28 +192,28 @@
           },
           "income": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": 0.3057,
-            "level": 48.89,
-            "impulse": -0.5,
+            "as_of": "2026-10",
+            "transform_value": 0.5048,
+            "level": 56.86,
+            "impulse": 5.93,
             "weight": 0.25,
             "coverage_contribution": 0.25,
             "short_window": false,
-            "retrieved_at": "2026-11-13T13:40:29Z",
-            "release_date": "2026-10-29",
+            "retrieved_at": "2026-11-27T12:04:39Z",
+            "release_date": "2026-11-25",
             "release_date_status": "recorded"
           },
           "spending": {
             "observed": true,
-            "as_of": "2026-09",
-            "transform_value": 0.2441,
-            "level": 53.1,
-            "impulse": -5.31,
+            "as_of": "2026-10",
+            "transform_value": 0.2355,
+            "level": 52.75,
+            "impulse": -2.8,
             "weight": 0.25,
             "coverage_contribution": 0.25,
             "short_window": false,
-            "retrieved_at": "2026-11-13T13:40:29Z",
-            "release_date": "2026-10-29",
+            "retrieved_at": "2026-11-27T12:04:39Z",
+            "release_date": "2026-11-25",
             "release_date_status": "recorded"
           },
           "confidence": {
@@ -1011,13 +1011,13 @@
         "lineage": "V1 structural LEVEL: score 50 = policy/trend anchor from docs/TEMPERATURE_LEVEL_CALIBRATION_V1.md; not the 2026-09-17 cumulative-impulse reindex. LEVEL = coverage-weighted anchored components; IMPULSE = latest print vs prior print."
       },
       "Consumer": {
-        "level": 40.92,
-        "impulse": -2.72,
+        "level": 41.17,
+        "impulse": -2.19,
         "direction": "cooling",
         "coverage": 1.0,
         "temperature_class": "neutral",
-        "as_of": "2026-10",
-        "latest_reference_period": "2026-10",
+        "as_of": "2026-11",
+        "latest_reference_period": "2026-11",
         "components": {
           "retail": 0.25,
           "income": 0.25,
@@ -1066,14 +1066,14 @@
           },
           "confidence": {
             "observed": true,
-            "as_of": "2026-10",
-            "transform_value": -17.9,
-            "level": 42.1,
-            "impulse": -1.1,
+            "as_of": "2026-11",
+            "transform_value": -16.9,
+            "level": 43.1,
+            "impulse": 1.0,
             "weight": 0.25,
             "coverage_contribution": 0.25,
             "short_window": false,
-            "retrieved_at": "2026-11-04T10:35:22Z",
+            "retrieved_at": "2026-11-27T12:04:39Z",
             "release_date": null,
             "release_date_status": "not_recorded"
           }

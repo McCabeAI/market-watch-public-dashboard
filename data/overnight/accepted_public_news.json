@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-25T06:28:51.354917-05:00",
+  "as_of": "2026-11-27T07:04:39.364763-05:00",
   "central_bank_research": [
     {
       "headline": "Fed Chairman Kevin Warsh stresses importance of AI to the economy, but says it could disappoint",
@@ -15,6 +15,57 @@
     }
   ],
   "news": [
+    {
+      "headline": "High Inflation Puts Fed\u2019s Credibility On the Line",
+      "market_salience": {
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 15
+      },
+      "published_at": "2026-11-26T22:00:00-05:00",
+      "summary": "As US consumers are all too aware, rising prices remain a persistent problem. If the Federal Reserve wants investors to believe its promise to get inflation back down to its 2% target, it\u2019ll have to ...",
+      "title": "High Inflation Puts Fed\u2019s Credibility On the Line",
+      "transmission": {
+        "affected_assets": [
+          "USD",
+          "UST"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy",
+          "usd_rates"
+        ],
+        "components": {
+          "asset_named": 3,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 5,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "show",
+        "reason_code": "g10_policy_path",
+        "score": 15
+      }
+    },
     {
       "headline": "ECB Can\u2019t Fall Behind Curve on Interest Rates, Kocher Says",
       "market_salience": {
@@ -173,6 +224,55 @@
       }
     },
     {
+      "headline": "European Workers\u2019 AI Use on Par With That of US Peers, ECB Says",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 9
+      },
+      "published_at": "2026-11-26T21:00:00-05:00",
+      "summary": "Euro-area workers are turning to artificial intelligence at a similar rate as their peers in the US, though obstacles remain to reaping more of the technology\u2019s benefits, according to European Central ...",
+      "title": "European Workers\u2019 AI Use on Par With That of US Peers, ECB Says",
+      "transmission": {
+        "affected_assets": [
+          "EUR"
+        ],
+        "channel": "g10_policy",
+        "channels": [
+          "g10_policy"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 5,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 0,
+          "channel_usd_rates": 0,
+          "shock": 2,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "g10_policy_path",
+        "score": 9
+      }
+    },
+    {
       "headline": "Fake Iran Tanker Highlights Uncertainty Around Hormuz Traffic",
       "market_salience": {
         "components": {
@@ -225,11 +325,111 @@
         "reason_code": "oil_supply_shock",
         "score": 15
       }
+    },
+    {
+      "headline": "JSE Courts Dangote Refinery Secondary Listing in Expansion Push",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-11-26T21:20:00-05:00",
+      "summary": "Africa\u2019s biggest stock exchange is working with Dangote Group to pave the way for a potential secondary listing of its giant oil refinery in Johannesburg, an outcome the bourse\u2019s chief said would be ...",
+      "title": "JSE Courts Dangote Refinery Secondary Listing in Expansion Push",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
+    },
+    {
+      "headline": "Semiconductor chips are the new oil. Here's why",
+      "market_salience": {
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "distribution_weight": 0,
+          "novelty": 0,
+          "recency": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "distribution": "standard",
+        "score": 7
+      },
+      "published_at": "2026-11-26T12:52:15-05:00",
+      "summary": "Headline-only public metadata; article body was not retrieved.",
+      "title": "Semiconductor chips are the new oil. Here's why",
+      "transmission": {
+        "affected_assets": [
+          "Brent",
+          "WTI"
+        ],
+        "channel": "oil_energy_tot",
+        "channels": [
+          "oil_energy_tot"
+        ],
+        "components": {
+          "asset_named": 2,
+          "channel_china_spillover": 0,
+          "channel_credit_funding": 0,
+          "channel_g10_policy": 0,
+          "channel_geopolitics": 0,
+          "channel_global_risk": 0,
+          "channel_oil_energy": 5,
+          "channel_usd_rates": 0,
+          "shock": 0,
+          "subject_penalty": 0
+        },
+        "disposition": "assess",
+        "reason_code": "oil_supply_shock",
+        "score": 7
+      }
     }
   ],
-  "overnight_run_id": "overnight-20261125",
+  "overnight_run_id": "overnight-20261127",
   "schema_version": 1,
   "source": "overnight-assemble-overlay",
-  "summary": "Into the New York morning, markets look defensive but commodities are split: WTI settled near $82.05 and Brent near $91.40 on Nov 24, gold held near $3,561.90, while equities sit at elevated marks, the S&P 500 near 7,237, Nasdaq near 23,734, and the Dow near 50,019, with VIX still above 26. The dominant rates move is lower nominal yields: the U.S. 10-year at 4.91% and 2-year at 4.63% fell roughly 17 to 19 bp over five sessions, and euro-area benchmarks show the 10-year at 3.22%. FX spots have euro-dollar at 1.0963 and dollar-yen at 159.07, while Scandinavian crosses led, with euro-krone and franc-krone closing through 20-day ranges. Official SOFR printed 3.92% on Nov 23, December SOFR futures imply 4.28%, and the December meeting contract implies about 4.10%. Headlines overnight leaned hawkish in Europe and nervous on metals and AI sentiment. Watch the U.S. third-quarter GDP second estimate and October personal income and outlays at 08:30 today, then the late-November data cluster and the December central-bank meetings.",
+  "summary": "Overnight, cross-asset tone was mixed but orderly: the S&P 500 closed near 7201, the Nasdaq at 23586, and the VIX at 26.36, with equities holding up while implied volatility stayed elevated. WTI settled at 83.68 and Brent at 94.61; gold was firm at 3535.80 and copper at 5.33, apart from earlier bearish metals sentiment in the tape. FX showed modest dollar give-back versus EURUSD at 1.0975 (+0.37% on the day) and AUDUSD at 0.6635 (+1%), while USDJPY sat near 159.26. U.S. yields eased over the week, with the 10-year at 4.85% (\u221222bp over five days), even as December Fed meeting pricing built roughly 44bp of cumulative tightening to a post-meeting rate near 4.31%. Euro-area 10-year yields rose 4bp to 3.29% on the latest observation.",
   "type": "OVERNIGHT_ACCEPTED_PUBLIC_NEWS"
 }
